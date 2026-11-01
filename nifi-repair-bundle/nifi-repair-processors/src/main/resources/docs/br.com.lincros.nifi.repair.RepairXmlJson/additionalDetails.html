@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8"/>
+    <title>RepairXmlJson</title>
+    <link rel="stylesheet" href="../../../../../css/component-usage.css" type="text/css"/>
+</head>
+<body>
+<h2>RepairXmlJson: corrige JSON e XML quebrados</h2>
+
+<p>Coloque este processor logo depois da ingestão (GetFile, ConsumeKafka, InvokeHTTP, ListenHTTP...)
+e antes de qualquer processor que leia JSON/XML (EvaluateJsonPath, JoltTransformJSON, ConvertRecord,
+EvaluateXPath, SplitXml...). Documentos válidos passam intactos; os quebrados são corrigidos.</p>
+
+<h3>Fluxo sugerido</h3>
+<pre>
+[ingestão] → RepairXmlJson ─success→ RouteOnAttribute (repair.status) ─repaired→ [log/alerta]
+                          │                                         └─valid/repaired→ [seu fluxo]
+                          └─failure→ PutFile / PutS3 (quarentena para análise)
+</pre>
+
+<h3>O que é corrigido</h3>
+<table>
+    <tr><th>Problema</th><th>Antes</th><th>Depois</th></tr>
+    <tr><td>Aspas simples (JSON)</td><td><code>{'nome': 'Ana'}</code></td><td><code>{"nome":"Ana"}</code></td></tr>
+    <tr><td>Aspa extra</td><td><code>{"nome": "Ana"", "id": 1}</code></td><td><code>{"nome":"Ana","id":1}</code></td></tr>
+    <tr><td>Aspa interna sem escape</td><td><code>{"d": "Tubo 3" aço"}</code></td><td><code>{"d":"Tubo 3\" aço"}</code></td></tr>
+    <tr><td>Aspas do Word/Excel</td><td><code>{“a”: “x”}</code></td><td><code>{"a":"x"}</code></td></tr>
+    <tr><td>Vírgula faltando/sobrando</td><td><code>{"a": 1 "b": 2,}</code></td><td><code>{"a":1,"b":2}</code></td></tr>
+    <tr><td>Chave sem aspas, comentários</td><td><code>{nome: "Ana" // x}</code></td><td><code>{"nome":"Ana"}</code></td></tr>
+    <tr><td>Vírgula decimal</td><td><code>{"peso": 1,5}</code></td><td><code>{"peso":1.5}</code></td></tr>
+    <tr><td>Zero à esquerda (CEP, NF)</td><td><code>{cep: 01310100}</code></td><td><code>{"cep":"01310100"}</code></td></tr>
+    <tr><td>Espaços nas pontas</td><td><code>{"a": "  Ana "}</code></td><td><code>{"a":"Ana"}</code></td></tr>
+    <tr><td>Acentuação quebrada</td><td><code>SÃ£o Paulo</code></td><td><code>São Paulo</code></td></tr>
+    <tr><td>BOM, caracteres de controle e invisíveis</td><td><code>﻿, \u0001, ​</code></td><td>removidos</td></tr>
+    <tr><td>&amp; solto (XML)</td><td><code>&lt;a&gt;Silva &amp; Filhos&lt;/a&gt;</code></td><td><code>&lt;a&gt;Silva &amp;amp; Filhos&lt;/a&gt;</code></td></tr>
+    <tr><td>&lt; solto (XML)</td><td><code>&lt;a&gt;x &lt; 5&lt;/a&gt;</code></td><td><code>&lt;a&gt;x &amp;lt; 5&lt;/a&gt;</code></td></tr>
+    <tr><td>Atributo sem aspas / aspa interna</td><td><code>&lt;i id=10 d="3" aço"/&gt;</code></td><td><code>&lt;i id="10" d="3&amp;quot; aço"/&gt;</code></td></tr>
+    <tr><td>Espaço dentro da tag</td><td><code>&lt; nome &gt;Ana&lt;/ nome &gt;</code></td><td><code>&lt;nome&gt;Ana&lt;/nome&gt;</code></td></tr>
+    <tr><td>Tag não fechada / órfã</td><td><code>&lt;a&gt;&lt;b&gt;1&lt;/a&gt;</code></td><td><code>&lt;a&gt;&lt;b&gt;1&lt;/b&gt;&lt;/a&gt;</code></td></tr>
+    <tr><td>Entidade HTML</td><td><code>S&amp;atilde;o</code></td><td><code>São</code></td></tr>
+    <tr><td>Várias raízes</td><td><code>&lt;a/&gt;&lt;a/&gt;</code></td><td><code>&lt;root&gt;&lt;a/&gt;&lt;a/&gt;&lt;/root&gt;</code></td></tr>
+</table>
+
+<h3>Atributos gravados</h3>
+<ul>
+    <li><b>repair.status</b>: <code>valid</code> (não mexeu), <code>repaired</code> (corrigiu),
+        <code>normalized</code> (modo "Sempre normalizar" limpou um documento válido) ou <code>failed</code>.</li>
+    <li><b>repair.actions</b>: lista das correções com contagem, ex.: <code>aspas-extras-removidas(2),e-comercial-escapado(1)</code>.</li>
+    <li><b>repair.action.count</b>, <b>repair.format</b>, <b>repair.error</b>, <b>mime.type</b>.</li>
+</ul>
+
+<h3>Observações</h3>
+<ul>
+    <li>A saída é sempre UTF-8. A declaração XML é ajustada para <code>encoding="UTF-8"</code>.</li>
+    <li>Números JSON são preservados exatamente como vieram (sem perda de precisão).</li>
+    <li>O conteúdo é carregado inteiro em memória: indicado para documentos de até algumas dezenas de MB.</li>
+    <li>A correção usa heurísticas. Revise periodicamente os FlowFiles com <code>repair.status=repaired</code>.</li>
+</ul>
+</body>
+</html>
