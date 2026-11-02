@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8"/>
+    <title>JsonToXmlTemplate</title>
+    <link rel="stylesheet" href="../../../../../css/component-usage.css" type="text/css"/>
+</head>
+<body>
+<h2>JsonToXmlTemplate: monta XML a partir de JSON com um template</h2>
+
+<p>Escreva o XML de saída do jeito que ele precisa ficar e marque onde entram os dados do JSON.
+A <b>parte única</b> funciona como um ReplaceText: <code>{{campo}}</code> é trocado pelo valor.
+As <b>listas</b> são repetidas com <code>{{#each lista}} ... {{/each}}</code>.
+O documento sai completo ou vai para <i>failure</i>, nunca pela metade, e não precisa de SplitJson + MergeContent.</p>
+
+<h3>Exemplo</h3>
+<p>JSON de entrada:</p>
+<pre>{"numero": 123, "cliente": {"nome": "Silva &amp; Filhos", "cnpj": "12345678000199"},
+ "itens": [{"sku": "A1", "qtd": 2}, {"sku": "B7", "qtd": 1}]}</pre>
+<p>Template:</p>
+<pre>&lt;Pedido numero="{{numero}}"&gt;
+  &lt;Cliente cnpj="{{cliente.cnpj}}"&gt;{{cliente.nome}}&lt;/Cliente&gt;
+  &lt;Itens total="{{itens.length}}"&gt;
+    {{#each itens}}
+    &lt;Item seq="{{@number}}"&gt;&lt;Sku&gt;{{sku}}&lt;/Sku&gt;&lt;Qtd&gt;{{qtd}}&lt;/Qtd&gt;&lt;/Item&gt;
+    {{/each}}
+  &lt;/Itens&gt;
+&lt;/Pedido&gt;</pre>
+<p>XML gerado:</p>
+<pre>&lt;Pedido numero="123"&gt;
+  &lt;Cliente cnpj="12345678000199"&gt;Silva &amp;amp; Filhos&lt;/Cliente&gt;
+  &lt;Itens total="2"&gt;
+    &lt;Item seq="1"&gt;&lt;Sku&gt;A1&lt;/Sku&gt;&lt;Qtd&gt;2&lt;/Qtd&gt;&lt;/Item&gt;
+    &lt;Item seq="2"&gt;&lt;Sku&gt;B7&lt;/Sku&gt;&lt;Qtd&gt;1&lt;/Qtd&gt;&lt;/Item&gt;
+  &lt;/Itens&gt;
+&lt;/Pedido&gt;</pre>
+
+<h3>Marcações</h3>
+<table>
+    <tr><th>Marcação</th><th>O que faz</th></tr>
+    <tr><td><code>{{campo}}</code>, <code>{{a.b.c}}</code>, <code>{{lista[0].x}}</code></td><td>Valor do JSON, já escapado para XML</td></tr>
+    <tr><td><code>{{lista.length}}</code></td><td>Quantidade de itens da lista</td></tr>
+    <tr><td><code>{{{campo}}}</code></td><td>Valor sem escape (para inserir um trecho de XML pronto)</td></tr>
+    <tr><td><code>{{#each lista}} ... {{/each}}</code></td><td>Repete o trecho para cada item. <code>{{else}}</code> é usado quando a lista está vazia</td></tr>
+    <tr><td><code>{{this}}</code></td><td>O item atual (lista de textos simples)</td></tr>
+    <tr><td><code>{{@number}}</code>, <code>{{@index}}</code>, <code>{{@count}}</code>, <code>{{@first}}</code>, <code>{{@last}}</code></td><td>Posição no laço (1, 2, 3... / 0, 1, 2... / total / primeiro / último)</td></tr>
+    <tr><td><code>{{#if campo}}</code>, <code>{{#if valor &gt; 0}}</code>, <code>{{#if status == 'A'}}</code></td><td>Condição, com <code>{{else}}</code> opcional. Operadores: == != &gt; &lt; &gt;= &lt;=</td></tr>
+    <tr><td><code>{{#unless campo}}</code></td><td>Condição negada</td></tr>
+    <tr><td><code>{{#with cliente}} {{nome}} {{/with}}</code></td><td>Entra num objeto para não repetir o caminho</td></tr>
+    <tr><td><code>{{../campo}}</code>, <code>{{@root.campo}}</code></td><td>Campo do nível de cima / da raiz do JSON</td></tr>
+    <tr><td><code>{{@attr.filename}}</code></td><td>Atributo do FlowFile</td></tr>
+    <tr><td><code>{{! comentário }}</code></td><td>Comentário, não aparece no XML</td></tr>
+</table>
+<p>Dentro de uma lista, se um campo não existir no item, ele é procurado nos níveis de cima.
+Assim, <code>{{numero}}</code> do pedido pode ser usado dentro de cada item.</p>
+
+<h3>Filtros</h3>
+<table>
+    <tr><th>Filtro</th><th>Exemplo</th><th>Resultado</th></tr>
+    <tr><td>default</td><td><code>{{obs | default:'N/A'}}</code></td><td>N/A quando vazio ou ausente</td></tr>
+    <tr><td>upper / lower / trim</td><td><code>{{nome | trim | upper}}</code></td><td>ANA SILVA</td></tr>
+    <tr><td>number</td><td><code>{{valor | number:2}}</code></td><td>1520.75 (aceita "1.234,56")</td></tr>
+    <tr><td>date</td><td><code>{{emissao | date:'dd/MM/yyyy'}}</code></td><td>02/11/2026 (entrada ISO, dd/MM/yyyy, yyyyMMdd...)</td></tr>
+    <tr><td>date com entrada</td><td><code>{{d | date:'yyyy-MM-dd':'ddMMyyyy'}}</code></td><td>formato de saída : formato de entrada</td></tr>
+    <tr><td>digits</td><td><code>{{cnpj | digits}}</code></td><td>12345678000199</td></tr>
+    <tr><td>lpad / rpad</td><td><code>{{numero | lpad:9}}</code></td><td>000004521</td></tr>
+    <tr><td>truncate</td><td><code>{{obs | truncate:60}}</code></td><td>primeiros 60 caracteres</td></tr>
+    <tr><td>replace</td><td><code>{{x | replace:';':','}}</code></td><td>troca texto</td></tr>
+    <tr><td>json</td><td><code>{{objeto | json}}</code></td><td>o valor como texto JSON</td></tr>
+</table>
+
+<h3>Dicas</h3>
+<ul>
+    <li>Linhas que só têm <code>{{#each}}</code>, <code>{{/each}}</code>, <code>{{#if}}</code> etc. não geram linha em branco no XML.</li>
+    <li>Se o JSON trouxer um objeto onde o template espera uma lista (comum quando o JSON veio de um XML), ele é tratado como lista de um item.</li>
+    <li>Use <b>Arquivo de template</b> com Expression Language para escolher o template pelo tipo de documento:
+        <code>/opt/nifi/templates/${tipo}.xml</code>. O arquivo é relido automaticamente quando muda.</li>
+    <li>Se o JSON puder chegar quebrado, coloque o <b>RepairXmlJson</b> antes.</li>
+    <li>Números do JSON saem exatamente como vieram. Use <code>number:2</code> para fixar casas decimais.</li>
+</ul>
+</body>
+</html>

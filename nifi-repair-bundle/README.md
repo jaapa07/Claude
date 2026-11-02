@@ -1,3 +1,90 @@
+# Processors NiFi da Lincros
+
+Pacote `.nar` para **Apache NiFi 1.23** (compatível com NiFi 1.x em Java 8+) com dois processors:
+
+| Processor | Para quê |
+|---|---|
+| **RepairXmlJson** | Conserta JSON e XML quebrados na entrada do fluxo |
+| **JsonToXmlTemplate** | Monta um XML completo a partir de um JSON, com template (parte única + listas), sem SplitJson/MergeContent |
+
+---
+
+# JsonToXmlTemplate: XML a partir de JSON com template
+
+Você escreve o XML de saída do jeito que ele precisa ficar:
+- **Parte única:** funciona como um `ReplaceText`. `{{campo}}` é trocado pelo valor do JSON, já escapado para XML.
+- **Listas:** o trecho entre `{{#each lista}}` e `{{/each}}` se repete para cada item, inclusive com listas dentro de listas.
+
+O documento sai **completo ou vai para `failure`**, nunca pela metade. Isso substitui fluxos frágeis com
+`SplitJson → ... → MergeContent`.
+
+**JSON**
+```json
+{"numero": 123, "cliente": {"nome": "Silva & Filhos", "cnpj": "12.345.678/0001-99"},
+ "itens": [{"sku": "A1", "qtd": 2, "valor": 150}, {"sku": "B7", "qtd": 1, "valor": 12.5}]}
+```
+**Template**
+```xml
+<Pedido numero="{{numero}}">
+  <Cliente cnpj="{{cliente.cnpj | digits}}">{{cliente.nome}}</Cliente>
+  <Itens total="{{itens.length}}">
+    {{#each itens}}
+    <Item seq="{{@number}}" pedido="{{numero}}"><Sku>{{sku}}</Sku><Valor>{{valor | number:2}}</Valor></Item>
+    {{/each}}
+  </Itens>
+</Pedido>
+```
+**XML gerado**
+```xml
+<Pedido numero="123">
+  <Cliente cnpj="12345678000199">Silva &amp; Filhos</Cliente>
+  <Itens total="2">
+    <Item seq="1" pedido="123"><Sku>A1</Sku><Valor>150.00</Valor></Item>
+    <Item seq="2" pedido="123"><Sku>B7</Sku><Valor>12.50</Valor></Item>
+  </Itens>
+</Pedido>
+```
+
+### Marcações
+| Marcação | O que faz |
+|---|---|
+| `{{campo}}` `{{a.b.c}}` `{{lista[0].x}}` | Valor do JSON, escapado para XML |
+| `{{lista.length}}` | Quantidade de itens |
+| `{{{campo}}}` | Valor **sem** escape (trecho de XML pronto) |
+| `{{#each lista}} … {{else}} … {{/each}}` | Repete para cada item; `else` quando vazia |
+| `{{this}}` | Item atual (lista de textos) |
+| `{{@number}}` `{{@index}}` `{{@count}}` `{{@first}}` `{{@last}}` | Posição no laço |
+| `{{#if campo}}` `{{#if valor > 0}}` `{{#if status == 'A'}}` … `{{else}}` … `{{/if}}` | Condição |
+| `{{#unless campo}}` | Condição negada |
+| `{{#with cliente}} … {{/with}}` | Entra num objeto |
+| `{{../campo}}` `{{@root.campo}}` | Nível de cima / raiz |
+| `{{@attr.filename}}` | Atributo do FlowFile |
+| `{{! comentário }}` | Não aparece no XML |
+
+Dentro de uma lista, um campo que não existe no item é procurado nos níveis de cima.
+Por isso `{{numero}}` do pedido funciona dentro de cada item.
+
+### Filtros
+`default:'x'` · `upper` · `lower` · `trim` · `number:2` (aceita `1.234,56`) · `date:'dd/MM/yyyy'`
+(ou `date:'saída':'entrada'`) · `digits` · `lpad:9` · `rpad:10` · `truncate:60` · `replace:';':','` · `json`.
+Filtros podem ser encadeados: `{{nome | trim | upper}}`.
+
+### Configuração
+| Propriedade | Padrão | Descrição |
+|---|---|---|
+| Template XML | — | O template escrito direto na propriedade |
+| Arquivo de template | — | Caminho do template; aceita Expression Language (ex.: `/templates/${tipo}.xml`). Use este **ou** o anterior |
+| Modo de saída | Um XML por JSON | `Um XML por item do array`: JSON com array na raiz gera um XML por item (substitui o SplitJson) |
+| Campo ausente no JSON | Deixar vazio | `Falhar` manda para failure se faltar campo (exceto com `default`) |
+| Remover elementos vazios | false | Tira tags sem valor e sem atributos |
+| Arquivo XSD | — | Valida o XML gerado contra um XSD |
+| Fuso horário | America/Sao_Paulo | Usado pelo filtro `date` |
+
+**Saídas:** `success` (XML), `original` (o JSON de entrada) e `failure` (JSON original + `xml.template.error`).
+Erros de sintaxe no template aparecem na própria tela do NiFi, com o número da linha.
+
+---
+
 # RepairXmlJson: processor NiFi que conserta JSON e XML quebrados
 
 Processor customizado para **Apache NiFi 1.23** (compatível com NiFi 1.x em Java 8+).
@@ -54,10 +141,10 @@ Documentos que já estão válidos **passam sem nenhuma alteração**.
 
 ## Instalação no NiFi 1.23
 
-1. Pegue o arquivo `nifi-repair-nar-1.0.0.nar` (veja "Compilar" abaixo).
+1. Pegue o arquivo `nifi-repair-nar-1.1.0.nar` (veja "Compilar" abaixo).
 2. Copie para a pasta de **auto-carregamento**, sem reiniciar:
    ```bash
-   cp nifi-repair-nar-1.0.0.nar $NIFI_HOME/extensions/
+   cp nifi-repair-nar-1.1.0.nar $NIFI_HOME/extensions/
    ```
    Se preferir, copie para `$NIFI_HOME/lib/` e reinicie o NiFi.
 3. Em **cluster**, copie para **todos os nós**.
@@ -66,7 +153,7 @@ Documentos que já estão válidos **passam sem nenhuma alteração**.
 
 **Docker:**
 ```bash
-docker cp nifi-repair-nar-1.0.0.nar <container>:/opt/nifi/nifi-current/extensions/
+docker cp nifi-repair-nar-1.1.0.nar <container>:/opt/nifi/nifi-current/extensions/
 ```
 
 ## Configuração
@@ -108,7 +195,7 @@ fornecedores ou sistemas mandam dados mais sujos.
 Requer Java 8+ e Maven 3.6+:
 ```bash
 mvn clean package
-# gera nifi-repair-nar/target/nifi-repair-nar-1.0.0.nar
+# gera nifi-repair-nar/target/nifi-repair-nar-1.1.0.nar
 ```
 O bytecode é Java 8, então roda no NiFi 1.23 em Java 8, 11, 17 ou 21.
 
