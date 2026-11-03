@@ -141,10 +141,10 @@ Documentos que já estão válidos **passam sem nenhuma alteração**.
 
 ## Instalação no NiFi 1.23
 
-1. Pegue o arquivo `nifi-repair-nar-1.1.0.nar` (veja "Compilar" abaixo).
+1. Pegue o arquivo `nifi-repair-nar-1.1.1.nar` (veja "Compilar" abaixo).
 2. Copie para a pasta de **auto-carregamento**, sem reiniciar:
    ```bash
-   cp nifi-repair-nar-1.1.0.nar $NIFI_HOME/extensions/
+   cp nifi-repair-nar-1.1.1.nar $NIFI_HOME/extensions/
    ```
    Se preferir, copie para `$NIFI_HOME/lib/` e reinicie o NiFi.
 3. Em **cluster**, copie para **todos os nós**.
@@ -153,7 +153,7 @@ Documentos que já estão válidos **passam sem nenhuma alteração**.
 
 **Docker:**
 ```bash
-docker cp nifi-repair-nar-1.1.0.nar <container>:/opt/nifi/nifi-current/extensions/
+docker cp nifi-repair-nar-1.1.1.nar <container>:/opt/nifi/nifi-current/extensions/
 ```
 
 ## Configuração
@@ -195,7 +195,7 @@ fornecedores ou sistemas mandam dados mais sujos.
 Requer Java 8+ e Maven 3.6+:
 ```bash
 mvn clean package
-# gera nifi-repair-nar/target/nifi-repair-nar-1.1.0.nar
+# gera nifi-repair-nar/target/nifi-repair-nar-1.1.1.nar
 ```
 O bytecode é Java 8, então roda no NiFi 1.23 em Java 8, 11, 17 ou 21.
 

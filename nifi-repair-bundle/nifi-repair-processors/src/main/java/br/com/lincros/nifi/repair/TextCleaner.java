@@ -96,10 +96,20 @@ public final class TextCleaner {
      * @param fixMojibake corrige sequências como "Ã§" -> "ç"
      */
     public static String clean(String text, boolean fixMojibake, RepairLog log) {
-        String s = removeInvisible(text, log);
+        // a correção de acentuação vem antes: ela pode revelar BOM e invisíveis
+        // que estavam "disfarçados" (ex.: "ï»¿" vira BOM, "â€‹" vira zero-width)
+        String s = text;
         if (fixMojibake) {
-            s = fixMojibake(s, log);
+            // texto pode ter sido "quebrado" mais de uma vez (ex.: "JoÃ£o" gravado de novo em Latin-1)
+            for (int pass = 0; pass < 3; pass++) {
+                String fixed = fixMojibake(s, log);
+                if (fixed == s) {
+                    break;
+                }
+                s = fixed;
+            }
         }
+        s = removeInvisible(s, log);
         s = normalizeSpaces(s, log);
         s = removeControlChars(s, log);
         return s;

@@ -80,6 +80,11 @@ class JsonRepairTest {
     }
 
     @Test
+    void aspaInternaNoFimDoValorNaoSePerde() {
+        assertRepaired("{\"msg\": \"Ele disse \"oi\"\", \"x\": 1}", "{\"msg\":\"Ele disse \\\"oi\\\"\",\"x\":1}");
+    }
+
+    @Test
     void apostrofoDentroDeStringComAspasSimples() {
         assertRepaired("{'obs': 'caixa d'água'}", "{\"obs\":\"caixa d'água\"}");
     }

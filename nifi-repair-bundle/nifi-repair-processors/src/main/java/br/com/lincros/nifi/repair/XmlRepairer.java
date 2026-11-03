@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -62,6 +63,7 @@ public final class XmlRepairer {
         final String name;
         final int contentStart;
         boolean hasChild;
+        boolean hasText;
 
         Element(String name, int contentStart) {
             this.name = name;
@@ -260,7 +262,13 @@ public final class XmlRepairer {
         } else if (pos + 1 < n && s.charAt(pos + 1) == '/') {
             readEndTag();
         } else if (pos + 1 < n && isNameStart(s.charAt(pos + 1))) {
-            readStartTag(pos + 1);
+            if (looksLikeTextNotTag(pos + 1)) {
+                log.add("menor-que-escapado");
+                emitRaw("&lt;");
+                pos++;
+            } else {
+                readStartTag(pos + 1);
+            }
         } else if (pos + 1 < n && s.charAt(pos + 1) <= ' ' && spacedTagAhead()) {
             log.add("espaco-dentro-da-tag-removido");
             readStartTag(skipWs(pos + 1));
@@ -269,6 +277,37 @@ public final class XmlRepairer {
             emitRaw("&lt;");
             pos++;
         }
+    }
+
+    /**
+     * "&lt;fundos&gt;" no meio de um texto (ex.: observação) parece tag, mas é texto quando:
+     * o elemento atual já tem texto, a "tag" não fecha sozinha (/&gt;) e não existe "&lt;/fundos" no arquivo.
+     */
+    private boolean looksLikeTextNotTag(int nameStart) {
+        if (stack.isEmpty() || !stack.peek().hasText) {
+            return false;
+        }
+        int i = nameStart;
+        while (i < n && isNameChar(s.charAt(i))) {
+            i++;
+        }
+        String name = s.substring(nameStart, i);
+        int gt = s.indexOf('>', i);
+        int nextLt = s.indexOf('<', i);
+        if (gt > 0 && (nextLt < 0 || gt < nextLt) && s.charAt(gt - 1) == '/') {
+            return false;
+        }
+        String lowerName = name.toLowerCase(Locale.ROOT);
+        return lower().indexOf("</" + lowerName, i) < 0 && lower().indexOf("</ " + lowerName, i) < 0;
+    }
+
+    private String lowerCache;
+
+    private String lower() {
+        if (lowerCache == null) {
+            lowerCache = s.toLowerCase(Locale.ROOT);
+        }
+        return lowerCache;
     }
 
     /** "< nome>" só é tag se existir um "</nome" mais adiante. */
@@ -560,9 +599,14 @@ public final class XmlRepairer {
                             break;
                         }
                     }
+                    // aspa interna aberta no conteúdo (ex.: "Pedido "Cliente""): uma das aspas do fim fecha a palavra
+                    boolean keepOne = countChar(sb, s.charAt(delimiter)) % 2 == 1;
                     for (int k = i; k < delimiter; k++) {
                         char q = s.charAt(k);
-                        if (q == s.charAt(delimiter)) {
+                        if (q == s.charAt(delimiter) && keepOne) {
+                            sb.append(q);
+                            keepOne = false;
+                        } else if (q == s.charAt(delimiter)) {
                             log.add("aspas-extras-removidas");
                         } else {
                             sb.append(q);
@@ -588,6 +632,16 @@ public final class XmlRepairer {
         log.add("aspa-de-atributo-nao-fechada");
         pos = i;
         return sb.toString();
+    }
+
+    static int countChar(CharSequence cs, char c) {
+        int count = 0;
+        for (int i = 0; i < cs.length(); i++) {
+            if (cs.charAt(i) == c) {
+                count++;
+            }
+        }
+        return count;
     }
 
     private boolean hasQuoteBeforeTagEnd(int from) {
@@ -678,6 +732,9 @@ public final class XmlRepairer {
                 log.add("texto-fora-da-raiz-removido");
             }
             return;
+        }
+        if (!text.trim().isEmpty()) {
+            stack.peek().hasText = true;
         }
         out.append(escape(text, false));
     }

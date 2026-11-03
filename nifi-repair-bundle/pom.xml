@@ -6,7 +6,7 @@
 
     <groupId>br.com.lincros.nifi</groupId>
     <artifactId>nifi-repair-bundle</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
     <packaging>pom</packaging>
     <name>NiFi Repair XML/JSON Bundle</name>
     <description>Processor que corrige XML e JSON malformados na entrada de fluxos NiFi.</description>

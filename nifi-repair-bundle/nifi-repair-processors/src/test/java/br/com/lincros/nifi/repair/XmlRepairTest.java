@@ -116,7 +116,9 @@ class XmlRepairTest {
 
     @Test
     void tagsNaoFechadas() {
-        assertRepaired("<a><b>1<c>2</a>", "<a><b>1<c>2</c></b></a>");
+        assertRepaired("<a><b><c>2</a>", "<a><b><c>2</c></b></a>");
+        // "<c>" no meio de um texto e nunca fechado é tratado como texto (ex.: "<fundos>" numa observação)
+        assertRepaired("<a><b>1<c>2</a>", "<a><b>1&lt;c>2</b></a>");
         assertRepaired("<a><b>1", "<a><b>1</b></a>");
     }
 
@@ -149,6 +151,51 @@ class XmlRepairTest {
     @Test
     void comentarioECdataPreservados() {
         assertRepaired("<a><!-- ok --><![CDATA[x < y & z]]> & </a>", "<a><!-- ok --><![CDATA[x < y & z]]> &amp;</a>");
+    }
+
+    @Test
+    void palavraEntreSinaisNoMeioDoTextoNaoViraTag() {
+        assertRepaired("<nf><obs>Entregar no galpão <fundos> até 17h & ligar antes</obs><x>1</x></nf>",
+                "<nf><obs>Entregar no galpão &lt;fundos> até 17h &amp; ligar antes</obs><x>1</x></nf>");
+    }
+
+    @Test
+    void tagNaoFechadaDeVerdadeContinuaSendoTag() {
+        assertRepaired("<det><prod>1</prod><infAdProd>Lote 7 & cia</det>",
+                "<det><prod>1</prod><infAdProd>Lote 7 &amp; cia</infAdProd></det>");
+    }
+
+    @Test
+    void aspaInternaNoFimDoAtributoNaoSePerde() {
+        assertRepaired("<o xCampo=\"Pedido \"Cliente\"\"/>", "<o xCampo=\"Pedido &quot;Cliente&quot;\"/>");
+    }
+
+    @Test
+    void acentoQuebradoDuasVezes() {
+        // "JoÃ£o" (já quebrado) gravado em UTF-8 + um byte Latin-1 no mesmo arquivo = quebrado duas vezes
+        byte[] utf8 = "<a>JoÃ£o e caf".getBytes(StandardCharsets.UTF_8);
+        byte[] fim = "</a>".getBytes(StandardCharsets.UTF_8);
+        byte[] input = new byte[utf8.length + 1 + fim.length];
+        System.arraycopy(utf8, 0, input, 0, utf8.length);
+        input[utf8.length] = (byte) 0xE9;
+        System.arraycopy(fim, 0, input, utf8.length + 1, fim.length);
+        Repairer.Outcome o = run(input, new RepairOptions());
+        assertEquals("<a>João e café</a>", o.text());
+    }
+
+    @Test
+    void invisiveisSaoRemovidosMesmoQuandoArquivoMisturaUtf8ELatin1() {
+        // BOM + zero-width em UTF-8 e um "é" em Latin-1 no mesmo arquivo:
+        // o arquivo inteiro é lido como windows-1252 e os invisíveis viram mojibake antes de serem reconhecidos
+        byte[] utf8 = "﻿<a>x​y & caf".getBytes(StandardCharsets.UTF_8);
+        byte[] fim = "</a>".getBytes(StandardCharsets.UTF_8);
+        byte[] input = new byte[utf8.length + 1 + fim.length];
+        System.arraycopy(utf8, 0, input, 0, utf8.length);
+        input[utf8.length] = (byte) 0xE9;
+        System.arraycopy(fim, 0, input, utf8.length + 1, fim.length);
+        Repairer.Outcome o = run(input, new RepairOptions());
+        assertEquals(Repairer.Status.REPAIRED, o.status);
+        assertEquals("<a>xy &amp; café</a>", o.text());
     }
 
     @Test

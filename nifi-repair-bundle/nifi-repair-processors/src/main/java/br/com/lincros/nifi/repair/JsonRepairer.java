@@ -380,9 +380,17 @@ public final class JsonRepairer {
             delimiter = end - 1;
         }
         char d = s.charAt(delimiter);
+        // aspa interna aberta no conteúdo (ex.: "Ele disse "oi""): uma das aspas do fim fecha a palavra
+        boolean keepOne = XmlRepairer.countChar(sb, d) % 2 == 1;
         for (int i = start; i < delimiter; i++) {
             char q = s.charAt(i);
-            if (q == d) {
+            if (q == d && keepOne) {
+                if (q == '"') {
+                    log.add("aspas-internas-escapadas");
+                }
+                sb.append(q);
+                keepOne = false;
+            } else if (q == d) {
                 log.add("aspas-extras-removidas");
             } else {
                 if (q == '"') {
