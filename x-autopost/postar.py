@@ -19,6 +19,7 @@ Uso:
     python3 postar.py --arquivo fio.txt --fio  # publica os blocos (separados por ---) como um fio
     python3 postar.py --dry-run          # combina com qualquer modo: nao publica
     python3 postar.py --listar           # lista a fila com contagem de caracteres
+    python3 postar.py --verificar        # confere formato das chaves e testa o login no X
 """
 
 from __future__ import annotations
@@ -43,6 +44,7 @@ AQUI = Path(__file__).resolve().parent
 FILA = AQUI / "fila.md"
 POSTADOS = AQUI / "postados.md"
 ENDPOINT = "https://api.x.com/2/tweets"
+ENDPOINT_ME = "https://api.x.com/2/users/me"
 LIMITE = 280
 URL_RE = re.compile(r"https?://\S+")
 ENV_VARS = ("X_API_KEY", "X_API_SECRET", "X_ACCESS_TOKEN", "X_ACCESS_SECRET")
@@ -149,14 +151,87 @@ def publicar(texto: str, creds: dict[str, str], responder_a: str | None = None) 
 # ---------------------------------------------------------------- main
 
 
+def _limpar(valor: str) -> str:
+    """Remove espacos nas pontas e aspas envolventes, erros comuns de colagem."""
+    v = valor.strip()
+    if len(v) >= 2 and v[0] == v[-1] and v[0] in "\"'":
+        v = v[1:-1].strip()
+    return v
+
+
 def carregar_credenciais() -> dict[str, str]:
-    faltando = [v for v in ENV_VARS if not os.environ.get(v)]
+    faltando = [v for v in ENV_VARS if not _limpar(os.environ.get(v, ""))]
     if faltando:
         raise SystemExit(
             "Credenciais do X ausentes no ambiente: " + ", ".join(faltando)
             + "\nNada foi publicado."
         )
-    return {v: os.environ[v] for v in ENV_VARS}
+    return {v: _limpar(os.environ[v]) for v in ENV_VARS}
+
+
+# Formato esperado de cada chave (tamanho tipico no Developer Portal).
+FORMATOS = {
+    "X_API_KEY": (20, 30, "API Key, ~25 caracteres"),
+    "X_API_SECRET": (45, 55, "API Key Secret, ~50 caracteres"),
+    "X_ACCESS_TOKEN": (40, 60, "Access Token, numeros + '-' + letras, ~50 caracteres"),
+    "X_ACCESS_SECRET": (40, 50, "Access Token Secret, ~45 caracteres"),
+}
+
+
+def verificar() -> int:
+    """Diagnostica as credenciais sem imprimir os valores."""
+    problemas = 0
+    print("Formato das variaveis de ambiente:")
+    for nome, (minimo, maximo, descricao) in FORMATOS.items():
+        bruto = os.environ.get(nome)
+        if bruto is None or not bruto.strip():
+            print(f"  {nome}: AUSENTE ({descricao})")
+            problemas += 1
+            continue
+        valor = _limpar(bruto)
+        avisos = []
+        nota = " (tinha espaco ou aspas nas pontas, removidos automaticamente)" if bruto != valor else ""
+        if re.search(r"\s", valor):
+            avisos.append("CONTEM ESPACO NO MEIO: valor colado errado")
+        if not (minimo <= len(valor) <= maximo):
+            avisos.append(f"tamanho {len(valor)} fora do esperado ({minimo}-{maximo})")
+        if nome == "X_ACCESS_TOKEN" and not re.match(r"^\d+-[A-Za-z0-9]+$", valor):
+            avisos.append("nao tem o formato numeros-letras do Access Token")
+        if nome != "X_ACCESS_TOKEN" and not re.match(r"^[A-Za-z0-9]+$", valor):
+            avisos.append("tem caracteres fora de letras e numeros")
+        if avisos:
+            problemas += 1
+            print(f"  {nome}: PROBLEMA, {'; '.join(avisos)} ({descricao}){nota}")
+        else:
+            print(f"  {nome}: ok, {len(valor)} caracteres{nota}")
+    if problemas:
+        print(f"\n{problemas} variavel(is) com problema. Corrija no ambiente antes de testar o login.")
+        return 1
+
+    creds = carregar_credenciais()
+    req = urllib.request.Request(ENDPOINT_ME, method="GET")
+    req.add_header("Authorization", cabecalho_oauth("GET", ENDPOINT_ME, creds))
+    req.add_header("User-Agent", "x-autopost/1.0")
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            dados = json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        detalhe = e.read().decode("utf-8", errors="replace")
+        print(f"\nLogin no X FALHOU: HTTP {e.code}\n{detalhe}")
+        if e.code == 401:
+            print(
+                "\n401 = o X nao aceitou a combinacao de chaves. Causas comuns:\n"
+                "  - algum valor foi colado errado ou trocado de campo;\n"
+                "  - as chaves foram regeneradas no portal depois de salvas aqui;\n"
+                "  - o Access Token e de outro App, nao do mesmo das Consumer Keys.\n"
+                "Regenere os dois pares no portal e cole de novo, cada um no seu campo."
+            )
+        elif e.code == 403:
+            print("\n403 = chaves validas, mas o App nao tem permissao ou nao esta em um Project.")
+        return 1
+    usuario = dados.get("data", {})
+    print(f"\nLogin no X OK: @{usuario.get('username')} (id {usuario.get('id')})")
+    return 0
 
 
 def dividir_fio(texto: str) -> list[str]:
@@ -214,10 +289,14 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--dry-run", action="store_true", help="nao publica, so mostra")
     ap.add_argument("--listar", action="store_true", help="lista a fila e sai")
+    ap.add_argument("--verificar", action="store_true", help="confere as chaves e testa o login no X, sem publicar")
     ap.add_argument("--arquivo", type=Path, help="publica o conteudo deste arquivo, ignorando a fila")
     ap.add_argument("--texto", help="publica este texto, ignorando a fila")
     ap.add_argument("--fio", action="store_true", help="com --arquivo ou --texto: publica os blocos separados por --- como um fio")
     args = ap.parse_args()
+
+    if args.verificar:
+        return verificar()
 
     if args.arquivo and args.texto:
         ap.error("use --arquivo ou --texto, nao os dois")
