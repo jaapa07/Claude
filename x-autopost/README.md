@@ -60,8 +60,34 @@ secao de segredos de rede ou variaveis de ambiente):
 | `X_ACCESS_SECRET` | Authentication Tokens, Access Token Secret|
 
 Gere o Access Token **depois** de configurar a permissao Read and Write, senao
-ele sai somente leitura. O plano Free da API do X permite publicar, com limite
-mensal de posts. Tres posts por dia dao cerca de 90 por mes.
+ele sai somente leitura.
+
+### Passo a passo no portal
+
+1. Entre em https://developer.x.com logado como @rodrigohajime e crie a conta
+   de desenvolvedor (hoje o modelo e pay-per-use, com credito pre-pago).
+2. No Developer Portal, em Projects & Apps, crie um Project e dentro dele um App.
+3. No App, abra **User authentication settings** e clique em Set up / Edit:
+   App permissions = **Read and write**; Type of App = Web App, Automated App
+   or Bot; preencha Callback URI e Website URL (qualquer URL sua serve, por
+   exemplo https://github.com/jaapa07/Claude). Salve.
+4. Abra a aba **Keys and tokens**.
+   - Em Consumer Keys, clique em Regenerate para API Key and Secret. Copie os
+     dois: sao `X_API_KEY` e `X_API_SECRET`.
+   - Em Authentication Tokens, clique em Generate / Regenerate em Access Token
+     and Secret. Confira que aparece "Created with Read and Write permissions".
+     Copie os dois: sao `X_ACCESS_TOKEN` e `X_ACCESS_SECRET`.
+   Os segredos aparecem uma unica vez. Se perder, regenere.
+5. Em Billing / Usage, deixe credito disponivel. Sem saldo o POST retorna erro.
+6. Cadastre as quatro variaveis como segredos do ambiente do Claude Code e
+   abra uma sessao nova (ou espere a proxima execucao da tarefa).
+
+### Custo estimado
+
+Na API pay-per-use, publicar um post custa cerca de US$ 0,015, e um post com
+link custa cerca de US$ 0,20. Com 3 posts por dia, se um deles tiver link,
+a conta fica perto de US$ 7 por mes. Sem links, abaixo de US$ 2. Confira os
+valores atuais no Developer Console, eles mudam.
 
 Sem as credenciais o script encerra avisando e nao publica nada.
 
