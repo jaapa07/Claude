@@ -1,21 +1,31 @@
 # x-autopost
 
-Agente que publica automaticamente no X (Twitter) a partir de uma fila de posts
-escrita por voce. Uma tarefa agendada no Claude Code roda o script uma vez por dia,
-publica o primeiro post da fila e faz commit do resultado.
+Agente que publica automaticamente no X (Twitter). Uma tarefa agendada no Claude
+Code roda tres vezes por dia (9h, 14h e 18h, horario de Brasilia), pesquisa
+noticias do dia, escreve um post seguindo a pauta em `PAUTA.md`, publica e faz
+commit do registro.
 
 ## Como funciona
 
-1. Voce escreve os posts em `fila.md`, um por bloco, separados por `---`.
-2. Todo dia a tarefa agendada roda `python3 x-autopost/postar.py`.
-3. O script publica o primeiro bloco, move o texto para `postados.md` com data e
-   id do tweet, e remove o bloco da fila.
-4. A tarefa faz commit e push das mudancas, para o dia seguinte continuar de onde parou.
-5. Fila vazia: nada e publicado.
+1. A tarefa agendada abre uma sessao nova, le `PAUTA.md` e `postados.md`.
+2. Se `fila.md` tiver algum post escrito por voce, ele tem prioridade:
+   `python3 x-autopost/postar.py` publica o primeiro bloco e o remove da fila.
+3. Senao, o agente pesquisa na web o tema do horario (economia e inflacao,
+   integracao de sistemas, tempo e economia), escreve um post de ate 280
+   caracteres com fonte e link, salva em um arquivo temporario e roda
+   `python3 x-autopost/postar.py --arquivo <arquivo>`.
+4. O script registra o texto em `postados.md` com data e id do tweet.
+5. A tarefa faz commit e push, para a proxima execucao saber o que ja foi dito.
 
-## Adicionar posts
+## Mudar os temas
 
-Edite `fila.md` e faca push. Exemplo:
+Edite `PAUTA.md`. Ele define os temas por horario, as fontes preferidas e as
+regras de estilo. A tarefa agendada le o arquivo a cada execucao, entao a
+mudanca vale a partir do proximo post.
+
+## Posts manuais (opcional)
+
+Edite `fila.md` e faca push. Cada bloco e publicado antes do conteudo gerado. Exemplo:
 
 ```
 Primeiro post, ate 280 caracteres. URLs contam como 23 caracteres.
@@ -49,15 +59,16 @@ secao de segredos de rede ou variaveis de ambiente):
 
 Gere o Access Token **depois** de configurar a permissao Read and Write, senao
 ele sai somente leitura. O plano Free da API do X permite publicar, com limite
-mensal de posts.
+mensal de posts. Tres posts por dia dao cerca de 90 por mes.
 
 Sem as credenciais o script encerra avisando e nao publica nada.
 
 ## Protecao contra duplicidade
 
-Se uma execucao publicou mas nao conseguiu salvar a fila (por exemplo, falha no
-push), a proxima execucao detecta o texto em `postados.md`, remove da fila e
-nao republica.
+O script recusa publicar qualquer texto que ja conste em `postados.md`. Se uma
+execucao publicou mas nao conseguiu fazer push, a proxima detecta o texto e nao
+republica. Alem disso, o agente le `postados.md` antes de escrever, para nao
+repetir assunto dos ultimos dias.
 
 ## Dependencias
 

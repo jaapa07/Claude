@@ -13,9 +13,11 @@ ambiente:
     X_ACCESS_SECRET  (Access Token Secret do usuario)
 
 Uso:
-    python3 postar.py            # publica o proximo post
-    python3 postar.py --dry-run  # mostra o que seria publicado, sem postar
-    python3 postar.py --listar   # lista a fila com contagem de caracteres
+    python3 postar.py                    # publica o proximo post da fila
+    python3 postar.py --arquivo post.txt # publica o texto do arquivo (ignora a fila)
+    python3 postar.py --texto "..."      # publica o texto informado (ignora a fila)
+    python3 postar.py --dry-run          # combina com qualquer modo: nao publica
+    python3 postar.py --listar           # lista a fila com contagem de caracteres
 """
 
 from __future__ import annotations
@@ -153,11 +155,44 @@ def carregar_credenciais() -> dict[str, str]:
     return {v: os.environ[v] for v in ENV_VARS}
 
 
+def publicar_direto(texto: str, dry_run: bool) -> int:
+    """Publica um texto avulso (gerado pelo agente), sem tocar na fila."""
+    if not texto:
+        raise SystemExit("Texto vazio. Nada a publicar.")
+    n = tamanho_x(texto)
+    if n > LIMITE:
+        raise SystemExit(f"O texto tem {n} caracteres (limite {LIMITE}). Encurte e tente de novo.")
+    if ja_postado(texto):
+        raise SystemExit("Este texto ja consta em postados.md. Nao vou republicar.")
+    print(f"Texto ({n}/{LIMITE} caracteres):\n\n{texto}\n")
+    if dry_run:
+        print("[dry-run] Nada foi publicado.")
+        return 0
+    creds = carregar_credenciais()
+    tweet_id = publicar(texto, creds)
+    registrar_postado(texto, tweet_id)
+    print(f"Publicado: https://x.com/i/web/status/{tweet_id}")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--dry-run", action="store_true", help="nao publica, so mostra")
     ap.add_argument("--listar", action="store_true", help="lista a fila e sai")
+    ap.add_argument("--arquivo", type=Path, help="publica o conteudo deste arquivo, ignorando a fila")
+    ap.add_argument("--texto", help="publica este texto, ignorando a fila")
     args = ap.parse_args()
+
+    if args.arquivo and args.texto:
+        ap.error("use --arquivo ou --texto, nao os dois")
+
+    direto = None
+    if args.arquivo:
+        direto = args.arquivo.read_text(encoding="utf-8").strip()
+    elif args.texto is not None:
+        direto = args.texto.strip()
+    if direto is not None:
+        return publicar_direto(direto, args.dry_run)
 
     posts = ler_fila()
 
