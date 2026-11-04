@@ -12,9 +12,10 @@ sistemas seguindo a pauta em `PAUTA.md`, publica e faz commit do registro.
    `python3 x-autopost/postar.py` publica o primeiro bloco e o remove da fila.
 3. Senao, o agente escreve um post sobre integracao no formato do horario
    (dica, erro comum, caso real, opiniao, ferramenta, gancho de noticia ou
-   licao), de ate 280 caracteres, citando a fonte pelo nome quando usar
-   dado, sem links, salva em um arquivo temporario e roda
+   post de alcance), de ate 280 caracteres, citando a fonte pelo nome quando
+   usar dado, sem links, salva em um arquivo temporario e roda
    `python3 x-autopost/postar.py --arquivo <arquivo>`.
+   Na terca as 10h sai um fio de 4 a 6 posts, com `--fio`.
 4. O script registra o texto em `postados.md` com data e id do tweet.
 5. A tarefa faz commit e push, para a proxima execucao saber o que ja foi dito.
 
@@ -42,6 +43,12 @@ Para conferir a fila e a contagem de caracteres sem publicar:
 ```
 python3 x-autopost/postar.py --listar
 python3 x-autopost/postar.py --dry-run
+```
+
+Para publicar um fio (thread), separe os blocos com `---` e use `--fio`:
+
+```
+python3 x-autopost/postar.py --arquivo meu_fio.txt --fio --dry-run
 ```
 
 ## Credenciais do X
@@ -86,7 +93,8 @@ ele sai somente leitura.
 
 Na API pay-per-use, publicar um post custa cerca de US$ 0,015, e um post com
 link custa cerca de US$ 0,20. Por isso a pauta proibe URLs. Com 8 posts por
-dia sem link, sao 240 posts e cerca de US$ 3,60 por mes. Confira os valores
+dia sem link, sao 240 posts e cerca de US$ 3,60 por mes. O fio semanal
+adiciona uns 20 posts por mes, cerca de US$ 0,30. Confira os valores
 atuais no Developer Console, eles mudam.
 
 Sem as credenciais o script encerra avisando e nao publica nada.

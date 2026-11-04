@@ -20,10 +20,52 @@ horario (Brasilia) tem um formato:
 | 14h      | Opiniao: arquitetura, decisao de projeto, o que eu faria diferente    |
 | 15h      | Ferramenta ou tecnica: NiFi, Kafka, API, EDI, um recurso especifico   |
 | 17h      | Gancho com noticia do dia (economia, clima ou tecnologia), sem link   |
-| 19h      | Licao ou reflexao: o que anos de integracao me ensinaram              |
+| 19h      | **Post de alcance**: feito para ser compartilhado (ver secao abaixo)  |
+
+Na **terca-feira as 10h**, em vez do caso real, sai um **fio** de 4 a 6 posts
+(ver secao "Fio semanal").
 
 Os formatos sao guia, nao camisa de forca. Se o assunto pedir outro formato,
 troque, desde que os 8 posts do dia nao fiquem parecidos entre si.
+
+## Post de alcance (19h)
+
+Um post por dia e escrito para viajar: ser salvo, compartilhado e comentado,
+e trazer gente nova para o perfil. O que funciona no X, sem apelar:
+
+- **Primeira frase e gancho.** Quem le a primeira linha precisa querer a
+  segunda. Comece com a tensao, o numero, a afirmacao forte. Nunca com
+  "Hoje vou falar sobre".
+- **Opiniao com lado.** "Microservico sem contrato versionado e monolito
+  distribuido" gera conversa. "Depende do contexto" nao gera nada.
+- **Dor reconhecivel.** Situacoes que quem trabalha com integracao viveu:
+  o payload que mudou sem aviso, a NF-e rejeitada por acento, o job que
+  rodou duas vezes. A pessoa compartilha porque se viu ali.
+- **Lista curta.** "3 coisas que todo integrador aprende do jeito dificil".
+  Cabe em 280 caracteres se cada item tiver poucas palavras.
+- **Pergunta aberta no fim**, quando couber: "qual foi a sua?". Convida
+  resposta sem parecer enquete.
+- **Numero concreto** quando houver fonte: "40% das rejeicoes de NF-e que
+  ja vi eram encoding" so se for experiencia propria declarada como tal, ou
+  dado com fonte nomeada.
+- Sem clickbait vazio, sem polemica gratuita, sem atacar pessoa ou empresa,
+  sem prometer o que o post nao entrega.
+
+## Fio semanal (terca, 10h)
+
+Um fio de 4 a 6 posts, blocos separados por `---`, publicado com
+`python3 x-autopost/postar.py --arquivo /tmp/post.txt --fio`. Formato:
+
+1. **Bloco 1 e o gancho**: promete algo especifico e util. E o unico que
+   a maioria vai ler, entao precisa funcionar sozinho.
+2. **Blocos do meio**: um ponto por bloco, cada um com exemplo concreto.
+3. **Ultimo bloco**: fecha com a licao principal e convida a salvar ou
+   compartilhar, de forma natural.
+
+Temas bons para fio: como desenhar uma integracao ERP-TMS do zero; o
+checklist antes de colocar um fluxo NiFi em producao; os erros de EDI que
+mais custam caro; como lidar com rejeicoes da SEFAZ. Cada semana um tema
+diferente dos 4 fios anteriores.
 
 ## Assuntos
 
@@ -60,3 +102,4 @@ troque, desde que os 8 posts do dia nao fiquem parecidos entre si.
 - Nao opinar sobre partidos, candidatos ou governos.
 - Nao inventar dados nem citar ferramenta ou versao que nao exista.
 - Nao repetir assunto ja publicado nos ultimos 7 dias (ver `postados.md`).
+- So publicar. Nao responder, curtir, seguir ou mencionar ninguem.

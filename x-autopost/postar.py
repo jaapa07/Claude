@@ -16,6 +16,7 @@ Uso:
     python3 postar.py                    # publica o proximo post da fila
     python3 postar.py --arquivo post.txt # publica o texto do arquivo (ignora a fila)
     python3 postar.py --texto "..."      # publica o texto informado (ignora a fila)
+    python3 postar.py --arquivo fio.txt --fio  # publica os blocos (separados por ---) como um fio
     python3 postar.py --dry-run          # combina com qualquer modo: nao publica
     python3 postar.py --listar           # lista a fila com contagem de caracteres
 """
@@ -127,8 +128,11 @@ def cabecalho_oauth(metodo: str, url: str, creds: dict[str, str]) -> str:
     return "OAuth " + ", ".join(f'{_pct(k)}="{_pct(v)}"' for k, v in sorted(params.items()))
 
 
-def publicar(texto: str, creds: dict[str, str]) -> str:
-    corpo = json.dumps({"text": texto}).encode("utf-8")
+def publicar(texto: str, creds: dict[str, str], responder_a: str | None = None) -> str:
+    payload: dict = {"text": texto}
+    if responder_a:
+        payload["reply"] = {"in_reply_to_tweet_id": responder_a}
+    corpo = json.dumps(payload).encode("utf-8")
     req = urllib.request.Request(ENDPOINT, data=corpo, method="POST")
     req.add_header("Authorization", cabecalho_oauth("POST", ENDPOINT, creds))
     req.add_header("Content-Type", "application/json")
@@ -155,23 +159,54 @@ def carregar_credenciais() -> dict[str, str]:
     return {v: os.environ[v] for v in ENV_VARS}
 
 
-def publicar_direto(texto: str, dry_run: bool) -> int:
-    """Publica um texto avulso (gerado pelo agente), sem tocar na fila."""
+def dividir_fio(texto: str) -> list[str]:
+    partes = re.split(r"^\s*---\s*$", texto, flags=re.MULTILINE)
+    return [p.strip() for p in partes if p.strip()]
+
+
+def publicar_direto(texto: str, dry_run: bool, fio: bool = False) -> int:
+    """Publica um texto avulso (gerado pelo agente), sem tocar na fila.
+
+    Com `fio=True`, o texto e dividido em blocos separados por `---` e cada
+    bloco vira uma resposta ao anterior, formando um fio.
+    """
     if not texto:
         raise SystemExit("Texto vazio. Nada a publicar.")
-    n = tamanho_x(texto)
-    if n > LIMITE:
-        raise SystemExit(f"O texto tem {n} caracteres (limite {LIMITE}). Encurte e tente de novo.")
-    if ja_postado(texto):
+    partes = dividir_fio(texto) if fio else [texto]
+    if fio and len(partes) < 2:
+        raise SystemExit("Um fio precisa de pelo menos 2 blocos separados por `---`.")
+    for i, parte in enumerate(partes, 1):
+        n = tamanho_x(parte)
+        if n > LIMITE:
+            raise SystemExit(f"O bloco {i} tem {n} caracteres (limite {LIMITE}). Encurte e tente de novo.")
+    if ja_postado(partes[0]):
         raise SystemExit("Este texto ja consta em postados.md. Nao vou republicar.")
-    print(f"Texto ({n}/{LIMITE} caracteres):\n\n{texto}\n")
+    for i, parte in enumerate(partes, 1):
+        rotulo = f"Bloco {i}/{len(partes)}" if fio else "Texto"
+        print(f"{rotulo} ({tamanho_x(parte)}/{LIMITE} caracteres):\n\n{parte}\n")
     if dry_run:
         print("[dry-run] Nada foi publicado.")
         return 0
     creds = carregar_credenciais()
-    tweet_id = publicar(texto, creds)
-    registrar_postado(texto, tweet_id)
-    print(f"Publicado: https://x.com/i/web/status/{tweet_id}")
+    anterior = None
+    primeiro = None
+    for i, parte in enumerate(partes, 1):
+        try:
+            tweet_id = publicar(parte, creds, responder_a=anterior)
+        except SystemExit as e:
+            if primeiro:
+                registrar_postado("\n---\n".join(partes[: i - 1]), primeiro)
+                raise SystemExit(
+                    f"{e}\nO fio foi publicado ate o bloco {i - 1} de {len(partes)} "
+                    f"(https://x.com/i/web/status/{primeiro}). Os blocos restantes NAO sairam."
+                ) from None
+            raise
+        anterior = tweet_id
+        primeiro = primeiro or tweet_id
+    registrar_postado("\n---\n".join(partes), primeiro)
+    print(f"Publicado: https://x.com/i/web/status/{primeiro}")
+    if fio:
+        print(f"Fio com {len(partes)} posts.")
     return 0
 
 
@@ -181,6 +216,7 @@ def main() -> int:
     ap.add_argument("--listar", action="store_true", help="lista a fila e sai")
     ap.add_argument("--arquivo", type=Path, help="publica o conteudo deste arquivo, ignorando a fila")
     ap.add_argument("--texto", help="publica este texto, ignorando a fila")
+    ap.add_argument("--fio", action="store_true", help="com --arquivo ou --texto: publica os blocos separados por --- como um fio")
     args = ap.parse_args()
 
     if args.arquivo and args.texto:
@@ -192,7 +228,9 @@ def main() -> int:
     elif args.texto is not None:
         direto = args.texto.strip()
     if direto is not None:
-        return publicar_direto(direto, args.dry_run)
+        return publicar_direto(direto, args.dry_run, fio=args.fio)
+    if args.fio:
+        ap.error("--fio exige --arquivo ou --texto")
 
     posts = ler_fila()
 
