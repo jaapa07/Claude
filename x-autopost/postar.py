@@ -130,6 +130,10 @@ def cabecalho_oauth(metodo: str, url: str, creds: dict[str, str]) -> str:
     return "OAuth " + ", ".join(f'{_pct(k)}="{_pct(v)}"' for k, v in sorted(params.items()))
 
 
+class Duplicado(Exception):
+    """O X recusou o post por ser identico a um ja publicado na conta."""
+
+
 def publicar(texto: str, creds: dict[str, str], responder_a: str | None = None) -> str:
     payload: dict = {"text": texto}
     if responder_a:
@@ -144,6 +148,8 @@ def publicar(texto: str, creds: dict[str, str], responder_a: str | None = None) 
             dados = json.loads(resp.read().decode("utf-8"))
     except urllib.error.HTTPError as e:
         detalhe = e.read().decode("utf-8", errors="replace")
+        if e.code == 403 and "duplicate" in detalhe.lower():
+            raise Duplicado(detalhe) from None
         raise SystemExit(f"Erro HTTP {e.code} ao publicar: {detalhe}") from None
     return dados["data"]["id"]
 
@@ -268,6 +274,8 @@ def publicar_direto(texto: str, dry_run: bool, fio: bool = False) -> int:
     for i, parte in enumerate(partes, 1):
         try:
             tweet_id = publicar(parte, creds, responder_a=anterior)
+        except Duplicado:
+            raise SystemExit("O X recusou: este texto ja foi publicado na conta. Escreva um post diferente.") from None
         except SystemExit as e:
             if primeiro:
                 registrar_postado("\n---\n".join(partes[: i - 1]), primeiro)
@@ -344,7 +352,13 @@ def main() -> int:
         return 0
 
     creds = carregar_credenciais()
-    tweet_id = publicar(texto, creds)
+    try:
+        tweet_id = publicar(texto, creds)
+    except Duplicado:
+        gravar_fila(posts[1:])
+        registrar_postado(texto, "ja-publicado")
+        print("O X informou que este texto ja foi publicado na conta. Removido da fila, nada novo publicado.")
+        return 3
     registrar_postado(texto, tweet_id)
     gravar_fila(posts[1:])
     print(f"Publicado: https://x.com/i/web/status/{tweet_id}")
