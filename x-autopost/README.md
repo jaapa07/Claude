@@ -86,8 +86,20 @@ ele sai somente leitura.
      Copie os dois: sao `X_ACCESS_TOKEN` e `X_ACCESS_SECRET`.
    Os segredos aparecem uma unica vez. Se perder, regenere.
 5. Em Billing / Usage, deixe credito disponivel. Sem saldo o POST retorna erro.
-6. Cadastre as quatro variaveis como segredos do ambiente do Claude Code e
-   abra uma sessao nova (ou espere a proxima execucao da tarefa).
+6. Cadastre as quatro variaveis no ambiente do Claude Code. Isso se faz no
+   navegador (no celular tambem, abrindo https://claude.ai/code/new): no
+   seletor de ambiente abaixo da caixa de mensagem, abra o ambiente, escolha
+   Editar, entre em **Variaveis de ambiente** e cole no formato `.env`:
+
+   ```
+   X_API_KEY=...
+   X_API_SECRET=...
+   X_ACCESS_TOKEN=...
+   X_ACCESS_SECRET=...
+   ```
+
+   Salve com "Salvar alteracoes". Sessoes novas, incluindo as da tarefa
+   agendada, passam a enxergar os valores.
 
 ### Custo estimado
 
