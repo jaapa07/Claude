@@ -1,9 +1,9 @@
 # x-autopost
 
 Agente que publica automaticamente na conta **@rodrigohajime** no X (Twitter).
-Uma tarefa agendada no Claude Code roda tres vezes por dia (9h, 14h e 18h,
-horario de Brasilia), escreve um post sobre integracao de sistemas seguindo a
-pauta em `PAUTA.md`, publica e faz commit do registro.
+Uma tarefa agendada no Claude Code roda oito vezes por dia (7h, 8h, 9h, 10h,
+14h, 15h, 17h e 19h, horario de Brasilia), escreve um post sobre integracao de
+sistemas seguindo a pauta em `PAUTA.md`, publica e faz commit do registro.
 
 ## Como funciona
 
@@ -11,9 +11,9 @@ pauta em `PAUTA.md`, publica e faz commit do registro.
 2. Se `fila.md` tiver algum post escrito por voce, ele tem prioridade:
    `python3 x-autopost/postar.py` publica o primeiro bloco e o remove da fila.
 3. Senao, o agente escreve um post sobre integracao no formato do horario
-   (dica pratica, opiniao, ou gancho com noticia do dia), de ate 280
-   caracteres, com fonte e link quando citar dado, salva em um arquivo
-   temporario e roda
+   (dica, erro comum, caso real, opiniao, ferramenta, gancho de noticia ou
+   licao), de ate 280 caracteres, citando a fonte pelo nome quando usar
+   dado, sem links, salva em um arquivo temporario e roda
    `python3 x-autopost/postar.py --arquivo <arquivo>`.
 4. O script registra o texto em `postados.md` com data e id do tweet.
 5. A tarefa faz commit e push, para a proxima execucao saber o que ja foi dito.
@@ -85,9 +85,9 @@ ele sai somente leitura.
 ### Custo estimado
 
 Na API pay-per-use, publicar um post custa cerca de US$ 0,015, e um post com
-link custa cerca de US$ 0,20. Com 3 posts por dia, se um deles tiver link,
-a conta fica perto de US$ 7 por mes. Sem links, abaixo de US$ 2. Confira os
-valores atuais no Developer Console, eles mudam.
+link custa cerca de US$ 0,20. Por isso a pauta proibe URLs. Com 8 posts por
+dia sem link, sao 240 posts e cerca de US$ 3,60 por mes. Confira os valores
+atuais no Developer Console, eles mudam.
 
 Sem as credenciais o script encerra avisando e nao publica nada.
 
