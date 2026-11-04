@@ -1,26 +1,27 @@
 # x-autopost
 
-Agente que publica automaticamente no X (Twitter). Uma tarefa agendada no Claude
-Code roda tres vezes por dia (9h, 14h e 18h, horario de Brasilia), pesquisa
-noticias do dia, escreve um post seguindo a pauta em `PAUTA.md`, publica e faz
-commit do registro.
+Agente que publica automaticamente na conta **@rodrigohajime** no X (Twitter).
+Uma tarefa agendada no Claude Code roda tres vezes por dia (9h, 14h e 18h,
+horario de Brasilia), escreve um post sobre integracao de sistemas seguindo a
+pauta em `PAUTA.md`, publica e faz commit do registro.
 
 ## Como funciona
 
 1. A tarefa agendada abre uma sessao nova, le `PAUTA.md` e `postados.md`.
 2. Se `fila.md` tiver algum post escrito por voce, ele tem prioridade:
    `python3 x-autopost/postar.py` publica o primeiro bloco e o remove da fila.
-3. Senao, o agente pesquisa na web o tema do horario (economia e inflacao,
-   integracao de sistemas, tempo e economia), escreve um post de ate 280
-   caracteres com fonte e link, salva em um arquivo temporario e roda
+3. Senao, o agente escreve um post sobre integracao no formato do horario
+   (dica pratica, opiniao, ou gancho com noticia do dia), de ate 280
+   caracteres, com fonte e link quando citar dado, salva em um arquivo
+   temporario e roda
    `python3 x-autopost/postar.py --arquivo <arquivo>`.
 4. O script registra o texto em `postados.md` com data e id do tweet.
 5. A tarefa faz commit e push, para a proxima execucao saber o que ja foi dito.
 
 ## Mudar os temas
 
-Edite `PAUTA.md`. Ele define os temas por horario, as fontes preferidas e as
-regras de estilo. A tarefa agendada le o arquivo a cada execucao, entao a
+Edite `PAUTA.md`. Ele define os formatos por horario, os assuntos, as fontes
+preferidas e as regras de estilo. A tarefa agendada le o arquivo a cada execucao, entao a
 mudanca vale a partir do proximo post.
 
 ## Posts manuais (opcional)
@@ -45,8 +46,9 @@ python3 x-autopost/postar.py --dry-run
 
 ## Credenciais do X
 
-O script precisa de um app no X Developer Portal (https://developer.x.com) com
-permissao **Read and Write** e as quatro chaves abaixo, definidas como segredos
+O script publica como o dono do Access Token. Entre no X Developer Portal
+(https://developer.x.com) **logado como @rodrigohajime**, crie um app com
+permissao **Read and Write** e pegue as quatro chaves abaixo, definidas como segredos
 do ambiente do Claude Code (menu do ambiente na barra de titulo da sessao, Editar,
 secao de segredos de rede ou variaveis de ambiente):
 
