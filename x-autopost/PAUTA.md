@@ -6,11 +6,11 @@ profissional que trabalha com integracao de sistemas e dados no dia a dia.
 Este arquivo define sobre o que o agente escreve. Edite a vontade; a tarefa
 agendada le este arquivo antes de gerar cada post.
 
-## Temas: IA, Apache NiFi, ETL com IA e integracao de dados
+## Temas: IA, Apache NiFi, ETL com IA, engenharia de dados + IA e integracao
 
-Sao 12 posts por dia, em quatro frentes: inteligencia artificial, Apache NiFi,
-ETL com IA e orquestracao (LangChain, LangGraph, n8n), e integracao de sistemas
-e dados. Cada horario (Brasilia) tem tema e formato
+Sao 12 posts por dia, em cinco frentes: inteligencia artificial, Apache NiFi,
+ETL com IA e orquestracao (LangChain, LangGraph, n8n), engenharia de dados com
+IA, e integracao de sistemas e dados. Cada horario (Brasilia) tem tema e formato
 proprios, para nao ficar repetitivo:
 
 | Execucao | Tema        | Formato                                                        |
@@ -21,7 +21,7 @@ proprios, para nao ficar repetitivo:
 | 10h      | Integracao  | Caso real de producao, sem citar cliente ou empresa            |
 | 14h      | ETL com IA  | LLM no pipeline: extrair, classificar, limpar, enriquecer dados |
 | 15h      | NiFi        | Novidade: release, recurso novo, mudanca de versao, comunidade |
-| 16h      | Dados       | Erro comum em pipeline de dados e como evitar                  |
+| 16h      | Eng. dados + IA | Pipeline para IA: ingestao p/ RAG, vetores, qualidade, erro comum |
 | 17h      | Dados       | Noticia do dia: ferramenta, incidente, mudanca de API ou padrao|
 | 18h      | Orquestracao| LangGraph, LangChain ou n8n: fluxo, agente, padrao, comparativo |
 | 19h      | Livre       | **Post de alcance**: feito para ser compartilhado              |
@@ -80,6 +80,10 @@ Fontes por tema:
   LangGraph), documentacao do LangGraph, blog, changelog e comunidade do n8n
   (n8n.io, community.n8n.io), repositorios langchain-ai e n8n-io no GitHub,
   LlamaIndex, Unstructured, e posts de engenharia sobre LLM em pipelines.
+- **Engenharia de dados + IA:** blogs de engenharia da Databricks, Snowflake,
+  dbt Labs, Confluent, Pinecone, Qdrant e Weaviate; Apache Iceberg; Data
+  Engineering Weekly; Seattle Data Guy; Hacker News; posts de engenharia de
+  empresas que rodam IA em producao.
 - **Integracao e dados:** InfoQ, blogs da Confluent, Databricks, Snowflake,
   dbt Labs, Airbyte, Fivetran e AWS; changelogs de APIs publicas; portal da
   NF-e e notas tecnicas da SEFAZ.
@@ -132,7 +136,8 @@ producao; o que mudou do NiFi 1.x para o 2.x; como usar um LLM para extrair
 dados de documentos dentro de um pipeline; agentes de IA consumindo APIs
 internas com seguranca; montando um ETL com IA no n8n passo a passo; agente
 com LangGraph que valida e corrige dados antes de carregar; NiFi, n8n ou
-LangGraph, quando usar cada um.
+LangGraph, quando usar cada um; como montar a ingestao de documentos para um
+RAG que nao alucina; qualidade de dados como pre-requisito de qualquer IA.
 
 Cada fio usa um tema diferente dos 4 fios anteriores do mesmo dia.
 
@@ -144,6 +149,11 @@ Cada fio usa um tema diferente dos 4 fios anteriores do mesmo dia.
 - ETL com IA: LLM extraindo campos de PDF, XML e e-mail; classificacao e
   limpeza de dados; enriquecimento; validacao com modelo; custo e latencia de
   LLM dentro do pipeline; quando nao usar IA.
+- Engenharia de dados + IA: pipelines que alimentam modelos e agentes,
+  ingestao e chunking para RAG, bancos vetoriais (pgvector, Qdrant, Milvus,
+  Weaviate), embeddings, feature stores, qualidade e governanca de dados para
+  IA, lakehouse (Databricks, Snowflake, Iceberg), dbt com IA, observabilidade
+  de dados, custo de processamento, e os erros comuns nesses pipelines.
 - Orquestracao e agentes: LangChain (chains, tools, retrievers), LangGraph
   (grafos de estado, agentes com checkpoint, human-in-the-loop), n8n (fluxos,
   nodes de IA, self-hosted, webhooks), comparacao entre n8n, NiFi e codigo.
