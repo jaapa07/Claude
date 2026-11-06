@@ -42,7 +42,7 @@ at(L0(2), (t, u) => { street(t); place('street'); stage.aim([3.6, 5.2, 0.6], [-3
 // 3. and a shadow becomes a dot (the lamp-post's shadow at your feet)
 at(L0(3), (t, u) => { street(t); place('street'); stage.aim([0.2, 1.8, -2.4], [-1.4, 0, -4.3], 54); });
 // 4. 12:00: there she is, the size of a pizza
-at(tNoon, (t, u) => { street(t); place('street', shadow); tiny(-2.0, -5.4, Object.assign({}, POSE.stand, { facing: 0 })); stage.aim([-1.4, 0.9, -4.2], [-2.0, 0.15, -5.4], 46); });
+at(tNoon, (t, u) => { street(t); place('street', shadow); tiny(-2.0, -5.4, Object.assign({}, POSE.stand, { facing: 0 })); stage.aim([-2.9, 0.8, -4.3], [-2.0, 0.15, -5.4], 44); });
 // 5. you leap with the bag
 at(L0(5), (t, u) => { street(t); place('street', you, shadow); const k = ease(u / 0.8); put(you, -0.6 - 1.6 * k, 0.5 * Math.sin(Math.PI * clamp(u / 0.8)), -5.2 - 0.8 * k, Object.assign({}, POSE.jump, { facing: -1 })); holdBag(-0.9 - 1.6 * k, 1.2 + 0.5 * Math.sin(Math.PI * clamp(u / 0.8)), -5.2 - 0.8 * k); tiny(-2.6 + u * 1.2, -6.2, Object.assign({}, POSE.scared)); stage.aim([0.8, 1.5, -2.0], [-1.6, 0.6, -5.8], 58); });
 // 6. she escapes under a bus
