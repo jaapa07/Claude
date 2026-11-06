@@ -1,0 +1,121 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>O Homem Sem Sombra — parte 2</title>
+<script type="importmap">{"imports": {"three": "../../engine/vendor/three.module.js"}}</script>
+<style>
+@font-face { font-family: 'Oswald'; font-weight: 700; src: url('../../engine/vendor/fonts/oswald-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 700; src: url('../../engine/vendor/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+html, body { margin: 0; background: #000; } canvas { display: block; }
+</style>
+<script src="timing.js"></script>
+</head><body>
+<canvas id="film" width="1080" height="1920"></canvas>
+<script type="module">
+import * as S from '../../engine/stage.js';
+import { buildWorld } from '../world.js';
+import { words, keyed, balance, app, row, paper, scribble, pill, title, strike, brl } from '../common.js';
+const { THREE, clamp, lerp, ease, spring, box, hud, ruleSticker, endCard, chunkCaptions, drawCaptions, loadFonts, phone, W: CW, H: CH } = S;
+S.LABELS.day = ''; S.LABELS.follow = 'SIGA PARA A PARTE ';
+const T = window.TIMING; const { w, L0 } = words(T);
+const c = document.getElementById('film').getContext('2d');
+const stage = S.createStage(document.getElementById('film'));
+const Wd = buildWorld(stage);
+const { you, shadow, suit, boss, bartender, POSE, at: put, place } = Wd;
+const COVER = location.hash === '#cover';
+
+const { crush, mom } = Wd;
+const tEnd = T.voice_end + 0.3, tLoan = w(13, '20'), tBlot = w(14, 'borrão');
+function street(t, { day = true, elev = 0.6 } = {}) { Wd.use('street'); Wd.setSun(day, elev); you.mesh.castShadow = false; Wd.bus.visible = false; Wd.shop.visible = true; }
+function office(t, { plaque = false } = {}) { Wd.use('office'); Wd.plaque.visible = plaque; }
+function home(t, { night = false } = {}) { Wd.use('home'); Wd.homeSun.intensity = night ? 0 : 1.6; Wd.homeSky.material.color.set(night ? '#3a5aa8' : '#8ec5ef'); Wd.bedLamp.userData.light.intensity = night ? 2 : 0; Wd.dog.visible = false; you.mesh.castShadow = false; }
+
+// ---------- the shot list ----------
+const SH = [], at = (t0, f) => SH.push([t0, f]);
+// 0. the opener: you cancel the card (phone); your shadow peeks in at the door behind you
+at(0, (t, u) => { home(t); place('home', you, shadow); put(you, 0.4, 0, 0.6, POSE.phone); put(shadow, -2.0, 0, -2.0, Object.assign({}, POSE.stand, { facing: 1, lean: 0.2 })); const k = ease(u / 3.4); stage.aim([lerp(0.7, 1.6, k), lerp(1.4, 1.6, k), lerp(2.0, 3.0, k)], [lerp(0.4, -0.6, k), 1.1, lerp(0.6, -0.6, k)], lerp(46, 62, k)); });
+// 1. she only wanted your money, right? (you, smug)
+at(L0(1), (t, u) => { home(t); place('home', you); put(you, 0.4, 0, 0.6, POSE.laugh(t)); stage.aim([0.5, 1.35, 1.9], [0.4, 1.15, 0.6], 46); });
+// 2. wrong: her face, at your desk
+at(L0(2), (t, u) => { office(t); place('office', shadow); put(shadow, 0.0, -0.1, -0.6, Object.assign({}, POSE.type, { facing: 0 })); stage.aim([0.0, 1.15, 0.5 - u * 0.1], [0.0, 1.05, -0.6], 40); });
+// 3. Monday: your shadow gets a job
+at(L0(3), (t, u) => { office(t); place('office', shadow, boss); shadow.pose(POSE.type); put(shadow, 0.0, -0.1, -0.6, Object.assign({}, POSE.type, { armL: [1.3 + 0.2 * Math.sin(t * 20), -0.6] })); put(boss, -2.4, 0, 1.0, Object.assign({}, POSE.stand, { facing: 1 })); stage.aim([2.2, 1.7, 2.6], [0, 0.9, -0.4], 58); });
+// 4. at your company, at your desk: you arrive, shocked
+at(L0(4), (t, u) => { office(t); place('office', shadow, you); put(shadow, 0.0, -0.1, -0.6, Object.assign({}, POSE.type, { armL: [1.3 + 0.2 * Math.sin(t * 20), -0.6] })); put(you, 1.1, 0, 0.6, Object.assign({}, POSE.scared, { facing: -1 })); stage.aim([1.9, 1.4, 2.4], [0.4, 1.0, -0.2], 56); });
+// 5. the boss loves her
+at(L0(5), (t, u) => { office(t); place('office', shadow, boss); put(shadow, 0.0, -0.1, -0.6, Object.assign({}, POSE.type, { armL: [1.3 + 0.2 * Math.sin(t * 20), -0.6] })); put(boss, -0.8, 0, -0.2, POSE.laugh(t)); stage.aim([0.8, 1.4, 1.8], [-0.4, 1.1, -0.4], 52); });
+// 6. rule 4 on the back of the contract (over the office)
+at(L0(6), (t, u) => { office(t); place('office', you); put(you, 1.1, 0, 0.6, Object.assign({}, POSE.phone)); stage.aim([1.5, 1.4, 2.0], [1.1, 1.15, 0.6], 50); });
+// 7. you call the man in the suit (street)
+at(L0(7), (t, u) => { street(t); place('street', you); put(you, 0, 0, -5.2, POSE.phone); stage.aim([0.4, 1.4, -2.8], [0.2, 1.15, -5.3], 54); });
+// 8. "she ran away from me too. Bit my assistant." (him, nursing a hand)
+at(L0(8), (t, u) => { street(t); place('street', suit); put(suit, 1.2, 0, -5.4, { facing: -1, mood: 'scared', armR: [-0.9, -1.2], armL: [0.9, -1.4] }); stage.aim([0.6, 1.45, -3.9], [1.2, 1.4, -5.4], 44); });
+// 9. Thursday: she's promoted. The manager. YOUR manager.
+at(L0(9), (t, u) => { office(t, { plaque: true }); place('office', shadow, you); put(shadow, 0.0, 0.75, -1.25, Object.assign({}, POSE.stand, { facing: 0, armL: [-2.4, 0.3], armR: [2.4, -0.3] })); put(you, 0.9, 0, 0.9, Object.assign({}, POSE.scared, { facing: -1 })); stage.aim([0.6, 1.2, 2.8], [0.1, 1.4, -0.8], 60); });
+// 10. Friday: dinner with your crush (through the restaurant window, at night)
+at(L0(10), (t, u) => { street(t, { day: false }); place('street', you, shadow, crush); put(shadow, 3.5, 0, -8.0, Object.assign({}, POSE.laugh(t), { facing: 1 })); put(crush, 4.5, 0, -8.0, POSE.laugh(t + 0.3)); put(you, 2.6, 0, -6.4, Object.assign({}, POSE.scared, { facing: 1 })); stage.aim([1.4, 1.7, -3.2], [3.9, 1.2, -8.2], 54); });
+// 11. Saturday: your mother calls (phone over your room)
+at(L0(11), (t, u) => { home(t); place('home', you); put(you, 0.4, 0, 0.6, POSE.phone); stage.aim([0.6, 1.4, 1.8], [0.4, 1.1, 0.6], 50); });
+// 12. "your shadow came for lunch, what a polite girl!": your mother hugging your shadow
+at(L0(12), (t, u) => { home(t); place('home', mom, shadow); put(mom, -0.3, 0, -0.2, Object.assign({}, POSE.stand, { facing: 1, armL: [-1.2, -0.6], armR: [-1.0, -0.5] })); put(shadow, 0.3, 0, -0.2, Object.assign({}, POSE.stand, { facing: -1 })); stage.aim([0.2, 1.3, 2.0], [0.0, 1.0, -0.2], 52); });
+// 13. Sunday: a letter from the bank (paper overlay over your room)
+at(L0(13), (t, u) => { home(t, { night: true }); place('home', you); put(you, 0.4, 0, 0.6, Object.assign({}, POSE.scared)); stage.aim([0.6, 1.4, 1.8], [0.4, 1.1, 0.6], 50); });
+// 14. enough: you're going to hunt your shadow
+at(L0(15), (t, u) => { home(t, { night: true }); place('home', you); put(you, 0.4, 0, 0.6, { facing: 0, armR: [-2.8, 0.2], armL: [0.6, -1.6], lean: -0.05 }); stage.aim([0.5, 0.8, 2.0], [0.4, 1.3, 0.6], 54); });
+// 15. but how do you catch a shadow? (you dive at the lamp-post's shadow)
+at(L0(16), (t, u) => { street(t, { elev: 0.5 }); place('street', you); Wd.post.visible = true; const k = ease(u / 0.7); put(you, -1.0 + k * 0.6, 0.3 * Math.sin(Math.PI * clamp(u / 0.7)), -4.0 + k * 0.8, POSE.jump); stage.aim([1.8, 1.6, -0.8], [-1.0, 0.5, -4.2], 58); });
+// 16. then you remember rule 1 (contract overlay)
+at(L0(17), (t, u) => { street(t, { elev: 0.5 }); place('street', you); put(you, 0, 0, -5.2, Object.assign({}, POSE.look, { facing: 0 })); stage.aim([0.4, 1.4, -2.8], [0.2, 1.15, -5.3], 54); });
+// 17. why would anyone forbid noon? (looking up at the sun overhead)
+at(L0(18), (t, u) => { street(t, { elev: 1.5 }); place('street', you); put(you, 0, 0, -5.2, Object.assign({}, POSE.stand, { headTilt: -0.4 })); stage.aim([0.6, 0.4, -2.4], [0.0, 3.5, -6.8], 70); });
+// 18. "at noon the shadow almost disappears. That's when she's weak." (him, low angle)
+at(L0(19), (t, u) => { street(t, { elev: 1.5 }); place('street', suit); put(suit, 1.2, 0, -5.4, Object.assign({}, POSE.stand, { facing: -1, armR: [-2.6, 0.3] })); stage.aim([0.7, 0.7, -3.6], [1.2, 1.7, -5.4], 50); });
+// 19. the last image: your shadow at your desk, trembling
+at(w(19, 'É'), (t, u) => { office(t, { plaque: true }); place('office', shadow); put(shadow, 0.0, -0.1, -0.6, Object.assign({}, POSE.tremble(t), { legL: [1.45, -1.4], legR: [1.35, -1.3] })); stage.aim([0.0, 1.15, 0.5 - u * 0.1], [0.0, 1.05, -0.6], 42); });
+
+const DAYS = [[0, 'DOMINGO', '10:05'], [L0(3), 'SEGUNDA', '09:00'], [L0(7), 'TERÇA', '12:40'], [L0(9), 'QUINTA', '15:10'], [L0(10), 'SEXTA', '21:30'], [L0(11), 'SÁBADO', '13:00'], [L0(13), 'DOMINGO', '19:45'], [L0(17), 'SEGUNDA', '11:20']];
+const clockAt = t => { const r = DAYS.filter(x => t >= x[0]).pop(); return [r[1], r[2]]; };
+const BAL = [[0, -452], [tLoan, 19548]];
+function screen(t, i) {
+  if (i === 0) phone(c, (c, x, y, ww, hh) => app(c, x, y, ww, hh, 'MEU BANCO', '#7a2fd6', (c, w2) => { row(c, w2, 90, 'CARTÃO', t >= w(0, 'cancela') + 0.2 ? 'CANCELADO ✓' : 'ATIVO', t >= w(0, 'cancela') + 0.2 ? '#2e9e57' : '#1f2026'); row(c, w2, 190, 'SALDO', brl(keyed(BAL, t)), '#c8372d'); }), clamp(t / 0.3));
+  if (i === 7) phone(c, (c, x, y, ww, hh) => { c.fillStyle = '#1b1d24'; c.fillRect(x, y, ww, hh); c.fillStyle = '#fff'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.font = '700 54px Oswald'; c.fillText('HOMEM DE TERNO', x + ww / 2, y + 260); c.font = '700 34px "JetBrains Mono"'; c.fillStyle = '#9fa3ad'; c.fillText('chamando...', x + ww / 2, y + 330); c.fillStyle = '#2e9e57'; c.beginPath(); c.arc(x + ww / 2, y + 800, 70, 0, 7); c.fill(); }, clamp((t - L0(7)) / 0.3));
+  if (i === 11) phone(c, (c, x, y, ww, hh) => { c.fillStyle = '#1b1d24'; c.fillRect(x, y, ww, hh); c.fillStyle = '#fff'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.font = '700 80px Oswald'; c.fillText('MÃE ❤', x + ww / 2, y + 260); c.font = '700 34px "JetBrains Mono"'; c.fillStyle = '#9fa3ad'; c.fillText('ligando...', x + ww / 2, y + 340); c.fillStyle = '#2e9e57'; c.beginPath(); c.arc(x + ww / 2 + 120, y + 800, 70, 0, 7); c.fill(); c.fillStyle = '#c8372d'; c.beginPath(); c.arc(x + ww / 2 - 120, y + 800, 70, 0, 7); c.fill(); }, clamp((t - L0(11)) / 0.3));
+}
+function letters(t) {
+  const s6 = L0(6), e6 = L0(7) - 0.05;
+  if (t >= s6 && t < e6) paper(c, ease((t - s6) / 0.25), (c, w2) => { c.fillStyle = '#1f2026'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.font = '700 48px Oswald'; c.fillText('CONTRATO · VERSO', w2 / 2, 90); c.fillStyle = '#9a958c'; for (let i = 0; i < 8; i++) c.fillRect(60, 170 + i * 34, w2 - 120 - (i % 3) * 90, 10);
+    c.fillStyle = '#1f2026'; c.font = '700 30px "JetBrains Mono"'; c.textAlign = 'left'; c.fillText('4. sombra fugida é', 60, 560); c.fillText('   problema do cliente.', 60, 600); }, { h: 760, y: 1100 });
+  const s13 = L0(13), e13 = L0(15) - 0.05;
+  if (t >= s13 && t < e13) paper(c, ease((t - s13) / 0.25), (c, w2) => { c.fillStyle = '#7a2fd6'; c.fillRect(0, 0, w2, 120); c.fillStyle = '#fff'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.font = '700 54px Oswald'; c.fillText('BANCO', w2 / 2, 64);
+    c.fillStyle = '#1f2026'; c.font = '700 44px Oswald'; c.fillText('EMPRÉSTIMO APROVADO', w2 / 2, 220); c.font = '700 96px Oswald'; c.fillStyle = '#2e9e57'; c.fillText('R$ 20.000', w2 / 2, 360);
+    c.fillStyle = '#1f2026'; c.font = '700 34px "JetBrains Mono"'; c.fillText('TITULAR: VOCÊ', w2 / 2, 470); c.textAlign = 'left'; c.fillText('ASSINATURA:', 60, 620); c.fillRect(60, 700, w2 - 120, 4);
+    if (t >= tBlot - 0.2) { const k = ease((t - tBlot + 0.2) / 0.3); c.fillStyle = '#0b0b0e'; c.beginPath(); for (let i = 0; i < 14; i++) { const a = i / 14 * Math.PI * 2, r = (60 + 25 * Math.sin(i * 2.7)) * k; c.lineTo(w2 / 2 + Math.cos(a) * r * 1.8, 660 + Math.sin(a) * r * 0.6); } c.closePath(); c.fill(); } }, { h: 800, y: 900 });
+  const s17 = L0(17), e17 = L0(18) - 0.05;
+  if (t >= s17 && t < e17) paper(c, ease((t - s17) / 0.25), (c, w2) => { c.fillStyle = '#1f2026'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.font = '700 54px Oswald'; c.fillText('CONTRATO', w2 / 2, 90);
+    c.font = '700 40px "JetBrains Mono"'; c.textAlign = 'left'; c.fillStyle = '#c8372d'; c.fillText('1. evite o sol do', 60, 300); c.fillText('   meio-dia', 60, 350); c.fillStyle = '#9a958c'; c.font = '700 28px "JetBrains Mono"'; c.fillText('2. nunca procure a sua sombra', 60, 450); c.fillText('3. não aceitamos devolução', 60, 500);
+    c.strokeStyle = '#c8372d'; c.lineWidth = 8; c.strokeRect(40, 250, w2 - 80, 140); }, { h: 640, y: 1000 });
+}
+
+const CHUNKS = chunkCaptions(T); window.CHUNKS = CHUNKS;
+window.TOTAL = Math.max(61, T.voice_end + 3.6);
+window.seek = t => {
+  if (COVER) return cover();
+  let i = 0; while (i + 1 < SH.length && t >= SH[i + 1][0]) i++;
+  SH[i][1](t, t - SH[i][0]);
+  stage.draw(t, { vignette: 0.42, bloomStrength: 0.45 });
+  const [d, k] = clockAt(t); hud(c, d, k); balance(c, keyed(BAL, t), t);
+  const ph = [0, 7, 11].includes(i); if (ph) screen(t, i);
+  letters(t);
+  const s6 = L0(6), e6 = T.lines[6].end + 0.25; if (t >= s6 - 0.05 && t < e6) ruleSticker(c, 4, ['SOMBRA FUGIDA', 'É SEU PROBLEMA'], spring((t - s6 + 0.05) * 1.4), 560);
+  const s17 = L0(17), e17 = T.lines[17].end + 0.25; if (t >= s17 - 0.05 && t < e17) ruleSticker(c, 1, ['EVITE O SOL', 'DO MEIO-DIA'], spring((t - s17 + 0.05) * 1.4), 560);
+  if (t >= tEnd) endCard(c, tEnd, t, ['VOCÊ CAÇA ELA', 'AO MEIO-DIA?'], 'SIM: AMANHÃ, 12:00', 'NÃO: DEIXO ELA VIVER', 3);
+  else drawCaptions(c, CHUNKS, t, ph ? 1700 : 1310);
+};
+function cover() {
+  const tt = L0(9) + 0.5; SH[9][1](tt, 0.5); stage.draw(tt, { vignette: 0.42, bloomStrength: 0.45 });
+  { const gr = c.createLinearGradient(0, 0, 0, 900); gr.addColorStop(0, 'rgba(0,0,0,0.6)'); gr.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = gr; c.fillRect(0, 0, CW, 900); }
+  pill(c, 'O HOMEM SEM SOMBRA · PARTE 2', 300); title(c, 'ELA VIROU', 'MINHA CHEFE');
+}
+await loadFonts();
+window.seek(0);
+window.READY = true;
+</script>
+</body></html>

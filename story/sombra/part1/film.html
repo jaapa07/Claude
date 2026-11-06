@@ -1,0 +1,146 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>O Homem Sem Sombra — parte 1</title>
+<script type="importmap">{"imports": {"three": "../../engine/vendor/three.module.js"}}</script>
+<style>
+@font-face { font-family: 'Oswald'; font-weight: 700; src: url('../../engine/vendor/fonts/oswald-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 700; src: url('../../engine/vendor/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+html, body { margin: 0; background: #000; } canvas { display: block; }
+</style>
+<script src="timing.js"></script>
+</head><body>
+<canvas id="film" width="1080" height="1920"></canvas>
+<script type="module">
+import * as S from '../../engine/stage.js';
+import { buildWorld } from '../world.js';
+import { words, keyed, balance, app, row, paper, scribble, pill, title, strike, brl } from '../common.js';
+const { THREE, clamp, lerp, ease, spring, box, hud, ruleSticker, endCard, chunkCaptions, drawCaptions, loadFonts, phone, W: CW, H: CH } = S;
+S.LABELS.day = ''; S.LABELS.follow = 'SIGA PARA A PARTE ';
+const T = window.TIMING; const { w, L0 } = words(T);
+const c = document.getElementById('film').getContext('2d');
+const stage = S.createStage(document.getElementById('film'));
+const Wd = buildWorld(stage);
+const { you, shadow, suit, boss, bartender, POSE, at: put, place } = Wd;
+const COVER = location.hash === '#cover';
+
+// the rolled-up shadow (a black carpet roll)
+const roll = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 1.0, 12), new THREE.MeshStandardMaterial({ color: '#0b0b0e', roughness: 1 })); roll.rotation.z = Math.PI / 2; roll.castShadow = true; Wd.street.add(roll);
+const flat = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 1.9), new THREE.MeshBasicMaterial({ color: '#000000', transparent: true, opacity: 0.55, depthWrite: false })); flat.rotation.x = -Math.PI / 2; Wd.street.add(flat);   // your shadow, flat on the pavement, being rolled up
+
+const tSign = w(3, 'assina'), tRoll = L0(4), tGone = w(4, 'some'), tEnd = T.voice_end + 0.3;
+function street(t, { day = true, elev = 0.6, youShadow = false } = {}) {
+  Wd.use('street'); Wd.setSun(day, elev); you.mesh.castShadow = youShadow; roll.visible = false; flat.visible = false; Wd.bus.visible = false; Wd.shop.visible = true;
+}
+
+// ---------- the shot list ----------
+const SH = [], at = (t0, f) => SH.push([t0, f]);
+// 0. the opener: you on the pavement staring at your phone; behind you, a man in a suit and a top hat
+at(0, (t, u) => { street(t, { youShadow: true }); place('street', you, suit); put(you, 0, 0, -5.2, POSE.phone); put(suit, 2.4, 0, -6.6, Object.assign({}, POSE.stand, { facing: -1 })); const k = ease(u / 4); stage.aim([lerp(0.3, 1.4, k), lerp(1.4, 1.7, k), lerp(-3.2, -1.2, k)], [lerp(0.2, 1.0, k), lerp(1.2, 1.2, k), -5.8], lerp(46, 58, k)); });
+// 1. a man in a suit stops you
+at(L0(1), (t, u) => { street(t, { youShadow: true }); place('street', you, suit); put(you, 0, 0, -5.2, Object.assign({}, POSE.stand, { facing: 1 })); suit.walk(u * 1.2, { speed: 1.2, facing: -1 }); suit.mesh.position.set(2.4 - Math.min(1.2, u * 0.9), 0, -5.4); stage.aim([1.0, 1.4, -1.8], [0.9, 1.2, -5.3], 54); });
+// 2. "I'll buy your shadow. 500. Cash."
+at(L0(2), (t, u) => { street(t, { youShadow: true }); place('street', suit); put(suit, 1.2, 0, -5.4, POSE.offer); stage.aim([0.6, 1.45, -3.9 + u * 0.05], [1.2, 1.4, -5.4], 44); });
+// 3. you laugh...
+at(L0(3), (t, u) => { street(t, { youShadow: true }); place('street', you, suit); put(you, 0, 0, -5.2, POSE.laugh(t)); put(suit, 1.2, 0, -5.4, POSE.offer); stage.aim([0.4, 1.4, -2.6], [0.5, 1.15, -5.3], 52); });
+// 4. ...and sign (the contract overlay)
+at(tSign, (t, u) => { street(t, { youShadow: true }); place('street', you, suit); put(you, 0, 0, -5.2, POSE.sign); put(suit, 1.2, 0, -5.4, POSE.offer); stage.aim([0.4, 1.4, -2.6], [0.5, 1.15, -5.3], 52); });
+// 5. he rolls your shadow up like a carpet (high angle: the shadow on the pavement)
+at(tRoll, (t, u) => { street(t); place('street', you, suit); put(you, 0, 0, -5.2, Object.assign({}, POSE.scared, { facing: 0 })); const k = ease(u / 1.6);
+  flat.visible = k < 1; flat.scale.set(1, 1 - k, 1); flat.position.set(0.15, 0.01, -5.2 + 0.95 + 0.95 * k);
+  roll.visible = true; roll.scale.set(1, 1, 1); roll.position.set(0.15, 0.12 + 0.6 * clamp((u - 1.6) / 0.4), -5.2 + 1.9 * (1 - 0) - 1.9 * (1 - k) * 0); roll.position.z = -5.2 + 0.0 + 1.9 * k;
+  put(suit, 0.15 + 0.5, 0, -5.2 + 1.9 * k + 0.3, Object.assign({}, POSE.carry, { facing: -1, lean: 0.6 * (1 - clamp((u - 1.6) / 0.4)) }));
+  if (t >= tGone) { suit.mesh.visible = false; roll.visible = false; }
+  stage.aim([3.2, 4.2, -1.2], [0.2, 0.2, -4.4], 52); });
+// 6. the small print: three rules (contract overlay over the empty street)
+at(L0(5), (t, u) => { street(t); place('street', you); put(you, 0, 0, -5.2, Object.assign({}, POSE.phone)); stage.aim([0.4, 1.4, -2.6], [0.2, 1.15, -5.3], 54); });
+// 7. rule 1: the noon sun
+at(L0(6), (t, u) => { street(t, { elev: 1.45 }); place('street', you); put(you, 0, 0, -5.2, POSE.stand); stage.aim([0.6, 0.4, -2.4], [0.0, 3.5, -6.8], 70); });
+// 8. rule 2: you have no shadow (a passer-by does)
+at(L0(7), (t, u) => { street(t, { elev: 0.45 }); place('street', you, boss); put(you, -0.6, 0, -5.4, Object.assign({}, POSE.scared, { facing: 0 })); boss.mesh.castShadow = true; boss.walk(u * 1.2, { speed: 1.2, facing: 1 }); boss.mesh.position.set(-3 + u * 1.2, 0, -6.6); stage.aim([2.4, 3.6, -0.2], [-0.6, 0.2, -5.6], 56); });
+// 9. rule 3: no returns (the spot where he vanished)
+at(L0(8), (t, u) => { street(t); place('street', you); put(you, -0.4, 0, -5.2, Object.assign({}, POSE.look, { facing: 1 })); stage.aim([1.4, 1.2, -2.8], [0.8, 1.0, -6.0], 56); });
+// 10. day 1: nobody notices. Morning in your room, the sun through the window, no shadow
+at(L0(9), (t, u) => { Wd.use('home'); place('home', you); Wd.dog.visible = false; Wd.homeSun.intensity = 1.6; Wd.homeSky.material.color.set('#8ec5ef'); Wd.bedLamp.userData.light.intensity = 0; you.mesh.castShadow = false; put(you, 0.6, 0, 0.2, POSE.stand); stage.aim([1.6, 1.5, 2.2], [0.3, 0.7, -0.6], 60); });
+// 11. only your dog, barking at you all day
+at(w(9, 'Só'), (t, u) => { Wd.use('home'); place('home', you); Wd.dog.visible = true; Wd.dog.position.set(-0.4, 0, 0.6); Wd.drawDog(Math.floor(t * 5) % 2 === 0, 1); put(you, 0.7, 0, 0.3, Object.assign({}, POSE.scared, { facing: -1 })); stage.aim([0.2, 0.9, 2.4], [0.1, 0.6, 0.4], 56); });
+// 12. day 3: the card bill (phone)
+at(L0(10), (t, u) => { Wd.use('home'); place('home', you); Wd.dog.visible = false; put(you, 0.4, 0, 0.0, POSE.phone); stage.aim([0.6, 1.4, 1.6], [0.4, 1.1, 0], 54); });
+// 13. at 3 am you were asleep... and your shadow climbs out of the window
+at(L0(11), (t, u) => { Wd.use('home'); place('home', you, shadow); Wd.homeSun.intensity = 0; Wd.homeSky.material.color.set('#3a5aa8'); Wd.bedLamp.userData.light.intensity = 1.5; Wd.homeL.h.intensity = 0.9; you.mesh.castShadow = false;
+  put(you, -1.3, 0.55, -1.05, { facing: 1, lean: -1.45, armL: [0.2, -0.2], armR: [0.1, -0.1] }); const k = ease(u / 1.8); put(shadow, 1.2, 0.5 + 0.6 * k, -2.2 - 0.3 * k, Object.assign({}, POSE.reach, { facing: 1, lean: 0.3 })); stage.aim([-0.2, 1.5, 2.0], [0.0, 0.8, -1.6], 66); });
+// 14. day 5: your boss
+at(L0(12), (t, u) => { Wd.use('office'); place('office', you, boss); Wd.plaque.visible = false; put(you, 0.0, -0.1, -0.6, POSE.type); boss.walk(u, { speed: 1, facing: 1 }); boss.mesh.position.set(-2.0 + u * 1.0, 0, 0.2); stage.aim([2.0, 1.5, 2.4], [-0.4, 1.0, -0.2], 58); });
+// 15. "what a show at karaoke last night!"
+at(L0(13), (t, u) => { Wd.use('office'); place('office', boss); put(boss, -0.9, 0, 0.2, POSE.laugh(t)); stage.aim([-0.3, 1.35, 1.6], [-0.9, 1.3, 0.2], 46); });
+// 16. you don't sing
+at(L0(14), (t, u) => { Wd.use('office'); place('office', you); put(you, 0.0, -0.1, -0.6, Object.assign({}, POSE.type, { facing: 0 })); stage.aim([0.3, 1.2, 0.7], [0.0, 1.05, -0.6], 44); });
+// 17. on social media: a photo tagged with you — just a shadow (phone over the office)
+at(L0(15), (t, u) => { Wd.use('office'); place('office', you); put(you, 0.0, -0.1, -0.6, POSE.phone); stage.aim([0.3, 1.2, 0.7], [0.0, 1.05, -0.6], 44); });
+// 18. your shadow has a social life. You don't: alone in bed, the dog asleep
+at(L0(16), (t, u) => { Wd.use('home'); place('home', you); Wd.homeSun.intensity = 0; Wd.homeSky.material.color.set('#0a1430'); Wd.bedLamp.userData.light.intensity = 3; Wd.dog.visible = true; Wd.dog.position.set(0.6, 0, -0.6); Wd.drawDog(false, -1); put(you, -1.3, 0.3, -0.9, Object.assign({}, POSE.phone)); stage.aim([0.8, 1.3, 1.8], [-0.8, 0.8, -1.0], 58); });
+// 19. "you don't": close
+at(w(16, 'Você'), (t, u) => { Wd.use('home'); place('home', you); put(you, -1.3, 0.3, -0.9, Object.assign({}, POSE.phone, { mood: 'scared' })); stage.aim([-1.0, 1.4, 0.2], [-1.3, 1.3, -0.9], 44); });
+// 20. midnight: you follow the bill to the club (the street at night)
+at(L0(17), (t, u) => { street(t, { day: false }); place('street', you); you.walk(u * 1.4, { speed: 1.4, facing: 1 }); you.mesh.position.set(-3 + u * 1.4, 0, -5.4); stage.aim([2.5, 1.6, -1.0], [-1.0 + u, 1.2, -5.6], 58); });
+// 21. on the dance floor, a shadow dancing alone
+at(L0(18), (t, u) => { Wd.use('club'); place('club', shadow); Wd.drawFloor(t); put(shadow, 0, 0, -0.5, POSE.dance(t)); Wd.spots.forEach((s, i) => s.target.position.set(Math.sin(t * 1.3 + i * 2) * 2, 0, -0.5 + Math.cos(t * 1.1 + i) * 1.5)); Wd.ball.rotation.y = t; stage.aim([2.6, 2.0, 3.2 - u * 0.2], [0, 1.0, -0.5], 58); });
+// 22. yours
+at(L0(19), (t, u) => { Wd.use('club'); place('club', shadow); Wd.drawFloor(t); put(shadow, 0, 0, -0.5, POSE.dance(t)); Wd.spots.forEach((s, i) => s.target.position.set(Math.sin(t * 1.3 + i * 2) * 2, 0, -0.5)); stage.aim([0.2, 1.3, 1.0], [0, 1.15, -0.5], 44); });
+// 23. she sees you, waves...
+at(L0(20), (t, u) => { Wd.use('club'); place('club', shadow, you); Wd.drawFloor(t); put(shadow, 0, 0, -0.5, t < w(20, 'Acena') ? Object.assign({}, POSE.stand, { facing: 0 }) : POSE.wave(t)); put(you, 1.8, 0, 2.2, Object.assign({}, POSE.scared, { facing: -1 })); Wd.spots.forEach((s, i) => s.target.position.set(Math.sin(t * 1.3 + i * 2) * 2, 0, -0.5)); stage.aim([2.6, 1.6, 4.0], [0.4, 1.0, -0.5], 58); });
+// 24. ...and orders another round
+at(w(20, 'pede'), (t, u) => { Wd.use('club'); place('club', shadow, bartender); Wd.drawFloor(t); put(shadow, 1.6, 0, -2.9, Object.assign({}, POSE.offer, { facing: 1, armR: [-1.6, 0.2] })); put(bartender, 2.6, 0, -4.4, Object.assign({}, POSE.stand, { facing: -1 })); stage.aim([0.4, 1.6, 0.0], [2.2, 1.2, -3.6], 54); });
+// 25. rule 2 is gone: you at the door
+at(L0(21), (t, u) => { Wd.use('club'); place('club', you); Wd.drawFloor(t); put(you, 1.8, 0, 2.2, Object.assign({}, POSE.scared, { facing: 0 })); stage.aim([1.6, 1.35, 3.6], [1.8, 1.2, 2.2], 46); });
+// 26. "she said you're paying": the bartender holds out the bill, your shadow waves from the floor
+at(L0(22), (t, u) => { Wd.use('club'); place('club', bartender, shadow); Wd.drawFloor(t); put(bartender, 1.6, 0, 0.9, Object.assign({}, POSE.offer, { facing: 1 })); put(shadow, -0.6, 0, -1.2, POSE.wave(t)); Wd.spots.forEach((s, i) => s.target.position.set(Math.sin(t * 1.3 + i * 2) * 2, 0, -0.5)); stage.aim([2.6, 1.45, 2.6], [0.6, 1.1, -0.2], 54); });
+
+// ---------- overlay ----------
+const CLOCK = [[0, 'HOJE', '09:12'], [L0(9), 'DIA 1', '08:00'], [L0(10), 'DIA 3', '10:30'], [L0(11), 'DIA 3', '03:00'], [L0(12), 'DIA 5', '14:20'], [L0(16), 'DIA 5', '23:10'], [L0(17), 'DIA 5', '00:00']];
+const clockAt = t => { const r = CLOCK.filter(x => t >= x[0]).pop(); return [r[1], r[2]]; };
+const BAL = [[0, -487], [tSign + 0.4, 13], [w(10, '380'), -367], [w(20, 'rodada'), -452]];
+const likes = t => Math.round(keyed([[0, 0], [w(15, '2'), 2000]], t, 2.0));
+function screen(t, i) {
+  if (i === 0) phone(c, (c, x, y, ww, hh) => app(c, x, y, ww, hh, 'MEU BANCO', '#7a2fd6', (c, w2) => { row(c, w2, 90, 'SALDO', brl(keyed(BAL, t)), '#c8372d', 34, 64); row(c, w2, 210, 'ALUGUEL', 'ATRASADO', '#c8372d'); row(c, w2, 290, 'LUZ', 'ATRASADA', '#c8372d'); row(c, w2, 370, 'INTERNET', 'CORTADA', '#c8372d'); }), clamp(t / 0.3));
+  if (i === 12) phone(c, (c, x, y, ww, hh) => app(c, x, y, ww, hh, 'FATURA', '#c8372d', (c, w2) => { row(c, w2, 90, 'NOITE+ BALADA', 'R$ 380', '#c8372d'); row(c, w2, 170, 'HORÁRIO', '03:12'); row(c, w2, 250, 'TITULAR', 'VOCÊ'); c.fillStyle = '#c8372d'; c.font = '700 60px Oswald'; c.textAlign = 'center'; c.fillText('??', w2 / 2, 420); }), clamp((t - L0(10)) / 0.3));
+  if (i === 17) phone(c, (c, x, y, ww, hh) => { c.fillStyle = '#fff'; c.fillRect(x, y, ww, hh); c.fillStyle = '#1f2026'; c.font = '700 40px Oswald'; c.textAlign = 'left'; c.textBaseline = 'middle'; c.fillText('@voce · marcado', x + 30, y + 60);
+    c.fillStyle = '#ff3fa4'; c.fillRect(x, y + 110, ww, 560); c.fillStyle = '#16161c'; c.lineCap = 'round'; c.strokeStyle = '#16161c'; c.lineWidth = 36; const cx = x + ww / 2, cy = y + 420; c.beginPath(); c.moveTo(cx, cy - 60); c.lineTo(cx, cy + 90); c.moveTo(cx, cy - 30); c.lineTo(cx - 90, cy - 140); c.moveTo(cx, cy - 30); c.lineTo(cx + 90, cy - 150); c.moveTo(cx, cy + 90); c.lineTo(cx - 60, cy + 210); c.moveTo(cx, cy + 90); c.lineTo(cx + 70, cy + 200); c.stroke(); c.beginPath(); c.arc(cx, cy - 120, 55, 0, 7); c.fill(); c.fillStyle = '#fff'; c.beginPath(); c.arc(cx - 18, cy - 125, 8, 0, 7); c.arc(cx + 18, cy - 125, 8, 0, 7); c.fill();
+    c.fillStyle = '#c8372d'; c.font = '700 64px Oswald'; c.textAlign = 'left'; c.fillText('♥ ' + likes(t).toLocaleString('pt-BR'), x + 30, y + 740); c.fillStyle = '#4a4d55'; c.font = '700 32px "JetBrains Mono"'; c.fillText('"melhor noite da vida"', x + 30, y + 820); }, clamp((t - L0(15)) / 0.3));
+}
+function contract(t) {
+  const k = ease((t - tSign) / 0.25);
+  if (t >= tSign && t < tRoll) paper(c, k, (c, w2, h2) => { c.fillStyle = '#1f2026'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.font = '700 54px Oswald'; c.fillText('CONTRATO', w2 / 2, 90); c.font = '700 34px "JetBrains Mono"'; c.fillText('COMPRA E VENDA DE SOMBRA', w2 / 2, 160);
+    c.textAlign = 'left'; c.font = '700 40px "JetBrains Mono"'; c.fillText('VALOR: R$ 500,00', 60, 300); c.fillText('PRAZO: PARA SEMPRE', 60, 370); c.fillStyle = '#9a958c'; for (let i = 0; i < 5; i++) c.fillRect(60, 450 + i * 34, w2 - 120 - (i % 2) * 120, 10);
+    c.fillStyle = '#1f2026'; c.fillRect(60, 760, w2 - 120, 4); scribble(c, 90, 720, (t - tSign - 0.15) / 0.5); }, { h: 860 });
+  const s5 = L0(5), e5 = L0(6) - 0.05;
+  if (t >= s5 && t < e5) paper(c, ease((t - s5) / 0.25), (c, w2, h2) => { c.fillStyle = '#1f2026'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.font = '700 54px Oswald'; c.fillText('CONTRATO', w2 / 2, 90);
+    c.fillStyle = '#9a958c'; for (let i = 0; i < 9; i++) c.fillRect(60, 170 + i * 34, w2 - 120 - (i % 3) * 90, 10);
+    c.fillStyle = '#1f2026'; c.font = '700 22px "JetBrains Mono"'; c.textAlign = 'left'; ['1. evite o sol do meio-dia', '2. nunca procure a sua sombra', '3. não aceitamos devolução'].forEach((s, i) => c.fillText(s, 60, 520 + i * 36));
+    c.strokeStyle = '#c8372d'; c.lineWidth = 8; c.beginPath(); c.arc(260, 556, 170, 0, 7); c.stroke(); c.beginPath(); c.moveTo(380, 676); c.lineTo(470, 770); c.lineWidth = 18; c.stroke(); }, { h: 860 });
+}
+
+const CHUNKS = chunkCaptions(T); window.CHUNKS = CHUNKS;
+window.TOTAL = Math.max(61, T.voice_end + 3.6);
+window.seek = t => {
+  if (COVER) return cover();
+  let i = 0; while (i + 1 < SH.length && t >= SH[i + 1][0]) i++;
+  SH[i][1](t, t - SH[i][0]);
+  stage.draw(t, { vignette: 0.42, bloomStrength: Wd.sets.club.visible ? 0.8 : 0.45 });
+  const [d, k] = clockAt(t); hud(c, d, k); balance(c, keyed(BAL, t), t);
+  const ph = [0, 12, 17].includes(i); if (ph) screen(t, i);
+  contract(t);
+  const R = [[6, 1, ['EVITE O SOL', 'DO MEIO-DIA']], [7, 2, ['NUNCA PROCURE', 'A SUA SOMBRA']], [8, 3, ['NÃO ACEITAMOS', 'DEVOLUÇÃO']]];
+  for (const [li, n, txt] of R) { const s = L0(li), e = T.lines[li].end + 0.25; if (t >= s - 0.05 && t < e) ruleSticker(c, n, txt, spring((t - s + 0.05) * 1.4), 560); }
+  const r2 = L0(21); if (t >= r2 && t < T.lines[21].end + 0.3) { ruleSticker(c, 2, ['NUNCA PROCURE', 'A SUA SOMBRA'], 1, 560); strike(c, t, w(21, 'era')); }
+  if (t >= tEnd) endCard(c, tEnd, t, ['VOCÊ PAGA', 'A CONTA?'], 'SIM: PAGO E LEVO ELA', 'NÃO: CANCELO O CARTÃO', 2);
+  else drawCaptions(c, CHUNKS, t, ph ? 1700 : 1310);
+};
+function cover() {
+  const tt = L0(19) + 0.4; SH[22][1](tt, 0.4); stage.draw(tt, { vignette: 0.42, bloomStrength: 0.8 });
+  { const gr = c.createLinearGradient(0, 0, 0, 900); gr.addColorStop(0, 'rgba(0,0,0,0.6)'); gr.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = gr; c.fillRect(0, 0, CW, 900); }
+  pill(c, 'VENDI POR R$ 500', 300); title(c, 'MINHA SOMBRA', 'FUGIU');
+}
+await loadFonts();
+window.seek(0);
+window.READY = true;
+</script>
+</body></html>

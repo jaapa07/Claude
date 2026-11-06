@@ -1,0 +1,112 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>O Homem Sem Sombra — parte 3</title>
+<script type="importmap">{"imports": {"three": "../../engine/vendor/three.module.js"}}</script>
+<style>
+@font-face { font-family: 'Oswald'; font-weight: 700; src: url('../../engine/vendor/fonts/oswald-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 700; src: url('../../engine/vendor/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+html, body { margin: 0; background: #000; } canvas { display: block; }
+</style>
+<script src="timing.js"></script>
+</head><body>
+<canvas id="film" width="1080" height="1920"></canvas>
+<script type="module">
+import * as S from '../../engine/stage.js';
+import { buildWorld } from '../world.js';
+import { words, keyed, balance, app, row, paper, scribble, pill, title, strike, brl } from '../common.js';
+const { THREE, clamp, lerp, ease, spring, box, hud, ruleSticker, endCard, chunkCaptions, drawCaptions, loadFonts, phone, W: CW, H: CH } = S;
+S.LABELS.day = ''; S.LABELS.follow = 'SIGA PARA A PARTE ';
+const T = window.TIMING; const { w, L0 } = words(T);
+const c = document.getElementById('film').getContext('2d');
+const stage = S.createStage(document.getElementById('film'));
+const Wd = buildWorld(stage);
+const { you, shadow, suit, boss, bartender, POSE, at: put, place } = Wd;
+const COVER = location.hash === '#cover';
+
+S.LABELS.follow = 'SIGA PARA MAIS HISTÓRIAS';
+const { reflex } = Wd;
+const bag = S.box(0.22, 0.32, 0.16, '#0b0b0e', 0, 0, 0); Wd.street.add(bag);
+const tEnd = T.voice_end + 0.3, tNoon = L0(4), tDeal = L0(14);
+const sunAt = t => t < L0(2) ? 1.15 : (t < w(3, 'pontinho') ? lerp(1.15, 1.55, ease((t - L0(2)) / (w(3, 'pontinho') - L0(2)))) : (t < tDeal ? 1.55 : 0.9));
+function street(t, { day = true } = {}) { Wd.use('street'); Wd.setSun(day, sunAt(t), 0.9); you.mesh.castShadow = false; Wd.bus.visible = false; Wd.shop.visible = true; bag.visible = false; shadow.mesh.scale.setScalar(1); reflex.mesh.scale.setScalar(1); Wd.suitcase.visible = false; }
+const tiny = (x, z, p, s = 0.3) => { put(shadow, x, 0, z, p); shadow.mesh.scale.setScalar(s); };
+const holdBag = (x, y, z) => { bag.visible = true; bag.position.set(x, y, z); };
+
+// ---------- the shot list ----------
+const SH = [], at = (t0, f) => SH.push([t0, f]);
+// 0. the opener: the plaza at 11:58, you in the middle, a tiny dark figure by the bench
+at(0, (t, u) => { street(t); place('street', you, shadow); put(you, 0, 0, -5.0, POSE.carry); holdBag(0.25, 0.75, -4.85); tiny(-2.6, -6.2, Object.assign({}, POSE.stand, { facing: 1 }), 0.45); const k = ease(u / 3.6); stage.aim([lerp(0.6, 2.2, k), lerp(1.3, 2.4, k), lerp(-3.4, -0.6, k)], [lerp(0.1, -0.8, k), lerp(1.1, 0.8, k), -5.4], lerp(44, 60, k)); });
+// 1. a net, a torch and a rubbish bag
+at(L0(1), (t, u) => { street(t); place('street', you); put(you, 0, 0, -5.0, Object.assign({}, POSE.carry, { mood: 'scared' })); holdBag(0.25, 0.75, -4.85); stage.aim([0.4, 1.3, -3.5], [0.1, 1.05, -5.0], 46); });
+// 2. the fact: in the tropics the noon sun is straight overhead (the shadows shrink as it climbs)
+at(L0(2), (t, u) => { street(t); place('street'); stage.aim([3.6, 5.2, 0.6], [-3.2, 0.6, -6.0], 58); });
+// 3. and a shadow becomes a dot (the lamp-post's shadow at your feet)
+at(L0(3), (t, u) => { street(t); place('street'); stage.aim([0.2, 1.8, -2.4], [-1.4, 0, -4.3], 54); });
+// 4. 12:00: there she is, the size of a pizza
+at(tNoon, (t, u) => { street(t); place('street', shadow); tiny(-2.0, -5.4, Object.assign({}, POSE.stand, { facing: 0 })); stage.aim([-1.4, 0.9, -4.2], [-2.0, 0.15, -5.4], 46); });
+// 5. you leap with the bag
+at(L0(5), (t, u) => { street(t); place('street', you, shadow); const k = ease(u / 0.8); put(you, -0.6 - 1.6 * k, 0.5 * Math.sin(Math.PI * clamp(u / 0.8)), -5.2 - 0.8 * k, Object.assign({}, POSE.jump, { facing: -1 })); holdBag(-0.9 - 1.6 * k, 1.2 + 0.5 * Math.sin(Math.PI * clamp(u / 0.8)), -5.2 - 0.8 * k); tiny(-2.6 + u * 1.2, -6.2, Object.assign({}, POSE.scared)); stage.aim([0.8, 1.5, -2.0], [-1.6, 0.6, -5.8], 58); });
+// 6. she escapes under a bus
+at(L0(6), (t, u) => { street(t); place('street', shadow); Wd.bus.visible = true; Wd.bus.position.set(-14 + u * 9, 0, 0); shadow.walk(u * 3, { speed: 3, facing: 1 }); shadow.mesh.scale.setScalar(0.3); shadow.mesh.position.set(-1.5 + u * 0.4, 0, -3.2 + u * 2.6); stage.aim([3.0, 1.4, 6.0], [-0.6, 0.6, 0], 58); });
+// 7. the chase across the plaza
+at(L0(7), (t, u) => { street(t); place('street', you, shadow); shadow.walk(u * 3.2, { speed: 3.2, facing: 1 }); shadow.mesh.scale.setScalar(0.3); shadow.mesh.position.set(-4 + u * 2.4, 0, 5.2); you.walk(u * 2.6, { speed: 2.6, facing: 1 }); you.mesh.position.set(-6.5 + u * 2.4, 0, 5.4); holdBag(you.mesh.position.x + 0.3, 0.9, 5.5); stage.aim([2.4 + u, 1.6, 9.5], [-3.5 + u * 2.4, 0.6, 5.2], 58); });
+// 8. her, tiny
+at(L0(7) + (w(7, 'Ela') - L0(7)), (t, u) => { street(t); place('street', shadow); shadow.walk(t * 3.2, { speed: 3.2, facing: 1 }); shadow.mesh.scale.setScalar(0.3); shadow.mesh.position.set(0, 0, 5.2); stage.aim([0.5, 0.3, 6.6], [0, 0.25, 5.2], 44); });
+// 9. you, ridiculous (bag on your head)
+at(w(7, 'Você') - 0.05, (t, u) => { street(t); place('street', you); put(you, 0, 0, 5.4, Object.assign({}, POSE.scared, { facing: 0 })); holdBag(0, 1.6, 5.5); stage.aim([0.3, 1.3, 7.6], [0, 1.2, 5.4], 48); });
+// 10. you corner her at a lamp-post. She trembles.
+at(L0(8), (t, u) => { street(t); place('street', you, shadow); tiny(-1.3, -4.15, POSE.tremble(t)); put(you, -0.2, 0, -3.6, Object.assign({}, POSE.carry, { facing: -1 })); holdBag(-0.5, 0.75, -3.5); stage.aim([-0.4, 0.6, -2.6], [-1.3, 0.3, -4.15], 46); });
+// 11. and shows you her phone (phone overlay, low angle on her)
+at(L0(9), (t, u) => { street(t); place('street', shadow); tiny(-1.3, -4.15, Object.assign({}, POSE.phone)); stage.aim([-1.1, 0.35, -3.3], [-1.3, 0.3, -4.15], 44); });
+// 12. debts paid / the rent / the crush (phone over the plaza)
+at(L0(10), (t, u) => { street(t); place('street', you); put(you, -0.2, 0, -3.6, POSE.phone); stage.aim([0.2, 1.3, -1.6], [-0.2, 1.1, -3.6], 50); });
+// 13. she didn't steal your life, she fixed it: you kneel to her
+at(L0(13), (t, u) => { street(t); place('street', you, shadow); tiny(-1.3, -4.15, Object.assign({}, POSE.stand, { facing: 1 })); put(you, -0.6, -0.35, -3.9, Object.assign({}, POSE.stand, { facing: -1, legL: [1.4, -2.4], legR: [0.2, -0.3] })); stage.aim([0.4, 0.9, -2.2], [-0.9, 0.6, -4.0], 52); });
+// 14. rule 3: no returns. A deal: a handshake (the sun has moved; she grows back)
+at(tDeal, (t, u) => { street(t); place('street', you, shadow); const g = 0.3 + 0.7 * ease(u / 2.5); put(shadow, -1.3, 0, -4.15, Object.assign({}, POSE.shake, { facing: 1 })); shadow.mesh.scale.setScalar(g); put(you, -0.4, 0, -4.0, Object.assign({}, POSE.shake, { facing: -1 })); stage.aim([0.6, 1.3, -1.8], [-0.85, 1.0, -4.1], 54); });
+// 15. the day is yours...
+at(L0(15), (t, u) => { street(t); place('street', you); you.walk(u * 1.2, { speed: 1.2, facing: 1 }); you.mesh.position.set(-1 + u * 1.2, 0, -5.4); stage.aim([1.5, 1.6, -2.4], [0.0, 1.1, -5.4], 56); });
+// 16. ...the night is hers
+at(w(15, 'A'), (t, u) => { Wd.use('club'); place('club', shadow); shadow.mesh.scale.setScalar(1); Wd.drawFloor(t); put(shadow, 0, 0, -0.5, POSE.dance(t)); Wd.spots.forEach((s, i) => s.target.position.set(Math.sin(t * 1.3 + i * 2) * 2, 0, -0.5)); stage.aim([1.8, 1.8, 2.8], [0, 1.0, -0.5], 58); });
+// 17. the rent, split in half (phone)
+at(w(15, 'O', 1), (t, u) => { Wd.use('home'); place('home', you); Wd.homeSun.intensity = 1.6; Wd.homeSky.material.color.set('#8ec5ef'); Wd.bedLamp.userData.light.intensity = 0; Wd.dog.visible = false; put(you, 0.4, 0, 0.6, POSE.phone); stage.aim([0.6, 1.4, 1.8], [0.4, 1.1, 0.6], 50); });
+// 18. a week later, the man in the suit is back (by the mirror shop)
+at(L0(16), (t, u) => { street(t); place('street', you, suit); put(you, 3.2, 0, -5.6, Object.assign({}, POSE.stand, { facing: 1 })); suit.walk(u, { speed: 1, facing: -1 }); suit.mesh.position.set(6.0 - Math.min(1.4, u), 0, -5.6); stage.aim([4.2, 1.6, -1.6], [4.2, 1.4, -6.6], 58); });
+// 19. "nice deal. so... how much for your reflection?"
+at(L0(17), (t, u) => { street(t); place('street', suit); put(suit, 4.6, 0, -5.6, POSE.offer); stage.aim([3.9, 1.45, -4.0], [4.6, 1.45, -5.8], 44); });
+// 20. the last image: in the shop window, your reflection is already packing its bags
+at(L0(18), (t, u) => { street(t); place('street', you, reflex); Wd.suitcase.visible = true; put(you, 3.6, 0, -5.4, Object.assign({}, POSE.scared, { facing: 0 })); put(reflex, 3.9, 0, -8.0, POSE.pack(t)); stage.aim([3.5, 1.5, -3.2], [3.9, 1.2, -7.8], 50); });
+
+const CLOCK = [[0, 'SEGUNDA', '11:58'], [tNoon, 'SEGUNDA', '12:00'], [L0(8), 'SEGUNDA', '12:09'], [tDeal, 'SEGUNDA', '12:20'], [L0(16), '1 SEMANA DEPOIS', '15:00']];
+const clockAt = t => { const r = CLOCK.filter(x => t >= x[0]).pop(); return [r[1], r[2]]; };
+const BAL = [[0, -452], [w(10, 'Quitadas'), 0], [w(15, 'meio', 1), 1250]];
+function check(c, w2, y, a, b, on) { c.globalAlpha = on ? 1 : 0.25; row(c, w2, y, a, b, '#2e9e57'); c.globalAlpha = 1; }
+function screen(t, i) {
+  if (i === 11 || i === 12) phone(c, (c, x, y, ww, hh) => app(c, x, y, ww, hh, 'APP DA SOMBRA', '#16161c', (c, w2) => {
+    check(c, w2, 90, 'DÍVIDAS', 'QUITADAS ✓', t >= w(10, 'Quitadas') - 0.1); check(c, w2, 180, 'ALUGUEL', 'PAGO ✓', t >= w(11, 'aluguel') - 0.1);
+    if (t >= w(12, 'crush') - 0.1) { c.fillStyle = '#e9e2f7'; c.beginPath(); c.roundRect(34, 260, w2 - 120, 150, 24); c.fill(); c.fillStyle = '#1f2026'; c.font = '700 30px "JetBrains Mono"'; c.textAlign = 'left'; c.fillText('crush: "ele é um fofo,', 60, 310); c.fillText('fala mais dele 😍"', 60, 360); } }), clamp((t - L0(9)) / 0.3));
+  if (i === 17) phone(c, (c, x, y, ww, hh) => app(c, x, y, ww, hh, 'ALUGUEL', '#2e9e57', (c, w2) => { row(c, w2, 90, 'TOTAL', 'R$ 1.800'); row(c, w2, 180, 'VOCÊ', 'R$ 900'); row(c, w2, 270, 'SOMBRA', 'R$ 900'); c.fillStyle = '#2e9e57'; c.font = '700 70px Oswald'; c.textAlign = 'center'; c.fillText('½ + ½', w2 / 2, 440); }), clamp((t - w(15, 'O', 1)) / 0.3));
+}
+
+const CHUNKS = chunkCaptions(T); window.CHUNKS = CHUNKS;
+window.TOTAL = Math.max(61, T.voice_end + 3.6);
+window.seek = t => {
+  if (COVER) return cover();
+  let i = 0; while (i + 1 < SH.length && t >= SH[i + 1][0]) i++;
+  SH[i][1](t, t - SH[i][0]);
+  stage.draw(t, { vignette: 0.42, bloomStrength: Wd.sets.club.visible ? 0.8 : 0.45 });
+  const [d, k] = clockAt(t); hud(c, d, k); balance(c, keyed(BAL, t), t);
+  const ph = [11, 12, 17].includes(i); if (ph) screen(t, i);
+  const s14 = L0(14), e14 = w(14, 'Então'); if (t >= s14 - 0.05 && t < e14) ruleSticker(c, 3, ['NÃO ACEITAMOS', 'DEVOLUÇÃO'], spring((t - s14 + 0.05) * 1.4), 560);
+  if (t >= tEnd) endCard(c, tEnd, t, ['VOCÊ VENDERIA', 'SEU REFLEXO?'], 'SIM: POR R$ 1.000', 'NÃO: NEM PENSAR', '');
+  else drawCaptions(c, CHUNKS, t, ph ? 1700 : 1310);
+};
+function cover() {
+  const tt = L0(18) + 1; SH[20][1](tt, 1); stage.draw(tt, { vignette: 0.42, bloomStrength: 0.45 });
+  { const gr = c.createLinearGradient(0, 0, 0, 900); gr.addColorStop(0, 'rgba(0,0,0,0.6)'); gr.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = gr; c.fillRect(0, 0, CW, 900); }
+  pill(c, 'O HOMEM SEM SOMBRA · FINAL', 300); title(c, 'AGORA ELE', 'QUER MEU REFLEXO');
+}
+await loadFonts();
+window.seek(0);
+window.READY = true;
+</script>
+</body></html>

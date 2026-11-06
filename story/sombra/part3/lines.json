@@ -1,0 +1,146 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.05,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lines": [
+  {
+   "text": "Imagine: 11:58. Praça central. Sol a pino.",
+   "say": "Imagine: onze e cinquenta e oito. Praça central. Sol a pino.",
+   "key": {
+    "pino": "yellow"
+   },
+   "pause": 0.23
+  },
+  {
+   "text": "Você trouxe uma rede, uma lanterna e um saco de lixo.",
+   "key": {
+    "lixo": "yellow"
+   },
+   "pause": 0.33
+  },
+  {
+   "text": "Fato: entre os trópicos, em alguns dias do ano, o sol do meio-dia fica bem em cima da sua cabeça.",
+   "key": {
+    "trópicos": "yellow"
+   },
+   "pause": 0.18
+  },
+  {
+   "text": "E a sombra vira um pontinho.",
+   "key": {
+    "pontinho": "green"
+   },
+   "pause": 0.33
+  },
+  {
+   "text": "12:00. Lá está ela. Do tamanho de uma pizza.",
+   "say": "Meio-dia. Lá está ela. Do tamanho de uma pizza.",
+   "key": {
+    "pizza": "yellow"
+   },
+   "pause": 0.23
+  },
+  {
+   "text": "Você pula com o saco.",
+   "key": {
+    "pula": "red"
+   },
+   "pause": 0.13
+  },
+  {
+   "text": "Ela foge por baixo de um ônibus.",
+   "key": {
+    "ônibus": "red"
+   },
+   "pause": 0.23
+  },
+  {
+   "text": "Perseguição pela praça. Ela, minúscula. Você, ridículo.",
+   "key": {
+    "ridículo": "red"
+   },
+   "pause": 0.33
+  },
+  {
+   "text": "Você encurrala ela num poste. Ela treme.",
+   "key": {
+    "poste": "yellow"
+   },
+   "pause": 0.23
+  },
+  {
+   "text": "E te mostra o celular.",
+   "key": {
+    "celular": "yellow"
+   },
+   "pause": 0.23
+  },
+  {
+   "text": "Suas dívidas? Quitadas. Com o salário dela.",
+   "key": {
+    "Quitadas": "green"
+   },
+   "pause": 0.23
+  },
+  {
+   "text": "O empréstimo? Seu aluguel atrasado.",
+   "key": {
+    "aluguel": "green"
+   },
+   "pause": 0.23
+  },
+  {
+   "text": "A crush? Ela passou a noite falando de você.",
+   "key": {
+    "você": "green"
+   },
+   "pause": 0.33
+  },
+  {
+   "text": "Ela não roubou a sua vida. Ela consertou.",
+   "key": {
+    "consertou": "green"
+   },
+   "pause": 0.33
+  },
+  {
+   "text": "Regra 3: não aceitamos devolução. Então vocês fazem um acordo.",
+   "say": "Regra três: não aceitamos devolução. Então vocês fazem um acordo.",
+   "key": {
+    "acordo": "yellow"
+   },
+   "pause": 0.23
+  },
+  {
+   "text": "O dia é seu. A noite é dela. O aluguel, meio a meio.",
+   "key": {
+    "meio": "green"
+   },
+   "pause": 0.33
+  },
+  {
+   "text": "Uma semana depois, o homem de terno volta.",
+   "key": {
+    "volta": "red"
+   },
+   "pause": 0.18
+  },
+  {
+   "text": "Belo negócio. E aí, quanto quer pelo seu reflexo?",
+   "voice": "pm_santa",
+   "speed": 1.0,
+   "key": {
+    "reflexo": "red"
+   },
+   "pause": 0.33
+  },
+  {
+   "text": "No vidro da vitrine, o seu reflexo já está fazendo as malas.",
+   "key": {
+    "malas": "red"
+   },
+   "pause": 0.23
+  }
+ ]
+}

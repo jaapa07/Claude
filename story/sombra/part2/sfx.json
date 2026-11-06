@@ -1,0 +1,21 @@
+{"mixkit": false, "roomtone": false, "music": {"level": -14},
+ "bed": [{"at": 0, "level": 0.4}, {"at": "Errado@2", "level": 0.9}, {"at": "emprego@3", "level": 0.6}, {"at": "gerente@9", "level": 0.9}, {"at": "crush@10", "level": 1.0}, {"at": "educada@12", "level": 0.4}, {"at": "20@13", "level": 1.0}, {"at": "caçar@15", "level": 0.8}, {"at": "fraca@19", "level": 1.2}],
+ "sfx": [
+  {"at": "cancela@0", "type": "click", "vol": 0.6},
+  {"at": "Errado@2", "type": "hit", "vol": 0.9},
+  {"at": "emprego@3", "type": "tick", "vol": 0.4}, {"at": "emprego@3+0.15", "type": "tick", "vol": 0.4}, {"at": "emprego@3+0.3", "type": "tick", "vol": 0.4},
+  {"at": "mesa@4", "type": "sting", "vol": 0.5},
+  {"at": "Regra@6", "type": "click", "vol": 0.5},
+  {"at": "terno@7", "type": "alarm", "vol": 0.2},
+  {"at": "Mordeu@8", "type": "growl", "vol": 0.6},
+  {"at": "promovida@9", "type": "glass", "vol": 0.5}, {"at": "gerente@9", "type": "hit", "vol": 0.6},
+  {"at": "crush@10", "type": "sting", "vol": 0.6},
+  {"at": "liga@11", "type": "alarm", "vol": 0.2},
+  {"at": "20@13", "type": "hit", "vol": 0.8},
+  {"at": "borrão@14", "type": "thud", "vol": 0.6},
+  {"at": "Chega@15", "type": "thud", "vol": 0.7},
+  {"at": "pega@16", "type": "whoosh", "vol": 0.5}, {"at": "sombra@16+0.3", "type": "thud", "vol": 0.6},
+  {"at": "Regra@17", "type": "click", "vol": 0.5},
+  {"at": "meio-dia@19", "type": "sting", "vol": 0.5},
+  {"at": "fraca@19", "type": "hit", "vol": 0.9}
+ ]}

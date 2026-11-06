@@ -1,0 +1,20 @@
+{"mixkit": false, "roomtone": false, "music": {"level": -14},
+ "bed": [{"at": 0, "level": 0.7}, {"at": "Fato:@2", "level": 0.5}, {"at": "pizza@4", "level": 0.8}, {"at": "Perseguição@7", "level": 1.1}, {"at": "celular@9", "level": 0.4}, {"at": "consertou@13", "level": 0.6}, {"at": "volta@16", "level": 0.9}, {"at": "malas@18", "level": 1.1}],
+ "sfx": [
+  {"at": "pino@0", "type": "sting", "vol": 0.4},
+  {"at": "lixo@1", "type": "thud", "vol": 0.3},
+  {"at": "pontinho@3", "type": "click", "vol": 0.5},
+  {"at": "ela@4", "type": "sting", "vol": 0.5},
+  {"at": "pula@5", "type": "whoosh", "vol": 0.6}, {"at": "saco@5+0.3", "type": "thud", "vol": 0.7},
+  {"at": "ônibus@6", "type": "rumble", "vol": 0.8}, {"at": "foge@6", "type": "whoosh", "vol": 0.5},
+  {"at": "Perseguição@7", "type": "heartbeat", "vol": 0.6}, {"at": "ridículo@7", "type": "thud", "vol": 0.5},
+  {"at": "treme@8", "type": "heartbeat", "vol": 0.6},
+  {"at": "Quitadas@10", "type": "glass", "vol": 0.5},
+  {"at": "aluguel@11", "type": "glass", "vol": 0.5},
+  {"at": "você@12", "type": "sting", "vol": 0.4},
+  {"at": "Regra@14", "type": "click", "vol": 0.5},
+  {"at": "acordo@14", "type": "thud", "vol": 0.5},
+  {"at": "volta@16", "type": "hit", "vol": 0.7},
+  {"at": "reflexo@17", "type": "sting", "vol": 0.6},
+  {"at": "malas@18", "type": "hit", "vol": 0.9}
+ ]}

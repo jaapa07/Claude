@@ -1,0 +1,22 @@
+{"mixkit": false, "roomtone": false, "music": {"level": -14},
+ "bed": [{"at": 0, "level": 0.5}, {"at": "sombra@2", "level": 0.8}, {"at": "assina@3", "level": 0.6}, {"at": "Dia@9", "level": 0.4}, {"at": "Balada@10", "level": 0.7}, {"at": "Meia-noite@17", "level": 1.0}, {"at": "sua@19", "level": 1.1}],
+ "sfx": [
+  {"at": "487@0", "type": "sting", "vol": 0.4},
+  {"at": "terno@1", "type": "floorcreak", "vol": 0.4},
+  {"at": "sombra@2", "type": "hit", "vol": 0.6},
+  {"at": "ri@3", "type": "click", "vol": 0.3}, {"at": "assina@3+0.3", "type": "whoosh", "vol": 0.3},
+  {"at": "enrola@4", "type": "whoosh", "vol": 0.6}, {"at": "tapete@4", "type": "whoosh", "vol": 0.5}, {"at": "some@4", "type": "hit", "vol": 0.7},
+  {"at": "Regra@6", "type": "click", "vol": 0.5}, {"at": "Regra@7", "type": "click", "vol": 0.5}, {"at": "Regra@8", "type": "click", "vol": 0.5},
+  {"at": "cachorro@9", "type": "growl", "vol": 0.5}, {"at": "late@9", "type": "growl", "vol": 0.6},
+  {"at": "fatura@10", "type": "sting", "vol": 0.5},
+  {"at": "dormindo@11", "type": "creak", "vol": 0.6},
+  {"at": "karaokê@13", "type": "sting", "vol": 0.3},
+  {"at": "canta@14", "type": "thud", "vol": 0.4},
+  {"at": "curtidas@15", "type": "tick", "vol": 0.6}, {"at": "curtidas@15+0.1", "type": "tick", "vol": 0.6}, {"at": "curtidas@15+0.2", "type": "tick", "vol": 0.6},
+  {"at": "balada@17", "type": "rumble", "vol": 0.5},
+  {"at": "dançando@18", "type": "thud", "vol": 0.6}, {"at": "dançando@18+0.45", "type": "thud", "vol": 0.6}, {"at": "sozinha@18", "type": "thud", "vol": 0.6}, {"at": "sozinha@18+0.45", "type": "thud", "vol": 0.6},
+  {"at": "sua@19", "type": "hit", "vol": 0.8},
+  {"at": "rodada@20", "type": "glass", "vol": 0.6},
+  {"at": "era@21", "type": "thud", "vol": 0.6},
+  {"at": "você@22", "type": "hit", "vol": 0.8}
+ ]}

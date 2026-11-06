@@ -198,11 +198,14 @@ export class Stickman {
         stroke([hip, neck], 34, o.mark.color);
         stroke([[head[0] - 34 + (f || 0) * 14, head[1] + 20], [head[0] + (f || 0) * 14, head[1] + 12], [head[0] + 34 + (f || 0) * 14, head[1] + 20]], 14, '#2a1f18');
         if (o.mark.color2) { c.fillStyle = o.mark.color2; c.beginPath(); c.arc(head[0], head[1] - 6, BONES.head + 4, Math.PI * 1.1, Math.PI * 1.9); c.fill(); } }
+      else if (o.mark.type === 'suit') {                                   // a dark suit, a red tie and a top hat
+        stroke([hip, neck], 40, o.mark.color); stroke([[neck[0], neck[1] + 14], [neck[0], neck[1] + 80]], 12, '#c8372d');
+        c.fillStyle = o.mark.color; c.fillRect(head[0] - 40, head[1] - BONES.head - 92, 80, 92); stroke([[head[0] - 78, head[1] - BONES.head + 2], [head[0] + 78, head[1] - BONES.head + 2]], 14, o.mark.color); }
       else if (o.mark.type === 'band') { stroke([[head[0] - BONES.head, head[1] - 18], [head[0] + BONES.head, head[1] - 18]], 16, o.mark.color); }
       else { stroke([hip, neck], 24, o.mark.color); }
     }
     if (o.eyes) {                                                           // dot eyes, no mouth
-      c.fillStyle = o.outline; const ex = head[0] + (f === 0 ? 0 : f * 18), ey = head[1] - 6, r = p.mood === 'scared' ? 9 : 7;
+      c.fillStyle = o.eyeColor || o.outline; const ex = head[0] + (f === 0 ? 0 : f * 18), ey = head[1] - 6, r = p.mood === 'scared' ? 9 : 7;
       if (f === 0) { c.beginPath(); c.arc(ex - 18, ey, r, 0, 7); c.arc(ex + 18, ey, r, 0, 7); c.fill(); } else { c.beginPath(); c.arc(ex + f * 12, ey, r, 0, 7); c.fill(); }
     }
     this.tex.needsUpdate = true; return this;

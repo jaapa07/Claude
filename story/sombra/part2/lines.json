@@ -1,0 +1,157 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.02,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lines": [
+  {
+   "text": "Imagine: você cancela o cartão. Problema resolvido.",
+   "key": {
+    "cancela": "green"
+   },
+   "pause": 0.26
+  },
+  {
+   "text": "Ela só queria o seu dinheiro, né?",
+   "key": {
+    "dinheiro": "yellow"
+   },
+   "pause": 0.26
+  },
+  {
+   "text": "Errado.",
+   "key": {
+    "Errado": "red"
+   },
+   "pause": 0.36
+  },
+  {
+   "text": "Segunda: a sua sombra arruma um emprego.",
+   "key": {
+    "emprego": "yellow"
+   },
+   "pause": 0.16
+  },
+  {
+   "text": "Na sua empresa. Na sua mesa.",
+   "key": {
+    "mesa": "red"
+   },
+   "pause": 0.26
+  },
+  {
+   "text": "O chefe ama. Ela não faz barulho, não almoça e não pede aumento.",
+   "key": {
+    "aumento": "green"
+   },
+   "pause": 0.36
+  },
+  {
+   "text": "No verso do contrato, a regra 4: sombra fugida é problema do cliente.",
+   "say": "No verso do contrato, a regra quatro: sombra fugida é problema do cliente.",
+   "key": {
+    "cliente": "red"
+   },
+   "pause": 0.26
+  },
+  {
+   "text": "Você liga pro homem de terno.",
+   "key": {
+    "terno": "yellow"
+   },
+   "pause": 0.16
+  },
+  {
+   "text": "Ela fugiu de mim também. Mordeu o meu assistente.",
+   "voice": "pm_santa",
+   "speed": 1.0,
+   "key": {
+    "Mordeu": "red"
+   },
+   "pause": 0.36
+  },
+  {
+   "text": "Quinta: ela é promovida. A gerente. Sua gerente.",
+   "key": {
+    "gerente": "red"
+   },
+   "pause": 0.26
+  },
+  {
+   "text": "Sexta: ela sai pra jantar com a sua crush.",
+   "key": {
+    "crush": "red"
+   },
+   "pause": 0.26
+  },
+  {
+   "text": "Sábado, a sua mãe liga.",
+   "key": {
+    "mãe": "yellow"
+   },
+   "pause": 0.16
+  },
+  {
+   "text": "Sua sombra veio almoçar. Que menina educada!",
+   "voice": "pf_dora",
+   "speed": 1.0,
+   "key": {
+    "educada": "green"
+   },
+   "pause": 0.36
+  },
+  {
+   "text": "Domingo, carta do banco. Empréstimo aprovado: 20 mil. No seu nome.",
+   "say": "Domingo, carta do banco. Empréstimo aprovado: vinte mil. No seu nome.",
+   "key": {
+    "20": "red"
+   },
+   "pause": 0.21
+  },
+  {
+   "text": "Assinatura: um borrão escuro.",
+   "key": {
+    "borrão": "red"
+   },
+   "pause": 0.36
+  },
+  {
+   "text": "Chega. Você vai caçar a sua sombra.",
+   "key": {
+    "caçar": "yellow"
+   },
+   "pause": 0.26
+  },
+  {
+   "text": "Mas como se pega uma sombra?",
+   "key": {
+    "pega": "yellow"
+   },
+   "pause": 0.36
+  },
+  {
+   "text": "Aí você lembra da regra 1: evite o sol do meio-dia.",
+   "say": "Aí você lembra da regra um: evite o sol do meio-dia.",
+   "key": {
+    "meio-dia": "red"
+   },
+   "pause": 0.26
+  },
+  {
+   "text": "Por que alguém proibiria o meio-dia?",
+   "key": {
+    "proibiria": "yellow"
+   },
+   "pause": 0.36
+  },
+  {
+   "text": "Ao meio-dia, a sombra quase some. É quando ela fica fraca.",
+   "voice": "pm_santa",
+   "speed": 0.95,
+   "key": {
+    "fraca": "red"
+   },
+   "pause": 0.26
+  }
+ ]
+}
