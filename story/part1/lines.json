@@ -1,0 +1,191 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.12,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lines": [
+  {
+   "text": "Imagine: 23:58. Réveillon de 1999.",
+   "say": "Imagine: vinte e três e cinquenta e oito. Réveillon de mil novecentos e noventa e nove.",
+   "key": {
+    "1999": "yellow"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Você está sozinho no 13º andar.",
+   "say": "Você está sozinho no décimo terceiro andar.",
+   "key": {
+    "sozinho": "red"
+   },
+   "pause": 0.15
+  },
+  {
+   "text": "A TV só fala do bug do milênio.",
+   "say": "A tevê só fala do bug do milênio.",
+   "key": {
+    "bug": "yellow"
+   },
+   "pause": 0.1
+  },
+  {
+   "text": "Pros computadores, 2000 vai virar 1900.",
+   "say": "Pros computadores, dois mil vai virar mil e novecentos.",
+   "key": {
+    "1900": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Por baixo da porta, um bilhete do síndico.",
+   "key": {
+    "bilhete": "yellow"
+   },
+   "pause": 0.15
+  },
+  {
+   "text": "Regra 1: não use o elevador.",
+   "key": {
+    "elevador": "red"
+   },
+   "pause": 0.1,
+   "say": "Regra um: não use o elevador."
+  },
+  {
+   "text": "Regra 2: não atenda o interfone.",
+   "key": {
+    "interfone": "red"
+   },
+   "pause": 0.1,
+   "say": "Regra dois: não atenda o interfone."
+  },
+  {
+   "text": "Regra 3: não abra a porta. Pra ninguém.",
+   "key": {
+    "ninguém": "red"
+   },
+   "pause": 0.3,
+   "say": "Regra três: não abra a porta. Pra ninguém."
+  },
+  {
+   "text": "Meia-noite. Fogos.",
+   "key": {
+    "Meia-noite": "yellow"
+   },
+   "pause": 0.1
+  },
+  {
+   "text": "E o prédio inteiro apaga.",
+   "key": {
+    "apaga": "red"
+   },
+   "pause": 0.35
+  },
+  {
+   "text": "O interfone toca.",
+   "key": {
+    "toca": "red"
+   },
+   "pause": 0.1
+  },
+  {
+   "text": "Mas sem energia, ele não podia tocar.",
+   "key": {
+    "energia": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "No escuro, o elevador para no seu andar.",
+   "key": {
+    "elevador": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Três batidas.",
+   "key": {
+    "batidas": "red"
+   },
+   "pause": 0.15
+  },
+  {
+   "text": "Filho, é a Dona Cida. Meu oxigênio desligou!",
+   "voice": "pf_dora",
+   "speed": 1.08,
+   "key": {
+    "oxigênio": "red"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "No olho mágico, é ela mesmo.",
+   "key": {
+    "ela": "yellow"
+   },
+   "pause": 0.15
+  },
+  {
+   "text": "Abrir quebra a regra. Não abrir mata ela.",
+   "key": {
+    "mata": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "O interfone de novo. Você atende.",
+   "key": {
+    "atende": "yellow"
+   },
+   "pause": 0.15
+  },
+  {
+   "text": "Aqui é o síndico. Eu não escrevi bilhete nenhum.",
+   "voice": "pm_santa",
+   "speed": 1.05,
+   "key": {
+    "nenhum": "red"
+   },
+   "pause": 0.35
+  },
+  {
+   "text": "As batidas param.",
+   "key": {
+    "param": "yellow"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "A luz volta. Feliz 2000.",
+   "say": "A luz volta. Feliz dois mil.",
+   "key": {
+    "volta": "green"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Então vem a fumaça. Por baixo da porta.",
+   "key": {
+    "fumaça": "red"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Ficar é sufocar. Sair é abrir.",
+   "key": {
+    "sufocar": "red",
+    "abrir": "red"
+   },
+   "pause": 0.35
+  },
+  {
+   "text": "Abre, filho. Eu espero.",
+   "voice": "pf_dora",
+   "speed": 0.95,
+   "key": {
+    "espero": "red"
+   },
+   "pause": 0.2
+  }
+ ]
+}

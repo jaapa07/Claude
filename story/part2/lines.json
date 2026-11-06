@@ -1,0 +1,189 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.07,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lines": [
+  {
+   "text": "Imagine: 00:06. Você abre a porta.",
+   "say": "Imagine: meia-noite e seis. Você abre a porta.",
+   "key": {
+    "abre": "green"
+   },
+   "pause": 0.275
+  },
+  {
+   "text": "Fumaça. E o corredor vazio.",
+   "key": {
+    "vazio": "red"
+   },
+   "pause": 0.175
+  },
+  {
+   "text": "A Dona Cida sumiu.",
+   "key": {
+    "sumiu": "red"
+   },
+   "pause": 0.175
+  },
+  {
+   "text": "Só ficou o oxigênio dela, rolando.",
+   "key": {
+    "oxigênio": "yellow"
+   },
+   "pause": 0.275
+  },
+  {
+   "text": "O elevador continua aberto. Esperando você.",
+   "key": {
+    "Esperando": "red"
+   },
+   "pause": 0.275
+  },
+  {
+   "text": "Você escolhe a escada. 13 andares.",
+   "say": "Você escolhe a escada. Treze andares.",
+   "key": {
+    "escada": "yellow"
+   },
+   "pause": 0.225
+  },
+  {
+   "text": "No 12º, um bilhete no corrimão.",
+   "say": "No décimo segundo, um bilhete no corrimão.",
+   "key": {
+    "bilhete": "yellow"
+   },
+   "pause": 0.225
+  },
+  {
+   "text": "Regra 4: não olhe pra trás.",
+   "say": "Regra quatro: não olhe pra trás.",
+   "key": {
+    "trás": "red"
+   },
+   "pause": 0.325
+  },
+  {
+   "text": "Atrás de você, passos. No seu ritmo.",
+   "key": {
+    "passos": "red"
+   },
+   "pause": 0.225
+  },
+  {
+   "text": "Filho, me espera!",
+   "voice": "pf_dora",
+   "speed": 1.05,
+   "key": {
+    "espera": "red"
+   },
+   "pause": 0.275
+  },
+  {
+   "text": "Mas a Dona Cida anda de andador.",
+   "key": {
+    "andador": "yellow"
+   },
+   "pause": 0.175
+  },
+  {
+   "text": "E esses passos estão correndo.",
+   "key": {
+    "correndo": "red"
+   },
+   "pause": 0.375
+  },
+  {
+   "text": "No 7º, a fumaça some.",
+   "say": "No sétimo, a fumaça some.",
+   "key": {
+    "some": "yellow"
+   },
+   "pause": 0.175
+  },
+  {
+   "text": "Não tem fogo. Nunca teve.",
+   "key": {
+    "Nunca": "red"
+   },
+   "pause": 0.225
+  },
+  {
+   "text": "A fumaça era pra tirar você de casa.",
+   "key": {
+    "casa": "red"
+   },
+   "pause": 0.375
+  },
+  {
+   "text": "No térreo, uma lanterna. É o síndico.",
+   "key": {
+    "síndico": "yellow"
+   },
+   "pause": 0.225
+  },
+  {
+   "text": "Graças a Deus. A Dona Cida está no hospital desde o Natal.",
+   "voice": "pm_santa",
+   "speed": 1.08,
+   "key": {
+    "hospital": "red"
+   },
+   "pause": 0.375
+  },
+  {
+   "text": "Então quem estava na sua porta?",
+   "key": {
+    "quem": "red"
+   },
+   "pause": 0.275
+  },
+  {
+   "text": "Ele ilumina a escada atrás de você.",
+   "key": {
+    "atrás": "red"
+   },
+   "pause": 0.175
+  },
+  {
+   "text": "Regra 4. Você olha.",
+   "say": "Regra quatro. Você olha.",
+   "key": {
+    "olha": "red"
+   },
+   "pause": 0.275
+  },
+  {
+   "text": "Vazia.",
+   "key": {
+    "Vazia": "green"
+   },
+   "pause": 0.375
+  },
+  {
+   "text": "Lá fora, no 13º andar, a luz da sua sala acende.",
+   "say": "Lá fora, no décimo terceiro andar, a luz da sua sala acende.",
+   "key": {
+    "acende": "yellow"
+   },
+   "pause": 0.225
+  },
+  {
+   "text": "Alguém acena da sua janela.",
+   "key": {
+    "acena": "red"
+   },
+   "pause": 0.325
+  },
+  {
+   "text": "Você deixou a porta aberta?",
+   "voice": "pm_santa",
+   "speed": 1.0,
+   "key": {
+    "aberta": "red"
+   },
+   "pause": 0.275
+  }
+ ]
+}

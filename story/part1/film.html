@@ -1,0 +1,413 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Réveillon 1999 — parte 1</title>
+<script type="importmap">{"imports": {"three": "../engine/vendor/three.module.js"}}</script>
+<style>
+@font-face { font-family: 'Oswald'; font-weight: 700; src: url('../engine/vendor/fonts/oswald-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 700; src: url('../engine/vendor/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+html, body { margin: 0; background: #000; } canvas { display: block; }
+</style>
+<script src="timing.js"></script>
+</head><body>
+<canvas id="film" width="1080" height="1920"></canvas>
+<script type="module">
+import * as S from '../engine/stage.js';
+const { THREE, clamp, lerp, ease, spring, rng, box, room, door, practical, accent, wallWithHoles, tower, Stickman, mat, hud, ruleSticker, endCard, chunkCaptions, drawCaptions, loadFonts, W, H } = S;
+
+const T = window.TIMING;
+const w = (li, word, n = 0) => {                               // the start time of a word in a line (n: which occurrence)
+  const b = s => s.toLowerCase().replace(/[^\p{L}0-9:]/gu, ''); let k = 0;
+  for (const x of T.lines[li].words) if (b(x.w) === b(word) && k++ === n) return x.s;
+  throw new Error(`word "${word}" not in line ${li}`);
+};
+const lineStart = li => T.lines[li].words[0].s;
+const canvas = document.getElementById('film');
+const stage = S.createStage(canvas);
+const { scene, sets, ctx: c } = stage;
+scene.background = new THREE.Color('#05070d');
+const COVER = location.hash === '#cover';
+S.LABELS.day = '';
+
+// ---------------- key times ----------------
+const tMid = w(8, 'Meia-noite'), tOff = w(9, 'apaga'), tPlim = w(12, 'para'), tOn = w(20, 'volta'), tSmoke = w(21, 'fumaça');
+const knocks = [w(13, 'Três'), w(13, 'Três') + 0.32, w(13, 'Três') + 0.64];
+const tEnd = T.voice_end + 0.3;
+const power = t => !(t >= tOff && t < tOn) && !(t >= tSmoke - 0.4);   // building power: off at the blackout, back for the false relief, gone with the smoke
+const flick = t => (t >= tOn && t < tSmoke - 0.4) ? (Math.sin(t * 37) > -0.92 ? 1 : 0.25) : 1;
+
+// ---------------- shared bits ----------------
+function softTex(inner = 'rgba(255,255,255,1)', outer = 'rgba(255,255,255,0)') {
+  const cv = document.createElement('canvas'); cv.width = cv.height = 128; const g = cv.getContext('2d');
+  const gr = g.createRadialGradient(64, 64, 0, 64, 64, 64); gr.addColorStop(0, inner); gr.addColorStop(1, outer);
+  g.fillStyle = gr; g.fillRect(0, 0, 128, 128); return new THREE.CanvasTexture(cv);
+}
+const SOFT = softTex();
+function canvasTex(wd, ht) { const cv = document.createElement('canvas'); cv.width = wd; cv.height = ht; const tx = new THREE.CanvasTexture(cv); tx.colorSpace = THREE.SRGBColorSpace; return { cv, g: cv.getContext('2d'), tx }; }
+
+// fireworks: seeded bursts, sampled by time (additive points)
+function fireworks(group, bursts, origin = [0, 0, 0]) {
+  const N = 90, R = rng(11), geo = new THREE.BufferGeometry();
+  const pos = new Float32Array(bursts.length * N * 3), col = new Float32Array(bursts.length * N * 3);
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3)); geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  const dirs = bursts.map(() => Array.from({ length: N }, () => { const u = R() * 2 - 1, a = R() * 6.283, s = Math.sqrt(1 - u * u); return [s * Math.cos(a), u, s * Math.sin(a), 0.75 + 0.25 * R()]; }));
+  const pts = new THREE.Points(geo, new THREE.PointsMaterial({ size: 0.9, map: SOFT, vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true }));
+  pts.frustumCulled = false; group.add(pts);
+  return t => {
+    bursts.forEach((b, i) => {
+      const age = t - b.t, base = new THREE.Color(b.c), k = age < 0 || age > 2.4 ? 0 : (1 - age / 2.4) ** 1.5;
+      dirs[i].forEach((d, j) => {
+        const r = b.r * (1 - Math.exp(-3 * Math.max(0, age))) * d[3], o = (i * N + j) * 3;
+        pos[o] = origin[0] + b.p[0] + d[0] * r; pos[o + 1] = origin[1] + b.p[1] + d[1] * r - 1.2 * Math.max(0, age) ** 2; pos[o + 2] = origin[2] + b.p[2] + d[2] * r;
+        col[o] = base.r * k * 2; col[o + 1] = base.g * k * 2; col[o + 2] = base.b * k * 2;
+      });
+    });
+    geo.attributes.position.needsUpdate = true; geo.attributes.color.needsUpdate = true;
+  };
+}
+function burstList(seed, from, to, every, area) {
+  const R = rng(seed), out = [], cols = ['#ffd27a', '#ff5a4f', '#7ad7ff', '#d68bff', '#ffffff', '#9dff8a'];
+  for (let t = from; t < to; t += every * (0.6 + 0.8 * R())) out.push({ t, c: cols[Math.floor(R() * cols.length)], r: area.r * (0.7 + 0.5 * R()), p: [lerp(area.x[0], area.x[1], R()), lerp(area.y[0], area.y[1], R()), lerp(area.z[0], area.z[1], R())] });
+  return out;
+}
+// smoke: soft grey sprites rising from a source, seeded, sampled by time
+function smoke(group, n, src, dir, color = '#6d6a66') {
+  const R = rng(5), m = [], sp = [];
+  for (let i = 0; i < n; i++) {
+    const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: SOFT, color, transparent: true, depthWrite: false, opacity: 0 }));
+    group.add(s); m.push(s); sp.push({ off: R() * 3, dx: R() * 2 - 1, dz: R() * 2 - 1, sz: 0.6 + R() * 0.9 });
+  }
+  return (t, t0, amount = 1) => m.forEach((s, i) => {
+    const q = sp[i], age = ((t - t0 + q.off * 3) % 3.0 + 3.0) % 3.0, life = age / 3.0, on = t - t0 + q.off * 3 > 0 && t >= t0 - 0.01;
+    s.visible = on && t >= t0;
+    s.position.set(src[0] + dir[0] * age * 0.8 + q.dx * age * 0.35, src[1] + 0.05 + age * dir[1] * 0.55, src[2] + dir[2] * age * 0.8 + q.dz * age * 0.2);
+    const sc = q.sz * (0.4 + life * 1.6); s.scale.set(sc, sc, 1); s.material.opacity = amount * 0.55 * Math.sin(Math.PI * life);
+  });
+}
+function lightGroup(group, { hemi = '#5d7bb3', ground = '#1b1a22', hemiI = 0.55, dir = '#5d7bb3', dirI = 0.4, dirPos = [-4, 6, 5] } = {}) {
+  const h = new THREE.HemisphereLight(hemi, ground, hemiI); group.add(h);
+  const d = new THREE.DirectionalLight(dir, dirI); d.position.set(...dirPos); group.add(d); group.add(d.target); return { h, d };
+}
+
+// ---------------- characters ----------------
+const HERO = { height: 1.75, mark: { type: 'cap', color: '#2f6fd6' } };
+const hero = new Stickman(HERO), heroX = new Stickman(Object.assign({}, HERO, { glow: 0.05, body: '#15171c' }));
+const cida = new Stickman({ height: 1.55, body: '#efe7da', glow: 0.4, mark: { type: 'scarf', color: '#9b4dca' } });
+const POSE = {
+  sit: { facing: 1, lean: -0.08, legL: [1.45, -1.35], legR: [1.3, -1.25], armL: [0.7, -0.9], armR: [0.4, -0.5] },
+  stand: { facing: 0 },
+  scared: { facing: 0, mood: 'scared', armL: [0.5, -1.9], armR: [-0.5, 1.9], legL: [0.18, -0.05], legR: [-0.18, 0.05] },
+  look: { facing: 1, mood: 'scared', lean: 0.06, armL: [0.3, -0.4], armR: [0.15, -0.2] },
+  reach: { facing: 1, lean: 0.12, armL: [1.35, -0.1], armR: [0.4, -0.5], legL: [0.2, -0.05], legR: [-0.12, 0.1] },
+  ear: { facing: 1, lean: 0.22, headTilt: 0.15, armL: [1.0, -0.2], armR: [0.6, -0.9], legL: [0.2, -0.1], legR: [-0.18, 0.05] },
+  phone: { facing: 1, mood: 'scared', armL: [-2.5, 2.3], armR: [0.25, -0.2] },
+  cough: { facing: 1, lean: 0.55, headTilt: 0.2, mood: 'scared', armL: [1.2, -2.0], armR: [0.6, -0.4], legL: [0.35, -0.3], legR: [-0.15, 0.2] },
+  window: { facing: 1, lean: 0.03, armL: [0.9, -0.4], armR: [0.2, -0.1] },
+};
+
+// ---------------- set: the apartment (1302) ----------------
+const apt = new THREE.Group(); sets.apt = apt; scene.add(apt);
+const RW = 5.2, RD = 5, RH = 2.7, DOORX = -1.4, WINX = 1.45;
+const aptRoom = room({ w: RW, d: RD, h: RH, wall: '#7c7466', floor: '#5b4433', ceiling: '#5d584f', holes: [{ x: DOORX, y: 0, w: 0.98, h: 2.12 }, { x: WINX, y: 0.95, w: 1.5, h: 1.25 }] });
+apt.add(aptRoom);
+// a front wall so reverse shots see a wall, with a gap for the camera when it sits behind it
+apt.add(box(RW, RH, 0.1, '#7c7466', 0, 0, RD / 2 + 0.05));
+const fdoor = door({ w: 0.92, h: 2.06, color: '#5a3a28' }); fdoor.position.set(DOORX, 0.035, -RD / 2); apt.add(fdoor);
+apt.add(box(0.05, 0.02, 0.05, '#b08d57', DOORX + 0.33, 1.02, -RD / 2 + 0.05));
+// the light under the door (a glowing floor strip, its colour set per shot)
+const gapMat = new THREE.MeshBasicMaterial({ color: '#ffb35c', map: softTex('rgba(255,255,255,1)', 'rgba(255,255,255,0)'), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
+const gapGlow = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 0.9), gapMat); gapGlow.rotation.x = -Math.PI / 2; gapGlow.position.set(DOORX, 0.006, -RD / 2 + 0.3); apt.add(gapGlow);
+const gapLine = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.032), new THREE.MeshBasicMaterial({ color: '#ffd29a' })); gapLine.position.set(DOORX, 0.018, -RD / 2 - 0.02); apt.add(gapLine);
+const gapLight = new THREE.PointLight('#ff9a4a', 0, 3.2, 1.6); gapLight.position.set(DOORX, 0.12, -RD / 2 + 0.25); apt.add(gapLight);
+// shadow blobs of feet in the gap
+const feet = new THREE.Group(); for (const dx of [-0.12, 0.12]) feet.add(box(0.13, 0.04, 0.05, '#050505', dx, 0, 0, { cast: false })); feet.position.set(DOORX, 0.0, -RD / 2 - 0.0); apt.add(feet);
+// the note under the door
+const note = new THREE.Mesh(new THREE.PlaneGeometry(0.22, 0.3), new THREE.MeshStandardMaterial({ color: '#f2ecdc', roughness: 1, emissive: '#f2ecdc', emissiveIntensity: 0.15 }));
+note.rotation.x = -Math.PI / 2; note.receiveShadow = true; apt.add(note);
+// interfone on the wall
+const intf = new THREE.Group(); intf.position.set(-0.55, 1.35, -RD / 2 + 0.07); apt.add(intf);
+intf.add(box(0.2, 0.3, 0.05, '#d8d1bf', 0, 0, 0));
+const handset = box(0.07, 0.26, 0.06, '#e6dfcd', -0.04, 0.02, 0.05); intf.add(handset);
+const ledMat = new THREE.MeshBasicMaterial({ color: '#330606' }); const led = new THREE.Mesh(new THREE.SphereGeometry(0.018, 8, 6), ledMat); led.position.set(0.06, 0.25, 0.04); intf.add(led);
+const ledLight = new THREE.PointLight('#ff2a1a', 0, 2.5, 1.5); ledLight.position.set(0.06, 0.25, 0.2); intf.add(ledLight);
+// TV on a rack (a CRT: the screen is a canvas texture)
+apt.add(box(1.05, 0.5, 0.42, '#3a2c22', 0.15, 0, -RD / 2 + 0.3));
+apt.add(box(0.66, 0.5, 0.48, '#1d1e22', 0.15, 0.5, -RD / 2 + 0.3));
+const tvC = canvasTex(512, 384);
+const tvMat = new THREE.MeshBasicMaterial({ map: tvC.tx }); const tvScreen = new THREE.Mesh(new THREE.PlaneGeometry(0.54, 0.4), tvMat); tvScreen.position.set(0.15, 0.75, -RD / 2 + 0.545); apt.add(tvScreen);
+const tvLight = new THREE.PointLight('#7fb2ff', 0, 4.5, 1.4); tvLight.position.set(0.15, 0.8, -RD / 2 + 0.9); apt.add(tvLight);
+// sofa, coffee table, a floor lamp (the warm practical)
+apt.add(box(2.0, 0.42, 0.85, '#6e2f2a', 0.25, 0, 1.45), box(2.0, 0.55, 0.22, '#5e2723', 0.25, 0.42, 1.8), box(0.22, 0.25, 0.85, '#5e2723', -0.85, 0.42, 1.45), box(0.22, 0.25, 0.85, '#5e2723', 1.35, 0.42, 1.45));
+apt.add(box(0.9, 0.38, 0.5, '#4a3628', 0.25, 0, 0.45));
+apt.add(box(0.12, 0.05, 0.08, '#c7c0ad', 0.1, 0.38, 0.45), box(0.07, 0.22, 0.07, '#2c6e3e', 0.45, 0.38, 0.5));   // a remote, a bottle
+apt.add(box(0.05, 1.45, 0.05, '#222', -1.95, 0, 1.6), box(0.36, 0.26, 0.36, '#e3c99a', -1.95, 1.45, 1.6, { glow: 0.4, emissive: '#5a3a14' }));
+const lamp = practical('#ffb46b', 7, 10); lamp.position.set(-1.95, 1.5, 1.6); lamp.userData.light.shadow.mapSize.set(512, 512); apt.add(lamp);
+// a calendar on the wall: 1999
+const calC = canvasTex(256, 320); { const g = calC.g; g.fillStyle = '#f1ebdd'; g.fillRect(0, 0, 256, 320); g.fillStyle = '#c8372d'; g.fillRect(0, 0, 256, 80); g.fillStyle = '#fff'; g.font = '700 54px Oswald'; g.textAlign = 'center'; g.fillText('DEZ 1999', 128, 60); g.fillStyle = '#222'; g.font = '700 30px "JetBrains Mono"'; for (let d = 1; d <= 31; d++) g.fillText(String(d), 30 + ((d + 2) % 7) * 33, 120 + Math.floor((d + 2) / 7) * 40); g.strokeStyle = '#c8372d'; g.lineWidth = 6; g.beginPath(); g.arc(30 + ((31 + 2) % 7) * 33, 110 + Math.floor((31 + 2) / 7) * 40, 22, 0, 7); g.stroke(); }
+const cal = new THREE.Mesh(new THREE.PlaneGeometry(0.32, 0.4), new THREE.MeshStandardMaterial({ map: calC.tx, roughness: 1 })); cal.rotation.y = Math.PI / 2; cal.position.set(-RW / 2 + 0.07, 1.55, -0.6); apt.add(cal);
+const aptL = lightGroup(apt, { hemiI: 0.5, dirI: 0.35, dirPos: [3, 4, -8] });
+const moon = new THREE.SpotLight('#8fb0ff', 6, 14, 0.5, 0.6, 1.2); moon.position.set(WINX + 0.4, 2.6, -RD / 2 - 2); moon.target.position.set(0.2, 0, 0.8); moon.castShadow = true; moon.shadow.mapSize.set(512, 512); apt.add(moon, moon.target);
+// the city through the window
+const city = new THREE.Group(); apt.add(city);
+const cityTowers = [];
+[[-14, -34, 11, 5], [-2, -40, 15, 6], [9, -30, 9, 4], [20, -44, 17, 6], [-26, -46, 13, 5], [3, -62, 20, 7], [30, -28, 8, 4]].forEach(([x, z, fl, cols], i) => {
+  const tw = tower({ floors: fl, cols, w: cols * 1.6, d: 6, floorH: 3, seed: 3 + i, litShare: 0.45 }); tw.position.set(x, -40, z); city.add(tw); cityTowers.push(tw);
+});
+const aptFW = fireworks(city, [...burstList(2, 1.0, 21.5, 2.6, { x: [-20, 25], y: [8, 30], z: [-70, -50], r: 7 }), ...burstList(3, 21.9, 47, 0.45, { x: [-25, 30], y: [5, 32], z: [-80, -45], r: 9 }), ...burstList(4, 47, 60, 0.9, { x: [-25, 30], y: [5, 32], z: [-80, -45], r: 9 })]);
+const aptSmoke = smoke(apt, 34, [DOORX, 0.02, -RD / 2 + 0.05], [0.1, 1, 1], '#a39d94');
+const roomHaze = new THREE.Mesh(new THREE.PlaneGeometry(9, 4), new THREE.MeshBasicMaterial({ color: '#5a5550', transparent: true, opacity: 0, depthWrite: false })); roomHaze.position.set(0, 1.4, 0); apt.add(roomHaze);
+apt.add(hero.mesh);
+
+// ---------------- set: the corridor (seen through the peephole) ----------------
+const hall = new THREE.Group(); sets.hall = hall; scene.add(hall);
+{ const hw = 2.3, hl = 9, hh = 2.6;
+  hall.add(box(hw, 0.05, hl, '#4b4740', 0, -0.05, -hl / 2), box(hw, 0.05, hl, '#3e3b36', 0, hh, -hl / 2));
+  hall.add(box(0.1, hh, hl, '#8b8574', -hw / 2, 0, -hl / 2), box(0.1, hh, hl, '#8b8574', hw / 2, 0, -hl / 2));
+  // neighbour doors (1301 on the left) and numbers
+  hall.add(box(0.06, 2.05, 0.9, '#4a3020', -hw / 2 + 0.05, 0, -3.2), box(0.06, 2.05, 0.9, '#4a3020', hw / 2 - 0.05, 0, -5.4));
+  const endWall = wallWithHoles(hw, hh, [{ x: 0, y: 0, w: 1.0, h: 2.1 }], '#7d7767'); endWall.position.z = -hl + 0.6; hall.add(endWall);
+}
+const elevL = box(0.5, 2.1, 0.05, '#8d949c', -0.25, 0, -8.35, { metal: 0.6, rough: 0.35 }), elevR = box(0.5, 2.1, 0.05, '#8d949c', 0.25, 0, -8.35, { metal: 0.6, rough: 0.35 });
+hall.add(elevL, elevR);
+const car = new THREE.Group(); car.position.set(0, 0, -9.0); hall.add(car);
+car.add(box(1.0, 0.05, 1.2, '#6b6255', 0, 0, 0), box(1.0, 2.2, 0.05, '#c9b48a', 0, 0, -0.55, { emissive: '#ffcf8a', glow: 0.0 }));
+const carLight = new THREE.PointLight('#ffc27a', 0, 7, 1.3); carLight.position.set(0, 2.0, -0.1); car.add(carLight);
+const dispC = canvasTex(128, 64); const disp = new THREE.Mesh(new THREE.PlaneGeometry(0.34, 0.17), new THREE.MeshBasicMaterial({ map: dispC.tx })); disp.position.set(0, 2.3, -8.32); hall.add(disp);
+const hallLamp = new THREE.PointLight('#e8e2cf', 0, 9, 1.4); hallLamp.position.set(0, 2.45, -3); hall.add(hallLamp);
+const hallFire = new THREE.PointLight('#ff6a2a', 0, 9, 1.3); hallFire.position.set(0.6, 0.4, -6.5); hall.add(hallFire);
+const hallL = lightGroup(hall, { hemiI: 0.38, dirI: 0.15 });
+const peepFill = new THREE.PointLight('#c9b48a', 1.6, 4, 1.5); peepFill.position.set(0.3, 2.2, -0.4); hall.add(peepFill);
+const oxy = new THREE.Group(); oxy.add(new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.6, 10), mat('#2f8a52'))); oxy.children[0].position.y = 0.3; oxy.add(box(0.05, 0.08, 0.05, '#bbb', 0, 0.6, 0)); hall.add(oxy);
+hall.add(cida.mesh);
+const hallSmoke = smoke(hall, 30, [0.5, 0.1, -7], [0, 1.6, 1.4], '#57524d');
+
+// ---------------- set: the tower from outside ----------------
+const ext = new THREE.Group(); sets.ext = ext; scene.add(ext);
+const FLOORS = 16, FH = 3, MAIN = tower({ floors: FLOORS, cols: 6, w: 10, d: 9, floorH: FH, color: '#3a3e49', seed: 21, litShare: 0.55 });
+ext.add(MAIN);
+const MY = MAIN.userData.windows.find(x => x.floor === 13 && x.col === 2); MY.on = true;
+const extTowers = [MAIN];
+[[-18, -10, 11], [17, -16, 13], [-8, -38, 18], [24, -44, 15], [-30, -30, 9]].forEach(([x, z, f], i) => { const tw = tower({ floors: f, cols: 5, w: 8, d: 7, floorH: 3, seed: 40 + i, litShare: 0.4 }); tw.position.set(x, 0, z); ext.add(tw); extTowers.push(tw); });
+ext.add(box(120, 0.1, 120, '#1a1c22', 0, -0.1, 0));
+const streetLights = [];
+for (let i = -3; i <= 3; i++) { ext.add(box(0.15, 5, 0.15, '#2a2c33', i * 9, 0, 12)); const b = new THREE.Mesh(new THREE.SphereGeometry(0.25, 8, 6), new THREE.MeshBasicMaterial({ color: '#ffcf8a' })); b.position.set(i * 9, 5.1, 12); ext.add(b); streetLights.push(b); }
+const extL = lightGroup(ext, { hemi: '#7f9bd6', hemiI: 1.3, dirI: 0.9, dirPos: [-10, 30, 30] });
+const extWarm = new THREE.PointLight('#ffb46b', 30, 40, 1.4); extWarm.position.set(0, 6, 14); ext.add(extWarm);
+const extFW = fireworks(ext, [...burstList(7, 0.5, 21.6, 1.7, { x: [-30, 30], y: [52, 75], z: [-40, -15], r: 8 }), ...burstList(8, 21.9, 30, 0.3, { x: [-35, 35], y: [50, 80], z: [-45, -10], r: 10 }), ...burstList(9, 46, 60, 0.4, { x: [-35, 35], y: [50, 80], z: [-45, -10], r: 10 })]);
+// the hero, a dark silhouette in the 13th-floor window
+heroX.mesh.position.set(MY.mesh.position.x + 0.1, MY.mesh.position.y - 0.62, MAIN.userData.windows[0].mesh.position.z + 0.06); heroX.mesh.castShadow = false; heroX.mesh.scale.setScalar(0.95); ext.add(heroX.mesh);
+heroX.pose(POSE.window);
+const DARK_WIN = mat('#0e1117'), LIT = {};
+function towerPower(tw, t, tOffAt, tOnAt, top) {      // windows go dark from the top floor down, and come back the same way
+  for (const x of tw.userData.windows) {
+    if (!x.on) { continue; }
+    const d = (top - x.floor) * 0.045, off = t >= tOffAt + d && !(t >= tOnAt + d * 0.6 && t < tSmoke - 0.4 + d);
+    const key = x.mesh.uuid; if (!LIT[key]) LIT[key] = x.mesh.material;
+    x.mesh.material = off ? DARK_WIN : LIT[key];
+  }
+}
+
+// ---------------- per-frame state ----------------
+function drawTV(t) {
+  const g = tvC.g; g.fillStyle = '#0b1a3a'; g.fillRect(0, 0, 512, 384);
+  if (!power(t)) { g.fillStyle = '#000'; g.fillRect(0, 0, 512, 384); tvC.tx.needsUpdate = true; return; }
+  const glitch = t > w(3, '2000') + 0.3 && t < lineStart(4);
+  g.fillStyle = '#c8372d'; g.fillRect(0, 0, 512, 70); g.fillStyle = '#fff'; g.font = '700 46px Oswald'; g.textAlign = 'center';
+  g.fillText(t >= tOn ? 'FELIZ 2000!' : 'BUG DO MILÊNIO', 256, 52);
+  g.font = '700 92px "JetBrains Mono"';
+  let txt = t < tMid ? (t < 13 ? '23:58' : '23:59') : '00:00', col = '#ffffff';
+  if (t >= w(3, '2000') - 0.1 && t < lineStart(4)) { txt = glitch && (t > w(3, '1900') - 0.15 || Math.sin(t * 60) > 0.3) ? '1900' : '2000'; col = txt === '1900' ? '#ff4b3e' : '#ffffff'; }
+  if (t >= tOn) { txt = '2000'; col = '#4fe08a'; }
+  g.fillStyle = col; g.fillText(txt, 256, 205);
+  g.font = '700 34px "JetBrains Mono"'; g.fillStyle = '#9fc2ff'; g.fillText(t >= w(3, '2000') - 0.1 && t < lineStart(4) ? '01/01/????' : (t >= tOn ? '01/01/2000' : '31/12/1999'), 256, 290);
+  for (let y = 0; y < 384; y += 4) { g.fillStyle = 'rgba(0,0,0,0.18)'; g.fillRect(0, y, 512, 2); }   // scanlines
+  tvC.tx.needsUpdate = true;
+}
+function drawDisplay(t, floor, lit) {
+  const g = dispC.g; g.fillStyle = '#080808'; g.fillRect(0, 0, 128, 64);
+  if (lit) { g.fillStyle = '#ff5a3a'; g.font = '700 48px "JetBrains Mono"'; g.textAlign = 'center'; g.fillText(String(floor), 64, 50); }
+  dispC.tx.needsUpdate = true;
+}
+function setApt(t, { gap = 0, feetOn = false, ring = false } = {}) {
+  const on = power(t), f = flick(t);
+  lamp.userData.light.intensity = on ? 7 * f : 0; lamp.userData.bulb.material.color.set(on ? '#ffb46b' : '#1a120a');
+  tvLight.intensity = on ? 2.2 * f : 0; drawTV(t);
+  aptL.h.intensity = on ? 0.5 : 0.62; aptL.h.color.set(on ? '#8a8fa8' : '#5d7bb3'); aptL.d.intensity = on ? 0.3 : 0.45;
+  moon.intensity = on ? 3 : 9;
+  // the light under the door: the corridor lamp while there is power; the elevator's orange glow in the blackout; fire later
+  const gl = gap || (on ? 0.35 : 0);
+  gapMat.opacity = clamp(gl); gapLine.visible = gl > 0.05; gapLight.intensity = 2.5 * gl;
+  const gc = t >= tSmoke - 0.4 ? '#ff6a2a' : (on ? '#ffd9a8' : '#ff9a4a'); gapMat.color.set(gc); gapLight.color.set(gc); gapLine.material.color.set(gc);
+  feet.visible = feetOn;
+  const ringing = ring && (Math.floor(t * 3) % 2 === 0);
+  ledMat.color.set(ringing ? '#ff2a1a' : '#330606'); ledLight.intensity = ringing ? 2.4 : 0;
+  handset.position.x = -0.04 + (ringing ? Math.sin(t * 90) * 0.006 : 0);
+  // the note: slides in under the door, then on the floor
+  const ns = w(4, 'Por'), k = ease((t - ns) / 1.1);
+  note.visible = t >= ns; note.position.set(DOORX + 0.12, 0.01, -RD / 2 + 0.05 + 0.45 * k); note.rotation.z = 0.35 * k;
+  if (t >= w(4, 'bilhete') + 0.6) note.visible = false;   // you picked it up
+  // the city
+  city.children.forEach(tw => { if (tw.userData.windows) towerPower(tw, t, tOff, tOn, tw.userData.windows.length / 4); });
+  aptFW(t);
+  const sm = t >= tSmoke - 0.3; aptSmoke(t, tSmoke - 0.3, sm ? clamp((t - tSmoke + 0.3) / 0.6) : 0);
+  roomHaze.material.opacity = sm ? clamp((t - tSmoke) / 6) * 0.35 : 0;
+  fdoor.userData.open(0);
+  stage.use('apt');
+}
+function setHall(t, { elev = 0, lamp = false, fire = 0, floor = 13, cidaAt = null, cidaPose = POSE.stand } = {}) {
+  hallLamp.intensity = lamp ? 4 : 0;
+  elevL.position.x = -0.25 - 0.48 * elev; elevR.position.x = 0.25 + 0.48 * elev;
+  carLight.intensity = 9 * elev + (fire ? 2 : 0); car.children[1].material.emissiveIntensity = 0.0;
+  drawDisplay(t, floor, true);
+  hallFire.intensity = fire * (14 + 4 * Math.sin(t * 13) + 3 * Math.sin(t * 29));
+  hallL.h.intensity = 0.32 + 0.1 * elev;
+  cida.mesh.visible = !!cidaAt; oxy.visible = !!cidaAt;
+  if (cidaAt) { cida.mesh.position.set(...cidaAt); cida.pose(cidaPose); oxy.position.set(cidaAt[0] + 0.42, 0, cidaAt[2] - 0.05); }
+  hallSmoke(t, tSmoke - 1, fire ? clamp(fire) : 0);
+  stage.use('hall');
+}
+function setExt(t) {
+  extTowers.forEach((tw, i) => towerPower(tw, t, tOff + (i ? 0.25 : 0), tOn, FLOORS));
+  streetLights.forEach((b, i) => b.material.color.set(power(t + 0.0) || t < tOff + 0.9 ? '#ffcf8a' : '#141414'));
+  extWarm.intensity = power(t) ? 30 : 0;
+  extFW(t); stage.use('ext');
+}
+const heroAt = (x, z, p, y = 0) => { hero.mesh.position.set(x, y, z); hero.pose(p); hero.mesh.visible = true; };
+
+// ---------------- the shot list (keyed to word times) ----------------
+// each shot: [start time, draw(t, u) where u = t - start]. A shot sets the set, the figures and the camera.
+const SH = [];
+const at = (t0, f) => SH.push([t0, f]);
+const SEAT = [0.25, 0.08, 1.25];
+// 0. the opener: tight on you on the sofa, the light under the door behind you; pull out to the room
+at(0, (t, u) => { setApt(t, { gap: 0.55 }); heroAt(SEAT[0], SEAT[2], POSE.sit, SEAT[1] - 0.12);
+  const k = ease(u / 1.25); stage.aim([lerp(0.95, 1.9, k), lerp(1.25, 1.55, k), lerp(2.25, 2.35, k)], [lerp(-0.05, -0.4, k), lerp(0.95, 0.95, k), lerp(0.6, -0.6, k)], lerp(50, 64, k)); });
+// 1. the tower outside, climbing to the 13th floor
+at(w(0, '23:58'), (t, u) => { setExt(t); const k = ease(u / 1.6); stage.aim([lerp(-6, -3, k), lerp(8, 36, k), lerp(40, 22, k)], [lerp(0, -2, k), lerp(20, 38, k), 0], 60); });
+// 2. Réveillon de 1999: your lit window among the fireworks
+at(w(0, 'Réveillon'), (t, u) => { setExt(t); const p = MY.mesh.position; stage.aim([p.x + 2.2 - u * 0.3, p.y + 0.2, 13.5 - u * 0.8], [p.x + 0.3, p.y - 0.5, 4.5], 58); });
+// 3. alone on the 13th floor: the empty room, a slow push
+at(w(1, 'Você'), (t, u) => { setApt(t); heroAt(SEAT[0], SEAT[2], POSE.sit, SEAT[1] - 0.12); stage.aim([2.1 - u * 0.1, 2.0, 2.3 - u * 0.12], [-0.4, 0.8, -0.4], 68); });
+// 4. the TV
+at(w(2, 'A'), (t, u) => { setApt(t); heroAt(SEAT[0], SEAT[2], POSE.sit, SEAT[1] - 0.12); stage.aim([0.55 - u * 0.05, 1.05, 0.7 - u * 0.12], [0.15, 0.78, -2.45], 55); });
+// 5. 2000 becomes 1900: macro on the screen
+at(w(3, 'Pros'), (t, u) => { setApt(t); hero.mesh.visible = false; stage.aim([0.15 + Math.sin(u * 30) * (t > w(3, '1900') - 0.2 && t < w(3, '1900') ? 0.004 : 0), 0.77, -1.2 - u * 0.04], [0.15, 0.6, -2.46], 50); });
+// 6. the note slides in under the door (low angle)
+at(w(4, 'Por'), (t, u) => { setApt(t, { gap: 0.8, feetOn: u < 0.9 }); hero.mesh.visible = false; stage.aim([DOORX + 0.9, 0.22, -1.2 - u * 0.05], [DOORX, 0.1, -RD / 2 + 0.2], 58); });
+// 7. the note in your hands (overlay)
+at(w(4, 'bilhete'), (t, u) => { setApt(t, { gap: 0.5 }); heroAt(DOORX + 0.5, -1.7, POSE.look); stage.aim([DOORX + 1.9, 1.5, -0.2], [DOORX + 0.3, 1.1, -2.2], 62); });
+// 8. rule 1: the elevator
+at(lineStart(5), (t, u) => { setHall(t, { lamp: true, floor: 13 }); stage.aim([0.3, 1.5, -3.6 - u * 0.4], [0, 1.4, -8.4], 62); });
+// 9. rule 2: the interfone
+at(lineStart(6), (t, u) => { setApt(t); hero.mesh.visible = false; stage.aim([-0.2 - u * 0.05, 1.45, -1.35 + u * 0.12], [-0.55, 1.38, -2.45], 54); });
+// 10. rule 3: you lock the door
+at(lineStart(7), (t, u) => { setApt(t, { gap: 0.5 }); heroAt(DOORX + 0.62, -2.05, POSE.reach); stage.aim([DOORX + 2.2 - u * 0.1, 1.4, -0.6], [DOORX + 0.2, 1.1, -2.4], 64); });
+// 11. midnight: you at the window, fireworks
+at(tMid, (t, u) => { setApt(t); heroAt(WINX - 0.3, -1.95, POSE.window); stage.aim([WINX - 1.6, 1.4, 0.6 + u * 0.1], [WINX + 0.3, 1.7, -RD / 2 - 3], 66); });
+// 12. the building goes dark, top floor down
+at(lineStart(9), (t, u) => { setExt(t); stage.aim([-14 + u * 1.2, 18, 46], [0, 30, 0], 62); });
+// 13. the interfone rings in the dark
+at(lineStart(10), (t, u) => { setApt(t, { ring: true }); hero.mesh.visible = false; stage.aim([-0.25, 1.4 + u * 0.03, -1.6 + u * 0.1], [-0.55, 1.38, -2.45], 52); });
+// 14. your face: it shouldn't ring
+at(lineStart(11), (t, u) => { setApt(t, { ring: true }); heroAt(0.6, -0.4, Object.assign({}, POSE.scared, { facing: -1 })); stage.aim([1.25, 1.3, 0.55 - u * 0.1], [0.55, 1.12, -0.45], 48); });
+// 15. ...wide: the red LED is the only light
+at(w(11, 'ele'), (t, u) => { setApt(t, { ring: true }); heroAt(0.9, 0.6, Object.assign({}, POSE.look, { facing: -1 })); stage.aim([2.2, 1.7, 2.1 - u * 0.15], [-0.6, 1.2, -2.2], 66); });
+// 16. the elevator climbs to your floor in the dark
+at(lineStart(12), (t, u) => { const fl = Math.min(13, 9 + Math.floor((t - lineStart(12)) / 0.25)); const e = ease((t - tPlim - 0.15) / 0.8);
+  setHall(t, { elev: e, floor: fl }); stage.aim([0.35, 1.45, -4.2 - u * 0.35], [0, 1.3, -8.4], 60); });
+// 17. three knocks: low angle on the door, it shakes
+at(lineStart(13), (t, u) => { setApt(t, { gap: 0.9, feetOn: true }); hero.mesh.visible = false;
+  const kk = knocks.reduce((a, k) => a + (t >= k && t < k + 0.12 ? 1 : 0), 0); fdoor.position.z = -RD / 2 - (kk ? 0.012 : 0);
+  stage.aim([DOORX + 0.75 + (kk ? 0.01 : 0), 0.35, -1.25], [DOORX, 0.75, -RD / 2], 64); });
+// 18. Dona Cida's voice: you, ear to the door
+at(lineStart(14), (t, u) => { setApt(t, { gap: 0.9, feetOn: true }); heroAt(DOORX + 0.48, -2.2, Object.assign({}, POSE.ear, { facing: -1 })); stage.aim([DOORX + 1.7, 1.35, -1.0 + u * 0.08], [DOORX + 0.2, 1.1, -2.4], 58); });
+// 19. her feet in the gap
+at(w(14, 'Meu'), (t, u) => { setApt(t, { gap: 1, feetOn: true }); hero.mesh.visible = false; feet.position.x = DOORX + Math.sin(u * 5) * 0.05; stage.aim([DOORX + 0.35, 0.09, -1.85], [DOORX, 0.05, -RD / 2], 50); });
+// 20. the peephole: it really is her
+at(lineStart(15), (t, u) => { setHall(t, { elev: 1, cidaAt: [-0.05, 0, -1.35 + u * 0.12], cidaPose: Object.assign({}, POSE.stand, { mood: 'scared', armL: [0.55, -0.7], armR: [-0.35, 0.3] }) }); stage.aim([0, 1.2, 0], [0, 0.85, -3], 84); });
+// 21. your hand on the lock
+at(lineStart(16), (t, u) => { setApt(t, { gap: 0.9, feetOn: true }); heroAt(DOORX + 0.55, -2.1, Object.assign({}, POSE.reach, { facing: -1 })); stage.aim([DOORX + 0.2, 1.15, -1.55 - u * 0.05], [DOORX + 0.33, 1.02, -RD / 2], 50); });
+// 22. ...she slumps against the wall
+at(w(16, 'Não'), (t, u) => { const k = ease(u / 0.9); setHall(t, { elev: 1, cidaAt: [-0.15 - 0.1 * k, -0.25 * k, -1.3], cidaPose: { facing: -1, lean: -0.2 * k - 0.05, headTilt: -0.4 * k, mood: 'scared', armL: [0.2, -0.2], armR: [-0.9 * k, 0.6], legL: [0.5 * k, -1.0 * k], legR: [-0.1, 0.3 * k] } }); stage.aim([0, 1.2, 0], [-0.1, 0.6, -3], 84); });
+// 23. the interfone again
+at(lineStart(17), (t, u) => { setApt(t, { ring: t < w(17, 'Você') + 0.2, gap: 0.6 }); hero.mesh.visible = false; stage.aim([-0.1, 1.5, -1.5 + u * 0.15], [-0.55, 1.38, -2.45], 55); });
+// 24. you answer
+at(w(17, 'Você'), (t, u) => { setApt(t, { gap: 0.6 }); heroAt(-0.3, -2.15, POSE.phone); handset.visible = false; stage.aim([0.9, 1.3, -0.7], [-0.4, 1.0, -2.3], 60); });
+// 25. the síndico: close on you
+at(lineStart(18), (t, u) => { setApt(t, { gap: 0.6 }); heroAt(-0.3, -2.15, POSE.phone); handset.visible = false; stage.aim([0.32, 1.3, -1.35 + u * 0.05], [-0.3, 1.1, -2.2], 46); });
+// 26. ...he never wrote a note (overlay: the note, crossed)
+at(w(18, 'Eu'), (t, u) => { setApt(t, { gap: 0.6 }); heroAt(-0.3, -2.15, POSE.phone); handset.visible = false; stage.aim([0.9, 1.3, -0.7], [-0.4, 1.0, -2.3], 60); });
+// 27. the knocking stops: the gap, empty
+at(lineStart(19), (t, u) => { setApt(t, { gap: 0.9, feetOn: false }); handset.visible = true; hero.mesh.visible = false; stage.aim([DOORX + 0.75, 0.3, -1.25 - u * 0.05], [DOORX, 0.6, -RD / 2], 64); });
+// 28. the light comes back
+at(lineStart(20), (t, u) => { setApt(t); heroAt(0.4, -0.2, POSE.stand); stage.aim([2.2, 1.9, 2.25 - u * 0.12], [-0.3, 0.9, -1.2], 68); });
+// 29. Happy 2000: the tower lights up again
+at(w(20, 'Feliz'), (t, u) => { setExt(t); stage.aim([10 - u * 1.0, 22, 44], [0, 34, 0], 60); });
+// 30. the smoke under the door
+at(lineStart(21), (t, u) => { setApt(t, { gap: 1.0 }); hero.mesh.visible = false; stage.aim([DOORX + 0.95, 0.35, -1.0 + u * 0.12], [DOORX, 0.4, -RD / 2], 62); });
+// 31. you, in the smoke
+at(w(21, 'Por'), (t, u) => { setApt(t, { gap: 1.0 }); heroAt(-0.2, -0.8, Object.assign({}, POSE.scared, { facing: -1 })); stage.aim([0.55, 1.3, 0.1 - u * 0.1], [-0.2, 1.1, -0.9], 52); });
+// 32. stay and choke: wide, the room filling
+at(lineStart(22), (t, u) => { setApt(t, { gap: 1.0 }); heroAt(0.2, -0.6, POSE.cough); stage.aim([2.1, 2.0, 2.2 - u * 0.15], [-0.6, 0.9, -1.5], 68); });
+// 33. leave and open: the lock
+at(w(22, 'Sair'), (t, u) => { setApt(t, { gap: 1.0 }); heroAt(DOORX + 0.55, -2.1, Object.assign({}, POSE.reach, { facing: -1 })); stage.aim([DOORX + 1.15, 1.2, -1.35 + u * 0.08], [DOORX + 0.1, 0.95, -RD / 2], 56); });
+// 34. the last image: Dona Cida right at the peephole, standing, waiting
+at(lineStart(23), (t, u) => { setHall(t, { elev: 1, fire: 1, cidaAt: [0.02, 0, -0.8 + u * 0.06], cidaPose: { facing: 0, armL: [0.1, 0], armR: [-0.1, 0] } }); stage.aim([0, 1.15, 0], [0, 0.75, -3], 84); });
+
+const BAD = { fisheye: 1, vignette: 0.6 };
+const FISH = new Set([20, 22, 34]);
+// the HUD: date and clock. The blackout turns the date into 1900 (the bug), the light brings 2000 back.
+function clockAt(t) {
+  if (t < 13) return ['31/12/1999', '23:58']; if (t < tMid) return ['31/12/1999', '23:59'];
+  const m = Math.min(9, Math.floor((t - tMid) / 6.5)); const date = t >= tOff && t < tOn ? '01/01/1900' : '01/01/2000';
+  return [date, '00:0' + m];
+}
+// the note overlay: typed, taped, signed
+function noteCard(c, k, crossed = 0) {
+  if (k <= 0) return; c.save(); c.globalAlpha = clamp(k); c.translate(540, 760); c.rotate(0.04); c.scale(0.9 + 0.1 * clamp(k), 0.9 + 0.1 * clamp(k));
+  c.fillStyle = '#efe8d6'; c.shadowColor = 'rgba(0,0,0,0.5)'; c.shadowBlur = 40; c.fillRect(-330, -360, 660, 720); c.shadowBlur = 0;
+  c.fillStyle = 'rgba(255,240,170,0.6)'; c.fillRect(-90, -385, 180, 50);
+  c.fillStyle = '#1f2026'; c.textAlign = 'left'; c.textBaseline = 'alphabetic';
+  c.font = '700 44px "JetBrains Mono"'; c.fillText('AO MORADOR', -280, -270); c.fillText('DO 1302', -280, -215);
+  c.font = '700 36px "JetBrains Mono"'; ['À MEIA-NOITE:', '', '1. NÃO USE O', '   ELEVADOR', '2. NÃO ATENDA', '   O INTERFONE', '3. NÃO ABRA A', '   PORTA'].forEach((s, i) => c.fillText(s, -280, -130 + i * 52));
+  c.font = '700 40px "JetBrains Mono"'; c.fillText('— O SÍNDICO', -60, 320);
+  if (crossed > 0) { c.strokeStyle = '#d93b30'; c.lineWidth = 14; c.lineCap = 'round'; c.beginPath(); c.moveTo(-90, 330); c.lineTo(-90 + 340 * clamp(crossed), 290); c.stroke();
+    c.save(); c.translate(0, 120); c.rotate(-0.2); c.globalAlpha = clamp(crossed * 2) * clamp(k); c.strokeStyle = '#d93b30'; c.lineWidth = 10; c.strokeRect(-250, -70, 500, 140); c.fillStyle = '#d93b30'; c.font = '700 72px Oswald'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('NÃO FOI ELE', 0, 4); c.restore(); }
+  c.restore();
+}
+function pill(c, s, y) { c.save(); c.font = '700 44px Oswald'; const wd = c.measureText(s).width + 70; c.fillStyle = '#d93b30'; c.beginPath(); c.roundRect(540 - wd / 2, y - 40, wd, 80, 40); c.fill(); c.fillStyle = '#fff'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(s, 540, y + 2); c.restore(); }
+
+const CHUNKS = chunkCaptions(T); window.CHUNKS = CHUNKS;
+window.TOTAL = 60;
+window.seek = t => {
+  if (COVER) return cover();
+  hero.mesh.position.set(0, 0, 0); handset.visible = true; feet.position.x = DOORX; fdoor.position.z = -RD / 2;
+  let i = 0; while (i + 1 < SH.length && t >= SH[i + 1][0]) i++;
+  SH[i][1](t, t - SH[i][0]);
+  stage.draw(t, FISH.has(i) ? BAD : { vignette: 0.5, bloomStrength: (i === 12 || i === 2 || i === 29) ? 0.8 : 0.55 });
+  const [date, clk] = clockAt(t);
+  hud(c, date, clk);
+  // the rule stickers, each over the shot that pays it off
+  const R = [[5, 1, ['NÃO USE', 'O ELEVADOR']], [6, 2, ['NÃO ATENDA', 'O INTERFONE']], [7, 3, ['NÃO ABRA', 'A PORTA']]];
+  for (const [li, n, txt] of R) { const s = lineStart(li), e = T.lines[li].end + 0.25; if (t >= s - 0.05 && t < e) ruleSticker(c, n, txt, spring((t - s + 0.05) * 1.4), 560); }
+  // rule 2 broken: the sticker comes back, struck through
+  const rb = w(17, 'atende'); if (t >= rb && t < rb + 0.9) { ruleSticker(c, 2, ['NÃO ATENDA', 'O INTERFONE'], 1, 560); c.save(); c.translate(540, 560); c.rotate(-0.06); c.strokeStyle = '#d93b30'; c.lineWidth = 22; c.lineCap = 'round'; c.beginPath(); c.moveTo(-360, 60); c.lineTo(-360 + 720 * ease((t - rb) / 0.3), -40); c.stroke(); c.restore(); }
+  // the note in your hands, and later, crossed out
+  const nb = w(4, 'bilhete'); if (t >= nb && t < lineStart(5) - 0.05) noteCard(c, ease((t - nb) / 0.25));
+  const ne = w(18, 'Eu'); if (t >= ne && t < lineStart(19)) noteCard(c, ease((t - ne) / 0.2), ease((t - w(18, 'nenhum')) / 0.35));
+  // the smoke greys the frame
+  if (t >= tSmoke) { c.fillStyle = `rgba(70,66,62,${0.28 * clamp((t - tSmoke) / 5)})`; c.fillRect(0, 0, W, H); }
+  if (t >= tEnd) endCard(c, tEnd, t, ['VOCÊ ABRE', 'A PORTA?'], 'SIM: ABRO E CORRO', 'NÃO: VEDO A PORTA', 2);
+  else drawCaptions(c, CHUNKS, t);
+};
+function cover() {
+  SH[34][1](lineStart(23) + 0.6, 0.6); stage.draw(lineStart(23) + 0.6, BAD);
+  { const gr = c.createLinearGradient(0, 0, 0, 900); gr.addColorStop(0, 'rgba(0,0,0,0.55)'); gr.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = gr; c.fillRect(0, 0, W, 900); }
+  pill(c, 'RÉVEILLON DE 1999', 300);
+  c.save(); c.textAlign = 'center'; c.textBaseline = 'middle'; c.lineJoin = 'round';
+  for (const [s, y, col] of [['NÃO ABRA', 450, '#ffffff'], ['A PORTA', 590, '#ff5a4f']]) { c.font = '700 150px Oswald'; c.lineWidth = 16; c.strokeStyle = '#0b0c0f'; c.strokeText(s, 540, y); c.fillStyle = col; c.fillText(s, 540, y); }
+  c.restore();
+}
+await loadFonts();
+window.seek(0);
+window.READY = true;
+</script>
+</body></html>
