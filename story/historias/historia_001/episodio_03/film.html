@@ -1,0 +1,83 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>QUARTO 313 — episódio 3</title>
+<script type="importmap">{"imports": {"three": "../../../engine/vendor/three.module.js"}}</script>
+<style>
+@font-face { font-family: 'Oswald'; font-weight: 700; src: url('../../../engine/vendor/fonts/oswald-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 700; src: url('../../../engine/vendor/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+html, body { margin: 0; background: #000; } canvas { display: block; }
+</style>
+<script src="timing.js"></script>
+</head><body>
+<canvas id="film" width="1080" height="1920"></canvas>
+<script type="module">
+import { S, THREE, clamp, lerp, ease, spring, setup, run, lie, headOnScreen, aimFace, smile, noteCard, ringHand, watch, newspaper, vhs, badge, ring, triptych, hardBlack } from '../comum.js';
+const { T, w, L0, c, stage, Wd, worldBill } = setup();
+const { lia, refl, recep, viewer, ghosts, POSE, at: put, place } = Wd;
+const H = await (await fetch('../historia.json')).json();
+S.LABELS.day = '';
+const inChamber = (who, ch, x, y, z, pose) => { if (who.mesh.parent !== ch) ch.add(who.mesh); who.mesh.position.set(x, y, z); who.pose(pose); who.mesh.visible = true; };
+const home = (who, set) => { if (who.mesh.parent !== Wd.sets[set]) Wd.sets[set].add(who.mesh); };
+const SEAT = -0.56;
+const catS = Wd.cat.clone(); Wd.street.add(catS); catS.userData.billboard = worldBill(catS);
+function resetPeople(set) { for (const p of [lia, refl]) { home(p, set); p.o.eyes = true; lie(p, false); } }
+function room(t, { gap = 0, refl: rp = null, eyes = true, hh = 3, mm = 13, clockSec = null, lamp = 3, doorOpen = 0, glassK = 0, ch = 6 } = {}) {
+  resetPeople('room'); Wd.use('room', 1.45); Wd.rain(t); Wd.drawClock(clockSec ?? (t % 60), hh, mm); Wd.roomLamp.userData.light.intensity = lamp; Wd.roomLamp.userData.bulb.visible = false;
+  Wd.doorGap.visible = gap > 0; Wd.doorLight.intensity = gap * 3; Wd.door.userData.open(doorOpen); Wd.door.position.x = -2.43;
+  Wd.glass.material.opacity = 0.18 + glassK; Wd.chLight.intensity = ch; Wd.drawCat(0);
+  if (rp) { inChamber(refl, Wd.chamber, rp[0], rp[1], rp[2], rp[3] || POSE.still); refl.o.eyes = eyes; refl.pose(rp[3] || POSE.still); } else refl.mesh.visible = false;
+}
+function work(t, { lamp = 6, cloth = null, refl: rp = null } = {}) {
+  resetPeople('work'); Wd.use('work', 1.35); Wd.workLamp.userData.light.intensity = lamp; Wd.workLamp.userData.bulb.visible = false;
+  Wd.cloth.visible = cloth !== null; if (cloth !== null) Wd.cloth.position.y = lerp(3.8, 1.2, clamp(cloth));
+  if (rp) { inChamber(refl, Wd.wchamber, rp[0], rp[1], rp[2], rp[3] || POSE.still); } else refl.mesh.visible = false;
+}
+function street(t) { resetPeople('street'); Wd.use('street', 1.5); Wd.rain2(t); }
+function corr(t) { resetPeople('corr'); Wd.use('corr', 1.4); }
+const flash = (c, k) => { if (k <= 0 || k >= 1) return; c.save(); c.fillStyle = `rgba(230,255,240,${Math.sin(Math.PI * k)})`; c.fillRect(0, 0, 1080, 1920); c.restore(); };
+const coverFn = (n, a, b) => c => { c.save(); const g = c.createLinearGradient(0, 0, 0, 900); g.addColorStop(0, 'rgba(0,0,0,0.65)'); g.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = g; c.fillRect(0, 0, 1080, 900);
+  c.font = '700 44px Oswald'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#d93b30'; c.beginPath(); c.roundRect(330, 260, 420, 80, 40); c.fill(); c.fillStyle = '#fff'; c.fillText(`QUARTO 313 · EP ${n}`, 540, 302);
+  for (const [s, y, col] of [[a, 450, '#ffffff'], [b, 590, '#3dff8c']]) { c.font = '700 140px Oswald'; c.lineWidth = 16; c.strokeStyle = '#000'; c.lineJoin = 'round'; c.strokeText(s, 540, y); c.fillStyle = col; c.fillText(s, 540, y); } c.restore(); };
+const E = H.episodios[2];
+const hotelWin = Wd.hotelWins[17];
+const SH = [], at = (t0, f) => SH.push([t0, f]);
+// 01 A: through the door into the corridor (we follow her)
+at(0, (t, u) => { corr(t); place('corr', lia); lia.walk(u * 1.1, { speed: 1.1, facing: 0 }); lia.mesh.position.set(0, 0, -0.5 - u * 1.1); stage.aim([0.1, 1.5, 2.0 - u * 1.0], [0, 1.1, -6], 58); return { flip: true, fx: c => badge(c, 'A', u / 0.4, '#2e9e57') }; });
+// 02 the corridor never ends: every door says 313
+at(L0(1), (t, u) => { corr(t); place('corr', lia); lia.walk(t * 1.1, { speed: 1.1, facing: 0 }); lia.mesh.position.set(0, 0, -6 - u * 1.1); stage.aim([0.3, 0.55, -1.0 - u * 0.6], [0, 1.1, -45], 46); return { flip: true }; });
+// 03 behind each door a woman waking on the floor, every one with the ring on the right hand
+at(L0(2), (t, u) => { corr(t); place('corr', ...ghosts); ghosts.forEach((g, i) => { put(g, (i % 2 ? 1 : -1) * 0.75, SEAT, -9 - i * 3.4, i === 1 && u > 1.5 ? Object.assign({}, POSE.sitUp, { mood: 'scared' }) : POSE.slump); g.o.eyes = u > 1.0 + i * 0.4; g.pose(g === ghosts[1] && u > 1.5 ? Object.assign({}, POSE.sitUp, { mood: 'scared' }) : POSE.slump); });
+  stage.aim([0.2, 1.1, -5.5 - u * 1.4], [0, 0.4, -15], 52); return { flip: true }; });
+// 04 at the end, the receptionist raises his face: he chose the door in 1974
+at(L0(3), (t, u) => { corr(t); place('corr', recep); put(recep, 0, 0, -50.6, Object.assign({}, POSE.stand, { facing: 0, headTilt: lerp(0.5, 0, ease(clamp((u - 1.0) / 0.8))), armL: [0.9, -1.4], armR: [-0.9, 1.4] })); stage.aim([0.2, 1.35, -45.5 - u * 0.6], [0, 1.3, -50.6], 46); return { flip: true }; });
+// 05 B: the mirror
+at(L0(4), (t, u) => { room(t, { mm: 59, refl: [0.0, 0, -0.2, Object.assign({}, POSE.reach, { facing: -1 })], glassK: 0.25 }); place('room', lia); put(lia, 1.7, 0, -0.4, Object.assign({}, POSE.reach, { facing: 1 })); stage.aim([0.3, 1.3, 1.2], [3.0, 1.0, -0.55], 56); return { flip: true, fx: c => badge(c, 'B', u / 0.4, '#c8372d') }; });
+// 06 it grabs her wrist and they swap places (a flash)
+at(L0(5), (t, u) => { const sw = u > 0.9; room(t, { mm: 59, glassK: 0.3, ch: 10 });
+  if (!sw) { inChamber(refl, Wd.chamber, 0, 0, -0.1, Object.assign({}, POSE.reach, { facing: -1 })); place('room', lia); put(lia, 2.0, 0, -0.55, Object.assign({}, POSE.reach, { facing: 1 })); }
+  else { inChamber(lia, Wd.chamber, 0, 0, -0.35, Object.assign({}, POSE.scared, { facing: 0 })); home(refl, 'room'); place('room', refl); put(refl, 1.6, 0, -0.4, Object.assign({}, POSE.stand, { facing: 1 })); }
+  stage.aim([0.5, 1.3, 0.8], [3.0, 1.0, -0.55], 54); return { flip: true, fx: c => flash(c, (u - 0.7) / 0.5) }; });
+// 07 now Lia can only copy: every gesture, forever (and the dark closes in)
+at(L0(6), (t, u) => { room(t, { mm: 59 }); const p = { facing: 0, armL: [0.3 + 1.2 * Math.abs(Math.sin(u * 2)), -0.4], armR: [-0.3, 0.3] };
+  inChamber(lia, Wd.chamber, 0, 0, -0.35, Object.assign({}, p, { mood: 'scared' })); home(refl, 'room'); place('room', refl); put(refl, 1.7, 0, -0.55, p);
+  aimFace(stage, lia, [-1.5, -0.2, 0], 44); return { flip: true, fx: c => hardBlack(c, (u - 2.2) / 1.2) }; });
+// 08 C: the window opens and she climbs out onto the fire escape (NOT flipped)
+at(L0(7), (t, u) => { street(t); place('street', lia); hotelWin.material.color.set('#3dff8c'); put(lia, 0, 9.0, -7.35, POSE.climb); stage.aim([3.0, 3.0, 3.0], [0, 9.6, -8], 44); return { flip: false, fx: c => badge(c, 'C', u / 0.4, '#3a6fd6') }; });
+// 09 down the zig-zag stairs in the rain (NOT flipped)
+at(L0(8), (t, u) => { street(t); place('street', lia); const k = clamp(u / 3.2), y = lerp(9.0, 1.3, k); lia.walk(u * 2, { speed: 2, facing: Math.floor(k * 4) % 2 ? 1 : -1 }); lia.mesh.position.set(Math.sin(k * Math.PI * 4) * 0.9, y, -7.35); stage.aim([5, y + 3.5, 4], [0, y, -7.5], 46); return { flip: false }; });
+// 10 the cat runs ahead, as if showing the way (NOT flipped)
+at(L0(9), (t, u) => { street(t); place('street', lia); catS.visible = true; catS.position.set(-2 + u * 2.6, 0, -5.4); lia.walk(u * 2.2, { speed: 2.2, facing: 1 }); lia.mesh.position.set(-4 + u * 2.4, 0, -5.6); stage.aim([2.5, 0.7, -2.4], [-1 + u * 2.4, 0.5, -5.6], 52); return { flip: false }; });
+// 11 the keyring leads to her workshop: the lamp switches on
+at(L0(10), (t, u) => { work(t, { lamp: u > 0.7 ? 6 : 0.3 }); place('work', lia); put(lia, -0.6, 0, 0.9, Object.assign({}, POSE.reach, { facing: -1 })); stage.aim([0.6, 1.4, 2.6], [-0.4, 1.0, -0.4], 60); return { flip: true }; });
+// 12 the brass plaque: HOTEL AURORA · QUARTO 313 (NOT flipped)
+at(L0(11), (t, u) => { work(t); place('work'); stage.aim([1.0 + u * 0.02, 0.3, -0.6], [1.0, 0.16, -1.52], 40); return { flip: false }; });
+// 13 inside the glass, the other Lia pounding and screaming (NOT flipped)
+at(L0(12), (t, u) => { work(t, { refl: [0, 0, -0.18, POSE.pound(t)] }); refl.o.eyes = true; place('work'); stage.aim([1.0, 1.3, 0.6], [1.0, 1.1, -1.8], 52); return { flip: false }; });
+// 14 "Lia! Me devolve!" (close, NOT flipped)
+at(L0(13), (t, u) => { work(t, { refl: [0, 0, -0.12, POSE.pound(t)] }); place('work'); aimFace(stage, refl, [0, 0.0, 0.85], 32); return { flip: false }; });
+// 15 who is inside, who is outside: profile on the line of the glass
+at(L0(14), (t, u) => { work(t, { refl: [0, 0, -0.25, Object.assign({}, POSE.stand, { facing: 0 })] }); place('work', lia); put(lia, 1.0, 0, -0.95, Object.assign({}, POSE.stand, { facing: 0 })); stage.aim([2.6 - u * 0.1, 1.35, -1.25], [1.0, 1.2, -1.6], 46); return { flip: true }; });
+
+const clockAt = t => ['QUARTO 313', t < L0(7) ? '04:00' : (t < L0(10) ? '04:02' : '04:31')];
+await run({ T, c, stage, SH, E, clockAt, coverAt: L0(12) + 1.0, cover: coverFn(3, 'ME', 'DEVOLVE!') });
+</script>
+</body></html>

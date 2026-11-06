@@ -4,28 +4,28 @@ QUARTO 313 — EPISÓDIO 1: O REFLEXO QUE DORME
 RESUMO
 Lia acorda às 3:13 no quarto 313 de um hotel que ela não conhece. O reflexo dela continua deitado no chão do outro lado do espelho. Ela encontra um bilhete na própria letra, recebe uma ligação da recepção, e o episódio termina quando o reflexo abre os olhos e sorri.
 
-DURAÇÃO: 64.4 s (voz 60.8 s + cartão final 3.6 s)
+DURAÇÃO: 64.2 s (voz 60.6 s + cartão final 3.6 s)
 
 NARRAÇÃO (entrada → saída · voz · fala)
 
 [00:00.1 → 00:04.9]  NARRADOR (pm_alex): Imagine que você acorda num quarto de hotel... e o seu reflexo continua dormindo.
 [00:05.4 → 00:11.0]  NARRADOR (pm_alex): Foi assim que Lia Moreno, 31 anos, restauradora de espelhos, acordou às 3:13 da manhã.
 [00:11.4 → 00:14.8]  NARRADOR (pm_alex): Quarto 313. Ela não lembra de ter chegado.
-[00:15.2 → 00:18.7]  NARRADOR (pm_alex): No espelho, a outra Lia continua deitada no chão. Imóvel.
-[00:19.0 → 00:21.1]  NARRADOR (pm_alex): Lia levanta a mão. O reflexo, não.
-[00:21.7 → 00:25.6]  NARRADOR (pm_alex): A aliança está na mão direita. Estranho. Ela sempre usou na esquerda.
-[00:26.0 → 00:29.1]  NARRADOR (pm_alex): Na mesa de cabeceira, um bilhete. Com a letra dela.
-[00:29.4 → 00:33.7]  NARRADOR (pm_alex): Três saídas. Só uma é real. Não confie em quem te chama pelo nome.
-[00:34.2 → 00:38.8]  NARRADOR (pm_alex): Pela janela, a chuva. E a placa da farmácia em frente, escrita ao contrário.
-[00:39.1 → 00:42.6]  NARRADOR (pm_alex): Na escada de incêndio, um gato preto olha só pra ela.
-[00:43.0 → 00:44.3]  NARRADOR (pm_alex): O telefone toca.
-[00:44.7 → 00:48.6]  RECEPCIONISTA (pm_santa): Senhora Moreno? O check-out é às quatro. Por favor... use a porta.
-[00:49.0 → 00:51.7]  NARRADOR (pm_alex): Ninguém sabia que ela estava ali. Nem ela.
-[00:52.2 → 00:55.0]  NARRADOR (pm_alex): O relógio da parede insiste: 3:13.
-[00:55.4 → 00:58.9]  NARRADOR (pm_alex): Então, do outro lado do vidro, o reflexo abre os olhos.
-[00:59.5 → 01:00.4]  NARRADOR (pm_alex): E sorri.
+[00:15.2 → 00:18.5]  NARRADOR (pm_alex): No espelho, a outra Lia continua caída no chão. Imóvel.
+[00:18.8 → 00:20.9]  NARRADOR (pm_alex): Lia levanta a mão. O reflexo, não.
+[00:21.5 → 00:25.4]  NARRADOR (pm_alex): A aliança está na mão direita. Estranho. Ela sempre usou na esquerda.
+[00:25.8 → 00:28.9]  NARRADOR (pm_alex): Na mesa de cabeceira, um bilhete. Com a letra dela.
+[00:29.2 → 00:33.5]  NARRADOR (pm_alex): Três saídas. Só uma é real. Não confie em quem te chama pelo nome.
+[00:34.0 → 00:38.6]  NARRADOR (pm_alex): Pela janela, a chuva. E a placa da farmácia em frente, escrita ao contrário.
+[00:38.9 → 00:42.4]  NARRADOR (pm_alex): Na escada de incêndio, um gato preto olha só pra ela.
+[00:42.8 → 00:44.1]  NARRADOR (pm_alex): O telefone toca.
+[00:44.5 → 00:48.4]  RECEPCIONISTA (pm_santa): Senhora Moreno? O check-out é às quatro. Por favor... use a porta.
+[00:48.8 → 00:51.5]  NARRADOR (pm_alex): Ninguém sabia que ela estava ali. Nem ela.
+[00:51.9 → 00:54.8]  NARRADOR (pm_alex): O relógio da parede insiste: 3:13.
+[00:55.2 → 00:58.7]  NARRADOR (pm_alex): Então, do outro lado do vidro, o reflexo abre os olhos.
+[00:59.3 → 01:00.2]  NARRADOR (pm_alex): E sorri.
 
-CARTÃO FINAL (01:01.1 → 01:04.4): QUANTAS PISTAS / VOCÊ VIU?
+CARTÃO FINAL (01:00.9 → 01:04.2): QUANTAS PISTAS / VOCÊ VIU?
 
 GANCHO PARA O PRÓXIMO EPISÓDIO
 O reflexo abre os olhos. E sorri.

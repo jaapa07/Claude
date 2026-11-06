@@ -6,7 +6,7 @@ Toda a trilha e todos os efeitos são originais, gerados em código (sem samples
 Mixagem: a música fica 13 dB abaixo da voz enquanto ela fala e cresce nos silêncios; o resultado sai em -14 LUFS (padrão das redes).
 Arquivos: narracao_com_trilha.wav/.mp3 (pronto) e narracao.wav/.mp3 (voz sozinha, se quiser usar outra trilha).
 
-Episódio 1 (64.4 s):
+Episódio 1 (64.2 s):
   0.05: rumble (vol 0.6)
   dormindo@0: sting (vol 0.5)
   3:13@1: tick (vol 0.5)

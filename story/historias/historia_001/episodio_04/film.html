@@ -1,0 +1,83 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>QUARTO 313 — episódio 4</title>
+<script type="importmap">{"imports": {"three": "../../../engine/vendor/three.module.js"}}</script>
+<style>
+@font-face { font-family: 'Oswald'; font-weight: 700; src: url('../../../engine/vendor/fonts/oswald-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 700; src: url('../../../engine/vendor/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+html, body { margin: 0; background: #000; } canvas { display: block; }
+</style>
+<script src="timing.js"></script>
+</head><body>
+<canvas id="film" width="1080" height="1920"></canvas>
+<script type="module">
+import { S, THREE, clamp, lerp, ease, spring, setup, run, lie, headOnScreen, aimFace, smile, noteCard, ringHand, watch, newspaper, vhs, badge, ring, triptych, hardBlack } from '../comum.js';
+const { T, w, L0, c, stage, Wd, worldBill } = setup();
+const { lia, refl, recep, viewer, ghosts, POSE, at: put, place } = Wd;
+const H = await (await fetch('../historia.json')).json();
+S.LABELS.day = '';
+const inChamber = (who, ch, x, y, z, pose) => { if (who.mesh.parent !== ch) ch.add(who.mesh); who.mesh.position.set(x, y, z); who.pose(pose); who.mesh.visible = true; };
+const home = (who, set) => { if (who.mesh.parent !== Wd.sets[set]) Wd.sets[set].add(who.mesh); };
+const SEAT = -0.56;
+const catS = Wd.cat.clone(); Wd.street.add(catS); catS.userData.billboard = worldBill(catS);
+function resetPeople(set) { for (const p of [lia, refl]) { home(p, set); p.o.eyes = true; lie(p, false); } }
+function room(t, { gap = 0, refl: rp = null, eyes = true, hh = 3, mm = 13, clockSec = null, lamp = 3, doorOpen = 0, glassK = 0, ch = 6 } = {}) {
+  resetPeople('room'); Wd.use('room', 1.45); Wd.rain(t); Wd.drawClock(clockSec ?? (t % 60), hh, mm); Wd.roomLamp.userData.light.intensity = lamp; Wd.roomLamp.userData.bulb.visible = false;
+  Wd.doorGap.visible = gap > 0; Wd.doorLight.intensity = gap * 3; Wd.door.userData.open(doorOpen); Wd.door.position.x = -2.43;
+  Wd.glass.material.opacity = 0.18 + glassK; Wd.chLight.intensity = ch; Wd.drawCat(0);
+  if (rp) { inChamber(refl, Wd.chamber, rp[0], rp[1], rp[2], rp[3] || POSE.still); refl.o.eyes = eyes; refl.pose(rp[3] || POSE.still); } else refl.mesh.visible = false;
+}
+function work(t, { lamp = 6, cloth = null, refl: rp = null } = {}) {
+  resetPeople('work'); Wd.use('work', 1.35); Wd.workLamp.userData.light.intensity = lamp; Wd.workLamp.userData.bulb.visible = false;
+  Wd.cloth.visible = cloth !== null; if (cloth !== null) Wd.cloth.position.y = lerp(3.8, 1.2, clamp(cloth));
+  if (rp) { inChamber(refl, Wd.wchamber, rp[0], rp[1], rp[2], rp[3] || POSE.still); } else refl.mesh.visible = false;
+}
+function street(t) { resetPeople('street'); Wd.use('street', 1.5); Wd.rain2(t); }
+function corr(t) { resetPeople('corr'); Wd.use('corr', 1.4); }
+const flash = (c, k) => { if (k <= 0 || k >= 1) return; c.save(); c.fillStyle = `rgba(230,255,240,${Math.sin(Math.PI * k)})`; c.fillRect(0, 0, 1080, 1920); c.restore(); };
+const coverFn = (n, a, b) => c => { c.save(); const g = c.createLinearGradient(0, 0, 0, 900); g.addColorStop(0, 'rgba(0,0,0,0.65)'); g.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = g; c.fillRect(0, 0, 1080, 900);
+  c.font = '700 44px Oswald'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#d93b30'; c.beginPath(); c.roundRect(330, 260, 420, 80, 40); c.fill(); c.fillStyle = '#fff'; c.fillText(`QUARTO 313 · EP ${n}`, 540, 302);
+  for (const [s, y, col] of [[a, 450, '#ffffff'], [b, 590, '#3dff8c']]) { c.font = '700 140px Oswald'; c.lineWidth = 16; c.strokeStyle = '#000'; c.lineJoin = 'round'; c.strokeText(s, 540, y); c.fillStyle = col; c.fillText(s, 540, y); } c.restore(); };
+const E = H.episodios[3];
+const NL = ['Três saídas.', 'Só uma é real.', 'Não confie em', 'quem te chama', 'pelo nome.'];
+const hotelWin = Wd.hotelWins[17];
+const SH = [], at = (t0, f) => SH.push([t0, f]);
+const lagPose = t => ({ facing: 0, armL: [0.3 + 1.1 * Math.abs(Math.sin(t * 1.6)), -0.4], armR: [-0.3, 0.3] });
+// 01 the hook: Lia, calm now, in her workshop; she turns towards us
+at(0, (t, u) => { work(t, { cloth: null }); place('work', lia); put(lia, 0.2, 0, 0.2, Object.assign({}, POSE.stand, { facing: u > 1.5 ? 0 : -1 })); stage.aim([0.3, 1.25, 2.4 - u * 0.25], [0.2, 1.15, 0.2], 46); return { flip: true }; });
+// 02 the archive: Hotel Aurora burning, 1974 (NOT flipped, sepia newspaper)
+at(L0(1), (t, u) => { street(t); place('street'); Wd.hotelWins.forEach((m, i) => m.material.color.set(`hsl(${20 + (i * 7) % 20}, 100%, ${45 + 10 * Math.sin(t * 9 + i)}%)`)); stage.aim([2, 3 + u * 0.3, 6.5], [0, 6.5, -9], 58); return { flip: false, noCaptions: false, fx: c => newspaper(c, u / 0.4), capY: 1500 }; });
+// 03 the mirror sold, many times (quick angles, years stamped)
+at(L0(2), (t, u) => { work(t); place('work'); const k = Math.floor(u / 0.9) % 3; stage.aim([[1.0, 1.2, 1.4], [2.4, 1.6, 0.4], [-0.2, 0.6, 0.4]][k], [1.0, 1.1, -1.6], 50);
+  return { flip: false, fx: c => { c.save(); c.font = '700 120px "JetBrains Mono"'; c.textAlign = 'center'; c.fillStyle = 'rgba(255,204,77,0.9)'; c.fillText(['1981', '1996', '2013'][k], 540, 480); c.restore(); } }; });
+// 04 it holds reflections until one wakes first: the reflection moves a moment after her
+at(L0(3), (t, u) => { work(t, { refl: [0, 0, -0.3, lagPose(t - 0.35)] }); place('work', lia); put(lia, 1.0, 0, -0.75, lagPose(t)); stage.aim([2.2, 1.4, 0.9], [1.0, 1.1, -1.4], 52); return { flip: true }; });
+// 05 now go back to the beginning: rewind (VHS)
+at(L0(4), (t, u) => { room(t, { clockSec: 60 - (t * 20) % 60, refl: [0.15, SEAT, -1.25, POSE.slump] }); place('room', lia); put(lia, 0.2, 0, 0.4, POSE.scared); stage.aim([0.2 - u * 0.4, 1.6, 2.2], [0.8, 0.9, -0.6], 64); return { flip: true, fx: c => vhs(c, t) }; });
+// 06 the ring on the right hand
+at(L0(5), (t, u) => { room(t, { refl: [0.15, SEAT, -1.25, POSE.slump] }); place('room'); stage.aim([0.2, 1.6, 2.2], [0.8, 0.9, -0.6], 64); return { flip: true, fx: c => ringHand(c, u / 0.3, true, (u - 0.4) / 0.6), capY: 1700 }; });
+// 07 the pharmacy sign: you saw it right (NOT flipped)
+at(L0(6), (t, u) => { room(t); place('room'); stage.aim([1.4, 1.6, -1.9], [1.0, 2.5, -14], 50); return { flip: false, bloom: 0.9, fx: c => ring(c, 540, 905, 330, (u - 0.3) / 0.6, '#3dff8c') }; });
+// 08 the clock turning the wrong way
+at(L0(7), (t, u) => { room(t, { clockSec: (t * 8) % 60 }); place('room'); stage.aim([0.0, 2.15, -1.55], [0.0, 2.15, -2.45], 40); return { flip: true, fx: c => ring(c, 540, 960, 420, (u - 0.2) / 0.6) }; });
+// 09 the one who called her by name was the true Lia, asking for her reflection back (NOT flipped)
+at(L0(8), (t, u) => { work(t, { refl: [0, 0, -0.12, Object.assign({}, POSE.hand, { facing: 0, mood: 'scared' })] }); place('work'); aimFace(stage, refl, [0, 0.02, 0.9], 32); return { flip: false }; });
+// 10 the Lia you followed was never Lia (calm, a cold smile)
+at(L0(9), (t, u) => { work(t); place('work', lia); put(lia, 0.2, 0, 0.2, POSE.stand); aimFace(stage, lia, [0, 0.02, 0.85], 32); return { flip: true, fx: c => smile(c, headOnScreen(stage, lia, true), ease((u - 0.8) / 0.8)) }; });
+// 11 you chose the window: the open window of 313, the cat on the fire escape (NOT flipped)
+at(L0(10), (t, u) => { street(t); place('street'); Wd.hotelWins.forEach(m => m.material.color.set('#11151b')); hotelWin.material.color.set('#0a0a0a'); catS.visible = true; catS.position.set(0.7, 9.0, -7.35); stage.aim([2.0, 7.0 + u * 0.2, 2.5], [0, 9.6, -8], 40); return { flip: false }; });
+// 12 she covers the mirror with a cloth (fists still on the glass behind it), then sits to write
+at(L0(11), (t, u) => { const k = ease(clamp(u / 1.6)); work(t, { cloth: k, refl: [0, 0, -0.15, POSE.pound(t)] }); place('work', lia);
+  if (u < 2.0) put(lia, 1.6, 0, -1.0, Object.assign({}, POSE.cover, { facing: -1 })); else put(lia, -1.25, -0.1, -0.9, Object.assign({}, POSE.write, { facing: -1 }));
+  stage.aim([0.6, 1.5, 2.2], [0.4, 1.1, -1.4], 60); return { flip: true }; });
+// 13 a new note, in mirror writing, for the next reflection that wakes
+at(L0(12), (t, u) => { work(t, { cloth: 1 }); place('work', lia); put(lia, -1.25, -0.1, -0.9, Object.assign({}, POSE.write, { facing: -1 })); stage.aim([-1.1, 1.6, -0.7], [-1.3, 0.85, -1.5], 50); return { flip: false, fx: c => noteCard(c, 1, NL, { reveal: u / 1.8 }), capY: 1650 }; });
+// 14 "Obrigada por escolher a janela." (straight into the lens)
+at(L0(13), (t, u) => { work(t, { cloth: 1 }); place('work', lia); put(lia, 0.2, 0, 0.2, POSE.stand); aimFace(stage, lia, [0, 0.0, 0.7], 28); return { flip: true, fx: c => smile(c, headOnScreen(stage, lia, true), 0.6) }; });
+// 15 tonight at 3:13, look at your mirror: it blinks after you
+at(L0(14), (t, u) => { resetPeople('bath'); Wd.use('bath', 1.3); place('bath'); const blink = u > 2.6 && u < 2.9; inChamber(viewer, Wd.bchamber, 0, 0, -0.55, POSE.stand); viewer.o.eyes = !blink; viewer.pose(POSE.stand);
+  stage.aim([0, 1.55, 1.0 - u * 0.05], [0, 1.45, -2.0], 44); return { flip: true, fx: c => hardBlack(c, (t - (T.voice_end - 0.05)) / 0.15) }; });
+
+const clockAt = t => ['QUARTO 313', t < L0(14) ? 'DIAS DEPOIS' : '03:13'];
+await run({ T, c, stage, SH, E, clockAt, coverAt: L0(13) + 1.0, cover: coverFn(4, 'VOCÊ ESCOLHEU', 'A JANELA') });
+</script>
+</body></html>

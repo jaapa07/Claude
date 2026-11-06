@@ -1,0 +1,71 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>QUARTO 313 — episódio 1</title>
+<script type="importmap">{"imports": {"three": "../../../engine/vendor/three.module.js"}}</script>
+<style>
+@font-face { font-family: 'Oswald'; font-weight: 700; src: url('../../../engine/vendor/fonts/oswald-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 700; src: url('../../../engine/vendor/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+html, body { margin: 0; background: #000; } canvas { display: block; }
+</style>
+<script src="timing.js"></script>
+</head><body>
+<canvas id="film" width="1080" height="1920"></canvas>
+<script type="module">
+import { S, THREE, clamp, lerp, ease, spring, setup, run, lie, headOnScreen, aimFace, smile, noteCard, ringHand, watch, newspaper, vhs, badge, ring, triptych, hardBlack } from '../comum.js';
+const { T, w, L0, c, stage, Wd, worldBill } = setup();
+const { lia, refl, recep, viewer, ghosts, POSE, at: put, place } = Wd;
+const H = await (await fetch('../historia.json')).json();
+const E = H.episodios[0]; S.LABELS.day = '';
+// ---------- helpers for this world ----------
+const inChamber = (who, ch, x, y, z, pose) => { if (who.mesh.parent !== ch) ch.add(who.mesh); who.mesh.position.set(x, y, z); who.pose(pose); who.mesh.visible = true; };
+function room(t, { gap = 0, refl: rp = null, reflLie = true, glassK = 0, eyes = false, clockSec = null, lamp = 4 } = {}) {
+  Wd.use('room', 1.45); Wd.rain(t); Wd.drawClock(clockSec ?? (t * 1) % 60, 3, 13); Wd.roomLamp.userData.light.intensity = lamp; Wd.roomLamp.userData.bulb.visible = false;
+  Wd.doorGap.visible = gap > 0; Wd.doorLight.intensity = gap * 3; Wd.door.userData.open(0); Wd.door.position.x = -2.43;
+  Wd.glass.material.opacity = 0.18 + glassK * 0.25; Wd.chLight.intensity = 2.5;
+  lie(lia, false); lie(refl, false); Wd.drawCat(0); lia.o.eyes = true;
+  if (rp) { refl.o.eyes = eyes; inChamber(refl, Wd.chamber, rp[0], rp[1], rp[2], rp[3] || POSE.still); }
+  else refl.mesh.visible = false;
+}
+const SEAT = -0.56; const REFL_LYING = [0.15, SEAT, -1.25, POSE.slump];
+
+// ---------- the shot list (one shot per scene in historia.json) ----------
+const SH = [], at = (t0, f) => SH.push([t0, f]);
+// 01 the hook: tight on Lia's open eye on the floor, pull back to reveal the mirror where her reflection still sleeps
+at(0, (t, u) => { room(t, { refl: REFL_LYING, lamp: 2 }); place('room', lia); lia.o.eyes = u > 0.55; put(lia, -0.3, SEAT, 0.6, u > 0.55 ? Object.assign({}, POSE.sitUp, { mood: 'scared', armR: [0.4, -0.3] }) : POSE.slump);
+  const k = ease(clamp((u - 0.5) / 3.6)); stage.aim([lerp(-0.3, -1.7, k), lerp(0.6, 1.4, k), lerp(1.2, 2.3, k)], [lerp(-0.3, 1.2, k), lerp(0.53, 0.55, k), lerp(0.6, -0.4, k)], lerp(30, 64, k)); return { flip: true }; });
+// 02 she sits up; the clock above reads 3:13
+at(L0(1), (t, u) => { room(t, { refl: REFL_LYING }); place('room', lia); lia.o.eyes = true; put(lia, -0.3, SEAT, 0.6, Object.assign({}, POSE.sitUp, { mood: 'scared' })); stage.aim([-0.9, 1.0, 2.2], [-0.1, 0.9, -1.5], 56); return { flip: true }; });
+// 03 room 313 (wide): small in the middle, the door with 313 and the card
+at(L0(2), (t, u) => { room(t, { refl: REFL_LYING }); place('room', lia); put(lia, 0.2, 0, -0.2, Object.assign({}, POSE.look, { facing: 0 })); stage.aim([1.9 - u * 0.15, 2.2, 2.2], [-1.2, 0.9, -0.2], 68); return { flip: true }; });
+// 04 over her shoulder to the mirror: the reflection still lies on the floor
+at(L0(3), (t, u) => { room(t, { refl: REFL_LYING }); place('room', lia); put(lia, 1.25, 0, 0.45, Object.assign({}, POSE.stand, { facing: 1 })); stage.aim([0.2 + u * 0.1, 1.15, 0.9], [3.4, 0.5, -0.5], 54); return { flip: true }; });
+// 05 she raises a hand; the reflection does not
+at(L0(4), (t, u) => { room(t, { refl: REFL_LYING }); place('room', lia); put(lia, 1.6, 0, 0.3, Object.assign({}, POSE.hand, { armL: [lerp(0.3, 1.6, ease(u / 0.8)), -0.1] })); stage.aim([0.3, 1.1, 1.4], [3.2, 0.55, -0.5], 58); return { flip: true }; });
+// 06 the ring (macro insert, flipped: the ring sits on the right hand)
+at(L0(5), (t, u) => { room(t, { refl: REFL_LYING }); place('room', lia); put(lia, 1.6, 0, 0.3, POSE.stand); stage.aim([0.4, 1.1, 1.3], [2.5, 0.6, -0.5], 58); return { flip: true, fx: c => ringHand(c, u / 0.3, true), capY: 1700 }; });
+// 07 the note on the nightstand, then the note itself (mirror writing)
+at(L0(6), (t, u) => { room(t); place('room'); stage.aim([-0.5, 1.15, -1.75], [-0.6, 0.55, -2.1], 52);
+  const NL = ['Três saídas.', 'Só uma é real.', 'Não confie em', 'quem te chama', 'pelo nome.']; return { flip: false, fx: c => noteCard(c, (t - L0(6) - 1.2) / 0.3, NL, { reveal: 1 }), capY: 1650 }; });
+// 08 the pharmacy across the street (NOT flipped: the viewer sees it the right way round)
+at(L0(8), (t, u) => { room(t); place('room'); stage.aim([1.4, 1.6, -1.9 + u * 0.15], [1.0, 2.5, -14], 50); return { flip: false, bloom: 0.9 }; });
+// 09 the cat on the fire escape, staring in (NOT flipped)
+at(L0(9), (t, u) => { room(t); place('room'); stage.aim([1.45, 1.25, -1.6], [1.7, 0.95, -3.05], 46); return { flip: false }; });
+// 10 the red phone rings
+at(L0(10), (t, u) => { room(t); place('room', lia); put(lia, -0.2, 0, -1.4, POSE.look); Wd.phone.position.x = -0.75 + Math.sin(t * 70) * 0.006; Wd.roomLamp.userData.light.intensity = 1.2; stage.aim([-0.3, 1.0, -1.3], [-0.75, 0.6, -2.15], 50); return { flip: true }; });
+// 11 the receptionist at the desk, receiver to his ear
+at(L0(11), (t, u) => { Wd.use('lobby', 1.4); place('lobby', recep); put(recep, 0.1, 0, -1.6, Object.assign({}, POSE.phone, { facing: 0, mood: undefined })); stage.aim([0.1, 1.3, 0.6 - u * 0.1], [0.1, 1.2, -1.6], 48); return { flip: true }; });
+// 12 alone: top shot, the camera rising
+at(L0(12), (t, u) => { room(t); place('room', lia); put(lia, 0.3, 0, -0.4, POSE.phone); stage.aim([0.3, 2.6 + u * 0.05, 0.6], [0.3, 0, -0.5], 70); return { flip: true }; });
+// 13 the clock insert (flipped: its hand runs backwards)
+at(L0(13), (t, u) => { room(t, { clockSec: (t * 6) % 60 }); place('room'); stage.aim([0.0, 2.15, -1.55], [0.0, 2.15, -2.45], 40); return { flip: true }; });
+// 14 the reflection opens its eyes
+at(L0(14), (t, u) => { const open = u > 1.2; room(t, { refl: REFL_LYING, eyes: open }); place('room'); aimFace(stage, refl, [-1.6, 0.15, 0], 40, -0.15); return { flip: true }; });
+// 15 and smiles (extreme close-up, a smile drawn on its face, then hard black)
+at(L0(15), (t, u) => { room(t, { refl: REFL_LYING, eyes: true }); place('room'); aimFace(stage, refl, [-0.9, 0.05, 0], 30);
+  return { flip: true, fx: c => { smile(c, headOnScreen(stage, refl, true), ease(u / 0.7)); hardBlack(c, (t - (T.voice_end - 0.1)) / 0.15); } }; });
+
+const clockAt = t => ['QUARTO 313', '03:13'];
+await run({ T, c, stage, SH, E, clockAt, coverAt: L0(15) + 0.6, cover: c => { c.save(); const g = c.createLinearGradient(0, 0, 0, 900); g.addColorStop(0, 'rgba(0,0,0,0.65)'); g.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = g; c.fillRect(0, 0, 1080, 900);
+  c.font = '700 44px Oswald'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#d93b30'; c.beginPath(); c.roundRect(330, 260, 420, 80, 40); c.fill(); c.fillStyle = '#fff'; c.fillText('QUARTO 313 · EP 1', 540, 302);
+  for (const [s, y, col] of [['O REFLEXO', 450, '#ffffff'], ['QUE DORME', 590, '#3dff8c']]) { c.font = '700 140px Oswald'; c.lineWidth = 16; c.strokeStyle = '#000'; c.lineJoin = 'round'; c.strokeText(s, 540, y); c.fillStyle = col; c.fillText(s, 540, y); } c.restore(); } });
+</script>
+</body></html>

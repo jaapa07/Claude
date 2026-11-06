@@ -201,6 +201,11 @@ export class Stickman {
       else if (o.mark.type === 'suit') {                                   // a dark suit, a red tie and a top hat
         stroke([hip, neck], 40, o.mark.color); stroke([[neck[0], neck[1] + 14], [neck[0], neck[1] + 80]], 12, '#c8372d');
         c.fillStyle = o.mark.color; c.fillRect(head[0] - 40, head[1] - BONES.head - 92, 80, 92); stroke([[head[0] - 78, head[1] - BONES.head + 2], [head[0] + 78, head[1] - BONES.head + 2]], 14, o.mark.color); }
+      else if (o.mark.type === 'lia') {                                    // black chin-length bob with bangs, wine velvet jacket over a white t-shirt
+        stroke([hip, neck], 40, o.mark.color); stroke([[neck[0], neck[1] + 12], [hip[0], hip[1] - 20]], 12, '#f1ede4');
+        c.fillStyle = '#121014'; c.beginPath(); c.arc(head[0], head[1] - 4, BONES.head + 6, Math.PI, 0); c.fill();
+        c.fillRect(head[0] - BONES.head - 6, head[1] - 4, 18, BONES.head + 10); c.fillRect(head[0] + BONES.head - 12, head[1] - 4, 18, BONES.head + 10);
+        c.fillRect(head[0] - BONES.head + 4, head[1] - BONES.head - 2, (BONES.head - 4) * 2, 26); }
       else if (o.mark.type === 'band') { stroke([[head[0] - BONES.head, head[1] - 18], [head[0] + BONES.head, head[1] - 18]], 16, o.mark.color); }
       else { stroke([hip, neck], 24, o.mark.color); }
     }
@@ -208,8 +213,10 @@ export class Stickman {
       c.fillStyle = o.eyeColor || o.outline; const ex = head[0] + (f === 0 ? 0 : f * 18), ey = head[1] - 6, r = p.mood === 'scared' ? 9 : 7;
       if (f === 0) { c.beginPath(); c.arc(ex - 18, ey, r, 0, 7); c.arc(ex + 18, ey, r, 0, 7); c.fill(); } else { c.beginPath(); c.arc(ex + f * 12, ey, r, 0, 7); c.fill(); }
     }
-    this.tex.needsUpdate = true; return this;
+    this.head = head; this.tex.needsUpdate = true; return this;
   }
+  // the head centre in world space (canvas head -> plane local -> world)
+  headWorld() { const h = this.o.height, w = h * 0.5, hd = this.head || [256, 357]; this.mesh.updateMatrixWorld(true); return this.mesh.localToWorld(new THREE.Vector3((hd[0] - 256) / 512 * w, (1024 - hd[1]) / 1024 * h, 0)); }
   // a walk with planted feet: x0 world start, speed m/s; returns the world x to place the mesh, and poses the legs by IK
   walk(t, { speed = 0.9, stride = 0.55, facing = 1 } = {}) {
     const px = 512 / (this.o.height * 0.5);                                 // canvas px per metre

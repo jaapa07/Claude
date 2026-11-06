@@ -34,7 +34,7 @@
    "speed": 0.96
   },
   {
-   "text": "No espelho, a outra Lia continua deitada no chão. Imóvel.",
+   "text": "No espelho, a outra Lia continua caída no chão. Imóvel.",
    "pause": 0.35,
    "key": {
     "Imóvel": "red"
