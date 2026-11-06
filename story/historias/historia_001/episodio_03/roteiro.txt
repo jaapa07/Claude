@@ -1,0 +1,30 @@
+QUARTO 313 — EPISÓDIO 3: AS CONSEQUÊNCIAS
+============================================================
+
+RESUMO
+Mostra o que acontece em cada saída. A porta leva a um corredor infinito de quartos 313, onde o recepcionista é um reflexo que escolheu a porta em 1974. O espelho troca Lia com o reflexo e a condena a copiar cada gesto para sempre. A janela é a saída: Lia foge pela chuva até a oficina dela, onde está o mesmo espelho, com a placa 'Hotel Aurora, quarto 313'. Lá dentro, a outra Lia grita e bate no vidro.
+
+DURAÇÃO: 63.8 s (voz 60.2 s + cartão final 3.6 s)
+
+NARRAÇÃO (entrada → saída · voz · fala)
+
+[00:00.1 → 00:02.5]  NARRADOR (pm_alex): Imagine que você escolhe a porta.
+[00:03.0 → 00:07.9]  NARRADOR (pm_alex): O corredor não termina. Todas as portas têm o mesmo número: 313.
+[00:08.3 → 00:13.4]  NARRADOR (pm_alex): Atrás de cada uma, uma mulher acordando no chão. Todas com a aliança na mão direita.
+[00:13.8 → 00:21.0]  NARRADOR (pm_alex): No fim, o recepcionista ergue o rosto. Ele também é um reflexo. Escolheu a porta em 1974.
+[00:21.6 → 00:22.8]  NARRADOR (pm_alex): B: o espelho.
+[00:23.2 → 00:26.2]  NARRADOR (pm_alex): O reflexo agarra o pulso dela. E troca de lugar.
+[00:26.6 → 00:31.0]  NARRADOR (pm_alex): Agora Lia só pode copiar. Cada gesto. Cada piscada. Pra sempre.
+[00:31.6 → 00:32.7]  NARRADOR (pm_alex): C: a janela.
+[00:33.1 → 00:36.0]  NARRADOR (pm_alex): A escada de incêndio range. A chuva é fria. Real.
+[00:36.4 → 00:39.5]  NARRADOR (pm_alex): O gato desce na frente, como quem mostra o caminho.
+[00:39.9 → 00:42.8]  NARRADOR (pm_alex): O chaveiro no bolso leva até a oficina dela.
+[00:43.2 → 00:50.1]  NARRADOR (pm_alex): No centro, o espelho que ela estava restaurando. Na moldura, uma placa: Hotel Aurora. Quarto 313.
+[00:50.7 → 00:53.6]  NARRADOR (pm_alex): Dentro do vidro, a outra Lia. Batendo. Gritando.
+[00:53.9 → 00:55.1]  LIA (pf_dora): Lia! Me devolve!
+[00:55.6 → 00:59.8]  NARRADOR (pm_alex): Mas quem está do lado de dentro... e quem está do lado de fora?
+
+CARTÃO FINAL (01:00.5 → 01:03.8): QUEM É A / VERDADEIRA LIA?  ·  A: A DE FORA | B: A DE DENTRO
+
+GANCHO PARA O PRÓXIMO EPISÓDIO
+Quem está do lado de dentro? E quem está do lado de fora?

@@ -1,0 +1,75 @@
+QUARTO 313 — TRILHA SONORA E EFEITOS
+
+Identidade: um drone grave em ré menor e o tique-taque do relógio do quarto 313 como assinatura (aparece toda vez que o tempo importa).
+Batimento cardíaco nas decisões; chuva constante no quarto; silêncio total antes de cada revelação.
+Toda a trilha e todos os efeitos são originais, gerados em código (sem samples de terceiros): pode usar à vontade.
+Mixagem: a música fica 13 dB abaixo da voz enquanto ela fala e cresce nos silêncios; o resultado sai em -14 LUFS (padrão das redes).
+Arquivos: narracao_com_trilha.wav/.mp3 (pronto) e narracao.wav/.mp3 (voz sozinha, se quiser usar outra trilha).
+
+Episódio 1 (64.4 s):
+  0.05: rumble (vol 0.6)
+  dormindo@0: sting (vol 0.5)
+  3:13@1: tick (vol 0.5)
+  3:13@1+0.5: tick (vol 0.5)
+  chegado@2: floorcreak (vol 0.4)
+  Imóvel@3: heartbeat (vol 0.6)
+  não@4: heartbeat (vol 0.8)
+  bilhete@6: whoosh (vol 0.3)
+  nome@7: sting (vol 0.5)
+  gato@9: hiss (vol 0.3)
+  toca@10: alarm (vol 0.25)
+  toca@10+0.6: alarm (vol 0.2)
+  porta@11: hit (vol 0.5)
+  3:13@13: tick (vol 0.6)
+  3:13@13+0.5: tick (vol 0.6)
+  olhos@14: hit (vol 0.9)
+  sorri@15: sting (vol 0.7)
+
+Episódio 2 (64.1 s):
+  0.05: whoosh (vol 0.5)
+  real@0: hit (vol 0.6)
+  13@1: tick (vol 0.6)
+  13@1+0.4: tick (vol 0.6)
+  13@1+0.8: tick (vol 0.6)
+  levanta@2: creak (vol 0.5)
+  volta@3: hiss (vol 0.3)
+  Batidas@4: knock (vol 1.0)
+  porta@6: click (vol 0.5)
+  espelho@7: click (vol 0.5)
+  janela@8: click (vol 0.5)
+  Quem@10: heartbeat (vol 0.8)
+  sozinha@11: lock (vol 0.7)
+  água@12: whoosh (vol 0.5)
+  arranha@13: glass (vol 0.4)
+  chance@15: hit (vol 0.9)
+
+Episódio 3 (63.8 s):
+  0.05: creak (vol 0.5)
+  313@1: sting (vol 0.5)
+  direita@2: heartbeat (vol 0.6)
+  reflexo@3: hit (vol 0.8)
+  troca@5: whoosh (vol 0.7)
+  troca@5+0.3: glass (vol 0.6)
+  sempre@6: sting (vol 0.5)
+  range@8: creak (vol 0.6)
+  oficina@10: click (vol 0.5)
+  Aurora@11: hit (vol 0.9)
+  Batendo@12: knock (vol 0.9)
+  fora@14: sting (vol 0.7)
+
+Episódio 4 (64.8 s):
+  0.05: rumble (vol 0.6)
+  errada@0: hit (vol 0.7)
+  1974@1: rumble (vol 0.6)
+  vendido@2: thud (vol 0.5)
+  primeiro@3: sting (vol 0.6)
+  começo@4: whoosh (vol 0.7)
+  direita@5: click (vol 0.5)
+  certo@6: click (vol 0.5)
+  errado@7: tick (vol 0.6)
+  verdadeira@8: hit (vol 0.8)
+  nunca@9: sting (vol 0.6)
+  libertou@10: hit (vol 0.9)
+  pano@11: whoosh (vol 0.4)
+  janela@13: sting (vol 0.5)
+  piscar@14: hit (vol 0.9)

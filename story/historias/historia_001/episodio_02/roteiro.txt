@@ -1,0 +1,31 @@
+QUARTO 313 — EPISÓDIO 2: AS TRÊS SAÍDAS
+============================================================
+
+RESUMO
+São 3:47 e faltam 13 minutos para o check-out. O reflexo se levanta e chama Lia pelo nome, e o recepcionista bate na porta. Lia tem três saídas: A, a porta; B, o espelho; C, a janela. A narração relembra as pistas sem dar a resposta, e o episódio termina com a maçaneta girando sozinha e o vidro ondulando.
+
+DURAÇÃO: 64.1 s (voz 60.5 s + cartão final 3.6 s)
+
+NARRAÇÃO (entrada → saída · voz · fala)
+
+[00:00.1 → 00:03.4]  NARRADOR (pm_alex): Imagine que existem três saídas. E só uma é real.
+[00:03.9 → 00:07.7]  NARRADOR (pm_alex): 3:47. Faltam 13 minutos para o check-out.
+[00:08.1 → 00:12.4]  NARRADOR (pm_alex): Do outro lado do vidro, o reflexo se levanta. E encosta a mão no espelho.
+[00:12.7 → 00:14.4]  LIA (pf_dora): Lia... volta pra mim.
+[00:14.9 → 00:18.5]  NARRADOR (pm_alex): Batidas na porta. A voz do recepcionista, calma demais.
+[00:18.8 → 00:21.2]  RECEPCIONISTA (pm_santa): Senhora Moreno. Estamos esperando.
+[00:21.6 → 00:25.8]  NARRADOR (pm_alex): A: a porta. O corredor iluminado. A placa de saída. O recepcionista.
+[00:26.1 → 00:31.3]  NARRADOR (pm_alex): B: o espelho. O reflexo estende a mão. Do outro lado, um quarto igual. Só que... certo.
+[00:31.7 → 00:36.6]  NARRADOR (pm_alex): C: a janela. A escada de incêndio, a chuva, o gato preto e a placa da farmácia.
+[00:37.1 → 00:40.8]  NARRADOR (pm_alex): Lembra do bilhete? Não confie em quem te chama pelo nome.
+[00:41.1 → 00:43.7]  NARRADOR (pm_alex): Pense bem. Quem chamou a Lia pelo nome?
+[00:44.2 → 00:48.0]  NARRADOR (pm_alex): 3:59. A maçaneta começa a girar sozinha.
+[00:48.3 → 00:50.6]  NARRADOR (pm_alex): O vidro do espelho ondula. Como água.
+[00:51.0 → 00:53.0]  NARRADOR (pm_alex): Lá fora, o gato arranha a janela.
+[00:53.5 → 00:57.7]  NARRADOR (pm_alex): Apenas uma dessas escolhas pode salvá-la. Comente A, B ou C.
+[00:58.1 → 01:00.2]  NARRADOR (pm_alex): Você só tem uma chance.
+
+CARTÃO FINAL (01:00.8 → 01:04.1): QUAL SAÍDA / VOCÊ ESCOLHE?  ·  A: A PORTA | B: O ESPELHO | C: A JANELA
+
+GANCHO PARA O PRÓXIMO EPISÓDIO
+3:59. A maçaneta gira sozinha. O vidro ondula como água. Comente A, B ou C.

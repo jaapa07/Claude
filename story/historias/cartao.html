@@ -1,0 +1,29 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Cartão final</title>
+<style>
+@font-face { font-family: 'Oswald'; font-weight: 700; src: url('../engine/vendor/fonts/oswald-latin-700-normal.woff2') format('woff2'); }
+html, body { margin: 0; background: #000; } canvas { display: block; }
+</style></head><body>
+<canvas id="film" width="1080" height="1920"></canvas>
+<script type="module">
+// cartao.html#historia_001/2 : the end card of an episode, drawn from historia.json (question, options, footer)
+const [hist, ep] = location.hash.slice(1).split('/');
+const H = await (await fetch(`${hist}/historia.json`)).json();
+const E = H.episodios.find(e => String(e.n) === ep), C = E.card;
+await document.fonts.load('700 100px Oswald');
+const c = document.getElementById('film').getContext('2d');
+window.TOTAL = 1;
+window.seek = () => {
+  const g = c.createLinearGradient(0, 0, 0, 1920); g.addColorStop(0, '#05070d'); g.addColorStop(0.5, '#0d1a14'); g.addColorStop(1, '#05070d');
+  c.fillStyle = g; c.fillRect(0, 0, 1080, 1920);
+  c.fillStyle = 'rgba(61,255,140,0.05)'; for (let y = 0; y < 1920; y += 6) c.fillRect(0, y, 1080, 2);
+  const txt = (s, y, size, col, stroke = 10) => { c.font = `700 ${size}px Oswald`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.lineJoin = 'round'; c.lineWidth = stroke; c.strokeStyle = '#000'; c.strokeText(s, 540, y); c.fillStyle = col; c.fillText(s, 540, y); };
+  c.fillStyle = '#d93b30'; c.beginPath(); c.roundRect(340, 300, 400, 80, 40); c.fill(); txt(`${H.titulo} · EP ${E.n}`, 342, 44, '#fff', 0);
+  C.titulo.forEach((s, i) => txt(s, 520 + i * 125, 112, '#ffffff'));
+  const cols = ['#2e9e57', '#c8372d', '#3a6fd6'];
+  if (C.opcoes) C.opcoes.forEach((s, i) => { const y = 880 + i * 190; c.fillStyle = cols[i % 3]; c.beginPath(); c.roundRect(150, y - 72, 780, 144, 32); c.fill(); txt(s, y, 66, '#fff', 0); });
+  else { txt(C.linha1, 900, 64, '#ffcc4d'); txt(C.linha2, 990, 64, '#ffcc4d'); }
+  txt('COMENTE ABAIXO', 1520, 60, '#ffffff', 8); txt(C.rodape, 1610, 50, '#ffcc4d', 8);
+};
+window.seek(0); window.READY = true;
+</script></body></html>

@@ -1,0 +1,30 @@
+QUARTO 313 — EPISÓDIO 4: O FINAL
+============================================================
+
+RESUMO
+O espelho do Hotel Aurora não prende pessoas: prende reflexos, até que um deles acorde primeiro. A narração volta às pistas do episódio 1, e todas se encaixam. A aliança na mão direita, a placa que Lia lia ao contrário e o relógio girando para trás mostram que a Lia que acompanhamos é o reflexo. Quem a chamava pelo nome era a verdadeira Lia, pedindo o reflexo de volta. O público escolheu a janela e libertou o reflexo. Ela cobre o espelho e escreve um bilhete novo, ao contrário, para o próximo reflexo que acordar.
+
+DURAÇÃO: 64.8 s (voz 61.2 s + cartão final 3.6 s)
+
+NARRAÇÃO (entrada → saída · voz · fala)
+
+[00:00.1 → 00:03.2]  NARRADOR (pm_alex): Imagine que você ajudou a pessoa errada a fugir.
+[00:03.7 → 00:10.9]  NARRADOR (pm_alex): Hotel Aurora. Um incêndio em 1974. A hóspede do quarto 313 nunca foi encontrada.
+[00:11.2 → 00:14.4]  NARRADOR (pm_alex): O espelho sobreviveu. E foi vendido, muitas vezes.
+[00:14.7 → 00:19.7]  NARRADOR (pm_alex): Ele não prende pessoas. Ele prende reflexos. Até que um deles acorde primeiro.
+[00:20.2 → 00:22.0]  NARRADOR (pm_alex): Agora volte ao começo.
+[00:22.4 → 00:25.7]  NARRADOR (pm_alex): A aliança na mão direita. Reflexos são invertidos.
+[00:26.0 → 00:29.6]  NARRADOR (pm_alex): A placa da farmácia, que a Lia via ao contrário. Você viu certo.
+[00:29.9 → 00:32.0]  NARRADOR (pm_alex): O relógio girando pro lado errado.
+[00:32.3 → 00:37.5]  NARRADOR (pm_alex): E quem chamava a Lia pelo nome... era a verdadeira Lia. Pedindo o reflexo de volta.
+[00:38.0 → 00:40.5]  NARRADOR (pm_alex): A Lia que você acompanhou nunca foi a Lia.
+[00:41.0 → 00:44.2]  NARRADOR (pm_alex): Você escolheu a janela. Você libertou o reflexo.
+[00:44.7 → 00:49.5]  NARRADOR (pm_alex): Na oficina, ela cobre o espelho com um pano. E escreve um bilhete novo. Ao contrário.
+[00:49.8 → 00:52.0]  NARRADOR (pm_alex): Para o próximo reflexo que acordar.
+[00:52.4 → 00:54.4]  LIA (pf_dora): Obrigada por escolher a janela.
+[00:55.0 → 01:00.9]  NARRADOR (pm_alex): Hoje, às 3:13, olhe pro seu espelho. Se ele piscar depois de você... não abra a janela.
+
+CARTÃO FINAL (01:01.5 → 01:04.8): VOCÊ PERCEBEU / AS PISTAS?  ·  SIM: DESDE O INÍCIO | NÃO: ME ENGANOU
+
+GANCHO PARA O PRÓXIMO EPISÓDIO
+Hoje, às 3:13, olhe pro seu espelho. Se ele piscar depois de você... não abra a janela.

@@ -1,0 +1,20 @@
+QUARTO 313 — IDENTIDADE VISUAL
+
+Formato: vertical 9:16, 4K, realismo cinematográfico, lente anamórfica de 35 mm, profundidade de campo rasa, grão de filme leve.
+Paleta: verde neon frio (da farmácia), âmbar quente (abajures), sombras quase pretas; o vinho da jaqueta da Lia é a única cor forte.
+Luz: low-key, uma fonte dura por cena; chuva na janela projetando sombras que escorrem; poeira visível só dentro dos feixes de luz.
+Câmera: push-ins lentos nos mistérios, planos abertos de cima para o isolamento, macros nas pistas, cortes secos nos sustos.
+
+A REGRA DO ESPELHO (o truque de produção que esconde a reviravolta)
+1. Gere TODOS os clipes normalmente, com a Lia de cicatriz, relógio e aliança do lado ESQUERDO.
+2. Na edição, inverta na horizontal todo clipe marcado com 'espelhar: SIM' (tudo que acontece no lado do espelho: o quarto, o
+   recepcionista, a Lia que nós acompanhamos). Com isso a aliança vai para a mão direita, o relógio da parede gira ao contrário e
+   as palavras dentro do quarto ficam invertidas, sem a IA precisar escrever nada ao contrário.
+3. NÃO inverta o mundo real: a farmácia, a rua, a placa do espelho, a 'verdadeira Lia' dentro do vidro, o arquivo de 1974.
+   A narração diz que a placa da farmácia está 'escrita ao contrário', mas o espectador vê a placa normal: essa contradição é a pista.
+
+Textos na tela: escreva na edição, não peça para a IA. Os geradores de vídeo erram letras. Isso vale para o bilhete, a placa
+NÃO PERTURBE e as letras A, B e C. Fonte das legendas e dos cartões: Oswald Bold, maiúsculas, contorno preto, a palavra-chave
+em amarelo ou vermelho. Use legendas.srt.
+Cartão final: cenas/cartao_final.jpg de cada episódio (fundo escuro, pergunta e opções coloridas).
+Continuidade: use a mesma imagem de referência da Lia (ingredients / reference image) em todas as cenas do Flow.

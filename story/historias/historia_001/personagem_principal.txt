@@ -1,0 +1,22 @@
+LIA MORENO — personagem principal
+
+Idade: 31 anos. Profissão: restauradora de espelhos antigos (São Paulo).
+Aparência fixa: pele morena clara; cabelo preto liso, chanel na altura do queixo, com franja reta; olhos castanho-escuros;
+  cicatriz fina e clara atravessando a sobrancelha ESQUERDA; argolas pequenas de prata.
+Roupa fixa (todos os episódios): jaqueta de veludo vinho sobre camiseta branca lisa, jeans escuro reto, coturno preto de amarrar,
+  relógio dourado de ponteiros no pulso ESQUERDO, aliança fina de prata no anelar ESQUERDO.
+Personalidade: metódica, observadora, calma sob pressão; fala pouco; repara em detalhes (é o trabalho dela).
+
+IMPORTANTE: gere a Lia sempre com cicatriz, relógio e aliança do lado ESQUERDO. A inversão para o lado direito acontece
+na edição (veja a regra do espelho em identidade_visual.txt). É isso que esconde a reviravolta.
+
+Bloco para colar nos prompts (inglês):
+LIA MORENO, 31 years old, Brazilian woman, warm light-brown skin, straight black chin-length bob with blunt bangs, dark brown eyes, a thin pale scar crossing her LEFT eyebrow, small silver hoop earrings, wine-red velvet jacket over a plain white t-shirt, dark straight jeans, black lace-up combat boots, gold analog wristwatch on her LEFT wrist, thin silver wedding ring on her LEFT ring finger
+
+SECUNDÁRIOS
+Recepcionista: THE RECEPTIONIST, gaunt man around 60, pale skin, slicked-back grey hair, thin moustache, 1970s burgundy hotel uniform with brass buttons and a brass name tag that reads AURORA, white cotton gloves, never blinks
+Gato: A thin black cat with a single white patch on its right ear and yellow eyes
+
+LUGARES
+Quarto 313: ROOM 313 of the Hotel Aurora, frozen in the 1970s: faded dark-green damask wallpaper, a single bed with a mustard bedspread, a red rotary phone on a wooden nightstand, a round wall clock, a tall antique standing mirror with an ornate gilded frame, a sash window streaked with rain opening onto a black iron fire escape, green neon light from a pharmacy across the street
+Oficina: LIA'S RESTORATION WORKSHOP in São Paulo: brick walls, warm work lamps, a cluttered wooden workbench with brushes, gold leaf and polishing cloths, antique mirrors leaning against the walls, and in the centre the SAME tall gilded mirror from room 313 with a small brass plaque on its frame

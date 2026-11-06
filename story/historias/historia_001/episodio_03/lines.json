@@ -1,0 +1,146 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.0,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lines": [
+  {
+   "text": "Imagine que você escolhe a porta.",
+   "speed": 0.874,
+   "pause": 0.45,
+   "key": {
+    "porta": "yellow"
+   },
+   "voice": "pm_alex"
+  },
+  {
+   "text": "O corredor não termina. Todas as portas têm o mesmo número: 313.",
+   "say": "O corredor não termina. Todas as portas têm o mesmo número: trezentos e treze.",
+   "pause": 0.4,
+   "key": {
+    "313": "red"
+   },
+   "voice": "pm_alex",
+   "speed": 0.92
+  },
+  {
+   "text": "Atrás de cada uma, uma mulher acordando no chão. Todas com a aliança na mão direita.",
+   "pause": 0.4,
+   "key": {
+    "direita": "red"
+   },
+   "voice": "pm_alex",
+   "speed": 0.92
+  },
+  {
+   "text": "No fim, o recepcionista ergue o rosto. Ele também é um reflexo. Escolheu a porta em 1974.",
+   "say": "No fim, o recepcionista ergue o rosto. Ele também é um reflexo. Escolheu a porta em mil novecentos e setenta e quatro.",
+   "pause": 0.6,
+   "key": {
+    "reflexo": "red"
+   },
+   "voice": "pm_alex",
+   "speed": 0.92
+  },
+  {
+   "text": "B: o espelho.",
+   "speed": 0.874,
+   "pause": 0.4,
+   "key": {
+    "espelho": "yellow"
+   },
+   "voice": "pm_alex"
+  },
+  {
+   "text": "O reflexo agarra o pulso dela. E troca de lugar.",
+   "speed": 0.966,
+   "pause": 0.4,
+   "key": {
+    "troca": "red"
+   },
+   "voice": "pm_alex"
+  },
+  {
+   "text": "Agora Lia só pode copiar. Cada gesto. Cada piscada. Pra sempre.",
+   "speed": 0.846,
+   "pause": 0.6,
+   "key": {
+    "sempre": "red"
+   },
+   "voice": "pm_alex"
+  },
+  {
+   "text": "C: a janela.",
+   "speed": 0.874,
+   "pause": 0.4,
+   "key": {
+    "janela": "green"
+   },
+   "voice": "pm_alex"
+  },
+  {
+   "text": "A escada de incêndio range. A chuva é fria. Real.",
+   "pause": 0.4,
+   "key": {
+    "Real": "green"
+   },
+   "voice": "pm_alex",
+   "speed": 0.92
+  },
+  {
+   "text": "O gato desce na frente, como quem mostra o caminho.",
+   "pause": 0.4,
+   "key": {
+    "caminho": "yellow"
+   },
+   "voice": "pm_alex",
+   "speed": 0.92
+  },
+  {
+   "text": "O chaveiro no bolso leva até a oficina dela.",
+   "pause": 0.4,
+   "key": {
+    "oficina": "yellow"
+   },
+   "voice": "pm_alex",
+   "speed": 0.92
+  },
+  {
+   "text": "No centro, o espelho que ela estava restaurando. Na moldura, uma placa: Hotel Aurora. Quarto 313.",
+   "say": "No centro, o espelho que ela estava restaurando. Na moldura, uma placa: Hotel Aurora. Quarto trezentos e treze.",
+   "speed": 0.846,
+   "pause": 0.6,
+   "key": {
+    "Aurora": "red"
+   },
+   "voice": "pm_alex"
+  },
+  {
+   "text": "Dentro do vidro, a outra Lia. Batendo. Gritando.",
+   "speed": 0.966,
+   "pause": 0.3,
+   "key": {
+    "Gritando": "red"
+   },
+   "voice": "pm_alex"
+  },
+  {
+   "text": "Lia! Me devolve!",
+   "speed": 0.966,
+   "pause": 0.5,
+   "key": {
+    "devolve": "red"
+   },
+   "voice": "pf_dora"
+  },
+  {
+   "text": "Mas quem está do lado de dentro... e quem está do lado de fora?",
+   "speed": 0.81,
+   "pause": 0.4,
+   "key": {
+    "fora": "red"
+   },
+   "voice": "pm_alex"
+  }
+ ]
+}

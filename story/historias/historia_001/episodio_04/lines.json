@@ -1,0 +1,145 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.0,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lines": [
+  {
+   "text": "Imagine que você ajudou a pessoa errada a fugir.",
+   "speed": 0.9,
+   "pause": 0.5,
+   "key": {
+    "errada": "red"
+   },
+   "voice": "pm_alex"
+  },
+  {
+   "text": "Hotel Aurora. Um incêndio em 1974. A hóspede do quarto 313 nunca foi encontrada.",
+   "say": "Hotel Aurora. Um incêndio em mil novecentos e setenta e quatro. A hóspede do quarto trezentos e treze nunca foi encontrada.",
+   "pause": 0.3,
+   "key": {
+    "encontrada": "red"
+   },
+   "voice": "pm_alex",
+   "speed": 1.0
+  },
+  {
+   "text": "O espelho sobreviveu. E foi vendido, muitas vezes.",
+   "pause": 0.3,
+   "key": {
+    "vendido": "yellow"
+   },
+   "voice": "pm_alex",
+   "speed": 1.0
+  },
+  {
+   "text": "Ele não prende pessoas. Ele prende reflexos. Até que um deles acorde primeiro.",
+   "speed": 0.9,
+   "pause": 0.5,
+   "key": {
+    "primeiro": "red"
+   },
+   "voice": "pm_alex"
+  },
+  {
+   "text": "Agora volte ao começo.",
+   "speed": 0.9,
+   "pause": 0.4,
+   "key": {
+    "começo": "yellow"
+   },
+   "voice": "pm_alex"
+  },
+  {
+   "text": "A aliança na mão direita. Reflexos são invertidos.",
+   "pause": 0.3,
+   "key": {
+    "invertidos": "red"
+   },
+   "voice": "pm_alex",
+   "speed": 1.0
+  },
+  {
+   "text": "A placa da farmácia, que a Lia via ao contrário. Você viu certo.",
+   "pause": 0.3,
+   "key": {
+    "certo": "green"
+   },
+   "voice": "pm_alex",
+   "speed": 1.0
+  },
+  {
+   "text": "O relógio girando pro lado errado.",
+   "pause": 0.3,
+   "key": {
+    "errado": "red"
+   },
+   "voice": "pm_alex",
+   "speed": 1.0
+  },
+  {
+   "text": "E quem chamava a Lia pelo nome... era a verdadeira Lia. Pedindo o reflexo de volta.",
+   "speed": 0.92,
+   "pause": 0.5,
+   "key": {
+    "verdadeira": "red"
+   },
+   "voice": "pm_alex"
+  },
+  {
+   "text": "A Lia que você acompanhou nunca foi a Lia.",
+   "speed": 0.88,
+   "pause": 0.5,
+   "key": {
+    "nunca": "red"
+   },
+   "voice": "pm_alex"
+  },
+  {
+   "text": "Você escolheu a janela. Você libertou o reflexo.",
+   "speed": 0.9,
+   "pause": 0.5,
+   "key": {
+    "libertou": "red"
+   },
+   "voice": "pm_alex"
+  },
+  {
+   "text": "Na oficina, ela cobre o espelho com um pano. E escreve um bilhete novo. Ao contrário.",
+   "pause": 0.3,
+   "key": {
+    "contrário": "yellow"
+   },
+   "voice": "pm_alex",
+   "speed": 1.0
+  },
+  {
+   "text": "Para o próximo reflexo que acordar.",
+   "speed": 0.92,
+   "pause": 0.4,
+   "key": {
+    "acordar": "red"
+   },
+   "voice": "pm_alex"
+  },
+  {
+   "text": "Obrigada por escolher a janela.",
+   "speed": 0.88,
+   "pause": 0.6,
+   "key": {
+    "janela": "red"
+   },
+   "voice": "pf_dora"
+  },
+  {
+   "text": "Hoje, às 3:13, olhe pro seu espelho. Se ele piscar depois de você... não abra a janela.",
+   "say": "Hoje, às três e treze, olhe pro seu espelho. Se ele piscar depois de você... não abra a janela.",
+   "speed": 0.88,
+   "pause": 0.3,
+   "key": {
+    "piscar": "red"
+   },
+   "voice": "pm_alex"
+  }
+ ]
+}

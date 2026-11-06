@@ -1,0 +1,96 @@
+{
+ "mixkit": false,
+ "roomtone": false,
+ "music": {
+  "level": -13
+ },
+ "bed": [
+  {
+   "at": 0,
+   "level": 0.8
+  },
+  {
+   "at": "reflexo@3",
+   "level": 1.1
+  },
+  {
+   "at": "janela@7",
+   "level": 0.4
+  },
+  {
+   "at": "Aurora@11",
+   "level": 1.1
+  },
+  {
+   "at": "fora@14",
+   "level": 1.2
+  }
+ ],
+ "sfx": [
+  {
+   "at": 0.05,
+   "type": "creak",
+   "vol": 0.5
+  },
+  {
+   "at": "313@1",
+   "type": "sting",
+   "vol": 0.5
+  },
+  {
+   "at": "direita@2",
+   "type": "heartbeat",
+   "vol": 0.6
+  },
+  {
+   "at": "reflexo@3",
+   "type": "hit",
+   "vol": 0.8
+  },
+  {
+   "at": "troca@5",
+   "type": "whoosh",
+   "vol": 0.7
+  },
+  {
+   "at": "troca@5+0.3",
+   "type": "glass",
+   "vol": 0.6
+  },
+  {
+   "at": "sempre@6",
+   "type": "sting",
+   "vol": 0.5
+  },
+  {
+   "at": "range@8",
+   "type": "creak",
+   "vol": 0.6
+  },
+  {
+   "at": "oficina@10",
+   "type": "click",
+   "vol": 0.5
+  },
+  {
+   "at": "Aurora@11",
+   "type": "hit",
+   "vol": 0.9
+  },
+  {
+   "at": "Batendo@12",
+   "type": "knock",
+   "vol": 0.9
+  },
+  {
+   "at": "fora@14",
+   "type": "sting",
+   "vol": 0.7
+  },
+  {
+   "at": 60.48,
+   "type": "hit",
+   "vol": 0.8
+  }
+ ]
+}

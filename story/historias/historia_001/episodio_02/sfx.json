@@ -1,0 +1,116 @@
+{
+ "mixkit": false,
+ "roomtone": false,
+ "music": {
+  "level": -13
+ },
+ "bed": [
+  {
+   "at": 0,
+   "level": 0.8
+  },
+  {
+   "at": "esperando@5",
+   "level": 0.6
+  },
+  {
+   "at": "nome@9",
+   "level": 0.3
+  },
+  {
+   "at": "sozinha@11",
+   "level": 1.1
+  },
+  {
+   "at": "chance@15",
+   "level": 1.2
+  }
+ ],
+ "sfx": [
+  {
+   "at": 0.05,
+   "type": "whoosh",
+   "vol": 0.5
+  },
+  {
+   "at": "real@0",
+   "type": "hit",
+   "vol": 0.6
+  },
+  {
+   "at": "13@1",
+   "type": "tick",
+   "vol": 0.6
+  },
+  {
+   "at": "13@1+0.4",
+   "type": "tick",
+   "vol": 0.6
+  },
+  {
+   "at": "13@1+0.8",
+   "type": "tick",
+   "vol": 0.6
+  },
+  {
+   "at": "levanta@2",
+   "type": "creak",
+   "vol": 0.5
+  },
+  {
+   "at": "volta@3",
+   "type": "hiss",
+   "vol": 0.3
+  },
+  {
+   "at": "Batidas@4",
+   "type": "knock",
+   "vol": 1.0
+  },
+  {
+   "at": "porta@6",
+   "type": "click",
+   "vol": 0.5
+  },
+  {
+   "at": "espelho@7",
+   "type": "click",
+   "vol": 0.5
+  },
+  {
+   "at": "janela@8",
+   "type": "click",
+   "vol": 0.5
+  },
+  {
+   "at": "Quem@10",
+   "type": "heartbeat",
+   "vol": 0.8
+  },
+  {
+   "at": "sozinha@11",
+   "type": "lock",
+   "vol": 0.7
+  },
+  {
+   "at": "água@12",
+   "type": "whoosh",
+   "vol": 0.5
+  },
+  {
+   "at": "arranha@13",
+   "type": "glass",
+   "vol": 0.4
+  },
+  {
+   "at": "chance@15",
+   "type": "hit",
+   "vol": 0.9
+  },
+  {
+   "at": 60.79,
+   "type": "hit",
+   "vol": 0.8
+  }
+ ]
+}

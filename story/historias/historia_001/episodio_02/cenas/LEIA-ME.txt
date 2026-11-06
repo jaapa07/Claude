@@ -1,0 +1,2 @@
+Coloque aqui os clipes gerados: cena_01.mp4 a cena_16.mp4 (veja ../prompts_visuais.txt).
+cartao_final.jpg é o cartão de escolha do fim do episódio.

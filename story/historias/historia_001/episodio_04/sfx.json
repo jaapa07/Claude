@@ -1,0 +1,111 @@
+{
+ "mixkit": false,
+ "roomtone": false,
+ "music": {
+  "level": -13
+ },
+ "bed": [
+  {
+   "at": 0,
+   "level": 0.7
+  },
+  {
+   "at": "começo@4",
+   "level": 0.9
+  },
+  {
+   "at": "nunca@9",
+   "level": 1.2
+  },
+  {
+   "at": "Obrigada@13",
+   "level": 0.2
+  },
+  {
+   "at": "piscar@14",
+   "level": 1.0
+  }
+ ],
+ "sfx": [
+  {
+   "at": 0.05,
+   "type": "rumble",
+   "vol": 0.6
+  },
+  {
+   "at": "errada@0",
+   "type": "hit",
+   "vol": 0.7
+  },
+  {
+   "at": "1974@1",
+   "type": "rumble",
+   "vol": 0.6
+  },
+  {
+   "at": "vendido@2",
+   "type": "thud",
+   "vol": 0.5
+  },
+  {
+   "at": "primeiro@3",
+   "type": "sting",
+   "vol": 0.6
+  },
+  {
+   "at": "começo@4",
+   "type": "whoosh",
+   "vol": 0.7
+  },
+  {
+   "at": "direita@5",
+   "type": "click",
+   "vol": 0.5
+  },
+  {
+   "at": "certo@6",
+   "type": "click",
+   "vol": 0.5
+  },
+  {
+   "at": "errado@7",
+   "type": "tick",
+   "vol": 0.6
+  },
+  {
+   "at": "verdadeira@8",
+   "type": "hit",
+   "vol": 0.8
+  },
+  {
+   "at": "nunca@9",
+   "type": "sting",
+   "vol": 0.6
+  },
+  {
+   "at": "libertou@10",
+   "type": "hit",
+   "vol": 0.9
+  },
+  {
+   "at": "pano@11",
+   "type": "whoosh",
+   "vol": 0.4
+  },
+  {
+   "at": "janela@13",
+   "type": "sting",
+   "vol": 0.5
+  },
+  {
+   "at": "piscar@14",
+   "type": "hit",
+   "vol": 0.9
+  },
+  {
+   "at": 61.44,
+   "type": "hit",
+   "vol": 0.8
+  }
+ ]
+}

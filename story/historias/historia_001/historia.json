@@ -1,0 +1,1480 @@
+{
+ "id": "historia_001",
+ "titulo": "QUARTO 313",
+ "logline": "Uma restauradora de espelhos acorda num quarto de hotel onde o seu reflexo continua dormindo. Três saídas, só uma é real e todas as pistas estão no primeiro minuto.",
+ "vozes": {
+  "narrador": "pm_alex",
+  "lia": "pf_dora",
+  "recepcionista": "pm_santa"
+ },
+ "velocidade_base": 1.0,
+ "personagens": {
+  "lia": "LIA MORENO, 31 years old, Brazilian woman, warm light-brown skin, straight black chin-length bob with blunt bangs, dark brown eyes, a thin pale scar crossing her LEFT eyebrow, small silver hoop earrings, wine-red velvet jacket over a plain white t-shirt, dark straight jeans, black lace-up combat boots, gold analog wristwatch on her LEFT wrist, thin silver wedding ring on her LEFT ring finger",
+  "recepcionista": "THE RECEPTIONIST, gaunt man around 60, pale skin, slicked-back grey hair, thin moustache, 1970s burgundy hotel uniform with brass buttons and a brass name tag that reads AURORA, white cotton gloves, never blinks",
+  "gato": "A thin black cat with a single white patch on its right ear and yellow eyes",
+  "quarto": "ROOM 313 of the Hotel Aurora, frozen in the 1970s: faded dark-green damask wallpaper, a single bed with a mustard bedspread, a red rotary phone on a wooden nightstand, a round wall clock, a tall antique standing mirror with an ornate gilded frame, a sash window streaked with rain opening onto a black iron fire escape, green neon light from a pharmacy across the street",
+  "oficina": "LIA'S RESTORATION WORKSHOP in São Paulo: brick walls, warm work lamps, a cluttered wooden workbench with brushes, gold leaf and polishing cloths, antique mirrors leaning against the walls, and in the centre the SAME tall gilded mirror from room 313 with a small brass plaque on its frame"
+ },
+ "episodios": [
+  {
+   "n": 1,
+   "titulo": "O REFLEXO QUE DORME",
+   "resumo": "Lia acorda às 3:13 no quarto 313 de um hotel que ela não conhece. O reflexo dela continua deitado no chão do outro lado do espelho. Ela encontra um bilhete na própria letra, recebe uma ligação da recepção, e o episódio termina quando o reflexo abre os olhos e sorri.",
+   "gancho_final": "O reflexo abre os olhos. E sorri.",
+   "card": {
+    "titulo": [
+     "QUANTAS PISTAS",
+     "VOCÊ VIU?"
+    ],
+    "linha1": "TODAS AS RESPOSTAS",
+    "linha2": "ESTÃO NESTE EPISÓDIO",
+    "rodape": "PARTE 2: AS TRÊS SAÍDAS"
+   },
+   "falas": [
+    {
+     "text": "Imagine que você acorda num quarto de hotel... e o seu reflexo continua dormindo.",
+     "speed": 0.95,
+     "pause": 0.45,
+     "key": {
+      "dormindo": "red"
+     }
+    },
+    {
+     "text": "Foi assim que Lia Moreno, 31 anos, restauradora de espelhos, acordou às 3:13 da manhã.",
+     "say": "Foi assim que Lia Moreno, trinta e um anos, restauradora de espelhos, acordou às três e treze da manhã.",
+     "pause": 0.3,
+     "key": {
+      "3:13": "yellow"
+     }
+    },
+    {
+     "text": "Quarto 313. Ela não lembra de ter chegado.",
+     "say": "Quarto trezentos e treze. Ela não lembra de ter chegado.",
+     "pause": 0.35,
+     "key": {
+      "313": "yellow"
+     }
+    },
+    {
+     "text": "No espelho, a outra Lia continua deitada no chão. Imóvel.",
+     "pause": 0.3,
+     "key": {
+      "Imóvel": "red"
+     }
+    },
+    {
+     "text": "Lia levanta a mão. O reflexo, não.",
+     "speed": 0.95,
+     "pause": 0.5,
+     "key": {
+      "não": "red"
+     }
+    },
+    {
+     "text": "A aliança está na mão direita. Estranho. Ela sempre usou na esquerda.",
+     "pause": 0.35,
+     "key": {
+      "direita": "yellow"
+     }
+    },
+    {
+     "text": "Na mesa de cabeceira, um bilhete. Com a letra dela.",
+     "pause": 0.3,
+     "key": {
+      "letra": "yellow"
+     }
+    },
+    {
+     "text": "Três saídas. Só uma é real. Não confie em quem te chama pelo nome.",
+     "speed": 0.9,
+     "pause": 0.45,
+     "key": {
+      "nome": "red"
+     }
+    },
+    {
+     "text": "Pela janela, a chuva. E a placa da farmácia em frente, escrita ao contrário.",
+     "pause": 0.3,
+     "key": {
+      "contrário": "yellow"
+     }
+    },
+    {
+     "text": "Na escada de incêndio, um gato preto olha só pra ela.",
+     "pause": 0.35,
+     "key": {
+      "gato": "yellow"
+     }
+    },
+    {
+     "text": "O telefone toca.",
+     "speed": 1.05,
+     "pause": 0.3,
+     "key": {
+      "toca": "red"
+     }
+    },
+    {
+     "text": "Senhora Moreno? O check-out é às quatro. Por favor... use a porta.",
+     "voz": "recepcionista",
+     "speed": 0.92,
+     "pause": 0.4,
+     "key": {
+      "porta": "red"
+     }
+    },
+    {
+     "text": "Ninguém sabia que ela estava ali. Nem ela.",
+     "pause": 0.4,
+     "key": {
+      "Nem": "red"
+     }
+    },
+    {
+     "text": "O relógio da parede insiste: 3:13.",
+     "say": "O relógio da parede insiste: três e treze.",
+     "pause": 0.4,
+     "key": {
+      "3:13": "yellow"
+     }
+    },
+    {
+     "text": "Então, do outro lado do vidro, o reflexo abre os olhos.",
+     "speed": 0.95,
+     "pause": 0.5,
+     "key": {
+      "olhos": "red"
+     }
+    },
+    {
+     "text": "E sorri.",
+     "speed": 0.85,
+     "pause": 0.3,
+     "key": {
+      "sorri": "red"
+     }
+    }
+   ],
+   "cenas": [
+    {
+     "de": 0,
+     "plano": "ABERTURA / GANCHO",
+     "espelhar": true,
+     "camera": "Extreme close-up on Lia's eye snapping open, then a fast pull-back revealing her on the floor and the mirror beside her",
+     "prompt": "Extreme close-up of LIA's dark brown eye snapping open in green neon light, rain sounds, then the camera pulls back fast: she lies on the worn carpet of ROOM 313; beside her the tall gilded mirror shows HER REFLECTION still lying asleep with eyes closed while the real Lia is awake and staring. Deep shadows, cold green and warm amber light, cinematic horror, anamorphic look.",
+     "sfx": "zumbido grave, chuva na janela"
+    },
+    {
+     "de": 1,
+     "plano": "APRESENTAÇÃO",
+     "espelhar": true,
+     "camera": "Slow dolly-in at floor level as she sits up",
+     "prompt": "LIA slowly sits up on the carpet of ROOM 313, confused, touching her temple; the round wall clock above her reads 3:13; green neon flickers through the rain-streaked window. Medium shot, low angle, shallow depth of field.",
+     "sfx": "tique-taque do relógio"
+    },
+    {
+     "de": 2,
+     "plano": "O QUARTO",
+     "espelhar": true,
+     "camera": "Wide shot, slow 90-degree pan across the room",
+     "prompt": "Wide shot of ROOM 313: LIA standing small in the centre, the bed with mustard bedspread, red rotary phone, tall gilded mirror, door with a brass number 313 and a hanging card on the knob that reads NÃO PERTURBE. Isolation, deep shadows, dust in the neon light.",
+     "sfx": "piso rangendo"
+    },
+    {
+     "de": 3,
+     "plano": "O REFLEXO DORMINDO",
+     "espelhar": true,
+     "camera": "Slow push-in over Lia's shoulder towards the mirror",
+     "prompt": "Over-the-shoulder shot of LIA standing in front of the tall gilded mirror; in the glass her REFLECTION does not stand: it still lies on the floor, motionless, eyes closed. Uncanny, quiet, cold light on the glass.",
+     "sfx": "drone baixo"
+    },
+    {
+     "de": 4,
+     "plano": "A MÃO",
+     "espelhar": true,
+     "camera": "Locked-off medium shot, perfectly still",
+     "prompt": "LIA slowly raises her open hand towards the mirror; inside the mirror the reflection stays lying on the floor and does not move. Perfect stillness, held breath, single amber lamp.",
+     "sfx": "silêncio, um batimento"
+    },
+    {
+     "de": 5,
+     "plano": "PISTA 1: A ALIANÇA",
+     "espelhar": true,
+     "camera": "Macro shot on the hand, rack focus",
+     "prompt": "Macro shot of LIA's hand with the thin silver wedding ring on her finger, she turns the hand slowly, frowning; the gold wristwatch ticks; rack focus to her worried face. Cinematic macro, shallow depth of field.",
+     "sfx": "tique-taque"
+    },
+    {
+     "de": 6,
+     "plano": "PISTA 2: O BILHETE",
+     "espelhar": false,
+     "camera": "Top-down insert shot",
+     "prompt": "Top-down insert of a folded hotel notepaper on the wooden nightstand next to the red rotary phone, handwritten in blue ink in elegant handwriting, lit by green neon. (Write the text in the edit: TRÊS SAÍDAS. SÓ UMA É REAL. NÃO CONFIE EM QUEM TE CHAMA PELO NOME. — flip the text horizontally so it reads backwards.)",
+     "sfx": "papel"
+    },
+    {
+     "de": 8,
+     "plano": "PISTA 3: A FARMÁCIA",
+     "espelhar": false,
+     "camera": "Point-of-view through the window, slow push towards the glass",
+     "prompt": "Point of view through a rain-streaked sash window at night: across a wet empty street a pharmacy with a bright green neon cross and a sign that reads FARMÁCIA 24H, perfectly normal and readable. Reflections of neon on the wet asphalt. Do NOT flip this shot.",
+     "sfx": "chuva, neon zumbindo"
+    },
+    {
+     "de": 9,
+     "plano": "PISTA 4: O GATO",
+     "espelhar": false,
+     "camera": "Medium close-up through the glass, slight handheld",
+     "prompt": "Outside the window on the black iron fire escape, THE CAT sits in the rain and stares straight into the room, straight at Lia, yellow eyes glowing in green neon light.",
+     "sfx": "chuva"
+    },
+    {
+     "de": 10,
+     "plano": "O TELEFONE",
+     "espelhar": true,
+     "camera": "Low-angle close-up on the phone, sharp tilt up to Lia",
+     "prompt": "Close-up of the red rotary phone ringing violently on the nightstand, the receiver trembling; LIA picks it up, the cord coiling, her face half in shadow.",
+     "sfx": "telefone antigo tocando"
+    },
+    {
+     "de": 11,
+     "plano": "O RECEPCIONISTA",
+     "espelhar": true,
+     "camera": "Slow push-in, symmetrical frame",
+     "prompt": "THE RECEPTIONIST behind an old wooden hotel reception desk in a dim lobby, holding a black telephone receiver to his ear, perfectly still, unblinking, a faint polite smile; behind him a wall of brass room keys where only hook 313 is empty.",
+     "sfx": "chiado de linha"
+    },
+    {
+     "de": 12,
+     "plano": "ISOLAMENTO",
+     "espelhar": true,
+     "camera": "Top shot, the camera rises slowly away from her",
+     "prompt": "Top-down shot: LIA alone in the middle of ROOM 313 holding the phone receiver, the camera rising slowly to make her small, the long shadows of the window bars across the floor.",
+     "sfx": "drone"
+    },
+    {
+     "de": 13,
+     "plano": "PISTA 5: O RELÓGIO",
+     "espelhar": true,
+     "camera": "Insert shot of the clock",
+     "prompt": "Insert of the round wall clock reading 3:13, the second hand ticking, green neon reflections on the glass of the clock. (After horizontal flip the hand will run counter-clockwise.)",
+     "sfx": "tique-taque alto"
+    },
+    {
+     "de": 14,
+     "plano": "O DESPERTAR",
+     "espelhar": true,
+     "camera": "Very slow push-in on the mirror",
+     "prompt": "Inside the tall gilded mirror THE REFLECTION of Lia, still lying on the floor, slowly opens her eyes and looks directly at the camera, while the real room in front of the mirror stays still. Cold light, horror atmosphere.",
+     "sfx": "sopro, impacto grave"
+    },
+    {
+     "de": 15,
+     "plano": "O SORRISO",
+     "espelhar": true,
+     "camera": "Extreme close-up, hold",
+     "prompt": "Extreme close-up inside the mirror: the REFLECTION's face slowly forms a calm, knowing smile. Hold. Then hard cut to black.",
+     "sfx": "impacto, silêncio"
+    }
+   ],
+   "sfx": [
+    {
+     "at": 0.05,
+     "type": "rumble",
+     "vol": 0.6
+    },
+    {
+     "at": "dormindo@0",
+     "type": "sting",
+     "vol": 0.5
+    },
+    {
+     "at": "3:13@1",
+     "type": "tick",
+     "vol": 0.5
+    },
+    {
+     "at": "3:13@1+0.5",
+     "type": "tick",
+     "vol": 0.5
+    },
+    {
+     "at": "chegado@2",
+     "type": "floorcreak",
+     "vol": 0.4
+    },
+    {
+     "at": "Imóvel@3",
+     "type": "heartbeat",
+     "vol": 0.6
+    },
+    {
+     "at": "não@4",
+     "type": "heartbeat",
+     "vol": 0.8
+    },
+    {
+     "at": "bilhete@6",
+     "type": "whoosh",
+     "vol": 0.3
+    },
+    {
+     "at": "nome@7",
+     "type": "sting",
+     "vol": 0.5
+    },
+    {
+     "at": "gato@9",
+     "type": "hiss",
+     "vol": 0.3
+    },
+    {
+     "at": "toca@10",
+     "type": "alarm",
+     "vol": 0.25
+    },
+    {
+     "at": "toca@10+0.6",
+     "type": "alarm",
+     "vol": 0.2
+    },
+    {
+     "at": "porta@11",
+     "type": "hit",
+     "vol": 0.5
+    },
+    {
+     "at": "3:13@13",
+     "type": "tick",
+     "vol": 0.6
+    },
+    {
+     "at": "3:13@13+0.5",
+     "type": "tick",
+     "vol": 0.6
+    },
+    {
+     "at": "olhos@14",
+     "type": "hit",
+     "vol": 0.9
+    },
+    {
+     "at": "sorri@15",
+     "type": "sting",
+     "vol": 0.7
+    }
+   ],
+   "bed": [
+    {
+     "at": 0,
+     "level": 0.6
+    },
+    {
+     "at": "nome@7",
+     "level": 0.9
+    },
+    {
+     "at": "toca@10",
+     "level": 0.5
+    },
+    {
+     "at": "relógio@13",
+     "level": 0.2
+    },
+    {
+     "at": "olhos@14",
+     "level": 1.2
+    }
+   ],
+   "velocidade": 0.96,
+   "pausa_extra": 0.05
+  },
+  {
+   "n": 2,
+   "titulo": "AS TRÊS SAÍDAS",
+   "resumo": "São 3:47 e faltam 13 minutos para o check-out. O reflexo se levanta e chama Lia pelo nome, e o recepcionista bate na porta. Lia tem três saídas: A, a porta; B, o espelho; C, a janela. A narração relembra as pistas sem dar a resposta, e o episódio termina com a maçaneta girando sozinha e o vidro ondulando.",
+   "gancho_final": "3:59. A maçaneta gira sozinha. O vidro ondula como água. Comente A, B ou C.",
+   "card": {
+    "titulo": [
+     "QUAL SAÍDA",
+     "VOCÊ ESCOLHE?"
+    ],
+    "opcoes": [
+     "A: A PORTA",
+     "B: O ESPELHO",
+     "C: A JANELA"
+    ],
+    "rodape": "SÓ UMA SALVA A LIA"
+   },
+   "falas": [
+    {
+     "text": "Imagine que existem três saídas. E só uma é real.",
+     "speed": 0.95,
+     "pause": 0.4,
+     "key": {
+      "real": "red"
+     }
+    },
+    {
+     "text": "3:47. Faltam 13 minutos para o check-out.",
+     "say": "Três e quarenta e sete. Faltam treze minutos para o check-out.",
+     "speed": 1.05,
+     "pause": 0.3,
+     "key": {
+      "13": "red"
+     }
+    },
+    {
+     "text": "Do outro lado do vidro, o reflexo se levanta. E encosta a mão no espelho.",
+     "pause": 0.3,
+     "key": {
+      "espelho": "yellow"
+     }
+    },
+    {
+     "text": "Lia... volta pra mim.",
+     "voz": "lia",
+     "speed": 0.85,
+     "pause": 0.4,
+     "key": {
+      "volta": "red"
+     }
+    },
+    {
+     "text": "Batidas na porta. A voz do recepcionista, calma demais.",
+     "speed": 1.05,
+     "pause": 0.2,
+     "key": {
+      "Batidas": "red"
+     }
+    },
+    {
+     "text": "Senhora Moreno. Estamos esperando.",
+     "voz": "recepcionista",
+     "speed": 0.9,
+     "pause": 0.4,
+     "key": {
+      "esperando": "red"
+     }
+    },
+    {
+     "text": "A: a porta. O corredor iluminado. A placa de saída. O recepcionista.",
+     "pause": 0.3,
+     "key": {
+      "porta": "yellow"
+     }
+    },
+    {
+     "text": "B: o espelho. O reflexo estende a mão. Do outro lado, um quarto igual. Só que... certo.",
+     "pause": 0.3,
+     "key": {
+      "espelho": "yellow"
+     }
+    },
+    {
+     "text": "C: a janela. A escada de incêndio, a chuva, o gato preto e a placa da farmácia.",
+     "pause": 0.4,
+     "key": {
+      "janela": "yellow"
+     }
+    },
+    {
+     "text": "Lembra do bilhete? Não confie em quem te chama pelo nome.",
+     "speed": 0.92,
+     "pause": 0.3,
+     "key": {
+      "nome": "red"
+     }
+    },
+    {
+     "text": "Pense bem. Quem chamou a Lia pelo nome?",
+     "speed": 0.9,
+     "pause": 0.5,
+     "key": {
+      "Quem": "red"
+     }
+    },
+    {
+     "text": "3:59. A maçaneta começa a girar sozinha.",
+     "say": "Três e cinquenta e nove. A maçaneta começa a girar sozinha.",
+     "speed": 1.08,
+     "pause": 0.3,
+     "key": {
+      "sozinha": "red"
+     }
+    },
+    {
+     "text": "O vidro do espelho ondula. Como água.",
+     "pause": 0.3,
+     "key": {
+      "água": "red"
+     }
+    },
+    {
+     "text": "Lá fora, o gato arranha a janela.",
+     "speed": 1.05,
+     "pause": 0.4,
+     "key": {
+      "arranha": "red"
+     }
+    },
+    {
+     "text": "Apenas uma dessas escolhas pode salvá-la. Comente A, B ou C.",
+     "speed": 0.92,
+     "pause": 0.3,
+     "key": {
+      "salvá-la": "green"
+     }
+    },
+    {
+     "text": "Você só tem uma chance.",
+     "speed": 0.88,
+     "pause": 0.3,
+     "key": {
+      "chance": "red"
+     }
+    }
+   ],
+   "cenas": [
+    {
+     "de": 0,
+     "plano": "ABERTURA",
+     "espelhar": true,
+     "camera": "Fast crash-zoom into the three exits in a single move: door, mirror, window",
+     "prompt": "ROOM 313 at night: a fast whip-pan from the door with brass number 313, to the tall gilded mirror, to the rain-streaked window with the fire escape, ending on LIA standing in the middle, breathing hard. Green neon, deep shadows.",
+     "sfx": "whoosh, impacto"
+    },
+    {
+     "de": 1,
+     "plano": "O TEMPO",
+     "espelhar": true,
+     "camera": "Insert shot of the wristwatch",
+     "prompt": "Macro of LIA's gold analog wristwatch showing 3:47, the second hand ticking, her pulse visible on her wrist, sweat, neon reflections.",
+     "sfx": "tique-taque acelerado"
+    },
+    {
+     "de": 2,
+     "plano": "O REFLEXO LEVANTA",
+     "espelhar": true,
+     "camera": "Slow push towards the mirror",
+     "prompt": "Inside the tall gilded mirror, THE REFLECTION of Lia rises from the floor on its own, smoothly, unnaturally, and places its palm flat against the inside of the glass. The real Lia in front of the mirror steps back. Cold light.",
+     "sfx": "vidro rangendo"
+    },
+    {
+     "de": 3,
+     "plano": "O CHAMADO",
+     "espelhar": true,
+     "camera": "Extreme close-up on the reflection's lips",
+     "prompt": "Extreme close-up of THE REFLECTION's face pressed close to the glass, breath fogging it from the inside, lips whispering a name. Intimate, unsettling.",
+     "sfx": "sussurro"
+    },
+    {
+     "de": 4,
+     "plano": "A PORTA",
+     "espelhar": true,
+     "camera": "Low angle on the door, the camera shakes slightly with each knock",
+     "prompt": "The wooden door of ROOM 313 shaking with three slow knocks, a line of warm yellow light under the door, the shadow of two feet standing still outside.",
+     "sfx": "três batidas"
+    },
+    {
+     "de": 5,
+     "plano": "A VOZ",
+     "espelhar": true,
+     "camera": "Locked-off symmetrical shot of the corridor",
+     "prompt": "THE RECEPTIONIST standing perfectly still in a long 1970s hotel corridor outside door 313, white gloves folded, polite smile, warm yellow sconce lights stretching into the distance.",
+     "sfx": "zumbido de lâmpada"
+    },
+    {
+     "de": 6,
+     "plano": "OPÇÃO A: A PORTA",
+     "espelhar": true,
+     "camera": "Slow push towards the door, title card A",
+     "prompt": "Hero shot of the door of ROOM 313 slightly ajar, warm corridor light spilling in, a green EXIT sign glowing at the end of the corridor. Inviting but wrong. (Big letter A in the edit.)",
+     "sfx": "drone"
+    },
+    {
+     "de": 7,
+     "plano": "OPÇÃO B: O ESPELHO",
+     "espelhar": true,
+     "camera": "Slow push towards the mirror, title card B",
+     "prompt": "Hero shot of the tall gilded mirror: THE REFLECTION of Lia extends an open hand towards the viewer; behind the reflection an identical hotel room but brighter, warmer, inviting. (Big letter B in the edit.)",
+     "sfx": "drone, vidro"
+    },
+    {
+     "de": 8,
+     "plano": "OPÇÃO C: A JANELA",
+     "espelhar": false,
+     "camera": "Slow push towards the window, title card C",
+     "prompt": "Hero shot from inside towards the rain-streaked sash window: the black iron fire escape, THE CAT sitting in the rain, and across the street the readable green sign FARMÁCIA 24H. (Big letter C in the edit. Do NOT flip this shot.)",
+     "sfx": "chuva"
+    },
+    {
+     "de": 9,
+     "plano": "O BILHETE",
+     "espelhar": false,
+     "camera": "Insert, the paper trembles in her hand",
+     "prompt": "LIA's hand holding the handwritten hotel note under the green neon light, the paper trembling. (Text in the edit, mirrored: NÃO CONFIE EM QUEM TE CHAMA PELO NOME.)",
+     "sfx": "papel"
+    },
+    {
+     "de": 10,
+     "plano": "A PERGUNTA",
+     "espelhar": true,
+     "camera": "Slow push-in on Lia's face, eyes moving between door and mirror",
+     "prompt": "Close-up of LIA's face, eyes moving from the door to the mirror and back, thinking, rain shadows running down her face, green and amber light.",
+     "sfx": "batimento cardíaco"
+    },
+    {
+     "de": 11,
+     "plano": "A MAÇANETA",
+     "espelhar": true,
+     "camera": "Macro shot on the doorknob",
+     "prompt": "Macro shot of the brass doorknob of ROOM 313 slowly turning by itself, the NÃO PERTURBE card swinging.",
+     "sfx": "maçaneta girando"
+    },
+    {
+     "de": 12,
+     "plano": "O VIDRO DE ÁGUA",
+     "espelhar": true,
+     "camera": "Medium shot, the surface ripples",
+     "prompt": "The surface of the tall gilded mirror rippling like disturbed water, the reflection's hand pushing through it, distorted light.",
+     "sfx": "água, sopro"
+    },
+    {
+     "de": 13,
+     "plano": "O GATO",
+     "espelhar": false,
+     "camera": "Close-up through the glass",
+     "prompt": "THE CAT on the fire escape scratching the rain-covered window glass with one paw, staring at Lia, urgent.",
+     "sfx": "arranhado no vidro"
+    },
+    {
+     "de": 14,
+     "plano": "AS TRÊS",
+     "espelhar": true,
+     "camera": "Triptych: three slow pushes in a split screen",
+     "prompt": "Three vertical panels side by side: the door ajar with corridor light, the rippling gilded mirror, the rainy window with the cat. LIA's silhouette in the centre of the room. (Assemble the triptych in the edit with letters A, B and C.)",
+     "sfx": "drone subindo"
+    },
+    {
+     "de": 15,
+     "plano": "CHANCE ÚNICA",
+     "espelhar": true,
+     "camera": "Extreme close-up on her eye, hard cut to black",
+     "prompt": "Extreme close-up of LIA's eye reflecting the three exits, a single tear of sweat, hard cut to black.",
+     "sfx": "impacto, silêncio"
+    }
+   ],
+   "sfx": [
+    {
+     "at": 0.05,
+     "type": "whoosh",
+     "vol": 0.5
+    },
+    {
+     "at": "real@0",
+     "type": "hit",
+     "vol": 0.6
+    },
+    {
+     "at": "13@1",
+     "type": "tick",
+     "vol": 0.6
+    },
+    {
+     "at": "13@1+0.4",
+     "type": "tick",
+     "vol": 0.6
+    },
+    {
+     "at": "13@1+0.8",
+     "type": "tick",
+     "vol": 0.6
+    },
+    {
+     "at": "levanta@2",
+     "type": "creak",
+     "vol": 0.5
+    },
+    {
+     "at": "volta@3",
+     "type": "hiss",
+     "vol": 0.3
+    },
+    {
+     "at": "Batidas@4",
+     "type": "knock",
+     "vol": 1.0
+    },
+    {
+     "at": "porta@6",
+     "type": "click",
+     "vol": 0.5
+    },
+    {
+     "at": "espelho@7",
+     "type": "click",
+     "vol": 0.5
+    },
+    {
+     "at": "janela@8",
+     "type": "click",
+     "vol": 0.5
+    },
+    {
+     "at": "Quem@10",
+     "type": "heartbeat",
+     "vol": 0.8
+    },
+    {
+     "at": "sozinha@11",
+     "type": "lock",
+     "vol": 0.7
+    },
+    {
+     "at": "água@12",
+     "type": "whoosh",
+     "vol": 0.5
+    },
+    {
+     "at": "arranha@13",
+     "type": "glass",
+     "vol": 0.4
+    },
+    {
+     "at": "chance@15",
+     "type": "hit",
+     "vol": 0.9
+    }
+   ],
+   "bed": [
+    {
+     "at": 0,
+     "level": 0.8
+    },
+    {
+     "at": "esperando@5",
+     "level": 0.6
+    },
+    {
+     "at": "nome@9",
+     "level": 0.3
+    },
+    {
+     "at": "sozinha@11",
+     "level": 1.1
+    },
+    {
+     "at": "chance@15",
+     "level": 1.2
+    }
+   ],
+   "velocidade": 0.94,
+   "pausa_extra": 0.08
+  },
+  {
+   "n": 3,
+   "titulo": "AS CONSEQUÊNCIAS",
+   "resumo": "Mostra o que acontece em cada saída. A porta leva a um corredor infinito de quartos 313, onde o recepcionista é um reflexo que escolheu a porta em 1974. O espelho troca Lia com o reflexo e a condena a copiar cada gesto para sempre. A janela é a saída: Lia foge pela chuva até a oficina dela, onde está o mesmo espelho, com a placa 'Hotel Aurora, quarto 313'. Lá dentro, a outra Lia grita e bate no vidro.",
+   "gancho_final": "Quem está do lado de dentro? E quem está do lado de fora?",
+   "card": {
+    "titulo": [
+     "QUEM É A",
+     "VERDADEIRA LIA?"
+    ],
+    "opcoes": [
+     "A: A DE FORA",
+     "B: A DE DENTRO"
+    ],
+    "rodape": "PARTE 4: O FINAL"
+   },
+   "falas": [
+    {
+     "text": "Imagine que você escolhe a porta.",
+     "speed": 0.95,
+     "pause": 0.35,
+     "key": {
+      "porta": "yellow"
+     }
+    },
+    {
+     "text": "O corredor não termina. Todas as portas têm o mesmo número: 313.",
+     "say": "O corredor não termina. Todas as portas têm o mesmo número: trezentos e treze.",
+     "pause": 0.3,
+     "key": {
+      "313": "red"
+     }
+    },
+    {
+     "text": "Atrás de cada uma, uma mulher acordando no chão. Todas com a aliança na mão direita.",
+     "pause": 0.3,
+     "key": {
+      "direita": "red"
+     }
+    },
+    {
+     "text": "No fim, o recepcionista ergue o rosto. Ele também é um reflexo. Escolheu a porta em 1974.",
+     "say": "No fim, o recepcionista ergue o rosto. Ele também é um reflexo. Escolheu a porta em mil novecentos e setenta e quatro.",
+     "pause": 0.5,
+     "key": {
+      "reflexo": "red"
+     }
+    },
+    {
+     "text": "B: o espelho.",
+     "speed": 0.95,
+     "pause": 0.3,
+     "key": {
+      "espelho": "yellow"
+     }
+    },
+    {
+     "text": "O reflexo agarra o pulso dela. E troca de lugar.",
+     "speed": 1.05,
+     "pause": 0.3,
+     "key": {
+      "troca": "red"
+     }
+    },
+    {
+     "text": "Agora Lia só pode copiar. Cada gesto. Cada piscada. Pra sempre.",
+     "speed": 0.92,
+     "pause": 0.5,
+     "key": {
+      "sempre": "red"
+     }
+    },
+    {
+     "text": "C: a janela.",
+     "speed": 0.95,
+     "pause": 0.3,
+     "key": {
+      "janela": "green"
+     }
+    },
+    {
+     "text": "A escada de incêndio range. A chuva é fria. Real.",
+     "pause": 0.3,
+     "key": {
+      "Real": "green"
+     }
+    },
+    {
+     "text": "O gato desce na frente, como quem mostra o caminho.",
+     "pause": 0.3,
+     "key": {
+      "caminho": "yellow"
+     }
+    },
+    {
+     "text": "O chaveiro no bolso leva até a oficina dela.",
+     "pause": 0.3,
+     "key": {
+      "oficina": "yellow"
+     }
+    },
+    {
+     "text": "No centro, o espelho que ela estava restaurando. Na moldura, uma placa: Hotel Aurora. Quarto 313.",
+     "say": "No centro, o espelho que ela estava restaurando. Na moldura, uma placa: Hotel Aurora. Quarto trezentos e treze.",
+     "speed": 0.92,
+     "pause": 0.5,
+     "key": {
+      "Aurora": "red"
+     }
+    },
+    {
+     "text": "Dentro do vidro, a outra Lia. Batendo. Gritando.",
+     "speed": 1.05,
+     "pause": 0.2,
+     "key": {
+      "Gritando": "red"
+     }
+    },
+    {
+     "text": "Lia! Me devolve!",
+     "voz": "lia",
+     "speed": 1.05,
+     "pause": 0.4,
+     "key": {
+      "devolve": "red"
+     }
+    },
+    {
+     "text": "Mas quem está do lado de dentro... e quem está do lado de fora?",
+     "speed": 0.88,
+     "pause": 0.3,
+     "key": {
+      "fora": "red"
+     }
+    }
+   ],
+   "cenas": [
+    {
+     "de": 0,
+     "plano": "CAMINHO A",
+     "espelhar": true,
+     "camera": "Slow dolly forward through the door into the corridor",
+     "prompt": "LIA steps through the door of ROOM 313 into a long 1970s hotel corridor lit by warm sconces; the camera follows behind her. A big letter A in the corner (edit).",
+     "sfx": "porta, passos"
+    },
+    {
+     "de": 1,
+     "plano": "O CORREDOR INFINITO",
+     "espelhar": true,
+     "camera": "Long forward tracking shot, vanishing point",
+     "prompt": "An impossibly long hotel corridor stretching to infinity, every door on both sides marked with the same brass number 313, repeating endlessly, warm sconces fading into darkness, LIA small in the centre.",
+     "sfx": "passos ecoando"
+    },
+    {
+     "de": 2,
+     "plano": "AS OUTRAS",
+     "espelhar": true,
+     "camera": "Quick pushes through three open doors",
+     "prompt": "Through several open doors along the corridor: in each identical room 313 a different woman lies on the floor waking up, each wearing a silver ring on the same hand. Unsettling repetition.",
+     "sfx": "sussurros"
+    },
+    {
+     "de": 3,
+     "plano": "O RECEPCIONISTA",
+     "espelhar": true,
+     "camera": "Slow push-in, symmetrical",
+     "prompt": "At the end of the corridor THE RECEPTIONIST behind his desk slowly raises his face to the camera; his reflection in the polished desk is missing. A plaque on the desk reads 1974.",
+     "sfx": "impacto grave"
+    },
+    {
+     "de": 4,
+     "plano": "CAMINHO B",
+     "espelhar": true,
+     "camera": "Medium shot, push towards the mirror",
+     "prompt": "LIA reaches towards the rippling surface of the tall gilded mirror; a big letter B in the corner (edit).",
+     "sfx": "vidro"
+    },
+    {
+     "de": 5,
+     "plano": "A TROCA",
+     "espelhar": true,
+     "camera": "Fast handheld, the camera crosses the glass",
+     "prompt": "THE REFLECTION's hand bursts out of the mirror and grips LIA's wrist; a violent swirl of light as the two swap places through the liquid glass.",
+     "sfx": "whoosh, vidro"
+    },
+    {
+     "de": 6,
+     "plano": "PRISÃO",
+     "espelhar": true,
+     "camera": "Locked-off shot from inside the mirror",
+     "prompt": "View from inside the mirror: LIA trapped behind the glass, forced to copy every movement of the woman outside who smiles, adjusts her hair and slowly covers the mirror with a white cloth until everything goes dark.",
+     "sfx": "tecido, silêncio"
+    },
+    {
+     "de": 7,
+     "plano": "CAMINHO C",
+     "espelhar": false,
+     "camera": "Exterior shot, the window opens towards the camera",
+     "prompt": "From outside in the rain: the sash window of room 313 opens and LIA climbs out onto the black iron fire escape, rain pouring, green neon of the FARMÁCIA 24H sign on her face. Big letter C (edit). Do NOT flip.",
+     "sfx": "janela, chuva forte"
+    },
+    {
+     "de": 8,
+     "plano": "A FUGA",
+     "espelhar": false,
+     "camera": "High angle, she runs down the zig-zag stairs",
+     "prompt": "High-angle shot of LIA running down the zig-zag iron fire escape in heavy rain, her wine-red velvet jacket soaked, the street lights below.",
+     "sfx": "passos no metal"
+    },
+    {
+     "de": 9,
+     "plano": "O GATO",
+     "espelhar": false,
+     "camera": "Ground-level tracking shot",
+     "prompt": "THE CAT running ahead of LIA along the wet pavement, turning its head as if guiding her, neon reflections in puddles.",
+     "sfx": "chuva"
+    },
+    {
+     "de": 10,
+     "plano": "A OFICINA",
+     "espelhar": true,
+     "camera": "Door opens into darkness, warm lamp switches on",
+     "prompt": "LIA bursts into her dark RESTORATION WORKSHOP, dripping wet, and switches on a warm work lamp; antique mirrors lean against the brick walls.",
+     "sfx": "porta, interruptor"
+    },
+    {
+     "de": 11,
+     "plano": "A PLACA",
+     "espelhar": false,
+     "camera": "Insert macro on the brass plaque, rack focus",
+     "prompt": "Macro shot of a small brass plaque on an ornate gilded mirror frame engraved HOTEL AURORA — QUARTO 313, gold leaf and polishing cloths beside it. Readable text. Do NOT flip.",
+     "sfx": "impacto"
+    },
+    {
+     "de": 12,
+     "plano": "A OUTRA LIA",
+     "espelhar": false,
+     "camera": "Medium close-up through the glass",
+     "prompt": "Inside the tall gilded mirror in the workshop: ANOTHER LIA, identical, inside ROOM 313, pounding on the glass with both fists, screaming silently, her silver ring clearly on her LEFT hand and the scar on her LEFT eyebrow.",
+     "sfx": "batidas no vidro"
+    },
+    {
+     "de": 13,
+     "plano": "O GRITO",
+     "espelhar": false,
+     "camera": "Extreme close-up on her mouth against the glass",
+     "prompt": "Extreme close-up: the trapped Lia screams against the inside of the mirror glass, breath fogging it, desperate.",
+     "sfx": "grito abafado"
+    },
+    {
+     "de": 14,
+     "plano": "DOS DOIS LADOS",
+     "espelhar": true,
+     "camera": "Profile two-shot, split by the glass",
+     "prompt": "Profile shot of the mirror surface: on the outside LIA stares, dripping wet; on the inside the other Lia stares back. The camera holds on the line of the glass between them.",
+     "sfx": "drone, silêncio"
+    }
+   ],
+   "sfx": [
+    {
+     "at": 0.05,
+     "type": "creak",
+     "vol": 0.5
+    },
+    {
+     "at": "313@1",
+     "type": "sting",
+     "vol": 0.5
+    },
+    {
+     "at": "direita@2",
+     "type": "heartbeat",
+     "vol": 0.6
+    },
+    {
+     "at": "reflexo@3",
+     "type": "hit",
+     "vol": 0.8
+    },
+    {
+     "at": "troca@5",
+     "type": "whoosh",
+     "vol": 0.7
+    },
+    {
+     "at": "troca@5+0.3",
+     "type": "glass",
+     "vol": 0.6
+    },
+    {
+     "at": "sempre@6",
+     "type": "sting",
+     "vol": 0.5
+    },
+    {
+     "at": "range@8",
+     "type": "creak",
+     "vol": 0.6
+    },
+    {
+     "at": "oficina@10",
+     "type": "click",
+     "vol": 0.5
+    },
+    {
+     "at": "Aurora@11",
+     "type": "hit",
+     "vol": 0.9
+    },
+    {
+     "at": "Batendo@12",
+     "type": "knock",
+     "vol": 0.9
+    },
+    {
+     "at": "fora@14",
+     "type": "sting",
+     "vol": 0.7
+    }
+   ],
+   "bed": [
+    {
+     "at": 0,
+     "level": 0.8
+    },
+    {
+     "at": "reflexo@3",
+     "level": 1.1
+    },
+    {
+     "at": "janela@7",
+     "level": 0.4
+    },
+    {
+     "at": "Aurora@11",
+     "level": 1.1
+    },
+    {
+     "at": "fora@14",
+     "level": 1.2
+    }
+   ],
+   "velocidade": 0.92,
+   "pausa_extra": 0.1
+  },
+  {
+   "n": 4,
+   "titulo": "O FINAL",
+   "resumo": "O espelho do Hotel Aurora não prende pessoas: prende reflexos, até que um deles acorde primeiro. A narração volta às pistas do episódio 1, e todas se encaixam. A aliança na mão direita, a placa que Lia lia ao contrário e o relógio girando para trás mostram que a Lia que acompanhamos é o reflexo. Quem a chamava pelo nome era a verdadeira Lia, pedindo o reflexo de volta. O público escolheu a janela e libertou o reflexo. Ela cobre o espelho e escreve um bilhete novo, ao contrário, para o próximo reflexo que acordar.",
+   "gancho_final": "Hoje, às 3:13, olhe pro seu espelho. Se ele piscar depois de você... não abra a janela.",
+   "card": {
+    "titulo": [
+     "VOCÊ PERCEBEU",
+     "AS PISTAS?"
+    ],
+    "opcoes": [
+     "SIM: DESDE O INÍCIO",
+     "NÃO: ME ENGANOU"
+    ],
+    "rodape": "SIGA PARA A PRÓXIMA HISTÓRIA"
+   },
+   "falas": [
+    {
+     "text": "Imagine que você ajudou a pessoa errada a fugir.",
+     "speed": 0.9,
+     "pause": 0.5,
+     "key": {
+      "errada": "red"
+     }
+    },
+    {
+     "text": "Hotel Aurora. Um incêndio em 1974. A hóspede do quarto 313 nunca foi encontrada.",
+     "say": "Hotel Aurora. Um incêndio em mil novecentos e setenta e quatro. A hóspede do quarto trezentos e treze nunca foi encontrada.",
+     "pause": 0.3,
+     "key": {
+      "encontrada": "red"
+     }
+    },
+    {
+     "text": "O espelho sobreviveu. E foi vendido, muitas vezes.",
+     "pause": 0.3,
+     "key": {
+      "vendido": "yellow"
+     }
+    },
+    {
+     "text": "Ele não prende pessoas. Ele prende reflexos. Até que um deles acorde primeiro.",
+     "speed": 0.9,
+     "pause": 0.5,
+     "key": {
+      "primeiro": "red"
+     }
+    },
+    {
+     "text": "Agora volte ao começo.",
+     "speed": 0.9,
+     "pause": 0.4,
+     "key": {
+      "começo": "yellow"
+     }
+    },
+    {
+     "text": "A aliança na mão direita. Reflexos são invertidos.",
+     "pause": 0.3,
+     "key": {
+      "invertidos": "red"
+     }
+    },
+    {
+     "text": "A placa da farmácia, que a Lia via ao contrário. Você viu certo.",
+     "pause": 0.3,
+     "key": {
+      "certo": "green"
+     }
+    },
+    {
+     "text": "O relógio girando pro lado errado.",
+     "pause": 0.3,
+     "key": {
+      "errado": "red"
+     }
+    },
+    {
+     "text": "E quem chamava a Lia pelo nome... era a verdadeira Lia. Pedindo o reflexo de volta.",
+     "speed": 0.92,
+     "pause": 0.5,
+     "key": {
+      "verdadeira": "red"
+     }
+    },
+    {
+     "text": "A Lia que você acompanhou nunca foi a Lia.",
+     "speed": 0.88,
+     "pause": 0.5,
+     "key": {
+      "nunca": "red"
+     }
+    },
+    {
+     "text": "Você escolheu a janela. Você libertou o reflexo.",
+     "speed": 0.9,
+     "pause": 0.5,
+     "key": {
+      "libertou": "red"
+     }
+    },
+    {
+     "text": "Na oficina, ela cobre o espelho com um pano. E escreve um bilhete novo. Ao contrário.",
+     "pause": 0.3,
+     "key": {
+      "contrário": "yellow"
+     }
+    },
+    {
+     "text": "Para o próximo reflexo que acordar.",
+     "speed": 0.92,
+     "pause": 0.4,
+     "key": {
+      "acordar": "red"
+     }
+    },
+    {
+     "text": "Obrigada por escolher a janela.",
+     "voz": "lia",
+     "speed": 0.88,
+     "pause": 0.6,
+     "key": {
+      "janela": "red"
+     }
+    },
+    {
+     "text": "Hoje, às 3:13, olhe pro seu espelho. Se ele piscar depois de você... não abra a janela.",
+     "say": "Hoje, às três e treze, olhe pro seu espelho. Se ele piscar depois de você... não abra a janela.",
+     "speed": 0.88,
+     "pause": 0.3,
+     "key": {
+      "piscar": "red"
+     }
+    }
+   ],
+   "cenas": [
+    {
+     "de": 0,
+     "plano": "GANCHO",
+     "espelhar": true,
+     "camera": "Slow push-in on Lia in the workshop, her back to the covered mirror",
+     "prompt": "LIA standing in her RESTORATION WORKSHOP at night, calm now, rain on the skylight, the tall gilded mirror behind her; she slowly turns her head towards the camera. Warm lamps, deep shadows.",
+     "sfx": "drone"
+    },
+    {
+     "de": 1,
+     "plano": "ARQUIVO 1974",
+     "espelhar": false,
+     "camera": "Archival look, slow zoom on an old photo",
+     "prompt": "An old 1974 black-and-white newspaper photo of a burning art-deco hotel facade with a neon sign HOTEL AURORA, firefighters, smoke, film grain, vintage print texture. Readable sign. Do NOT flip.",
+     "sfx": "fogo distante"
+    },
+    {
+     "de": 2,
+     "plano": "O ESPELHO VENDIDO",
+     "espelhar": false,
+     "camera": "Montage of quick dissolves",
+     "prompt": "Quick dissolves of the same tall ornate gilded mirror in different decades: a 1980s antique shop, a 1990s auction with a hammer coming down, a 2000s dusty warehouse, always reflecting a figure that is not in the room.",
+     "sfx": "martelo de leilão"
+    },
+    {
+     "de": 3,
+     "plano": "A REGRA",
+     "espelhar": true,
+     "camera": "Slow push-in on the glass, the reflection lags behind",
+     "prompt": "Close-up of the gilded mirror in the workshop: a woman's reflection moves a split second AFTER the woman in front of it, a tiny delay, unsettling.",
+     "sfx": "sopro"
+    },
+    {
+     "de": 4,
+     "plano": "REWIND",
+     "espelhar": true,
+     "camera": "Rewind effect, fast reverse cuts",
+     "prompt": "Fast rewind montage of moments from ROOM 313: the clock, the phone, the note, the mirror, all in reverse motion with VHS rewind distortion. (Build in the edit from episode 1 clips.)",
+     "sfx": "rebobinar VHS"
+    },
+    {
+     "de": 5,
+     "plano": "PISTA: A ALIANÇA",
+     "espelhar": true,
+     "camera": "Macro, a red circle highlights it in the edit",
+     "prompt": "Macro shot of LIA's hand with the silver ring, the hand turning slowly. (Red circle in the edit; reuse the episode 1 shot.)",
+     "sfx": "click"
+    },
+    {
+     "de": 6,
+     "plano": "PISTA: A FARMÁCIA",
+     "espelhar": false,
+     "camera": "The episode 1 shot of the sign, with a highlight",
+     "prompt": "The readable green neon sign FARMÁCIA 24H across the wet street. (Reuse the episode 1 shot; a green circle in the edit.)",
+     "sfx": "click"
+    },
+    {
+     "de": 7,
+     "plano": "PISTA: O RELÓGIO",
+     "espelhar": true,
+     "camera": "Insert shot of the clock running backwards",
+     "prompt": "The wall clock reading 3:13 with the second hand running counter-clockwise. (Reuse the flipped episode 1 shot.)",
+     "sfx": "tique-taque ao contrário"
+    },
+    {
+     "de": 8,
+     "plano": "QUEM CHAMAVA",
+     "espelhar": false,
+     "camera": "Inside the mirror, close-up",
+     "prompt": "Inside the mirror: the TRUE LIA, ring on her LEFT hand and scar on her LEFT eyebrow, whispering against the glass with tears in her eyes, desperate and sincere.",
+     "sfx": "sussurro"
+    },
+    {
+     "de": 9,
+     "plano": "A REVELAÇÃO",
+     "espelhar": true,
+     "camera": "Very slow push-in on her face, a slight smile",
+     "prompt": "Close-up of the LIA we followed: her face slowly loses all fear and becomes calm, almost amused, a slight cold smile; the scar on her eyebrow catches the light.",
+     "sfx": "impacto grave"
+    },
+    {
+     "de": 10,
+     "plano": "VOCÊ ESCOLHEU",
+     "espelhar": false,
+     "camera": "Exterior: the open window of room 313 in the rain",
+     "prompt": "Exterior wide shot of the empty open window of room 313 on the old hotel facade, curtain moving in the rain, the black cat sitting on the fire escape looking at the camera. Do NOT flip.",
+     "sfx": "chuva"
+    },
+    {
+     "de": 11,
+     "plano": "O PANO",
+     "espelhar": true,
+     "camera": "Medium shot, she covers the mirror",
+     "prompt": "LIA calmly drapes a white cloth over the tall gilded mirror in the workshop while, behind the cloth, two fists still pound faintly on the glass; then she sits at the workbench and writes on hotel notepaper.",
+     "sfx": "tecido, batidas abafadas"
+    },
+    {
+     "de": 12,
+     "plano": "O BILHETE NOVO",
+     "espelhar": false,
+     "camera": "Top-down insert, she writes backwards",
+     "prompt": "Top-down insert of a hand writing on old hotel notepaper with a fountain pen, the letters forming backwards (mirror writing), blue ink. (Text in the edit: TRÊS SAÍDAS. SÓ UMA É REAL...)",
+     "sfx": "caneta no papel"
+    },
+    {
+     "de": 13,
+     "plano": "OBRIGADA",
+     "espelhar": true,
+     "camera": "Extreme close-up, she looks straight into the lens",
+     "prompt": "Extreme close-up of LIA looking straight into the camera, calm, grateful, slightly too perfect, warm lamp light on half of her face.",
+     "sfx": "silêncio"
+    },
+    {
+     "de": 14,
+     "plano": "A ÚLTIMA FRASE",
+     "espelhar": true,
+     "camera": "Slow push towards a bathroom mirror, the reflection blinks late",
+     "prompt": "A dark modern bathroom at night, an ordinary mirror; the viewer's point of view facing their own silhouette; the silhouette in the mirror blinks a moment late. Hard cut to black at 3:13.",
+     "sfx": "impacto, silêncio total"
+    }
+   ],
+   "sfx": [
+    {
+     "at": 0.05,
+     "type": "rumble",
+     "vol": 0.6
+    },
+    {
+     "at": "errada@0",
+     "type": "hit",
+     "vol": 0.7
+    },
+    {
+     "at": "1974@1",
+     "type": "rumble",
+     "vol": 0.6
+    },
+    {
+     "at": "vendido@2",
+     "type": "thud",
+     "vol": 0.5
+    },
+    {
+     "at": "primeiro@3",
+     "type": "sting",
+     "vol": 0.6
+    },
+    {
+     "at": "começo@4",
+     "type": "whoosh",
+     "vol": 0.7
+    },
+    {
+     "at": "direita@5",
+     "type": "click",
+     "vol": 0.5
+    },
+    {
+     "at": "certo@6",
+     "type": "click",
+     "vol": 0.5
+    },
+    {
+     "at": "errado@7",
+     "type": "tick",
+     "vol": 0.6
+    },
+    {
+     "at": "verdadeira@8",
+     "type": "hit",
+     "vol": 0.8
+    },
+    {
+     "at": "nunca@9",
+     "type": "sting",
+     "vol": 0.6
+    },
+    {
+     "at": "libertou@10",
+     "type": "hit",
+     "vol": 0.9
+    },
+    {
+     "at": "pano@11",
+     "type": "whoosh",
+     "vol": 0.4
+    },
+    {
+     "at": "janela@13",
+     "type": "sting",
+     "vol": 0.5
+    },
+    {
+     "at": "piscar@14",
+     "type": "hit",
+     "vol": 0.9
+    }
+   ],
+   "bed": [
+    {
+     "at": 0,
+     "level": 0.7
+    },
+    {
+     "at": "começo@4",
+     "level": 0.9
+    },
+    {
+     "at": "nunca@9",
+     "level": 1.2
+    },
+    {
+     "at": "Obrigada@13",
+     "level": 0.2
+    },
+    {
+     "at": "piscar@14",
+     "level": 1.0
+    }
+   ],
+   "velocidade": 1.0,
+   "pausa_extra": 0.0
+  }
+ ]
+}

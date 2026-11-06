@@ -1,0 +1,155 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.0,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lines": [
+  {
+   "text": "Imagine que você acorda num quarto de hotel... e o seu reflexo continua dormindo.",
+   "speed": 0.912,
+   "pause": 0.5,
+   "key": {
+    "dormindo": "red"
+   },
+   "voice": "pm_alex"
+  },
+  {
+   "text": "Foi assim que Lia Moreno, 31 anos, restauradora de espelhos, acordou às 3:13 da manhã.",
+   "say": "Foi assim que Lia Moreno, trinta e um anos, restauradora de espelhos, acordou às três e treze da manhã.",
+   "pause": 0.35,
+   "key": {
+    "3:13": "yellow"
+   },
+   "voice": "pm_alex",
+   "speed": 0.96
+  },
+  {
+   "text": "Quarto 313. Ela não lembra de ter chegado.",
+   "say": "Quarto trezentos e treze. Ela não lembra de ter chegado.",
+   "pause": 0.4,
+   "key": {
+    "313": "yellow"
+   },
+   "voice": "pm_alex",
+   "speed": 0.96
+  },
+  {
+   "text": "No espelho, a outra Lia continua deitada no chão. Imóvel.",
+   "pause": 0.35,
+   "key": {
+    "Imóvel": "red"
+   },
+   "voice": "pm_alex",
+   "speed": 0.96
+  },
+  {
+   "text": "Lia levanta a mão. O reflexo, não.",
+   "speed": 0.912,
+   "pause": 0.55,
+   "key": {
+    "não": "red"
+   },
+   "voice": "pm_alex"
+  },
+  {
+   "text": "A aliança está na mão direita. Estranho. Ela sempre usou na esquerda.",
+   "pause": 0.4,
+   "key": {
+    "direita": "yellow"
+   },
+   "voice": "pm_alex",
+   "speed": 0.96
+  },
+  {
+   "text": "Na mesa de cabeceira, um bilhete. Com a letra dela.",
+   "pause": 0.35,
+   "key": {
+    "letra": "yellow"
+   },
+   "voice": "pm_alex",
+   "speed": 0.96
+  },
+  {
+   "text": "Três saídas. Só uma é real. Não confie em quem te chama pelo nome.",
+   "speed": 0.864,
+   "pause": 0.5,
+   "key": {
+    "nome": "red"
+   },
+   "voice": "pm_alex"
+  },
+  {
+   "text": "Pela janela, a chuva. E a placa da farmácia em frente, escrita ao contrário.",
+   "pause": 0.35,
+   "key": {
+    "contrário": "yellow"
+   },
+   "voice": "pm_alex",
+   "speed": 0.96
+  },
+  {
+   "text": "Na escada de incêndio, um gato preto olha só pra ela.",
+   "pause": 0.4,
+   "key": {
+    "gato": "yellow"
+   },
+   "voice": "pm_alex",
+   "speed": 0.96
+  },
+  {
+   "text": "O telefone toca.",
+   "speed": 1.008,
+   "pause": 0.35,
+   "key": {
+    "toca": "red"
+   },
+   "voice": "pm_alex"
+  },
+  {
+   "text": "Senhora Moreno? O check-out é às quatro. Por favor... use a porta.",
+   "speed": 0.883,
+   "pause": 0.45,
+   "key": {
+    "porta": "red"
+   },
+   "voice": "pm_santa"
+  },
+  {
+   "text": "Ninguém sabia que ela estava ali. Nem ela.",
+   "pause": 0.45,
+   "key": {
+    "Nem": "red"
+   },
+   "voice": "pm_alex",
+   "speed": 0.96
+  },
+  {
+   "text": "O relógio da parede insiste: 3:13.",
+   "say": "O relógio da parede insiste: três e treze.",
+   "pause": 0.45,
+   "key": {
+    "3:13": "yellow"
+   },
+   "voice": "pm_alex",
+   "speed": 0.96
+  },
+  {
+   "text": "Então, do outro lado do vidro, o reflexo abre os olhos.",
+   "speed": 0.912,
+   "pause": 0.55,
+   "key": {
+    "olhos": "red"
+   },
+   "voice": "pm_alex"
+  },
+  {
+   "text": "E sorri.",
+   "speed": 0.816,
+   "pause": 0.35,
+   "key": {
+    "sorri": "red"
+   },
+   "voice": "pm_alex"
+  }
+ ]
+}

@@ -1,0 +1,159 @@
+QUARTO 313 — EPISÓDIO 3: PROMPTS VISUAIS (Google Flow / Veo, 9:16)
+============================================================
+
+COMO USAR: gere cada cena separadamente, com o áudio da ferramenta desligado. A narração e a trilha vêm de
+narracao_com_trilha.wav. Monte as cenas na ordem e nos tempos abaixo (CapCut ou Premiere) e coloque legendas.srt por cima.
+ESPELHAR = SIM: depois de gerar, inverta o clipe na horizontal na edição (é a regra do espelho; veja identidade_visual.txt).
+Cenas com mais de 8 s: gere em 2 tomadas, porque o Veo faz no máximo 8 s por clipe.
+
+CENA 01 — CAMINHO A
+  tempo: 00:00.0 → 00:03.0  (3.0 s)
+  espelhar na edição: SIM
+  narração entra em 00:00.1: "Imagine que você escolhe a porta."
+  câmera: Slow dolly forward through the door into the corridor
+  efeitos: porta, passos
+  arquivo: cenas/cena_01.mp4
+  PROMPT:
+  Vertical 9:16 frame, 4K, cinematic realism, 35mm anamorphic look, shallow depth of field, dramatic low-key lighting, deep shadows, cold green neon and warm amber palette, light film grain, consistent characters, no subtitles, no captions, no watermark, no on-screen text unless described. LIA steps through the door of ROOM 313 into a long 1970s hotel corridor lit by warm sconces; the camera follows behind her. A big letter A in the corner (edit). LIA: LIA MORENO, 31 years old, Brazilian woman, warm light-brown skin, straight black chin-length bob with blunt bangs, dark brown eyes, a thin pale scar crossing her LEFT eyebrow, small silver hoop earrings, wine-red velvet jacket over a plain white t-shirt, dark straight jeans, black lace-up combat boots, gold analog wristwatch on her LEFT wrist, thin silver wedding ring on her LEFT ring finger. ROOM 313: ROOM 313 of the Hotel Aurora, frozen in the 1970s: faded dark-green damask wallpaper, a single bed with a mustard bedspread, a red rotary phone on a wooden nightstand, a round wall clock, a tall antique standing mirror with an ornate gilded frame, a sash window streaked with rain opening onto a black iron fire escape, green neon light from a pharmacy across the street.
+
+CENA 02 — O CORREDOR INFINITO
+  tempo: 00:03.0 → 00:08.3  (5.3 s)
+  espelhar na edição: SIM
+  narração entra em 00:03.0: "O corredor não termina. Todas as portas têm o mesmo número: 313."
+  câmera: Long forward tracking shot, vanishing point
+  efeitos: passos ecoando
+  arquivo: cenas/cena_02.mp4
+  PROMPT:
+  Vertical 9:16 frame, 4K, cinematic realism, 35mm anamorphic look, shallow depth of field, dramatic low-key lighting, deep shadows, cold green neon and warm amber palette, light film grain, consistent characters, no subtitles, no captions, no watermark, no on-screen text unless described. An impossibly long hotel corridor stretching to infinity, every door on both sides marked with the same brass number 313, repeating endlessly, warm sconces fading into darkness, LIA small in the centre. LIA: LIA MORENO, 31 years old, Brazilian woman, warm light-brown skin, straight black chin-length bob with blunt bangs, dark brown eyes, a thin pale scar crossing her LEFT eyebrow, small silver hoop earrings, wine-red velvet jacket over a plain white t-shirt, dark straight jeans, black lace-up combat boots, gold analog wristwatch on her LEFT wrist, thin silver wedding ring on her LEFT ring finger.
+
+CENA 03 — AS OUTRAS
+  tempo: 00:08.3 → 00:13.8  (5.5 s)
+  espelhar na edição: SIM
+  narração entra em 00:08.3: "Atrás de cada uma, uma mulher acordando no chão. Todas com a aliança na mão direita."
+  câmera: Quick pushes through three open doors
+  efeitos: sussurros
+  arquivo: cenas/cena_03.mp4
+  PROMPT:
+  Vertical 9:16 frame, 4K, cinematic realism, 35mm anamorphic look, shallow depth of field, dramatic low-key lighting, deep shadows, cold green neon and warm amber palette, light film grain, consistent characters, no subtitles, no captions, no watermark, no on-screen text unless described. Through several open doors along the corridor: in each identical room 313 a different woman lies on the floor waking up, each wearing a silver ring on the same hand. Unsettling repetition.
+
+CENA 04 — O RECEPCIONISTA
+  tempo: 00:13.8 → 00:21.6  (7.8 s)
+  espelhar na edição: SIM
+  narração entra em 00:13.8: "No fim, o recepcionista ergue o rosto. Ele também é um reflexo. Escolheu a porta em 1974."
+  câmera: Slow push-in, symmetrical
+  efeitos: impacto grave
+  arquivo: cenas/cena_04.mp4
+  PROMPT:
+  Vertical 9:16 frame, 4K, cinematic realism, 35mm anamorphic look, shallow depth of field, dramatic low-key lighting, deep shadows, cold green neon and warm amber palette, light film grain, consistent characters, no subtitles, no captions, no watermark, no on-screen text unless described. At the end of the corridor THE RECEPTIONIST behind his desk slowly raises his face to the camera; his reflection in the polished desk is missing. A plaque on the desk reads 1974. RECEPTIONIST: THE RECEPTIONIST, gaunt man around 60, pale skin, slicked-back grey hair, thin moustache, 1970s burgundy hotel uniform with brass buttons and a brass name tag that reads AURORA, white cotton gloves, never blinks.
+
+CENA 05 — CAMINHO B
+  tempo: 00:21.6 → 00:23.2  (1.6 s)
+  espelhar na edição: SIM
+  narração entra em 00:21.6: "B: o espelho."
+  câmera: Medium shot, push towards the mirror
+  efeitos: vidro
+  arquivo: cenas/cena_05.mp4
+  PROMPT:
+  Vertical 9:16 frame, 4K, cinematic realism, 35mm anamorphic look, shallow depth of field, dramatic low-key lighting, deep shadows, cold green neon and warm amber palette, light film grain, consistent characters, no subtitles, no captions, no watermark, no on-screen text unless described. LIA reaches towards the rippling surface of the tall gilded mirror; a big letter B in the corner (edit). LIA: LIA MORENO, 31 years old, Brazilian woman, warm light-brown skin, straight black chin-length bob with blunt bangs, dark brown eyes, a thin pale scar crossing her LEFT eyebrow, small silver hoop earrings, wine-red velvet jacket over a plain white t-shirt, dark straight jeans, black lace-up combat boots, gold analog wristwatch on her LEFT wrist, thin silver wedding ring on her LEFT ring finger.
+
+CENA 06 — A TROCA
+  tempo: 00:23.2 → 00:26.6  (3.4 s)
+  espelhar na edição: SIM
+  narração entra em 00:23.2: "O reflexo agarra o pulso dela. E troca de lugar."
+  câmera: Fast handheld, the camera crosses the glass
+  efeitos: whoosh, vidro
+  arquivo: cenas/cena_06.mp4
+  PROMPT:
+  Vertical 9:16 frame, 4K, cinematic realism, 35mm anamorphic look, shallow depth of field, dramatic low-key lighting, deep shadows, cold green neon and warm amber palette, light film grain, consistent characters, no subtitles, no captions, no watermark, no on-screen text unless described. THE REFLECTION's hand bursts out of the mirror and grips LIA's wrist; a violent swirl of light as the two swap places through the liquid glass. LIA: LIA MORENO, 31 years old, Brazilian woman, warm light-brown skin, straight black chin-length bob with blunt bangs, dark brown eyes, a thin pale scar crossing her LEFT eyebrow, small silver hoop earrings, wine-red velvet jacket over a plain white t-shirt, dark straight jeans, black lace-up combat boots, gold analog wristwatch on her LEFT wrist, thin silver wedding ring on her LEFT ring finger.
+
+CENA 07 — PRISÃO
+  tempo: 00:26.6 → 00:31.6  (5.0 s)
+  espelhar na edição: SIM
+  narração entra em 00:26.6: "Agora Lia só pode copiar. Cada gesto. Cada piscada. Pra sempre."
+  câmera: Locked-off shot from inside the mirror
+  efeitos: tecido, silêncio
+  arquivo: cenas/cena_07.mp4
+  PROMPT:
+  Vertical 9:16 frame, 4K, cinematic realism, 35mm anamorphic look, shallow depth of field, dramatic low-key lighting, deep shadows, cold green neon and warm amber palette, light film grain, consistent characters, no subtitles, no captions, no watermark, no on-screen text unless described. View from inside the mirror: LIA trapped behind the glass, forced to copy every movement of the woman outside who smiles, adjusts her hair and slowly covers the mirror with a white cloth until everything goes dark. LIA: LIA MORENO, 31 years old, Brazilian woman, warm light-brown skin, straight black chin-length bob with blunt bangs, dark brown eyes, a thin pale scar crossing her LEFT eyebrow, small silver hoop earrings, wine-red velvet jacket over a plain white t-shirt, dark straight jeans, black lace-up combat boots, gold analog wristwatch on her LEFT wrist, thin silver wedding ring on her LEFT ring finger.
+
+CENA 08 — CAMINHO C
+  tempo: 00:31.6 → 00:33.1  (1.5 s)
+  espelhar na edição: NÃO
+  narração entra em 00:31.6: "C: a janela."
+  câmera: Exterior shot, the window opens towards the camera
+  efeitos: janela, chuva forte
+  arquivo: cenas/cena_08.mp4
+  PROMPT:
+  Vertical 9:16 frame, 4K, cinematic realism, 35mm anamorphic look, shallow depth of field, dramatic low-key lighting, deep shadows, cold green neon and warm amber palette, light film grain, consistent characters, no subtitles, no captions, no watermark, no on-screen text unless described. From outside in the rain: the sash window of room 313 opens and LIA climbs out onto the black iron fire escape, rain pouring, green neon of the FARMÁCIA 24H sign on her face. Big letter C (edit). Do NOT flip. LIA: LIA MORENO, 31 years old, Brazilian woman, warm light-brown skin, straight black chin-length bob with blunt bangs, dark brown eyes, a thin pale scar crossing her LEFT eyebrow, small silver hoop earrings, wine-red velvet jacket over a plain white t-shirt, dark straight jeans, black lace-up combat boots, gold analog wristwatch on her LEFT wrist, thin silver wedding ring on her LEFT ring finger.
+
+CENA 09 — A FUGA
+  tempo: 00:33.1 → 00:36.4  (3.3 s)
+  espelhar na edição: NÃO
+  narração entra em 00:33.1: "A escada de incêndio range. A chuva é fria. Real."
+  câmera: High angle, she runs down the zig-zag stairs
+  efeitos: passos no metal
+  arquivo: cenas/cena_09.mp4
+  PROMPT:
+  Vertical 9:16 frame, 4K, cinematic realism, 35mm anamorphic look, shallow depth of field, dramatic low-key lighting, deep shadows, cold green neon and warm amber palette, light film grain, consistent characters, no subtitles, no captions, no watermark, no on-screen text unless described. High-angle shot of LIA running down the zig-zag iron fire escape in heavy rain, her wine-red velvet jacket soaked, the street lights below. LIA: LIA MORENO, 31 years old, Brazilian woman, warm light-brown skin, straight black chin-length bob with blunt bangs, dark brown eyes, a thin pale scar crossing her LEFT eyebrow, small silver hoop earrings, wine-red velvet jacket over a plain white t-shirt, dark straight jeans, black lace-up combat boots, gold analog wristwatch on her LEFT wrist, thin silver wedding ring on her LEFT ring finger.
+
+CENA 10 — O GATO
+  tempo: 00:36.4 → 00:39.9  (3.4 s)
+  espelhar na edição: NÃO
+  narração entra em 00:36.4: "O gato desce na frente, como quem mostra o caminho."
+  câmera: Ground-level tracking shot
+  efeitos: chuva
+  arquivo: cenas/cena_10.mp4
+  PROMPT:
+  Vertical 9:16 frame, 4K, cinematic realism, 35mm anamorphic look, shallow depth of field, dramatic low-key lighting, deep shadows, cold green neon and warm amber palette, light film grain, consistent characters, no subtitles, no captions, no watermark, no on-screen text unless described. THE CAT running ahead of LIA along the wet pavement, turning its head as if guiding her, neon reflections in puddles. LIA: LIA MORENO, 31 years old, Brazilian woman, warm light-brown skin, straight black chin-length bob with blunt bangs, dark brown eyes, a thin pale scar crossing her LEFT eyebrow, small silver hoop earrings, wine-red velvet jacket over a plain white t-shirt, dark straight jeans, black lace-up combat boots, gold analog wristwatch on her LEFT wrist, thin silver wedding ring on her LEFT ring finger. CAT: A thin black cat with a single white patch on its right ear and yellow eyes.
+
+CENA 11 — A OFICINA
+  tempo: 00:39.9 → 00:43.2  (3.3 s)
+  espelhar na edição: SIM
+  narração entra em 00:39.9: "O chaveiro no bolso leva até a oficina dela."
+  câmera: Door opens into darkness, warm lamp switches on
+  efeitos: porta, interruptor
+  arquivo: cenas/cena_11.mp4
+  PROMPT:
+  Vertical 9:16 frame, 4K, cinematic realism, 35mm anamorphic look, shallow depth of field, dramatic low-key lighting, deep shadows, cold green neon and warm amber palette, light film grain, consistent characters, no subtitles, no captions, no watermark, no on-screen text unless described. LIA bursts into her dark RESTORATION WORKSHOP, dripping wet, and switches on a warm work lamp; antique mirrors lean against the brick walls. LIA: LIA MORENO, 31 years old, Brazilian woman, warm light-brown skin, straight black chin-length bob with blunt bangs, dark brown eyes, a thin pale scar crossing her LEFT eyebrow, small silver hoop earrings, wine-red velvet jacket over a plain white t-shirt, dark straight jeans, black lace-up combat boots, gold analog wristwatch on her LEFT wrist, thin silver wedding ring on her LEFT ring finger. WORKSHOP: LIA'S RESTORATION WORKSHOP in São Paulo: brick walls, warm work lamps, a cluttered wooden workbench with brushes, gold leaf and polishing cloths, antique mirrors leaning against the walls, and in the centre the SAME tall gilded mirror from room 313 with a small brass plaque on its frame.
+
+CENA 12 — A PLACA
+  tempo: 00:43.2 → 00:50.7  (7.6 s)
+  espelhar na edição: NÃO
+  narração entra em 00:43.2: "No centro, o espelho que ela estava restaurando. Na moldura, uma placa: Hotel Aurora. Quarto 313."
+  câmera: Insert macro on the brass plaque, rack focus
+  efeitos: impacto
+  arquivo: cenas/cena_12.mp4
+  PROMPT:
+  Vertical 9:16 frame, 4K, cinematic realism, 35mm anamorphic look, shallow depth of field, dramatic low-key lighting, deep shadows, cold green neon and warm amber palette, light film grain, consistent characters, no subtitles, no captions, no watermark, no on-screen text unless described. Macro shot of a small brass plaque on an ornate gilded mirror frame engraved HOTEL AURORA — QUARTO 313, gold leaf and polishing cloths beside it. Readable text. Do NOT flip.
+
+CENA 13 — A OUTRA LIA
+  tempo: 00:50.7 → 00:53.9  (3.2 s)
+  espelhar na edição: NÃO
+  narração entra em 00:50.7: "Dentro do vidro, a outra Lia. Batendo. Gritando."
+  câmera: Medium close-up through the glass
+  efeitos: batidas no vidro
+  arquivo: cenas/cena_13.mp4
+  PROMPT:
+  Vertical 9:16 frame, 4K, cinematic realism, 35mm anamorphic look, shallow depth of field, dramatic low-key lighting, deep shadows, cold green neon and warm amber palette, light film grain, consistent characters, no subtitles, no captions, no watermark, no on-screen text unless described. Inside the tall gilded mirror in the workshop: ANOTHER LIA, identical, inside ROOM 313, pounding on the glass with both fists, screaming silently, her silver ring clearly on her LEFT hand and the scar on her LEFT eyebrow. LIA: LIA MORENO, 31 years old, Brazilian woman, warm light-brown skin, straight black chin-length bob with blunt bangs, dark brown eyes, a thin pale scar crossing her LEFT eyebrow, small silver hoop earrings, wine-red velvet jacket over a plain white t-shirt, dark straight jeans, black lace-up combat boots, gold analog wristwatch on her LEFT wrist, thin silver wedding ring on her LEFT ring finger. ROOM 313: ROOM 313 of the Hotel Aurora, frozen in the 1970s: faded dark-green damask wallpaper, a single bed with a mustard bedspread, a red rotary phone on a wooden nightstand, a round wall clock, a tall antique standing mirror with an ornate gilded frame, a sash window streaked with rain opening onto a black iron fire escape, green neon light from a pharmacy across the street.
+
+CENA 14 — O GRITO
+  tempo: 00:53.9 → 00:55.6  (1.7 s)
+  espelhar na edição: NÃO
+  narração entra em 00:53.9: "Lia! Me devolve!"
+  câmera: Extreme close-up on her mouth against the glass
+  efeitos: grito abafado
+  arquivo: cenas/cena_14.mp4
+  PROMPT:
+  Vertical 9:16 frame, 4K, cinematic realism, 35mm anamorphic look, shallow depth of field, dramatic low-key lighting, deep shadows, cold green neon and warm amber palette, light film grain, consistent characters, no subtitles, no captions, no watermark, no on-screen text unless described. Extreme close-up: the trapped Lia screams against the inside of the mirror glass, breath fogging it, desperate.
+
+CENA 15 — DOS DOIS LADOS
+  tempo: 00:55.6 → 01:00.5  (4.9 s)
+  espelhar na edição: SIM
+  narração entra em 00:55.6: "Mas quem está do lado de dentro... e quem está do lado de fora?"
+  câmera: Profile two-shot, split by the glass
+  efeitos: drone, silêncio
+  arquivo: cenas/cena_15.mp4
+  PROMPT:
+  Vertical 9:16 frame, 4K, cinematic realism, 35mm anamorphic look, shallow depth of field, dramatic low-key lighting, deep shadows, cold green neon and warm amber palette, light film grain, consistent characters, no subtitles, no captions, no watermark, no on-screen text unless described. Profile shot of the mirror surface: on the outside LIA stares, dripping wet; on the inside the other Lia stares back. The camera holds on the line of the glass between them. LIA: LIA MORENO, 31 years old, Brazilian woman, warm light-brown skin, straight black chin-length bob with blunt bangs, dark brown eyes, a thin pale scar crossing her LEFT eyebrow, small silver hoop earrings, wine-red velvet jacket over a plain white t-shirt, dark straight jeans, black lace-up combat boots, gold analog wristwatch on her LEFT wrist, thin silver wedding ring on her LEFT ring finger.
+
+CARTÃO FINAL — 01:00.5 → 01:03.8: use cenas/cartao_final.jpg (gerado pelo estúdio).

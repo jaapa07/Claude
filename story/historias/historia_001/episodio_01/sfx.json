@@ -1,0 +1,121 @@
+{
+ "mixkit": false,
+ "roomtone": false,
+ "music": {
+  "level": -13
+ },
+ "bed": [
+  {
+   "at": 0,
+   "level": 0.6
+  },
+  {
+   "at": "nome@7",
+   "level": 0.9
+  },
+  {
+   "at": "toca@10",
+   "level": 0.5
+  },
+  {
+   "at": "relógio@13",
+   "level": 0.2
+  },
+  {
+   "at": "olhos@14",
+   "level": 1.2
+  }
+ ],
+ "sfx": [
+  {
+   "at": 0.05,
+   "type": "rumble",
+   "vol": 0.6
+  },
+  {
+   "at": "dormindo@0",
+   "type": "sting",
+   "vol": 0.5
+  },
+  {
+   "at": "3:13@1",
+   "type": "tick",
+   "vol": 0.5
+  },
+  {
+   "at": "3:13@1+0.5",
+   "type": "tick",
+   "vol": 0.5
+  },
+  {
+   "at": "chegado@2",
+   "type": "floorcreak",
+   "vol": 0.4
+  },
+  {
+   "at": "Imóvel@3",
+   "type": "heartbeat",
+   "vol": 0.6
+  },
+  {
+   "at": "não@4",
+   "type": "heartbeat",
+   "vol": 0.8
+  },
+  {
+   "at": "bilhete@6",
+   "type": "whoosh",
+   "vol": 0.3
+  },
+  {
+   "at": "nome@7",
+   "type": "sting",
+   "vol": 0.5
+  },
+  {
+   "at": "gato@9",
+   "type": "hiss",
+   "vol": 0.3
+  },
+  {
+   "at": "toca@10",
+   "type": "alarm",
+   "vol": 0.25
+  },
+  {
+   "at": "toca@10+0.6",
+   "type": "alarm",
+   "vol": 0.2
+  },
+  {
+   "at": "porta@11",
+   "type": "hit",
+   "vol": 0.5
+  },
+  {
+   "at": "3:13@13",
+   "type": "tick",
+   "vol": 0.6
+  },
+  {
+   "at": "3:13@13+0.5",
+   "type": "tick",
+   "vol": 0.6
+  },
+  {
+   "at": "olhos@14",
+   "type": "hit",
+   "vol": 0.9
+  },
+  {
+   "at": "sorri@15",
+   "type": "sting",
+   "vol": 0.7
+  },
+  {
+   "at": 61.04,
+   "type": "hit",
+   "vol": 0.8
+  }
+ ]
+}

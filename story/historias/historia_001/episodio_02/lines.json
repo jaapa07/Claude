@@ -1,0 +1,154 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.0,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lines": [
+  {
+   "text": "Imagine que existem três saídas. E só uma é real.",
+   "speed": 0.893,
+   "pause": 0.48,
+   "key": {
+    "real": "red"
+   },
+   "voice": "pm_alex"
+  },
+  {
+   "text": "3:47. Faltam 13 minutos para o check-out.",
+   "say": "Três e quarenta e sete. Faltam treze minutos para o check-out.",
+   "speed": 0.987,
+   "pause": 0.38,
+   "key": {
+    "13": "red"
+   },
+   "voice": "pm_alex"
+  },
+  {
+   "text": "Do outro lado do vidro, o reflexo se levanta. E encosta a mão no espelho.",
+   "pause": 0.38,
+   "key": {
+    "espelho": "yellow"
+   },
+   "voice": "pm_alex",
+   "speed": 0.94
+  },
+  {
+   "text": "Lia... volta pra mim.",
+   "speed": 0.799,
+   "pause": 0.48,
+   "key": {
+    "volta": "red"
+   },
+   "voice": "pf_dora"
+  },
+  {
+   "text": "Batidas na porta. A voz do recepcionista, calma demais.",
+   "speed": 0.987,
+   "pause": 0.28,
+   "key": {
+    "Batidas": "red"
+   },
+   "voice": "pm_alex"
+  },
+  {
+   "text": "Senhora Moreno. Estamos esperando.",
+   "speed": 0.846,
+   "pause": 0.48,
+   "key": {
+    "esperando": "red"
+   },
+   "voice": "pm_santa"
+  },
+  {
+   "text": "A: a porta. O corredor iluminado. A placa de saída. O recepcionista.",
+   "pause": 0.38,
+   "key": {
+    "porta": "yellow"
+   },
+   "voice": "pm_alex",
+   "speed": 0.94
+  },
+  {
+   "text": "B: o espelho. O reflexo estende a mão. Do outro lado, um quarto igual. Só que... certo.",
+   "pause": 0.38,
+   "key": {
+    "espelho": "yellow"
+   },
+   "voice": "pm_alex",
+   "speed": 0.94
+  },
+  {
+   "text": "C: a janela. A escada de incêndio, a chuva, o gato preto e a placa da farmácia.",
+   "pause": 0.48,
+   "key": {
+    "janela": "yellow"
+   },
+   "voice": "pm_alex",
+   "speed": 0.94
+  },
+  {
+   "text": "Lembra do bilhete? Não confie em quem te chama pelo nome.",
+   "speed": 0.865,
+   "pause": 0.38,
+   "key": {
+    "nome": "red"
+   },
+   "voice": "pm_alex"
+  },
+  {
+   "text": "Pense bem. Quem chamou a Lia pelo nome?",
+   "speed": 0.846,
+   "pause": 0.58,
+   "key": {
+    "Quem": "red"
+   },
+   "voice": "pm_alex"
+  },
+  {
+   "text": "3:59. A maçaneta começa a girar sozinha.",
+   "say": "Três e cinquenta e nove. A maçaneta começa a girar sozinha.",
+   "speed": 1.015,
+   "pause": 0.38,
+   "key": {
+    "sozinha": "red"
+   },
+   "voice": "pm_alex"
+  },
+  {
+   "text": "O vidro do espelho ondula. Como água.",
+   "pause": 0.38,
+   "key": {
+    "água": "red"
+   },
+   "voice": "pm_alex",
+   "speed": 0.94
+  },
+  {
+   "text": "Lá fora, o gato arranha a janela.",
+   "speed": 0.987,
+   "pause": 0.48,
+   "key": {
+    "arranha": "red"
+   },
+   "voice": "pm_alex"
+  },
+  {
+   "text": "Apenas uma dessas escolhas pode salvá-la. Comente A, B ou C.",
+   "speed": 0.865,
+   "pause": 0.38,
+   "key": {
+    "salvá-la": "green"
+   },
+   "voice": "pm_alex"
+  },
+  {
+   "text": "Você só tem uma chance.",
+   "speed": 0.827,
+   "pause": 0.38,
+   "key": {
+    "chance": "red"
+   },
+   "voice": "pm_alex"
+  }
+ ]
+}
