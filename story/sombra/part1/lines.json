@@ -1,25 +1,188 @@
-{"voice": "pm_alex", "speed": 1.1, "lang": "pt-br", "align": "estimate", "lines": [
- {"text": "Imagine: sua conta tem menos 487 reais.", "say": "Imagine: sua conta tem menos quatrocentos e oitenta e sete reais.", "key": {"487": "red"}, "pause": 0.25},
- {"text": "Na rua, um homem de terno te para.", "key": {"terno": "yellow"}, "pause": 0.15},
- {"text": "Compro a sua sombra. 500 reais. À vista.", "say": "Compro a sua sombra. Quinhentos reais. À vista.", "voice": "pm_santa", "speed": 1.0, "key": {"sombra": "red"}, "pause": 0.25},
- {"text": "Você ri. E assina.", "key": {"assina": "yellow"}, "pause": 0.2},
- {"text": "Ele enrola a sua sombra feito um tapete e some.", "key": {"tapete": "yellow"}, "pause": 0.3},
- {"text": "No contrato, 3 regras em letra miúda.", "say": "No contrato, três regras em letra miúda.", "key": {"miúda": "yellow"}, "pause": 0.1},
- {"text": "Regra 1: evite o sol do meio-dia.", "say": "Regra um: evite o sol do meio-dia.", "key": {"meio-dia": "red"}, "pause": 0.1},
- {"text": "Regra 2: nunca procure a sua sombra.", "say": "Regra dois: nunca procure a sua sombra.", "key": {"procure": "red"}, "pause": 0.1},
- {"text": "Regra 3: não aceitamos devolução.", "say": "Regra três: não aceitamos devolução.", "key": {"devolução": "red"}, "pause": 0.3},
- {"text": "Dia 1: ninguém percebe. Só o seu cachorro, que late pra você o dia todo.", "say": "Dia um: ninguém percebe. Só o seu cachorro, que late pra você o dia todo.", "key": {"cachorro": "yellow"}, "pause": 0.3},
- {"text": "Dia 3: fatura do cartão. Balada. 380 reais. Às 3 da manhã.", "say": "Dia três: fatura do cartão. Balada. Trezentos e oitenta reais. Às três da manhã.", "key": {"Balada": "red"}, "pause": 0.15},
- {"text": "Às 3 da manhã, você estava dormindo.", "say": "Às três da manhã, você estava dormindo.", "key": {"dormindo": "yellow"}, "pause": 0.3},
- {"text": "Dia 5, o seu chefe:", "say": "Dia cinco, o seu chefe:", "key": {"chefe": "yellow"}, "pause": 0.1},
- {"text": "Que show no karaokê ontem, hein!", "voice": "pm_santa", "speed": 1.15, "key": {"karaokê": "yellow"}, "pause": 0.2},
- {"text": "Você não canta.", "key": {"canta": "red"}, "pause": 0.3},
- {"text": "Nas redes, uma foto marcada com você. Só uma sombra. 2 mil curtidas.", "say": "Nas redes, uma foto marcada com você. Só uma sombra. Dois mil curtidas.", "key": {"curtidas": "green"}, "pause": 0.2},
- {"text": "Sua sombra tem vida social. Você não.", "key": {"social": "yellow", "não": "red"}, "pause": 0.3},
- {"text": "Meia-noite. Você segue a fatura até a balada.", "key": {"balada": "red"}, "pause": 0.2},
- {"text": "Na pista, uma sombra dançando sozinha.", "key": {"dançando": "yellow"}, "pause": 0.2},
- {"text": "A sua.", "key": {"sua": "red"}, "pause": 0.3},
- {"text": "Ela te vê. Acena. E pede mais uma rodada.", "key": {"rodada": "red"}, "pause": 0.2},
- {"text": "Regra 2 já era.", "say": "Regra dois já era.", "key": {"era": "red"}, "pause": 0.2},
- {"text": "Ela disse que quem paga é você.", "voice": "pf_dora", "speed": 1.05, "key": {"você": "red"}, "pause": 0.2}
-]}
+{
+ "voice": "pm_alex",
+ "speed": 1.1,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lines": [
+  {
+   "text": "Imagine que a sua conta tem menos 487 reais.",
+   "say": "Imagine que a sua conta tem menos quatrocentos e oitenta e sete reais.",
+   "key": {
+    "487": "red"
+   },
+   "pause": 0.25
+  },
+  {
+   "text": "Na rua, um homem de terno te para.",
+   "key": {
+    "terno": "yellow"
+   },
+   "pause": 0.15
+  },
+  {
+   "text": "Compro a sua sombra. 500 reais. À vista.",
+   "say": "Compro a sua sombra. Quinhentos reais. À vista.",
+   "voice": "pm_santa",
+   "speed": 1.0,
+   "key": {
+    "sombra": "red"
+   },
+   "pause": 0.25
+  },
+  {
+   "text": "Você ri. E assina.",
+   "key": {
+    "assina": "yellow"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Ele enrola a sua sombra feito um tapete e some.",
+   "key": {
+    "tapete": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "No contrato, 3 regras em letra miúda.",
+   "say": "No contrato, três regras em letra miúda.",
+   "key": {
+    "miúda": "yellow"
+   },
+   "pause": 0.1
+  },
+  {
+   "text": "Regra 1: evite o sol do meio-dia.",
+   "say": "Regra um: evite o sol do meio-dia.",
+   "key": {
+    "meio-dia": "red"
+   },
+   "pause": 0.1
+  },
+  {
+   "text": "Regra 2: nunca procure a sua sombra.",
+   "say": "Regra dois: nunca procure a sua sombra.",
+   "key": {
+    "procure": "red"
+   },
+   "pause": 0.1
+  },
+  {
+   "text": "Regra 3: não aceitamos devolução.",
+   "say": "Regra três: não aceitamos devolução.",
+   "key": {
+    "devolução": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Dia 1: ninguém percebe. Só o seu cachorro, que late pra você o dia todo.",
+   "say": "Dia um: ninguém percebe. Só o seu cachorro, que late pra você o dia todo.",
+   "key": {
+    "cachorro": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Dia 3: fatura do cartão. Balada. 380 reais. Às 3 da manhã.",
+   "say": "Dia três: fatura do cartão. Balada. Trezentos e oitenta reais. Às três da manhã.",
+   "key": {
+    "Balada": "red"
+   },
+   "pause": 0.15
+  },
+  {
+   "text": "Às 3 da manhã, você estava dormindo.",
+   "say": "Às três da manhã, você estava dormindo.",
+   "key": {
+    "dormindo": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Dia 5, o seu chefe:",
+   "say": "Dia cinco, o seu chefe:",
+   "key": {
+    "chefe": "yellow"
+   },
+   "pause": 0.1
+  },
+  {
+   "text": "Que show no karaokê ontem, hein!",
+   "voice": "pm_santa",
+   "speed": 1.15,
+   "key": {
+    "karaokê": "yellow"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Você não canta.",
+   "key": {
+    "canta": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Nas redes, uma foto marcada com você. Só uma sombra. 2 mil curtidas.",
+   "say": "Nas redes, uma foto marcada com você. Só uma sombra. Dois mil curtidas.",
+   "key": {
+    "curtidas": "green"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Sua sombra tem vida social. Você não.",
+   "key": {
+    "social": "yellow",
+    "não": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Meia-noite. Você segue a fatura até a balada.",
+   "key": {
+    "balada": "red"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Na pista, uma sombra dançando sozinha.",
+   "key": {
+    "dançando": "yellow"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "A sua.",
+   "key": {
+    "sua": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Ela te vê. Acena. E pede mais uma rodada.",
+   "key": {
+    "rodada": "red"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Regra 2 já era.",
+   "say": "Regra dois já era.",
+   "key": {
+    "era": "red"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Ela disse que quem paga é você.",
+   "voice": "pf_dora",
+   "speed": 1.05,
+   "key": {
+    "você": "red"
+   },
+   "pause": 0.2
+  }
+ ]
+}

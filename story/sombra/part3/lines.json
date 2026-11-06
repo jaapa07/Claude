@@ -5,8 +5,8 @@
  "align": "estimate",
  "lines": [
   {
-   "text": "Imagine: 11:58. Praça central. Sol a pino.",
-   "say": "Imagine: onze e cinquenta e oito. Praça central. Sol a pino.",
+   "text": "Imagine que são 11:58. Praça central. Sol a pino.",
+   "say": "Imagine que são onze e cinquenta e oito. Praça central. Sol a pino.",
    "key": {
     "pino": "yellow"
    },
