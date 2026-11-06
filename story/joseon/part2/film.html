@@ -1,0 +1,173 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>O Templo de 1592 — parte 2</title>
+<script type="importmap">{"imports": {"three": "../../engine/vendor/three.module.js"}}</script>
+<style>
+@font-face { font-family: 'Oswald'; font-weight: 700; src: url('../../engine/vendor/fonts/oswald-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 700; src: url('../../engine/vendor/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+html, body { margin: 0; background: #000; } canvas { display: block; }
+</style>
+<script src="timing.js"></script>
+</head><body>
+<canvas id="film" width="1080" height="1920"></canvas>
+<script type="module">
+import * as S from '../../engine/stage.js';
+import { buildWorld, flame, smoke, canvasTex } from '../world.js';
+const { THREE, clamp, lerp, ease, spring, box, hud, ruleSticker, endCard, chunkCaptions, drawCaptions, loadFonts, W: CW, H: CH } = S;
+S.LABELS.day = ''; S.LABELS.follow = 'SIGA PARA A PARTE ';
+const T = window.TIMING;
+const w = (li, word, n = 0) => { const b = s => s.toLowerCase().replace(/[^\p{L}0-9:]/gu, ''); let k = 0; for (const x of T.lines[li].words) if (b(x.w) === b(word) && k++ === n) return x.s; throw new Error(`word "${word}" not in line ${li}`); };
+const L0 = li => T.lines[li].words[0].s;
+const c = document.getElementById('film').getContext('2d');
+const stage = S.createStage(document.getElementById('film'));
+const Wd = buildWorld(stage);
+const { monk, master, woman, POSE, heroAt, place } = Wd;
+const COVER = location.hash === '#cover';
+
+// ---------- props for this part ----------
+const sealC = canvasTex(128, 128); { const g = sealC.g; g.fillStyle = '#6b3a20'; g.fillRect(0, 0, 128, 128); g.fillStyle = '#c4231c'; g.fillRect(34, 34, 60, 60); g.strokeStyle = '#f0d9b0'; g.lineWidth = 5; g.strokeRect(42, 42, 44, 44); g.beginPath(); g.moveTo(64, 46); g.lineTo(64, 82); g.moveTo(48, 64); g.lineTo(80, 64); g.stroke(); }
+function chest() { const g = new THREE.Group(); g.add(box(0.6, 0.36, 0.4, '#6b3a20', 0, 0, 0)); const lid = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.06, 0.42), new THREE.MeshStandardMaterial({ map: sealC.tx, roughness: 0.8 })); lid.position.y = 0.39; g.add(lid); g.add(box(0.64, 0.04, 0.05, '#b08d57', 0, 0.2, 0.2)); return g; }
+const chestCourt = chest(); Wd.court.add(chestCourt);
+const soldiers = Wd.soldiers;
+const blockTorch = flame(Wd.blocks, 0.45, 5, 9, true);
+// the warrior monks' lanterns climbing from the valley (a second line of lights on the same trail)
+const NM = 24, mg = new THREE.BufferGeometry(), mp = new Float32Array(NM * 3), mc = new Float32Array(NM * 3);
+mg.setAttribute('position', new THREE.BufferAttribute(mp, 3)); mg.setAttribute('color', new THREE.BufferAttribute(mc, 3));
+const monkPts = new THREE.Points(mg, new THREE.PointsMaterial({ size: 2.2, map: Wd.SOFT, vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending })); monkPts.frustumCulled = false; Wd.mount.add(monkPts);
+function monkLights(t, head) { for (let i = 0; i < NM; i++) { const u = clamp(head - i * 0.012, 0, 1), p = Wd.trailCurve.getPoint(u); mp.set([p.x + Math.sin(i * 3.1) * 0.8, p.y + 1, p.z + Math.cos(i * 4.3) * 0.8], i * 3); const k = head - i * 0.012 > 0 ? 0.9 + 0.1 * Math.sin(t * 9 + i) : 0; mc.set([0.75 * k, 0.85 * k, 1.0 * k], i * 3); } mg.attributes.position.needsUpdate = true; mg.attributes.color.needsUpdate = true; }
+// pulling woodblocks out of the shelf (instanced): left shelf, level 2, around the hidden records
+const inst = Wd.blocks.children.find(o => o.isInstancedMesh), MM = new THREE.Matrix4(), RY = new THREE.Matrix4().makeRotationY(Math.PI / 2);
+function blockOut(k, dx) { const idx = 2 * 70 + k, z = -6.3 + k * 0.181; MM.makeTranslation(-1.8 + dx, 0.4 + 2 * 0.5, z); MM.multiply(RY); inst.setMatrixAt(idx, MM); inst.instanceMatrix.needsUpdate = true; }
+const PULL = [24, 25, 26];
+
+// ---------- key times ----------
+const tRing = w(0, 'toca'), tAnswer = w(2, 'resposta'), tFire = w(20, 'pôs'), tSmell = L0(19), tEnd = T.voice_end + 0.3;
+const tHide = w(9, 'esconde');
+function court(t, { gate = 0, gateShake = 0, torchesOut = 0, soldiersIn = null } = {}) {
+  Wd.use('court', 'night'); stage.renderer.toneMappingExposure = 1.9;
+  Wd.courtL.h.intensity = 1.25; Wd.courtL.h.color.set('#6e86c4'); Wd.courtL.d.intensity = 0.9; Wd.courtL.d.color.set('#9fb4ff');
+  Wd.moonSpot.intensity = 1.1; Wd.moonSpot.color.set('#a9bcff'); Wd.hallLamp.userData.light.intensity = 0;
+  Wd.openGate(gate + gateShake);
+  Wd.gateTorches.forEach((f, i) => f.set([-3 + i * 1.2 + Math.sin(i * 3) * 0.4, 1.9, 8.5 + (i % 3) * 1.3], t, torchesOut));
+  Wd.trailTorches.forEach(f => f.set([0, -50, 0], t, 0)); Wd.courtFires.forEach(f => f.set([0, -50, 0], t, 0)); Wd.courtSmoke(t, 0);
+  Wd.striker.position.x = -1.65; Wd.bellG.rotation.z = 0; chestCourt.visible = false;
+  soldiers.forEach((s, i) => { const on = soldiersIn && soldiersIn[i]; if (!on) return; });
+}
+function soldiersAt(set, list, t) {        // list: [[x, z, facing, walking]] per soldier; torches in their raised hands
+  Wd.place(set, ...list.map((_, i) => soldiers[i]));
+  list.forEach(([x, z, f, walk], i) => { const s = soldiers[i]; s.mesh.position.set(x, 0, z); if (walk) s.walk(t * 1.3 + i, { speed: 1.2, facing: f }); else s.pose({ facing: f, armR: [-2.6 * f, 0.4 * f], armL: [0.3, -0.2] });
+    if (set === 'court') Wd.gateTorches[i].set([x - 0.35 * f, 2.15, z], t, 1); });
+}
+function blocks(t, { fire = 0, smoke = 0, torch = null } = {}) {
+  Wd.use('blocks', 'night'); stage.renderer.toneMappingExposure = 1.5;
+  Wd.blockMoon.intensity = 18; Wd.blocksL.h.intensity = 0.5;
+  Wd.blockFires.forEach((f, i) => { const z = 6.2 - i * 0.9 * clamp(fire * 1.5, 0, 1), on = fire > i * 0.12 ? 1 : 0; f.set([(i % 2 ? 1 : -1) * (0.6 + (i % 3) * 0.4), 0.5 + (i % 2) * 0.4, z], t, on); f.L.distance = 12; f.L.intensity *= 3.5; });
+  Wd.blockSmoke(t, Math.max(smoke, fire));
+  Wd.records.position.set(-1.8 + 0.6 * (1 - ease((t - tHide) / 0.5)), 1.25, -1.0);
+  Wd.records.visible = t >= L0(9) - 0.1;
+  PULL.forEach((k, j) => blockOut(k, t >= w(16, 'puxa') + j * 0.55 && t < L0(17) + 0.4 ? 0.28 : 0));
+  if (torch) blockTorch.set(torch, t, 1); else blockTorch.set([0, -50, 0], t, 0);
+  Wd.blockDoor.material.color.set(fire > 0 ? '#ff7a2a' : '#16120e');
+}
+function mount(t, { trail = 0.9, monks = 0, village = 0 } = {}) {
+  Wd.use('mount', 'night'); stage.renderer.toneMappingExposure = 2.4; Wd.mountL.h.intensity = 0.9;
+  Wd.setTrail(t, trail, 36); monkLights(t, monks);
+  Wd.miniFront.material.emissiveIntensity = 0; Wd.miniBell.intensity = t >= tRing ? 40 * Math.exp(-(t - tRing) * 0.6) : 0;
+  Wd.vilWins.forEach((f, i) => f.material.emissiveIntensity = village * (t >= tAnswer + i * 0.12 ? 1.4 : 0));
+}
+
+// ---------- the shot list ----------
+const SH = [], at = (t0, f) => SH.push([t0, f]);
+// 0. the opener: you at the striker, torches beyond the wall
+at(0, (t, u) => { court(t, { torchesOut: 1 }); Wd.place('court', monk); heroAt(monk, 3.2, 0.4, 1.5, POSE.strike(0)); const k = ease(u / 2.4); stage.aim([lerp(3.9, 2.0, k), lerp(1.35, 2.4, k), lerp(2.6, 6.0, k)], [lerp(3.2, 4.4, k), lerp(1.15, 1.9, k), 1.5], lerp(46, 62, k)); });
+// 1. you ring the bell
+at(tRing, (t, u) => { court(t, { torchesOut: 1 }); Wd.place('court', monk); const k = clamp(u / 0.25); heroAt(monk, 3.2 + 0.25 * k, 0.4, 1.5, POSE.strike(k)); Wd.striker.position.x = -1.65 + 0.9 * k; Wd.bellG.rotation.z = u > 0.25 ? 0.05 * Math.sin((u - 0.25) * 12) * Math.exp(-(u - 0.25) * 1.5) : 0; stage.aim([3.4 + (u > 0.25 && u < 0.4 ? 0.04 : 0), 1.6, 5.4], [4.8, 2.0, 1.5], 58); });
+// 2. the sound goes down the whole mountain
+at(L0(1), (t, u) => { mount(t, { trail: 0.9 }); const k = ease(u / 2); stage.aim([lerp(16, 50, k), lerp(36, 30, k), lerp(-26, 6, k)], [0, lerp(31, 22, k), -40], 48); });
+// 3. an answer from below: lights in the village
+at(L0(2), (t, u) => { mount(t, { trail: 0.9, village: 1 }); stage.aim([60, 16 - u * 0.4, 45], [30, -1, 20], 46); });
+// 4. the warrior monks are coming: a line of white lanterns
+at(L0(3), (t, u) => { mount(t, { trail: 0.9, village: 1, monks: 0.12 + 0.05 * u }); stage.aim([55 - u, 22, 4], [0, 14, -40], 42); });
+// 5. but the torches arrive first: the gate shakes
+at(L0(4), (t, u) => { const kk = Math.floor(u * 2.6) % 2 === 0 && (u * 2.6) % 1 < 0.15; court(t, { torchesOut: 1, gateShake: kk ? 0.04 : 0 }); Wd.place('court', woman, monk); heroAt(monk, -0.9, 0, 3.6, Object.assign({}, POSE.scared, { facing: 1 })); heroAt(woman, 0.6, 0, 3.4, Object.assign({}, POSE.carry, { facing: -1, mood: 'scared' })); chestCourt.visible = true; chestCourt.position.set(0.3, 0.55, 3.55); stage.aim([0.2, 1.5, 0.2], [0, 1.4, 6], 60); });
+// 6. a note from your master inside the chest (overlay) — macro on the open chest
+at(L0(5), (t, u) => { court(t, { torchesOut: 1 }); Wd.place('court'); chestCourt.visible = true; chestCourt.position.set(0.2, 0, 3.0); stage.aim([0.55, 0.95, 3.4], [0.2, 0.4, 3.0], 50); });
+// 7. rule 4 (sticker) over the hall: the Buddha
+at(L0(6), (t, u) => { Wd.use('inner', 'night'); stage.renderer.toneMappingExposure = 1.9; Wd.place('inner'); Wd.candles.forEach(k => k.f.set([k.x, 1.2, -2.0], t, 0)); Wd.incense(t, 0); stage.aim([0, 1.3, 2.2 - u * 0.2], [0, 1.9, -2.8], 56); });
+// 8. you run to the woodblock hall
+at(L0(7), (t, u) => { court(t, { torchesOut: 1 }); Wd.place('court', monk); monk.walk(u * 2.2, { speed: 2.2, facing: -1 }); monk.mesh.position.set(-1 - u * 2.2, 0, 2.2); stage.aim([1.5, 1.8, 6.0 - u * 0.2], [-3.0 - u, 1.0, 0], 60); });
+// 9. thousands of carved sutras: a dolly down the aisle
+at(L0(8), (t, u) => { blocks(t); Wd.place('blocks'); stage.aim([0.2, 1.7, 5.5 - u * 0.9], [-0.2, 1.2, -6], 62); });
+// 10. you hide the records among them
+at(L0(9), (t, u) => { blocks(t); Wd.place('blocks', monk); heroAt(monk, -1.15, 0, -0.6, Object.assign({}, POSE.reach, { facing: -1 })); stage.aim([0.6, 1.5, 0.4], [-1.6, 1.25, -1.0], 54); });
+// 11. soldiers in the courtyard
+at(L0(10), (t, u) => { court(t, { gate: 1.2 }); soldiersAt('court', [[-1.0 + u * 0.4, 3.2, 1, true], [0.8, 4.4 - u * 0.3, -1, true], [2.2, 2.0, -1, false]], t); stage.aim([-3.0, 3.6, -1.6], [0.5, 1.0, 3.4], 60); });
+// 12. they are looking for a chest
+at(L0(11), (t, u) => { court(t, { gate: 1.2 }); soldiersAt('court', [[0.4, -2.6, 1, false], [-1.4, -1.2 + u * 0.3, -1, true]], t); stage.aim([2.4, 1.6, 0.6], [-0.2, 1.4, -3.0], 58); });
+// 13. "give me the empty chest": the two of you in the dark woodblock hall
+at(L0(12), (t, u) => { blocks(t); Wd.place('blocks', monk, woman); heroAt(woman, 0.3, 0, 2.2, Object.assign({}, POSE.carry, { facing: -1 })); heroAt(monk, -0.4, 0, 1.6, Object.assign({}, POSE.scared, { facing: 1 })); stage.aim([0.3, 1.4, 4.8 - u * 0.1], [0, 1.0, 1.5], 56); });
+// 14. she runs into the woods; the torches follow
+at(L0(13), (t, u) => { court(t, { gate: 1.2 }); Wd.place('court', woman, soldiers[0], soldiers[1], soldiers[2]); woman.walk(u * 3, { speed: 3, facing: 1 }); woman.mesh.position.set(-4 + u * 3, 0, 4.5); woman.mesh.visible = true;
+  soldiers.forEach((s, i) => { s.walk(u * 2.6 + i, { speed: 2.6, facing: 1 }); s.mesh.position.set(-7 + u * 2.6 - i * 0.9, 0, 4.2 - i * 0.5); s.mesh.visible = u > 0.4 + i * 0.2; Wd.gateTorches[i].set([s.mesh.position.x - 0.3, 2.1, s.mesh.position.z], t, s.mesh.visible ? 1 : 0); }); stage.aim([2.0, 1.6, 0.0], [-1.5, 1.2, 4.4], 64); });
+// 15. one fewer: one torch stays behind
+at(L0(14), (t, u) => { court(t, { gate: 1.2 }); soldiersAt('court', [[-1.5, 2.0, 1, false]], t); stage.aim([2.4, 2.2, -1.6], [-1.5, 1.4, 2.0], 52); });
+// 16. a soldier walks into the woodblock hall
+at(L0(15), (t, u) => { blocks(t, { torch: [0.3, 2.0, 6.2 - u * 0.8] }); Wd.place('blocks', soldiers[0]); soldiers[0].walk(u, { speed: 0.6, facing: -1 }); soldiers[0].mesh.position.set(0.65, 0, 6.2 - u * 0.8); stage.aim([0.2, 1.3, -2.5], [0.3, 1.2, 6.2], 56); });
+// 17. he pulls a block. Two. Three. (close on the shelf, the records behind)
+at(L0(16), (t, u) => { blocks(t, { torch: [-0.7, 1.9, -0.9] }); Wd.place('blocks', soldiers[0]); soldiers[0].mesh.position.set(-0.9, 0, -0.3); soldiers[0].pose({ facing: -1, armL: [-1.6, -0.2], armR: [-2.6, 0.4] }); stage.aim([0.6, 1.35, -1.9], [-1.8, 1.4, -1.0], 48); });
+// 18. and gives up. Leaves.
+at(L0(17), (t, u) => { blocks(t, { torch: [0.3, 2.0, 2.0 + u * 2.5] }); Wd.place('blocks', soldiers[0], monk); soldiers[0].walk(u, { speed: 1.2, facing: 1 }); soldiers[0].mesh.position.set(0.6, 0, 2.0 + u * 2.5); heroAt(monk, 1.6, 0, -3.6, Object.assign({}, POSE.scared, { facing: 0 })); stage.aim([1.2, 1.4, -5.0], [0.6, 1.2, 3.0], 58); });
+// 19. silence: your face
+at(L0(18), (t, u) => { blocks(t); Wd.place('blocks', monk); heroAt(monk, 1.4, 0, -3.6, Object.assign({}, POSE.scared, { facing: -1 })); stage.aim([0.7, 1.15, -2.8 + u * 0.03], [1.4, 1.05, -3.6], 44); });
+// 20. then the smell of smoke: smoke along the floor
+at(tSmell, (t, u) => { blocks(t, { smoke: clamp(u / 1.5) }); Wd.place('blocks'); stage.aim([0.1, 0.4, -2.0], [0, 0.4, 6], 60); });
+// 21. he set the hall on fire
+at(L0(20), (t, u) => { blocks(t, { fire: clamp((t - tFire + 0.6) / 4) }); Wd.place('blocks', monk); heroAt(monk, 0.3, 0, -1.0, Object.assign({}, POSE.scared, { facing: 0 })); stage.aim([0.3, 1.5, -4.4], [0.2, 1.1, 5], 62); });
+// 22. your arms carry only one
+at(L0(21), (t, u) => { blocks(t, { fire: clamp((t - tFire + 0.6) / 4) }); Wd.place('blocks', monk); heroAt(monk, -0.8, 0, -1.0, POSE.carry); stage.aim([1.2, 2.6, 0.4], [-0.9, 0.9, -1.2], 58); });
+// 23. the kingdom's records...
+at(L0(22), (t, u) => { blocks(t, { fire: clamp((t - tFire + 0.6) / 4) }); Wd.place('blocks'); stage.aim([-0.7, 1.45, -0.1 + u * 0.05], [-1.8, 1.3, -1.0], 50); });
+// 24. ...or the temple's sutras
+at(w(22, 'Ou'), (t, u) => { blocks(t, { fire: clamp((t - tFire + 0.6) / 4) }); Wd.place('blocks'); stage.aim([0.6, 2.4, -6.2 + u * 0.3], [1.8, 1.0, 2.0], 60); });
+// 25. the fire is at the door: the last image
+at(L0(23), (t, u) => { blocks(t, { fire: 1 }); Wd.place('blocks', monk); heroAt(monk, 0.0, 0, -2.0, Object.assign({}, POSE.carry, { facing: 0, mood: 'scared' })); stage.aim([0.1, 1.2, -5.6 + u * 0.15], [0, 1.2, 4], 64); });
+
+function clockAt(t) { return ['ANO 1592', t < L0(10) ? '00:20' : (t < tSmell ? '00:40' : '01:05')]; }
+function noteCard4(c, k) {
+  if (k <= 0) return; c.save(); c.globalAlpha = clamp(k); c.translate(540, 760); c.rotate(-0.04); c.scale(0.9 + 0.1 * clamp(k), 0.9 + 0.1 * clamp(k));
+  c.fillStyle = '#efe4c8'; c.shadowColor = 'rgba(0,0,0,0.5)'; c.shadowBlur = 40; c.fillRect(-300, -230, 600, 460); c.shadowBlur = 0;
+  c.strokeStyle = '#8a5a34'; c.lineWidth = 6; c.strokeRect(-280, -210, 560, 420);
+  c.fillStyle = '#1f2026'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.font = '700 46px "JetBrains Mono"';
+  ['4.', 'O SAGRADO', 'SE ESCONDE', 'NO SAGRADO.'].forEach((s, i) => c.fillText(s, 0, -120 + i * 80));
+  c.fillStyle = '#c4231c'; c.fillRect(170, 120, 70, 70); c.restore();
+}
+function pill(c, s, y) { c.save(); c.font = '700 44px Oswald'; const wd = c.measureText(s).width + 70; c.fillStyle = '#d93b30'; c.beginPath(); c.roundRect(540 - wd / 2, y - 40, wd, 80, 40); c.fill(); c.fillStyle = '#fff'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(s, 540, y + 2); c.restore(); }
+
+const CHUNKS = chunkCaptions(T); window.CHUNKS = CHUNKS;
+window.TOTAL = 61;
+window.seek = t => {
+  if (COVER) return cover();
+  let i = 0; while (i + 1 < SH.length && t >= SH[i + 1][0]) i++;
+  SH[i][1](t, t - SH[i][0]);
+  stage.draw(t, { vignette: 0.5, bloomStrength: (i >= 21 || [2, 3, 4].includes(i)) ? 0.85 : 0.55 });
+  if (i === 1 && t - tRing > 0.25 && t - tRing < 0.45) { c.fillStyle = `rgba(255,240,210,${0.35 * (1 - (t - tRing - 0.25) / 0.2)})`; c.fillRect(0, 0, CW, CH); }
+  const [d, k] = clockAt(t); hud(c, d, k);
+  const nb = L0(5) + 0.4; if (t >= nb && t < L0(6) - 0.05) noteCard4(c, ease((t - nb) / 0.25));
+  const s6 = L0(6), e6 = T.lines[6].end + 0.3; if (t >= s6 - 0.05 && t < e6) ruleSticker(c, 4, ['O SAGRADO SE', 'ESCONDE NO SAGRADO'], spring((t - s6 + 0.05) * 1.4), 560);
+  if (t >= tRing && t < tRing + 1.1) { ruleSticker(c, 2, ['O SINO SÓ', 'AO AMANHECER'], 1, 560); c.save(); c.translate(540, 560); c.rotate(-0.06); c.strokeStyle = '#d93b30'; c.lineWidth = 22; c.lineCap = 'round'; c.beginPath(); c.moveTo(-360, 60); c.lineTo(-360 + 720 * ease((t - tRing) / 0.3), -40); c.stroke(); c.restore(); }
+  if (t >= tFire) { c.fillStyle = `rgba(90,30,10,${0.18 * clamp((t - tFire) / 4)})`; c.fillRect(0, 0, CW, CH); }
+  if (t >= tEnd) endCard(c, tEnd, t, ['O QUE', 'VOCÊ SALVA?'], 'OS REGISTROS DO REINO', 'OS SUTRAS DO TEMPLO', 3);
+  else drawCaptions(c, CHUNKS, t);
+};
+function cover() {
+  const tt = L0(23) + 1; SH[25][1](tt, 1); stage.draw(tt, { vignette: 0.5, bloomStrength: 0.85 });
+  { const gr = c.createLinearGradient(0, 0, 0, 900); gr.addColorStop(0, 'rgba(0,0,0,0.6)'); gr.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = gr; c.fillRect(0, 0, CW, 900); }
+  pill(c, 'COREIA, 1592 · PARTE 2', 300);
+  c.save(); c.textAlign = 'center'; c.textBaseline = 'middle'; c.lineJoin = 'round';
+  for (const [s, y, col] of [['SÓ DÁ PRA', 450, '#ffffff'], ['SALVAR UM', 590, '#ff5a4f']]) { c.font = '700 150px Oswald'; c.lineWidth = 16; c.strokeStyle = '#0b0c0f'; c.strokeText(s, 540, y); c.fillStyle = col; c.fillText(s, 540, y); }
+  c.restore();
+}
+await loadFonts();
+window.seek(0);
+window.READY = true;
+</script>
+</body></html>

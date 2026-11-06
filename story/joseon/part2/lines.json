@@ -1,0 +1,179 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.03,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lines": [
+  {
+   "text": "Imagine: 1592. Você toca o sino.",
+   "say": "Imagine: mil quinhentos e noventa e dois. Você toca o sino.",
+   "key": {
+    "sino": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "O som desce a montanha inteira.",
+   "key": {
+    "montanha": "yellow"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Lá embaixo, uma resposta. Tambores.",
+   "key": {
+    "Tambores": "green"
+   },
+   "pause": 0.25
+  },
+  {
+   "text": "Os monges guerreiros estão vindo.",
+   "key": {
+    "vindo": "green"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Mas as tochas chegam primeiro.",
+   "key": {
+    "primeiro": "red"
+   },
+   "pause": 0.35
+  },
+  {
+   "text": "No baú, um bilhete do seu mestre.",
+   "key": {
+    "bilhete": "yellow"
+   },
+   "pause": 0.15
+  },
+  {
+   "text": "Regra 4: o sagrado se esconde no sagrado.",
+   "say": "Regra quatro: o sagrado se esconde no sagrado.",
+   "key": {
+    "sagrado": "red"
+   },
+   "pause": 0.35
+  },
+  {
+   "text": "Você corre pra sala das tábuas.",
+   "key": {
+    "tábuas": "yellow"
+   },
+   "pause": 0.15
+  },
+  {
+   "text": "Milhares de sutras entalhados em madeira.",
+   "key": {
+    "Milhares": "yellow"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Você esconde os registros entre eles.",
+   "key": {
+    "esconde": "green"
+   },
+   "pause": 0.35
+  },
+  {
+   "text": "Soldados no pátio.",
+   "key": {
+    "Soldados": "red"
+   },
+   "pause": 0.25
+  },
+  {
+   "text": "Eles procuram um baú.",
+   "key": {
+    "baú": "red"
+   },
+   "pause": 0.25
+  },
+  {
+   "text": "Me dá o baú vazio. Eles vão me seguir.",
+   "voice": "pf_dora",
+   "speed": 1.05,
+   "key": {
+    "seguir": "red"
+   },
+   "pause": 0.25
+  },
+  {
+   "text": "Ela corre pro bosque. As tochas vão atrás.",
+   "key": {
+    "bosque": "red"
+   },
+   "pause": 0.35
+  },
+  {
+   "text": "Menos uma.",
+   "key": {
+    "uma": "red"
+   },
+   "pause": 0.25
+  },
+  {
+   "text": "Um soldado entra na sala das tábuas.",
+   "key": {
+    "soldado": "red"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Ele puxa uma tábua. Duas. Três.",
+   "say": "Ele puxa uma tábua. Duas. Três.",
+   "key": {
+    "Três": "red"
+   },
+   "pause": 0.25
+  },
+  {
+   "text": "E desiste. Vai embora.",
+   "key": {
+    "embora": "green"
+   },
+   "pause": 0.35
+  },
+  {
+   "text": "Silêncio.",
+   "pause": 0.35
+  },
+  {
+   "text": "Até o cheiro de fumaça.",
+   "key": {
+    "fumaça": "red"
+   },
+   "pause": 0.25
+  },
+  {
+   "text": "Ele não desistiu. Ele pôs fogo na sala.",
+   "key": {
+    "fogo": "red"
+   },
+   "pause": 0.35
+  },
+  {
+   "text": "Seus braços só carregam um.",
+   "key": {
+    "um": "red"
+   },
+   "pause": 0.25
+  },
+  {
+   "text": "Os registros do reino. Ou os sutras do templo.",
+   "key": {
+    "reino": "yellow",
+    "templo": "yellow"
+   },
+   "pause": 0.35
+  },
+  {
+   "text": "O fogo já chegou na porta.",
+   "key": {
+    "porta": "red"
+   },
+   "pause": 0.25
+  }
+ ]
+}

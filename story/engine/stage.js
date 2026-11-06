@@ -183,6 +183,17 @@ export class Stickman {
       c.fillStyle = o.mark.color;
       if (o.mark.type === 'cap') { c.beginPath(); c.arc(head[0], head[1] - 6, BONES.head + 4, Math.PI, 0); c.fill(); c.fillRect(head[0] + (f >= 0 ? 0 : -BONES.head - 30), head[1] - 12, BONES.head + 30, 14); }
       else if (o.mark.type === 'scarf') { stroke([[neck[0] - 30, neck[1] + 10], [neck[0] + 30, neck[1] + 10]], 26, o.mark.color); stroke([[neck[0] + 10 * f, neck[1] + 10], [neck[0] + 26 * f, neck[1] + 80]], 18, o.mark.color); }
+      else if (o.mark.type === 'robe') {                                   // a monk's robe: a grey torso and a sash across it
+        stroke([hip, neck], 34, o.mark.color); stroke([[hip[0], hip[1] + 60], [hip[0] - 40, hip[1] + 150], [hip[0] + 40, hip[1] + 150], [hip[0], hip[1] + 60]], 30, o.mark.color);
+        if (o.mark.color2) stroke([[neck[0] - 26 * f || neck[0] - 26, neck[1] + 6], [hip[0] + 30, hip[1] - 30]], 20, o.mark.color2); }
+      else if (o.mark.type === 'hanbok') {                                 // a long skirt (chima), a jacket colour, hair with a bun
+        c.beginPath(); c.moveTo(hip[0] - 30, hip[1] - 90); c.lineTo(hip[0] + 30, hip[1] - 90); c.lineTo(hip[0] + 120, 1010); c.lineTo(hip[0] - 120, 1010); c.closePath(); c.fillStyle = o.outline; c.fill(); c.lineWidth = 20; c.strokeStyle = o.outline; c.stroke();
+        c.beginPath(); c.moveTo(hip[0] - 26, hip[1] - 82); c.lineTo(hip[0] + 26, hip[1] - 82); c.lineTo(hip[0] + 108, 1000); c.lineTo(hip[0] - 108, 1000); c.closePath(); c.fillStyle = o.mark.color; c.fill();
+        stroke([[neck[0], neck[1] + 10], [hip[0], hip[1] - 90]], 30, o.mark.color2 || '#f1ede4');
+        c.fillStyle = '#16120f'; c.beginPath(); c.arc(head[0], head[1] - 8, BONES.head + 3, Math.PI * 1.05, Math.PI * 1.95); c.fill();
+        c.beginPath(); c.arc(head[0] - 52 * (f || 1), head[1] - 10, 24, 0, 7); c.fill(); }
+      else if (o.mark.type === 'gat') {                                    // a wide black horsehair hat
+        c.fillStyle = o.mark.color; c.fillRect(head[0] - 34, head[1] - BONES.head - 64, 68, 62); stroke([[head[0] - 110, head[1] - BONES.head + 2], [head[0] + 110, head[1] - BONES.head + 2]], 14, o.mark.color); }
       else if (o.mark.type === 'band') { stroke([[head[0] - BONES.head, head[1] - 18], [head[0] + BONES.head, head[1] - 18]], 16, o.mark.color); }
       else { stroke([hip, neck], 24, o.mark.color); }
     }

@@ -1,0 +1,185 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.13,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lines": [
+  {
+   "text": "Imagine: 1592. Você é um monge de 16 anos.",
+   "say": "Imagine: mil quinhentos e noventa e dois. Você é um monge de dezesseis anos.",
+   "key": {
+    "1592": "yellow"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Num templo escondido no alto da montanha.",
+   "key": {
+    "escondido": "yellow"
+   },
+   "pause": 0.1
+  },
+  {
+   "text": "Naquele ano, o Japão invadiu a Coreia.",
+   "key": {
+    "invadiu": "red"
+   },
+   "pause": 0.25
+  },
+  {
+   "text": "Seu mestre desce pra vila e deixa 3 regras.",
+   "say": "Seu mestre desce pra vila e deixa três regras.",
+   "key": {
+    "regras": "yellow"
+   },
+   "pause": 0.15
+  },
+  {
+   "text": "Regra 1: nenhuma luz depois do pôr do sol.",
+   "say": "Regra um: nenhuma luz depois do pôr do sol.",
+   "key": {
+    "luz": "red"
+   },
+   "pause": 0.08
+  },
+  {
+   "text": "Regra 2: o sino só toca ao amanhecer.",
+   "say": "Regra dois: o sino só toca ao amanhecer.",
+   "key": {
+    "sino": "red"
+   },
+   "pause": 0.08
+  },
+  {
+   "text": "Regra 3: o portão não abre pra ninguém.",
+   "say": "Regra três: o portão não abre pra ninguém.",
+   "key": {
+    "ninguém": "red"
+   },
+   "pause": 0.25
+  },
+  {
+   "text": "Anoitece. Você apaga a última vela.",
+   "key": {
+    "vela": "yellow"
+   },
+   "pause": 0.25
+  },
+  {
+   "text": "Então você vê. Tochas subindo a trilha.",
+   "key": {
+    "Tochas": "red"
+   },
+   "pause": 0.08
+  },
+  {
+   "text": "Dezenas delas.",
+   "key": {
+    "Dezenas": "red"
+   },
+   "pause": 0.25
+  },
+  {
+   "text": "Batidas no portão.",
+   "key": {
+    "portão": "red"
+   },
+   "pause": 0.1
+  },
+  {
+   "text": "Monge! Eu carrego algo que não pode queimar!",
+   "voice": "pf_dora",
+   "speed": 1.08,
+   "key": {
+    "queimar": "red"
+   },
+   "pause": 0.15
+  },
+  {
+   "text": "Pela fresta, uma mulher ferida, abraçada a um baú.",
+   "key": {
+    "baú": "yellow"
+   },
+   "pause": 0.15
+  },
+  {
+   "text": "Abrir quebra a regra. Não abrir entrega ela às tochas.",
+   "key": {
+    "tochas": "red"
+   },
+   "pause": 0.25
+  },
+  {
+   "text": "Você abre.",
+   "key": {
+    "abre": "green"
+   },
+   "pause": 0.25
+  },
+  {
+   "text": "No baú, o selo do rei.",
+   "key": {
+    "rei": "yellow"
+   },
+   "pause": 0.1
+  },
+  {
+   "text": "São os registros do reino. Se queimarem, a história some.",
+   "voice": "pf_dora",
+   "speed": 1.05,
+   "key": {
+    "some": "red"
+   },
+   "pause": 0.25
+  },
+  {
+   "text": "As tochas viram pro outro lado. Por um segundo.",
+   "key": {
+    "outro": "green"
+   },
+   "pause": 0.1
+  },
+  {
+   "text": "E voltam. Mais perto.",
+   "key": {
+    "perto": "red"
+   },
+   "pause": 0.25
+  },
+  {
+   "text": "Seu mestre não foi à vila. Foi juntar os monges guerreiros.",
+   "voice": "pf_dora",
+   "speed": 1.05,
+   "key": {
+    "guerreiros": "yellow"
+   },
+   "pause": 0.15
+  },
+  {
+   "text": "O sinal é o sino.",
+   "voice": "pf_dora",
+   "speed": 1.0,
+   "key": {
+    "sino": "red"
+   },
+   "pause": 0.25
+  },
+  {
+   "text": "Tocar chama os monges. E mostra o templo pras tochas.",
+   "key": {
+    "monges": "green",
+    "tochas": "red"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Toca, menino. Ou ninguém vai lembrar da gente.",
+   "voice": "pf_dora",
+   "speed": 0.95,
+   "key": {
+    "lembrar": "red"
+   },
+   "pause": 0.15
+  }
+ ]
+}

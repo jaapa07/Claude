@@ -1,0 +1,178 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>O Templo de 1592 — parte 3</title>
+<script type="importmap">{"imports": {"three": "../../engine/vendor/three.module.js"}}</script>
+<style>
+@font-face { font-family: 'Oswald'; font-weight: 700; src: url('../../engine/vendor/fonts/oswald-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 700; src: url('../../engine/vendor/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+html, body { margin: 0; background: #000; } canvas { display: block; }
+</style>
+<script src="timing.js"></script>
+</head><body>
+<canvas id="film" width="1080" height="1920"></canvas>
+<script type="module">
+import * as S from '../../engine/stage.js';
+import { buildWorld, flame, smoke, canvasTex } from '../world.js';
+const { THREE, clamp, lerp, ease, spring, box, hud, ruleSticker, endCard, chunkCaptions, drawCaptions, loadFonts, W: CW, H: CH } = S;
+S.LABELS.day = ''; S.LABELS.follow = 'SIGA PARA A PARTE ';
+const T = window.TIMING;
+const w = (li, word, n = 0) => { const b = s => s.toLowerCase().replace(/[^\p{L}0-9:]/gu, ''); let k = 0; for (const x of T.lines[li].words) if (b(x.w) === b(word) && k++ === n) return x.s; throw new Error(`word "${word}" not in line ${li}`); };
+const L0 = li => T.lines[li].words[0].s;
+const c = document.getElementById('film').getContext('2d');
+const stage = S.createStage(document.getElementById('film'));
+const Wd = buildWorld(stage);
+const { monk, master, woman, POSE, heroAt, place } = Wd;
+const COVER = location.hash === '#cover';
+
+// ---------- props for this part ----------
+const sealC = canvasTex(128, 128); { const g = sealC.g; g.fillStyle = '#6b3a20'; g.fillRect(0, 0, 128, 128); g.fillStyle = '#c4231c'; g.fillRect(34, 34, 60, 60); g.strokeStyle = '#f0d9b0'; g.lineWidth = 5; g.strokeRect(42, 42, 44, 44); g.beginPath(); g.moveTo(64, 46); g.lineTo(64, 82); g.moveTo(48, 64); g.lineTo(80, 64); g.stroke(); }
+function chest() { const g = new THREE.Group(); g.add(box(0.6, 0.36, 0.4, '#6b3a20', 0, 0, 0)); const lid = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.06, 0.42), new THREE.MeshStandardMaterial({ map: sealC.tx, roughness: 0.8 })); lid.position.y = 0.39; g.add(lid); g.add(box(0.64, 0.04, 0.05, '#b08d57', 0, 0.2, 0.2)); return g; }
+const chestCourt = chest(); Wd.court.add(chestCourt);
+S.LABELS.follow = 'SIGA PARA MAIS HISTÓRIAS';
+const records = chest(); Wd.court.add(records);
+const warriors = Array.from({ length: 4 }, () => new S.Stickman({ height: 1.7, mark: { type: 'robe', color: '#5f5a52', color2: '#7a3a24' } }));
+warriors.forEach(v => { Wd.court.add(v.mesh); v.mesh.visible = false; });
+const wLights = warriors.map(() => flame(Wd.court, 0.35, 2.5, 7));
+const caveTorch = Wd.caveTorch, chaseTorch = flame(Wd.court, 0.5, 4, 9);
+
+// ---------- key times ----------
+const tDawn = L0(11), tOut = w(9, 'Sem'), tEnd = T.voice_end + 0.3;
+function court(t, { burning = 0, burnt = false, dawn = false } = {}) {
+  Wd.use('court', dawn ? 'dawn' : (burning ? 'fire' : 'night')); stage.renderer.toneMappingExposure = dawn ? 1.05 : 1.9;
+  Wd.courtL.h.intensity = dawn ? 1.1 : 1.25; Wd.courtL.h.color.set(dawn ? '#c9b2a0' : '#6e86c4'); Wd.courtL.d.intensity = dawn ? 1.2 : 0.9; Wd.courtL.d.color.set(dawn ? '#ffc58a' : '#9fb4ff');
+  Wd.moonSpot.intensity = dawn ? 1.4 : 1.1; Wd.moonSpot.color.set(dawn ? '#ffc58a' : '#a9bcff'); Wd.moonSpot.position.set(dawn ? 12 : -6, dawn ? 6 : 14, dawn ? 8 : 10);
+  Wd.hallLamp.userData.light.intensity = 0; Wd.openGate(dawn ? 1.2 : 1.2);
+  Wd.gateTorches.forEach(f => f.set([0, -50, 0], t, 0)); Wd.trailTorches.forEach(f => f.set([0, -50, 0], t, 0));
+  const fx = [[-7, 1.5, -2.8], [-7.5, 2.4, -1.0], [-6.5, 1.2, 0.2], [-7.2, 3.2, -1.8], [-6.8, 0.8, -0.4]];
+  Wd.courtFires.forEach((f, i) => f.set(fx[i], t, burning));
+  Wd.courtSmoke(t, burning ? 1 : (burnt ? 0.6 : 0), burnt ? [0, 0.5, -6] : [-7, 3, -1.5]);
+  side.visible = !burnt; Wd.hallMesh.userData.roof.visible = !burnt; Wd.hallMesh.userData.front.material.color.set(burnt ? '#1b1714' : '#ffffff');
+  Wd.striker.position.x = -1.65; Wd.bellG.rotation.z = 0; chestCourt.visible = false; records.visible = false; chaseTorch.set([0, -50, 0], t, 0);
+}
+const side = Wd.court.children.find(o => o.isGroup && o.position.x === -7);
+function mount(t, { dawn = false, trail = 0, n = 0 } = {}) {
+  Wd.use('mount', dawn ? 'dawn' : 'night'); stage.renderer.toneMappingExposure = dawn ? 1.1 : 2.4; Wd.mountL.h.intensity = dawn ? 1.4 : 0.9; Wd.mountL.h.color.set(dawn ? '#c9a68a' : '#5b74b0');
+  Wd.setTrail(t, trail, n); Wd.miniFront.material.emissiveIntensity = 0; Wd.miniBell.intensity = dawn && t < L0(12) + 1 ? 40 * Math.exp(-(t - tDawn - 0.6) * 0.5) * (t > tDawn + 0.6 ? 1 : 0) : 0;
+  Wd.vilWins.forEach(f => f.material.emissiveIntensity = 0);
+}
+function cave(t, { torch = null, dawn = false } = {}) {
+  Wd.use('cave', 'night'); stage.renderer.toneMappingExposure = 1.6;
+  Wd.caveMouth.material.color.set(dawn ? '#f2c58a' : '#1b2647'); Wd.caveL.h.intensity = dawn ? 0.9 : 0.45; Wd.caveL.d.color.set(dawn ? '#ffc58a' : '#8fa6e8'); Wd.caveL.d.intensity = dawn ? 1.2 : 0.6;
+  if (torch) caveTorch.set(torch, t, 1); else caveTorch.set([0, -50, 0], t, 0);
+}
+function blocksFire(t) { Wd.use('blocks', 'night'); stage.renderer.toneMappingExposure = 1.5; Wd.blockFires.forEach((f, i) => { f.set([(i % 2 ? 1 : -1) * (0.6 + (i % 3) * 0.4), 0.5 + (i % 2) * 0.4, 6.2 - i * 0.9], t, 1); f.L.distance = 12; f.L.intensity *= 3.5; }); Wd.blockSmoke(t, 1); Wd.blockDoor.material.color.set('#ff7a2a'); }
+
+// ---------- the shot list ----------
+const SH = [], at = (t0, f) => SH.push([t0, f]);
+// 0. the opener: you in the burning hall, the records in your arms
+at(0, (t, u) => { blocksFire(t); Wd.place('blocks', monk); heroAt(monk, 0.0, 0, -2.0, Object.assign({}, POSE.carry, { facing: 0, mood: 'scared' })); const k = ease(u / 2.4); stage.aim([lerp(0.4, 0.2, k), lerp(1.2, 1.5, k), lerp(-3.2, -6.0, k)], [0, lerp(1.0, 1.2, k), 4], lerp(46, 64, k)); });
+// 1. you save the records: out through the smoke
+at(w(0, 'Você'), (t, u) => { court(t, { burning: 1 }); Wd.place('court', monk); monk.walk(u * 2.5, { speed: 2.5, facing: 1 }); monk.mesh.position.set(-5 + u * 2.5, 0, 1.0); stage.aim([0.5, 1.6, 4.5], [-4 + u * 2, 1.2, 0], 60); });
+// 2. behind you, the sutras burn
+at(L0(1), (t, u) => { court(t, { burning: 1 }); Wd.place('court', monk); heroAt(monk, -1.5, 0, 2.6, Object.assign({}, POSE.carry, { facing: -1 })); stage.aim([3.6 - u * 0.3, 2.4, 6.0], [-6.5, 2.0, -1.2], 58); });
+// 3. up the back trail, between the pines
+at(L0(2), (t, u) => { court(t, { burning: 1 }); Wd.place('court', monk); monk.walk(u * 2.2, { speed: 2.2, facing: 0 }); monk.mesh.position.set(8.6, 0, 1.5 - u * 2.4); stage.aim([9.6, 1.9, 5.5], [8.4, 1.2, -4], 58); });
+// 4. drums: the warrior monks pour into the courtyard
+at(L0(3), (t, u) => { court(t, { burning: 1 }); Wd.place('court'); warriors.forEach((v, i) => { v.mesh.visible = true; v.walk(u * 2 + i * 0.7, { speed: 2, facing: -1 }); v.mesh.position.set(1.2 - i * 0.9, 0, 7.5 - u * 2.4 - (i % 2) * 0.8); wLights[i].set([v.mesh.position.x + 0.3, 2.0, v.mesh.position.z], t, 1); }); stage.aim([-2.5, 2.2, 0.5], [0.2, 1.2, 6], 60); });
+// 5. but one torch comes after you
+at(L0(4), (t, u) => { court(t, { burning: 1 }); Wd.place('court', monk); monk.walk(u * 2.4, { speed: 2.4, facing: 1 }); monk.mesh.position.set(8.6, 0, -4.5 - u * 2.4); chaseTorch.set([8.3, 1.9, 2.5 - u * 2.6], t, 1); stage.aim([9.8, 2.2, 6.5], [8.4, 1.2, -4], 56); });
+// 6. a cave: you go in
+at(L0(5), (t, u) => { cave(t); Wd.place('cave', monk); heroAt(monk, 0.1, 0, 2.6 - u * 1.2, Object.assign({}, POSE.carry, { facing: 0 })); stage.aim([0.4, 1.2, -2.5], [0, 1.2, 3], 62); });
+// 7. the torch stops at the entrance
+at(L0(6), (t, u) => { cave(t, { torch: [0.35, 1.5, 3.2] }); Wd.place('cave', monk); heroAt(monk, -0.6, 0, -1.5, Object.assign({}, POSE.scared, { facing: 1 })); stage.aim([-1.4, 1.1, -3.0], [0.3, 1.3, 3], 58); });
+// 8. it's her: the woman with the chest
+at(L0(7), (t, u) => { cave(t, { torch: [0.35, 1.5, 2.6] }); Wd.place('cave', woman); heroAt(woman, 0.0, 0, 2.8 - u * 0.4, Object.assign({}, POSE.torch, { facing: 0 })); stage.aim([0.1, 1.15, 0.3 + u * 0.05], [0, 1.0, 3], 54); });
+// 9. "they lost my trail; I didn't lose yours"
+at(L0(8), (t, u) => { cave(t, { torch: [0.9, 1.0, 0.6] }); Wd.place('cave', woman, monk); heroAt(woman, 0.6, 0, 0.8, Object.assign({}, POSE.kneel, { facing: -1 })); heroAt(monk, -0.6, 0, 0.4, Object.assign({}, POSE.sit)); stage.aim([0.1, 1.2, -2.6 + u * 0.1], [0, 0.8, 0.8], 58); });
+// 10. the night there, no light: she puts the torch out
+at(L0(9), (t, u) => { const on = t < tOut + 0.25; cave(t, { torch: on ? [0.9, 1.0 - (t > tOut ? (t - tOut) * 2 : 0), 0.6] : null }); Wd.place('cave', woman, monk); heroAt(woman, 0.6, 0, 0.8, Object.assign({}, POSE.kneel, { facing: -1 })); heroAt(monk, -0.6, 0, 0.4, POSE.sit); stage.aim([0.1, 1.3, -3.2 + u * 0.1], [0, 0.9, 1.5], 60); });
+// 11. rule 1, to the end (hold in the dark)
+at(L0(10), (t, u) => { cave(t); Wd.place('cave', woman, monk); heroAt(woman, 0.6, 0, 0.8, Object.assign({}, POSE.kneel, { facing: -1 })); heroAt(monk, -0.6, 0, 0.4, POSE.sit); stage.aim([0.1, 1.3, -3.1 + u * 0.15], [0, 0.9, 1.5], 60); });
+// 12. at dawn, a bell (the mountain, the sky turns)
+at(L0(11), (t, u) => { mount(t, { dawn: true }); stage.aim([40 - u, 34, 0], [0, 30, -40], 44); });
+// 13. rule 2: the signal it is over; you stand in the dawn
+at(L0(12), (t, u) => { cave(t, { dawn: true }); Wd.place('cave', monk); heroAt(monk, 0.0, 0, 2.2, Object.assign({}, POSE.carry, { facing: 0 })); stage.aim([0.3, 1.2, -1.8 + u * 0.15], [0, 1.2, 3], 60); });
+// 14. the temple is ash
+at(L0(13), (t, u) => { court(t, { burnt: true, dawn: true }); Wd.place('court'); stage.aim([7 - u * 0.4, 5.5, 9.5], [-1, 1, -4], 60); });
+// 15. your master at the gate. Alive.
+at(L0(14), (t, u) => { court(t, { burnt: true, dawn: true }); Wd.place('court', master, monk); heroAt(master, 0.2, 0, 5.4, Object.assign({}, POSE.stand, { facing: 0 })); monk.walk(u * 2, { speed: 2, facing: 1 }); monk.mesh.position.set(-2.4 + u * 1.8, 0, 3.6); stage.aim([1.6, 1.6, -0.2], [0, 1.2, 5.4], 56); });
+// 16. "Alive": close on him
+at(w(14, 'Vivo'), (t, u) => { court(t, { burnt: true, dawn: true }); Wd.place('court', master, monk); heroAt(master, 0.2, 0, 5.4, Object.assign({}, POSE.stand, { facing: -1, armL: [1.2, -0.6], armR: [0.8, -0.4] })); heroAt(monk, -0.4, 0, 5.0, Object.assign({}, POSE.bow, { facing: 1 })); stage.aim([0.9, 1.4, 2.8 - u * 0.1], [0, 1.1, 5.2], 50); });
+// 17. "this story is invented": the records on a stone in the dawn (then the history card)
+at(L0(15), (t, u) => { court(t, { burnt: true, dawn: true }); Wd.place('court'); records.visible = true; records.position.set(-2.2, 1.49, 1.2); stage.aim([-1.6, 1.95, 1.9 - u * 0.05], [-2.2, 1.6, 1.2], 50); });
+// 18–22. the history card sits over the hall, candles lit, darkened
+const hist = (t, u) => { Wd.use('inner', 'night'); stage.renderer.toneMappingExposure = 1.3; Wd.place('inner'); Wd.candles.forEach(k => k.f.set([k.x, 1.2, -2.0], t, 1)); Wd.incense(t, 0.6); stage.aim([0, 1.5, 1.6 - u * 0.05], [0, 1.6, -2.8], 58); };
+at(L0(16), hist);
+// 19. the last copy carried up a mountain: one light climbing at dawn
+at(L0(18), (t, u) => { mount(t, { dawn: true, trail: 0.55 + 0.1 * u, n: 1 }); stage.aim([55 - u, 22, 4], [0, 14, -40], 42); });
+// 20. by ordinary people: the two of you at the cave mouth, dawn
+at(L0(19), (t, u) => { cave(t, { dawn: true }); Wd.place('cave', woman, monk); heroAt(woman, 0.5, 0, 2.4, Object.assign({}, POSE.stand, { facing: 0 })); heroAt(monk, -0.5, 0, 2.4, Object.assign({}, POSE.carry, { facing: 0 })); stage.aim([0, 1.3, -1.5 + u * 0.1], [0, 1.2, 3], 58); });
+// 21–22. the Annals; UNESCO
+at(L0(20), hist);
+// 23. the last line: "to remember is also to fight" — her, facing the sunrise
+at(L0(22), (t, u) => { cave(t, { dawn: true }); Wd.place('cave', woman, monk); heroAt(woman, 0.45, 0, 2.6, Object.assign({}, POSE.stand, { facing: -1 })); heroAt(monk, -0.45, 0, 2.6, Object.assign({}, POSE.carry, { facing: 1 })); stage.aim([0.05, 1.2, -0.6 - u * 0.15], [0, 1.0, 3], 60); });
+
+function clockAt(t) { return ['ANO 1592', t < L0(11) ? '01:30' : '05:40']; }
+// the history card: four copies, three burned, one carried up a mountain; then the Annals and UNESCO
+function book(c, x, y, s, col, state, k) {
+  c.save(); c.translate(x, y); c.scale(s, s);
+  c.fillStyle = col; c.beginPath(); c.roundRect(-60, -85, 120, 170, 10); c.fill();
+  c.fillStyle = 'rgba(0,0,0,0.25)'; c.fillRect(-60, -85, 18, 170); c.strokeStyle = '#f0d9b0'; c.lineWidth = 4; c.strokeRect(-28, -60, 70, 36);
+  if (state === 'burnt') { c.globalAlpha = k; c.fillStyle = 'rgba(20,10,8,0.75)'; c.fillRect(-60, -85, 120, 170); c.strokeStyle = '#ff4b3e'; c.lineWidth = 14; c.lineCap = 'round'; c.beginPath(); c.moveTo(-50, -70); c.lineTo(50, 70); c.moveTo(50, -70); c.lineTo(-50, 70); c.stroke(); }
+  if (state === 'saved') { c.globalAlpha = k; c.strokeStyle = '#ffcc4d'; c.lineWidth = 10; c.strokeRect(-70, -95, 140, 190); }
+  c.restore();
+}
+function historyCard(c, t) {
+  const s16 = L0(16), s17 = L0(17), s18 = L0(18), s20 = L0(20), s21 = L0(21);
+  c.save(); c.fillStyle = 'rgba(8,7,6,0.72)'; c.fillRect(0, 0, CW, CH);
+  const card = (y0, h0) => { c.fillStyle = '#e9dcbc'; c.shadowColor = 'rgba(0,0,0,0.5)'; c.shadowBlur = 40; c.beginPath(); c.roundRect(110, y0, 860, h0, 24); c.fill(); c.shadowBlur = 0; c.strokeStyle = '#8a5a34'; c.lineWidth = 6; c.strokeRect(130, y0 + 20, 820, h0 - 40); };
+  c.textAlign = 'center'; c.textBaseline = 'middle';
+  if (t < s20) {
+    card(420, 640);
+    c.fillStyle = '#1f2026'; c.font = '700 64px Oswald'; c.fillText('1592: OS REGISTROS DO REINO', 540, 500);
+    const n = Math.min(4, Math.floor((t - s16) / 0.35) + 1);
+    const names = ['SEUL', 'CHUNGJU', 'SEONGJU', 'JEONJU'];
+    for (let i = 0; i < n; i++) {
+      const x = 225 + i * 210, burnt = i < 3 && t >= s17 + i * 0.3, saved = i === 3 && t >= s18;
+      book(c, x, 700, 1, '#6b3a20', burnt ? 'burnt' : (saved ? 'saved' : ''), burnt ? ease((t - s17 - i * 0.3) / 0.3) : ease((t - s18) / 0.4));
+      c.fillStyle = '#1f2026'; c.font = '700 36px "JetBrains Mono"'; c.fillText(names[i], x, 830);
+    }
+    c.font = '700 70px Oswald'; c.fillStyle = t >= s17 ? '#c8372d' : '#1f2026';
+    c.fillText(t >= s18 ? 'SOBROU 1' : (t >= s17 ? 'QUEIMADAS: 3' : 'CÓPIAS: ' + n), 540, 960);
+  } else {
+    card(470, 560);
+    book(c, 540, 640, 1.1, '#6b3a20', 'saved', 1);
+    c.fillStyle = '#1f2026'; c.font = '700 66px Oswald'; c.fillText('ANAIS DA DINASTIA JOSEON', 540, 820);
+    if (t >= s21) { c.fillStyle = '#2e7d4f'; c.font = '700 50px Oswald'; c.fillText('MEMÓRIA DO MUNDO · UNESCO · 1997', 540, 920); }
+  }
+  c.restore();
+}
+function pill(c, s, y) { c.save(); c.font = '700 44px Oswald'; const wd = c.measureText(s).width + 70; c.fillStyle = '#d93b30'; c.beginPath(); c.roundRect(540 - wd / 2, y - 40, wd, 80, 40); c.fill(); c.fillStyle = '#fff'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(s, 540, y + 2); c.restore(); }
+
+const CHUNKS = chunkCaptions(T); window.CHUNKS = CHUNKS;
+window.TOTAL = 61;
+window.seek = t => {
+  if (COVER) return cover();
+  warriors.forEach(v => v.mesh.visible = false); wLights.forEach(f => f.set([0, -50, 0], t, 0));
+  let i = 0; while (i + 1 < SH.length && t >= SH[i + 1][0]) i++;
+  SH[i][1](t, t - SH[i][0]);
+  stage.draw(t, { vignette: 0.5, bloomStrength: [0, 1, 2, 5, 12, 19].includes(i) ? 0.85 : 0.55 });
+  const [d, k] = clockAt(t); hud(c, d, k);
+  const R = [[10, 1, ['NENHUMA LUZ', 'APÓS O SOL']], [12, 2, ['O SINO SÓ', 'AO AMANHECER']]];
+  for (const [li, n, txt] of R) { const s = L0(li), e = T.lines[li].end + 0.25; if (t >= s - 0.05 && t < e) ruleSticker(c, n, txt, spring((t - s + 0.05) * 1.4), 560); }
+  if ((t >= L0(16) && t < L0(18)) || (t >= L0(20) && t < L0(22))) historyCard(c, t);
+  if (t >= tEnd) endCard(c, tEnd, t, ['VOCÊ TERIA', 'CARREGADO?'], 'SIM: NAS COSTAS', 'NÃO: EU FUGIRIA', '');
+  else drawCaptions(c, CHUNKS, t, (t >= L0(16) && t < L0(18)) || (t >= L0(20) && t < L0(22)) ? 1420 : 1310);
+};
+function cover() {
+  const tt = L0(22) + 0.5; SH[SH.length - 1][1](tt, 0.5); stage.draw(tt, { vignette: 0.5, bloomStrength: 0.7 });
+  { const gr = c.createLinearGradient(0, 0, 0, 900); gr.addColorStop(0, 'rgba(0,0,0,0.6)'); gr.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = gr; c.fillRect(0, 0, CW, 900); }
+  pill(c, 'COREIA, 1592 · FINAL', 300);
+  c.save(); c.textAlign = 'center'; c.textBaseline = 'middle'; c.lineJoin = 'round';
+  for (const [s, y, col] of [['A ÚLTIMA', 450, '#ffffff'], ['CÓPIA', 590, '#ffcc4d']]) { c.font = '700 150px Oswald'; c.lineWidth = 16; c.strokeStyle = '#0b0c0f'; c.strokeText(s, 540, y); c.fillStyle = col; c.fillText(s, 540, y); }
+  c.restore();
+}
+await loadFonts();
+window.seek(0);
+window.READY = true;
+</script>
+</body></html>

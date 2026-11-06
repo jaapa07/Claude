@@ -1,0 +1,22 @@
+{"mixkit": false, "roomtone": false,
+ "bed": [{"at": 0, "level": 0.7}, {"at": "toca@0", "level": 1.2}, {"at": "Tambores@2", "level": 0.9}, {"at": "primeiro@4", "level": 1.1}, {"at": "tábuas@7", "level": 0.6}, {"at": "Soldados@10", "level": 1.0}, {"at": "puxa@16", "level": 0.5}, {"at": "Silêncio@18", "level": 0.1}, {"at": "fumaça@19", "level": 0.8}, {"at": "fogo@20", "level": 1.2}],
+ "sfx": [
+  {"at": "toca@0+0.25", "type": "boom", "vol": 1.0}, {"at": "toca@0+0.25", "type": "hit", "vol": 0.9}, {"at": "toca@0+0.3", "type": "sting", "vol": 0.5},
+  {"at": "montanha@1", "type": "rumble", "vol": 0.6},
+  {"at": "Tambores@2", "type": "thud", "vol": 0.8}, {"at": "Tambores@2+0.45", "type": "thud", "vol": 0.8}, {"at": "Tambores@2+0.9", "type": "thud", "vol": 0.8}, {"at": "vindo@3", "type": "thud", "vol": 0.7}, {"at": "vindo@3+0.45", "type": "thud", "vol": 0.7},
+  {"at": "primeiro@4", "type": "knock", "vol": 1.0}, {"at": "primeiro@4+0.8", "type": "thud", "vol": 0.8},
+  {"at": "bilhete@5", "type": "click", "vol": 0.4}, {"at": "Regra@6", "type": "click", "vol": 0.55},
+  {"at": "corre@7", "type": "whoosh", "vol": 0.4},
+  {"at": "esconde@9", "type": "creak", "vol": 0.35},
+  {"at": "Soldados@10", "type": "hit", "vol": 0.8},
+  {"at": "seguir@12", "type": "heartbeat", "vol": 0.6},
+  {"at": "bosque@13", "type": "whoosh", "vol": 0.5},
+  {"at": "soldado@15", "type": "floorcreak", "vol": 0.5},
+  {"at": "tábua@16", "type": "thud", "vol": 0.5}, {"at": "Duas@16", "type": "thud", "vol": 0.5}, {"at": "Três@16", "type": "thud", "vol": 0.6},
+  {"at": "desiste@17", "type": "heartbeat", "vol": 0.7},
+  {"at": "fumaça@19", "type": "hiss", "vol": 0.5},
+  {"at": "fogo@20", "type": "hit", "vol": 0.9}, {"at": "fogo@20", "type": "rumble", "vol": 0.8}, {"at": "sala@20", "type": "rumble", "vol": 0.7},
+  {"at": "um@21", "type": "heartbeat", "vol": 0.8},
+  {"at": "porta@23", "type": "rumble", "vol": 0.9},
+  {"at": 55.5, "type": "hit", "vol": 0.9}
+ ]}

@@ -1,10 +1,10 @@
 engine/models/
 engine/sfx/
-engine/__pycache__/
-*/frames/
-*/stills/
-*/vo/
-*/cover/
+**/__pycache__/
+**/frames/
+**/stills/
+**/vo/
+**/cover/
 *_master.mp4
 *.log
 *.wav

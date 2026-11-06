@@ -1,0 +1,178 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.08,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lines": [
+  {
+   "text": "Imagine: 1592. Você salva os registros.",
+   "say": "Imagine: mil quinhentos e noventa e dois. Você salva os registros.",
+   "key": {
+    "registros": "yellow"
+   },
+   "pause": 0.31
+  },
+  {
+   "text": "Atrás de você, os sutras queimam.",
+   "key": {
+    "queimam": "red"
+   },
+   "pause": 0.36
+  },
+  {
+   "text": "Você corre pela trilha dos fundos. Montanha acima.",
+   "key": {
+    "acima": "yellow"
+   },
+   "pause": 0.26
+  },
+  {
+   "text": "Tambores. Os monges guerreiros chegam no pátio.",
+   "key": {
+    "guerreiros": "green"
+   },
+   "pause": 0.36
+  },
+  {
+   "text": "Mas uma tocha vem atrás de você.",
+   "key": {
+    "tocha": "red"
+   },
+   "pause": 0.21
+  },
+  {
+   "text": "Uma caverna. Você entra.",
+   "key": {
+    "caverna": "yellow"
+   },
+   "pause": 0.26
+  },
+  {
+   "text": "A tocha para na entrada.",
+   "key": {
+    "para": "red"
+   },
+   "pause": 0.36
+  },
+  {
+   "text": "Quem segura é ela. A mulher do baú.",
+   "key": {
+    "ela": "green"
+   },
+   "pause": 0.26
+  },
+  {
+   "text": "Eles perderam o meu rastro. Eu não perdi o seu.",
+   "voice": "pf_dora",
+   "speed": 1.0,
+   "key": {
+    "rastro": "yellow"
+   },
+   "pause": 0.36
+  },
+  {
+   "text": "Vocês passam a noite ali. Sem luz.",
+   "key": {
+    "luz": "red"
+   },
+   "pause": 0.21
+  },
+  {
+   "text": "Regra 1, até o fim.",
+   "say": "Regra um, até o fim.",
+   "key": {
+    "fim": "yellow"
+   },
+   "pause": 0.36
+  },
+  {
+   "text": "Ao amanhecer, um sino.",
+   "key": {
+    "sino": "green"
+   },
+   "pause": 0.26
+  },
+  {
+   "text": "Regra 2. É o sinal de que acabou.",
+   "say": "Regra dois. É o sinal de que acabou.",
+   "key": {
+    "acabou": "green"
+   },
+   "pause": 0.36
+  },
+  {
+   "text": "O templo virou cinza.",
+   "key": {
+    "cinza": "red"
+   },
+   "pause": 0.26
+  },
+  {
+   "text": "Seu mestre está no portão. Vivo.",
+   "key": {
+    "Vivo": "green"
+   },
+   "pause": 0.36
+  },
+  {
+   "text": "Esta história é inventada.",
+   "key": {
+    "inventada": "yellow"
+   },
+   "pause": 0.36
+  },
+  {
+   "text": "Mas em 1592, o reino tinha 4 cópias dos seus registros.",
+   "say": "Mas em mil quinhentos e noventa e dois, o reino tinha quatro cópias dos seus registros.",
+   "key": {
+    "4": "yellow"
+   },
+   "pause": 0.26
+  },
+  {
+   "text": "A guerra queimou 3.",
+   "say": "A guerra queimou três.",
+   "key": {
+    "3": "red"
+   },
+   "pause": 0.36
+  },
+  {
+   "text": "A última foi carregada nas costas até uma montanha.",
+   "key": {
+    "montanha": "green"
+   },
+   "pause": 0.36
+  },
+  {
+   "text": "Por gente comum.",
+   "key": {
+    "comum": "yellow"
+   },
+   "pause": 0.36
+  },
+  {
+   "text": "São os Anais da Dinastia Joseon.",
+   "key": {
+    "Joseon": "yellow"
+   },
+   "pause": 0.26
+  },
+  {
+   "text": "Hoje, Memória do Mundo da UNESCO.",
+   "key": {
+    "UNESCO": "green"
+   },
+   "pause": 0.36
+  },
+  {
+   "text": "Lembrar também é lutar.",
+   "voice": "pf_dora",
+   "speed": 0.95,
+   "key": {
+    "lutar": "red"
+   },
+   "pause": 0.26
+  }
+ ]
+}

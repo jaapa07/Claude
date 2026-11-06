@@ -1,0 +1,21 @@
+{"mixkit": false, "roomtone": false,
+ "bed": [{"at": 0, "level": 0.5}, {"at": "invadiu@2", "level": 0.8}, {"at": "Anoitece@7", "level": 0.6}, {"at": "Tochas@8", "level": 1.0}, {"at": "Batidas@10", "level": 1.1}, {"at": "abre@14", "level": 0.6}, {"at": "outro@17", "level": 0.25}, {"at": "voltam@18", "level": 1.1}, {"at": "sino@20", "level": 1.2}],
+ "sfx": [
+  {"at": 0.1, "type": "whoosh", "vol": 0.3},
+  {"at": "1592@0", "type": "sting", "vol": 0.4},
+  {"at": "invadiu@2", "type": "hit", "vol": 0.9}, {"at": "Coreia@2", "type": "rumble", "vol": 0.5},
+  {"at": "Regra@4", "type": "click", "vol": 0.55}, {"at": "Regra@5", "type": "click", "vol": 0.55}, {"at": "Regra@6", "type": "click", "vol": 0.55},
+  {"at": "apaga@7+0.3", "type": "hiss", "vol": 0.35},
+  {"at": "Tochas@8", "type": "sting", "vol": 0.5}, {"at": "Dezenas@9", "type": "heartbeat", "vol": 0.7},
+  {"at": "Batidas@10", "type": "knock", "vol": 1.0},
+  {"at": "fresta@12", "type": "creak", "vol": 0.4},
+  {"at": "Abrir@13", "type": "heartbeat", "vol": 0.7},
+  {"at": "abre@14", "type": "creak", "vol": 0.8}, {"at": "abre@14+0.3", "type": "lock", "vol": 0.5},
+  {"at": "rei@15", "type": "hit", "vol": 0.7},
+  {"at": "some@16", "type": "sting", "vol": 0.4},
+  {"at": "voltam@18", "type": "hit", "vol": 0.9},
+  {"at": "guerreiros@19", "type": "thud", "vol": 0.6}, {"at": "guerreiros@19+0.4", "type": "thud", "vol": 0.6},
+  {"at": "sino@20", "type": "sting", "vol": 0.6},
+  {"at": "Toca@22", "type": "heartbeat", "vol": 0.8},
+  {"at": 57.3, "type": "hit", "vol": 0.9}
+ ]}

@@ -1,0 +1,23 @@
+{"mixkit": false, "roomtone": false,
+ "bed": [{"at": 0, "level": 1.1}, {"at": "trilha@2", "level": 0.9}, {"at": "Tambores@3", "level": 1.0}, {"at": "caverna@5", "level": 0.6}, {"at": "ela@7", "level": 0.4}, {"at": "Sem@9", "level": 0.15}, {"at": "sino@11", "level": 0.6}, {"at": "cinza@13", "level": 0.5}, {"at": "inventada@15", "level": 0.3}, {"at": "queimou@17", "level": 0.8}, {"at": "montanha@18", "level": 0.7}, {"at": "UNESCO@21", "level": 0.9}],
+ "music": {"level": -12},
+ "sfx": [
+  {"at": 0.1, "type": "rumble", "vol": 0.8}, {"at": 0.2, "type": "hiss", "vol": 0.4},
+  {"at": "registros@0", "type": "whoosh", "vol": 0.4},
+  {"at": "queimam@1", "type": "rumble", "vol": 0.7},
+  {"at": "Tambores@3", "type": "thud", "vol": 0.8}, {"at": "Tambores@3+0.45", "type": "thud", "vol": 0.8}, {"at": "monges@3", "type": "thud", "vol": 0.8}, {"at": "pátio@3", "type": "thud", "vol": 0.8},
+  {"at": "tocha@4", "type": "heartbeat", "vol": 0.7},
+  {"at": "caverna@5", "type": "whoosh", "vol": 0.4},
+  {"at": "para@6", "type": "heartbeat", "vol": 0.8},
+  {"at": "ela@7", "type": "sting", "vol": 0.4},
+  {"at": "Sem@9", "type": "hiss", "vol": 0.4},
+  {"at": "Regra@10", "type": "click", "vol": 0.5},
+  {"at": "sino@11", "type": "boom", "vol": 0.8}, {"at": "sino@11", "type": "sting", "vol": 0.4},
+  {"at": "Regra@12", "type": "click", "vol": 0.5},
+  {"at": "Vivo@14", "type": "sting", "vol": 0.5},
+  {"at": "4@16", "type": "click", "vol": 0.4},
+  {"at": "queimou@17", "type": "hit", "vol": 0.8}, {"at": "3@17", "type": "thud", "vol": 0.6},
+  {"at": "comum@19", "type": "sting", "vol": 0.4},
+  {"at": "Joseon@20", "type": "boom", "vol": 0.7},
+  {"at": "lutar@22", "type": "hit", "vol": 0.9}
+ ]}
