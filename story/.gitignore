@@ -8,3 +8,5 @@ engine/sfx/
 *_master.mp4
 *.log
 *.wav
+**/capa/
+historias/**/mix.wav
