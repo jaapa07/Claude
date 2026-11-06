@@ -194,6 +194,10 @@ export class Stickman {
         c.beginPath(); c.arc(head[0] - 52 * (f || 1), head[1] - 10, 24, 0, 7); c.fill(); }
       else if (o.mark.type === 'gat') {                                    // a wide black horsehair hat
         c.fillStyle = o.mark.color; c.fillRect(head[0] - 34, head[1] - BONES.head - 64, 68, 62); stroke([[head[0] - 110, head[1] - BONES.head + 2], [head[0] + 110, head[1] - BONES.head + 2]], 14, o.mark.color); }
+      else if (o.mark.type === 'stache') {                                 // a shirt colour and a big moustache (and grey hair if color2)
+        stroke([hip, neck], 34, o.mark.color);
+        stroke([[head[0] - 34 + (f || 0) * 14, head[1] + 20], [head[0] + (f || 0) * 14, head[1] + 12], [head[0] + 34 + (f || 0) * 14, head[1] + 20]], 14, '#2a1f18');
+        if (o.mark.color2) { c.fillStyle = o.mark.color2; c.beginPath(); c.arc(head[0], head[1] - 6, BONES.head + 4, Math.PI * 1.1, Math.PI * 1.9); c.fill(); } }
       else if (o.mark.type === 'band') { stroke([[head[0] - BONES.head, head[1] - 18], [head[0] + BONES.head, head[1] - 18]], 16, o.mark.color); }
       else { stroke([hip, neck], 24, o.mark.color); }
     }

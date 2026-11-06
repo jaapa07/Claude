@@ -1,0 +1,166 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>O Jantar — parte 2</title>
+<script type="importmap">{"imports": {"three": "../../engine/vendor/three.module.js"}}</script>
+<style>
+@font-face { font-family: 'Oswald'; font-weight: 700; src: url('../../engine/vendor/fonts/oswald-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 700; src: url('../../engine/vendor/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+html, body { margin: 0; background: #000; } canvas { display: block; }
+</style>
+<script src="timing.js"></script>
+</head><body>
+<canvas id="film" width="1080" height="1920"></canvas>
+<script type="module">
+import * as S from '../../engine/stage.js';
+import { buildWorld, canvasTex } from '../world.js';
+const { THREE, clamp, lerp, ease, spring, box, hud, ruleSticker, endCard, chunkCaptions, drawCaptions, loadFonts, W: CW, H: CH } = S;
+S.LABELS.day = ''; S.LABELS.follow = 'SIGA PARA A PARTE ';
+const T = window.TIMING;
+const w = (li, word, n = 0) => { const b = s => s.toLowerCase().replace(/[^\p{L}0-9:]/gu, ''); let k = 0; for (const x of T.lines[li].words) if (b(x.w) === b(word) && k++ === n) return x.s; throw new Error(`word "${word}" not in line ${li}`); };
+const L0 = li => T.lines[li].words[0].s;
+const c = document.getElementById('film').getContext('2d');
+const stage = S.createStage(document.getElementById('film'));
+const Wd = buildWorld(stage);
+const { you, gf, mom, dad, grandpa, POSE, at: put, place } = Wd;
+const COVER = location.hash === '#cover';
+stage.renderer.toneMappingExposure = 1.1;
+
+
+// ---------- props for this part ----------
+const noteC = canvasTex(256, 180); { const g = noteC.g; g.fillStyle = '#fff3a6'; g.fillRect(0, 0, 256, 180); g.fillStyle = '#c8372d'; g.font = '700 46px Oswald'; g.textAlign = 'center'; g.fillText('NÃO DÊ', 128, 58); g.fillText('DESCARGA!', 128, 108); g.fillStyle = '#1f2026'; g.font = '700 34px Oswald'; g.fillText('ENTOPE.', 128, 156); }
+Wd.note.material = new THREE.MeshStandardMaterial({ map: noteC.tx, emissive: '#ffffff', emissiveMap: noteC.tx, emissiveIntensity: 0.25 });
+const pudim = new THREE.Group(); { const pl = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.17, 0.03, 18), S.mat('#f7f4ee', { rough: 0.4 })); pudim.add(pl); const b = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.15, 0.12, 18), S.mat('#e8b860', { rough: 0.5 })); b.position.y = 0.075; pudim.add(b); const top = new THREE.Mesh(new THREE.CylinderGeometry(0.115, 0.12, 0.03, 18), S.mat('#8a4a1a', { rough: 0.3, emissive: '#3a1a05', glow: 0.4 })); top.position.y = 0.15; pudim.add(top); } Wd.dining.add(pudim);
+const canFloor = Wd.can;
+const SEAT = -0.16, seats = { dad: [-1.6, 0], you: [0.3, 0.9], gf: [-0.6, 0.9], mom: [0.5, -0.9] };
+const tRelief = L0(1), tSpray = w(12, 'esvazia'), tOpen = L0(14), tLever = w(18, 'Segura'), tFlush = L0(19), tPudim = w(21, 'Pudim');
+
+function bath(t, { door = 0, mist = 0 } = {}) {
+  Wd.use('bath'); Wd.bathInDoor.userData.open(-door);
+  Wd.mist(t, mist); Wd.lever.rotation.z = t >= tLever && t < tFlush + 0.6 ? -0.5 : 0;
+  canFloor.position.set(0.75, 0.85, -1.2); canFloor.rotation.set(0, 0, 0);
+  if (t >= tSpray + 1.5) { canFloor.position.set(0.25, 0.04, -0.3); canFloor.rotation.set(0, 0.6, Math.PI / 2); }
+}
+const onToilet = (p = {}) => put(you, -0.3, -0.13, -1.0, Object.assign({}, POSE.sitSide, { facing: -1 }, p));
+function dinner(t) {
+  Wd.use('dining'); place('dining', you, gf, mom, dad);
+  put(you, seats.you[0], SEAT, seats.you[1], t >= w(22, 'lactose') ? POSE.clench : POSE.table);
+  put(gf, seats.gf[0], SEAT, seats.gf[1], POSE.table);
+  put(dad, seats.dad[0], SEAT, seats.dad[1], POSE.table);
+  if (t >= tPudim) put(mom, seats.mom[0], SEAT, seats.mom[1], POSE.table); else put(mom, 0.9, 0, -0.5, { facing: -1, armR: [-1.4, -0.3], armL: [-1.2, -0.4] });
+  Wd.plates.forEach(p => p.visible = false); Wd.pot.visible = false;
+  pudim.position.set(...(t >= tPudim ? [0.3, 0.77, 0.38] : [0.62, 1.12, -0.5])); Wd.potSteam(t, 0);
+}
+
+// ---------- the shot list ----------
+const SH = [], at = (t0, f) => SH.push([t0, f]);
+// 0. the opener: you at the forbidden door, inside; the photos behind; pull out
+at(0, (t, u) => { bath(t, { door: 0.9 }); place('bath', you); put(you, -0.4, 0, 0.9, Object.assign({}, POSE.hold, { facing: 0 })); const k = ease(u / 2.1); stage.aim([lerp(-0.3, 0.9, k), lerp(1.15, 1.6, k), lerp(-0.1, -1.0, k)], [lerp(-0.4, -0.4, k), lerp(1.05, 1.1, k), 0.9], lerp(44, 64, k)); });
+// 1. you go in: the door closes behind you
+at(w(0, 'Você'), (t, u) => { bath(t, { door: 0.9 * (1 - ease(u / 1.2)) }); place('bath', you); put(you, -0.4, 0, 0.5, Object.assign({}, POSE.hold, { facing: 0 })); stage.aim([0.4, 1.4, -1.0], [-0.5, 1.1, 1.2], 62); });
+// 2. relief. pure relief.
+at(tRelief, (t, u) => { bath(t); place('bath', you); onToilet({ armL: [1.6, -0.5], armR: [-1.6, 0.5], headTilt: -0.2, lean: -0.1 }); stage.aim([1.1, 1.0, -1.0], [-0.3, 0.85, -1.0], 54); });
+// 3. until you look around
+at(L0(2), (t, u) => { bath(t); place('bath', you); onToilet({ mood: 'scared', facing: t > w(2, 'volta') ? 1 : -1 }); stage.aim([0.7, 1.05, -0.85], [-0.3, 0.95, -1.0], 44); });
+// 4. the walls are full of photos, all of her father: a pan
+at(L0(3), (t, u) => { bath(t); place('bath', you); onToilet({ mood: 'scared' }); stage.aim([0.3, 1.9, 0.6], [lerp(-1.2, 0.6, ease(u / 3.2)), 1.95, -1.5], 56); });
+// 5. judo medals: nine
+at(L0(4), (t, u) => { bath(t); place('bath'); stage.aim([0.25, 1.35, -0.62 + u * 0.05], [1.46, 1.3, -0.62], 56); });
+// 6. a note taped to the toilet
+at(L0(5), (t, u) => { bath(t); place('bath'); stage.aim([-0.3, 0.95, -0.55 - u * 0.05], [-0.3, 0.68, -1.19], 46); });
+// 7. rule 4 (sticker) over the note
+at(L0(6), (t, u) => { bath(t); place('bath'); stage.aim([-0.3, 0.88, -0.75 - u * 0.03], [-0.3, 0.68, -1.19], 44); });
+// 8. you look at the toilet...
+at(L0(7), (t, u) => { bath(t); place('bath', you); put(you, -0.3, 0, -0.35, Object.assign({}, POSE.look, { facing: 0, mood: 'scared' })); stage.aim([0.6, 1.5, 0.3], [-0.3, 0.8, -0.8], 56); });
+// 9. ...at the note
+at(w(7, 'Olha'), (t, u) => { bath(t); place('bath'); stage.aim([-0.3, 1.3, -0.35], [-0.3, 0.4, -1.0], 54); });
+// 10. knocks on the door (it shakes)
+at(L0(8), (t, u) => { const kk = [0, 0.3, 0.6].some(k => u >= k && u < k + 0.1); bath(t, { door: kk ? 0.015 : 0 }); place('bath', you); put(you, -0.3, 0, -0.35, Object.assign({}, POSE.scared, { facing: 0 })); stage.aim([0.6, 1.3, -1.2], [-0.5, 1.1, 1.5], 60); });
+// 11. "Anyone in there? This bathroom is mine!": him, outside
+at(L0(9), (t, u) => { Wd.use('up'); place('up', dad); put(dad, 0.3, 0, -1.3, Object.assign({}, POSE.reach, { facing: 0, armL: [-0.5, -2.2], armR: [-2.6, 0.4] })); Wd.forbidden.userData.open(0); Wd.forbLight.intensity = 2; Wd.forbGlow.visible = false; stage.aim([0.6, 1.3, 1.4 - u * 0.1], [0.3, 1.25, -1.3], 52); });
+// 12. no window, no way out: wide, you panicking
+at(L0(10), (t, u) => { bath(t); place('bath', you); put(you, 0.1, 0, -0.2, Object.assign({}, POSE.scared, { facing: 0 })); stage.aim([1.1, 2.3, 1.2], [-0.2, 0.8, -0.8], 66); });
+// 13. only a lavender spray, nearly empty
+at(L0(11), (t, u) => { bath(t); place('bath'); stage.aim([0.6, 1.05, -0.75], [0.75, 0.95, -1.2], 44); });
+// 14. you empty the whole can
+at(L0(12), (t, u) => { bath(t, { mist: clamp(u / 0.6) }); place('bath', you); put(you, 0.35, 0, -0.5, POSE.spray); stage.aim([1.0, 1.5, 1.1], [0.0, 1.3, -0.8], 60); });
+// 15. you didn't lock the door: the knob turns
+at(L0(13), (t, u) => { bath(t, { mist: 0.3 }); place('bath'); stage.aim([-0.55, 1.1, 0.75], [-0.93, 1.0, 1.45], 46); });
+// 16. it opens
+at(tOpen, (t, u) => { bath(t, { door: 1.1 * ease(u / 0.5), mist: 0.15 }); place('bath', you, dad); put(you, 0.3, 0, -0.5, Object.assign({}, POSE.scared, { facing: 0 })); put(dad, -0.6, 0, 1.95, Object.assign({}, POSE.stand, { facing: 0 })); stage.aim([0.7, 1.3, -1.25], [-0.45, 1.2, 1.8], 58); });
+// 17. it's him: close
+at(w(14, 'É'), (t, u) => { bath(t, { door: 1.1, mist: 0.15 }); place('bath', dad); put(dad, -0.6, 0, 1.95, Object.assign({}, POSE.stand, { facing: 0 })); stage.aim([-0.55, 1.25, 0.85], [-0.6, 1.2, 1.95], 44); });
+// 18. he looks at you...
+at(L0(15), (t, u) => { bath(t, { door: 1.1, mist: 0.15 }); place('bath', you); put(you, 0.3, 0, -0.5, Object.assign({}, POSE.scared, { facing: 0 })); stage.aim([0.25, 1.05, 0.4], [0.3, 1.0, -0.5], 44); });
+// 19. ...the toilet...
+at(w(15, 'Pro'), (t, u) => { bath(t, { door: 1.1, mist: 0.15 }); place('bath'); stage.aim([-0.3, 1.25, -0.2], [-0.3, 0.4, -1.0], 50); });
+// 20. ...the empty can
+at(w(15, 'Pra', 1), (t, u) => { bath(t, { door: 1.1, mist: 0.15 }); place('bath'); stage.aim([0.45, 0.35, 0.15], [0.25, 0.05, -0.3], 46); });
+// 21. and bursts out laughing
+at(L0(16), (t, u) => { bath(t, { door: 1.1 }); place('bath', you, dad); put(dad, -0.6, 0, 1.55, POSE.laugh(t)); put(you, 0.4, 0, -0.3, Object.assign({}, POSE.stand, { facing: -1 })); stage.aim([0.9, 1.4, -0.9], [-0.35, 1.15, 1.3], 58); });
+// 22. "my wife's feijoada? got me in 1997"
+at(L0(17), (t, u) => { bath(t, { door: 1.1 }); place('bath', you, dad); put(dad, -0.1, 0, 0.6, Object.assign({}, POSE.hug)); put(you, 0.45, 0, 0.1, Object.assign({}, POSE.stand, { facing: -1 })); stage.aim([0.8, 1.35, -1.0], [0.1, 1.15, 0.5], 56); });
+// 23. hold the lever three seconds
+at(tLever, (t, u) => { bath(t); place('bath'); stage.aim([0.1, 0.95, -0.6], [-0.13, 0.75, -1.18], 44); });
+// 24. it works
+at(tFlush, (t, u) => { bath(t); place('bath'); const sh = u < 0.8 ? 0.006 * Math.sin(t * 60) : 0; stage.aim([-0.3 + sh, 1.3, -0.4], [-0.3, 0.3, -0.98], 50); });
+// 25. you go down laughing: approved
+at(L0(20), (t, u) => { Wd.use('hall'); place('hall', you, dad); put(dad, -0.55, 0.18 * 9, -8.0, POSE.laugh(t)); put(you, -0.55, 0.18 * 6, -7.2, Object.assign({}, POSE.stand, { facing: 0 })); stage.aim([0.4, 1.3, -3.6], [-0.55, 1.9, -7.6], 56); });
+// 26. until her mother brings dessert
+at(L0(21), (t, u) => { dinner(t); stage.aim([1.3, 1.5, 2.4], [0.6, 1.0, -0.4], 56); });
+// 27. pudding (macro)
+at(tPudim, (t, u) => { dinner(t); stage.aim([0.3, 1.15, 0.0 + u * 0.03], [0.3, 0.85, 0.4], 46); });
+// 28. and you're lactose intolerant: your face
+at(L0(22), (t, u) => { dinner(t); const sh = 0.004 * Math.sin(t * 70); stage.aim([0.25 + sh, 0.95, -0.35], [0.3, 0.88, 0.9], 44); });
+// 29. "rule 1, kid. eat it all": him
+at(L0(23), (t, u) => { dinner(t); stage.aim([-0.85, 0.95, -0.25], [-1.6, 1.0, 0], 46); });
+// 30. the last image: the pudding in front of you
+at(w(23, 'Come'), (t, u) => { dinner(t); stage.aim([0.3, 1.25, -0.35 + u * 0.05], [0.3, 0.85, 0.6], 50); });
+
+const CLOCK = [[0, '20:52'], [L0(8), '20:58'], [L0(20), '21:04'], [L0(21), '21:10']];
+const clockAt = t => ['JANTAR', CLOCK.filter(x => t >= x[0]).pop()[1]];
+const PK = [[0, 99], [w(1, 'Alívio') + 0.2, 0], [tPudim, 15], [w(22, 'lactose'), 58], [w(23, 'tudo'), 71]];
+function pressure(t) { let v = PK[0][1]; for (let i = 1; i < PK.length; i++) { const [tk, vk] = PK[i]; if (t >= tk - 0.35) v = lerp(PK[i - 1][1], vk, ease((t - tk + 0.35) / (i === 1 ? 1.2 : 0.35))); } return Math.round(v); }
+function gauge(c, v, t) {
+  const x = 640, y = 120, wd = 400, ht = 108, hot = v >= 90, sh = hot ? Math.sin(t * 50) * 3 : 0;
+  c.save(); c.translate(sh, 0); c.fillStyle = 'rgba(8,9,12,0.62)'; c.beginPath(); c.roundRect(x, y, wd, ht, 18); c.fill();
+  c.font = '700 30px "JetBrains Mono"'; c.textAlign = 'left'; c.textBaseline = 'middle'; c.fillStyle = '#f3eee4'; c.fillText('PRESSÃO', x + 24, y + 30);
+  c.textAlign = 'right'; c.fillStyle = hot ? '#ff5a4f' : '#ffcc4d'; c.font = '700 40px "JetBrains Mono"'; c.fillText(v + '%', x + wd - 22, y + 32);
+  c.fillStyle = 'rgba(255,255,255,0.15)'; c.beginPath(); c.roundRect(x + 24, y + 62, wd - 48, 26, 13); c.fill();
+  const gr = c.createLinearGradient(x + 24, 0, x + wd - 24, 0); gr.addColorStop(0, '#4fe08a'); gr.addColorStop(0.6, '#ffcc4d'); gr.addColorStop(1, '#ff4b3e');
+  c.fillStyle = gr; c.beginPath(); c.roundRect(x + 24, y + 62, (wd - 48) * v / 100, 26, 13); c.fill(); c.restore();
+}
+function pill(c, s, y) { c.save(); c.font = '700 44px Oswald'; const wd = c.measureText(s).width + 70; c.fillStyle = '#d93b30'; c.beginPath(); c.roundRect(540 - wd / 2, y - 40, wd, 80, 40); c.fill(); c.fillStyle = '#fff'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(s, 540, y + 2); c.restore(); }
+
+
+function medalCount(c, t) { const s = L0(4), n = Math.min(9, Math.floor((t - s) / ((w(4, '9') - s) / 9)) + 1); c.save(); c.textAlign = 'center'; c.textBaseline = 'middle'; c.font = '700 150px Oswald'; c.lineJoin = 'round'; c.lineWidth = 16; c.strokeStyle = '#0b0c0f'; const s2 = 'x' + n; c.strokeText(s2, 540, 980); c.fillStyle = '#ffcc4d'; c.fillText(s2, 540, 980); c.restore(); }
+function stamp(c, k) { if (k <= 0) return; c.save(); c.translate(540, 820); c.rotate(-0.18); const s = 1.6 - 0.6 * clamp(k * 2); c.scale(s, s); c.globalAlpha = clamp(k * 3); c.strokeStyle = '#2e9e57'; c.lineWidth = 16; c.strokeRect(-330, -95, 660, 190); c.fillStyle = '#2e9e57'; c.font = '700 130px Oswald'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('APROVADO', 0, 6); c.restore(); }
+const tEnd = T.voice_end + 0.3;
+const CHUNKS = chunkCaptions(T); window.CHUNKS = CHUNKS;
+window.TOTAL = 60;
+window.seek = t => {
+  if (COVER) return cover();
+  Wd.plates.forEach(p => p.visible = true); Wd.pot.visible = true;
+  let i = 0; while (i + 1 < SH.length && t >= SH[i + 1][0]) i++;
+  SH[i][1](t, t - SH[i][0]);
+  stage.draw(t, { vignette: 0.45, bloomStrength: 0.45 });
+  const [d, k] = clockAt(t); hud(c, d, k); gauge(c, pressure(t), t);
+  if (i === 5 && t < L0(5)) medalCount(c, t);
+  const s6 = L0(6), e6 = T.lines[6].end + 0.25; if (t >= s6 - 0.05 && t < e6) ruleSticker(c, 4, ['NÃO DÊ', 'DESCARGA'], spring((t - s6 + 0.05) * 1.4), 560);
+  if (t >= tLever && t < tLever + 1.2) { ruleSticker(c, 4, ['NÃO DÊ', 'DESCARGA'], 1, 560); c.save(); c.translate(540, 560); c.rotate(-0.06); c.strokeStyle = '#d93b30'; c.lineWidth = 22; c.lineCap = 'round'; c.beginPath(); c.moveTo(-360, 60); c.lineTo(-360 + 720 * ease((t - tLever) / 0.3), -40); c.stroke(); c.restore(); }
+  if (t >= L0(23) && t < tEnd) ruleSticker(c, 1, ['COMA TUDO'], spring((t - L0(23)) * 1.4), 560);
+  if (i === 25) stamp(c, (t - w(20, 'Aprovado')) / 0.5);
+  if (t >= tEnd) endCard(c, tEnd, t, ['VOCÊ COME', 'O PUDIM?'], 'SIM: COMO E REZO', 'NÃO: QUEBRO A REGRA 1', 3);
+  else drawCaptions(c, CHUNKS, t);
+};
+function cover() {
+  const tt = L0(16) + 0.6; SH[21][1](tt, 0.6); stage.draw(tt, { vignette: 0.45, bloomStrength: 0.45 });
+  gauge(c, 99, 0);
+  pill(c, 'PRIMEIRO JANTAR · PARTE 2', 300);
+  c.save(); c.textAlign = 'center'; c.textBaseline = 'middle'; c.lineJoin = 'round';
+  for (const [s, y, col] of [['ELE ABRIU', 450, '#ffffff'], ['A PORTA', 590, '#ff5a4f']]) { c.font = '700 140px Oswald'; c.lineWidth = 16; c.strokeStyle = '#0b0c0f'; c.strokeText(s, 540, y); c.fillStyle = col; c.fillText(s, 540, y); }
+  c.restore();
+}
+await loadFonts();
+window.seek(0);
+window.READY = true;
+</script>
+</body></html>

@@ -1,0 +1,22 @@
+{"mixkit": false, "roomtone": false,
+ "bed": [{"at": 0, "level": 0.4}, {"at": "barulho@6", "level": 0.7}, {"at": "trovão@8", "level": 0.3}, {"at": "7@10", "level": 0.8}, {"at": "aperta@14", "level": 1.0}, {"at": "Trancado@16", "level": 1.1}, {"at": "jornal@17", "level": 0.4}, {"at": "cima@19", "level": 1.0}, {"at": "ver@22", "level": 1.2}],
+ "music": {"level": -14},
+ "sfx": [
+  {"at": 0.1, "type": "click", "vol": 0.3},
+  {"at": "Regra@2", "type": "click", "vol": 0.5}, {"at": "Regra@3", "type": "click", "vol": 0.5}, {"at": "Regra@4", "type": "click", "vol": 0.5},
+  {"at": "feijoada@5", "type": "thud", "vol": 0.4}, {"at": "Duas@5", "type": "thud", "vol": 0.5},
+  {"at": "barulho@6", "type": "growl", "vol": 1.0}, {"at": "barulho@6+0.4", "type": "growl", "vol": 0.8},
+  {"at": "Alto@7", "type": "sting", "vol": 0.3},
+  {"at": "trovão@8+0.5", "type": "rumble", "vol": 0.6},
+  {"at": "7@10", "type": "growl", "vol": 0.7},
+  {"at": "infância@12", "type": "growl", "vol": 0.6},
+  {"at": "aperta@14", "type": "heartbeat", "vol": 0.8},
+  {"at": "corre@15", "type": "whoosh", "vol": 0.5},
+  {"at": "Trancado@16", "type": "lock", "vol": 0.9}, {"at": "Trancado@16+0.25", "type": "lock", "vol": 0.9}, {"at": "Trancado@16+0.5", "type": "hit", "vol": 0.6},
+  {"at": "jornal@17", "type": "hiss", "vol": 0.3},
+  {"at": "quarenta@18", "type": "growl", "vol": 0.9},
+  {"at": "sobe@20", "type": "floorcreak", "vol": 0.5}, {"at": "batalha@20", "type": "floorcreak", "vol": 0.5},
+  {"at": "braço@21", "type": "sting", "vol": 0.4},
+  {"at": "ver@22", "type": "creak", "vol": 0.6},
+  {"at": 55.9, "type": "hit", "vol": 0.8}
+ ]}
