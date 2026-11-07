@@ -14,6 +14,7 @@ Comédia de boteco em bonecos de papel, feita com o Skill **Papermorph** ([Dozen
 |---|---|
 | `parte1.mp4` … `parte3.mp4` | os vídeos finais, 9:16, com legendas gravadas na imagem |
 | `parte1.srt` … `parte3.srt` | as legendas em arquivo, para subir junto na plataforma |
+| `parte1-capa.jpg` … `parte3-capa.jpg` | as capas 1080 × 1920: faixa PÕE NA CONTA DO CAVALO · PT N e título (`tools/cavalo/covers.js`, fonte Oswald, OFL) |
 | `site/cavalo/` | a série como páginas web (player do Papermorph: pausa, legendas, velocidade); `ch01`–`ch03` são as partes |
 | `site/cavalo/ch01/bar.js` | o que as três partes compartilham: marcas, planos, câmera do bar |
 | `site/cavalo/chNN/sceneN.js` | uma cena por arquivo |
@@ -35,6 +36,7 @@ uv run --with playwright --with pillow python $SKILL/scripts/bake_sets.py books/
 python3 $SKILL/scripts/serve.py 8765 site &                     # http://localhost:8765/cavalo/ch01/
 uv run --with playwright --with pillow python $SKILL/scripts/bake_puppets.py site/cavalo --url http://localhost:8765/cavalo/
 sh tools/cavalo/export.sh 1 2 3                                 # parte1.mp4 … parte3.mp4 com legendas
+node tools/cavalo/covers.js                                     # parte1-capa.jpg … parte3-capa.jpg
 ```
 
 ## O que mudou em relação ao Papermorph de fábrica (e por quê)
