@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="pt-BR" data-stage="portrait">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Põe na Conta do Cavalo</title>
+<link rel="stylesheet" href="../lib/engine.css">
+<link rel="expect" href="#bar" blocking="render">
+</head>
+<body>
+<!-- One beat per scene. Order matters: engine, sets and baked pieces, kit, cast, audio data, shared helpers, scenes. -->
+<script src="../lib/engine.js"></script>
+<script src="../img/sets/sets.js"></script>
+<script src="../img/puppets/baked.js" onerror="0"></script>
+<script src="../lib/paper.js"></script>
+<script src="../lib/cast.js"></script>
+<script src="../lib/cavalo.js"></script>
+<script src="audio/pt/timings.js"></script>
+<script src="audio/pt/mouths.js"></script>
+<script src="audio/pt/shots.js"></script>
+<script src="../lib/shared.js"></script>
+<script src="bar.js"></script>
+<script src="scene1.js"></script>
+<script src="scene2.js"></script>
+<script src="scene3.js"></script>
+<script src="scene4.js"></script>
+<script src="scene5.js"></script>
+<script src="scene6.js"></script>
+<script>
+'use strict';
+const CHAPTER = { number: 1, title: 'Põe na Conta do Cavalo', minutes: 2, language: 'pt', film: true };
+try { if (localStorage.getItem('captions') === null) setCaptions(true, false); } catch {}
+const BEATS = [
+  ['scene1', 'O banheiro', (m, D) => scene1(panel(0), D, m), { lead: false, pre: PRE1 }],
+  ['scene2', 'O plano', (m, D) => scene2(panel(0), D, m), { lead: false, pre: PRE2 }],
+  ['scene3', 'Dona Neide', (m, D) => scene3(panel(0), D, m), { lead: false, pre: PRE3 }],
+  ['scene4', 'O óleo do pastel', (m, D) => scene4(panel(0), D, m), { lead: false, pre: PRE4 }],
+  ['scene5', 'A fiscal', (m, D) => scene5(panel(0), D, m), { lead: false, pre: PRE5 }],
+  ['scene6', 'A conta', (m, D) => scene6(panel(0), D, m), { lead: false, pre: PRE6 }],
+].map(([id, title, run, extra]) => ({ id, title, run, ...extra }));
+music('audio/sfx/samba.mp3', undefined, .22);
+paperWarm(g => { zePuppet(g); valdirPuppet(g); neidePuppet(g); horsePuppet(g); });
+boot();
+</script>
+</body>
+</html>

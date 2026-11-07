@@ -1,0 +1,50 @@
+{
+  "engine": "kokoro",
+  "voice": "pm_alex",
+  "rate": "+8%",
+  "voices": {
+    "ze": { "voice": "pm_alex", "rate": "+10%" },
+    "valdir": { "voice": "pm_santa", "rate": "+6%" },
+    "neide": { "voice": "pf_dora", "rate": "+4%" }
+  },
+  "beats": {
+    "z1": { "speaker": "ze", "text": "Valdir. Por que que tem um cavalo no banheiro?" },
+    "v1": { "speaker": "valdir", "text": "Porque o feminino tava ocupado, Zé." },
+    "z2": { "speaker": "ze", "text": "Puta que pariu. De onde saiu esse bicho?" },
+    "v2": { "speaker": "valdir", "text": "Ganhei no jogo do bicho." },
+    "z3": { "speaker": "ze", "text": "No jogo do bicho a gente ganha dinheiro, Valdir!" },
+    "v3": { "speaker": "valdir", "text": "O bicheiro tava sem troco." },
+
+    "z4": { "speaker": "ze", "text": "Tira essa porra daqui! A vigilância sanitária vem hoje!" },
+    "v4": { "speaker": "valdir", "text": "Relaxa. Eu tenho um plano." },
+    "z5": { "speaker": "ze", "text": "Teu último plano foi tatuar o nome da tua ex na testa do teu irmão." },
+    "v5": { "speaker": "valdir", "text": "E ela voltou com ele. Funcionou ou não funcionou?" },
+    "v6": { "speaker": "valdir", "text": "Entalou." },
+
+    "n1": { "speaker": "neide", "text": "Zé, o banheiro tá livre?" },
+    "z6": { "speaker": "ze", "text": "Tá com o Trovão." },
+    "n2": { "speaker": "neide", "text": "Ih, o Trovão. Ele demora mesmo, né?" },
+    "v7": { "speaker": "valdir", "text": "A senhora conhece o Trovão?" },
+    "n3": { "speaker": "neide", "text": "Meu filho, na minha idade, eu conheço todo mundo que demora no banheiro." },
+
+    "v8": { "speaker": "valdir", "text": "Já sei! Óleo do pastel!" },
+    "z7": { "speaker": "ze", "text": "Não, Valdir. Não, não, não, não!" },
+    "v9": { "speaker": "valdir", "text": "Saiu." },
+    "z8": { "speaker": "ze", "text": "Minha cachaça de vinte anos, caralho!" },
+    "v10": { "speaker": "valdir", "text": "Calma, Zé. Ela tá em boas mãos." },
+    "z9": { "speaker": "ze", "text": "Ele não tem mão, Valdir!" },
+
+    "n4": { "speaker": "neide", "text": "Vigilância Sanitária. Boa tarde." },
+    "z10": { "speaker": "ze", "text": "Dona Neide? A senhora bebe aqui há vinte anos!" },
+    "n5": { "speaker": "neide", "text": "Disfarce, Zé. Vinte anos de disfarce." },
+    "v11": { "speaker": "valdir", "text": "Vinte anos? A senhora é fiscal ou é sócia?" },
+    "n6": { "speaker": "neide", "text": "Óleo no chão. Cachaça no cavalo. Cavalo no balcão." },
+    "z11": { "speaker": "ze", "text": "Vai multar o cavalo?" },
+    "n7": { "speaker": "neide", "text": "O cavalo não. Ele tá com a vacina em dia, e já pagou a conta no pix." },
+    "n8": { "speaker": "neide", "text": "Agora, vocês dois, eu vou interditar." },
+    "v12": { "speaker": "valdir", "text": "Interditar por quê?" },
+    "n9": { "speaker": "neide", "text": "Porque nesse bar, o único que deu descarga, foi o cavalo." },
+
+    "v13": { "speaker": "valdir", "text": "Zé. Põe na conta do cavalo." }
+  }
+}

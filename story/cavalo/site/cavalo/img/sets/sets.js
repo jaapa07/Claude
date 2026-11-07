@@ -1,0 +1,1 @@
+window.SETS = {"bar": [{"name": "wall", "k": 0.94, "box": [-300, -400, 2700, 1750], "soft": true}, {"name": "floor", "k": 1, "box": [-300, 1260, 2700, 680], "soft": true}, {"name": "counter", "k": 1, "box": [-300, 1020, 1120, 330], "soft": true, "stage": true}, {"name": "jamb", "k": 1, "box": [1760, 280, 660, 1050], "soft": false}]};

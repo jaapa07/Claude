@@ -1,0 +1,43 @@
+scene1 dur 15.624 (scene-clip times; the beat clock adds the scene's pre)
+   z1 @0  | Valdir.@0.12 Por@0.66 que@0.79 que@0.93 tem@1.06 um@1.19 cavalo@1.33 no@1.73 banheiro?@1.86
+   v1 @2.942  | Porque@3.07 o@3.26 feminino@3.36 tava@3.75 ocupado,@3.94 Zé.@4.41
+   z2 @5.596  | Puta@5.71 que@6.0 pariu.@6.15 De@6.56 onde@6.71 saiu@7.01 esse@7.16 bicho?@7.46
+   v2 @8.418  | Ganhei@8.54 no@8.87 jogo@9.04 do@9.37 bicho.@9.54
+   z3 @10.544  | No@10.67 jogo@10.82 do@11.12 bicho@11.26 a@11.56 gente@11.7 ganha@12.0 dinheiro,@12.29 Valdir!@12.8
+   v3 @13.894  | O@14.0 bicheiro@14.19 tava@14.76 sem@15.13 troco.@15.32
+scene2 dur 17.64 (scene-clip times; the beat clock adds the scene's pre)
+   z4 @0  | Tira@0.13 essa@0.4 porra@0.67 daqui!@0.94 A@1.39 vigilância@1.54 sanitária@2.13 vem@2.72 hoje!@2.87
+   v4 @3.83  | Relaxa.@3.97 Eu@4.42 tenho@4.57 um@4.87 plano.@5.02
+   z5 @5.908  | Teu@6.02 último@6.18 plano@6.68 foi@7.01 tatuar@7.17 o@7.5 nome@7.66 da@7.99 tua@8.16 ex@8.32 na@8.49 testa@8.65 do@8.98 teu@9.14 irmão.@9.31
+   v5 @10.29  | E@10.4 ela@10.54 voltou@10.83 com@11.11 ele.@11.25 Funcionou@11.74 ou@12.26 não@12.44 funcionou?@12.61
+   tug @13.832  | (silence)
+   v6 @16.782  | Entalou.@16.9
+scene3 dur 12.48 (scene-clip times; the beat clock adds the scene's pre)
+   n1 @0  | Zé,@0.11 o@0.28 banheiro@0.45 tá@0.97 livre?@1.14
+   z6 @2.102  | Tá@2.22 com@2.42 o@2.63 Trovão.@2.83
+   n2 @3.796  | Ih,@3.92 o@4.06 Trovão.@4.21 Ele@4.5 demora@4.79 mesmo,@5.22 né?@5.51
+   v7 @6.354  | A@6.48 senhora@6.64 conhece@7.1 o@7.57 Trovão?@7.72
+   n3 @8.648  | Meu@8.76 filho,@9.2 na@10.34 minha@10.43 idade,@10.61 eu@10.99 conheço@11.08 todo@11.35 mundo@11.52 que@11.7 demora@11.79 no@12.06 banheiro.@12.15
+scene4 dur 17.136 (scene-clip times; the beat clock adds the scene's pre)
+   v8 @0  | Já@0.13 sei!@0.33 Óleo@0.54 do@0.94 pastel!@1.14
+   z7 @2.126  | Não,@2.26 Valdir.@2.48 Não,@2.94 não,@3.17 não,@3.39 não!@3.62
+   slide @4.54  | (silence)
+   v9 @9.09  | Saiu.@9.21
+   z8 @10.256  | Minha@10.39 cachaça@10.7 de@11.18 vinte@11.34 anos,@11.66 caralho!@11.98
+   v10 @13.054  | Calma,@13.17 Zé.@13.99 Ela@14.14 tá@14.43 em@14.57 boas@14.71 mãos.@14.86
+   z9 @15.588  | Ele@15.7 não@16.09 tem@16.29 mão,@16.49 Valdir!@16.69
+scene5 dur 32.232 (scene-clip times; the beat clock adds the scene's pre)
+   n4 @0  | Vigilância@0.12 Sanitária.@0.88 Boa@1.72 tarde.@1.86
+   z10 @2.726  | Dona@2.85 Neide?@3.19 A@3.64 senhora@3.76 bebe@4.15 aqui@4.4 há@4.66 vinte@4.79 anos!@5.04
+   n5 @5.884  | Disfarce,@6.0 Zé.@6.9 Vinte@7.06 anos@7.36 de@7.66 disfarce.@7.81
+   v11 @8.85  | Vinte@8.97 anos?@9.27 A@9.66 senhora@9.8 é@10.22 fiscal@10.37 ou@10.65 é@10.79 sócia?@10.93
+   n6 @11.888  | Óleo@12.0 no@12.36 chão.@12.54 Cachaça@12.79 no@13.2 cavalo.@13.34 Cavalo@13.84 no@14.25 balcão.@14.39
+   z11 @15.262  | Vai@15.38 multar@15.55 o@15.89 cavalo?@16.06
+   n7 @17.196  | O@17.31 cavalo@17.45 não.@17.9 Ele@18.22 tá@18.51 com@18.66 a@18.81 vacina@18.96 em@19.41 dia,@19.56 e@19.82 já@19.97 pagou@20.13 a@20.44 conta@20.59 no@20.91 pix.@21.06
+   n8 @21.77  | Agora,@21.88 vocês@22.43 dois,@22.8 eu@22.98 vou@23.16 interditar.@23.35
+   v12 @24.76  | Interditar@24.87 por@25.68 quê?@25.89
+   n9 @26.694  | Porque@26.82 nesse@27.13 bar,@27.44 o@27.74 único@27.89 que@28.34 deu@28.49 descarga,@28.64 foi@29.18 o@29.29 cavalo.@29.4
+   flush @30.38  | (silence)
+scene6 dur 5.664 (scene-clip times; the beat clock adds the scene's pre)
+   v13 @0  | Zé.@0.11 Põe@0.4 na@0.56 conta@0.71 do@1.02 cavalo.@1.18
+   tail @2.246  | (silence)

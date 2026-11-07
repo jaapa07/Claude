@@ -1,0 +1,25 @@
+# Storyboard (ch01)
+
+Planos por cena; os tempos estão no relógio de cada cena (pre + clipe juntado, ver `content/cavalo/ch01/narration.pt.words.txt`).
+
+| Cena | Plano | O que se vê | Quem fala |
+|---|---|---|---|
+| 1 | porta ELES | a cabeça do cavalo sai da porta e relincha (gancho em 0,5 s) | — |
+| 1 | close Zé / dois / close Valdir, alternando | Zé enxuga o copo, para e depois grita; Valdir, meio de pileque, orgulhoso | Zé, Valdir |
+| 2 | porta ELES | o cavalo relincha baixinho | — |
+| 2 | close Zé / dois / close Valdir | Zé aponta a porta; Valdir levanta o dedo (o plano); Zé com a pálpebra baixa (a tatuagem) | Zé, Valdir |
+| 2 | porta, aberto | Valdir puxa a corda três vezes; o cavalo sai um pouco e volta (entalado) | — |
+| 2 | close Valdir com o cavalo ao lado | "Entalou." olhando para a câmera | Valdir |
+| 3 | bar aberto | sino; Dona Neide entra a passinhos rápidos | — |
+| 3 | close Neide / Zé / Neide / Valdir com o cavalo / Neide | a senhora que sabe das coisas | Neide, Zé, Valdir |
+| 4 | close Valdir na porta | a ideia: "Óleo do pastel!" | Valdir |
+| 4 | close Zé | "Não, não, não", agitando os braços | Zé |
+| 4 | porta, aberto → chicote acompanhando | o óleo escorre; o cavalo dispara de barriga, Neide pula, o cavalo bate no balcão (tremida, clarão, garrafas voando) | — |
+| 4 | o cavalo no balcão / close Valdir / Zé e o cavalo | o cavalo de pé no balcão bebendo a cachaça; luto do Zé | Valdir, Zé |
+| 5 | close Neide | o crachá da Vigilância (sting) | Neide |
+| 5 | close Zé / Neide / Valdir | a reviravolta | Zé, Neide, Valdir |
+| 5 | insertos: óleo no chão / cachaça no cavalo / cavalo no balcão | cada item da lista conforme ela fala | Neide |
+| 5 | inserto do casco com o celular PIX ✓ (moeda) | "pagou a conta no pix" | Neide |
+| 5 | close Neide / Valdir / Neide → cavalo | "o único que deu descarga foi o cavalo"; descarga; push lento no cavalo, satisfeito | Neide, Valdir |
+| 6 | close Zé → close Valdir | "Zé. Põe na conta do cavalo." | Valdir |
+| 6 | cavalo / bar aberto | relincho; cartão final | — |

@@ -1,0 +1,1448 @@
+{
+ "z1": {
+  "key": "a4631901129f8238d962d176f30f0c3cf15726b6",
+  "dur": 2.592,
+  "words": [
+   [
+    0.12,
+    "Valdir."
+   ],
+   [
+    0.66,
+    "Por"
+   ],
+   [
+    0.793,
+    "que"
+   ],
+   [
+    0.927,
+    "que"
+   ],
+   [
+    1.06,
+    "tem"
+   ],
+   [
+    1.193,
+    "um"
+   ],
+   [
+    1.327,
+    "cavalo"
+   ],
+   [
+    1.727,
+    "no"
+   ],
+   [
+    1.86,
+    "banheiro?"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Valdir."
+   ],
+   [
+    0.66,
+    "Por que que tem um cavalo no banheiro?"
+   ]
+  ],
+  "lag": 0
+ },
+ "v1": {
+  "key": "ef11b17cb47ecea5b60a8df050e2c7442e2756b7",
+  "dur": 2.304,
+  "words": [
+   [
+    0.13,
+    "Porque"
+   ],
+   [
+    0.322,
+    "o"
+   ],
+   [
+    0.418,
+    "feminino"
+   ],
+   [
+    0.803,
+    "tava"
+   ],
+   [
+    0.995,
+    "ocupado,"
+   ],
+   [
+    1.47,
+    "Z\u00e9."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.13,
+    "Porque o feminino tava ocupado, Z\u00e9."
+   ]
+  ],
+  "lag": 0
+ },
+ "z2": {
+  "key": "470ea52db74f145f3931fd307bfc16072eb5d036",
+  "dur": 2.472,
+  "words": [
+   [
+    0.11,
+    "Puta"
+   ],
+   [
+    0.406,
+    "que"
+   ],
+   [
+    0.554,
+    "pariu."
+   ],
+   [
+    0.96,
+    "De"
+   ],
+   [
+    1.111,
+    "onde"
+   ],
+   [
+    1.414,
+    "saiu"
+   ],
+   [
+    1.565,
+    "esse"
+   ],
+   [
+    1.868,
+    "bicho?"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "Puta que pariu."
+   ],
+   [
+    0.96,
+    "De onde saiu esse bicho?"
+   ]
+  ],
+  "lag": 0
+ },
+ "v2": {
+  "key": "30ac4a50b7df97690c853a712c038b4c3eacb0a2",
+  "dur": 1.776,
+  "words": [
+   [
+    0.12,
+    "Ganhei"
+   ],
+   [
+    0.452,
+    "no"
+   ],
+   [
+    0.619,
+    "jogo"
+   ],
+   [
+    0.951,
+    "do"
+   ],
+   [
+    1.118,
+    "bicho."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Ganhei no jogo do bicho."
+   ]
+  ],
+  "lag": 0
+ },
+ "z3": {
+  "key": "2690e1c06400eafca6af9d7a70c52ea3964bd800",
+  "dur": 3.0,
+  "words": [
+   [
+    0.13,
+    "No"
+   ],
+   [
+    0.277,
+    "jogo"
+   ],
+   [
+    0.571,
+    "do"
+   ],
+   [
+    0.719,
+    "bicho"
+   ],
+   [
+    1.013,
+    "a"
+   ],
+   [
+    1.16,
+    "gente"
+   ],
+   [
+    1.454,
+    "ganha"
+   ],
+   [
+    1.749,
+    "dinheiro,"
+   ],
+   [
+    2.26,
+    "Valdir!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.13,
+    "No jogo do bicho a gente ganha dinheiro, Valdir!"
+   ]
+  ],
+  "lag": 0
+ },
+ "v3": {
+  "key": "14202539129a47f5fa82e3806efeafbcd93f52c6",
+  "dur": 2.016,
+  "words": [
+   [
+    0.11,
+    "O"
+   ],
+   [
+    0.298,
+    "bicheiro"
+   ],
+   [
+    0.861,
+    "tava"
+   ],
+   [
+    1.237,
+    "sem"
+   ],
+   [
+    1.424,
+    "troco."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "O bicheiro tava sem troco."
+   ]
+  ],
+  "lag": 0
+ },
+ "z4": {
+  "key": "af545398506912263db85d26ba4ce20161802ab1",
+  "dur": 3.48,
+  "words": [
+   [
+    0.13,
+    "Tira"
+   ],
+   [
+    0.4,
+    "essa"
+   ],
+   [
+    0.67,
+    "porra"
+   ],
+   [
+    0.94,
+    "daqui!"
+   ],
+   [
+    1.39,
+    "A"
+   ],
+   [
+    1.537,
+    "vigil\u00e2ncia"
+   ],
+   [
+    2.128,
+    "sanit\u00e1ria"
+   ],
+   [
+    2.718,
+    "vem"
+   ],
+   [
+    2.865,
+    "hoje!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.13,
+    "Tira essa porra daqui!"
+   ],
+   [
+    1.39,
+    "A vigil\u00e2ncia sanit\u00e1ria vem hoje!"
+   ]
+  ],
+  "lag": 0
+ },
+ "v4": {
+  "key": "c8b409e0f0dcbf68d790be8241f0733f6f33bf8e",
+  "dur": 1.728,
+  "words": [
+   [
+    0.14,
+    "Relaxa."
+   ],
+   [
+    0.59,
+    "Eu"
+   ],
+   [
+    0.74,
+    "tenho"
+   ],
+   [
+    1.04,
+    "um"
+   ],
+   [
+    1.19,
+    "plano."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.14,
+    "Relaxa."
+   ],
+   [
+    0.59,
+    "Eu tenho um plano."
+   ]
+  ],
+  "lag": 0
+ },
+ "z5": {
+  "key": "34713545d4732611c665b4597a71a8acebd047c2",
+  "dur": 4.032,
+  "words": [
+   [
+    0.11,
+    "Teu"
+   ],
+   [
+    0.275,
+    "\u00faltimo"
+   ],
+   [
+    0.768,
+    "plano"
+   ],
+   [
+    1.097,
+    "foi"
+   ],
+   [
+    1.262,
+    "tatuar"
+   ],
+   [
+    1.591,
+    "o"
+   ],
+   [
+    1.755,
+    "nome"
+   ],
+   [
+    2.085,
+    "da"
+   ],
+   [
+    2.249,
+    "tua"
+   ],
+   [
+    2.414,
+    "ex"
+   ],
+   [
+    2.578,
+    "na"
+   ],
+   [
+    2.743,
+    "testa"
+   ],
+   [
+    3.072,
+    "do"
+   ],
+   [
+    3.236,
+    "teu"
+   ],
+   [
+    3.401,
+    "irm\u00e3o."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "Teu \u00faltimo plano foi tatuar o nome da tua ex na testa do teu irm\u00e3o."
+   ]
+  ],
+  "lag": 0
+ },
+ "v5": {
+  "key": "6b623c726b9e4c0954613eb2e11358064b50630d",
+  "dur": 3.192,
+  "words": [
+   [
+    0.11,
+    "E"
+   ],
+   [
+    0.252,
+    "ela"
+   ],
+   [
+    0.538,
+    "voltou"
+   ],
+   [
+    0.822,
+    "com"
+   ],
+   [
+    0.965,
+    "ele."
+   ],
+   [
+    1.45,
+    "Funcionou"
+   ],
+   [
+    1.975,
+    "ou"
+   ],
+   [
+    2.15,
+    "n\u00e3o"
+   ],
+   [
+    2.325,
+    "funcionou?"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "E ela voltou com ele."
+   ],
+   [
+    1.45,
+    "Funcionou ou n\u00e3o funcionou?"
+   ]
+  ],
+  "lag": 0
+ },
+ "v6": {
+  "key": "c5091d9b68e69059058d0bbb307ec81145129265",
+  "dur": 1.104,
+  "words": [
+   [
+    0.12,
+    "Entalou."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Entalou."
+   ]
+  ],
+  "lag": 0
+ },
+ "n1": {
+  "key": "3db77ee19820d7444df524b4f31a9708a4dcd60c",
+  "dur": 1.752,
+  "words": [
+   [
+    0.11,
+    "Z\u00e9,"
+   ],
+   [
+    0.281,
+    "o"
+   ],
+   [
+    0.452,
+    "banheiro"
+   ],
+   [
+    0.966,
+    "t\u00e1"
+   ],
+   [
+    1.138,
+    "livre?"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "Z\u00e9, o banheiro t\u00e1 livre?"
+   ]
+  ],
+  "lag": 0
+ },
+ "z6": {
+  "key": "735761035e7b5ad65fe8b21ca18a4bb433afe2e3",
+  "dur": 1.344,
+  "words": [
+   [
+    0.12,
+    "T\u00e1"
+   ],
+   [
+    0.322,
+    "com"
+   ],
+   [
+    0.524,
+    "o"
+   ],
+   [
+    0.726,
+    "Trov\u00e3o."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "T\u00e1 com o Trov\u00e3o."
+   ]
+  ],
+  "lag": 0
+ },
+ "n2": {
+  "key": "ac6ee84219031b67ef4ab5baa0cc85a8e37f5f9f",
+  "dur": 2.208,
+  "words": [
+   [
+    0.12,
+    "Ih,"
+   ],
+   [
+    0.265,
+    "o"
+   ],
+   [
+    0.41,
+    "Trov\u00e3o."
+   ],
+   [
+    0.7,
+    "Ele"
+   ],
+   [
+    0.99,
+    "demora"
+   ],
+   [
+    1.425,
+    "mesmo,"
+   ],
+   [
+    1.715,
+    "n\u00e9?"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Ih, o Trov\u00e3o."
+   ],
+   [
+    0.7,
+    "Ele demora mesmo, n\u00e9?"
+   ]
+  ],
+  "lag": 0
+ },
+ "v7": {
+  "key": "d06a233d059119d2f9ac4a625095789de27c4cd9",
+  "dur": 1.944,
+  "words": [
+   [
+    0.13,
+    "A"
+   ],
+   [
+    0.285,
+    "senhora"
+   ],
+   [
+    0.75,
+    "conhece"
+   ],
+   [
+    1.215,
+    "o"
+   ],
+   [
+    1.37,
+    "Trov\u00e3o?"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.13,
+    "A senhora conhece o Trov\u00e3o?"
+   ]
+  ],
+  "lag": 0
+ },
+ "n3": {
+  "key": "71252d3a7087df5cf0d36de133debcc4a409ec84",
+  "dur": 4.056,
+  "words": [
+   [
+    0.11,
+    "Meu"
+   ],
+   [
+    0.55,
+    "filho,"
+   ],
+   [
+    1.69,
+    "na"
+   ],
+   [
+    1.782,
+    "minha"
+   ],
+   [
+    1.965,
+    "idade,"
+   ],
+   [
+    2.34,
+    "eu"
+   ],
+   [
+    2.429,
+    "conhe\u00e7o"
+   ],
+   [
+    2.698,
+    "todo"
+   ],
+   [
+    2.876,
+    "mundo"
+   ],
+   [
+    3.055,
+    "que"
+   ],
+   [
+    3.144,
+    "demora"
+   ],
+   [
+    3.412,
+    "no"
+   ],
+   [
+    3.502,
+    "banheiro."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "Meu filho, na minha idade, eu conhe\u00e7o todo mundo que demora no banheiro."
+   ]
+  ],
+  "lag": 0
+ },
+ "v8": {
+  "key": "f9555870fee65d95d4073fd13b2f565562ec9e95",
+  "dur": 1.776,
+  "words": [
+   [
+    0.13,
+    "J\u00e1"
+   ],
+   [
+    0.333,
+    "sei!"
+   ],
+   [
+    0.536,
+    "\u00d3leo"
+   ],
+   [
+    0.941,
+    "do"
+   ],
+   [
+    1.144,
+    "pastel!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.13,
+    "J\u00e1 sei!"
+   ],
+   [
+    0.536,
+    "\u00d3leo do pastel!"
+   ]
+  ],
+  "lag": 0
+ },
+ "z7": {
+  "key": "f2e96475d9c8340283f4de05419fb4ad4c1079fc",
+  "dur": 2.064,
+  "words": [
+   [
+    0.13,
+    "N\u00e3o,"
+   ],
+   [
+    0.357,
+    "Valdir."
+   ],
+   [
+    0.811,
+    "N\u00e3o,"
+   ],
+   [
+    1.039,
+    "n\u00e3o,"
+   ],
+   [
+    1.266,
+    "n\u00e3o,"
+   ],
+   [
+    1.493,
+    "n\u00e3o!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.13,
+    "N\u00e3o, Valdir."
+   ],
+   [
+    0.811,
+    "N\u00e3o, n\u00e3o, n\u00e3o, n\u00e3o!"
+   ]
+  ],
+  "lag": 0
+ },
+ "v9": {
+  "key": "6df5c76816ee4f177565078cdb1ed8a72ff4cd0f",
+  "dur": 0.816,
+  "words": [
+   [
+    0.12,
+    "Saiu."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Saiu."
+   ]
+  ],
+  "lag": 0
+ },
+ "z8": {
+  "key": "2ec1ab4b35c69039935ef6bba2f6a041a199416f",
+  "dur": 2.448,
+  "words": [
+   [
+    0.13,
+    "Minha"
+   ],
+   [
+    0.448,
+    "cacha\u00e7a"
+   ],
+   [
+    0.926,
+    "de"
+   ],
+   [
+    1.085,
+    "vinte"
+   ],
+   [
+    1.404,
+    "anos,"
+   ],
+   [
+    1.722,
+    "caralho!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.13,
+    "Minha cacha\u00e7a de vinte anos, caralho!"
+   ]
+  ],
+  "lag": 0
+ },
+ "v10": {
+  "key": "e7a7124900050bb7804aca61a14e3e05fc227b61",
+  "dur": 2.184,
+  "words": [
+   [
+    0.12,
+    "Calma,"
+   ],
+   [
+    0.94,
+    "Z\u00e9."
+   ],
+   [
+    1.084,
+    "Ela"
+   ],
+   [
+    1.373,
+    "t\u00e1"
+   ],
+   [
+    1.517,
+    "em"
+   ],
+   [
+    1.661,
+    "boas"
+   ],
+   [
+    1.806,
+    "m\u00e3os."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Calma, Z\u00e9."
+   ],
+   [
+    1.084,
+    "Ela t\u00e1 em boas m\u00e3os."
+   ]
+  ],
+  "lag": 0
+ },
+ "z9": {
+  "key": "c5bdfe6e8af8cccc994e69fc6f887f4aa751dee0",
+  "dur": 1.824,
+  "words": [
+   [
+    0.11,
+    "Ele"
+   ],
+   [
+    0.507,
+    "n\u00e3o"
+   ],
+   [
+    0.706,
+    "tem"
+   ],
+   [
+    0.904,
+    "m\u00e3o,"
+   ],
+   [
+    1.103,
+    "Valdir!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "Ele n\u00e3o tem m\u00e3o, Valdir!"
+   ]
+  ],
+  "lag": 0
+ },
+ "n4": {
+  "key": "6b9b026b03a8bb09d4f19f189e2b9588cb8f08df",
+  "dur": 2.376,
+  "words": [
+   [
+    0.12,
+    "Vigil\u00e2ncia"
+   ],
+   [
+    0.88,
+    "Sanit\u00e1ria."
+   ],
+   [
+    1.72,
+    "Boa"
+   ],
+   [
+    1.857,
+    "tarde."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Vigil\u00e2ncia Sanit\u00e1ria."
+   ],
+   [
+    1.72,
+    "Boa tarde."
+   ]
+  ],
+  "lag": 0
+ },
+ "z10": {
+  "key": "77ddd4ec33438d0d6b5f245de8862d010381816a",
+  "dur": 2.808,
+  "words": [
+   [
+    0.12,
+    "Dona"
+   ],
+   [
+    0.465,
+    "Neide?"
+   ],
+   [
+    0.91,
+    "A"
+   ],
+   [
+    1.038,
+    "senhora"
+   ],
+   [
+    1.421,
+    "bebe"
+   ],
+   [
+    1.676,
+    "aqui"
+   ],
+   [
+    1.932,
+    "h\u00e1"
+   ],
+   [
+    2.059,
+    "vinte"
+   ],
+   [
+    2.315,
+    "anos!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Dona Neide?"
+   ],
+   [
+    0.91,
+    "A senhora bebe aqui h\u00e1 vinte anos!"
+   ]
+  ],
+  "lag": 0
+ },
+ "n5": {
+  "key": "c6dcb62f43cf017ebc388ae1f37a7cf172139450",
+  "dur": 2.616,
+  "words": [
+   [
+    0.12,
+    "Disfarce,"
+   ],
+   [
+    1.02,
+    "Z\u00e9."
+   ],
+   [
+    1.171,
+    "Vinte"
+   ],
+   [
+    1.473,
+    "anos"
+   ],
+   [
+    1.776,
+    "de"
+   ],
+   [
+    1.927,
+    "disfarce."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Disfarce, Z\u00e9."
+   ],
+   [
+    1.171,
+    "Vinte anos de disfarce."
+   ]
+  ],
+  "lag": 0
+ },
+ "v11": {
+  "key": "b151e372a6bb9bdfb630b82fc415686c0e82f85c",
+  "dur": 2.688,
+  "words": [
+   [
+    0.12,
+    "Vinte"
+   ],
+   [
+    0.42,
+    "anos?"
+   ],
+   [
+    0.81,
+    "A"
+   ],
+   [
+    0.951,
+    "senhora"
+   ],
+   [
+    1.374,
+    "\u00e9"
+   ],
+   [
+    1.515,
+    "fiscal"
+   ],
+   [
+    1.796,
+    "ou"
+   ],
+   [
+    1.937,
+    "\u00e9"
+   ],
+   [
+    2.078,
+    "s\u00f3cia?"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Vinte anos?"
+   ],
+   [
+    0.81,
+    "A senhora \u00e9 fiscal ou \u00e9 s\u00f3cia?"
+   ]
+  ],
+  "lag": 0
+ },
+ "n6": {
+  "key": "0ab0160a71b6ebfec6de9efe78b0a5e024549794",
+  "dur": 3.024,
+  "words": [
+   [
+    0.11,
+    "\u00d3leo"
+   ],
+   [
+    0.47,
+    "no"
+   ],
+   [
+    0.65,
+    "ch\u00e3o."
+   ],
+   [
+    0.9,
+    "Cacha\u00e7a"
+   ],
+   [
+    1.311,
+    "no"
+   ],
+   [
+    1.449,
+    "cavalo."
+   ],
+   [
+    1.95,
+    "Cavalo"
+   ],
+   [
+    2.365,
+    "no"
+   ],
+   [
+    2.503,
+    "balc\u00e3o."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "\u00d3leo no ch\u00e3o."
+   ],
+   [
+    0.9,
+    "Cacha\u00e7a no cavalo."
+   ],
+   [
+    1.95,
+    "Cavalo no balc\u00e3o."
+   ]
+  ],
+  "lag": 0
+ },
+ "z11": {
+  "key": "124ef05dd2ca8dddaef21eca920bb026f50e6584",
+  "dur": 1.584,
+  "words": [
+   [
+    0.12,
+    "Vai"
+   ],
+   [
+    0.29,
+    "multar"
+   ],
+   [
+    0.63,
+    "o"
+   ],
+   [
+    0.8,
+    "cavalo?"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Vai multar o cavalo?"
+   ]
+  ],
+  "lag": 0
+ },
+ "n7": {
+  "key": "ea2b3aec63082da6abb0479da3907c7c1c2658a8",
+  "dur": 4.224,
+  "words": [
+   [
+    0.11,
+    "O"
+   ],
+   [
+    0.258,
+    "cavalo"
+   ],
+   [
+    0.702,
+    "n\u00e3o."
+   ],
+   [
+    1.02,
+    "Ele"
+   ],
+   [
+    1.318,
+    "t\u00e1"
+   ],
+   [
+    1.467,
+    "com"
+   ],
+   [
+    1.616,
+    "a"
+   ],
+   [
+    1.765,
+    "vacina"
+   ],
+   [
+    2.212,
+    "em"
+   ],
+   [
+    2.361,
+    "dia,"
+   ],
+   [
+    2.62,
+    "e"
+   ],
+   [
+    2.776,
+    "j\u00e1"
+   ],
+   [
+    2.931,
+    "pagou"
+   ],
+   [
+    3.242,
+    "a"
+   ],
+   [
+    3.398,
+    "conta"
+   ],
+   [
+    3.709,
+    "no"
+   ],
+   [
+    3.864,
+    "pix."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "O cavalo n\u00e3o."
+   ],
+   [
+    1.02,
+    "Ele t\u00e1 com a vacina em dia, e j\u00e1 pagou a conta no pix."
+   ]
+  ],
+  "lag": 0
+ },
+ "n8": {
+  "key": "925351a520a2f38a186bd13a6debba57ebe1c63b",
+  "dur": 2.64,
+  "words": [
+   [
+    0.11,
+    "Agora,"
+   ],
+   [
+    0.66,
+    "voc\u00eas"
+   ],
+   [
+    1.027,
+    "dois,"
+   ],
+   [
+    1.21,
+    "eu"
+   ],
+   [
+    1.393,
+    "vou"
+   ],
+   [
+    1.577,
+    "interditar."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "Agora, voc\u00eas dois, eu vou interditar."
+   ]
+  ],
+  "lag": 0
+ },
+ "v12": {
+  "key": "d70ac41f76b36a18cc338353d72d7ec096dcc131",
+  "dur": 1.584,
+  "words": [
+   [
+    0.11,
+    "Interditar"
+   ],
+   [
+    0.923,
+    "por"
+   ],
+   [
+    1.127,
+    "qu\u00ea?"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "Interditar por qu\u00ea?"
+   ]
+  ],
+  "lag": 0
+ },
+ "n9": {
+  "key": "f94b31acfaa1ef94279ae1daf061a19211d95666",
+  "dur": 3.336,
+  "words": [
+   [
+    0.13,
+    "Porque"
+   ],
+   [
+    0.438,
+    "nesse"
+   ],
+   [
+    0.746,
+    "bar,"
+   ],
+   [
+    1.05,
+    "o"
+   ],
+   [
+    1.199,
+    "\u00fanico"
+   ],
+   [
+    1.646,
+    "que"
+   ],
+   [
+    1.794,
+    "deu"
+   ],
+   [
+    1.943,
+    "descarga,"
+   ],
+   [
+    2.49,
+    "foi"
+   ],
+   [
+    2.6,
+    "o"
+   ],
+   [
+    2.71,
+    "cavalo."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.13,
+    "Porque nesse bar, o \u00fanico que deu descarga, foi o cavalo."
+   ]
+  ],
+  "lag": 0
+ },
+ "v13": {
+  "key": "30ea8941ba81a656058ffff956e8f53dec1da70b",
+  "dur": 1.896,
+  "words": [
+   [
+    0.11,
+    "Z\u00e9."
+   ],
+   [
+    0.4,
+    "P\u00f5e"
+   ],
+   [
+    0.556,
+    "na"
+   ],
+   [
+    0.712,
+    "conta"
+   ],
+   [
+    1.025,
+    "do"
+   ],
+   [
+    1.181,
+    "cavalo."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "Z\u00e9."
+   ],
+   [
+    0.4,
+    "P\u00f5e na conta do cavalo."
+   ]
+  ],
+  "lag": 0
+ }
+}

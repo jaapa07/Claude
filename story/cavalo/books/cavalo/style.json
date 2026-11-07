@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "tier": "picture",
+  "book": { "title": "Põe na Conta do Cavalo", "slug": "cavalo", "language": "pt", "readers": "adultos, redes sociais", "pilot": "ch01" },
+  "words": [
+    "Comédia brasileira raiz, humor ácido e de boteco, palavrões sem preconceito; situação absurda nos primeiros segundos, cada decisão piora tudo, reviravolta absurda, piada final memorável; sem narrador explicando as piadas.",
+    "Formato: MP4 vertical 9:16, com mais de 60 segundos."
+  ],
+  "look": "bonecos de papel recortado de cabeça redonda (cast.js tipo 1) e um cavalo em perfil feito para o filme; cenário de boteco desenhado em código; palco vertical 900 x 1600",
+  "voice": {
+    "engine": "kokoro (kokoro-onnx, local)",
+    "cast": { "Zé": { "voice": "pm_alex", "rate": "+10%" }, "Valdir": { "voice": "pm_santa", "rate": "+6%" }, "Dona Neide": { "voice": "pf_dora", "rate": "+4%" } }
+  },
+  "illustration": {
+    "sets": "SVG em papel, assado por bake_sets.py (books/cavalo/art/sets.js)",
+    "budget": "zero: nada pago",
+    "cast": [
+      { "name": "Zé", "look": "dono do bar, careca, bigode, avental azul", "file": "site/cavalo/lib/cavalo.js" },
+      { "name": "Valdir", "look": "cliente sem noção, cabelo arrepiado, barba por fazer, camisa amarela e verde", "file": "site/cavalo/lib/cavalo.js" },
+      { "name": "Dona Neide", "look": "senhora de coque grisalho e óculos, vestido roxo, bolsa; fiscal disfarçada", "file": "site/cavalo/lib/cavalo.js" },
+      { "name": "Trovão", "look": "cavalo alazão de perfil, crina escura, mancha branca no focinho", "file": "site/cavalo/lib/cavalo.js" }
+    ]
+  },
+  "engine": { "source": "DozenTwelve/Papermorph", "ref": "main (engine/ folder)" },
+  "approved": []
+}
