@@ -1,20 +1,19 @@
 # x-autopost
 
 Agente que publica automaticamente na conta **@rodrigohajime** no X (Twitter).
-Uma tarefa agendada no Claude Code roda doze vezes por dia (7h, 8h, 9h, 10h,
-14h, 15h, 16h, 17h, 18h, 19h, 20h e 21h, horario de Brasilia), pesquisa
-conteudo novo na web, escreve um post sobre IA, Apache NiFi, ETL com IA (LangChain, LangGraph,
-n8n), engenharia de dados + IA ou integracao de dados, terminando com uma pergunta de melhoria, seguindo a pauta em `PAUTA.md`, publica e faz commit do registro.
+Uma tarefa agendada no Claude Code roda dez vezes por dia (7h, 8h, 9h, 10h,
+14h, 15h, 16h, 17h, 18h e 19h, horario de Brasilia), escreve um post de ensino
+sobre integracao de sistemas ou ETL seguindo a pauta em `PAUTA.md`, publica e
+faz commit do registro. Cada post termina com uma pergunta para o leitor.
 
 ## Como funciona
 
 1. A tarefa agendada abre uma sessao nova, le `PAUTA.md` e `postados.md`.
 2. Se `fila.md` tiver algum post escrito por voce, ele tem prioridade:
    `python3 x-autopost/postar.py` publica o primeiro bloco e o remove da fila.
-3. Senao, o agente escreve um post sobre integracao no formato do horario
-   (dica, erro comum, caso real, opiniao, ferramenta, gancho de noticia ou
-   post de alcance), de ate 280 caracteres, citando a fonte pelo nome quando
-   usar dado, sem links, salva em um arquivo temporario e roda
+3. Senao, o agente escolhe um tema do banco de temas da pauta, no tipo de
+   ensinamento do horario, faz uma pesquisa rapida, escreve um post de ate
+   280 caracteres sem links, salva em um arquivo temporario e roda
    `python3 x-autopost/postar.py --arquivo <arquivo>`.
    Na terca as 10h e na sexta as 15h sai um fio de 4 a 6 posts, com `--fio`.
 4. O script registra o texto em `postados.md` com data e id do tweet.
@@ -105,8 +104,8 @@ ele sai somente leitura.
 ### Custo estimado
 
 Na API pay-per-use, publicar um post custa cerca de US$ 0,015, e um post com
-link custa cerca de US$ 0,20. Por isso a pauta proibe URLs. Com 12 posts por
-dia sem link, sao cerca de 360 posts e US$ 5,40 por mes. Os dois fios
+link custa cerca de US$ 0,20. Por isso a pauta proibe URLs. Com 10 posts por
+dia sem link, sao cerca de 300 posts e US$ 4,50 por mes. Os dois fios
 semanais adicionam uns 40 posts por mes, cerca de US$ 0,60. Confira os valores
 atuais no Developer Console, eles mudam.
 
