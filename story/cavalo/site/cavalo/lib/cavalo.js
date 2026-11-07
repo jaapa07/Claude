@@ -30,6 +30,7 @@ Object.assign(SHAPES, {
 const PROPS = {
   glass: '<g filter="url(#paper)"><path d="M-16,-46 h32 l-4,52 h-24 Z" fill="#dfeff2" opacity=".9"/><rect x="-14" y="-30" width="28" height="30" fill="#f2c94c" opacity=".85"/><rect x="-14" y="-36" width="28" height="8" fill="#fbf6e8"/></g>',
   cloth: '<g filter="url(#paper)"><path d="M-22,-8 q22,-10 44,0 l-6,40 q-16,8 -32,0 Z" fill="#f4f1ea"/><path d="M-18,6 h36 M-16,20 h32" stroke="#c8322f" stroke-width="4"/></g>',
+  phone: '<g filter="url(#paper)"><rect x="-34" y="-34" width="28" height="52" rx="5" fill="#222"/><rect x="-30" y="-28" width="20" height="38" fill="#5a7fa8"/></g>',
   rope: '<g filter="url(#paper)"><circle r="14" fill="none" stroke="#c8a26a" stroke-width="8"/></g>',
   pan: '<g filter="url(#paper)" transform="scale(.62)"><rect x="-6" y="-14" width="90" height="16" rx="6" fill="#3a2a20"/><path d="M80,-30 h150 q-6,56 -75,58 q-69,-2 -75,-58 Z" fill="#6c6c6c"/><ellipse cx="155" cy="-30" rx="75" ry="10" fill="#e9c46a"/></g>',
   badge: '<g filter="url(#paper)"><rect x="-58" y="-150" width="116" height="150" rx="10" fill="#f4f1ea"/><rect x="-58" y="-150" width="116" height="34" rx="10" fill="#2f7a55"/>' +
@@ -51,11 +52,18 @@ const PROPS = {
 const HORSE = { coat: '#a2622f', far: '#86501f', mane: '#3a2416', hoof: '#2a1a12', blaze: '#f4efe6', muzzle: '#c98f62' };
 const H_HIP = [-118, -205], H_SH = [104, -198], H_NECK = [100, -262], H_HEAD = [160, -407];
 const REST_H = { x: 0, y: 0, s: 1, flip: 1, r: 0, bob: 0, neck: 0, head: 0, jaw: 0, shut: false, lids: 0, eyeX: 0, fn: 0, ff: 0, hn: 0, hf: 0, tail: 0, hold: null, hoof: null };
-function horsePuppet(parent) {
-  const c = HORSE, g = mk('g', {}, parent);
-  const hind = (k, fill) => `<g data-p="${k}" transform="translate(${H_HIP[0]},${H_HIP[1]})"><g filter="url(#paper)"><path d="M-30,-16 Q-36,60 -16,118 L-13,182 L15,182 L16,118 Q30,40 30,-16 Z" fill="${fill}"/>
+// look: other colours (coat, far, mane, blaze, muzzle) and stripes: true (a zebra) or 'half' (its foal, striped behind).
+function horsePuppet(parent, look = {}) {
+  const c = { ...HORSE, ...look }, g = mk('g', {}, parent), ink = c.ink || '#1d1a1a';
+  const sw = (d, w = 13) => `<path d="${d}" stroke="${ink}" stroke-width="${w}" fill="none" stroke-linecap="round"/>`;
+  const ST = !c.stripes ? { body: '', neck: '', head: '', leg: '' } : {
+    body: [-140, -100, -60, -20, 20, 60, 100].filter(x => c.stripes === true || x < -10).map((x, i) => sw(`M${x},${-284 + (i % 2) * 4} q${-12 + (i % 3) * 6},62 ${2 + i},${124 - (i % 2) * 8}`)).join(''),
+    neck: c.stripes === true ? [-20, 10, 40].map((y, i) => sw(`M${-30 + i * 22},${y - 10} L${50 + i * 14},${y - 70}`, 12)).join('') : '',
+    head: c.stripes === true ? sw('M10,-12 q14,20 6,42', 9) + sw('M40,6 q16,18 10,40', 9) + sw('M70,30 q14,14 12,34', 8) : '',
+    leg: [30, 70, 110, 150].map(y => sw(`M-24,${y} q24,8 48,0`, 11)).join('') };
+  const hind = (k, fill) => `<g data-p="${k}" transform="translate(${H_HIP[0]},${H_HIP[1]})"><g filter="url(#paper)"><path d="M-30,-16 Q-36,60 -16,118 L-13,182 L15,182 L16,118 Q30,40 30,-16 Z" fill="${fill}"/>${ST.leg}
       <rect x="-19" y="176" width="38" height="24" rx="5" fill="${c.hoof}"/></g></g>`;
-  const fore = (k, fill, phone) => `<g data-p="${k}" transform="translate(${H_SH[0]},${H_SH[1]})"><g filter="url(#paper)"><path d="M-22,-14 Q-24,70 -13,128 L-13,178 L13,178 L13,128 Q24,60 22,-14 Z" fill="${fill}"/>
+  const fore = (k, fill, phone) => `<g data-p="${k}" transform="translate(${H_SH[0]},${H_SH[1]})"><g filter="url(#paper)"><path d="M-22,-14 Q-24,70 -13,128 L-13,178 L13,178 L13,128 Q24,60 22,-14 Z" fill="${fill}"/>${c.stripes === true ? ST.leg : ''}
       <rect x="-18" y="172" width="36" height="24" rx="5" fill="${c.hoof}"/></g>${phone ? `<g data-p="phone" transform="translate(0,150) rotate(70)"><g filter="url(#paper)"><rect x="-26" y="-46" width="52" height="92" rx="8" fill="#222"/>
       <rect x="-21" y="-38" width="42" height="72" fill="#32bcad"/><text x="0" y="-8" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-size="16" fill="#fff">PIX</text>
       <path d="M-10,8 l7,8 l14,-16" stroke="#fff" stroke-width="5" fill="none"/></g></g>` : ''}</g>`;
@@ -63,18 +71,20 @@ function horsePuppet(parent) {
     ${fore('ff', c.far)}${hind('hf', c.far)}
     <g data-p="tail" transform="translate(-160,-262)"><g filter="url(#paper)"><path d="M6,-6 C-34,10 -50,80 -36,170 C-20,160 -12,120 -6,90 C0,120 4,150 12,160 C16,90 18,30 14,-4 Z" fill="${c.mane}"/></g></g>
     <g filter="url(#paper)"><path d="M-170,-226 C-178,-292 -70,-302 30,-292 C120,-300 166,-268 156,-214 C152,-160 104,-150 40,-150 C-40,-146 -150,-150 -168,-196 Z" fill="${c.coat}"/>
-      <path d="M-120,-170 q60,16 150,4" stroke="#8f5426" stroke-width="5" fill="none"/></g>
+      ${ST.body}<path d="M-120,-170 q60,16 150,4" stroke="${c.stripes ? ink : '#8f5426'}" stroke-width="5" fill="none"/></g>
     <g data-p="neck" transform="translate(${H_NECK[0]},${H_NECK[1]})"><g filter="url(#paper)">
-      <path d="M-44,-20 C-20,-90 10,-130 40,-158 C70,-150 96,-130 108,-108 C80,-60 66,0 60,64 C20,50 -20,20 -44,-20 Z" fill="${c.coat}"/>
+      <path d="M-44,-20 C-20,-90 10,-130 40,-158 C70,-150 96,-130 108,-108 C80,-60 66,0 60,64 C20,50 -20,20 -44,-20 Z" fill="${c.coat}"/>${ST.neck}
       <path d="M-50,-14 C-30,-84 0,-128 36,-164 L46,-150 L24,-132 L34,-118 L10,-104 L18,-88 L-6,-74 L2,-56 L-22,-44 L-14,-26 L-36,-12 Z" fill="${c.mane}"/></g>
       <g data-p="head" transform="translate(${H_HEAD[0] - H_NECK[0]},${H_HEAD[1] - H_NECK[1]})">
         <g filter="url(#paper)"><ellipse cx="128" cy="122" rx="22" ry="10" fill="#5a1414"/><path d="M108,116 h36 v7 h-36 Z" fill="#fbf6e8"/></g>
+        <g data-p="paper" transform="translate(146,124) rotate(-8)"><g filter="url(#paper)"><rect x="-10" y="-26" width="120" height="56" rx="3" fill="#ecebe4"/><path d="M4,-14 h90 M4,-2 h70 M4,10 h84 M4,20 h60" stroke="#9a9a94" stroke-width="4"/>
+          <rect x="70" y="-20" width="32" height="26" fill="#b8b8b0"/><text x="50" y="-30" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-size="15" fill="#2b1d14">JORNAL</text></g></g>
         <g data-p="bottle" transform="translate(150,118) rotate(-70)"><g filter="url(#paper)"><rect x="-20" y="-150" width="40" height="110" rx="9" fill="#8a5a1e"/><rect x="-9" y="-40" width="18" height="52" rx="5" fill="#8a5a1e"/>
           <rect x="-16" y="-128" width="32" height="54" rx="3" fill="#f3e9d2"/><text x="0" y="-108" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-size="13" fill="#a3271f">20</text>
           <text x="0" y="-92" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-size="10" fill="#a3271f">ANOS</text></g></g>
         <g filter="url(#paper)"><path d="M-8,-10 L2,-66 L26,-6 Z" fill="${c.coat}"/><path d="M-2,-14 L3,-50 L16,-12 Z" fill="#6d3a18"/>
           <path d="M-14,-16 C20,-24 60,-6 110,48 C140,78 156,100 150,116 C142,132 116,130 100,120 C80,110 60,90 40,74 C20,62 -6,54 -18,30 C-26,14 -24,-6 -14,-16 Z" fill="${c.coat}"/>
-          <path d="M30,-6 C60,10 90,40 116,76 L104,84 C80,52 56,26 24,8 Z" fill="${c.blaze}"/>
+          <path d="M30,-6 C60,10 90,40 116,76 L104,84 C80,52 56,26 24,8 Z" fill="${c.blaze}"/>${ST.head}
           <path d="M104,84 C124,94 150,98 152,112 C146,130 118,130 100,118 C92,106 94,92 104,84 Z" fill="${c.muzzle}"/>
           <ellipse cx="138" cy="100" rx="7" ry="4" fill="#4a2410"/>
           <path d="M-16,-14 C0,-30 20,-24 26,-8 C14,-14 4,-6 -2,6 C-6,-4 -12,-6 -16,-14 Z" fill="${c.mane}"/></g>
@@ -116,12 +126,12 @@ function horsePuppet(parent) {
     vis(P.eyeO, !o.shut); vis(P.eyeC, !!o.shut);
     tf(P.pupil, `translate(${(o.eyeX * 6).toFixed(1)},0)`);
     vis(P.lid, o.lids > 0); tf(P.lid, `translate(0,${(-18 + 18 * o.lids).toFixed(1)})`);
-    vis(P.bottle, o.hold === 'bottle'); vis(P.phone, o.hoof === 'phone');
+    vis(P.bottle, o.hold === 'bottle'); vis(P.paper, o.hold === 'paper'); vis(P.phone, o.hoof === 'phone');
   } };
 }
 
 /* ---------- people of this film ---------- */
-const zePuppet = (p, o = {}) => spKid(p, 'ze', { skin: '#e3a97c', coat: '#f4f1ea', stripe: '#d9d2c2', pants: '#3a3a4a', holds: { glass: PROPS.glass, cloth: PROPS.cloth }, ...o });
+const zePuppet = (p, o = {}) => spKid(p, 'ze', { skin: '#e3a97c', coat: '#f4f1ea', stripe: '#d9d2c2', pants: '#3a3a4a', holds: { glass: PROPS.glass, cloth: PROPS.cloth, phone: PROPS.phone }, ...o });
 const valdirPuppet = (p, o = {}) => spKid(p, 'valdir', { skin: '#d9a273', coat: '#f2c230', stripe: '#2f8a4a', pants: '#3f6fa8', holds: { rope: PROPS.rope, pan: PROPS.pan }, ...o });
 const neidePuppet = (p, o = {}) => spKid(p, 'neide', { skin: '#f2cfae', coat: '#8e4c9e', stripe: '#f4f1ea', pants: '#e0b49a', holds: { bag: PROPS.bag, badge: PROPS.badge, clip: PROPS.clip }, ...o });
 

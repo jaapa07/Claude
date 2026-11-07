@@ -1,0 +1,998 @@
+{
+ "z1": {
+  "key": "0e22b0183db63555f229f0da75ca873d3d90070b",
+  "dur": 2.952,
+  "words": [
+   [
+    0.12,
+    "Valdir."
+   ],
+   [
+    0.71,
+    "Por"
+   ],
+   [
+    0.851,
+    "que"
+   ],
+   [
+    0.991,
+    "que"
+   ],
+   [
+    1.132,
+    "o"
+   ],
+   [
+    1.273,
+    "cavalo"
+   ],
+   [
+    1.695,
+    "t\u00e1"
+   ],
+   [
+    1.836,
+    "atr\u00e1s"
+   ],
+   [
+    2.117,
+    "do"
+   ],
+   [
+    2.258,
+    "meu"
+   ],
+   [
+    2.399,
+    "balc\u00e3o?"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Valdir."
+   ],
+   [
+    0.71,
+    "Por que que o cavalo t\u00e1 atr\u00e1s do meu balc\u00e3o?"
+   ]
+  ],
+  "lag": 0
+ },
+ "v1": {
+  "key": "e22eb66e5d0e6d2861db48bd065c042f68067518",
+  "dur": 3.792,
+  "words": [
+   [
+    0.11,
+    "N\u00e3o"
+   ],
+   [
+    0.227,
+    "\u00e9"
+   ],
+   [
+    0.345,
+    "mais"
+   ],
+   [
+    0.462,
+    "teu,"
+   ],
+   [
+    0.65,
+    "Z\u00e9."
+   ],
+   [
+    1.28,
+    "A"
+   ],
+   [
+    1.416,
+    "Dona"
+   ],
+   [
+    1.689,
+    "Neide"
+   ],
+   [
+    1.961,
+    "passou"
+   ],
+   [
+    2.234,
+    "o"
+   ],
+   [
+    2.37,
+    "alvar\u00e1"
+   ],
+   [
+    2.779,
+    "pro"
+   ],
+   [
+    2.915,
+    "nome"
+   ],
+   [
+    3.187,
+    "dele."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "N\u00e3o \u00e9 mais teu, Z\u00e9."
+   ],
+   [
+    1.28,
+    "A Dona Neide passou o alvar\u00e1 pro nome dele."
+   ]
+  ],
+  "lag": 0
+ },
+ "z2": {
+  "key": "1ce0ee2f28382bbab4527ca31d1cec717f81cc3a",
+  "dur": 1.488,
+  "words": [
+   [
+    0.12,
+    "Pro"
+   ],
+   [
+    0.279,
+    "nome"
+   ],
+   [
+    0.596,
+    "do"
+   ],
+   [
+    0.754,
+    "cavalo?"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Pro nome do cavalo?"
+   ]
+  ],
+  "lag": 0
+ },
+ "v2": {
+  "key": "4827d7949e6cb55d593a53ac88a2e173eb9f1910",
+  "dur": 2.232,
+  "words": [
+   [
+    0.11,
+    "Era"
+   ],
+   [
+    0.37,
+    "o"
+   ],
+   [
+    0.5,
+    "\u00fanico"
+   ],
+   [
+    0.89,
+    "aqui"
+   ],
+   [
+    1.15,
+    "com"
+   ],
+   [
+    1.28,
+    "o"
+   ],
+   [
+    1.41,
+    "nome"
+   ],
+   [
+    1.67,
+    "limpo."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "Era o \u00fanico aqui com o nome limpo."
+   ]
+  ],
+  "lag": 0
+ },
+ "z3": {
+  "key": "61f1fa13c0b0b3b0c5a5a9b5f3e6994ab5b9f31b",
+  "dur": 2.688,
+  "words": [
+   [
+    0.11,
+    "Isso"
+   ],
+   [
+    0.353,
+    "\u00e9"
+   ],
+   [
+    0.474,
+    "um"
+   ],
+   [
+    0.596,
+    "assalto!"
+   ],
+   [
+    1.07,
+    "Trov\u00e3o,"
+   ],
+   [
+    1.368,
+    "me"
+   ],
+   [
+    1.517,
+    "devolve"
+   ],
+   [
+    1.963,
+    "o"
+   ],
+   [
+    2.112,
+    "meu"
+   ],
+   [
+    2.261,
+    "bar!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "Isso \u00e9 um assalto!"
+   ],
+   [
+    1.07,
+    "Trov\u00e3o, me devolve o meu bar!"
+   ]
+  ],
+  "lag": 0
+ },
+ "v3": {
+  "key": "74827e97fdef4375d83fac90a47c282502207027",
+  "dur": 2.52,
+  "words": [
+   [
+    0.11,
+    "Ele"
+   ],
+   [
+    0.288,
+    "t\u00e1"
+   ],
+   [
+    0.377,
+    "dizendo"
+   ],
+   [
+    0.643,
+    "que"
+   ],
+   [
+    0.732,
+    "fiado,"
+   ],
+   [
+    0.98,
+    "s\u00f3"
+   ],
+   [
+    1.292,
+    "amanh\u00e3."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "Ele t\u00e1 dizendo que fiado, s\u00f3 amanh\u00e3."
+   ]
+  ],
+  "lag": 0
+ },
+ "z4": {
+  "key": "5bb6b4a72ef2becf8d7428b9c6a6f3ecad09a0e4",
+  "dur": 2.832,
+  "words": [
+   [
+    0.11,
+    "Eu"
+   ],
+   [
+    0.273,
+    "t\u00f4"
+   ],
+   [
+    0.437,
+    "pedindo"
+   ],
+   [
+    0.927,
+    "fiado"
+   ],
+   [
+    1.253,
+    "no"
+   ],
+   [
+    1.417,
+    "meu"
+   ],
+   [
+    1.58,
+    "pr\u00f3prio"
+   ],
+   [
+    1.907,
+    "bar,"
+   ],
+   [
+    2.14,
+    "caralho?"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "Eu t\u00f4 pedindo fiado no meu pr\u00f3prio bar, caralho?"
+   ]
+  ],
+  "lag": 0
+ },
+ "v4": {
+  "key": "c8b409e0f0dcbf68d790be8241f0733f6f33bf8e",
+  "dur": 1.728,
+  "words": [
+   [
+    0.14,
+    "Relaxa."
+   ],
+   [
+    0.59,
+    "Eu"
+   ],
+   [
+    0.74,
+    "tenho"
+   ],
+   [
+    1.04,
+    "um"
+   ],
+   [
+    1.19,
+    "plano."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.14,
+    "Relaxa."
+   ],
+   [
+    0.59,
+    "Eu tenho um plano."
+   ]
+  ],
+  "lag": 0
+ },
+ "z5": {
+  "key": "dee41c07e7ac402ccc6120df53de433f5f82688b",
+  "dur": 1.632,
+  "words": [
+   [
+    0.14,
+    "Puta"
+   ],
+   [
+    0.553,
+    "merda."
+   ],
+   [
+    0.967,
+    "L\u00e1"
+   ],
+   [
+    1.173,
+    "vem."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.14,
+    "Puta merda."
+   ],
+   [
+    0.967,
+    "L\u00e1 vem."
+   ]
+  ],
+  "lag": 0
+ },
+ "v5": {
+  "key": "cb6c138db838fa47e0a0c6a10d95999627b952d7",
+  "dur": 3.816,
+  "words": [
+   [
+    0.11,
+    "A"
+   ],
+   [
+    0.251,
+    "gente"
+   ],
+   [
+    0.534,
+    "devolve"
+   ],
+   [
+    0.959,
+    "o"
+   ],
+   [
+    1.1,
+    "cavalo"
+   ],
+   [
+    1.524,
+    "pro"
+   ],
+   [
+    1.666,
+    "bicheiro."
+   ],
+   [
+    2.36,
+    "Ele"
+   ],
+   [
+    2.622,
+    "aceita"
+   ],
+   [
+    3.016,
+    "devolu\u00e7\u00e3o."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "A gente devolve o cavalo pro bicheiro."
+   ],
+   [
+    2.36,
+    "Ele aceita devolu\u00e7\u00e3o."
+   ]
+  ],
+  "lag": 0
+ },
+ "z6": {
+  "key": "833b59773187b98ad479f08f8de14870e5fffefa",
+  "dur": 0.816,
+  "words": [
+   [
+    0.13,
+    "S\u00e9rio?"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.13,
+    "S\u00e9rio?"
+   ]
+  ],
+  "lag": 0
+ },
+ "v6": {
+  "key": "0c0a7ad98be1ded13523f95f252a655fabb66fcc",
+  "dur": 2.568,
+  "words": [
+   [
+    0.12,
+    "S\u00e9rio."
+   ],
+   [
+    0.72,
+    "Mas"
+   ],
+   [
+    0.859,
+    "tem"
+   ],
+   [
+    0.998,
+    "que"
+   ],
+   [
+    1.137,
+    "t\u00e1"
+   ],
+   [
+    1.276,
+    "na"
+   ],
+   [
+    1.415,
+    "caixa"
+   ],
+   [
+    1.694,
+    "original."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "S\u00e9rio."
+   ],
+   [
+    0.72,
+    "Mas tem que t\u00e1 na caixa original."
+   ]
+  ],
+  "lag": 0
+ },
+ "n1": {
+  "key": "9a565ef0c5c2786585c6157b133428459ea0f926",
+  "dur": 1.464,
+  "words": [
+   [
+    0.16,
+    "Que"
+   ],
+   [
+    0.343,
+    "caixa"
+   ],
+   [
+    0.71,
+    "\u00e9"
+   ],
+   [
+    0.893,
+    "essa?"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.16,
+    "Que caixa \u00e9 essa?"
+   ]
+  ],
+  "lag": 0
+ },
+ "v7": {
+  "key": "9c091a162e64737f0527322350e5550bd8a7e8e7",
+  "dur": 1.104,
+  "words": [
+   [
+    0.11,
+    "Geladeira."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "Geladeira."
+   ]
+  ],
+  "lag": 0
+ },
+ "n2": {
+  "key": "2020a7e6736a47172efa2a0215df9f70f5227618",
+  "dur": 1.248,
+  "words": [
+   [
+    0.12,
+    "E"
+   ],
+   [
+    0.304,
+    "esse"
+   ],
+   [
+    0.672,
+    "rabo?"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "E esse rabo?"
+   ]
+  ],
+  "lag": 0
+ },
+ "z7": {
+  "key": "c2faa4d37d7ad9890ed8664434c35dc8075efaea",
+  "dur": 1.08,
+  "words": [
+   [
+    0.11,
+    "\u00c9"
+   ],
+   [
+    0.252,
+    "o"
+   ],
+   [
+    0.394,
+    "degelo."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "\u00c9 o degelo."
+   ]
+  ],
+  "lag": 0
+ },
+ "n3": {
+  "key": "dcb0e573d62283284e1a799ab158b0e49f84a46e",
+  "dur": 1.704,
+  "words": [
+   [
+    0.11,
+    "E"
+   ],
+   [
+    0.307,
+    "essas"
+   ],
+   [
+    0.701,
+    "quatro"
+   ],
+   [
+    1.096,
+    "pernas?"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "E essas quatro pernas?"
+   ]
+  ],
+  "lag": 0
+ },
+ "v8": {
+  "key": "5f2a8eb157ad0cc8a84b222529365e657366f3b6",
+  "dur": 2.904,
+  "words": [
+   [
+    0.11,
+    "\u00c9"
+   ],
+   [
+    0.263,
+    "frost"
+   ],
+   [
+    0.417,
+    "free,"
+   ],
+   [
+    0.66,
+    "Dona"
+   ],
+   [
+    1.115,
+    "Neide."
+   ],
+   [
+    1.75,
+    "Ela"
+   ],
+   [
+    2.004,
+    "anda"
+   ],
+   [
+    2.259,
+    "sozinha."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "\u00c9 frost free, Dona Neide."
+   ],
+   [
+    1.75,
+    "Ela anda sozinha."
+   ]
+  ],
+  "lag": 0
+ },
+ "n4": {
+  "key": "ca5f23511ac1b58bc2a2eedb87e5768490329c96",
+  "dur": 2.688,
+  "words": [
+   [
+    0.12,
+    "Psiu."
+   ],
+   [
+    0.52,
+    "Tem"
+   ],
+   [
+    0.696,
+    "dois"
+   ],
+   [
+    0.873,
+    "cora\u00e7\u00f5es"
+   ],
+   [
+    1.402,
+    "batendo"
+   ],
+   [
+    1.931,
+    "a\u00ed"
+   ],
+   [
+    2.107,
+    "dentro."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Psiu."
+   ],
+   [
+    0.52,
+    "Tem dois cora\u00e7\u00f5es batendo a\u00ed dentro."
+   ]
+  ],
+  "lag": 0
+ },
+ "z8": {
+  "key": "ab1448edc41af8a9b8662681f6f4e0ba35c937d1",
+  "dur": 1.56,
+  "words": [
+   [
+    0.11,
+    "Ele"
+   ],
+   [
+    0.464,
+    "engoliu"
+   ],
+   [
+    0.996,
+    "algu\u00e9m?"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "Ele engoliu algu\u00e9m?"
+   ]
+  ],
+  "lag": 0
+ },
+ "n5": {
+  "key": "4c02540312a089d396107ae63af402455bad8804",
+  "dur": 2.712,
+  "words": [
+   [
+    0.11,
+    "Ele"
+   ],
+   [
+    0.404,
+    "n\u00e3o."
+   ],
+   [
+    0.551,
+    "Ela."
+   ],
+   [
+    0.845,
+    "Esse"
+   ],
+   [
+    1.138,
+    "cavalo"
+   ],
+   [
+    1.579,
+    "\u00e9"
+   ],
+   [
+    1.726,
+    "\u00e9gua."
+   ],
+   [
+    2.11,
+    "E"
+   ],
+   [
+    2.19,
+    "t\u00e1"
+   ],
+   [
+    2.27,
+    "prenha."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "Ele n\u00e3o."
+   ],
+   [
+    0.551,
+    "Ela."
+   ],
+   [
+    0.845,
+    "Esse cavalo \u00e9 \u00e9gua."
+   ],
+   [
+    2.11,
+    "E t\u00e1 prenha."
+   ]
+  ],
+  "lag": 0
+ },
+ "z9": {
+  "key": "bb726bf02196e954aa0eb13bf188d0c2c5cde713",
+  "dur": 1.56,
+  "words": [
+   [
+    0.13,
+    "Prenha?"
+   ],
+   [
+    0.425,
+    "Como"
+   ],
+   [
+    0.72,
+    "assim,"
+   ],
+   [
+    1.015,
+    "\u00e9gua?"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.13,
+    "Prenha?"
+   ],
+   [
+    0.425,
+    "Como assim, \u00e9gua?"
+   ]
+  ],
+  "lag": 0
+ },
+ "v9": {
+  "key": "39457577dafe1c95b8b76e75e65448672b0e0b50",
+  "dur": 2.448,
+  "words": [
+   [
+    0.11,
+    "Eu"
+   ],
+   [
+    0.249,
+    "falei"
+   ],
+   [
+    0.528,
+    "que"
+   ],
+   [
+    0.667,
+    "o"
+   ],
+   [
+    0.807,
+    "feminino"
+   ],
+   [
+    1.364,
+    "tava"
+   ],
+   [
+    1.643,
+    "ocupado."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "Eu falei que o feminino tava ocupado."
+   ]
+  ],
+  "lag": 0
+ },
+ "z10": {
+  "key": "6bd8dfb52957321ded14744a17a53fa27e635ab5",
+  "dur": 2.208,
+  "words": [
+   [
+    0.13,
+    "E"
+   ],
+   [
+    0.33,
+    "quem"
+   ],
+   [
+    0.53,
+    "\u00e9"
+   ],
+   [
+    0.73,
+    "o"
+   ],
+   [
+    0.93,
+    "pai"
+   ],
+   [
+    1.13,
+    "dessa"
+   ],
+   [
+    1.53,
+    "crian\u00e7a?"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.13,
+    "E quem \u00e9 o pai dessa crian\u00e7a?"
+   ]
+  ],
+  "lag": 0
+ }
+}

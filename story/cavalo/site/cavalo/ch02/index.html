@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pt-BR" data-stage="portrait">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Põe na Conta do Cavalo, parte 2</title>
+<link rel="stylesheet" href="../lib/engine.css">
+<link rel="expect" href="#bar" blocking="render">
+</head>
+<body>
+<script src="../lib/engine.js"></script>
+<script src="../img/sets/sets.js"></script>
+<script src="../img/puppets/baked.js" onerror="0"></script>
+<script src="../lib/paper.js"></script>
+<script src="../lib/cast.js"></script>
+<script src="../lib/cavalo.js"></script>
+<script src="audio/pt/timings.js"></script>
+<script src="audio/pt/mouths.js"></script>
+<script src="audio/pt/shots.js"></script>
+<script src="../lib/shared.js"></script>
+<script src="../ch01/bar.js"></script>
+<script src="../lib/series.js"></script>
+<script src="scene1.js"></script>
+<script src="scene2.js"></script>
+<script src="scene3.js"></script>
+<script src="scene4.js"></script>
+<script>
+'use strict';
+const CHAPTER = { number: 2, title: 'Põe na Conta do Cavalo, parte 2', minutes: 1, language: 'pt', film: true, next: '../ch03/' };
+try { if (localStorage.getItem('captions') === null) setCaptions(true, false); } catch {}
+const BEATS = [
+  ['scene1', 'O novo dono', (m, D) => scene1(panel(0), D, m), { lead: false, pre: PRE1 }],
+  ['scene2', 'Fiado', (m, D) => scene2(panel(0), D, m), { lead: false, pre: PRE2 }],
+  ['scene3', 'A geladeira', (m, D) => scene3(panel(0), D, m), { lead: false, pre: PRE3 }],
+  ['scene4', 'Dois corações', (m, D) => scene4(panel(0), D, m), { lead: false, pre: PRE4 }],
+].map(([id, title, run, extra]) => ({ id, title, run, ...extra }));
+music('audio/sfx/samba.mp3', undefined, .22);
+paperWarm(g => { zePuppet(g); valdirPuppet(g); neidePuppet(g); horsePuppet(g); horsePuppet(g, ZEBRA); horsePuppet(g, FOAL); });
+boot();
+</script>
+</body>
+</html>

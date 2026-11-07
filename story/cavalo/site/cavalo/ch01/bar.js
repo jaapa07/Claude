@@ -29,8 +29,8 @@ const blinks = (seed, D) => { const out = []; for (let t = .8 + (seed % 7) * .3,
 // Breathing and the small weight shifts that keep a held figure alive.
 const alive = (q, k) => ({ bob: 2.2 * Math.sin(q * 2.1 + k), headR: 1.6 * Math.sin(q * .9 + k * 2) });
 
-function barScene(p, { neide = false, horse = true, oil = false } = {}) {
-  const cam = paperCam(p, 'bar', V.bar, { after: 'counter', stages: ['floor'] });
+function barScene(p, { neide = false, horse = true, oil = false, wall = false } = {}) {
+  const cam = paperCam(p, 'bar', V.bar, { after: 'counter', stages: wall ? ['wall', 'floor'] : ['floor'] });
   const puddle = mk('g', { visibility: oil ? 'inherit' : 'hidden' }, cam.stage);
   puddle.innerHTML = '<path d="M1500,1296 q90,-22 200,-6 q120,8 180,0 q40,12 -10,22 q-160,18 -330,8 q-70,-6 -40,-24 Z" fill="#e9c46a" opacity=".85"/><path d="M1560,1300 q80,-8 160,-2" stroke="#fff6c8" stroke-width="5" fill="none" opacity=".8"/>';
   const ze = zePuppet(cam.stageAt.floor);

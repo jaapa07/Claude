@@ -14,6 +14,6 @@ python3 "$SKILL/scripts/join.py" "$A" --words "$N" \
   scene4=v8,z7,slide:4.2,v9,z8,v10,z9 \
   scene5=n4,z10,n5,v11,n6,z11,n7,n8,v12,n9,flush:2.4 \
   scene6=v13,tail:3.4
-uv run -q --with numpy python "$SKILL/scripts/sfx.py" "$X" clop crash bang thud bell door splash whoosh laugh slurp coin beep room bonk scrape sting \
+uv run -q --with numpy python "$SKILL/scripts/sfx.py" "$X" clop crash bang thud bell door splash whoosh laugh slurp coin beep room bonk scrape sting clack creak pop boing latch yip \
   --recipes tools/cavalo/sfx_cavalo.py
 uv run -q --with numpy python "$SKILL/scripts/sfx.py" "$X" neigh flush sizzle samba --recipes tools/cavalo/sfx_cavalo.py

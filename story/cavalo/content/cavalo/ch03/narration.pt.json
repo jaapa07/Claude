@@ -1,0 +1,93 @@
+{
+ "engine": "kokoro",
+ "voice": "pm_alex",
+ "rate": "+8%",
+ "voices": {
+  "ze": {
+   "voice": "pm_alex",
+   "rate": "+10%"
+  },
+  "valdir": {
+   "voice": "pm_santa",
+   "rate": "+6%"
+  },
+  "neide": {
+   "voice": "pf_dora",
+   "rate": "+4%"
+  }
+ },
+ "beats": {
+  "z1": {
+   "speaker": "ze",
+   "text": "Tem uma zebra saindo do banheiro feminino."
+  },
+  "v1": {
+   "speaker": "valdir",
+   "text": "Tá explicado o ocupado."
+  },
+  "n1": {
+   "speaker": "neide",
+   "text": "Esse aí entrou na terça. Disse que ia rapidinho."
+  },
+  "z2": {
+   "speaker": "ze",
+   "text": "Zebra não fala, Dona Neide!"
+  },
+  "n2": {
+   "speaker": "neide",
+   "text": "Por isso que ele nunca respondeu."
+  },
+  "n3": {
+   "speaker": "neide",
+   "text": "Vai nascer! Água quente, rápido!"
+  },
+  "v2": {
+   "speaker": "valdir",
+   "text": "Deixa comigo!"
+  },
+  "z3": {
+   "speaker": "ze",
+   "text": "Água, Valdir! Água! Não é o óleo!"
+  },
+  "v3": {
+   "speaker": "valdir",
+   "text": "Da outra vez o óleo funcionou."
+  },
+  "z4": {
+   "speaker": "ze",
+   "text": "Alô, SAMU? É um parto! Não, não é a minha mulher. É a dona do bar."
+  },
+  "z4b": {
+   "speaker": "ze",
+   "text": "Quantos meses? Sei lá! Ela chegou na quinta-feira!"
+  },
+  "n4": {
+   "speaker": "neide",
+   "text": "Empurra, minha filha! Empurra!"
+  },
+  "n5": {
+   "speaker": "neide",
+   "text": "Você não, Valdir!"
+  },
+  "n6": {
+   "speaker": "neide",
+   "text": "Parabéns. É uma menina."
+  },
+  "z5": {
+   "speaker": "ze",
+   "text": "Ela é listrada!"
+  },
+  "v4": {
+   "speaker": "valdir",
+   "text": "Ih, Zé. Deu zebra."
+  },
+  "z6": {
+   "speaker": "ze",
+   "text": "E quem é que vai pagar a pensão dessa menina?"
+  },
+  "v5": {
+   "speaker": "valdir",
+   "text": "Zé. Põe na conta do cavalo."
+  }
+ }
+}

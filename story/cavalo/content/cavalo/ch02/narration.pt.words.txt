@@ -1,0 +1,32 @@
+scene1 dur 11.328 (scene-clip times; the beat clock adds the scene's pre)
+   z1 @0  | Valdir.@0.12 Por@0.71 que@0.85 que@0.99 o@1.13 cavalo@1.27 tá@1.7 atrás@1.84 do@2.12 meu@2.26 balcão?@2.4
+   v1 @3.302  | Não@3.41 é@3.53 mais@3.65 teu,@3.76 Zé.@3.95 A@4.58 Dona@4.72 Neide@4.99 passou@5.26 o@5.54 alvará@5.67 pro@6.08 nome@6.22 dele.@6.49
+   z2 @7.444  | Pro@7.56 nome@7.72 do@8.04 cavalo?@8.2
+   v2 @9.282  | Era@9.39 o@9.65 único@9.78 aqui@10.17 com@10.43 o@10.56 nome@10.69 limpo.@10.95
+scene2 dur 23.208 (scene-clip times; the beat clock adds the scene's pre)
+   z3 @0  | Isso@0.11 é@0.35 um@0.47 assalto!@0.6 Trovão,@1.07 me@1.37 devolve@1.52 o@1.96 meu@2.11 bar!@2.26
+   sign @3.038  | (silence)
+   v3 @5.588  | Ele@5.7 tá@5.88 dizendo@5.96 que@6.23 fiado,@6.32 só@6.57 amanhã.@6.88
+   z4 @8.458  | Eu@8.57 tô@8.73 pedindo@8.89 fiado@9.38 no@9.71 meu@9.88 próprio@10.04 bar,@10.37 caralho?@10.6
+   v4 @11.64  | Relaxa.@11.78 Eu@12.23 tenho@12.38 um@12.68 plano.@12.83
+   z5 @13.718  | Puta@13.86 merda.@14.27 Lá@14.69 vem.@14.89
+   v5 @15.7  | A@15.81 gente@15.95 devolve@16.23 o@16.66 cavalo@16.8 pro@17.22 bicheiro.@17.37 Ele@18.06 aceita@18.32 devolução.@18.72
+   z6 @19.866  | Sério?@20.0
+   v6 @21.032  | Sério.@21.15 Mas@21.75 tem@21.89 que@22.03 tá@22.17 na@22.31 caixa@22.45 original.@22.73
+scene3 dur 13.68 (scene-clip times; the beat clock adds the scene's pre)
+   n1 @0  | Que@0.16 caixa@0.34 é@0.71 essa?@0.89
+   v7 @1.814  | Geladeira.@1.92
+   n2 @3.268  | E@3.39 esse@3.57 rabo?@3.94
+   z7 @4.866  | É@4.98 o@5.12 degelo.@5.26
+   n3 @6.296  | E@6.41 essas@6.6 quatro@7.0 pernas?@7.39
+   v8 @8.35  | É@8.46 frost@8.61 free,@8.77 Dona@9.01 Neide.@9.46 Ela@10.1 anda@10.35 sozinha.@10.61
+   walk @11.604  | (silence)
+scene4 dur 20.544 (scene-clip times; the beat clock adds the scene's pre)
+   n4 @0  | Psiu.@0.12 Tem@0.52 dois@0.7 corações@0.87 batendo@1.4 aí@1.93 dentro.@2.11
+   z8 @3.038  | Ele@3.15 engoliu@3.5 alguém?@4.03
+   n5 @4.948  | Ele@5.06 não.@5.35 Ela.@5.5 Esse@5.79 cavalo@6.09 é@6.53 égua.@6.67 E@7.06 tá@7.14 prenha.@7.22
+   z9 @8.01  | Prenha?@8.14 Como@8.44 assim,@8.73 égua?@9.03
+   stare @9.92  | (silence)
+   v9 @11.87  | Eu@11.98 falei@12.12 que@12.4 o@12.54 feminino@12.68 tava@13.23 ocupado.@13.51
+   z10 @14.668  | E@14.8 quem@15.0 é@15.2 o@15.4 pai@15.6 dessa@15.8 criança?@16.2
+   flush @17.226  | (silence)

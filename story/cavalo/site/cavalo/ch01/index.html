@@ -20,6 +20,7 @@
 <script src="audio/pt/shots.js"></script>
 <script src="../lib/shared.js"></script>
 <script src="bar.js"></script>
+<script src="../lib/series.js"></script>
 <script src="scene1.js"></script>
 <script src="scene2.js"></script>
 <script src="scene3.js"></script>
@@ -28,7 +29,7 @@
 <script src="scene6.js"></script>
 <script>
 'use strict';
-const CHAPTER = { number: 1, title: 'Põe na Conta do Cavalo', minutes: 2, language: 'pt', film: true };
+const CHAPTER = { number: 1, title: 'Põe na Conta do Cavalo', minutes: 2, language: 'pt', film: true, next: '../ch02/' };
 try { if (localStorage.getItem('captions') === null) setCaptions(true, false); } catch {}
 const BEATS = [
   ['scene1', 'O banheiro', (m, D) => scene1(panel(0), D, m), { lead: false, pre: PRE1 }],

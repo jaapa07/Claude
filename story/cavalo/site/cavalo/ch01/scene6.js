@@ -5,7 +5,7 @@ function scene6(p, D, m) {
   const sc = 'scene6', A = c => clipAt(sc, PRE6, c), { cam, ze, tro, val, nei, front } = barScene(p, { neide: true, oil: true });
   cam.cut(V.ze, 0).cut(V.valD, A('v13') - .12).cut(V.stool, A('tail') + .2).cut(V.wide, A('tail') + 1.6);
   sfx(sc, A('tail') + .35, 'neigh', .7);
-  const card = endCardUp(p, A('tail') + 1.9, 'Põe na conta do cavalo', 60);   // on the panel, outside the camera: it stays put
+  const card = endCardUp(p, A('tail') + 1.9, 'Continua na parte 2', 56);   // on the panel, outside the camera: it stays put
   const bz = blinks(3, D), bv = blinks(5, D), bn = blinks(15, D), bh = blinks(22, D);
   stopClock(D, (q, f) => {
     cam.apply(q, f);

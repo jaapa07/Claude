@@ -2,13 +2,13 @@
 'use strict';
 const PRE1 = 1.6;
 function scene1(p, D, m) {
-  const sc = 'scene1', A = c => clipAt(sc, PRE1, c), { cam, ze, tro, val } = barScene(p);
+  const sc = 'scene1', A = c => clipAt(sc, PRE1, c), { cam, ze, tro, val } = barScene(p), tag = partTag(p, 'PARTE 1');
   cam.cut(V.door, 0);
   cuts(cam, sc, PRE1, [['z1', V.ze], ['v1', V.two], ['z2', V.ze], ['v2', V.val], ['z3', V.zeWide], ['v3', V.val]]);
   sfx(sc, .35, 'door', .5); sfx(sc, .55, 'neigh', .8);
   const bz = blinks(3, D), bv = blinks(5, D), bh = blinks(9, D);
   stopClock(D, (q, f) => {
-    cam.apply(q, f);
+    cam.apply(q, f); tag(q);
     // Trovão pokes his head out, neighs, then looks about the bar as if he owned it
     const out = tween(q, .1, .5, 0, 1), neigh = between(q, .55, 1.8);
     tro.pose({ x: TRO.x + 80 * (1 - out), y: FLOORY, s: TRO.s, flip: -1, neck: neigh ? 22 : 4 + 4 * Math.sin(q * 1.3),

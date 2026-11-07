@@ -1,0 +1,27 @@
+scene1 dur 16.56 (scene-clip times; the beat clock adds the scene's pre)
+   door @0  | (silence)
+   z1 @3.75  | Tem@3.86 uma@4.01 zebra@4.3 saindo@4.6 do@4.9 banheiro@5.04 feminino.@5.49
+   v1 @6.788  | Tá@6.9 explicado@7.05 o@7.66 ocupado.@7.81
+   n1 @8.986  | Esse@9.1 aí@9.43 entrou@9.6 na@9.94 terça.@10.11 Disse@10.66 que@10.94 ia@11.08 rapidinho.@11.23
+   z2 @12.384  | Zebra@12.5 não@12.84 fala,@13.01 Dona@13.44 Neide!@13.78
+   n2 @14.726  | Por@14.85 isso@15.0 que@15.31 ele@15.46 nunca@15.77 respondeu.@16.07
+scene2 dur 10.536 (scene-clip times; the beat clock adds the scene's pre)
+   n3 @0  | Vai@0.12 nascer!@0.39 Água@1.03 quente,@1.28 rápido!@1.62
+   v2 @2.462  | Deixa@2.6 comigo!@2.99
+   run @4.156  | (silence)
+   z3 @6.106  | Água,@6.22 Valdir!@7.02 Água!@7.21 Não@7.41 é@7.51 o@7.61 óleo!@7.71
+   v3 @8.568  | Da@8.69 outra@8.86 vez@9.19 o@9.36 óleo@9.53 funcionou.@9.86
+scene3 dur 14.16 (scene-clip times; the beat clock adds the scene's pre)
+   z4 @0  | Alô,@0.11 SAMU?@0.88 É@1.12 um@1.14 parto!@1.16 Não,@1.32 não@1.45 é@1.57 a@1.7 minha@1.83 mulher.@2.08 É@2.47 a@2.58 dona@2.69 do@2.92 bar.@3.03
+   z4b @3.782  | Quantos@3.9 meses?@4.46 Sei@5.12 lá!@5.23 Ela@5.34 chegou@5.55 na@5.77 quinta-feira!@5.88
+   n4 @6.964  | Empurra,@7.09 minha@7.32 filha!@7.87 Empurra!@8.52
+   n5 @9.426  | Você@9.57 não,@10.01 Valdir!@10.24
+   push @11.336  | (silence)
+scene4 dur 17.064 (scene-clip times; the beat clock adds the scene's pre)
+   n6 @0  | Parabéns.@0.12 É@0.53 uma@0.67 menina.@0.94
+   z5 @1.958  | Ela@2.07 é@2.39 listrada!@2.55
+   v4 @3.604  | Ih,@3.73 Zé.@3.94 Deu@4.14 zebra.@4.35
+   z6 @5.394  | E@5.5 quem@5.66 é@5.82 que@5.97 vai@6.12 pagar@6.28 a@6.59 pensão@6.75 dessa@7.06 menina?@7.37
+   hide @8.504  | (silence)
+   v5 @11.454  | Zé.@11.56 Põe@11.85 na@12.01 conta@12.17 do@12.48 cavalo.@12.64
+   tail @13.7  | (silence)

@@ -1,0 +1,117 @@
+{
+ "engine": "kokoro",
+ "voice": "pm_alex",
+ "rate": "+8%",
+ "voices": {
+  "ze": {
+   "voice": "pm_alex",
+   "rate": "+10%"
+  },
+  "valdir": {
+   "voice": "pm_santa",
+   "rate": "+6%"
+  },
+  "neide": {
+   "voice": "pf_dora",
+   "rate": "+4%"
+  }
+ },
+ "beats": {
+  "z1": {
+   "speaker": "ze",
+   "text": "Valdir. Por que que o cavalo tá atrás do meu balcão?"
+  },
+  "v1": {
+   "speaker": "valdir",
+   "text": "Não é mais teu, Zé. A Dona Neide passou o alvará pro nome dele."
+  },
+  "z2": {
+   "speaker": "ze",
+   "text": "Pro nome do cavalo?"
+  },
+  "v2": {
+   "speaker": "valdir",
+   "text": "Era o único aqui com o nome limpo."
+  },
+  "z3": {
+   "speaker": "ze",
+   "text": "Isso é um assalto! Trovão, me devolve o meu bar!"
+  },
+  "v3": {
+   "speaker": "valdir",
+   "text": "Ele tá dizendo que fiado, só amanhã."
+  },
+  "z4": {
+   "speaker": "ze",
+   "text": "Eu tô pedindo fiado no meu próprio bar, caralho?"
+  },
+  "v4": {
+   "speaker": "valdir",
+   "text": "Relaxa. Eu tenho um plano."
+  },
+  "z5": {
+   "speaker": "ze",
+   "text": "Puta merda. Lá vem."
+  },
+  "v5": {
+   "speaker": "valdir",
+   "text": "A gente devolve o cavalo pro bicheiro. Ele aceita devolução."
+  },
+  "z6": {
+   "speaker": "ze",
+   "text": "Sério?"
+  },
+  "v6": {
+   "speaker": "valdir",
+   "text": "Sério. Mas tem que tá na caixa original."
+  },
+  "n1": {
+   "speaker": "neide",
+   "text": "Que caixa é essa?"
+  },
+  "v7": {
+   "speaker": "valdir",
+   "text": "Geladeira."
+  },
+  "n2": {
+   "speaker": "neide",
+   "text": "E esse rabo?"
+  },
+  "z7": {
+   "speaker": "ze",
+   "text": "É o degelo."
+  },
+  "n3": {
+   "speaker": "neide",
+   "text": "E essas quatro pernas?"
+  },
+  "v8": {
+   "speaker": "valdir",
+   "text": "É frost free, Dona Neide. Ela anda sozinha."
+  },
+  "n4": {
+   "speaker": "neide",
+   "text": "Psiu. Tem dois corações batendo aí dentro."
+  },
+  "z8": {
+   "speaker": "ze",
+   "text": "Ele engoliu alguém?"
+  },
+  "n5": {
+   "speaker": "neide",
+   "text": "Ele não. Ela. Esse cavalo é égua. E tá prenha."
+  },
+  "z9": {
+   "speaker": "ze",
+   "text": "Prenha? Como assim, égua?"
+  },
+  "v9": {
+   "speaker": "valdir",
+   "text": "Eu falei que o feminino tava ocupado."
+  },
+  "z10": {
+   "speaker": "ze",
+   "text": "E quem é o pai dessa criança?"
+  }
+ }
+}
