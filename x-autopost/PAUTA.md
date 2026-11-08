@@ -10,15 +10,15 @@ agendada le este arquivo antes de gerar cada post.
 
 Sao 12 posts por dia, divididos assim:
 
-- **3 de ensino** sobre integracao de sistemas e ETL, com tom provocativo.
+- **2 de ensino** sobre integracao de sistemas e ETL, com tom provocativo.
 - **4 de novidades de IA:** o que saiu de novo no Claude, ChatGPT, Grok,
   Gemini e outras, sempre puxando debate.
 - **2 de conexao**, para atrair devs, engenheiros de dados e de IA.
 - **1 opiniao impopular do dia**, que pode ser de integracao, ETL ou IA.
 - **1 de economia do Brasil**, com o dado do dia e o que ele muda para quem
   trabalha com tecnologia.
-- **1 do mundo tech**, sobre o fato mais relevante do dia fora dos
-  assistentes de IA.
+- **2 do mundo tech**: o fato mais relevante das ultimas 24 horas (02h) e
+  outro assunto relevante da semana (08h), fora dos assistentes de IA.
 
 Todo post e pensado para gerar resposta, nao so curtida (ver "Tom
 provocativo"). Os tipos se intercalam para a timeline nao ficar repetitiva:
@@ -27,18 +27,18 @@ provocativo"). Os tipos se intercalam para a timeline nao ficar repetitiva:
 |----------|-------------------------------------------------------------------------|
 | 02h      | **Mundo tech:** o fato mais relevante em tecnologia das ultimas 24 horas (ver "Mundo tech") |
 | 07h      | **Novidade de IA do dia:** o anuncio mais relevante das ultimas 24 horas |
-| 08h      | **Ensino:** formato de ensino do dia (ver rodizio abaixo)               |
+| 08h      | **Mundo tech da semana:** outro assunto relevante da semana, diferente do post das 02h (ver "Mundo tech") |
 | 09h      | **IA em comparacao:** uma novidade colocando Claude, ChatGPT, Grok ou Gemini lado a lado |
-| 10h      | **Ensino:** segundo formato de ensino do dia                            |
+| 10h      | **Ensino:** formato de ensino do dia (ver rodizio abaixo)               |
 | 14h      | **IA para devs:** recurso novo para quem programa ou integra: APIs, agentes, MCP, ferramentas de codigo |
-| 15h      | **Ensino:** terceiro formato de ensino do dia                           |
+| 15h      | **Ensino:** segundo formato de ensino do dia                            |
 | 16h      | **Conexao:** post para atrair devs, engenheiros de dados e de IA (ver "Posts de conexao") |
 | 17h      | **Debate de IA do dia:** preco, limite, benchmark, seguranca, regulacao ou polemica, com "de que lado voce esta?" |
 | 18h      | **Conexao:** segundo post de conexao do dia, com outro publico e outro formato |
 | 19h      | **Opiniao impopular do dia:** a afirmacao mais forte, feita para ser debatida |
 | 20h      | **Economia do Brasil:** o dado economico do dia e o impacto em tech (ver "Economia do Brasil") |
 
-**Rodizio dos formatos de ensino (08h, 10h e 15h).** Use tres formatos
+**Rodizio dos formatos de ensino (10h e 15h).** Use dois formatos
 diferentes por dia, sem repetir a combinacao do dia anterior:
 
 - **Conceito com opiniao:** explica um termo e diz o que quase todo mundo
@@ -191,13 +191,21 @@ ligando o dado a quem trabalha com tecnologia, dados e empresas.
 - Termine com pergunta ligada ao dado: "Sua empresa ja sentiu isso na conta
   de nuvem?", "Isso muda seus planos de contratacao em 2027?".
 
-## Mundo tech (02h)
+## Mundo tech (02h e 08h)
 
-Um post por dia, de madrugada, sobre o fato mais relevante em tecnologia,
-fora dos assistentes de IA (que ja tem quatro horarios proprios). As 02h
-saem as noticias da tarde e da noite nos Estados Unidos e na Europa, entao
-priorize o que aconteceu nas ultimas 12 a 24 horas e que o publico
-brasileiro vai ver de manha.
+Dois posts por dia sobre tecnologia, fora dos assistentes de IA (que ja tem
+quatro horarios proprios):
+
+- **02h, o fato do dia:** as 02h saem as noticias da tarde e da noite nos
+  Estados Unidos e na Europa. Priorize o que aconteceu nas ultimas 12 a 24
+  horas e que o publico brasileiro vai ver de manha.
+- **08h, outra situacao da semana:** um assunto relevante dos ultimos 7
+  dias, obrigatoriamente diferente do post das 02h do mesmo dia e de tudo
+  que ja esta em `postados.md`. Bons candidatos: a historia que continuou
+  se desenrolando durante a semana, um postmortem publicado dias depois de
+  uma queda, uma mudanca de licenca ou de preco que so agora mostrou efeito,
+  um tema que a imprensa brasileira ainda nao cobriu, ou o "o que voce pode
+  ter perdido esta semana". Pode ser contexto e analise, nao so noticia.
 
 - **Assuntos:** movimentos das big techs (Apple, Microsoft, Google, Amazon,
   Meta, Nvidia), chips e semicondutores, nuvem e grandes quedas de servico,
