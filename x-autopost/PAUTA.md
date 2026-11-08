@@ -8,13 +8,17 @@ agendada le este arquivo antes de gerar cada post.
 
 ## Temas: integracao e ETL, novidades de IA e conexao
 
-Sao 10 posts por dia, divididos assim:
+Sao 12 posts por dia, divididos assim:
 
 - **3 de ensino** sobre integracao de sistemas e ETL, com tom provocativo.
 - **4 de novidades de IA:** o que saiu de novo no Claude, ChatGPT, Grok,
   Gemini e outras, sempre puxando debate.
 - **2 de conexao**, para atrair devs, engenheiros de dados e de IA.
 - **1 opiniao impopular do dia**, que pode ser de integracao, ETL ou IA.
+- **1 de economia do Brasil**, com o dado do dia e o que ele muda para quem
+  trabalha com tecnologia.
+- **1 do mundo tech**, sobre o fato mais relevante do dia fora dos
+  assistentes de IA.
 
 Todo post e pensado para gerar resposta, nao so curtida (ver "Tom
 provocativo"). Os tipos se intercalam para a timeline nao ficar repetitiva:
@@ -25,12 +29,14 @@ provocativo"). Os tipos se intercalam para a timeline nao ficar repetitiva:
 | 08h      | **Ensino:** formato de ensino do dia (ver rodizio abaixo)               |
 | 09h      | **IA em comparacao:** uma novidade colocando Claude, ChatGPT, Grok ou Gemini lado a lado |
 | 10h      | **Ensino:** segundo formato de ensino do dia                            |
+| 12h      | **Mundo tech:** o fato mais relevante do dia em tecnologia (ver "Mundo tech") |
 | 14h      | **IA para devs:** recurso novo para quem programa ou integra: APIs, agentes, MCP, ferramentas de codigo |
 | 15h      | **Ensino:** terceiro formato de ensino do dia                           |
 | 16h      | **Conexao:** post para atrair devs, engenheiros de dados e de IA (ver "Posts de conexao") |
 | 17h      | **Debate de IA do dia:** preco, limite, benchmark, seguranca, regulacao ou polemica, com "de que lado voce esta?" |
 | 18h      | **Conexao:** segundo post de conexao do dia, com outro publico e outro formato |
 | 19h      | **Opiniao impopular do dia:** a afirmacao mais forte, feita para ser debatida |
+| 20h      | **Economia do Brasil:** o dado economico do dia e o impacto em tech (ver "Economia do Brasil") |
 
 **Rodizio dos formatos de ensino (08h, 10h e 15h).** Use tres formatos
 diferentes por dia, sem repetir a combinacao do dia anterior:
@@ -160,6 +166,53 @@ Como fazer:
 Tom: provocativo e com opiniao, mas justo. Pode dizer qual ferramenta voce
 prefere para cada tarefa e por que. Nao ataque empresa nem pessoa, nao
 exagere numero e nao transforme opiniao em fato. Nao inclua URL.
+
+## Economia do Brasil (20h)
+
+Um post por dia sobre a economia brasileira, no fechamento do dia, sempre
+ligando o dado a quem trabalha com tecnologia, dados e empresas.
+
+- **Assuntos:** dolar e Ibovespa no fechamento, Selic e decisoes do Copom,
+  IPCA e IPCA-15, PIB, emprego (Caged, PNAD), boletim Focus, credito, juros
+  futuros, investimento em tecnologia no Brasil, startups e rodadas de
+  investimento, reforma tributaria e seu efeito em sistemas (notas
+  fiscais, ERP, integracoes fiscais).
+- **Angulo:** o que isso muda para devs, empresas de tecnologia e times de
+  dados. Exemplos: dolar alto encarecendo nuvem e licencas cobradas em
+  dolar; Selic alta travando contratacao em startups; reforma tributaria
+  exigindo mudanca em integracoes de NF-e e ERP.
+- **Fontes:** IBGE, Banco Central (Copom, Focus, series do SGS), B3, Tesouro,
+  Receita Federal, Valor Economico, InfoMoney, Folha, Estadao, Agencia
+  Brasil. Pesquise o dado do dia e confirme o numero na fonte oficial ou
+  em pelo menos duas fontes.
+- **Neutralidade:** dados e efeitos economicos sim, opiniao sobre governo,
+  partido, politico ou eleicao nao. Nao diga se uma politica e boa ou ruim
+  para o pais; diga o que ela muda na pratica para o setor.
+- Termine com pergunta ligada ao dado: "Sua empresa ja sentiu isso na conta
+  de nuvem?", "Isso muda seus planos de contratacao em 2027?".
+
+## Mundo tech (12h)
+
+Um post por dia sobre o fato mais relevante em tecnologia, fora dos
+assistentes de IA (que ja tem quatro horarios proprios).
+
+- **Assuntos:** movimentos das big techs (Apple, Microsoft, Google, Amazon,
+  Meta, Nvidia), chips e semicondutores, nuvem e grandes quedas de servico,
+  incidentes de seguranca e vazamentos, open source (licencas, projetos
+  importantes, mudancas de governanca), regulacao de tecnologia no mundo e
+  no Brasil (LGPD, ANPD, marco da IA), mercado de trabalho em tech
+  (contratacoes e demissoes), linguagens e frameworks com lancamento
+  importante, hardware relevante para devs.
+- **Angulo:** por que isso importa para quem desenvolve, integra ou cuida de
+  dados. Uma queda de nuvem vira licao de resiliencia; um vazamento vira
+  licao de seguranca de API; uma mudanca de licenca vira alerta de
+  dependencia.
+- **Fontes:** The Verge, Ars Technica, TechCrunch, Bloomberg Technology,
+  Reuters Tech, The Register, BleepingComputer, Hacker News, paginas de
+  status e postmortems oficiais, e no Brasil Tecmundo, Canaltech, Olhar
+  Digital e Convergencia Digital. Confirme em fonte primaria sempre que
+  possivel.
+- Nao repita assunto ja postado nem o tema dos posts de IA do mesmo dia.
 
 ## Banco de temas
 
@@ -322,7 +375,8 @@ Cada fio usa um tema diferente dos 4 fios anteriores do mesmo dia.
   palavras.
 - Numero so com fonte citada pelo nome. Sem URLs em nenhum post.
 - No maximo uma hashtag. Nada de emoji em sequencia.
-- Nao opinar sobre partidos, candidatos ou governos.
+- Nao opinar sobre partidos, candidatos ou governos, nem no post de
+  economia.
 - Nao inventar dados nem citar ferramenta ou versao que nao exista.
 - Nao repetir tema publicado nos ultimos 7 dias (ver `postados.md`).
 - So publicar. Nao responder, curtir, seguir ou mencionar ninguem, nem

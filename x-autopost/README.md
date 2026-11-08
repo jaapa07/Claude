@@ -1,11 +1,12 @@
 # x-autopost
 
 Agente que publica automaticamente na conta **@rodrigohajime** no X (Twitter).
-Uma tarefa agendada no Claude Code roda dez vezes por dia (7h, 8h, 9h, 10h,
-14h, 15h, 16h, 17h, 18h e 19h, horario de Brasilia), escreve um post seguindo a pauta em `PAUTA.md`, publica e faz
+Uma tarefa agendada no Claude Code roda doze vezes por dia (7h, 8h, 9h, 10h,
+12h, 14h, 15h, 16h, 17h, 18h, 19h e 20h, horario de Brasilia), escreve um post seguindo a pauta em `PAUTA.md`, publica e faz
 commit do registro. Sao 3 posts de ensino sobre integracao e ETL, 4 de novidades
 de IA (Claude, ChatGPT, Grok, Gemini e outras), 2 de conexao com devs e
-engenheiros de dados e IA, e 1 opiniao impopular. Cada post
+engenheiros de dados e IA, 1 opiniao impopular, 1 de economia do Brasil e 1
+do mundo tech. Cada post
 termina com uma pergunta para o leitor.
 
 ## Como funciona
@@ -106,8 +107,8 @@ ele sai somente leitura.
 ### Custo estimado
 
 Na API pay-per-use, publicar um post custa cerca de US$ 0,015, e um post com
-link custa cerca de US$ 0,20. Por isso a pauta proibe URLs. Com 10 posts por
-dia sem link, sao cerca de 300 posts e US$ 4,50 por mes. Os dois fios
+link custa cerca de US$ 0,20. Por isso a pauta proibe URLs. Com 12 posts por
+dia sem link, sao cerca de 360 posts e US$ 5,40 por mes. Os dois fios
 semanais adicionam uns 40 posts por mes, cerca de US$ 0,60. Confira os valores
 atuais no Developer Console, eles mudam.
 
