@@ -25,11 +25,11 @@ provocativo"). Os tipos se intercalam para a timeline nao ficar repetitiva:
 
 | Execucao | Tipo de post                                                            |
 |----------|-------------------------------------------------------------------------|
+| 02h      | **Mundo tech:** o fato mais relevante em tecnologia das ultimas 24 horas (ver "Mundo tech") |
 | 07h      | **Novidade de IA do dia:** o anuncio mais relevante das ultimas 24 horas |
 | 08h      | **Ensino:** formato de ensino do dia (ver rodizio abaixo)               |
 | 09h      | **IA em comparacao:** uma novidade colocando Claude, ChatGPT, Grok ou Gemini lado a lado |
 | 10h      | **Ensino:** segundo formato de ensino do dia                            |
-| 12h      | **Mundo tech:** o fato mais relevante do dia em tecnologia (ver "Mundo tech") |
 | 14h      | **IA para devs:** recurso novo para quem programa ou integra: APIs, agentes, MCP, ferramentas de codigo |
 | 15h      | **Ensino:** terceiro formato de ensino do dia                           |
 | 16h      | **Conexao:** post para atrair devs, engenheiros de dados e de IA (ver "Posts de conexao") |
@@ -191,10 +191,13 @@ ligando o dado a quem trabalha com tecnologia, dados e empresas.
 - Termine com pergunta ligada ao dado: "Sua empresa ja sentiu isso na conta
   de nuvem?", "Isso muda seus planos de contratacao em 2027?".
 
-## Mundo tech (12h)
+## Mundo tech (02h)
 
-Um post por dia sobre o fato mais relevante em tecnologia, fora dos
-assistentes de IA (que ja tem quatro horarios proprios).
+Um post por dia, de madrugada, sobre o fato mais relevante em tecnologia,
+fora dos assistentes de IA (que ja tem quatro horarios proprios). As 02h
+saem as noticias da tarde e da noite nos Estados Unidos e na Europa, entao
+priorize o que aconteceu nas ultimas 12 a 24 horas e que o publico
+brasileiro vai ver de manha.
 
 - **Assuntos:** movimentos das big techs (Apple, Microsoft, Google, Amazon,
   Meta, Nvidia), chips e semicondutores, nuvem e grandes quedas de servico,
