@@ -203,11 +203,65 @@ x ferramenta low-code, ponto a ponto x barramento, CSV x Parquet.
 
 ## Pesquisa
 
-Antes de escrever, faca 1 ou 2 buscas na web sobre o tema escolhido para
-achar um angulo novo, um exemplo concreto ou um dado verificavel. Abra a
-fonte se for usar numero, nome de versao ou citacao. Para conceitos e
-padroes classicos, a pesquisa serve para enriquecer o exemplo, nao precisa
-de noticia. Cite a fonte pelo nome quando usar dado. **Nao inclua URL.**
+A pesquisa e a base do post. Nao economize nela.
+
+- **Ensino:** 3 a 5 buscas. Procure documentacao oficial, artigos de
+  engenharia de empresas, discussoes recentes (Hacker News, Reddit, Stack
+  Overflow, blogs tecnicos) e casos reais publicados. O objetivo e achar o
+  detalhe que quase ninguem conta: o parametro que muda tudo, o caso de
+  borda, o numero de um postmortem, a pegadinha da especificacao.
+- **Novidades de IA:** 4 a 6 buscas, priorizando as ultimas 24 horas. Leia
+  o anuncio oficial inteiro e pelo menos uma segunda fonte independente.
+  Procure o que mudou de fato: nome exato do recurso, preco, limite, janela
+  de contexto, disponibilidade por plano e regiao, o que ficou de fora.
+- **Conexao:** 1 ou 2 buscas para entender o que esse publico esta
+  discutindo esta semana.
+
+Abra (WebFetch) toda fonte da qual vier um numero, versao, preco, nome de
+recurso ou citacao. Cite a fonte pelo nome quando usar dado. **Nao inclua
+URL.**
+
+## Detalhe e originalidade: como escrever cada post
+
+Siga este processo em toda execucao:
+
+1. **Anote 3 achados concretos** da pesquisa: um numero, um nome exato
+   (recurso, parametro, campo, codigo de erro, versao) e um exemplo ou caso.
+2. **Escreva 3 rascunhos com angulos diferentes.** Por exemplo: um que
+   comeca pelo numero, um que comeca pela dor, um que comeca pela opiniao.
+3. **Avalie cada rascunho** com estas perguntas, de 0 a 2 pontos cada:
+   - Tem pelo menos um detalhe concreto e verificavel (nome, numero,
+     parametro, exemplo real)?
+   - Alguem que trabalha na area aprende algo que nao sabia?
+   - A primeira frase faz parar de rolar a tela?
+   - Seria impossivel trocar o assunto por outro e o texto continuar
+     servindo? (Se serve para qualquer tema, e generico.)
+   - Esta diferente, em assunto e em estrutura, de tudo em `postados.md`?
+   - A pergunta final e especifica e facil de responder?
+4. **Publique o rascunho com maior nota.** Se nenhum passar de 9 dos 12
+   pontos, pesquise mais e reescreva antes de publicar.
+5. Informe no relatorio final a nota do rascunho escolhido.
+
+**Seja especifico.** Em vez de "valide seus dados", escreva "rejeite o lote
+se a contagem de linhas do destino diferir mais de 0,5% da origem". Em vez
+de "o novo modelo e mais rapido", escreva o que mudou, quanto, para quem e
+a que preco, segundo a fonte. Exemplos com nome de campo, status HTTP,
+header, formato de data ou trecho de configuracao sao bem-vindos quando
+couberem.
+
+**Fuja de cliches.** Nao use: "no mundo de hoje", "cada vez mais", "e
+fundamental", "game changer", "divisor de aguas", "revolucionar", "o futuro
+chegou", "nao e sobre X, e sobre Y", "spoiler:", "thread:", "vamos falar
+sobre", "voce sabia que". Nao comece dois posts do mesmo dia do mesmo jeito.
+
+**Varie a estrutura.** Alterne entre: frase unica forte; afirmacao + prova;
+antes e depois; lista de 3 itens curtos; mini-historia de 3 frases; numero
+seguido de interpretacao; pergunta retorica respondida.
+
+**Fio curto quando o detalhe pedir.** Nos posts de IA das 09h e 14h, se a
+novidade tiver detalhes demais para 280 caracteres, publique um fio de 2 ou
+3 blocos com `--fio`. O primeiro bloco precisa funcionar sozinho. Use isso
+no maximo duas vezes por dia, alem dos fios semanais.
 
 ## Pergunta no fim de todo post
 
