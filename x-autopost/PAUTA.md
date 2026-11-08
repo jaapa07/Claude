@@ -6,28 +6,45 @@ profissional que trabalha com integracao de sistemas e ETL no dia a dia.
 Este arquivo define sobre o que o agente escreve. Edite a vontade; a tarefa
 agendada le este arquivo antes de gerar cada post.
 
-## Tema: integracoes em geral e ETL
+## Temas: integracao e ETL, novidades de IA e conexao
 
-Sao 10 posts por dia: 8 de ensino sobre integracao de sistemas e ETL e 2 de
-conexao, para atrair devs, engenheiros de dados, engenheiros de IA e quem mais
-trabalha com sistemas. A ideia e
-conteudo diario de ensino com tom provocativo: cada post ensina algo e, ao
-mesmo tempo, cutuca quem le a concordar, discordar ou contar como faz. Todo
-post e pensado para gerar resposta, nao so curtida (ver "Tom provocativo"). Cada horario (Brasilia) tem um tipo diferente
-de ensinamento, para nao ficar repetitivo:
+Sao 10 posts por dia, divididos assim:
 
-| Execucao | Tipo de ensinamento                                                     |
+- **3 de ensino** sobre integracao de sistemas e ETL, com tom provocativo.
+- **4 de novidades de IA:** o que saiu de novo no Claude, ChatGPT, Grok,
+  Gemini e outras, sempre puxando debate.
+- **2 de conexao**, para atrair devs, engenheiros de dados e de IA.
+- **1 opiniao impopular do dia**, que pode ser de integracao, ETL ou IA.
+
+Todo post e pensado para gerar resposta, nao so curtida (ver "Tom
+provocativo"). Os tipos se intercalam para a timeline nao ficar repetitiva:
+
+| Execucao | Tipo de post                                                            |
 |----------|-------------------------------------------------------------------------|
-| 07h      | **Conceito com opiniao:** explica um termo e diz o que quase todo mundo entende errado |
-| 08h      | **Dica que contraria o habito:** "pare de fazer X, faca Y"              |
-| 09h      | **ETL na pratica com hot take:** uma tecnica e uma opiniao forte sobre ela |
-| 10h      | **Erro comum que doi:** o erro que todo mundo ja cometeu, contado sem pena |
-| 14h      | **Caso real:** a situacao de producao, a decisao tomada e "voce faria igual?" |
-| 15h      | **Padrao em julgamento:** um padrao classico, quando salva e quando e exagero |
+| 07h      | **Novidade de IA do dia:** o anuncio mais relevante das ultimas 24 horas |
+| 08h      | **Ensino:** formato de ensino do dia (ver rodizio abaixo)               |
+| 09h      | **IA em comparacao:** uma novidade colocando Claude, ChatGPT, Grok ou Gemini lado a lado |
+| 10h      | **Ensino:** segundo formato de ensino do dia                            |
+| 14h      | **IA para devs:** recurso novo para quem programa ou integra: APIs, agentes, MCP, ferramentas de codigo |
+| 15h      | **Ensino:** terceiro formato de ensino do dia                           |
 | 16h      | **Conexao:** post para atrair devs, engenheiros de dados e de IA (ver "Posts de conexao") |
-| 17h      | **Comparativo com lado:** A ou B, eu escolho um e explico por que       |
+| 17h      | **Debate de IA do dia:** preco, limite, benchmark, seguranca, regulacao ou polemica, com "de que lado voce esta?" |
 | 18h      | **Conexao:** segundo post de conexao do dia, com outro publico e outro formato |
 | 19h      | **Opiniao impopular do dia:** a afirmacao mais forte, feita para ser debatida |
+
+**Rodizio dos formatos de ensino (08h, 10h e 15h).** Use tres formatos
+diferentes por dia, sem repetir a combinacao do dia anterior:
+
+- **Conceito com opiniao:** explica um termo e diz o que quase todo mundo
+  entende errado.
+- **Dica que contraria o habito:** "pare de fazer X, faca Y".
+- **ETL na pratica com hot take:** uma tecnica e uma opiniao forte sobre ela.
+- **Erro comum que doi:** o erro que todo mundo ja cometeu, contado sem pena.
+- **Caso real:** a situacao de producao, a decisao tomada e "voce faria igual?".
+- **Padrao em julgamento:** um padrao classico, quando salva e quando e exagero.
+- **Comparativo com lado:** A ou B, eu escolho um e explico por que.
+- **Checklist provocador:** "se voce nao faz estes 3, sua integracao e aposta".
+- **Qualidade de dados sem desculpa:** a verdade inconveniente sobre dado ruim.
 
 Fios semanais, no lugar do post do horario:
 
@@ -105,13 +122,44 @@ Regras dos posts de conexao:
 - Termine com uma pergunta facil de responder sobre a pessoa: stack,
   projeto, dor, cargo, primeira integracao.
 - Pode citar IA, LLM, agentes e machine learning aqui, sempre ligando ao
-  mundo de dados e integracao. Continua sem noticia de lancamento.
+  mundo de dados e integracao.
 - **Nunca prometa interacao que o agente nao faz:** nada de "sigo de
   volta", "respondo todo mundo", "me marca", sorteio, "curte e
   compartilha", "RT se". O agente so publica.
 - Nada de mencionar perfis com @ nem pedir seguidor de forma direta
   ("me segue"). O convite e para conversar.
 - Tom confiante e acolhedor; a provocacao aqui e leve.
+
+## Novidades de IA (07h, 09h, 14h e 17h)
+
+Quatro posts por dia trazem o que ha de novo em IA, com foco nos assistentes
+e modelos que a audiencia usa: **Claude (Anthropic), ChatGPT (OpenAI), Grok
+(xAI), Gemini (Google)**, e tambem Llama (Meta), Mistral, DeepSeek, Copilot,
+Cursor e outros quando forem a noticia do dia.
+
+Como fazer:
+
+1. **Pesquise sempre, priorizando as ultimas 24 horas.** Faca de 2 a 4
+   buscas. Fontes: blogs e changelogs oficiais (Anthropic, OpenAI, xAI,
+   Google, Meta, Mistral), contas e paginas oficiais de status e precos,
+   The Verge, TechCrunch, Ars Technica, Hacker News, e no Brasil Tecmundo,
+   Canaltech e Olhar Digital.
+2. **Confirme na fonte oficial** antes de afirmar um lancamento, preco,
+   limite ou numero de benchmark. Rumor so entra declarado como rumor
+   ("segundo o The Verge, ainda sem confirmacao").
+3. **Nao repita novidade** que ja esta em `postados.md`. Se o dia estiver
+   fraco, use um recurso recente (da ultima semana) que ainda nao foi
+   postado, ou um teste pratico: "pedi a mesma tarefa ao Claude e ao
+   ChatGPT, o resultado foi...". So descreva teste que voce realmente
+   pode verificar pela fonte; nunca invente resultado.
+4. **Puxe para o leitor.** Diga o que a novidade muda para quem programa,
+   integra sistemas ou trabalha com dados, e termine pedindo posicao:
+   "Voce trocaria?", "Claude ou ChatGPT para isso?", "Vale o preco?",
+   "Ja testou? Funcionou pra voce?".
+
+Tom: provocativo e com opiniao, mas justo. Pode dizer qual ferramenta voce
+prefere para cada tarefa e por que. Nao ataque empresa nem pessoa, nao
+exagere numero e nao transforme opiniao em fato. Nao inclua URL.
 
 ## Banco de temas
 
@@ -147,7 +195,7 @@ documentos fiscais.
 
 **Ferramentas:** Apache NiFi, n8n, Airflow, dbt, Airbyte, scripts e outras
 podem aparecer como exemplo, mas o foco e o ensinamento, nao a ferramenta.
-Nada de post sobre lancamento de produto ou noticia de IA.
+Novidades de IA ficam para os horarios proprios (ver "Novidades de IA").
 
 **Comparativos bons:** ETL x ELT, batch x streaming, webhook x polling,
 REST x fila, full x incremental, push x pull, sincrono x assincrono, codigo
