@@ -1,0 +1,14 @@
+{"mixkit": false, "roomtone": false, "music": {"level": -14},
+ "bed": [{"at": 0, "level": 0.5}, {"at": "laser@3", "level": 0.8}, {"at": "motor@4", "level": 0.9}, {"at": "Primer@6", "level": 0.9}, {"at": "momento@8", "level": 0.2}, {"at": "partida@8", "level": 1.2}, {"at": "rodas@9", "level": 0.8}],
+ "sfx": [
+  {"at": 0.05, "type": "cityhum", "vol": 0.5}, {"at": "nascer@0", "type": "sting", "vol": 0.4}, {"at": "zero@0", "type": "hit", "vol": 0.6},
+  {"at": "desenho@1", "type": "whoosh", "vol": 0.3},
+  {"at": "computador@2", "type": "click", "vol": 0.4}, {"at": "vento@2", "type": "whoosh", "vol": 0.6},
+  {"at": "laser@3", "type": "weld", "vol": 0.5}, {"at": "robôs@3", "type": "servo", "vol": 0.5}, {"at": "soldam@3", "type": "weld", "vol": 0.55}, {"at": "milimétrica@3", "type": "click", "vol": 0.4},
+  {"at": "motor@4", "type": "rumble", "vol": 0.4}, {"at": "peça@4", "type": "click", "vol": 0.5}, {"at": "peça@4+0.4", "type": "click", "vol": 0.5}, {"at": "sincronia@4", "type": "thud", "vol": 0.5},
+  {"at": "Suspensão@5", "type": "airwrench", "vol": 0.6}, {"at": "freios@5", "type": "airwrench", "vol": 0.5}, {"at": "motor@5", "type": "servo", "vol": 0.5}, {"at": "carroceria@5", "type": "hit", "vol": 0.7},
+  {"at": "Primer@6", "type": "hiss", "vol": 0.5}, {"at": "azul@6", "type": "hiss", "vol": 0.5},
+  {"at": "bancos@7", "type": "click", "vol": 0.4}, {"at": "airbags@7", "type": "thud", "vol": 0.6},
+  {"at": "partida@8", "type": "click", "vol": 0.7}, {"at": "partida@8+0.35", "type": "engine", "vol": 1.0},
+  {"at": "real@9", "type": "whoosh", "vol": 0.4}, {"at": "rodas@9", "type": "engine", "vol": 0.6}
+ ]}

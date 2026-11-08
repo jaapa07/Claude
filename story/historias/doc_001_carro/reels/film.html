@@ -1,0 +1,45 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Um carro do zero — Reels</title>
+<script type="importmap">{"imports": {"three": "../../../../engine/vendor/three.module.js"}}</script>
+<style>
+@font-face { font-family: 'Oswald'; font-weight: 700; src: url('../../../../engine/vendor/fonts/oswald-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 700; src: url('../../../../engine/vendor/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+html, body { margin: 0; background: #000; } canvas { display: block; }
+</style>
+<script src="timing.js"></script>
+</head><body>
+<canvas id="film" width="1080" height="1920"></canvas>
+<script type="module">
+import * as S from '../../../../engine/stage.js';
+import { buildWorld } from '../mundo.js';
+import { planos } from '../planos.js';
+const { clamp, ease, endCard, loadFonts } = S;
+S.LABELS.comment = 'COMENTE ABAIXO'; S.LABELS.follow = 'SIGA PARA MAIS HISTÓRIAS';
+const CW = 1080, CH = 1920, T = window.TIMING;
+const canvas = document.getElementById('film'), c = canvas.getContext('2d');
+const stage = S.createStage(canvas);
+const Wd = buildWorld(stage);
+const { SH, reset, word, pill } = planos({ stage, Wd, c, CW, CH, T, vertical: true });
+// each narration line gets one or two of the documentary's shots (1-based, as in prompts_visuais.txt)
+const MAP = [[1, 2], [4], [6, 7], [9, 11], [16, 18], [19, 22], [25, 26], [28, 29], [31, 32], [34, 35]];
+const LABEL = ['A IDEIA', 'O DESENHO', 'DESIGN', 'CHASSI', 'O MOTOR', 'OS SISTEMAS', 'A PINTURA', 'O INTERIOR', 'A PARTIDA', 'O SONHO'];
+const ORIG = [8, 7, 7, 8, 8, 7, 8, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 7, 7, 8, 6, 6, 7, 6, 7, 6, 6, 6, 6, 6, 8, 7, 8];
+const tEnd = T.voice_end + 0.3, TOTAL = T.voice_end + 3.5;
+const SC = [];
+T.lines.forEach((L, i) => { const a = i ? L.start : 0, b = i + 1 < T.lines.length ? T.lines[i + 1].start : tEnd, n = MAP[i].length;
+  MAP[i].forEach((k, j) => SC.push({ k: k - 1, t0: a + (b - a) * j / n, d: (b - a) / n, line: i })); });
+window.TOTAL = TOTAL;
+window.seek = t => {
+  let s = 0; while (s + 1 < SC.length && t >= SC[s + 1].t0) s++;
+  const sc = SC[s]; let u = (t - sc.t0) * ORIG[sc.k] / sc.d; if (sc.k === 3) u = Math.min(u, 6.9);
+  reset(); const r = SH[sc.k](t, u) || {};
+  stage.draw(t, { vignette: 0.4, bloomStrength: 0.5 });
+  if (r.fx) r.fx(c);
+  const L = T.lines[sc.line], a = sc.line ? L.start : 0; pill(c, `${sc.line + 1} · ${LABEL[sc.line]}`, Math.min(clamp((t - a) / 0.25), clamp((a + 2.2 - t) / 0.3)));
+  c.fillStyle = 'rgba(255,255,255,0.25)'; c.fillRect(0, 0, CW, 10); c.fillStyle = '#ffffff'; c.fillRect(0, 0, CW * Math.min(1, t / tEnd), 10);
+  if (t >= tEnd) endCard(c, tEnd, t, ['QUAL ETAPA', 'TE SURPREENDEU?'], 'O MOTOR EM CORTE', 'OS ROBÔS SOLDANDO', '');
+  else word(c, t);
+};
+await loadFonts(); window.seek(0); window.READY = true;
+</script>
+</body></html>
