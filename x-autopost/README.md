@@ -2,9 +2,10 @@
 
 Agente que publica automaticamente na conta **@rodrigohajime** no X (Twitter).
 Uma tarefa agendada no Claude Code roda dez vezes por dia (7h, 8h, 9h, 10h,
-14h, 15h, 16h, 17h, 18h e 19h, horario de Brasilia), escreve um post de ensino
-sobre integracao de sistemas ou ETL seguindo a pauta em `PAUTA.md`, publica e
-faz commit do registro. Cada post termina com uma pergunta para o leitor.
+14h, 15h, 16h, 17h, 18h e 19h, horario de Brasilia), escreve um post seguindo a pauta em `PAUTA.md`, publica e faz
+commit do registro. Sao 8 posts de ensino sobre integracao e ETL e 2 posts de
+conexao (16h e 18h) para atrair devs, engenheiros de dados e de IA. Cada post
+termina com uma pergunta para o leitor.
 
 ## Como funciona
 

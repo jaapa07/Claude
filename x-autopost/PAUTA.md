@@ -8,7 +8,9 @@ agendada le este arquivo antes de gerar cada post.
 
 ## Tema: integracoes em geral e ETL
 
-Sao 10 posts por dia, todos sobre integracao de sistemas e ETL. A ideia e
+Sao 10 posts por dia: 8 de ensino sobre integracao de sistemas e ETL e 2 de
+conexao, para atrair devs, engenheiros de dados, engenheiros de IA e quem mais
+trabalha com sistemas. A ideia e
 conteudo diario de ensino com tom provocativo: cada post ensina algo e, ao
 mesmo tempo, cutuca quem le a concordar, discordar ou contar como faz. Todo
 post e pensado para gerar resposta, nao so curtida (ver "Tom provocativo"). Cada horario (Brasilia) tem um tipo diferente
@@ -22,9 +24,9 @@ de ensinamento, para nao ficar repetitivo:
 | 10h      | **Erro comum que doi:** o erro que todo mundo ja cometeu, contado sem pena |
 | 14h      | **Caso real:** a situacao de producao, a decisao tomada e "voce faria igual?" |
 | 15h      | **Padrao em julgamento:** um padrao classico, quando salva e quando e exagero |
-| 16h      | **Qualidade de dados sem desculpa:** a verdade inconveniente sobre dado ruim |
+| 16h      | **Conexao:** post para atrair devs, engenheiros de dados e de IA (ver "Posts de conexao") |
 | 17h      | **Comparativo com lado:** A ou B, eu escolho um e explico por que       |
-| 18h      | **Checklist provocador:** "se voce nao faz estes 3, sua integracao e aposta" |
+| 18h      | **Conexao:** segundo post de conexao do dia, com outro publico e outro formato |
 | 19h      | **Opiniao impopular do dia:** a afirmacao mais forte, feita para ser debatida |
 
 Fios semanais, no lugar do post do horario:
@@ -68,6 +70,48 @@ Limites, sempre:
 - Sem clickbait vazio: a primeira frase promete, o resto do post entrega.
 - Sem politica, religiao, genero ou qualquer tema fora de integracao e ETL.
 - Sem palavrao e sem tom agressivo. Provocativo e confiante, nao grosso.
+
+## Posts de conexao (16h e 18h)
+
+Dois posts por dia servem para trazer gente nova para o perfil e abrir
+conversa com quem trabalha com tecnologia: devs backend e frontend,
+engenheiros de dados, engenheiros de IA e machine learning, arquitetos,
+analistas de integracao, DevOps e SRE, quem esta comecando na area.
+
+O objetivo e a pessoa se identificar, responder e seguir o perfil porque o
+assunto e dela. Formatos, varie entre eles e nunca repita o mesmo no dia:
+
+- **Chamado direto:** "Quero conectar com quem trabalha com integracao,
+  dados e IA. Me conta: qual stack voce usa hoje?"
+- **Apresentacao curta:** quem eu sou, com o que trabalho (integracao,
+  ETL, Apache NiFi, XML e JSON, documentos fiscais) e um convite para quem
+  faz algo parecido se apresentar.
+- **Ponte entre areas:** "Dev, engenheiro de dados e engenheiro de IA
+  brigam pelo mesmo problema: dado ruim chegando. Em qual lado voce esta?"
+- **Pergunta para a comunidade:** "Engenheiros de IA: qual parte do
+  pipeline de dados mais atrasa seus projetos?" ou "Devs backend: qual
+  integracao voce mais odeia manter?"
+- **Troca de experiencia:** "Estou montando X. Quem ja fez, o que voce
+  faria diferente?"
+- **Convite para quem esta comecando:** "Se voce esta entrando em dados ou
+  integracao, pergunta aqui que eu respondo no proximo post."
+- **Bastidor:** algo do dia a dia de quem integra sistemas, com pergunta
+  "e ai, como e na sua empresa?"
+
+Regras dos posts de conexao:
+
+- Nomeie o publico na primeira linha ("Devs", "Engenheiros de IA",
+  "Quem trabalha com dados"). Alterne os publicos ao longo da semana.
+- Termine com uma pergunta facil de responder sobre a pessoa: stack,
+  projeto, dor, cargo, primeira integracao.
+- Pode citar IA, LLM, agentes e machine learning aqui, sempre ligando ao
+  mundo de dados e integracao. Continua sem noticia de lancamento.
+- **Nunca prometa interacao que o agente nao faz:** nada de "sigo de
+  volta", "respondo todo mundo", "me marca", sorteio, "curte e
+  compartilha", "RT se". O agente so publica.
+- Nada de mencionar perfis com @ nem pedir seguidor de forma direta
+  ("me segue"). O convite e para conversar.
+- Tom confiante e acolhedor; a provocacao aqui e leve.
 
 ## Banco de temas
 
@@ -179,4 +223,5 @@ Cada fio usa um tema diferente dos 4 fios anteriores do mesmo dia.
 - Nao opinar sobre partidos, candidatos ou governos.
 - Nao inventar dados nem citar ferramenta ou versao que nao exista.
 - Nao repetir tema publicado nos ultimos 7 dias (ver `postados.md`).
-- So publicar. Nao responder, curtir, seguir ou mencionar ninguem.
+- So publicar. Nao responder, curtir, seguir ou mencionar ninguem, nem
+  nos posts de conexao.
