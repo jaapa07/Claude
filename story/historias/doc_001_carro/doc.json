@@ -1,0 +1,99 @@
+{
+ "id": "doc_001_carro",
+ "titulo": "A CRIAÇÃO DE UM CARRO DO ZERO",
+ "formato": "16:9 horizontal, 4K, cerca de 4 minutos",
+ "voz": "pm_alex",
+ "velocidade": 0.94,
+ "fichas": {
+  "CAR": "THE CAR: a modern two-door sports coupé prototype with no badges or logos anywhere, deep metallic midnight-blue paint, low wide stance, long sculpted hood, short rear deck, fastback roofline, frameless side windows, a slim full-width LED light bar at the front and at the rear, large black front air intakes, 20-inch five-spoke graphite wheels, red brake calipers, black side mirrors, tan leather sports interior",
+  "RAFAEL": "RAFAEL: Brazilian automotive engineer, about 45 years old, short salt-and-pepper beard, rectangular black glasses, navy work shirt with rolled-up sleeves, grey trousers, silver wristwatch",
+  "FACTORY": "THE FACTORY: a clean modern car factory with polished grey epoxy floors, white overhead LED panels, orange industrial robot arms, yellow safety lines on the floor, glass-walled control rooms, workers in dark grey uniforms with safety glasses"
+ },
+ "estilo": "Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark.",
+ "secoes": [
+  {"n": 1, "titulo": "O NASCIMENTO DA IDEIA", "inicio": 0, "fim": 30,
+   "narracao": "Todo grande automóvel começa muito antes de existir. Começa com uma pergunta, uma necessidade ou simplesmente um sonho. Foi assim que nasceu a ideia de criar um carro que unisse desempenho, tecnologia e personalidade.",
+   "cenas": [
+    {"dur": 8, "plano": "Cidade à noite", "camera": "Slow aerial drift over avenues", "prompt": "Aerial night view of a modern Brazilian city, wet avenues with long red and white light trails of passing cars, glass towers, soft haze.", "sfx": "ruído distante de trânsito"},
+    {"dur": 7, "plano": "O engenheiro na janela", "camera": "Slow push-in from inside the office", "prompt": "RAFAEL stands at a tall office window at night, watching the traffic far below, city lights reflected on the glass and on his glasses, warm desk lamp behind him. Thoughtful.", "sfx": "zumbido da cidade, relógio"},
+    {"dur": 7, "plano": "O caderno", "camera": "Top-down, slow descent towards the page", "prompt": "Top-down shot of RAFAEL's hands opening a black notebook on a wooden desk under a warm lamp and starting to sketch the first pencil lines of a low sports coupé.", "sfx": "lápis no papel"},
+    {"dur": 8, "plano": "O primeiro desenho", "camera": "Macro push-in into the drawing (match cut to the next scene)", "prompt": "Macro shot of the pencil finishing a side-view sketch of THE CAR: long hood, fastback roofline, big wheels; graphite texture; the camera pushes into the drawing until the lines fill the frame.", "sfx": "lápis, trilha entra"}
+   ]},
+  {"n": 2, "titulo": "DESIGN E ENGENHARIA", "inicio": 30, "fim": 60,
+   "narracao": "Depois da primeira ideia, começa o trabalho de transformar imaginação em engenharia. Cada curva é estudada, cada medida calculada e cada componente projetado para cumprir uma função.",
+   "cenas": [
+    {"dur": 8, "plano": "Estúdio de design", "camera": "Lateral dolly along the drafting tables", "prompt": "A bright car design studio: designers sketching THE CAR by hand on large sheets and drawing tablets, walls covered with side-view and front-view sketches of the same coupé.", "sfx": "lápis, ambiente de escritório"},
+    {"dur": 7, "plano": "O modelo 3D", "camera": "Slow push towards the monitor", "prompt": "A large monitor showing a detailed 3D wireframe model of THE CAR rotating slowly; an engineer's hand moves a mouse; reflections on the screen.", "sfx": "cliques de teclado"},
+    {"dur": 8, "plano": "Aerodinâmica", "camera": "Low side tracking shot", "prompt": "A full-size clay model of THE CAR inside a wind tunnel, a thin white smoke stream flowing smoothly over the hood, roof and rear; engineers watching from behind glass.", "sfx": "vento contínuo"},
+    {"dur": 7, "plano": "Medidas e estrutura", "camera": "Overhead slow orbit around the table", "prompt": "RAFAEL and two engineers around a table with technical drawings of THE CAR, measuring the wheelbase with a ruler, weight-distribution charts and a structural simulation on a tablet.", "sfx": "papel, conversa baixa"}
+   ]},
+  {"n": 3, "titulo": "CHASSI E CARROCERIA", "inicio": 60, "fim": 95,
+   "narracao": "A construção começa pela estrutura. Chapas metálicas são cortadas, moldadas e unidas com precisão milimétrica. É aqui que nasce a base responsável pela segurança, rigidez e estabilidade do automóvel.",
+   "cenas": [
+    {"dur": 7, "plano": "Corte das chapas", "camera": "Low close-up, slow slide", "prompt": "Inside THE FACTORY a laser cutting machine slices a large aluminium sheet, bright sparks and a thin line of smoke, precise geometric shapes falling away.", "sfx": "corte a laser, chiado"},
+    {"dur": 7, "plano": "A prensa", "camera": "Static wide, then a slight push on impact", "prompt": "A huge hydraulic press in THE FACTORY stamps a steel sheet into the shape of a car door panel, heavy and slow, metal flexing.", "sfx": "impacto grave da prensa"},
+    {"dur": 7, "plano": "Robôs soldando", "camera": "Slow arc around the robots", "prompt": "Orange robot arms in THE FACTORY spot-weld the bare metal body structure of THE CAR (body-in-white), showers of sparks, synchronized movements.", "sfx": "solda, servos dos robôs"},
+    {"dur": 7, "plano": "Precisão milimétrica", "camera": "Macro on the probe, rack focus to the technician", "prompt": "A technician with safety glasses checks the bare body structure with a coordinate-measuring probe and a laser tracker, numbers on a screen beside him.", "sfx": "bipe do instrumento"},
+    {"dur": 7, "plano": "A estrutura pronta", "camera": "Wide shot, the line moves towards the camera", "prompt": "The complete bare metal body of THE CAR, with structural reinforcements and the coupé silhouette already recognisable, moving slowly along the assembly line under LED lights.", "sfx": "esteira, ambiente de fábrica"}
+   ]},
+  {"n": 4, "titulo": "O MOTOR", "inicio": 95, "fim": 130,
+   "narracao": "Enquanto a estrutura ganha forma, outra equipe trabalha no coração da máquina. O motor é montado peça por peça. Pistões, válvulas, virabrequim e centenas de componentes precisam trabalhar em perfeita sincronia para transformar combustível em movimento.",
+   "cenas": [
+    {"dur": 7, "plano": "O bloco", "camera": "Close-up, slow slide past the machine", "prompt": "A CNC machine mills an aluminium engine block, coolant spraying, metal shavings curling, precise bores appearing.", "sfx": "usinagem, líquido"},
+    {"dur": 7, "plano": "Pistões e bielas", "camera": "Macro, hands in frame", "prompt": "A mechanic in gloves slides polished pistons with connecting rods into the cylinders of the engine block on an assembly stand.", "sfx": "metal deslizando"},
+    {"dur": 7, "plano": "O virabrequim", "camera": "Low angle, slow tilt up", "prompt": "A gleaming crankshaft is lowered by a hoist into the engine block and seated in its bearings.", "sfx": "corrente do guincho, impacto leve"},
+    {"dur": 7, "plano": "Cabeçote e torque", "camera": "Macro on the torque wrench, then pull back", "prompt": "The cylinder head with valves and camshafts is fitted; a mechanic tightens the bolts in sequence with a torque wrench, the click visible.", "sfx": "cliques do torquímetro"},
+    {"dur": 7, "plano": "Motor completo", "camera": "Slow 180-degree orbit around the engine", "prompt": "The complete turbocharged engine on its stand: turbocharger, fuel injection rail, intake, oil lines and radiator hoses connected, under bright workshop light.", "sfx": "parafusadeira, ambiente"}
+   ]},
+  {"n": 5, "titulo": "MONTAGEM DOS SISTEMAS", "inicio": 130, "fim": 160,
+   "narracao": "Agora, os sistemas começam a se conectar. Suspensão, transmissão, freios, direção e eletrônica formam um conjunto complexo. Cada ligação precisa ser testada para garantir que o veículo funcione como um único organismo.",
+   "cenas": [
+    {"dur": 8, "plano": "Suspensão e freios", "camera": "Low angle at wheel height", "prompt": "On the assembly line, workers install a suspension strut, shock absorber and a large ventilated disc brake with a red caliper onto the bare metal body of THE CAR on its carrier.", "sfx": "parafusadeira de impacto"},
+    {"dur": 7, "plano": "Transmissão", "camera": "Slow push under the car", "prompt": "From below, a gearbox and differential are raised and bolted into the bare metal body of THE CAR, drive shafts connected.", "sfx": "servo do elevador, metal"},
+    {"dur": 7, "plano": "Chicotes e sensores", "camera": "Macro tracking along the wiring", "prompt": "Hands route colour-coded wiring harnesses through the body of THE CAR and click connectors into sensors and electronic modules.", "sfx": "cliques de conectores"},
+    {"dur": 8, "plano": "O casamento", "camera": "Low wide shot, the engine rises into the frame", "prompt": "The 'marriage': the complete engine and transmission rise from below on a lift and are joined to the body of THE CAR in the front compartment, workers guiding it into place.", "sfx": "hidráulica, impacto grave"}
+   ]},
+  {"n": 6, "titulo": "PINTURA E ACABAMENTO", "inicio": 160, "fim": 185,
+   "narracao": "A engenharia encontra o design. A carroceria recebe proteção, cor e acabamento. Cada superfície é inspecionada para alcançar o resultado visual planejado desde os primeiros desenhos.",
+   "cenas": [
+    {"dur": 6, "plano": "Primer", "camera": "Slow lateral move inside the booth", "prompt": "A separate bare body shell of THE CAR in a clean paint booth receiving a grey primer coat from robot spray guns, fine mist in the light.", "sfx": "spray"},
+    {"dur": 6, "plano": "Lixamento", "camera": "Close-up on a gloved hand", "prompt": "A worker sands the primed body by hand and inspects the surface under a bright light strip.", "sfx": "lixa"},
+    {"dur": 7, "plano": "A cor", "camera": "Slow orbit, the colour builds up", "prompt": "Robot arms spray deep metallic midnight-blue paint onto the body of THE CAR, then a glossy clear coat; the metallic flakes sparkle under the booth lights.", "sfx": "spray, servos"},
+    {"dur": 6, "plano": "Faróis, vidros e rodas", "camera": "Quick elegant cuts between details", "prompt": "The painted midnight-blue body of THE CAR is polished; workers fit the slim full-width LED light bar, the bumpers, the glass and the 20-inch five-spoke graphite wheels with red calipers.", "sfx": "polidora, parafusadeira"}
+   ]},
+  {"n": 7, "titulo": "INTERIOR E TECNOLOGIA", "inicio": 185, "fim": 210,
+   "narracao": "Por dentro, cada detalhe é pensado para quem vai dirigir. Conforto, ergonomia, conectividade e segurança transformam uma máquina em uma experiência.",
+   "cenas": [
+    {"dur": 7, "plano": "Os bancos", "camera": "Through the open door", "prompt": "Workers carefully place tan leather sports seats into the cabin of THE CAR through the open door.", "sfx": "couro, cliques"},
+    {"dur": 6, "plano": "Painel e volante", "camera": "Slow push across the dashboard", "prompt": "The dashboard of THE CAR with a sports steering wheel and a wide multimedia screen being installed; the screen lights up for the first time.", "sfx": "bipe eletrônico"},
+    {"dur": 6, "plano": "Segurança", "camera": "Macro on details", "prompt": "Close-ups of seat belts, airbag modules and door trim panels being fitted inside THE CAR, ambient interior lighting glowing.", "sfx": "cliques"},
+    {"dur": 6, "plano": "Diagnóstico", "camera": "Over-the-shoulder on the laptop", "prompt": "Two technicians run electronic diagnostics on THE CAR with a laptop connected by a cable, green check marks appearing on the screen.", "sfx": "teclado, bipes"}
+   ]},
+  {"n": 8, "titulo": "PRIMEIRO FUNCIONAMENTO E TESTES", "inicio": 210, "fim": 230,
+   "narracao": "Depois de milhares de horas de trabalho, chega o momento mais aguardado: o primeiro funcionamento. Mas antes de chegar às ruas, o carro precisa provar que está preparado para enfrentar o mundo real.",
+   "cenas": [
+    {"dur": 6, "plano": "A partida", "camera": "Macro on the start button, rack focus to the instrument cluster", "prompt": "RAFAEL's finger presses the illuminated start button of THE CAR; the digital instrument cluster lights up in sequence.", "sfx": "clique, motor dá partida"},
+    {"dur": 6, "plano": "O primeiro ronco", "camera": "Low close-up at the exhaust", "prompt": "Low close-up of the twin exhaust tips of THE CAR as the engine starts inside THE FACTORY, a slight heat shimmer; workers applauding in the background.", "sfx": "ronco do motor, aplausos distantes"},
+    {"dur": 8, "plano": "Testes", "camera": "Fast cuts: dyno, then a tracking shot on the test track", "prompt": "THE CAR on a chassis dynamometer with its wheels spinning on rollers, then THE CAR driving fast on a closed test track, cornering firmly.", "sfx": "motor acelerando, pneus"}
+   ]},
+  {"n": 9, "titulo": "A REALIZAÇÃO DO SONHO", "inicio": 230, "fim": 245,
+   "narracao": "De um simples desenho a uma máquina real. Cada peça carrega o trabalho de centenas de decisões, profissionais e horas de dedicação. E assim, um sonho finalmente ganha rodas.",
+   "cenas": [
+    {"dur": 7, "plano": "Saindo da fábrica", "camera": "Static wide from outside the doors", "prompt": "The finished midnight-blue THE CAR rolls slowly out of the large factory doors into warm golden evening light, RAFAEL watching from the side.", "sfx": "motor em marcha lenta"},
+    {"dur": 8, "plano": "Na estrada", "camera": "Tracking shot alongside, then a slow push on the parked car", "prompt": "THE CAR drives along a scenic coastal road at sunset, then stands parked on an overlook; final hero shot of its lines, LED light bar and wheels glowing in the sunset.", "sfx": "motor passando, vento, trilha final"}
+   ]}
+ ],
+ "sfx": [
+  {"at": 0.0, "type": "cityhum", "vol": 0.5}, {"at": 5.5, "type": "cityhum", "vol": 0.45}, {"at": 11.0, "type": "cityhum", "vol": 0.35},
+  {"at": 15.5, "type": "tick", "vol": 0.3}, {"at": 23.5, "type": "whoosh", "vol": 0.35},
+  {"at": 38.5, "type": "tick", "vol": 0.3}, {"at": 39.0, "type": "tick", "vol": 0.3}, {"at": 45.5, "type": "whoosh", "vol": 0.5}, {"at": 48.0, "type": "whoosh", "vol": 0.4},
+  {"at": 60.5, "type": "weld", "vol": 0.4}, {"at": 68.5, "type": "hit", "vol": 0.6}, {"at": 74.5, "type": "servo", "vol": 0.5}, {"at": 75.5, "type": "weld", "vol": 0.5}, {"at": 78.0, "type": "weld", "vol": 0.45}, {"at": 81.5, "type": "click", "vol": 0.4}, {"at": 89.0, "type": "servo", "vol": 0.4},
+  {"at": 96.0, "type": "rumble", "vol": 0.4}, {"at": 103.0, "type": "click", "vol": 0.4}, {"at": 110.0, "type": "thud", "vol": 0.5}, {"at": 117.5, "type": "click", "vol": 0.6}, {"at": 118.3, "type": "click", "vol": 0.6}, {"at": 119.1, "type": "click", "vol": 0.6}, {"at": 124.5, "type": "airwrench", "vol": 0.5},
+  {"at": 131.0, "type": "airwrench", "vol": 0.6}, {"at": 134.5, "type": "airwrench", "vol": 0.5}, {"at": 138.5, "type": "servo", "vol": 0.5}, {"at": 146.0, "type": "click", "vol": 0.5}, {"at": 147.2, "type": "click", "vol": 0.5}, {"at": 153.0, "type": "servo", "vol": 0.5}, {"at": 156.5, "type": "hit", "vol": 0.7},
+  {"at": 160.5, "type": "hiss", "vol": 0.5}, {"at": 167.5, "type": "hiss", "vol": 0.3}, {"at": 172.5, "type": "hiss", "vol": 0.5}, {"at": 175.0, "type": "servo", "vol": 0.4}, {"at": 179.5, "type": "airwrench", "vol": 0.4},
+  {"at": 186.0, "type": "click", "vol": 0.4}, {"at": 193.0, "type": "tick", "vol": 0.4}, {"at": 193.4, "type": "tick", "vol": 0.4}, {"at": 199.5, "type": "click", "vol": 0.4}, {"at": 205.0, "type": "tick", "vol": 0.4}, {"at": 205.3, "type": "tick", "vol": 0.4},
+  {"at": 211.0, "type": "click", "vol": 0.7}, {"at": 211.4, "type": "engine", "vol": 0.9}, {"at": 216.5, "type": "engine", "vol": 0.8}, {"at": 222.5, "type": "engine", "vol": 0.9}, {"at": 225.5, "type": "whoosh", "vol": 0.6},
+  {"at": 230.5, "type": "rumble", "vol": 0.4}, {"at": 237.5, "type": "engine", "vol": 0.6}, {"at": 238.5, "type": "whoosh", "vol": 0.5}, {"at": 244.0, "type": "hit", "vol": 0.7}
+ ],
+ "bed": [{"at": 0, "level": 0.35}, {"at": 30, "level": 0.5}, {"at": 60, "level": 0.6}, {"at": 95, "level": 0.7}, {"at": 130, "level": 0.8}, {"at": 160, "level": 0.85}, {"at": 185, "level": 0.9}, {"at": 209, "level": 0.3}, {"at": 212, "level": 1.1}, {"at": 230, "level": 1.25}, {"at": 243, "level": 0.6}]
+}

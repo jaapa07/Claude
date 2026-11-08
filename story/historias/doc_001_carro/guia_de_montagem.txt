@@ -1,0 +1,11 @@
+A CRIAÇÃO DE UM CARRO DO ZERO: GUIA DE MONTAGEM
+
+1. Gere as cenas de prompts_visuais.txt no Veo/Flow (16:9). Salve em cenas/cena_01.mp4 ... na ordem.
+2. No editor (CapCut, Premiere ou DaVinci), crie uma sequência 16:9 em 4K e 30 fps.
+3. Coloque narracao_com_trilha.wav como faixa de áudio principal, começando em 0:00.
+4. Coloque cada cena no tempo indicado; corte ou acelere para caber na janela de cada seção.
+5. Transições: corte seco dentro de uma seção; fusão de 0,5 s entre seções (a cena 04 já termina num 'match cut' do desenho).
+6. Legendas: legendas_palavra.srt (uma palavra por vez, no centro, fonte bold branca com contorno preto, no estilo do
+   vídeo de referência) ou legendas_frases.srt (frases curtas, embaixo).
+7. Opcional no estilo de referência: uma barra de progresso fina no topo; os títulos das 9 etapas como cartelas de 1,5 s.
+8. Exporte em 4K, H.264 ou H.265, áudio AAC 320 kbps. Para Reels/TikTok, faça um corte vertical de 60 s com as etapas 3, 4, 6 e 8.

@@ -8,6 +8,7 @@ and low booms on every "hit" sound. It ducks under each line, swells a little in
 types from Mixkit (free sound effects, downloaded once into engine/sfx/, Mixkit Sound Effects Free License):
   knock slam thud creak floorcreak lock heartbeat hit boom whoosh meow catangry glass swell
 types made in code (tiny UI sounds, and the offline fallback for every type): tick click hiss growl sting rumble drip alarm
+                                                         weld servo airwrench engine cityhum
 needs: pip install numpy imageio-ffmpeg"""
 import json, os, re, shutil, subprocess, sys, wave
 import numpy as np
@@ -117,6 +118,23 @@ def synth(kind):
         n = L(1.6); t = np.arange(n) / SR; gate = ((t * 4) % 1 < 0.5).astype(float)
         return 0.4 * np.sign(np.sin(2 * np.pi * 880 * t)) * gate * np.minimum(1, (n - np.arange(n)) / L(0.1))
     if kind == "drip": n = L(0.25); return 0.6 * tone(900, n, 1800) * env(n, 0.001, 0.04)
+    if kind == "weld":                                            # arc welding: crackling noise bursts
+        n = L(1.6); t = np.arange(n) / SR; crack = (rng.random(n) < 0.004).astype(float)
+        crack = np.convolve(crack, np.exp(-np.arange(L(0.004)) / L(0.001)), mode="same")
+        return 0.5 * band(noise(n), 2500, 9000) * (0.5 + 0.5 * np.sin(2 * np.pi * 3 * t) ** 2) + 0.8 * crack
+    if kind == "servo":                                           # a robot arm moving: a whining sweep
+        n = L(1.2); t = np.arange(n) / SR; f = 420 + 260 * np.sin(np.pi * t / t[-1])
+        return 0.35 * (np.sin(2 * np.pi * np.cumsum(f) / SR) + 0.3 * np.sin(4 * np.pi * np.cumsum(f) / SR)) * np.sin(np.linspace(0, np.pi, n))
+    if kind == "airwrench":                                       # an impact wrench: a fast rattling burst
+        n = L(0.7); t = np.arange(n) / SR; gate = (np.sin(2 * np.pi * 38 * t) > 0).astype(float)
+        return 0.7 * band(noise(n), 300, 4000) * gate * np.minimum(1, (n - np.arange(n)) / L(0.05))
+    if kind == "engine":                                          # an engine starting and revving
+        n = L(3.5); t = np.arange(n) / SR; rpm = np.interp(t, [0, 0.5, 0.9, 1.6, 2.2, 3.5], [3, 14, 13, 40, 22, 18])
+        ph = 2 * np.pi * np.cumsum(rpm) / SR; saw = 2 * ((ph / (2 * np.pi)) % 1) - 1
+        crank = np.where(t < 0.6, 0.6 * np.sign(np.sin(2 * np.pi * 9 * t)), 0) * band(noise(n), 200, 1500)
+        return 0.7 * band(saw + 0.4 * np.sin(2 * ph), 30, 900) * np.minimum(1, t / 0.4) * np.minimum(1, (n - np.arange(n)) / L(0.3)) + 0.4 * crank
+    if kind == "cityhum":                                         # distant night traffic
+        n = L(6); return 0.6 * band(noise(n), 60, 600) * (0.7 + 0.3 * np.sin(np.linspace(0, 3 * np.pi, n)))
     sys.exit(f"unknown sfx type {kind}")
 
 with wave.open(os.path.join(part, "narration.wav")) as w:

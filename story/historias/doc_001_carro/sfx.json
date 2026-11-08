@@ -1,0 +1,305 @@
+{
+ "mixkit": false,
+ "roomtone": false,
+ "music": {
+  "level": -15
+ },
+ "bed": [
+  {
+   "at": 0,
+   "level": 0.35
+  },
+  {
+   "at": 30,
+   "level": 0.5
+  },
+  {
+   "at": 60,
+   "level": 0.6
+  },
+  {
+   "at": 95,
+   "level": 0.7
+  },
+  {
+   "at": 130,
+   "level": 0.8
+  },
+  {
+   "at": 160,
+   "level": 0.85
+  },
+  {
+   "at": 185,
+   "level": 0.9
+  },
+  {
+   "at": 209,
+   "level": 0.3
+  },
+  {
+   "at": 212,
+   "level": 1.1
+  },
+  {
+   "at": 230,
+   "level": 1.25
+  },
+  {
+   "at": 243,
+   "level": 0.6
+  }
+ ],
+ "sfx": [
+  {
+   "at": 0.0,
+   "type": "cityhum",
+   "vol": 0.5
+  },
+  {
+   "at": 5.5,
+   "type": "cityhum",
+   "vol": 0.45
+  },
+  {
+   "at": 11.0,
+   "type": "cityhum",
+   "vol": 0.35
+  },
+  {
+   "at": 15.5,
+   "type": "tick",
+   "vol": 0.3
+  },
+  {
+   "at": 23.5,
+   "type": "whoosh",
+   "vol": 0.35
+  },
+  {
+   "at": 38.5,
+   "type": "tick",
+   "vol": 0.3
+  },
+  {
+   "at": 39.0,
+   "type": "tick",
+   "vol": 0.3
+  },
+  {
+   "at": 45.5,
+   "type": "whoosh",
+   "vol": 0.5
+  },
+  {
+   "at": 48.0,
+   "type": "whoosh",
+   "vol": 0.4
+  },
+  {
+   "at": 60.5,
+   "type": "weld",
+   "vol": 0.4
+  },
+  {
+   "at": 68.5,
+   "type": "hit",
+   "vol": 0.6
+  },
+  {
+   "at": 74.5,
+   "type": "servo",
+   "vol": 0.5
+  },
+  {
+   "at": 75.5,
+   "type": "weld",
+   "vol": 0.5
+  },
+  {
+   "at": 78.0,
+   "type": "weld",
+   "vol": 0.45
+  },
+  {
+   "at": 81.5,
+   "type": "click",
+   "vol": 0.4
+  },
+  {
+   "at": 89.0,
+   "type": "servo",
+   "vol": 0.4
+  },
+  {
+   "at": 96.0,
+   "type": "rumble",
+   "vol": 0.4
+  },
+  {
+   "at": 103.0,
+   "type": "click",
+   "vol": 0.4
+  },
+  {
+   "at": 110.0,
+   "type": "thud",
+   "vol": 0.5
+  },
+  {
+   "at": 117.5,
+   "type": "click",
+   "vol": 0.6
+  },
+  {
+   "at": 118.3,
+   "type": "click",
+   "vol": 0.6
+  },
+  {
+   "at": 119.1,
+   "type": "click",
+   "vol": 0.6
+  },
+  {
+   "at": 124.5,
+   "type": "airwrench",
+   "vol": 0.5
+  },
+  {
+   "at": 131.0,
+   "type": "airwrench",
+   "vol": 0.6
+  },
+  {
+   "at": 134.5,
+   "type": "airwrench",
+   "vol": 0.5
+  },
+  {
+   "at": 138.5,
+   "type": "servo",
+   "vol": 0.5
+  },
+  {
+   "at": 146.0,
+   "type": "click",
+   "vol": 0.5
+  },
+  {
+   "at": 147.2,
+   "type": "click",
+   "vol": 0.5
+  },
+  {
+   "at": 153.0,
+   "type": "servo",
+   "vol": 0.5
+  },
+  {
+   "at": 156.5,
+   "type": "hit",
+   "vol": 0.7
+  },
+  {
+   "at": 160.5,
+   "type": "hiss",
+   "vol": 0.5
+  },
+  {
+   "at": 167.5,
+   "type": "hiss",
+   "vol": 0.3
+  },
+  {
+   "at": 172.5,
+   "type": "hiss",
+   "vol": 0.5
+  },
+  {
+   "at": 175.0,
+   "type": "servo",
+   "vol": 0.4
+  },
+  {
+   "at": 179.5,
+   "type": "airwrench",
+   "vol": 0.4
+  },
+  {
+   "at": 186.0,
+   "type": "click",
+   "vol": 0.4
+  },
+  {
+   "at": 193.0,
+   "type": "tick",
+   "vol": 0.4
+  },
+  {
+   "at": 193.4,
+   "type": "tick",
+   "vol": 0.4
+  },
+  {
+   "at": 199.5,
+   "type": "click",
+   "vol": 0.4
+  },
+  {
+   "at": 205.0,
+   "type": "tick",
+   "vol": 0.4
+  },
+  {
+   "at": 205.3,
+   "type": "tick",
+   "vol": 0.4
+  },
+  {
+   "at": 211.0,
+   "type": "click",
+   "vol": 0.7
+  },
+  {
+   "at": 211.4,
+   "type": "engine",
+   "vol": 0.9
+  },
+  {
+   "at": 216.5,
+   "type": "engine",
+   "vol": 0.8
+  },
+  {
+   "at": 222.5,
+   "type": "engine",
+   "vol": 0.9
+  },
+  {
+   "at": 225.5,
+   "type": "whoosh",
+   "vol": 0.6
+  },
+  {
+   "at": 230.5,
+   "type": "rumble",
+   "vol": 0.4
+  },
+  {
+   "at": 237.5,
+   "type": "engine",
+   "vol": 0.6
+  },
+  {
+   "at": 238.5,
+   "type": "whoosh",
+   "vol": 0.5
+  },
+  {
+   "at": 244.0,
+   "type": "hit",
+   "vol": 0.7
+  }
+ ]
+}

@@ -1,0 +1,45 @@
+{
+ "voice": "pm_alex",
+ "speed": 0.94,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lead": 0.6,
+ "lines": [
+  {
+   "text": "Todo grande automóvel começa muito antes de existir. Começa com uma pergunta, uma necessidade ou simplesmente um sonho. Foi assim que nasceu a ideia de criar um carro que unisse desempenho, tecnologia e personalidade.",
+   "pause": 17.114
+  },
+  {
+   "text": "Depois da primeira ideia, começa o trabalho de transformar imaginação em engenharia. Cada curva é estudada, cada medida calculada e cada componente projetado para cumprir uma função.",
+   "pause": 18.545
+  },
+  {
+   "text": "A construção começa pela estrutura. Chapas metálicas são cortadas, moldadas e unidas com precisão milimétrica. É aqui que nasce a base responsável pela segurança, rigidez e estabilidade do automóvel.",
+   "pause": 22.594
+  },
+  {
+   "text": "Enquanto a estrutura ganha forma, outra equipe trabalha no coração da máquina. O motor é montado peça por peça. Pistões, válvulas, virabrequim e centenas de componentes precisam trabalhar em perfeita sincronia para transformar combustível em movimento.",
+   "pause": 19.655
+  },
+  {
+   "text": "Agora, os sistemas começam a se conectar. Suspensão, transmissão, freios, direção e eletrônica formam um conjunto complexo. Cada ligação precisa ser testada para garantir que o veículo funcione como um único organismo.",
+   "pause": 16.682
+  },
+  {
+   "text": "A engenharia encontra o design. A carroceria recebe proteção, cor e acabamento. Cada superfície é inspecionada para alcançar o resultado visual planejado desde os primeiros desenhos.",
+   "pause": 13.329
+  },
+  {
+   "text": "Por dentro, cada detalhe é pensado para quem vai dirigir. Conforto, ergonomia, conectividade e segurança transformam uma máquina em uma experiência.",
+   "pause": 15.649
+  },
+  {
+   "text": "Depois de milhares de horas de trabalho, chega o momento mais aguardado: o primeiro funcionamento. Mas antes de chegar às ruas, o carro precisa provar que está preparado para enfrentar o mundo real.",
+   "pause": 8.233
+  },
+  {
+   "text": "De um simples desenho a uma máquina real. Cada peça carrega o trabalho de centenas de decisões, profissionais e horas de dedicação. E assim, um sonho finalmente ganha rodas.",
+   "pause": 0.3
+  }
+ ]
+}

@@ -1,0 +1,318 @@
+A CRIAÇÃO DE UM CARRO DO ZERO: PROMPTS VISUAIS (Google Flow / Veo, 16:9)
+============================================================
+
+Gere cada cena separadamente, com o áudio da ferramenta desligado; o som vem de narracao_com_trilha.wav.
+Use a MESMA imagem de referência do carro (e do Rafael) em todas as cenas do Flow para manter o modelo idêntico.
+Cada cena tem no máximo 8 s (o limite do Veo). Monte na ordem e nos tempos abaixo.
+
+FICHAS FIXAS (já incluídas em cada prompt quando o personagem ou o lugar aparece):
+  THE CAR: a modern two-door sports coupé prototype with no badges or logos anywhere, deep metallic midnight-blue paint, low wide stance, long sculpted hood, short rear deck, fastback roofline, frameless side windows, a slim full-width LED light bar at the front and at the rear, large black front air intakes, 20-inch five-spoke graphite wheels, red brake calipers, black side mirrors, tan leather sports interior
+  RAFAEL: Brazilian automotive engineer, about 45 years old, short salt-and-pepper beard, rectangular black glasses, navy work shirt with rolled-up sleeves, grey trousers, silver wristwatch
+  THE FACTORY: a clean modern car factory with polished grey epoxy floors, white overhead LED panels, orange industrial robot arms, yellow safety lines on the floor, glass-walled control rooms, workers in dark grey uniforms with safety glasses
+
+── 1. O NASCIMENTO DA IDEIA (0:00.0 – 0:30.0) ──
+   narração entra em 0:00.6: "Todo grande automóvel começa muito antes de existir. Começa com uma pergunta, uma necessidade ou simplesmente um sonho. Foi assim que nasceu a ideia de criar um carro que unisse desempenho, tecnologia e personalidade."
+
+CENA 01 — Cidade à noite
+  tempo: 0:00.0 → 0:08.0  (8.0 s)
+  câmera: Slow aerial drift over avenues
+  sons: ruído distante de trânsito
+  arquivo: cenas/cena_01.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. Aerial night view of a modern Brazilian city, wet avenues with long red and white light trails of passing cars, glass towers, soft haze.
+
+CENA 02 — O engenheiro na janela
+  tempo: 0:08.0 → 0:15.0  (7.0 s)
+  câmera: Slow push-in from inside the office
+  sons: zumbido da cidade, relógio
+  arquivo: cenas/cena_02.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. RAFAEL stands at a tall office window at night, watching the traffic far below, city lights reflected on the glass and on his glasses, warm desk lamp behind him. Thoughtful. RAFAEL: Brazilian automotive engineer, about 45 years old, short salt-and-pepper beard, rectangular black glasses, navy work shirt with rolled-up sleeves, grey trousers, silver wristwatch.
+
+CENA 03 — O caderno
+  tempo: 0:15.0 → 0:22.0  (7.0 s)
+  câmera: Top-down, slow descent towards the page
+  sons: lápis no papel
+  arquivo: cenas/cena_03.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. Top-down shot of RAFAEL's hands opening a black notebook on a wooden desk under a warm lamp and starting to sketch the first pencil lines of a low sports coupé. RAFAEL: Brazilian automotive engineer, about 45 years old, short salt-and-pepper beard, rectangular black glasses, navy work shirt with rolled-up sleeves, grey trousers, silver wristwatch.
+
+CENA 04 — O primeiro desenho
+  tempo: 0:22.0 → 0:30.0  (8.0 s)
+  câmera: Macro push-in into the drawing (match cut to the next scene)
+  sons: lápis, trilha entra
+  arquivo: cenas/cena_04.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. Macro shot of the pencil finishing a side-view sketch of THE CAR: long hood, fastback roofline, big wheels; graphite texture; the camera pushes into the drawing until the lines fill the frame. THE CAR: a modern two-door sports coupé prototype with no badges or logos anywhere, deep metallic midnight-blue paint, low wide stance, long sculpted hood, short rear deck, fastback roofline, frameless side windows, a slim full-width LED light bar at the front and at the rear, large black front air intakes, 20-inch five-spoke graphite wheels, red brake calipers, black side mirrors, tan leather sports interior.
+
+── 2. DESIGN E ENGENHARIA (0:30.0 – 1:00.0) ──
+   narração entra em 0:30.6: "Depois da primeira ideia, começa o trabalho de transformar imaginação em engenharia. Cada curva é estudada, cada medida calculada e cada componente projetado para cumprir uma função."
+
+CENA 05 — Estúdio de design
+  tempo: 0:30.0 → 0:38.0  (8.0 s)
+  câmera: Lateral dolly along the drafting tables
+  sons: lápis, ambiente de escritório
+  arquivo: cenas/cena_05.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. A bright car design studio: designers sketching THE CAR by hand on large sheets and drawing tablets, walls covered with side-view and front-view sketches of the same coupé. THE CAR: a modern two-door sports coupé prototype with no badges or logos anywhere, deep metallic midnight-blue paint, low wide stance, long sculpted hood, short rear deck, fastback roofline, frameless side windows, a slim full-width LED light bar at the front and at the rear, large black front air intakes, 20-inch five-spoke graphite wheels, red brake calipers, black side mirrors, tan leather sports interior.
+
+CENA 06 — O modelo 3D
+  tempo: 0:38.0 → 0:45.0  (7.0 s)
+  câmera: Slow push towards the monitor
+  sons: cliques de teclado
+  arquivo: cenas/cena_06.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. A large monitor showing a detailed 3D wireframe model of THE CAR rotating slowly; an engineer's hand moves a mouse; reflections on the screen. THE CAR: a modern two-door sports coupé prototype with no badges or logos anywhere, deep metallic midnight-blue paint, low wide stance, long sculpted hood, short rear deck, fastback roofline, frameless side windows, a slim full-width LED light bar at the front and at the rear, large black front air intakes, 20-inch five-spoke graphite wheels, red brake calipers, black side mirrors, tan leather sports interior.
+
+CENA 07 — Aerodinâmica
+  tempo: 0:45.0 → 0:53.0  (8.0 s)
+  câmera: Low side tracking shot
+  sons: vento contínuo
+  arquivo: cenas/cena_07.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. A full-size clay model of THE CAR inside a wind tunnel, a thin white smoke stream flowing smoothly over the hood, roof and rear; engineers watching from behind glass. THE CAR: a modern two-door sports coupé prototype with no badges or logos anywhere, deep metallic midnight-blue paint, low wide stance, long sculpted hood, short rear deck, fastback roofline, frameless side windows, a slim full-width LED light bar at the front and at the rear, large black front air intakes, 20-inch five-spoke graphite wheels, red brake calipers, black side mirrors, tan leather sports interior.
+
+CENA 08 — Medidas e estrutura
+  tempo: 0:53.0 → 1:00.0  (7.0 s)
+  câmera: Overhead slow orbit around the table
+  sons: papel, conversa baixa
+  arquivo: cenas/cena_08.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. RAFAEL and two engineers around a table with technical drawings of THE CAR, measuring the wheelbase with a ruler, weight-distribution charts and a structural simulation on a tablet. THE CAR: a modern two-door sports coupé prototype with no badges or logos anywhere, deep metallic midnight-blue paint, low wide stance, long sculpted hood, short rear deck, fastback roofline, frameless side windows, a slim full-width LED light bar at the front and at the rear, large black front air intakes, 20-inch five-spoke graphite wheels, red brake calipers, black side mirrors, tan leather sports interior. RAFAEL: Brazilian automotive engineer, about 45 years old, short salt-and-pepper beard, rectangular black glasses, navy work shirt with rolled-up sleeves, grey trousers, silver wristwatch.
+
+── 3. CHASSI E CARROCERIA (1:00.0 – 1:35.0) ──
+   narração entra em 1:00.6: "A construção começa pela estrutura. Chapas metálicas são cortadas, moldadas e unidas com precisão milimétrica. É aqui que nasce a base responsável pela segurança, rigidez e estabilidade do automóvel."
+
+CENA 09 — Corte das chapas
+  tempo: 1:00.0 → 1:07.0  (7.0 s)
+  câmera: Low close-up, slow slide
+  sons: corte a laser, chiado
+  arquivo: cenas/cena_09.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. Inside THE FACTORY a laser cutting machine slices a large aluminium sheet, bright sparks and a thin line of smoke, precise geometric shapes falling away. THE FACTORY: a clean modern car factory with polished grey epoxy floors, white overhead LED panels, orange industrial robot arms, yellow safety lines on the floor, glass-walled control rooms, workers in dark grey uniforms with safety glasses.
+
+CENA 10 — A prensa
+  tempo: 1:07.0 → 1:14.0  (7.0 s)
+  câmera: Static wide, then a slight push on impact
+  sons: impacto grave da prensa
+  arquivo: cenas/cena_10.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. A huge hydraulic press in THE FACTORY stamps a steel sheet into the shape of a car door panel, heavy and slow, metal flexing. THE FACTORY: a clean modern car factory with polished grey epoxy floors, white overhead LED panels, orange industrial robot arms, yellow safety lines on the floor, glass-walled control rooms, workers in dark grey uniforms with safety glasses.
+
+CENA 11 — Robôs soldando
+  tempo: 1:14.0 → 1:21.0  (7.0 s)
+  câmera: Slow arc around the robots
+  sons: solda, servos dos robôs
+  arquivo: cenas/cena_11.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. Orange robot arms in THE FACTORY spot-weld the bare metal body structure of THE CAR (body-in-white), showers of sparks, synchronized movements. THE CAR: a modern two-door sports coupé prototype with no badges or logos anywhere, deep metallic midnight-blue paint, low wide stance, long sculpted hood, short rear deck, fastback roofline, frameless side windows, a slim full-width LED light bar at the front and at the rear, large black front air intakes, 20-inch five-spoke graphite wheels, red brake calipers, black side mirrors, tan leather sports interior. THE FACTORY: a clean modern car factory with polished grey epoxy floors, white overhead LED panels, orange industrial robot arms, yellow safety lines on the floor, glass-walled control rooms, workers in dark grey uniforms with safety glasses.
+
+CENA 12 — Precisão milimétrica
+  tempo: 1:21.0 → 1:28.0  (7.0 s)
+  câmera: Macro on the probe, rack focus to the technician
+  sons: bipe do instrumento
+  arquivo: cenas/cena_12.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. A technician with safety glasses checks the bare body structure with a coordinate-measuring probe and a laser tracker, numbers on a screen beside him.
+
+CENA 13 — A estrutura pronta
+  tempo: 1:28.0 → 1:35.0  (7.0 s)
+  câmera: Wide shot, the line moves towards the camera
+  sons: esteira, ambiente de fábrica
+  arquivo: cenas/cena_13.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. The complete bare metal body of THE CAR, with structural reinforcements and the coupé silhouette already recognisable, moving slowly along the assembly line under LED lights. THE CAR: a modern two-door sports coupé prototype with no badges or logos anywhere, deep metallic midnight-blue paint, low wide stance, long sculpted hood, short rear deck, fastback roofline, frameless side windows, a slim full-width LED light bar at the front and at the rear, large black front air intakes, 20-inch five-spoke graphite wheels, red brake calipers, black side mirrors, tan leather sports interior.
+
+── 4. O MOTOR (1:35.0 – 2:10.0) ──
+   narração entra em 1:35.6: "Enquanto a estrutura ganha forma, outra equipe trabalha no coração da máquina. O motor é montado peça por peça. Pistões, válvulas, virabrequim e centenas de componentes precisam trabalhar em perfeita sincronia para transformar combustível em movimento."
+
+CENA 14 — O bloco
+  tempo: 1:35.0 → 1:42.0  (7.0 s)
+  câmera: Close-up, slow slide past the machine
+  sons: usinagem, líquido
+  arquivo: cenas/cena_14.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. A CNC machine mills an aluminium engine block, coolant spraying, metal shavings curling, precise bores appearing.
+
+CENA 15 — Pistões e bielas
+  tempo: 1:42.0 → 1:49.0  (7.0 s)
+  câmera: Macro, hands in frame
+  sons: metal deslizando
+  arquivo: cenas/cena_15.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. A mechanic in gloves slides polished pistons with connecting rods into the cylinders of the engine block on an assembly stand.
+
+CENA 16 — O virabrequim
+  tempo: 1:49.0 → 1:56.0  (7.0 s)
+  câmera: Low angle, slow tilt up
+  sons: corrente do guincho, impacto leve
+  arquivo: cenas/cena_16.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. A gleaming crankshaft is lowered by a hoist into the engine block and seated in its bearings.
+
+CENA 17 — Cabeçote e torque
+  tempo: 1:56.0 → 2:03.0  (7.0 s)
+  câmera: Macro on the torque wrench, then pull back
+  sons: cliques do torquímetro
+  arquivo: cenas/cena_17.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. The cylinder head with valves and camshafts is fitted; a mechanic tightens the bolts in sequence with a torque wrench, the click visible.
+
+CENA 18 — Motor completo
+  tempo: 2:03.0 → 2:10.0  (7.0 s)
+  câmera: Slow 180-degree orbit around the engine
+  sons: parafusadeira, ambiente
+  arquivo: cenas/cena_18.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. The complete turbocharged engine on its stand: turbocharger, fuel injection rail, intake, oil lines and radiator hoses connected, under bright workshop light.
+
+── 5. MONTAGEM DOS SISTEMAS (2:10.0 – 2:40.0) ──
+   narração entra em 2:10.6: "Agora, os sistemas começam a se conectar. Suspensão, transmissão, freios, direção e eletrônica formam um conjunto complexo. Cada ligação precisa ser testada para garantir que o veículo funcione como um único organismo."
+
+CENA 19 — Suspensão e freios
+  tempo: 2:10.0 → 2:18.0  (8.0 s)
+  câmera: Low angle at wheel height
+  sons: parafusadeira de impacto
+  arquivo: cenas/cena_19.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. On the assembly line, workers install a suspension strut, shock absorber and a large ventilated disc brake with a red caliper onto the bare metal body of THE CAR on its carrier. THE CAR: a modern two-door sports coupé prototype with no badges or logos anywhere, deep metallic midnight-blue paint, low wide stance, long sculpted hood, short rear deck, fastback roofline, frameless side windows, a slim full-width LED light bar at the front and at the rear, large black front air intakes, 20-inch five-spoke graphite wheels, red brake calipers, black side mirrors, tan leather sports interior.
+
+CENA 20 — Transmissão
+  tempo: 2:18.0 → 2:25.0  (7.0 s)
+  câmera: Slow push under the car
+  sons: servo do elevador, metal
+  arquivo: cenas/cena_20.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. From below, a gearbox and differential are raised and bolted into the bare metal body of THE CAR, drive shafts connected. THE CAR: a modern two-door sports coupé prototype with no badges or logos anywhere, deep metallic midnight-blue paint, low wide stance, long sculpted hood, short rear deck, fastback roofline, frameless side windows, a slim full-width LED light bar at the front and at the rear, large black front air intakes, 20-inch five-spoke graphite wheels, red brake calipers, black side mirrors, tan leather sports interior.
+
+CENA 21 — Chicotes e sensores
+  tempo: 2:25.0 → 2:32.0  (7.0 s)
+  câmera: Macro tracking along the wiring
+  sons: cliques de conectores
+  arquivo: cenas/cena_21.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. Hands route colour-coded wiring harnesses through the body of THE CAR and click connectors into sensors and electronic modules. THE CAR: a modern two-door sports coupé prototype with no badges or logos anywhere, deep metallic midnight-blue paint, low wide stance, long sculpted hood, short rear deck, fastback roofline, frameless side windows, a slim full-width LED light bar at the front and at the rear, large black front air intakes, 20-inch five-spoke graphite wheels, red brake calipers, black side mirrors, tan leather sports interior.
+
+CENA 22 — O casamento
+  tempo: 2:32.0 → 2:40.0  (8.0 s)
+  câmera: Low wide shot, the engine rises into the frame
+  sons: hidráulica, impacto grave
+  arquivo: cenas/cena_22.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. The 'marriage': the complete engine and transmission rise from below on a lift and are joined to the body of THE CAR in the front compartment, workers guiding it into place. THE CAR: a modern two-door sports coupé prototype with no badges or logos anywhere, deep metallic midnight-blue paint, low wide stance, long sculpted hood, short rear deck, fastback roofline, frameless side windows, a slim full-width LED light bar at the front and at the rear, large black front air intakes, 20-inch five-spoke graphite wheels, red brake calipers, black side mirrors, tan leather sports interior.
+
+── 6. PINTURA E ACABAMENTO (2:40.0 – 3:05.0) ──
+   narração entra em 2:40.6: "A engenharia encontra o design. A carroceria recebe proteção, cor e acabamento. Cada superfície é inspecionada para alcançar o resultado visual planejado desde os primeiros desenhos."
+
+CENA 23 — Primer
+  tempo: 2:40.0 → 2:46.0  (6.0 s)
+  câmera: Slow lateral move inside the booth
+  sons: spray
+  arquivo: cenas/cena_23.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. A separate bare body shell of THE CAR in a clean paint booth receiving a grey primer coat from robot spray guns, fine mist in the light. THE CAR: a modern two-door sports coupé prototype with no badges or logos anywhere, deep metallic midnight-blue paint, low wide stance, long sculpted hood, short rear deck, fastback roofline, frameless side windows, a slim full-width LED light bar at the front and at the rear, large black front air intakes, 20-inch five-spoke graphite wheels, red brake calipers, black side mirrors, tan leather sports interior.
+
+CENA 24 — Lixamento
+  tempo: 2:46.0 → 2:52.0  (6.0 s)
+  câmera: Close-up on a gloved hand
+  sons: lixa
+  arquivo: cenas/cena_24.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. A worker sands the primed body by hand and inspects the surface under a bright light strip.
+
+CENA 25 — A cor
+  tempo: 2:52.0 → 2:59.0  (7.0 s)
+  câmera: Slow orbit, the colour builds up
+  sons: spray, servos
+  arquivo: cenas/cena_25.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. Robot arms spray deep metallic midnight-blue paint onto the body of THE CAR, then a glossy clear coat; the metallic flakes sparkle under the booth lights. THE CAR: a modern two-door sports coupé prototype with no badges or logos anywhere, deep metallic midnight-blue paint, low wide stance, long sculpted hood, short rear deck, fastback roofline, frameless side windows, a slim full-width LED light bar at the front and at the rear, large black front air intakes, 20-inch five-spoke graphite wheels, red brake calipers, black side mirrors, tan leather sports interior.
+
+CENA 26 — Faróis, vidros e rodas
+  tempo: 2:59.0 → 3:05.0  (6.0 s)
+  câmera: Quick elegant cuts between details
+  sons: polidora, parafusadeira
+  arquivo: cenas/cena_26.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. The painted midnight-blue body of THE CAR is polished; workers fit the slim full-width LED light bar, the bumpers, the glass and the 20-inch five-spoke graphite wheels with red calipers. THE CAR: a modern two-door sports coupé prototype with no badges or logos anywhere, deep metallic midnight-blue paint, low wide stance, long sculpted hood, short rear deck, fastback roofline, frameless side windows, a slim full-width LED light bar at the front and at the rear, large black front air intakes, 20-inch five-spoke graphite wheels, red brake calipers, black side mirrors, tan leather sports interior.
+
+── 7. INTERIOR E TECNOLOGIA (3:05.0 – 3:30.0) ──
+   narração entra em 3:05.6: "Por dentro, cada detalhe é pensado para quem vai dirigir. Conforto, ergonomia, conectividade e segurança transformam uma máquina em uma experiência."
+
+CENA 27 — Os bancos
+  tempo: 3:05.0 → 3:12.0  (7.0 s)
+  câmera: Through the open door
+  sons: couro, cliques
+  arquivo: cenas/cena_27.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. Workers carefully place tan leather sports seats into the cabin of THE CAR through the open door. THE CAR: a modern two-door sports coupé prototype with no badges or logos anywhere, deep metallic midnight-blue paint, low wide stance, long sculpted hood, short rear deck, fastback roofline, frameless side windows, a slim full-width LED light bar at the front and at the rear, large black front air intakes, 20-inch five-spoke graphite wheels, red brake calipers, black side mirrors, tan leather sports interior.
+
+CENA 28 — Painel e volante
+  tempo: 3:12.0 → 3:18.0  (6.0 s)
+  câmera: Slow push across the dashboard
+  sons: bipe eletrônico
+  arquivo: cenas/cena_28.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. The dashboard of THE CAR with a sports steering wheel and a wide multimedia screen being installed; the screen lights up for the first time. THE CAR: a modern two-door sports coupé prototype with no badges or logos anywhere, deep metallic midnight-blue paint, low wide stance, long sculpted hood, short rear deck, fastback roofline, frameless side windows, a slim full-width LED light bar at the front and at the rear, large black front air intakes, 20-inch five-spoke graphite wheels, red brake calipers, black side mirrors, tan leather sports interior.
+
+CENA 29 — Segurança
+  tempo: 3:18.0 → 3:24.0  (6.0 s)
+  câmera: Macro on details
+  sons: cliques
+  arquivo: cenas/cena_29.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. Close-ups of seat belts, airbag modules and door trim panels being fitted inside THE CAR, ambient interior lighting glowing. THE CAR: a modern two-door sports coupé prototype with no badges or logos anywhere, deep metallic midnight-blue paint, low wide stance, long sculpted hood, short rear deck, fastback roofline, frameless side windows, a slim full-width LED light bar at the front and at the rear, large black front air intakes, 20-inch five-spoke graphite wheels, red brake calipers, black side mirrors, tan leather sports interior.
+
+CENA 30 — Diagnóstico
+  tempo: 3:24.0 → 3:30.0  (6.0 s)
+  câmera: Over-the-shoulder on the laptop
+  sons: teclado, bipes
+  arquivo: cenas/cena_30.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. Two technicians run electronic diagnostics on THE CAR with a laptop connected by a cable, green check marks appearing on the screen. THE CAR: a modern two-door sports coupé prototype with no badges or logos anywhere, deep metallic midnight-blue paint, low wide stance, long sculpted hood, short rear deck, fastback roofline, frameless side windows, a slim full-width LED light bar at the front and at the rear, large black front air intakes, 20-inch five-spoke graphite wheels, red brake calipers, black side mirrors, tan leather sports interior.
+
+── 8. PRIMEIRO FUNCIONAMENTO E TESTES (3:30.0 – 3:50.0) ──
+   narração entra em 3:30.6: "Depois de milhares de horas de trabalho, chega o momento mais aguardado: o primeiro funcionamento. Mas antes de chegar às ruas, o carro precisa provar que está preparado para enfrentar o mundo real."
+
+CENA 31 — A partida
+  tempo: 3:30.0 → 3:36.0  (6.0 s)
+  câmera: Macro on the start button, rack focus to the instrument cluster
+  sons: clique, motor dá partida
+  arquivo: cenas/cena_31.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. RAFAEL's finger presses the illuminated start button of THE CAR; the digital instrument cluster lights up in sequence. THE CAR: a modern two-door sports coupé prototype with no badges or logos anywhere, deep metallic midnight-blue paint, low wide stance, long sculpted hood, short rear deck, fastback roofline, frameless side windows, a slim full-width LED light bar at the front and at the rear, large black front air intakes, 20-inch five-spoke graphite wheels, red brake calipers, black side mirrors, tan leather sports interior. RAFAEL: Brazilian automotive engineer, about 45 years old, short salt-and-pepper beard, rectangular black glasses, navy work shirt with rolled-up sleeves, grey trousers, silver wristwatch.
+
+CENA 32 — O primeiro ronco
+  tempo: 3:36.0 → 3:42.0  (6.0 s)
+  câmera: Low close-up at the exhaust
+  sons: ronco do motor, aplausos distantes
+  arquivo: cenas/cena_32.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. Low close-up of the twin exhaust tips of THE CAR as the engine starts inside THE FACTORY, a slight heat shimmer; workers applauding in the background. THE CAR: a modern two-door sports coupé prototype with no badges or logos anywhere, deep metallic midnight-blue paint, low wide stance, long sculpted hood, short rear deck, fastback roofline, frameless side windows, a slim full-width LED light bar at the front and at the rear, large black front air intakes, 20-inch five-spoke graphite wheels, red brake calipers, black side mirrors, tan leather sports interior. THE FACTORY: a clean modern car factory with polished grey epoxy floors, white overhead LED panels, orange industrial robot arms, yellow safety lines on the floor, glass-walled control rooms, workers in dark grey uniforms with safety glasses.
+
+CENA 33 — Testes
+  tempo: 3:42.0 → 3:50.0  (8.0 s)
+  câmera: Fast cuts: dyno, then a tracking shot on the test track
+  sons: motor acelerando, pneus
+  arquivo: cenas/cena_33.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. THE CAR on a chassis dynamometer with its wheels spinning on rollers, then THE CAR driving fast on a closed test track, cornering firmly. THE CAR: a modern two-door sports coupé prototype with no badges or logos anywhere, deep metallic midnight-blue paint, low wide stance, long sculpted hood, short rear deck, fastback roofline, frameless side windows, a slim full-width LED light bar at the front and at the rear, large black front air intakes, 20-inch five-spoke graphite wheels, red brake calipers, black side mirrors, tan leather sports interior.
+
+── 9. A REALIZAÇÃO DO SONHO (3:50.0 – 4:05.0) ──
+   narração entra em 3:50.6: "De um simples desenho a uma máquina real. Cada peça carrega o trabalho de centenas de decisões, profissionais e horas de dedicação. E assim, um sonho finalmente ganha rodas."
+
+CENA 34 — Saindo da fábrica
+  tempo: 3:50.0 → 3:57.0  (7.0 s)
+  câmera: Static wide from outside the doors
+  sons: motor em marcha lenta
+  arquivo: cenas/cena_34.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. The finished midnight-blue THE CAR rolls slowly out of the large factory doors into warm golden evening light, RAFAEL watching from the side. THE CAR: a modern two-door sports coupé prototype with no badges or logos anywhere, deep metallic midnight-blue paint, low wide stance, long sculpted hood, short rear deck, fastback roofline, frameless side windows, a slim full-width LED light bar at the front and at the rear, large black front air intakes, 20-inch five-spoke graphite wheels, red brake calipers, black side mirrors, tan leather sports interior. RAFAEL: Brazilian automotive engineer, about 45 years old, short salt-and-pepper beard, rectangular black glasses, navy work shirt with rolled-up sleeves, grey trousers, silver wristwatch.
+
+CENA 35 — Na estrada
+  tempo: 3:57.0 → 4:05.0  (8.0 s)
+  câmera: Tracking shot alongside, then a slow push on the parked car
+  sons: motor passando, vento, trilha final
+  arquivo: cenas/cena_35.mp4
+  PROMPT:
+  Horizontal 16:9 frame, 4K, hyper-realistic cinematic automotive documentary, shot on a cinema camera with anamorphic lenses, shallow depth of field, smooth gimbal and dolly moves, realistic industrial lighting, detailed metal and paint textures, natural documentary colour grade, real people, not animated, not CGI-looking, no text, no logos, no brand names, no subtitles, no watermark. THE CAR drives along a scenic coastal road at sunset, then stands parked on an overlook; final hero shot of its lines, LED light bar and wheels glowing in the sunset. THE CAR: a modern two-door sports coupé prototype with no badges or logos anywhere, deep metallic midnight-blue paint, low wide stance, long sculpted hood, short rear deck, fastback roofline, frameless side windows, a slim full-width LED light bar at the front and at the rear, large black front air intakes, 20-inch five-spoke graphite wheels, red brake calipers, black side mirrors, tan leather sports interior.
