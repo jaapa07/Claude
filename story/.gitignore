@@ -10,3 +10,4 @@ engine/sfx/
 *.wav
 **/capa/
 historias/**/mix.wav
+historias/doc_*/mix.wav

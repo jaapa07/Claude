@@ -40,6 +40,7 @@ const LensShader = {
 
 // ---------- the stage ----------
 export function createStage(canvas2d) {
+  const W = canvas2d.width, H = canvas2d.height;                       // 1080x1920 (vertical) or 1920x1080 (horizontal)
   const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
   renderer.setPixelRatio(1); renderer.setSize(W, H, false);
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
