@@ -1,0 +1,137 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Vendi a minha vontade de cagar, parte 2</title>
+<script type="importmap">{"imports": {"three": "../../engine/vendor/three.module.js"}}</script>
+<style>
+@font-face { font-family: 'Oswald'; font-weight: 700; src: url('../../engine/vendor/fonts/oswald-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 700; src: url('../../engine/vendor/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+html, body { margin: 0; background: #000; } canvas { display: block; }
+</style>
+<script src="timing.js"></script>
+</head><body>
+<canvas id="film" width="1080" height="1920"></canvas>
+<script type="module">
+// "Vendi a minha vontade de cagar", part 2: a 65 s film in the style of O Homem Sem Sombra, on its world (street, bedroom,
+// office). The first frame is the cover (series pill and title), so the platform's default thumbnail is the cover.
+import * as S from '../../engine/stage.js';
+import { buildWorld } from '../../sombra/world.js';
+import { words, keyed, balance, app, row, paper, scribble, pill, title, strike, brl } from '../../sombra/common.js';
+const { THREE, clamp, lerp, ease, spring, box, hud, ruleSticker, endCard, chunkCaptions, drawCaptions, loadFonts, phone, W: CW, H: CH } = S;
+S.LABELS.day = ''; S.LABELS.follow = '';
+const T = window.TIMING; const { w, L0 } = words(T);
+const c = document.getElementById('film').getContext('2d');
+const stage = S.createStage(document.getElementById('film'));
+const Wd = buildWorld(stage);
+const { you, suit, boss, crush, mom, shadow, bartender, POSE, at: put, place } = Wd;
+const COVER = location.hash === '#cover';
+const END = T.lines[T.lines.length - 1].end + 1.6;
+const sweat = (t, k = 1) => ({ facing: 0, mood: 'scared', lean: 0.05 * Math.sin(t * 45) * k, armL: [0.25, -0.3], armR: [-0.25, 0.3], legL: [0.12, -0.1], legR: [-0.12, 0.1] });   // knees together, trembling
+const eat = t => ({ facing: 0, armL: [0.2, -0.2], armR: [-1.6 - 0.5 * Math.max(0, Math.sin(t * 9)), 2.2] });   // a hand going to the mouth again and again
+
+function street(day, { elev = 0.6 } = {}) { Wd.use('street'); Wd.setSun(day, elev); you.mesh.castShadow = true; Wd.bus.visible = false; Wd.shop.visible = false; }
+function home(night) { Wd.use('home'); Wd.dog.visible = false; Wd.homeSun.intensity = night ? 0 : 1.6; Wd.homeSky.material.color.set(night ? '#0a1430' : '#8ec5ef'); Wd.bedLamp.userData.light.intensity = night ? 2.5 : 0; Wd.homeL.h.intensity = night ? 0.5 : 0.75; }
+
+// the bathroom, built beside the bedroom: green tiles, a toilet, a lamp; and the bedroom's bathroom door
+const bath = new THREE.Group(); bath.position.set(12, 0, 0); Wd.home.add(bath);
+bath.add(box(3, 0.05, 3, '#d9d4c8', 0, -0.02, 0), box(3, 2.6, 0.1, '#5f8f7a', 0, 0, -1.2), box(0.1, 2.6, 3, '#6a9a84', -1.4, 0, 0));
+bath.add(box(0.5, 0.42, 0.6, '#eef0f0', 0, 0, -0.75), box(0.55, 0.06, 0.62, '#ffffff', 0, 0.42, -0.72), box(0.5, 0.55, 0.2, '#eef0f0', 0, 0.42, -1.05));
+const bathL = new THREE.PointLight('#fff2d0', 1.6, 6, 1.6); bathL.position.set(-0.6, 2.4, 0.9); bath.add(bathL);
+const paperProp = box(0.45, 0.32, 0.02, '#ecebe4', 0, 0, 0); paperProp.visible = false; Wd.home.add(paperProp);
+const bdoor = S.door({ color: '#8a5a36' }); bdoor.rotation.y = -Math.PI / 2; bdoor.position.set(2.42, 0, 0.6); Wd.home.add(bdoor);
+const sit = { facing: 0, legL: [1.45, -1.4], legR: [1.35, -1.3], armL: [1.3, -1.2], armR: [-1.3, 1.2] };
+const queue = [boss, crush, mom, shadow];
+
+// ---------- the shot list ----------
+const SH = [], at = (t0, f) => SH.push([t0, f]);
+const bar = (t) => { Wd.use('club'); Wd.drawFloor(t); Wd.ball.rotation.y = t; Wd.spots.forEach((s, i) => s.target.position.set(Math.sin(t * 1.3 + i * 2) * 2, 0, -0.5 + Math.cos(t * 1.1 + i) * 1.5)); };
+const hideBits = () => { paperProp.visible = false; };
+// 0. you take his hand
+at(0, (t, u) => { home(true); hideBits(); place('home', you, suit); put(you, -0.3, 0, 0.8, Object.assign({}, POSE.shake, { facing: 1 })); put(suit, 0.9, 0, 1.4, Object.assign({}, POSE.offer, { mood: 'scared' })); stage.aim([0.3, 1.45, 3.9], [0.3, 1.2, 1.1], 50); });
+// 1. five days, all at once: you, close, shaking
+at(L0(1), (t, u) => { home(true); hideBits(); place('home', you); put(you, -0.3, 0, 0.8, POSE.tremble(t)); stage.aim([-0.2, 1.5, 2.3 - u * 0.1], [-0.3, 1.4, 0.8], 40); });
+// 2. you run for the bathroom; the door is locked
+at(L0(2), (t, u) => { home(true); hideBits(); place('home', you); bdoor.userData.open(0); const k = ease(u / 1.0); if (k < 1) { you.walk(u * 3, { speed: 3, facing: 1 }); you.mesh.position.set(lerp(-0.3, 1.9, k), 0, 0.6); } else put(you, 1.9, 0, 0.6, Object.assign({}, POSE.reach, { armL: [1.4 + 0.3 * Math.sin(t * 20), -0.2] })); stage.aim([0.2, 1.5, 3.0], [1.6, 1.1, 0.6], 54); });
+// 3. inside, sitting, reading the paper: the man in the suit
+at(L0(3), (t, u) => { home(true); place('home', suit); put(suit, 12, 0.45, -0.7, sit); paperProp.visible = true; paperProp.position.set(12, 1.05, -0.35); paperProp.rotation.set(-0.3, 0, 0); stage.aim([12.4, 1.4, 1.7 - u * 0.15], [12, 1.0, -0.7], 50); });
+// 4. "Occupied!"
+at(L0(4), (t, u) => { home(true); place('home', suit); put(suit, 12, 0.45, -0.7, Object.assign({}, sit, { armR: [-2.5, 0.3] })); paperProp.visible = true; paperProp.position.set(11.85, 1.05, -0.35); stage.aim([12.2, 1.4, 1.3], [12, 1.2, -0.7], 46); });
+// 5. the neighbour's bathroom? 6. the petrol station? 7. 3:12, only the club is left (the street at night)
+at(L0(5), (t, u) => { street(false); hideBits(); place('street', you); you.walk(u * 3, { speed: 3, facing: 1 }); you.mesh.position.set(-4 + u * 2.4, 0, -5.4); stage.aim([2.0, 1.6, -1.2], [-3 + u * 2.4, 1.1, -5.6], 56); });
+at(L0(6), (t, u) => { street(false); place('street', you); put(you, 3.4, 0, -5.4, POSE.tremble(t)); stage.aim([3.8, 1.45, -3.0], [3.4, 1.25, -5.4], 46); });
+at(L0(7), (t, u) => { street(false); place('street', you); you.walk(u * 2.2, { speed: 2.2, facing: -1 }); you.mesh.position.set(4 - u * 1.8, 0, -5.4); stage.aim([1.0, 3.2, 0.5], [2.5 - u * 1.5, 0.8, -5.6], 60); });
+// 8. the toilet queue at the club: 47 people (you at the end)
+at(L0(8), (t, u) => { bar(t); place('club', you, ...queue); queue.forEach((p, i) => put(p, -3.2 + i * 0.75, 0, -1.6, Object.assign({}, POSE.stand, { facing: 1, lean: 0.03 * Math.sin(t * 3 + i) }))); put(you, -3.2 - 0.85, 0, -1.6, Object.assign({}, POSE.tremble(t), { facing: 1 })); stage.aim([-4.6 + u * 0.3, 1.6, 2.4], [-2.2, 1.0, -1.6], 58); });
+// 9. you sweat, shake, pray
+at(L0(9), (t, u) => { bar(t); place('club', you); put(you, -4.05, 0, -1.6, Object.assign({}, POSE.tremble(t), { armL: [2.6, -2.2], armR: [-2.6, 2.2] })); stage.aim([-3.8, 1.5, 0.0], [-4.05, 1.35, -1.6], 42); });
+// 10. the bartender: "are you feeling ill, sir?"
+at(L0(10), (t, u) => { bar(t); place('club', bartender); put(bartender, 2.6, 0, -2.9, Object.assign({}, POSE.stand, { facing: 0, headTilt: 0.2 })); stage.aim([2.6, 1.45, -1.2], [2.6, 1.4, -2.9], 40); });
+// 11. you tell her everything
+at(L0(11), (t, u) => { bar(t); place('club', you, bartender); put(you, 1.8, 0, -2.6, Object.assign({}, POSE.laugh(t * 0.6), { facing: 1, mood: 'scared' })); put(bartender, 3.2, 0, -2.9, Object.assign({}, POSE.stand, { facing: -1 })); stage.aim([2.5, 1.45, 0.6 + u * 0.1], [2.5, 1.1, -2.8], 52); });
+// 12. she laughs and takes a contract from her pocket
+at(L0(12), (t, u) => { bar(t); place('club', you, bartender); put(you, 1.8, 0, -2.6, Object.assign({}, POSE.tremble(t), { facing: 1 })); put(bartender, 3.2, 0, -2.9, Object.assign({}, POSE.laugh(t), { facing: -1 })); stage.aim([2.5, 1.45, 0.6], [2.5, 1.1, -2.8], 52); });
+// 13. "I'll buy your urge. 500."
+at(L0(13), (t, u) => { bar(t); place('club', bartender); put(bartender, 3.2, 0, -2.9, POSE.offer); stage.aim([2.6, 1.45, -1.0], [3.2, 1.4, -2.9], 42); });
+// 14. it's worth more now? inflation
+at(L0(14), (t, u) => { bar(t); place('club', you); put(you, 1.8, 0, -2.6, Object.assign({}, POSE.look, { facing: 0, headTilt: 0.25 })); stage.aim([1.8, 1.45, -0.9], [1.8, 1.4, -2.6], 42); });
+// 15. you sign again (the contract); 16. the urge goes; she doesn't even tremble
+at(L0(15), (t, u) => { bar(t); place('club', you, bartender); put(you, 1.8, 0, -2.6, POSE.sign); put(bartender, 3.2, 0, -2.9, POSE.offer); stage.aim([2.5, 1.45, 0.6], [2.5, 1.1, -2.8], 52); });
+at(L0(16), (t, u) => { bar(t); place('club', you, bartender); put(you, 1.8, 0, -2.6, Object.assign({}, POSE.laugh(t), { facing: 1 })); put(bartender, 3.2, 0, -2.9, Object.assign({}, POSE.stand, { facing: -1 })); stage.aim([2.5, 1.45, 0.6], [2.5, 1.1, -2.8], 52); });
+// 17. because she feels nothing: she resells
+at(L0(17), (t, u) => { bar(t); place('club', bartender); put(bartender, 3.2, 0, -2.9, Object.assign({}, POSE.stand, { facing: 0 })); stage.aim([3.2, 1.45, -1.0 - u * 0.1], [3.2, 1.4, -2.9], 40); });
+// 18. on the club's big screen: an auction of urges (the screen overlay) over the crowd
+at(L0(18), (t, u) => { bar(t); place('club', ...queue, you); queue.forEach((p, i) => put(p, -2.4 + i * 1.2, 0, 0.8, Object.assign({}, POSE.stand, { facing: 0 }))); put(you, 2.6, 0, 0.8, Object.assign({}, POSE.scared)); stage.aim([0, 1.7, 5.0], [0, 1.6, -2.0], 62); });
+// 19. who bids? the man in the suit, his hand up; 20. "I know this one. Comes with torresmo."
+at(L0(19), (t, u) => { bar(t); place('club', ...queue, suit); queue.forEach((p, i) => put(p, -2.4 + i * 1.2, 0, 0.8, Object.assign({}, POSE.stand, { facing: 0 }))); put(suit, 0.6, 0, 1.8, Object.assign({}, POSE.stand, { facing: 0, armR: [-2.9, 0.1] })); stage.aim([0.4, 1.6, 4.6], [0.4, 1.3, 1.0], 54); });
+at(L0(20), (t, u) => { bar(t); place('club', suit); put(suit, 0.6, 0, 1.8, Object.assign({}, POSE.stand, { facing: 0, armR: [-2.9, 0.1] })); stage.aim([0.6, 1.6, 3.6], [0.6, 1.55, 1.8], 40); });
+// 21. "Sold! To the gentleman in the top hat!"
+at(L0(21), (t, u) => { bar(t); place('club', bartender); put(bartender, 3.2, 0, -2.9, Object.assign({}, POSE.wave(t), { facing: 0 })); stage.aim([2.9, 1.5, -0.8], [3.2, 1.4, -2.9], 44); });
+// 22. he pays one real, sits at the bar and orders a feijoada (you, horrified, behind him)
+at(L0(22), (t, u) => { bar(t); place('club', suit, you, bartender); put(suit, 2.0, 0, -2.6, Object.assign({}, POSE.offer, { facing: 1 })); put(bartender, 3.2, 0, -2.9, Object.assign({}, POSE.stand, { facing: -1 })); put(you, 0.4, 0, -1.4, POSE.tremble(t)); const k = ease(u / 4); stage.aim([lerp(1.4, 1.6, k), 1.5, lerp(1.6, 0.6, k)], [1.6, 1.1, -2.4], lerp(56, 48, k)); });
+
+// ---------- overlay ----------
+const CLOCK = [[0, 'DIA 5', '03:00'], [L0(7), 'DIA 5', '03:12'], [L0(8), 'DIA 5', '03:20'], [L0(18), 'DIA 5', '03:41']];
+const clockAt = t => { const r = CLOCK.filter(x => t >= x[0]).pop(); return [r[1], r[2]]; };
+const BAL = [[0, 143], [w(15, 'assina') + 0.4, 643], [w(22, 'paga'), 643]];
+const sticker = (t, s, e, label, txt) => { if (t >= s && t < e) { const r = S.LABELS.rule; S.LABELS.rule = label; ruleSticker(c, '', txt, spring((t - s) * 1.4), 560); S.LABELS.rule = r; } };
+function screenBoard(t) {   // the club's big screen: the auction
+  const s = L0(18), e = L0(19) + 0.6; if (t < s || t >= e) return; const k = ease((t - s) / 0.3);
+  c.save(); c.globalAlpha = k; c.fillStyle = '#120a1e'; c.strokeStyle = '#ff3fa4'; c.lineWidth = 10; c.beginPath(); c.roundRect(110, 430, 860, 560, 30); c.fill(); c.stroke();
+  c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#ffcc4d'; c.font = '700 64px Oswald'; c.fillText('LEILÃO DE VONTADES', 540, 520);
+  c.fillStyle = '#ffffff'; c.font = '700 40px "JetBrains Mono"'; c.fillText('LOTE 01: 5 DIAS', 540, 620); c.fillText('+ FEIJOADA + TORRESMO', 540, 680);
+  c.fillStyle = '#4fe08a'; c.font = '700 96px Oswald'; c.fillText('LANCE: R$ 1', 540, 820); c.restore();
+}
+function contract(t) {
+  const ts = w(15, 'assina'), te = L0(16);
+  if (t >= L0(12) + 0.6 && t < L0(13)) paper(c, ease((t - L0(12) - 0.6) / 0.25), (c, w2) => { c.fillStyle = '#1f2026'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.font = '700 54px Oswald'; c.fillText('CONTRATO', w2 / 2, 90); c.font = '700 30px "JetBrains Mono"'; c.fillText('REVENDA DE VONTADES LTDA.', w2 / 2, 160);
+    c.fillStyle = '#9a958c'; for (let i = 0; i < 9; i++) c.fillRect(60, 240 + i * 40, w2 - 120 - (i % 3) * 90, 10); }, { h: 760, rot: -0.04 });
+  if (t >= ts && t < te) paper(c, ease((t - ts) / 0.25), (c, w2) => { c.fillStyle = '#1f2026'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.font = '700 54px Oswald'; c.fillText('CONTRATO', w2 / 2, 90); c.font = '700 30px "JetBrains Mono"'; c.fillText('REVENDA DE VONTADES LTDA.', w2 / 2, 160);
+    c.textAlign = 'left'; c.font = '700 40px "JetBrains Mono"'; c.fillText('VALOR: R$ 500,00', 60, 300); c.fillText('REVENDA: LIBERADA', 60, 370); c.fillStyle = '#9a958c'; for (let i = 0; i < 5; i++) c.fillRect(60, 450 + i * 34, w2 - 120 - (i % 2) * 120, 10);
+    c.fillStyle = '#1f2026'; c.fillRect(60, 760, w2 - 120, 4); scribble(c, 90, 720, (t - ts - 0.15) / 0.5); }, { h: 860 });
+}
+function coverArt() {
+  const gr = c.createLinearGradient(0, 0, 0, 900); gr.addColorStop(0, 'rgba(0,0,0,0.7)'); gr.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = gr; c.fillRect(0, 0, CW, 900);
+  pill(c, 'O HOMEM DE TERNO · PT 2', 300); title(c, 'NÃO ACHEI', 'UM BANHEIRO');
+}
+
+const CHUNKS = chunkCaptions(T); window.CHUNKS = CHUNKS;
+window.TOTAL = 65;
+window.seek = t => {
+  if (COVER) t = 0;
+  let i = 0; while (i + 1 < SH.length && t >= SH[i + 1][0]) i++;
+  SH[i][1](t, t - SH[i][0]);
+  stage.draw(t, { vignette: 0.42, bloomStrength: Wd.sets.club.visible ? 0.8 : 0.45 });
+  if (COVER || t < L0(0)) { coverArt(); return; }
+  const [d, k] = clockAt(t); hud(c, d, k); balance(c, keyed(BAL, t), t);
+  contract(t); screenBoard(t);
+  sticker(t, w(2, 'trancada'), T.lines[2].end + 0.3, 'AVISO', ['PORTA', 'TRANCADA']);
+  sticker(t, w(5, 'Ela'), T.lines[5].end + 0.2, 'VIZINHA', ['NO BANHO', 'HÁ 40 MIN']);
+  sticker(t, w(6, 'Fechou'), T.lines[6].end + 0.2, 'POSTO', ['FECHADO', 'DESDE 00:00']);
+  sticker(t, w(8, '47'), T.lines[8].end + 0.3, 'FILA', ['47 PESSOAS', 'NA SUA FRENTE']);
+  sticker(t, w(14, 'Inflação'), T.lines[14].end + 0.2, 'MERCADO', ['VONTADE', 'R$ 200 → R$ 500']);
+  if (t >= END) { const p = 1 + 0.02 * Math.sin((t - END) * 4); c.save(); c.translate(540, 900); c.scale(p, p); c.translate(-540, -900); endCard(c, END, t, ['VOCÊ VENDERIA', 'DE NOVO?'], 'SIM: POR 500 EU VENDO', 'NÃO: ENCARO A FILA', ''); c.restore(); }
+  else drawCaptions(c, CHUNKS, t, 1310);
+};
+await loadFonts();
+window.seek(0);
+window.READY = true;
+</script>
+</body></html>

@@ -1,0 +1,188 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.15,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lead": 0.7,
+ "lines": [
+  {
+   "text": "Imagine: você pega na mão dele.",
+   "key": {
+    "mão": "yellow"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "5 dias de vontade. Tudo de uma vez.",
+   "say": "Cinco dias de vontade. Tudo de uma vez.",
+   "key": {
+    "vez": "red"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Você corre pro banheiro. A porta tá trancada.",
+   "key": {
+    "trancada": "red"
+   },
+   "pause": 0.15
+  },
+  {
+   "text": "Lá dentro, sentado, lendo jornal: o homem de terno.",
+   "key": {
+    "jornal": "yellow"
+   },
+   "pause": 0.15
+  },
+  {
+   "text": "Ocupado!",
+   "voice": "pm_santa",
+   "speed": 1.0,
+   "key": {
+    "Ocupado": "red"
+   },
+   "pause": 0.25
+  },
+  {
+   "text": "O banheiro da vizinha? Ela tá no banho há 40 minutos.",
+   "say": "O banheiro da vizinha? Ela tá no banho há quarenta minutos.",
+   "key": {
+    "40": "red"
+   },
+   "pause": 0.15
+  },
+  {
+   "text": "O posto de gasolina? Fechou à meia-noite.",
+   "key": {
+    "meia-noite": "red"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "3 e 12 da manhã. Só sobrou a balada.",
+   "say": "Três e doze da manhã. Só sobrou a balada.",
+   "key": {
+    "balada": "yellow"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Fila do banheiro: 47 pessoas.",
+   "say": "Fila do banheiro: quarenta e sete pessoas.",
+   "key": {
+    "47": "red"
+   },
+   "pause": 0.15
+  },
+  {
+   "text": "Você transpira. Treme. Reza.",
+   "key": {
+    "Reza": "red"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Tá passando mal, moço?",
+   "voice": "pf_dora",
+   "speed": 1.0,
+   "key": {
+    "mal": "yellow"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Você conta tudo pra bartender. O contrato, a feijoada, as 3 regras.",
+   "say": "Você conta tudo pra bartender. O contrato, a feijoada, as três regras.",
+   "key": {
+    "feijoada": "yellow"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Ela ri. E tira um contrato do bolso.",
+   "key": {
+    "contrato": "yellow"
+   },
+   "pause": 0.15
+  },
+  {
+   "text": "Compro a sua vontade. 500 reais.",
+   "say": "Compro a sua vontade. Quinhentos reais.",
+   "voice": "pf_dora",
+   "speed": 1.0,
+   "key": {
+    "500": "red"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Ué. Agora vale o dobro? Inflação.",
+   "key": {
+    "Inflação": "red"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Você assina. De novo. Sem ler. De novo.",
+   "key": {
+    "novo": "yellow"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "A vontade some. E ela nem treme.",
+   "key": {
+    "treme": "yellow"
+   },
+   "pause": 0.15
+  },
+  {
+   "text": "Porque ela não sente nada. Ela revende.",
+   "key": {
+    "revende": "red"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "No telão da balada: leilão de vontades. Lance inicial: 1 real.",
+   "say": "No telão da balada: leilão de vontades. Lance inicial: um real.",
+   "key": {
+    "leilão": "red"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Quem dá o lance? O homem de terno.",
+   "key": {
+    "terno": "yellow"
+   },
+   "pause": 0.15
+  },
+  {
+   "text": "Essa eu conheço. Vem com torresmo.",
+   "voice": "pm_santa",
+   "speed": 1.05,
+   "key": {
+    "torresmo": "red"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Vendido! Pro senhor de cartola!",
+   "voice": "pf_dora",
+   "speed": 1.0,
+   "key": {
+    "Vendido": "red"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Ele paga 1 real. Senta no balcão. E pede uma feijoada.",
+   "say": "Ele paga um real. Senta no balcão. E pede uma feijoada.",
+   "key": {
+    "feijoada": "red"
+   },
+   "pause": 0.3
+  }
+ ]
+}
