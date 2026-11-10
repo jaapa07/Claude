@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset="utf-8"><title>Fog Bridge 3D</title>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Fog Bridge 3D</title>
 <style>html,body{margin:0;background:#000;overflow:hidden}canvas{display:block}
 #t{position:fixed;left:48px;bottom:40px;color:#fff;font:700 13px "Helvetica Neue",Arial;letter-spacing:4px;opacity:.85;text-shadow:0 1px 6px #0008}</style></head><body>
 <div id="t"></div>
@@ -87,7 +87,7 @@ window.renderFrame=t=>{
   [carM,head,tail].forEach(m=>m.instanceMatrix.needsUpdate=true);
   puffs.forEach(f=>{let x=((f.x0+f.sp*t+2100)%4200)-2100;f.s.position.set(x,f.y+Math.sin(t*.3+f.x0)*4,f.z);
     const d=f.s.position.distanceTo(p);f.s.material.opacity=f.a*Math.min(1,Math.max(0,(d-60)/200))});
-  label.textContent=t<4?'PROCEDURAL THREE.JS · NO ASSETS':t<9?'ROLLING FOG':t<12.5?'TRAFFIC ON THE DECK':'1280 M MAIN SPAN';
+  label.textContent=t<4?'THREE.JS PROCEDURAL · SEM MODELOS':t<9?'NEBLINA EM MOVIMENTO':t<12.5?'TRÂNSITO NA PISTA':'VÃO CENTRAL DE 1.280 M';
   label.style.opacity=Math.min(1,Math.abs(Math.sin(Math.PI*((t<4?t/4:t<9?(t-4)/5:t<12.5?(t-9)/3.5:(t-12.5)/3.5))))*3)*.85;
   r.render(scene,cam)};
 window.renderFrame(0);

@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset="utf-8"><title>Jelly Dice</title>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Jelly Dice</title>
 <style>html,body{margin:0;background:#ffd9e4;overflow:hidden;font-family:"Helvetica Neue",Arial,sans-serif}canvas{display:block}
 #ui{position:fixed;inset:0;pointer-events:none}
 h1{position:absolute;left:44px;top:30px;margin:0;font-size:42px;font-weight:900;color:#7a1f4b;letter-spacing:-1px}
@@ -10,8 +10,8 @@ h1 small{display:block;font-size:13px;letter-spacing:4px;font-weight:700;color:#
 #hist{position:absolute;left:44px;bottom:44px;color:#7a1f4b;font-size:13px;letter-spacing:2px;font-weight:700;line-height:1.8}
 #cur{position:absolute;width:34px;height:34px;left:0;top:0}
 </style></head><body>
-<div id="ui"><h1>Jelly Dice<small>SOFT-BODY GUMMY DICE · TAP TO ROLL</small></h1>
-<div id="total"><span>TOTAL</span><b id="tv">–</b><div id="faces">&nbsp;</div></div><div id="hist"></div><div id="roll">ROLL</div>
+<div id="ui"><h1>Dados de Goma<small>DADOS MACIOS DE BALA DE GOMA · TOQUE PARA ROLAR</small></h1>
+<div id="total"><span>TOTAL</span><b id="tv">–</b><div id="faces">&nbsp;</div></div><div id="hist"></div><div id="roll">ROLAR</div>
 <svg id="cur" viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.5L16 20l-3 1.5-3.5-7.5L4 18z" fill="#fff" stroke="#3a0f24" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
 <script src="three.min.js"></script>
 <script>
@@ -54,18 +54,18 @@ function jelly(col){const m=new THREE.MeshPhysicalMaterial({color:col,roughness:
      .replace('#include <transmission_fragment>','#include <transmission_fragment>\n')};
   return m}
 // deterministic RNG
-let seed=7;const rand=()=>(seed=(seed*16807)%2147483647)/2147483647;
+window.EVENTS=[];let seed=7;const rand=()=>(seed=(seed*16807)%2147483647)/2147483647;
 const N=5,dice=[];
 for(let i=0;i<N;i++){const m=jelly(COLORS[i]);const mesh=new THREE.Mesh(G,m);mesh.castShadow=true;scene.add(mesh);
   dice.push({mesh,m,p:new THREE.Vector3(-4+i*2,1,0),v:new THREE.Vector3(),q:new THREE.Quaternion(),w:new THREE.Vector3(),sq:{a:0,t:-9},wob:{a:0,t:-9},grounded:true})}
 const ROLLS=[1.2,7.4,13.4],GRAV=-34,HALF=1,BX=8.7,BZ=5.2;
-function launch(T){dice.forEach((d,i)=>{d.p.set(-7+rand()*1.5,1.4+i*.2,-3+i*1.5);d.v.set(9+rand()*4,9+rand()*6,(rand()-.5)*7);d.w.set((rand()-.5)*26,(rand()-.5)*26,(rand()-.5)*26);d.sq={a:-.35,t:T};d.wob={a:1,t:T};d.grounded=false})}
+function launch(T){window.EVENTS.push({t:T,type:'roll'});dice.forEach((d,i)=>{d.p.set(-7+rand()*1.5,1.4+i*.2,-3+i*1.5);d.v.set(9+rand()*4,9+rand()*6,(rand()-.5)*7);d.w.set((rand()-.5)*26,(rand()-.5)*26,(rand()-.5)*26);d.sq={a:-.35,t:T};d.wob={a:1,t:T};d.grounded=false})}
 const UP=new THREE.Vector3(0,1,0),AX=[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]].map(a=>new THREE.Vector3(...a)),FV=[2,5,1,6,3,4];
 function upFace(d){let best=-9,f=1;AX.forEach((a,i)=>{const y=a.clone().applyQuaternion(d.q).y;if(y>best){best=y;f=FV[i]}});return f}
 function step(dt,T){for(const d of dice){
   d.v.y+=GRAV*dt;d.p.addScaledVector(d.v,dt);
   const wl=d.w.length();if(wl>1e-4){const dq=new THREE.Quaternion().setFromAxisAngle(d.w.clone().divideScalar(wl),wl*dt);d.q.premultiply(dq).normalize()}
-  if(d.p.y<HALF){d.p.y=HALF;const s=-d.v.y;if(s>2){d.sq={a:Math.min(.42,s/30),t:T};d.wob={a:Math.min(1,s/18),t:T};d.v.y=s*.38;d.w.multiplyScalar(.7);d.w.x+=d.v.z*.6;d.w.z-=d.v.x*.6}else{d.v.y=0;d.grounded=true}
+  if(d.p.y<HALF){d.p.y=HALF;const s=-d.v.y;if(s>2){d.sq={a:Math.min(.42,s/30),t:T};window.EVENTS.push({t:T,type:'hit',a:Math.min(1,s/20),i:dice.indexOf(d)});d.wob={a:Math.min(1,s/18),t:T};d.v.y=s*.38;d.w.multiplyScalar(.7);d.w.x+=d.v.z*.6;d.w.z-=d.v.x*.6}else{d.v.y=0;d.grounded=true}
     d.v.x*=1-4*dt;d.v.z*=1-4*dt;d.w.multiplyScalar(1-3.5*dt)}
   for(const [ax,lim] of[['x',BX],['z',BZ]]){if(d.p[ax]>lim){d.p[ax]=lim;d.v[ax]*=-.5;d.wob={a:.6,t:T}}if(d.p[ax]<-lim){d.p[ax]=-lim;d.v[ax]*=-.5;d.wob={a:.6,t:T}}}
   // settle: ease toward the nearest face-up orientation once slow and grounded
@@ -88,7 +88,7 @@ window.renderFrame=t=>{
   dice.forEach(d=>{d.mesh.position.copy(d.p);d.mesh.quaternion.copy(d.q);const u=d.m.userData.u;u.uC.value.copy(d.p);u.uT.value=t;
     const ds=t-d.sq.t,dw=t-d.wob.t;u.uSq.value=d.sq.a*Math.exp(-7*ds)*Math.cos(19*ds)+ (d.p.y<1.02?0:-Math.min(.12,Math.abs(d.v.y)/120));
     u.uWob.value=d.wob.a*Math.exp(-3.2*dw);if(d.v.length()>.4||d.p.y>1.05)allStill=false});
-  if(allStill&&t-ROLLS[launched-1]>1.5&&lastShown!==launched){const f=dice.map(upFace),s=f.reduce((a,b)=>a+b,0);lastShown=launched;ui.tv.textContent=s;ui.faces.textContent=f.join(' · ');hist.push(s);ui.hist.innerHTML=hist.map((h,i)=>`ROLL ${i+1} — ${h}`).join('<br>')}
+  if(allStill&&t-ROLLS[launched-1]>1.5&&lastShown!==launched){const f=dice.map(upFace),s=f.reduce((a,b)=>a+b,0);lastShown=launched;ui.tv.textContent=s;ui.faces.textContent=f.join(' · ');hist.push(s);window.EVENTS.push({t,type:'result',v:s});ui.hist.innerHTML=hist.map((h,i)=>`JOGADA ${i+1} — ${h}`).join('<br>')}
   const [cx,cy,press]=cursorAt(t);ui.cur.style.transform=`translate(${cx}px,${cy}px) scale(${1-press*.2})`;
   const pr=ROLLS.some(R=>t>=R-.12&&t<R+.15);ui.roll.style.transform=`translateX(-50%) translateY(${pr?6:0}px) scale(${pr?.96:1})`;ui.roll.style.boxShadow=pr?'0 2px 0 #c42a63':'';
   const a=t*.06;cam.position.set(Math.sin(a)*3,15.5,14.5);cam.lookAt(0,0,.6);r.render(scene,cam)};

@@ -11,5 +11,5 @@ const {chromium}=require('playwright');const {spawn}=require('child_process');co
   const dur=await p.evaluate(()=>window.DURATION);const n=Math.round(dur*fps);
   const ff=spawn('ffmpeg',['-y','-loglevel','error','-f','image2pipe','-framerate',''+fps,'-i','-','-c:v','libx264','-pix_fmt','yuv420p','-crf','20','-preset','medium','-movflags','+faststart',out],{stdio:['pipe','inherit','inherit']});
   for(let i=0;i<n;i++){await p.evaluate(t=>window.renderFrame(t),i/fps);ff.stdin.write(await p.screenshot({type:'jpeg',quality:92}));if(i%60==0)process.stdout.write(`${src} ${i}/${n}\r`)}
-  ff.stdin.end();await new Promise(r=>ff.on('close',r));await b.close();console.log('\ndone',out,n,'frames');
+  ff.stdin.end();const ev=await p.evaluate(()=>window.EVENTS||null);if(ev)require('fs').writeFileSync(out.replace(/\.mp4$/,'.events.json'),JSON.stringify(ev));await new Promise(r=>ff.on('close',r));await b.close();console.log('\ndone',out,n,'frames');
 })();

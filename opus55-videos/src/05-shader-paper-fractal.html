@@ -1,10 +1,10 @@
-<!doctype html><html><head><meta charset="utf-8"><title>Paper Fractals</title>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Paper Fractals</title>
 <style>html,body{margin:0;background:#000;overflow:hidden}canvas{display:block}
 #o{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#2b1d14;font-family:Georgia,serif;pointer-events:none}
 #o h1{margin:0;font-size:84px;font-weight:400;letter-spacing:2px;background:#f2e8d5;padding:6px 34px 12px;box-shadow:6px 8px 0 #0003;transform:rotate(-2deg)}
 #o p{margin:18px 0 0;font:700 14px "Helvetica Neue",Arial;letter-spacing:6px;background:#2b1d14;color:#f2e8d5;padding:8px 16px;transform:rotate(1deg)}
 #cap{position:fixed;left:44px;bottom:36px;font:700 12px "Helvetica Neue",Arial;letter-spacing:4px;color:#f2e8d5;background:#2b1d14cc;padding:7px 12px}</style></head><body>
-<canvas id="c" width="1280" height="720"></canvas><div id="o"><h1>Paper Fractals</h1><p>HAND-CUT · INFINITELY DEEP</p></div><div id="cap"></div>
+<canvas id="c" width="1280" height="720"></canvas><div id="o"><h1>Fractais de Papel</h1><p>RECORTADOS À MÃO · INFINITAMENTE PROFUNDOS</p></div><div id="cap"></div>
 <script>
 // Type: Generative shader art — a fractal visualiser (Mandelbrot, Julia) that looks hand-made from
 // paper and cardboard, with cinematic post-processing and elaborate transitions (prompt from @jrayon).
@@ -61,7 +61,7 @@ window.renderFrame=t=>{
   gl.uniform2f(U.R,W,H);gl.uniform1f(U.T,t);gl.uniform1f(U.Z,Z);gl.uniform1f(U.MIX,MIX);gl.uniform1f(U.ROT,t*.05);gl.uniform2f(U.CEN,cx,cy);gl.uniform2f(U.JC,JC[0],JC[1]);
   gl.viewport(0,0,W,H);gl.drawArrays(gl.TRIANGLES,0,3);
   const ti=t<2.4?1:1-ss((t-2.4)/.8),te=ss((t-13.6)/.9);o.style.opacity=Math.max(ti,te);o.style.transform=`scale(${1+.04*(1-ti)})`;
-  if(t>13.6)o.querySelector('h1').textContent='Fold. Cut. Repeat.',o.querySelector('p').textContent='MANDELBROT → JULIA · ONE SHADER';
-  cap.textContent=t<9.6?`MANDELBROT · ZOOM ×${Math.round(2.4/Z)}`:`JULIA · c = ${JC[0].toFixed(3)} ${JC[1]<0?'−':'+'} ${Math.abs(JC[1]).toFixed(3)}i`;cap.style.opacity=t>2.8&&t<13.5?1:0};
+  if(t>13.6)o.querySelector('h1').textContent='Dobre. Corte. Repita.',o.querySelector('p').textContent='MANDELBROT → JULIA · UM SÓ SHADER';
+  cap.textContent=t<9.6?`MANDELBROT · ZOOM ×${Math.round(2.4/Z)}`:`CONJUNTO DE JULIA · c = ${JC[0].toFixed(3).replace('.',',')} ${JC[1]<0?'−':'+'} ${Math.abs(JC[1]).toFixed(3).replace('.',',')}i`;cap.style.opacity=t>2.8&&t<13.5?1:0};
 window.renderFrame(0);
 </script></body></html>

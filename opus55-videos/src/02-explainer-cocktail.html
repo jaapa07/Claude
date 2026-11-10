@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset="utf-8"><title>Cocktail Explainer</title>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Cocktail Explainer</title>
 <style>html,body{margin:0;background:#f3ead8;overflow:hidden}canvas{display:block}</style></head><body>
 <canvas id="c" width="1280" height="720"></canvas>
 <script>
@@ -12,13 +12,13 @@ function rnd(i){const s=Math.sin(i*91.7+17.3)*43758.5453;return s-Math.floor(s)}
 const INK='#2a2118',CREAM='#f3ead8',MINT='#3fa66b',LIME='#9ccc3a',SYRUP='#e8b04a',RUM='#f1e6c4',SODA='#dff3ee';
 // Steps: [start, end, name, amount, unit, ml added, colour]
 const STEPS=[
- [2,5,'Mint leaves',8,'leaves',0,MINT],
- [5,8,'Lime wedges',2,'wedges',0,LIME],
- [8,11,'Sugar syrup',20,'ml',20,SYRUP],
- [11,13.5,'Muddle',5,'presses',0,INK],
- [13.5,16.5,'White rum',50,'ml',50,RUM],
- [16.5,19,'Crushed ice',1,'cup',0,'#bfe6f0'],
- [19,21.5,'Soda water',60,'ml',60,SODA],
+ [2,5,'Folhas de hortelã',8,'folhas',0,MINT],
+ [5,8,'Gomos de limão',2,'gomos',0,LIME],
+ [8,11,'Xarope de açúcar',20,'ml',20,SYRUP],
+ [11,13.5,'Macerar',5,'vezes',0,INK],
+ [13.5,16.5,'Rum branco',50,'ml',50,RUM],
+ [16.5,19,'Gelo picado',1,'copo',0,'#bfe6f0'],
+ [19,21.5,'Água com gás',60,'ml',60,SODA],
 ];
 const G={cx:430,top:190,bot:600,wTop:300,wBot:230}; // glass (tumbler, slightly tapered)
 const CAP=260; // ml to the brim
@@ -77,7 +77,7 @@ function drawScene(t){
     x.fillStyle='#f06b3a';x.save();x.translate(G.cx+40,lerp(-200,G.top-120,ease((t-21.8)/.8)));x.rotate(.25);x.fillRect(-6,0,12,330);x.restore()}
 
   // ---- right panel: recipe card ----
-  const px=760;txt('Mojito',px,110,64,INK,700);sans('ONE GLASS · SEVEN STEPS · 2 MINUTES',px+2,160,15,'rgba(42,33,24,.6)',700);
+  const px=760;txt('Mojito',px,110,64,INK,700);sans('UM COPO · SETE PASSOS · 2 MINUTOS',px+2,160,15,'rgba(42,33,24,.6)',700);
   x.fillStyle=INK;x.fillRect(px,185,420,3);
   STEPS.forEach((s,i)=>{const y=225+i*50,on=t>=s[0],done=t>=s[1],act=on&&!done,ap=ease((t-s[0])/.35);
     x.globalAlpha=t<1.2+i*.08?cl((t-.8-i*.08)/.4):1;
@@ -87,20 +87,20 @@ function drawScene(t){
     sans((i+1)+'. '+s[2],px+38,y,22,done?'rgba(42,33,24,.45)':INK,act?800:600);
     // live measurement counter
     const prog=act?ease((t-s[0]-.3)/(s[1]-s[0]-.8)):done?1:0,val=Math.round(s[3]*prog);
-    if(on)sans((s[2]=='Crushed ice'?(prog>.99?'1':'½'):val)+' '+s[4],px+420,y,22,act?s[6]==RUM||s[6]==SODA?'#2b7f8f':s[6]:'rgba(42,33,24,.45)',800,'right');
+    if(on)sans((s[2]=='Gelo picado'?(prog>.99?'1':'½'):val)+' '+s[4],px+420,y,22,act?s[6]==RUM||s[6]==SODA?'#2b7f8f':s[6]:'rgba(42,33,24,.45)',800,'right');
     x.globalAlpha=1});
   // big current-step caption under the glass area
   const cur=STEPS.find(s=>t>=s[0]&&t<s[1]);
   if(cur){const k=ease((t-cur[0])/.3);x.globalAlpha=k;sans(cur[2].toUpperCase(),px,620,30,INK,900);
     const prog=ease((t-cur[0]-.3)/(cur[1]-cur[0]-.8));sans(cur[5]?Math.round(cur[3]*prog)+' ml':cur[3]+' '+cur[4],px,660,22,'rgba(42,33,24,.65)',700);
-    x.fillStyle=INK;x.fillRect(px+260,612,160*prog,6);x.strokeStyle=INK;x.lineWidth=2;x.strokeRect(px+260,612,160,6);x.globalAlpha=1}
-  sans('total '+Math.round(ml)+' ml',G.cx,660,18,'rgba(42,33,24,.6)',700,'center');
+    x.fillStyle=INK;x.fillRect(px,688,420*prog,6);x.strokeStyle=INK;x.lineWidth=2;x.strokeRect(px,688,420,6);x.globalAlpha=1}
+  sans('total: '+Math.round(ml)+' ml',G.cx,660,18,'rgba(42,33,24,.6)',700,'center');
 
   // intro + outro overlays
   if(t<2){const a=t<1.4?1:1-(t-1.4)/.6;x.fillStyle=`rgba(243,234,216,${a})`;x.fillRect(0,0,W,H);x.globalAlpha=a;
-    txt('How to build a',W/2,300,40,INK,400,'center');txt('Mojito',W/2,380,120*lerp(.8,1,ease(t/.6)),INK,700,'center');sans('FROM AN EMPTY GLASS',W/2,460,16,'rgba(42,33,24,.6)',700,'center');x.globalAlpha=1}
+    txt('Como preparar um',W/2,300,40,INK,400,'center');txt('Mojito',W/2,380,120*lerp(.8,1,ease(t/.6)),INK,700,'center');sans('DO COPO VAZIO AO DRINK PRONTO',W/2,460,16,'rgba(42,33,24,.6)',700,'center');x.globalAlpha=1}
   if(t>22.4){const a=ease((t-22.4)/.6);x.fillStyle=`rgba(42,33,24,${.85*a})`;x.beginPath();x.roundRect(760,550,440,130,16);x.fill();x.globalAlpha=a;
-    sans('READY.',790,592,36,CREAM,900);sans('130 ml liquid · 8 mint · 2 lime · ice',790,640,18,CREAM,600);x.globalAlpha=1}
+    sans('PRONTO!',790,592,36,CREAM,900);sans('130 ml de líquido · 8 folhas · 2 gomos · gelo',790,640,18,CREAM,600);x.globalAlpha=1}
 }
 window.renderFrame=drawScene;drawScene(0);
 </script></body></html>
