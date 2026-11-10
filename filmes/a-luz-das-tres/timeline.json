@@ -1,0 +1,321 @@
+{
+ "DUR": 90.0,
+ "L": {
+  "L1": {
+   "at": 1.4,
+   "dur": 3.64,
+   "end": 5.04,
+   "text": "Na Rua da Ladeira, a primeira luz do dia não vinha do sol."
+  },
+  "L2": {
+   "at": 5.9,
+   "dur": 2.106,
+   "end": 8.006,
+   "text": "Vinha da padaria da Dona Zélia."
+  },
+  "L3": {
+   "at": 10.9,
+   "dur": 3.656,
+   "end": 14.556,
+   "text": "Às 3 da manhã, todas as noites, havia 40 anos."
+  },
+  "L4": {
+   "at": 15.4,
+   "dur": 2.483,
+   "end": 17.883,
+   "text": "Ninguém sabia direito quem ela era."
+  },
+  "L5": {
+   "at": 18.4,
+   "dur": 3.545,
+   "end": 21.945,
+   "text": "Mas a rua inteira acertava o relógio pela janela dela."
+  },
+  "L6": {
+   "at": 23.2,
+   "dur": 2.19,
+   "end": 25.39,
+   "text": "A enfermeira, voltando do plantão."
+  },
+  "L7": {
+   "at": 26.6,
+   "dur": 1.529,
+   "end": 28.129,
+   "text": "O menino do jornal."
+  },
+  "L8": {
+   "at": 29.9,
+   "dur": 2.296,
+   "end": 32.196,
+   "text": "O motorista do primeiro ônibus."
+  },
+  "L9": {
+   "at": 37.6,
+   "dur": 3.687,
+   "end": 41.287,
+   "text": "Até que, numa terça-feira, às 3, a janela ficou escura."
+  },
+  "L10": {
+   "at": 43.8,
+   "dur": 3.185,
+   "end": 46.985,
+   "text": "A enfermeira parou. O menino desceu da bicicleta."
+  },
+  "L11": {
+   "at": 49.4,
+   "dur": 1.742,
+   "end": 51.142,
+   "text": "Alguém bateu na porta."
+  },
+  "L12": {
+   "at": 54.0,
+   "dur": 2.425,
+   "end": 56.425,
+   "text": "Dona Zélia tinha caído na cozinha."
+  },
+  "L13": {
+   "at": 57.0,
+   "dur": 2.526,
+   "end": 59.526,
+   "text": "Estava bem. Só não conseguia levantar."
+  },
+  "L14": {
+   "at": 61.0,
+   "dur": 3.899,
+   "end": 64.899,
+   "text": "Naquela madrugada, pela primeira vez, a rua fez o pão por ela."
+  },
+  "L15": {
+   "at": 65.6,
+   "dur": 2.151,
+   "end": 67.751,
+   "text": "Ela ditava a receita da cama."
+  },
+  "L16": {
+   "at": 80.2,
+   "dur": 4.236,
+   "end": 84.436,
+   "text": "Hoje, às 3 da manhã, a Rua da Ladeira tem muitas luzes acesas."
+  },
+  "L17": {
+   "at": 85.2,
+   "dur": 2.375,
+   "end": 87.575,
+   "text": "E ninguém mais acorda sozinho."
+  }
+ },
+ "cues": [
+  {
+   "id": "L1",
+   "t0": 1.25,
+   "t1": 5.64,
+   "text": "Na Rua da Ladeira, a primeira luz do dia não vinha do sol."
+  },
+  {
+   "id": "L2",
+   "t0": 5.75,
+   "t1": 8.606,
+   "text": "Vinha da padaria da Dona Zélia."
+  },
+  {
+   "id": "L3",
+   "t0": 10.75,
+   "t1": 15.156,
+   "text": "Às 3 da manhã, todas as noites, havia 40 anos."
+  },
+  {
+   "id": "L4",
+   "t0": 15.25,
+   "t1": 18.24,
+   "text": "Ninguém sabia direito quem ela era."
+  },
+  {
+   "id": "L5",
+   "t0": 18.25,
+   "t1": 22.545,
+   "text": "Mas a rua inteira acertava o relógio pela janela dela."
+  },
+  {
+   "id": "L6",
+   "t0": 23.05,
+   "t1": 25.99,
+   "text": "A enfermeira, voltando do plantão."
+  },
+  {
+   "id": "L7",
+   "t0": 26.45,
+   "t1": 28.729,
+   "text": "O menino do jornal."
+  },
+  {
+   "id": "L8",
+   "t0": 29.75,
+   "t1": 32.796,
+   "text": "O motorista do primeiro ônibus."
+  },
+  {
+   "id": "L9",
+   "t0": 37.45,
+   "t1": 41.887,
+   "text": "Até que, numa terça-feira, às 3, a janela ficou escura."
+  },
+  {
+   "id": "L10",
+   "t0": 43.65,
+   "t1": 47.585,
+   "text": "A enfermeira parou. O menino desceu da bicicleta."
+  },
+  {
+   "id": "L11",
+   "t0": 49.25,
+   "t1": 51.742,
+   "text": "Alguém bateu na porta."
+  },
+  {
+   "id": "L12",
+   "t0": 53.85,
+   "t1": 56.84,
+   "text": "Dona Zélia tinha caído na cozinha."
+  },
+  {
+   "id": "L13",
+   "t0": 56.85,
+   "t1": 60.126,
+   "text": "Estava bem. Só não conseguia levantar."
+  },
+  {
+   "id": "L14",
+   "t0": 60.85,
+   "t1": 65.44,
+   "text": "Naquela madrugada, pela primeira vez, a rua fez o pão por ela."
+  },
+  {
+   "id": "L15",
+   "t0": 65.45,
+   "t1": 68.351,
+   "text": "Ela ditava a receita da cama."
+  },
+  {
+   "id": "L16",
+   "t0": 80.05,
+   "t1": 85.036,
+   "text": "Hoje, às 3 da manhã, a Rua da Ladeira tem muitas luzes acesas."
+  },
+  {
+   "id": "L17",
+   "t0": 85.05,
+   "t1": 88.175,
+   "text": "E ninguém mais acorda sozinho."
+  }
+ ],
+ "HIT": {
+  "pin": 0.5,
+  "iris": [
+   4.6,
+   9.2
+  ],
+  "nurse": [
+   22.4,
+   28.6
+  ],
+  "boy": [
+   26.0,
+   30.4
+  ],
+  "bus": [
+   29.4,
+   35.5
+  ],
+  "bells": [
+   35.6,
+   36.4,
+   37.2
+  ],
+  "silence": [
+   41.4,
+   43.6
+  ],
+  "nurse2": [
+   43.4,
+   46.2
+  ],
+  "boy2": [
+   44.6,
+   47.0
+  ],
+  "knock": [
+   48.6,
+   48.95,
+   49.3
+  ],
+  "open": 51.6,
+  "oven": 72.6,
+  "strips": [
+   68.2,
+   69.4,
+   70.6,
+   71.8
+  ],
+  "wins": [
+   74.9,
+   75.32,
+   75.74,
+   76.16,
+   76.58,
+   77.0,
+   77.42,
+   77.84,
+   78.26,
+   78.68,
+   79.1,
+   79.52,
+   79.94,
+   80.36
+  ],
+  "pull": 82.8,
+  "title": 86.2,
+  "end": 89.4
+ },
+ "SHOTS": [
+  [
+   "S1",
+   0.0,
+   null
+  ],
+  [
+   "S2",
+   10.0,
+   "dissolve"
+  ],
+  [
+   "S3",
+   22.0,
+   "dissolve"
+  ],
+  [
+   "S4",
+   35.2,
+   "dark"
+  ],
+  [
+   "S5",
+   48.0,
+   "dissolve"
+  ],
+  [
+   "S5b",
+   53.0,
+   "dissolve"
+  ],
+  [
+   "S6",
+   60.2,
+   "dissolve"
+  ],
+  [
+   "S7",
+   73.6,
+   "flash"
+  ]
+ ]
+}

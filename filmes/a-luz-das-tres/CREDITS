@@ -1,0 +1,9 @@
+A Luz das Três — créditos de terceiros
+
+Motor de papel (paper.js, post.js, stage.js, lib.js): adaptado do estilo "Paper-cut Lightbox" da biblioteca Lemo-Opuscar (MIT).
+Voz: Kokoro TTS v1.0 (kokoro-onnx), voz pf_dora — Apache 2.0. Fonemas: espeak-ng (GPL-3.0, usado como ferramenta).
+Amostras: VSCO 2 Community Edition (Versilian Studios) — CC0 1.0 (cellos, violas, violins).
+Caixinha de música, harpa e violão de náilon: síntese por modelagem física (pluck.py, Lemo-Opuscar), sem licença de terceiros.
+Efeitos sonoros: sintetizados (sfx.py), sem licença de terceiros.
+Fonte: Cormorant Garamond — SIL Open Font License 1.1 (via @fontsource-variable/cormorant-garamond).
+Three.js r170 — MIT.
