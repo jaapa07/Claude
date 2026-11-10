@@ -1,0 +1,22 @@
+{"mixkit": false, "roomtone": false,
+ "bed": [{"at": 0, "level": 0.6}, {"at": "barulho@0", "level": 0.0}, {"at": "primeiro@4", "level": 0.6}, {"at": "culpa@6", "level": 0.4}, {"at": "câmera@11", "level": 0.8}, {"at": "Dez@13", "level": 1.0}, {"at": "Flash@19", "level": 0.2}, {"at": "transbordou@21", "level": 1.0}, {"at": "cima@24", "level": 1.2}],
+ "music": {"level": -14},
+ "sfx": [
+  {"at": "barulho@0", "type": "growl", "vol": 1.2}, {"at": "barulho@0+0.3", "type": "rumble", "vol": 0.7},
+  {"at": "garfo@1", "type": "glass", "vol": 0.8},
+  {"at": "confessar@3", "type": "sting", "vol": 0.3},
+  {"at": "eu@5", "type": "hit", "vol": 0.6},
+  {"at": "deve@10", "type": "sting", "vol": 0.5},
+  {"at": "câmera@11", "type": "click", "vol": 0.6},
+  {"at": "Dez@13", "type": "click", "vol": 0.6}, {"at": "Sete@14", "type": "click", "vol": 0.6}, {"at": "Cinco@15", "type": "click", "vol": 0.6}, {"at": "Três@16", "type": "click", "vol": 0.6}, {"at": "Dois@17", "type": "click", "vol": 0.6}, {"at": "Um@18", "type": "click", "vol": 0.7},
+  {"at": "volta@14", "type": "growl", "vol": 0.9},
+  {"at": "teto@15", "type": "creak", "vol": 0.7},
+  {"at": "gota@16", "type": "drip", "vol": 0.9},
+  {"at": "careca@17", "type": "drip", "vol": 1.0},
+  {"at": "Flash@19", "type": "whoosh", "vol": 0.8}, {"at": "Flash@19", "type": "hit", "vol": 0.5},
+  {"at": "pingando@20", "type": "drip", "vol": 0.6}, {"at": "pingando@20+0.6", "type": "drip", "vol": 0.5},
+  {"at": "transbordou@21", "type": "hiss", "vol": 0.7},
+  {"at": "três@22", "type": "drip", "vol": 0.5},
+  {"at": "cima@24", "type": "sting", "vol": 0.7},
+  {"at": 54.2, "type": "hit", "vol": 0.8}
+ ]}

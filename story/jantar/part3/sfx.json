@@ -1,0 +1,21 @@
+{"mixkit": false, "roomtone": false,
+ "bed": [{"at": 0, "level": 0.8}, {"at": "terno@3", "level": 1.0}, {"at": "Minuto@9", "level": 0.9}, {"at": "Silêncio@16", "level": 0.1}, {"at": "judoca@18", "level": 0.8}, {"at": "barulho@20", "level": 0.0}, {"at": "dois@22", "level": 1.0}],
+ "music": {"level": -14},
+ "sfx": [
+  {"at": 0.1, "type": "growl", "vol": 0.5},
+  {"at": "medo@1", "type": "sting", "vol": 0.4},
+  {"at": "escada@2", "type": "thud", "vol": 0.4}, {"at": "escada@2+0.5", "type": "thud", "vol": 0.4}, {"at": "escada@2+1.0", "type": "thud", "vol": 0.4},
+  {"at": "terno@3", "type": "whoosh", "vol": 0.7}, {"at": "vermelha@3", "type": "sting", "vol": 0.5},
+  {"at": "Cinco@5", "type": "hit", "vol": 0.6},
+  {"at": "Regra@6", "type": "click", "vol": 0.5},
+  {"at": "lactose@8", "type": "growl", "vol": 1.0},
+  {"at": "Minuto@9", "type": "click", "vol": 0.4}, {"at": "Minuto@10", "type": "click", "vol": 0.4}, {"at": "Minuto@11", "type": "click", "vol": 0.4}, {"at": "Minuto@12", "type": "click", "vol": 0.4}, {"at": "Minuto@15", "type": "click", "vol": 0.5},
+  {"at": "Mentira@10", "type": "sting", "vol": 0.4},
+  {"at": "frio@12", "type": "heartbeat", "vol": 0.7},
+  {"at": "vinte@14", "type": "knock", "vol": 0.6},
+  {"at": "judoca@18", "type": "thud", "vol": 0.8},
+  {"at": "muito@19", "type": "growl", "vol": 0.9},
+  {"at": "barulho@20", "type": "growl", "vol": 1.2}, {"at": "barulho@20+0.3", "type": "rumble", "vol": 0.8},
+  {"at": "Inconfundível@21", "type": "hit", "vol": 0.6},
+  {"at": 54.0, "type": "hit", "vol": 0.8}
+ ]}

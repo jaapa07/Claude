@@ -1,0 +1,117 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>O Jantar — parte 5</title>
+<script type="importmap">{"imports": {"three": "../../engine/vendor/three.module.js"}}</script>
+<style>
+@font-face { font-family: 'Oswald'; font-weight: 700; src: url('../../engine/vendor/fonts/oswald-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 700; src: url('../../engine/vendor/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+html, body { margin: 0; background: #000; } canvas { display: block; }
+</style>
+<script src="timing.js"></script>
+</head><body>
+<canvas id="film" width="1080" height="1920"></canvas>
+<script type="module">
+import * as S from '../../engine/stage.js';
+import { buildWorld, canvasTex } from '../world.js';
+const { THREE, clamp, lerp, ease, spring, box, hud, ruleSticker, endCard, chunkCaptions, drawCaptions, loadFonts, W: CW, H: CH } = S;
+S.LABELS.day = ''; S.LABELS.follow = 'FIM · SIGA PARA MAIS HISTÓRIAS';
+const T = window.TIMING;
+const w = (li, word, n = 0) => { const b = s => s.toLowerCase().replace(/[^\p{L}0-9:]/gu, ''); let k = 0; for (const x of T.lines[li].words) if (b(x.w) === b(word) && k++ === n) return x.s; throw new Error(`word "${word}" not in line ${li}`); };
+const L0 = li => T.lines[li].words[0].s;
+const c = document.getElementById('film').getContext('2d');
+const stage = S.createStage(document.getElementById('film'));
+const Wd = buildWorld(stage);
+const { you, gf, mom, dad, grandpa, POSE, at: put, place } = Wd;
+const COVER = location.hash === '#cover';
+import { extras, SEAT, seats, stairY, gauge, pressureOf, pill, title, bang } from '../extra.js';
+const X = extras(Wd);
+stage.renderer.toneMappingExposure = 1.1;
+X.stain.position.set(-0.3, 2.785, -0.85);
+
+const tWet = L0(12), tFlushG = L0(11), tOut = L0(17);
+const drips = t => [[0, 0.0, [-0.3, 0.79, -0.4]], [1, 0.45, [-0.55, 0.79, -0.1]], [2, 0.8, [0.0, 0.79, -0.6]]].forEach(([i, off, p]) => X.drop(i, t, Math.floor((t - off) / 1.1) * 1.1 + off, p, 0.5));
+function bathroom(t, level, { overflow = level > 0.05, door = 0 } = {}) { Wd.use('bath'); X.flood(t, level); X.overflowOn(t, overflow); Wd.bathInDoor.userData.open(-door); X.suit(true, t >= tWet); }
+function landing(t, { puddle = 0.85, door = 0 } = {}) { Wd.use('up'); X.puddleOn(puddle); Wd.forbidden.userData.open(-door); Wd.forbGlow.visible = door > 0.05; Wd.forbLight.visible = true; Wd.forbLight.intensity = door > 0.05 ? 3 : 1.5; X.suit(true, t >= tWet); }
+const walkLegs = t => ({ legL: [0.45 * Math.sin(t * 7), -0.4], legR: [-0.45 * Math.sin(t * 7), 0.4] });
+const stance = t => ({ facing: 0, legL: [0.55, -0.35], legR: [-0.55, 0.35], armL: [1.3, -0.9], armR: [-1.3, 0.9], lean: 0.03 * Math.sin(t * 3) });
+const crossed = { facing: 0, armL: [1.0, -2.0], armR: [-1.0, 2.0], legL: [0.2, 0], legR: [-0.2, 0] };
+
+const SH = [], at = (t0, f) => SH.push([t0, f]);
+// 0. the ceiling drips onto the table: everyone looking up
+at(0, (t, u) => { Wd.use('dining'); place('dining', gf, mom); X.stain.visible = true; X.pudim.visible = true; drips(t); put(gf, seats.gf[0], SEAT, seats.gf[1], { facing: 0, headTilt: 0, mood: 'scared' }); put(mom, seats.mom[0], SEAT, seats.mom[1], { facing: 0, mood: 'scared', armL: [2.5, 0.7], armR: [-2.5, -0.7] }); stage.aim([lerp(1.4, 1.0, ease(u / 2.5)), 1.6, 2.5], [-0.2, 1.1, -0.3], 58); });
+// 1. grandpa, trapped upstairs, standing in the water
+at(w(0, 'avô'), (t, u) => { bathroom(t, 0.15); place('bath', grandpa); put(grandpa, 0.15, 0, -0.55, { facing: 0, mood: 'scared', armL: [1.2, -1.4], armR: [-1.2, 1.4] }); X.paperOn(Wd.bath, 0.15, 0.55, -0.42, -0.5); stage.aim([0.6, 1.15, 0.7], [0.15, 0.9, -0.55], 54); });
+// 2. your father-in-law goes up the stairs. in the suit. (low angle)
+at(L0(1), (t, u) => { Wd.use('hall'); place('hall', dad); X.suit(true); const z = lerp(-6.3, -8.6, clamp(u / 2.2)); put(dad, -0.55, stairY(z), z, Object.assign({ facing: 0, lean: 0.1 }, walkLegs(t))); stage.aim([0.4, 0.6, -4.2], [-0.55, 1.7, -7.3], 54); });
+// 3. you go up behind him, belly on fire
+at(L0(2), (t, u) => { Wd.use('hall'); place('hall', you); const z = lerp(-6.2, -8.0, clamp(u / 2.6)); put(you, -0.55, stairY(z), z, Object.assign({}, POSE.clench, walkLegs(t * 0.7))); const sh = 0.006 * Math.sin(t * 60); stage.aim([0.5 + sh, 1.4, -4.6], [-0.55, 1.5, -7.0], 52); });
+// 4. the forbidden door: water coming out from under it (low)
+at(L0(3), (t, u) => { landing(t, { puddle: 0.9 + 0.1 * ease(u / 2.5) }); place('up', dad, you); put(dad, -0.5, 0, -0.9, { facing: 0 }); put(you, 1.0, 0, -0.5, POSE.clench); stage.aim([0.5, 0.45, lerp(1.2, 0.9, ease(u / 2.6))], [0.3, 0.55, -1.9], 58); });
+// 5. "I held it two seconds! two!": grandpa inside, the paper up
+at(L0(4), (t, u) => { bathroom(t, 0.15); place('bath', grandpa); put(grandpa, 0.15, 0, -0.55, { facing: 0, mood: 'scared', armL: [2.6, 0.2], armR: [-0.4, 0.2], lean: 0.05 * Math.sin(t * 9) }); X.paperOn(Wd.bath, -0.05, 1.3, -0.5, 0.2, 0.3); stage.aim([0.55, 1.05, 0.65], [0.1, 0.95, -0.55], 50); });
+// 6. he rolls up the sleeves of the suit
+at(L0(5), (t, u) => { landing(t); place('up', dad); const r = Math.sin(t * 9) * 0.25; put(dad, -0.2, 0, -0.9, { facing: 0, armL: [1.1 + r, -2.0], armR: [-1.1 + r, 2.0] }); stage.aim([-0.1, 1.2, lerp(0.5, 0.25, ease(u / 2.3))], [-0.2, 1.15, -0.9], 46); });
+// 7. "I'll handle the toilet. you get my father out.": over your shoulder
+at(L0(6), (t, u) => { landing(t); place('up', dad, you); put(dad, -0.2, 0, -0.9, { facing: 1, armL: [1.6, -0.1], armR: [-0.3, 0.2] }); put(you, 0.75, 0, -0.35, { facing: -1, mood: 'scared' }); stage.aim([1.15, 1.3, 0.75], [-0.2, 1.15, -0.9], 52); });
+// 8. you pull grandpa out. he won't let go of the paper
+at(L0(7), (t, u) => { bathroom(t, 0.15, { door: 1.1 }); place('bath', you, grandpa); const k = ease(clamp((t - w(7, 'lá')) / 1.6)); put(you, lerp(-0.75, -0.7, k), 0, lerp(1.0, 1.25, k), { facing: -1, lean: -0.1, armL: [-1.35, 0.1], armR: [-1.2, 0.0] }); put(grandpa, lerp(-0.3, -0.45, k), 0, lerp(0.5, 0.9, k), { facing: 1, mood: 'scared', armL: [1.2, -1.4], armR: [-1.2, 1.4] }); X.paperOn(Wd.bath, lerp(-0.3, -0.45, k), 0.6, lerp(0.62, 1.02, k), -0.3, Math.PI); stage.aim([0.9, 1.3, -0.8], [-0.5, 0.95, 0.9], 56); });
+// 9. he stares the toilet down. judo stance (low, from behind the toilet)
+at(L0(8), (t, u) => { bathroom(t, 0.15); place('bath', dad); put(dad, -0.3, 0, -0.3, stance(t)); stage.aim([0.35, 0.45, -1.3], [-0.3, 1.0, -0.1], 58); });
+// 10. "Hajime!": snap in on him, shake
+at(L0(9), (t, u) => { bathroom(t, 0.15); place('bath', dad); put(dad, -0.3, 0, -0.3, stance(t)); const sh = 0.01 * Math.sin(t * 70) * Math.max(0, 1 - u); stage.aim([0.05 + sh, 1.2, -0.95], [-0.3, 1.22, -0.3], lerp(60, 44, ease(clamp(u / 0.25)))); });
+// 11. he holds the lever. one. two. three.
+at(L0(10), (t, u) => { bathroom(t, 0.15); place('bath'); Wd.lever.rotation.z = t >= w(10, 'alavanca') ? -0.5 : 0; stage.aim([0.1, 0.95, -0.6], [-0.13, 0.75, -1.18], 44); });
+// 12. and the toilet swallows everything: the water drains
+at(tFlushG, (t, u) => { const lv = 0.15 * (1 - ease(clamp(u / 1.6))); bathroom(t, Math.max(lv, 0.035), { overflow: u < 0.4 }); place('bath', dad); put(dad, 0.35, 0, -0.1, { facing: -1 }); const sh = u < 1 ? 0.006 * Math.sin(t * 60) : 0; stage.aim([0.9 + sh, 1.5, 1.0], [-0.3, 0.4, -0.9], 60); });
+// 13. water to the knee. a soaked suit. he smiles
+at(tWet, (t, u) => { bathroom(t, 0.035, { overflow: false }); place('bath', dad); put(dad, 0.1, 0, -0.2, POSE.laugh(t)); stage.aim([0.6, 1.15, lerp(0.75, 0.55, ease(u / 2.6))], [0.1, 1.05, -0.2], 50); });
+// 14. but your belly didn't wait (close, shaking)
+at(L0(13), (t, u) => { landing(t, { puddle: 0.5 }); place('up', you); put(you, 0.7, 0, -0.4, POSE.clench); const sh = 0.01 * Math.sin(t * 70); stage.aim([0.6 + sh, 1.18, 0.55], [0.7, 1.1, -0.4], 44); });
+// 15. bathroom free. the only one in the house.
+at(L0(14), (t, u) => { bathroom(t, 0, { overflow: false, door: 1.1 }); place('bath'); stage.aim([-0.55, 1.5, 1.25], [-0.3, 0.55, -1.0], 62); });
+// 16. you go in. he guards the door. in the suit.
+at(L0(15), (t, u) => { landing(t, { puddle: 0.5, door: t < w(15, 'guarda') ? 0.9 * (1 - ease(clamp((t - L0(15) - 0.3) / 0.5))) : 0 }); place('up', dad); put(dad, 0.3, 0, -1.55, crossed); stage.aim([0.2, 0.6, lerp(0.8, 0.5, ease(u / 2.5))], [0.3, 1.2, -1.6], 56); });
+// 17. "nobody goes in. my orders.": close, stern
+at(L0(16), (t, u) => { landing(t, { puddle: 0.5 }); place('up', dad); put(dad, 0.3, 0, -1.55, crossed); stage.aim([0.3, 1.28, -0.6 - u * 0.04], [0.3, 1.24, -1.55], 44); });
+// 18. ten minutes later, you come out. a new man.
+at(tOut, (t, u) => { const k = ease(clamp((t - w(17, 'sai')) / 0.6)); landing(t, { puddle: 0.5, door: 1.0 * k }); place('up', dad, you); put(dad, lerp(0.3, -0.55, k), 0, -1.45, Object.assign({}, crossed, { facing: k > 0.5 ? 1 : 0 })); put(you, 0.3, 0, lerp(-2.4, -1.4, k), { facing: 0, armL: [0.4, -0.2], armR: [-0.4, 0.2] }); stage.aim([0.9, 1.2, 0.7], [0.0, 1.05, -1.5], 54); });
+// 19. on the bathroom wall, a new photo
+at(L0(18), (t, u) => { bathroom(t, 0, { overflow: false }); place('bath'); X.photo.visible = true; stage.aim([0.4, 1.5, lerp(-0.3, -0.55, ease(u / 2.3))], [1.0, 1.55, -1.47], 54); });
+// 20. you, him and grandpa. soaked. smiling. (close on the photo)
+at(L0(19), (t, u) => { bathroom(t, 0, { overflow: false }); place('bath'); X.photo.visible = true; stage.aim([1.0, 1.55, -0.85 - u * 0.03], [1.0, 1.55, -1.47], 42); });
+// 21. "my dad never let anyone in there": her, with you, on the landing
+at(L0(20), (t, u) => { landing(t, { puddle: 0.4 }); place('up', gf, you); put(gf, -0.4, 0, -0.6, { facing: 1, armL: [0.3, -0.2], armR: [-1.2, 0.3] }); put(you, 0.45, 0, -0.6, { facing: -1 }); stage.aim([0.0, 1.12, lerp(1.0, 0.75, ease(u / 2.6))], [0.0, 1.0, -0.6], 50); });
+// 22. "next Sunday there's feijoada again": the whole family at the table, him soaked, the pot steaming
+at(L0(21), (t, u) => { Wd.use('dining'); X.suit(true, true); place('dining', you, gf, mom, dad, grandpa); X.stain.visible = true; Wd.potSteam(t, 1);
+  put(you, seats.you[0], SEAT, seats.you[1], POSE.table); put(gf, seats.gf[0], SEAT, seats.gf[1], POSE.table); put(mom, seats.mom[0], SEAT, seats.mom[1], POSE.table); put(grandpa, seats.grandpa[0], SEAT, seats.grandpa[1], POSE.table); put(dad, -1.85, 0, 0, Object.assign({ facing: 1 }, { armL: [2.0 + 0.3 * Math.sin(t * 5), -0.3], armR: [-0.3, 0.2] }));
+  stage.aim([lerp(1.7, 1.3, ease(u / 4)), 1.35, 2.6], [-0.5, 0.95, 0], 60); });
+
+const CLOCK = [[0, '21:31'], [L0(13), '21:36'], [tOut, '21:46'], [L0(21), '21:50']];
+const clockAt = t => ['JANTAR', CLOCK.filter(x => t >= x[0]).pop()[1]];
+const pressure = pressureOf([[0, 96], [L0(2), 98], [L0(13), 100], [w(17, 'sai'), 0]]);
+const tEnd = T.voice_end + 0.3;
+const CHUNKS = chunkCaptions(T); window.CHUNKS = CHUNKS;
+window.TOTAL = 60;
+window.seek = t => {
+  X.reset();
+  if (COVER) return cover();
+  let i = 0; while (i + 1 < SH.length && t >= SH[i + 1][0]) i++;
+  SH[i][1](t, t - SH[i][0]);
+  stage.draw(t, { vignette: 0.45, bloomStrength: 0.45 });
+  const [d, k] = clockAt(t); hud(c, d, k); gauge(c, pressure(t), t);
+  const th = w(9, 'Hajime'); if (t >= th && t < th + 1.3) bang(c, 'HAJIME!', t - th, { y: 700, col: '#ff5a4f', size: 200 });
+  for (const [word, s] of [['Um', '1'], ['Dois', '2'], ['Três', '3']]) { const t0 = w(10, word); if (t >= t0 && t < t0 + 0.75) bang(c, s, t - t0, { y: 700, size: 300, col: '#ffffff', rot: 0 }); }
+  if (t >= tEnd) endCard(c, tEnd, t, ['VOCÊ VOLTA', 'DOMINGO?'], 'SIM: COM REMÉDIO', 'NÃO: NUNCA MAIS', '');
+  else drawCaptions(c, CHUNKS, t);
+};
+function cover() {
+  const tt = L0(13) - 0.2; X.suit(true, true); bathroom(tt, 0.15); place('bath', dad); put(dad, -0.3, 0, -0.3, stance(0));
+  stage.aim([0.35, 0.45, -1.3], [-0.3, 1.0, -0.1], 58); stage.draw(tt, { vignette: 0.5, bloomStrength: 0.45 });
+  gauge(c, 99, 0); pill(c, 'PRIMEIRO JANTAR · PARTE 5 · FINAL', 300);
+  title(c, [['O SOGRO', 450, '#ffffff'], ['VS O VASO', 590, '#ff5a4f']]);
+}
+await loadFonts();
+X.paintPhoto();
+window.seek(0);
+window.READY = true;
+</script>
+</body></html>

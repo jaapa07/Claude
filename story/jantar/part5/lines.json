@@ -1,0 +1,176 @@
+{
+"voice": "pm_alex",
+"speed": 1.1,
+"lang": "pt-br",
+"align": "estimate",
+"lines": [
+{
+"text": "Imagine que o teto está pingando e o avô está preso lá em cima.",
+"key": {
+"preso": "red"
+},
+"pause": 0.2
+},
+{
+"text": "Seu sogro sobe a escada. De terno.",
+"key": {
+"terno": "yellow"
+},
+"pause": 0.15
+},
+{
+"text": "Você sobe atrás. A barriga pegando fogo.",
+"key": {
+"fogo": "red"
+},
+"pause": 0.2
+},
+{
+"text": "A porta proibida. Água saindo por baixo.",
+"key": {
+"Água": "yellow"
+},
+"pause": 0.2
+},
+{
+"text": "Eu segurei dois segundos! Dois!",
+"voice": "pm_santa",
+"speed": 0.85,
+"key": {
+"dois": "red"
+},
+"pause": 0.3
+},
+{
+"text": "Seu sogro arregaça as mangas do terno.",
+"key": {
+"mangas": "yellow"
+},
+"pause": 0.15
+},
+{
+"text": "Eu cuido do vaso. Você tira o meu pai.",
+"voice": "pm_santa",
+"speed": 1.0,
+"key": {
+"vaso": "yellow",
+"pai": "green"
+},
+"pause": 0.2
+},
+{
+"text": "Você tira o avô de lá. Ele não solta o jornal.",
+"key": {
+"jornal": "yellow"
+},
+"pause": 0.2
+},
+{
+"text": "Seu sogro encara o vaso. Postura de judô.",
+"key": {
+"judô": "red"
+},
+"pause": 0.2
+},
+{
+"text": "Hajime!",
+"say": "Rajime!",
+"voice": "pm_santa",
+"speed": 0.9,
+"key": {
+"Hajime": "red"
+},
+"pause": 0.3
+},
+{
+"text": "Ele segura a alavanca. Um. Dois. Três.",
+"key": {
+"Três": "green"
+},
+"pause": 0.3
+},
+{
+"text": "E o vaso engole tudo.",
+"key": {
+"tudo": "green"
+},
+"pause": 0.3
+},
+{
+"text": "Água no joelho. Terno ensopado. Ele sorri.",
+"key": {
+"sorri": "green"
+},
+"pause": 0.3
+},
+{
+"text": "Mas a sua barriga não esperou.",
+"key": {
+"barriga": "red"
+},
+"pause": 0.15
+},
+{
+"text": "Banheiro livre. O único da casa.",
+"key": {
+"livre": "green"
+},
+"pause": 0.2
+},
+{
+"text": "Você entra. Ele guarda a porta. De terno.",
+"key": {
+"porta": "yellow"
+},
+"pause": 0.15
+},
+{
+"text": "Ninguém entra. Ordem minha.",
+"voice": "pm_santa",
+"speed": 0.95,
+"key": {
+"Ninguém": "red"
+},
+"pause": 0.3
+},
+{
+"text": "Dez minutos depois, você sai. Outro homem.",
+"key": {
+"homem": "green"
+},
+"pause": 0.3
+},
+{
+"text": "Na parede do banheiro, uma foto nova.",
+"key": {
+"nova": "yellow"
+},
+"pause": 0.15
+},
+{
+"text": "Você, ele e o avô. Ensopados. Sorrindo.",
+"key": {
+"Sorrindo": "green"
+},
+"pause": 0.3
+},
+{
+"text": "Meu pai nunca deixou ninguém entrar lá.",
+"voice": "pf_dora",
+"speed": 1.05,
+"key": {
+"ninguém": "yellow"
+},
+"pause": 0.3
+},
+{
+"text": "Domingo que vem tem feijoada de novo.",
+"voice": "pm_santa",
+"speed": 1.0,
+"key": {
+"feijoada": "yellow"
+},
+"pause": 0.3
+}
+]
+}

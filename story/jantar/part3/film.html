@@ -1,0 +1,127 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>O Jantar — parte 3</title>
+<script type="importmap">{"imports": {"three": "../../engine/vendor/three.module.js"}}</script>
+<style>
+@font-face { font-family: 'Oswald'; font-weight: 700; src: url('../../engine/vendor/fonts/oswald-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 700; src: url('../../engine/vendor/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+html, body { margin: 0; background: #000; } canvas { display: block; }
+</style>
+<script src="timing.js"></script>
+</head><body>
+<canvas id="film" width="1080" height="1920"></canvas>
+<script type="module">
+import * as S from '../../engine/stage.js';
+import { buildWorld, canvasTex } from '../world.js';
+const { THREE, clamp, lerp, ease, spring, box, hud, ruleSticker, endCard, chunkCaptions, drawCaptions, loadFonts, W: CW, H: CH } = S;
+S.LABELS.day = ''; S.LABELS.follow = 'SIGA PARA A PARTE ';
+const T = window.TIMING;
+const w = (li, word, n = 0) => { const b = s => s.toLowerCase().replace(/[^\p{L}0-9:]/gu, ''); let k = 0; for (const x of T.lines[li].words) if (b(x.w) === b(word) && k++ === n) return x.s; throw new Error(`word "${word}" not in line ${li}`); };
+const L0 = li => T.lines[li].words[0].s;
+const c = document.getElementById('film').getContext('2d');
+const stage = S.createStage(document.getElementById('film'));
+const Wd = buildWorld(stage);
+const { you, gf, mom, dad, grandpa, POSE, at: put, place } = Wd;
+const COVER = location.hash === '#cover';
+import { extras, SEAT, seats, stairY, gauge, pressureOf, pill, title, bang, timer } from '../extra.js';
+const X = extras(Wd);
+stage.renderer.toneMappingExposure = 1.1;
+
+const tSuit = L0(3), tUp = L0(8), tSpeech = L0(9), tEndSp = w(15, 'termina'), tRise = L0(17), tHug = L0(18), tPrrt = w(20, 'barulho');
+// the dining room as it is in this part: the pudding gone (an empty plate), the father in his shirt or the suit
+function dinner(t, { youUp = false, dadAt = null, youPose = null } = {}) {
+  Wd.use('dining'); place('dining', you, gf, mom, dad); X.suit(t >= tSuit);
+  Wd.plates.forEach((p, i) => p.visible = i !== 1); X.emptyPlate.visible = true; Wd.pot.visible = false;
+  put(gf, seats.gf[0], SEAT, seats.gf[1], POSE.table); put(mom, seats.mom[0], SEAT, seats.mom[1], POSE.table);
+  if (youUp) put(you, 0.3, 0, 1.35, youPose || POSE.clench); else put(you, seats.you[0], SEAT, seats.you[1], youPose || POSE.table);
+  if (dadAt) put(dad, ...dadAt); else put(dad, seats.dad[0], SEAT, seats.dad[1], POSE.table);
+}
+const dadStand = (p = {}) => [-1.85, 0, 0, Object.assign({ facing: 0 }, p)];
+// his walk round the table to you: (-1.85, 0) -> (-1.85, 1.35) -> (-0.15, 1.35)
+function walk(k) { k = clamp(k); return k < 0.45 ? [-1.85, 0, lerp(0, 1.35, ease(k / 0.45))] : [lerp(-1.85, -0.15, ease((k - 0.45) / 0.55)), 0, 1.35]; }
+const talk = t => ({ facing: 0, mood: 'scared', lean: 0.08, armL: [0.9 + 0.3 * Math.sin(t * 5), -1.0], armR: [-0.6, 0.3] });
+const hugP = t => ({ facing: 1, armL: [1.25, 0.7], armR: [1.05, 0.6], lean: 0.12 + 0.02 * Math.sin(t * 30) });
+
+const SH = [], at = (t0, f) => SH.push([t0, f]);
+// 0. 21:12: the table after the pudding; you, pale
+at(0, (t, u) => { dinner(t); stage.aim([lerp(-1.3, -0.9, ease(u / 2.5)), 1.6, -2.3], [0.3, 1.05, 0.9], 56); });
+// 1. the empty plate (macro)
+at(w(0, 'pudim'), (t, u) => { dinner(t); stage.aim([0.3, 1.1, 0.05 + u * 0.03], [0.3, 0.78, 0.4], 44); });
+// 2. out of respect. and fear: your face
+at(L0(1), (t, u) => { dinner(t, { youPose: Object.assign({}, POSE.table, { mood: t > w(1, 'medo') ? 'scared' : undefined }) }); stage.aim([0.15, 1.25, -0.6 + u * 0.05], [0.3, 1.2, 0.9], 42); });
+// 3. her father goes up the stairs without a word
+at(L0(2), (t, u) => { Wd.use('hall'); place('hall', dad); X.suit(false); const z = lerp(-6.4, -8.6, clamp(u / 2.8)); put(dad, -0.55, stairY(z), z, { facing: 0, lean: 0.1, legL: [0.5 * Math.sin(t * 7), -0.4], legR: [-0.5 * Math.sin(t * 7), 0.4] }); stage.aim([0.5, 1.2, -3.2], [-0.55, 1.6, -7.4], 54); });
+// 4. and comes back in a suit: low angle at the foot of the stairs, slow push
+at(tSuit, (t, u) => { Wd.use('hall'); place('hall', dad); X.suit(true); const z = lerp(-7.0, -6.1, clamp(u / 1.4)); put(dad, -0.55, stairY(z), z, { facing: 0 }); stage.aim([lerp(0.2, 0.0, ease(u / 2.4)), 0.55, lerp(-3.2, -3.9, ease(u / 2.4))], [-0.55, 1.6, -6.3], 52); });
+// 5. red tie (close)
+at(w(3, 'Gravata'), (t, u) => { Wd.use('hall'); place('hall', dad); X.suit(true); put(dad, -0.55, 0, -5.6, { facing: 0 }); stage.aim([-0.5, 1.15, -4.6 - u * 0.05], [-0.55, 1.1, -5.6], 40); });
+// 6. "in my family, the boyfriend makes a speech": him standing at the head of the table, over your shoulder
+at(L0(4), (t, u) => { dinner(t, { dadAt: dadStand({ facing: 1, armR: [-0.3, 0.2], armL: [1.5, -0.1] }) }); stage.aim([0.9, 1.25, 1.6], [-1.85, 1.45, 0], 54); });
+// 7. "standing. five minutes": close, five fingers up
+at(L0(5), (t, u) => { dinner(t, { dadAt: dadStand({ facing: 1, facing: 0, armL: [2.6, 0.3], armR: [-0.3, 0.2] }) }); stage.aim([-0.4, 1.4, 0.9 - u * 0.05], [-1.85, 1.35, 0], 52); });
+// 8. rule 2: nobody gets up before my father (wide)
+at(L0(6), (t, u) => { dinner(t, { dadAt: dadStand({ facing: 0 }) }); stage.aim([1.5, 2.3, 2.6], [-0.2, 0.8, 0], 62); });
+// 9. now he wants you to get up: he gestures upwards; you, from behind the family
+at(L0(7), (t, u) => { dinner(t, { dadAt: dadStand({ facing: 1, armL: [2.0 + 0.4 * Math.sin(t * 6), -0.4], armR: [-0.3, 0.2] }), youPose: Object.assign({}, POSE.table, { mood: 'scared' }) }); stage.aim([0.6, 1.4, -2.3], [0.3, 0.95, 0.9], 52); });
+// 10. you get up. the lactose gets up too (shake)
+at(tUp, (t, u) => { const k = ease(clamp(u / 0.6)); dinner(t, { dadAt: dadStand(), youUp: k >= 1 }); if (k < 1) put(you, 0.3, lerp(SEAT, 0, k), lerp(0.9, 1.35, k), POSE.clench); const sh = t > w(8, 'lactose') ? 0.008 * Math.sin(t * 60) : 0; stage.aim([0.4 + sh, 1.3, -1.6], [0.3, 1.2, 1.3], 54); });
+// 11. minute one: you praise the feijoada (wide from the family side)
+at(tSpeech, (t, u) => { dinner(t, { dadAt: dadStand(), youUp: true, youPose: talk(t) }); stage.aim([-0.2, 1.5, -1.4], [0.3, 1.35, 1.3], 48); });
+// 12. minute two: the pudding. a lie (close, shaking)
+at(L0(10), (t, u) => { dinner(t, { dadAt: dadStand(), youUp: true, youPose: talk(t) }); const sh = t > w(10, 'Mentira') ? 0.006 * Math.sin(t * 55) : 0; stage.aim([0.25 + sh, 1.2, 2.6], [0.3, 1.12, 1.35], 44); });
+// 13. minute three: her mother cries
+at(L0(11), (t, u) => { dinner(t, { dadAt: dadStand(), youUp: true, youPose: talk(t) }); put(mom, seats.mom[0], SEAT, seats.mom[1], { facing: 0, armL: [2.5, 0.7], armR: [-2.5, -0.7], lean: 0.05 * Math.sin(t * 8) }); stage.aim([0.6, 1.2, 0.6], [0.5, 1.05, -0.9], 50); });
+// 14. minute four: cold sweat (extreme close, the pressure)
+at(L0(12), (t, u) => { dinner(t, { dadAt: dadStand(), youUp: true, youPose: talk(t) }); const sh = 0.01 * Math.sin(t * 70); stage.aim([0.28 + sh, 1.18, 2.3], [0.3, 1.14, 1.35], 40); });
+// 15. the downstairs bathroom? grandpa is still in there: the door, the light under it
+at(L0(13), (t, u) => { Wd.use('hall'); place('hall'); stage.aim([-0.5, 1.3, lerp(-1.2, -1.8, ease(u / 2.4))], [1.18, 1.0, -3.5], 54); });
+// 16. "twenty more minutes, son!": closer, the door rattles
+at(L0(14), (t, u) => { Wd.use('hall'); place('hall'); const kk = [0, 0.25].some(k => u >= k && u < k + 0.08); Wd.bathDoor.userData.open(kk ? 0.02 : 0); stage.aim([0.2, 1.2, -2.6], [1.18, 1.0, -3.5], 48); });
+// 17. minute five: you finish (arms open)
+at(L0(15), (t, u) => { dinner(t, { dadAt: dadStand(), youUp: true, youPose: { facing: 0, armL: [1.6, -0.2], armR: [-1.6, 0.2] } }); stage.aim([0.4, 1.45, -2.0], [0.3, 1.3, 1.3], 54); });
+// 18. total silence: very wide from above, nobody moves
+at(L0(16), (t, u) => { dinner(t, { dadAt: dadStand(), youUp: true, youPose: { facing: 0, mood: 'scared' } }); stage.aim([2.2, 2.5, lerp(2.4, 2.2, u / 1.6)], [-0.1, 0.8, 0.2], 64); });
+// 19. he gets up. in the suit. he comes to you
+at(tRise, (t, u) => { const p = walk((t - w(17, 'Vem')) / 1.6); dinner(t, { youUp: true, youPose: { facing: -1, mood: 'scared' }, dadAt: [...p, { facing: p[2] > 1.3 ? 1 : 0, legL: [0.35 * Math.sin(t * 8), -0.3], legR: [-0.35 * Math.sin(t * 8), 0.3] }] }); stage.aim([0.5, 1.4, 2.85], [-0.8, 1.2, 0.8], 60); });
+// 20. a judo hug (two-shot)
+at(tHug, (t, u) => { dinner(t, { youUp: true, youPose: { facing: -1, mood: 'scared', armL: [0.2, -0.2], armR: [-0.2, 0.2] }, dadAt: [-0.05, 0, 1.35, hugP(t)] }); stage.aim([0.1, 1.3, 2.85], [0.12, 1.1, 1.35], 50); });
+// 21. it squeezes. hard. (close, shaking, the pressure maxes)
+at(L0(19), (t, u) => { dinner(t, { youUp: true, youPose: { facing: -1, mood: 'scared', lean: -0.08, armL: [0.2, -0.2], armR: [-0.2, 0.2] }, dadAt: [0.05, 0, 1.35, hugP(t)] }); const sh = 0.012 * Math.sin(t * 75); stage.aim([0.15 + sh, 1.3, 2.75], [0.15, 1.18, 1.35], 44); });
+// 22. and a noise escapes: snap back wide
+at(L0(20), (t, u) => { dinner(t, { youUp: true, youPose: { facing: -1, mood: 'scared', armL: [0.2, -0.2], armR: [-0.2, 0.2] }, dadAt: [0.05, 0, 1.35, hugP(0)] }); const sh = t > tPrrt ? 0.02 * Math.sin(t * 80) * Math.max(0, 1 - (t - tPrrt) / 1.2) : 0; stage.aim([0.2 + sh, 1.4, 2.8], [0.2, 1.2, 0.9], t > tPrrt ? 64 : 52); });
+// 23. loud. long. unmistakable: her mother and her, frozen
+at(L0(21), (t, u) => { dinner(t, { youUp: true, dadAt: [0.05, 0, 1.35, hugP(0)] }); put(gf, seats.gf[0], SEAT, seats.gf[1], { facing: 0, mood: 'scared', armL: [0.9, -1.2], armR: [-0.9, 1.2] }); put(mom, seats.mom[0], SEAT, seats.mom[1], { facing: 0, mood: 'scared', armL: [2.5, 0.7], armR: [-2.5, -0.7] }); stage.aim([-0.2, 1.25, 0.95], [0.0, 1.0, -0.9], 54); });
+// 24. everyone looks at the two of you: slow push from the family's side
+at(L0(22), (t, u) => { dinner(t, { youUp: true, youPose: { facing: -1, mood: 'scared', armL: [0.2, -0.2], armR: [-0.2, 0.2] }, dadAt: [0.05, 0, 1.35, Object.assign(hugP(0), { mood: 'scared' })] }); put(gf, seats.gf[0], SEAT, seats.gf[1], { facing: 0, mood: 'scared' }); put(mom, seats.mom[0], SEAT, seats.mom[1], { facing: 0, mood: 'scared' }); stage.aim([lerp(-0.2, 0.0, ease(u / 3)), 1.35, lerp(-2.4, -1.6, ease(u / 3))], [0.2, 1.3, 1.35], 52); });
+
+const CLOCK = [[0, '21:12'], [tSpeech, '21:15'], [L0(15), '21:20'], [tPrrt, '21:21']];
+const clockAt = t => ['JANTAR', CLOCK.filter(x => t >= x[0]).pop()[1]];
+const pressure = pressureOf([[0, 71], [w(1, 'medo'), 76], [w(8, 'lactose'), 86], [L0(12), 93], [L0(19), 100], [tPrrt + 0.2, 55]]);
+const tEnd = T.voice_end + 0.3;
+const CHUNKS = chunkCaptions(T); window.CHUNKS = CHUNKS;
+window.TOTAL = 60;
+window.seek = t => {
+  X.reset();
+  if (COVER) return cover();
+  let i = 0; while (i + 1 < SH.length && t >= SH[i + 1][0]) i++;
+  SH[i][1](t, t - SH[i][0]);
+  stage.draw(t, { vignette: 0.45, bloomStrength: 0.45 });
+  const [d, k] = clockAt(t); hud(c, d, k); gauge(c, pressure(t), t);
+  if (t >= tSpeech - 0.2 && t < tEndSp + 1.2) timer(c, t >= tEndSp ? 0 : 300 * (1 - (t - tSpeech) / (tEndSp - tSpeech)), t);
+  if (t >= L0(6) - 0.05 && t < T.lines[6].end + 0.25) ruleSticker(c, 2, ['NINGUÉM LEVANTA', 'ANTES DO PAI'], spring((t - L0(6) + 0.05) * 1.4), 560);
+  if (t >= tPrrt && t < tPrrt + 1.6) bang(c, 'PRRRRT', t - tPrrt, { y: 760, shake: 1 });
+  if (t >= tEnd) endCard(c, tEnd, t, ['QUEM LEVA', 'A CULPA?'], 'VOCÊ ASSUME', 'CULPA O SOGRO', 4);
+  else drawCaptions(c, CHUNKS, t);
+};
+function cover() {
+  Wd.use('dining'); place('dining', dad, you, gf, mom); X.suit(true); X.emptyPlate.visible = true; Wd.plates.forEach((p, i) => p.visible = i !== 1); Wd.pot.visible = false;
+  put(dad, -1.0, 0, 1.65, { facing: 0, armL: [0.3, -0.2], armR: [-0.3, 0.2] }); put(you, 0.35, SEAT, 0.9, { facing: -1, mood: 'scared', armL: [0.9, -1.2], armR: [-0.9, 1.2] });
+  put(gf, -0.6, SEAT, -0.9, POSE.table); put(mom, 0.5, SEAT, -0.9, POSE.table);
+  stage.aim([-0.05, 0.85, 2.85], [-0.85, 1.3, 1.6], 62); stage.draw(1, { vignette: 0.5, bloomStrength: 0.45 });
+  gauge(c, 86, 0); pill(c, 'PRIMEIRO JANTAR · PARTE 3', 300);
+  title(c, [['ELE VOLTOU', 450, '#ffffff'], ['DE TERNO', 590, '#ff5a4f']]);
+}
+await loadFonts();
+window.seek(0);
+window.READY = true;
+</script>
+</body></html>

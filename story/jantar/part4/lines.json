@@ -1,0 +1,192 @@
+{
+"voice": "pm_alex",
+"speed": 1.1,
+"lang": "pt-br",
+"align": "estimate",
+"lines": [
+{
+"text": "Imagine que o seu sogro te abraça de terno e escapa um barulho.",
+"key": {
+"barulho": "red"
+},
+"pause": 0.2
+},
+{
+"text": "A mãe dela larga o garfo.",
+"key": {
+"garfo": "yellow"
+},
+"pause": 0.15
+},
+{
+"text": "Sua namorada cobre o rosto.",
+"key": {
+"rosto": "yellow"
+},
+"pause": 0.2
+},
+{
+"text": "Você abre a boca pra confessar.",
+"key": {
+"confessar": "red"
+},
+"pause": 0.2
+},
+{
+"text": "Mas ele fala primeiro.",
+"key": {
+"primeiro": "yellow"
+},
+"pause": 0.3
+},
+{
+"text": "Fui eu. O terno está apertado.",
+"voice": "pm_santa",
+"speed": 1.0,
+"key": {
+"eu": "red",
+"apertado": "yellow"
+},
+"pause": 0.3
+},
+{
+"text": "Ele assumiu a culpa. Por você.",
+"key": {
+"culpa": "green"
+},
+"pause": 0.2
+},
+{
+"text": "O maior ato de amor que você já viu.",
+"key": {
+"amor": "green"
+},
+"pause": 0.15
+},
+{
+"text": "Meu pai nunca assumiu nada na vida.",
+"voice": "pf_dora",
+"speed": 1.05,
+"key": {
+"nada": "yellow"
+},
+"pause": 0.3
+},
+{
+"text": "E cochicha no seu ouvido:",
+"key": {
+"ouvido": "yellow"
+},
+"pause": 0.1
+},
+{
+"text": "Agora você me deve uma.",
+"voice": "pm_santa",
+"speed": 0.9,
+"key": {
+"deve": "red"
+},
+"pause": 0.3
+},
+{
+"text": "Aí ele monta a câmera. Foto de família.",
+"key": {
+"família": "green"
+},
+"pause": 0.15
+},
+{
+"text": "Dez segundos. Ninguém se mexe.",
+"voice": "pm_santa",
+"speed": 1.0,
+"key": {
+"mexe": "red"
+},
+"pause": 0.3
+},
+{
+"text": "Dez. Você aperta tudo.",
+"key": {
+"tudo": "red"
+},
+"pause": 0.15
+},
+{
+"text": "Sete. A lactose volta.",
+"key": {
+"volta": "red"
+},
+"pause": 0.15
+},
+{
+"text": "Cinco. Um barulho no teto.",
+"key": {
+"teto": "yellow"
+},
+"pause": 0.15
+},
+{
+"text": "Três. Uma gota cai no pudim.",
+"key": {
+"gota": "yellow"
+},
+"pause": 0.15
+},
+{
+"text": "Dois. Outra gota. Na careca do seu sogro.",
+"key": {
+"careca": "red"
+},
+"pause": 0.15
+},
+{
+"text": "Um.",
+"key": {
+"Um": "yellow"
+},
+"pause": 0.1
+},
+{
+"text": "Flash.",
+"key": {
+"Flash": "yellow"
+},
+"pause": 0.4
+},
+{
+"text": "Na foto, todo mundo sorrindo. E o teto pingando.",
+"key": {
+"pingando": "red"
+},
+"pause": 0.2
+},
+{
+"text": "Lá em cima, o banheiro proibido transbordou.",
+"key": {
+"transbordou": "red"
+},
+"pause": 0.2
+},
+{
+"text": "Alguém deu descarga sem segurar três segundos.",
+"key": {
+"três": "yellow"
+},
+"pause": 0.3
+},
+{
+"text": "Aí você percebe: o avô não está mais no banheiro de baixo.",
+"key": {
+"avô": "yellow"
+},
+"pause": 0.2
+},
+{
+"text": "Ele está no de cima.",
+"key": {
+"cima": "red"
+},
+"pause": 0.2
+}
+]
+}

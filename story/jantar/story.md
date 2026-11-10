@@ -1,4 +1,4 @@
-# O Jantar: 2 partes de 60 s
+# O Jantar: 5 partes de 60 s
 
 Comédia de tensão: o primeiro jantar com os pais da namorada, uma feijoada e um banheiro proibido.
 
@@ -67,3 +67,19 @@ Fato: o intestino tem uns 7 metros (somando delgado e grosso).
 23. *(pai)* Regra 1, rapaz. Come tudo.
 
 **Final:** VOCÊ COME O PUDIM? (Sim: como e rezo / Não: quebro a regra 1)
+
+## Parte 3 — o sogro de terno
+Ele sobe sem falar nada e volta de terno e gravata vermelha. Discurso do namorado: 5 minutos, em pé (regra 2 invertida).
+O avô ainda no banheiro de baixo ("mais vinte minutos"). No fim, o abraço de judoca aperta... e escapa um barulho.
+**Final:** QUEM LEVA A CULPA? (Você assume / Culpa o sogro)
+
+## Parte 4 — "fui eu"
+Ele assume o pum ("o terno está apertado") e cochicha: "agora você me deve uma". Foto de família com timer de 10 s:
+gotas no pudim e na careca dele. Flash. O banheiro proibido transbordou: o avô está lá em cima.
+**Final:** QUEM SOBE PRIMEIRO? (Você / O sogro de terno)
+
+## Parte 5 — o sogro vs o vaso (final)
+Ele arregaça as mangas do terno, postura de judô, "Hajime!", alavanca 3 segundos: o vaso engole tudo.
+Terno ensopado. Você usa o banheiro com ele de guarda na porta. Foto nova na parede: você, ele e o avô, ensopados.
+"Domingo que vem tem feijoada de novo."
+**Final:** VOCÊ VOLTA DOMINGO? (Com remédio / Nunca mais)

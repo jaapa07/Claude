@@ -1,0 +1,134 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>O Jantar — parte 4</title>
+<script type="importmap">{"imports": {"three": "../../engine/vendor/three.module.js"}}</script>
+<style>
+@font-face { font-family: 'Oswald'; font-weight: 700; src: url('../../engine/vendor/fonts/oswald-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 700; src: url('../../engine/vendor/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+html, body { margin: 0; background: #000; } canvas { display: block; }
+</style>
+<script src="timing.js"></script>
+</head><body>
+<canvas id="film" width="1080" height="1920"></canvas>
+<script type="module">
+import * as S from '../../engine/stage.js';
+import { buildWorld, canvasTex } from '../world.js';
+const { THREE, clamp, lerp, ease, spring, box, hud, ruleSticker, endCard, chunkCaptions, drawCaptions, loadFonts, W: CW, H: CH } = S;
+S.LABELS.day = ''; S.LABELS.follow = 'SIGA PARA A PARTE ';
+const T = window.TIMING;
+const w = (li, word, n = 0) => { const b = s => s.toLowerCase().replace(/[^\p{L}0-9:]/gu, ''); let k = 0; for (const x of T.lines[li].words) if (b(x.w) === b(word) && k++ === n) return x.s; throw new Error(`word "${word}" not in line ${li}`); };
+const L0 = li => T.lines[li].words[0].s;
+const c = document.getElementById('film').getContext('2d');
+const stage = S.createStage(document.getElementById('film'));
+const Wd = buildWorld(stage);
+const { you, gf, mom, dad, grandpa, POSE, at: put, place } = Wd;
+const COVER = location.hash === '#cover';
+import { extras, SEAT, seats, gauge, pressureOf, pill, title, bang, polaroid } from '../extra.js';
+const X = extras(Wd);
+stage.renderer.toneMappingExposure = 1.1;
+X.stain.position.set(-0.3, 2.785, -0.85);
+
+const tCam = L0(11), tPose = L0(12), tFlash = w(19, 'Flash'), tPhoto = L0(20), tDropP = w(16, 'gota') - 0.2, tDropD = w(17, 'careca') - 0.45;
+const SPOT = { mom: [-0.95, -1.45], dad: [-0.3, -1.45], gf: [0.35, -1.45], you: [0.95, -1.45] };
+// the table: everyone still where part 3 left them (him hugging you), or lined up for the photo
+function dinner(t, { photo = false, youP = null, dadP = null, momP = null, gfP = null } = {}) {
+  Wd.use('dining'); place('dining', you, gf, mom, dad); X.suit(true);
+  Wd.plates.forEach((p, i) => p.visible = i !== 1); X.emptyPlate.visible = true; Wd.pot.visible = false;
+  X.pudim.visible = true; X.pudim.position.set(-0.3, 0.77, -0.4);
+  if (photo) {
+    put(mom, ...SPOT.mom.slice(0, 1), 0, SPOT.mom[1], momP || { facing: 0 }); put(dad, SPOT.dad[0], 0, SPOT.dad[1], dadP || { facing: 0 });
+    put(gf, SPOT.gf[0], 0, SPOT.gf[1], gfP || { facing: 0 }); put(you, SPOT.you[0], 0, SPOT.you[1], youP || POSE.clench);
+    X.cam.visible = true; X.led.visible = Math.floor(t * 4) % 2 === 0;
+  } else {
+    put(mom, seats.mom[0], SEAT, seats.mom[1], momP || POSE.table); put(gf, seats.gf[0], SEAT, seats.gf[1], gfP || POSE.table);
+    put(you, 0.3, 0, 1.35, youP || { facing: -1, mood: 'scared' }); put(dad, 0.05, 0, 1.35, dadP || { facing: 1 });
+  }
+  const sk = clamp((t - L0(15)) / 1.5); X.stain.visible = sk > 0; X.stain.material.opacity = sk; X.stain.scale.setScalar(0.5 + 0.5 * sk);
+}
+const hugP = t => ({ facing: 1, armL: [1.25, 0.7], armR: [1.05, 0.6], lean: 0.12 });
+const youSide = (p = {}) => Object.assign({ facing: 1, mood: 'scared' }, p);   // from the -z side, he is on screen right
+const POV = u => stage.aim([0, 1.45, lerp(2.15, 2.05, u / 3)], [0.0, 1.0, -1.45], 58);
+
+const SH = [], at = (t0, f) => SH.push([t0, f]);
+// 0. the hug, again: and the noise
+at(0, (t, u) => { dinner(t, { dadP: hugP(t), youP: { facing: -1, mood: 'scared', armL: [0.2, -0.2], armR: [-0.2, 0.2] } }); const tb = w(0, 'barulho'), sh = t > tb ? 0.02 * Math.sin(t * 80) * Math.max(0, 1 - (t - tb) / 1.2) : 0; stage.aim([0.15 + sh, 1.3, lerp(2.4, 2.8, ease(u / 3.5))], [0.15, 1.15, 1.35], 50); });
+// 1. her mother drops her fork
+at(L0(1), (t, u) => { dinner(t, { momP: { facing: 0, mood: 'scared', armL: [0.9, -1.2], armR: [-1.3, 0.9] } }); X.fork.visible = true; const k = clamp((t - w(1, 'larga')) / 0.35); X.fork.position.set(lerp(0.62, 0.55, k), lerp(1.0, 0.8, k * k), lerp(-0.72, -0.45, k)); X.fork.rotation.set(k * 1.2, 0, k * 0.6); stage.aim([0.6, 1.2, 0.7], [0.5, 0.95, -0.7], 48); });
+// 2. your girlfriend covers her face
+at(L0(2), (t, u) => { dinner(t, { gfP: { facing: 0, armL: [2.55, 0.8], armR: [-2.55, -0.8] } }); stage.aim([-0.6, 1.0, -0.35 - u * 0.05], [-0.6, 0.9, 0.9], 46); });
+// 3. you open your mouth to confess
+at(L0(3), (t, u) => { dinner(t, { youP: youSide({ armL: [0.9, -1.0], armR: [-0.4, 0.3] }) }); stage.aim([0.4, 1.2, 0.25 - u * 0.04], [0.3, 1.14, 1.35], 44); });
+// 4. but he speaks first: him, close
+at(L0(4), (t, u) => { dinner(t, { dadP: { facing: -1, armL: [-0.3, -0.2], armR: [-1.4, 0.2] }, youP: youSide() }); stage.aim([0.0, 1.3, 0.35], [0.05, 1.24, 1.35], 46); });
+// 5. "it was me. the suit is tight": hand on his chest, low angle, slow push
+at(L0(5), (t, u) => { dinner(t, { dadP: { facing: 0, armL: [0.6, -2.6], armR: [-0.3, 0.2] }, youP: youSide() }); stage.aim([lerp(-0.15, -0.05, ease(u / 2)), 0.85, lerp(0.1, 0.4, ease(u / 2))], [0.05, 1.2, 1.35], 52); });
+// 6. he took the blame. for you. (wide: her mother laughing)
+at(L0(6), (t, u) => { dinner(t, { momP: POSE.laugh(t), dadP: { facing: -1 }, youP: { facing: -1 } }); stage.aim([1.7, 1.9, 2.6], [-0.1, 1.0, 0.3], 60); });
+// 7. the greatest act of love you've ever seen: you, close, slow push
+at(L0(7), (t, u) => { dinner(t, { youP: { facing: 1, headTilt: 0.1 } }); stage.aim([0.4, 1.2, lerp(0.3, 0.55, ease(u / 2.4))], [0.3, 1.14, 1.35], 42); });
+// 8. "my dad never took the blame for anything": her
+at(L0(8), (t, u) => { dinner(t, { gfP: { facing: 0, armL: [0.9, -1.2], armR: [-1.5, 0.6] } }); stage.aim([-0.6, 1.0, -0.3 - u * 0.04], [-0.6, 0.9, 0.9], 44); });
+// 9. and he whispers in your ear (two-shot, he leans in)
+at(L0(9), (t, u) => { dinner(t, { dadP: { facing: 1, lean: 0.3 * ease(clamp(u / 0.6)), armR: [-0.3, 0.2] }, youP: { facing: -1, mood: 'scared' } }); stage.aim([0.15, 1.25, 2.35], [0.15, 1.15, 1.35], 44); });
+// 10. "now you owe me one": him, extreme close
+at(L0(10), (t, u) => { dinner(t, { dadP: { facing: 1, lean: 0.3 }, youP: { facing: -1, mood: 'scared' } }); stage.aim([-0.05, 1.27, 2.15 + u * 0.04], [0.0, 1.24, 1.35], 38); });
+// 11. then he sets up the camera: family photo
+at(tCam, (t, u) => { dinner(t); X.cam.visible = true; X.led.visible = true; put(dad, 0.3, 0, 2.05, { facing: -1, lean: 0.15, armL: [-1.4, -0.2], armR: [-1.2, -0.3] }); stage.aim([-1.6, 1.4, 1.1], [0.1, 1.15, 2.2], 52); });
+// 12. "ten seconds. nobody moves.": the camera's view
+at(tPose, (t, u) => { dinner(t, { photo: true, dadP: { facing: 0, armL: [0.3, -0.2], armR: [-1.6, 0.0] } }); POV(u); });
+const big = [[13, 'Dez', '10'], [14, 'Sete', '7'], [15, 'Cinco', '5'], [16, 'Três', '3'], [17, 'Dois', '2'], [18, 'Um', '1']];
+// 13. ten: you squeeze everything
+at(L0(13), (t, u) => { dinner(t, { photo: true }); stage.aim([0.95, 1.2, -0.35], [0.95, 1.14, -1.45], 44); });
+// 14. seven: the lactose comes back (lower, shaking)
+at(L0(14), (t, u) => { dinner(t, { photo: true }); const sh = 0.008 * Math.sin(t * 70); stage.aim([0.95 + sh, 0.9, -0.45], [0.95, 0.85, -1.45], 46); });
+// 15. five: a noise in the ceiling: the stain spreads
+at(L0(15), (t, u) => { dinner(t, { photo: true }); stage.aim([-0.3, 1.6, 0.6], [-0.3, 2.78, -0.85], 62); });
+// 16. three: a drop falls into the pudding
+at(L0(16), (t, u) => { dinner(t, { photo: true }); X.drop(0, t, tDropP, [-0.3, 0.885, -0.4]); stage.aim([-0.3, 1.05, 0.08], [-0.3, 0.88, -0.4], 46); });
+// 17. two: another drop: on his bald head
+at(L0(17), (t, u) => { dinner(t, { photo: true, dadP: { facing: 0, mood: t > tDropD + 0.45 ? 'scared' : undefined } }); X.drop(1, t, tDropD, [-0.3, 1.37, -1.45]); stage.aim([-0.3, 1.5, -0.55], [-0.3, 1.3, -1.45], 44); });
+// 18. one: the camera's view, everyone rigid
+at(L0(18), (t, u) => { dinner(t, { photo: true, dadP: { facing: 0, mood: 'scared' } }); X.drop(2, t, t - 0.2, [-0.3, 0.885, -0.4]); POV(1); });
+// 19. flash: the same view, drops in mid-air
+const frozen = t => { dinner(t, { photo: true, dadP: { facing: 0, mood: 'scared' }, gfP: { facing: 0, armR: [-2.6, -0.3] }, momP: { facing: 0, armL: [2.0, 0.4] } }); X.drop(2, 0.25, 0, [-0.3, 0.885, -0.4]); X.drop(3, 0.3, 0, [-0.6, 1.62, -1.45]); X.drop(4, 0.15, 0, [0.4, 0.8, -0.2]); POV(1); };
+at(tFlash, (t, u) => frozen(t));
+// 20. the photo: everyone smiling. and the ceiling dripping
+at(tPhoto, (t, u) => frozen(t));
+// 21. upstairs: water coming out from under the forbidden door
+at(L0(21), (t, u) => { Wd.use('up'); place('up'); X.puddleOn(0.4 + 0.4 * ease(clamp(u / 2.5))); Wd.forbLight.visible = true; Wd.forbLight.intensity = 1.5; stage.aim([0.9, 1.0, lerp(1.4, 1.0, ease(u / 2.6))], [0.3, 0.4, -1.8], 56); });
+// 22. inside: the toilet overflowing, the floor flooded
+at(L0(22), (t, u) => { Wd.use('bath'); place('bath'); X.flood(t, 0.1); X.overflowOn(t, true); stage.aim([0.9, 1.4, 1.1], [-0.3, 0.45, -1.0], 60); });
+// 23. grandpa isn't in the downstairs bathroom any more: its door wide open, nobody
+at(L0(23), (t, u) => { Wd.use('hall'); place('hall'); Wd.bathDoor.userData.open(1.3); stage.aim([-0.5, 1.35, lerp(-1.0, -1.9, ease(u / 3.2))], [1.18, 1.0, -3.5], 54); });
+// 24. he's in the one upstairs: standing in the water, with his newspaper
+at(L0(24), (t, u) => { Wd.use('bath'); place('bath', grandpa); X.flood(t, 0.1); X.overflowOn(t, true); put(grandpa, 0.15, 0, -0.55, { facing: 0, mood: 'scared', armL: [1.2, -1.4], armR: [-1.2, 1.4] }); X.paperOn(Wd.bath, 0.15, 0.55, -0.42, -0.5); stage.aim([lerp(0.75, 0.55, ease(u / 3)), 1.25, lerp(1.0, 0.6, ease(u / 3))], [0.15, 0.95, -0.55], 56); });
+
+const CLOCK = [[0, '21:21'], [tCam, '21:28'], [L0(21), '21:31']];
+const clockAt = t => ['JANTAR', CLOCK.filter(x => t >= x[0]).pop()[1]];
+const pressure = pressureOf([[0, 55], [w(0, 'barulho'), 40], [L0(13), 78], [w(14, 'volta'), 92], [L0(21), 96]]);
+const tEnd = T.voice_end + 0.3;
+const CHUNKS = chunkCaptions(T); window.CHUNKS = CHUNKS;
+window.TOTAL = 60;
+window.seek = t => {
+  X.reset();
+  if (COVER) return cover();
+  let i = 0; while (i + 1 < SH.length && t >= SH[i + 1][0]) i++;
+  SH[i][1](t, t - SH[i][0]);
+  stage.draw(t, { vignette: 0.45, bloomStrength: 0.45 });
+  if (t >= tPhoto && t < L0(21)) polaroid(c, (t - tPhoto) / 0.6, '');
+  if (t >= tFlash && t < tPhoto) { c.save(); c.globalAlpha = clamp(1 - (t - tFlash) / 0.7); c.fillStyle = '#fff'; c.fillRect(0, 0, CW, CH); c.restore(); }
+  const [d, k] = clockAt(t); hud(c, d, k); gauge(c, pressure(t), t);
+  const tb = w(0, 'barulho'); if (t >= tb && t < tb + 1.4) bang(c, 'PRRRRT', t - tb, { y: 760, shake: 1 });
+  for (const [li, word, s] of big) { const t0 = w(li, word); if (t >= t0 && t < T.lines[li].end + 0.15) bang(c, s, t - t0, { y: 700, size: 300, col: li === 18 ? '#ff5a4f' : '#ffffff', rot: 0 }); }
+  if (t >= tEnd) endCard(c, tEnd, t, ['QUEM SOBE', 'PRIMEIRO?'], 'VOCÊ', 'O SOGRO DE TERNO', 5);
+  else drawCaptions(c, CHUNKS, t);
+};
+function cover() {
+  const tt = L0(5) + 1.2; SH.find(s => s[0] === L0(5))[1](tt, 1.2); stage.draw(tt, { vignette: 0.5, bloomStrength: 0.45 });
+  gauge(c, 55, 0); pill(c, 'PRIMEIRO JANTAR · PARTE 4', 300);
+  title(c, [['ELE DISSE', 450, '#ffffff'], ['"FUI EU"', 590, '#ff5a4f']]);
+}
+await loadFonts();
+window.seek(0);
+window.READY = true;
+</script>
+</body></html>
