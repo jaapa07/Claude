@@ -1,0 +1,23 @@
+{"mixkit": false, "roomtone": false, "music": {"level": -14},
+ "bed": [{"at": 0, "level": 0.6}, {"at": "cagar@0", "level": 0.8}, {"at": "assina@4", "level": 0.5}, {"at": "Dia@10", "level": 0.5}, {"at": "churrasco@12", "level": 0.7}, {"at": "manhã@16", "level": 0.9}, {"at": "mão@21", "level": 1.1}],
+ "sfx": [
+  {"at": "cagar@0", "type": "growl", "vol": 0.7}, {"at": "cagar@0+0.5", "type": "rumble", "vol": 0.6},
+  {"at": "Interditado@1", "type": "sting", "vol": 0.5},
+  {"at": "terno@2", "type": "whoosh", "vol": 0.4},
+  {"at": "vontade@3", "type": "hit", "vol": 0.5},
+  {"at": "assina@4", "type": "click", "vol": 0.4}, {"at": "Sem@4", "type": "whoosh", "vol": 0.3},
+  {"at": "passa@5", "type": "whoosh", "vol": 0.5}, {"at": "pálido@5", "type": "growl", "vol": 0.7},
+  {"at": "Regra@7", "type": "click", "vol": 0.5}, {"at": "Regra@8", "type": "click", "vol": 0.5}, {"at": "Regra@9", "type": "click", "vol": 0.5},
+  {"at": "Liberdade@10", "type": "sting", "vol": 0.3},
+  {"at": "correndo@11", "type": "rumble", "vol": 0.6}, {"at": "reunião@11", "type": "slam", "vol": 0.6},
+  {"at": "maionese@12", "type": "growl", "vol": 0.6},
+  {"at": "toca@13", "type": "alarm", "vol": 0.4},
+  {"at": "Deus@14", "type": "hit", "vol": 0.6},
+  {"at": "era@15", "type": "thud", "vol": 0.5}, {"at": "torresmo@15", "type": "rumble", "vol": 0.7},
+  {"at": "bate@16", "type": "knock", "vol": 0.8}, {"at": "porta@16", "type": "knock", "vol": 0.8},
+  {"at": "Tremendo@17", "type": "growl", "vol": 0.6}, {"at": "Apertado@17", "type": "rumble", "vol": 0.7},
+  {"at": "devolver@18", "type": "heartbeat", "vol": 0.5},
+  {"at": "aponta@19", "type": "click", "vol": 0.4},
+  {"at": "dois@20", "type": "hit", "vol": 0.7},
+  {"at": "mão@21", "type": "rumble", "vol": 0.8}, {"at": "vez@21", "type": "boom", "vol": 0.9}
+ ]}

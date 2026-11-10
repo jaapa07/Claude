@@ -1,0 +1,182 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.15,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lead": 0.7,
+ "lines": [
+  {
+   "text": "Imagine: primeiro encontro. E bate aquela vontade de cagar.",
+   "key": {
+    "cagar": "red"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "O banheiro do restaurante? Interditado.",
+   "key": {
+    "Interditado": "red"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Do nada, um homem de terno aparece do seu lado.",
+   "key": {
+    "terno": "yellow"
+   },
+   "pause": 0.15
+  },
+  {
+   "text": "Compro a sua vontade de cagar. 200 reais.",
+   "say": "Compro a sua vontade de cagar. Duzentos reais.",
+   "voice": "pm_santa",
+   "speed": 1.05,
+   "key": {
+    "vontade": "red"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Você assina. Na hora. Sem ler.",
+   "key": {
+    "assina": "yellow"
+   },
+   "pause": 0.15
+  },
+  {
+   "text": "A vontade passa na hora. E ele fica pálido.",
+   "key": {
+    "pálido": "yellow"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "No contrato, 3 regras.",
+   "say": "No contrato, três regras.",
+   "key": {
+    "regras": "yellow"
+   },
+   "pause": 0.1
+  },
+  {
+   "text": "Regra 1: nunca coma feijoada.",
+   "say": "Regra um: nunca coma feijoada.",
+   "key": {
+    "feijoada": "red"
+   },
+   "pause": 0.1
+  },
+  {
+   "text": "Regra 2: qualquer vontade, quem sente é ele.",
+   "say": "Regra dois: qualquer vontade, quem sente é ele.",
+   "key": {
+    "ele": "red"
+   },
+   "pause": 0.1
+  },
+  {
+   "text": "Regra 3: não aceitamos devolução.",
+   "say": "Regra três: não aceitamos devolução.",
+   "key": {
+    "devolução": "red"
+   },
+   "pause": 0.25
+  },
+  {
+   "text": "Dia 1: você come 3 pastéis. Nada. Liberdade.",
+   "say": "Dia um: você come três pastéis. Nada. Liberdade.",
+   "key": {
+    "Liberdade": "yellow"
+   },
+   "pause": 0.15
+  },
+  {
+   "text": "Do outro lado da cidade, ele sai correndo de uma reunião.",
+   "key": {
+    "correndo": "red"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Dia 3: churrasco da firma. Linguiça, farofa e maionese de quinta-feira.",
+   "say": "Dia três: churrasco da firma. Linguiça, farofa e maionese de quinta-feira.",
+   "key": {
+    "maionese": "red"
+   },
+   "pause": 0.15
+  },
+  {
+   "text": "Seu celular toca.",
+   "key": {
+    "toca": "yellow"
+   },
+   "pause": 0.1
+  },
+  {
+   "text": "Para de comer, pelo amor de Deus!",
+   "voice": "pm_santa",
+   "speed": 1.2,
+   "key": {
+    "Deus": "red"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Dia 5: regra 1 já era. Feijoada completa. Com torresmo.",
+   "say": "Dia cinco: regra um já era. Feijoada completa. Com torresmo.",
+   "key": {
+    "torresmo": "red"
+   },
+   "pause": 0.25
+  },
+  {
+   "text": "3 da manhã. Alguém bate na sua porta.",
+   "say": "Três da manhã. Alguém bate na sua porta.",
+   "key": {
+    "porta": "yellow"
+   },
+   "pause": 0.15
+  },
+  {
+   "text": "É ele. Suado. Tremendo. Apertado.",
+   "key": {
+    "Apertado": "red"
+   },
+   "pause": 0.15
+  },
+  {
+   "text": "Eu quero devolver.",
+   "voice": "pm_santa",
+   "speed": 0.95,
+   "key": {
+    "devolver": "red"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Você aponta pro contrato. Regra 3: não aceitamos devolução.",
+   "say": "Você aponta pro contrato. Regra três: não aceitamos devolução.",
+   "key": {
+    "devolução": "red"
+   },
+   "pause": 0.15
+  },
+  {
+   "text": "Essa regra vale pros dois.",
+   "voice": "pm_santa",
+   "speed": 1.05,
+   "key": {
+    "dois": "red"
+   },
+   "pause": 0.2
+  },
+  {
+   "text": "Ele estica a mão. São 5 dias de vontade. Tudo de uma vez.",
+   "say": "Ele estica a mão. São cinco dias de vontade. Tudo de uma vez.",
+   "key": {
+    "vez": "red"
+   },
+   "pause": 0.3
+  }
+ ]
+}

@@ -1,0 +1,128 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Vendi a minha vontade de cagar</title>
+<script type="importmap">{"imports": {"three": "../../engine/vendor/three.module.js"}}</script>
+<style>
+@font-face { font-family: 'Oswald'; font-weight: 700; src: url('../../engine/vendor/fonts/oswald-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 700; src: url('../../engine/vendor/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+html, body { margin: 0; background: #000; } canvas { display: block; }
+</style>
+<script src="timing.js"></script>
+</head><body>
+<canvas id="film" width="1080" height="1920"></canvas>
+<script type="module">
+// "Vendi a minha vontade de cagar": one 65 s film in the style of O Homem Sem Sombra, on its world (street, bedroom,
+// office). The first frame is the cover (series pill and title), so the platform's default thumbnail is the cover.
+import * as S from '../../engine/stage.js';
+import { buildWorld } from '../../sombra/world.js';
+import { words, keyed, balance, app, row, paper, scribble, pill, title, strike, brl } from '../../sombra/common.js';
+const { THREE, clamp, lerp, ease, spring, box, hud, ruleSticker, endCard, chunkCaptions, drawCaptions, loadFonts, phone, W: CW, H: CH } = S;
+S.LABELS.day = ''; S.LABELS.follow = '';
+const T = window.TIMING; const { w, L0 } = words(T);
+const c = document.getElementById('film').getContext('2d');
+const stage = S.createStage(document.getElementById('film'));
+const Wd = buildWorld(stage);
+const { you, suit, boss, crush, POSE, at: put, place } = Wd;
+const COVER = location.hash === '#cover';
+const END = T.lines[T.lines.length - 1].end + 1.6;
+const sweat = (t, k = 1) => ({ facing: 0, mood: 'scared', lean: 0.05 * Math.sin(t * 45) * k, armL: [0.25, -0.3], armR: [-0.25, 0.3], legL: [0.12, -0.1], legR: [-0.12, 0.1] });   // knees together, trembling
+const eat = t => ({ facing: 0, armL: [0.2, -0.2], armR: [-1.6 - 0.5 * Math.max(0, Math.sin(t * 9)), 2.2] });   // a hand going to the mouth again and again
+
+function street(day, { elev = 0.6 } = {}) { Wd.use('street'); Wd.setSun(day, elev); you.mesh.castShadow = true; Wd.bus.visible = false; Wd.shop.visible = false; }
+function home(night) { Wd.use('home'); Wd.dog.visible = false; Wd.homeSun.intensity = night ? 0 : 1.6; Wd.homeSky.material.color.set(night ? '#0a1430' : '#8ec5ef'); Wd.bedLamp.userData.light.intensity = night ? 2.5 : 0; Wd.homeL.h.intensity = night ? 0.5 : 0.75; }
+
+// ---------- the shot list ----------
+const SH = [], at = (t0, f) => SH.push([t0, f]);
+// 0. first date at night: you, knees together, sweating; your date talking away
+at(0, (t, u) => { street(false); place('street', you, crush); put(you, 0, 0, -5.2, sweat(t)); put(crush, 1.3, 0, -5.4, Object.assign({}, POSE.laugh(t), { facing: -1 })); const k = ease(u / 4); stage.aim([lerp(0.4, 0.6, k), 1.4, lerp(-2.4, -2.9, k)], [0.55, 1.15, -5.3], lerp(56, 50, k)); });
+// 1. the restaurant toilet: closed (the sticker), you close up
+at(L0(1), (t, u) => { street(false); place('street', you); put(you, 0, 0, -5.2, sweat(t, 1.6)); stage.aim([0.1, 1.45, -3.6], [0, 1.35, -5.2], 44); });
+// 2. a man in a suit appears beside you
+at(L0(2), (t, u) => { street(false); place('street', you, suit); put(you, 0, 0, -5.2, sweat(t)); const k = ease(u / 0.6); put(suit, lerp(3.2, 1.1, k), 0, -5.4, Object.assign({}, POSE.stand, { facing: -1 })); stage.aim([0.6, 1.4, -2.2], [0.6, 1.2, -5.3], 54); });
+// 3. "I'll buy your urge. 200."
+at(L0(3), (t, u) => { street(false); place('street', suit); put(suit, 1.1, 0, -5.4, POSE.offer); stage.aim([0.5, 1.5, -3.9], [1.1, 1.45, -5.4], 42); });
+// 4. you sign (the contract)
+at(L0(4), (t, u) => { street(false); place('street', you, suit); put(you, 0, 0, -5.2, POSE.sign); put(suit, 1.1, 0, -5.4, POSE.offer); stage.aim([0.4, 1.4, -2.6], [0.5, 1.15, -5.3], 52); });
+// 5. the urge passes; he goes pale and trembles
+at(L0(5), (t, u) => { street(false); place('street', you, suit); put(you, 0, 0, -5.2, POSE.laugh(t)); put(suit, 1.1, 0, -5.4, Object.assign({}, sweat(t, 1.4), { facing: -1 })); stage.aim([0.6, 1.45, -2.4], [0.6, 1.2, -5.3], 50); });
+// 6-9. the contract, the three rules
+at(L0(6), (t, u) => { street(false); place('street', you); put(you, 0, 0, -5.2, POSE.phone); stage.aim([0.4, 1.4, -2.6], [0.2, 1.15, -5.3], 54); });
+at(L0(7), (t, u) => { home(false); place('home', you); put(you, 0.4, 0, 0.0, Object.assign({}, POSE.scared)); stage.aim([0.6, 1.4, 1.8], [0.4, 1.1, 0], 54); });
+at(L0(8), (t, u) => { street(true); place('street', you, suit); put(you, -0.8, 0, -5.2, POSE.laugh(t)); put(suit, 1.4, 0, -5.6, Object.assign({}, sweat(t, 1.8), { facing: -1 })); stage.aim([0.3, 1.4, -1.4], [0.3, 1.1, -5.4], 58); });
+at(L0(9), (t, u) => { street(true); place('street', you); put(you, -0.4, 0, -5.2, Object.assign({}, POSE.look, { facing: 1 })); stage.aim([1.4, 1.2, -2.8], [0.8, 1.0, -6.0], 56); });
+// 10. day 1: three pastéis, nothing, freedom
+at(L0(10), (t, u) => { home(false); place('home', you); put(you, 0.4, 0, 0.0, t < w(10, 'Liberdade') ? eat(t) : POSE.jump); stage.aim([0.8, 1.3, 2.0], [0.4, 0.9, 0], 56); });
+// 11. across town he runs out of a meeting, the boss staring
+at(L0(11), (t, u) => { Wd.use('office'); place('office', suit, boss); Wd.plaque.visible = false; suit.walk(u * 3, { speed: 3, facing: 1 }); suit.mesh.position.set(-2.4 + u * 1.5, 0, 2.2); put(boss, 1.4, 0, 1.6, Object.assign({}, POSE.scared, { facing: -1 })); stage.aim([0.0, 1.5, 6.0], [-0.2, 1.0, 1.8], 52); });
+// 12. day 3: the company barbecue, you eat everything
+at(L0(12), (t, u) => { street(true); place('street', you, boss); put(you, 0, 0, -5.2, eat(t)); put(boss, 1.4, 0, -5.6, Object.assign({}, POSE.laugh(t), { facing: -1 })); stage.aim([0.4, 1.45, -2.6 - u * 0.1], [0.4, 1.3, -5.3], 50); });
+// 13. your phone rings
+at(L0(13), (t, u) => { street(true); place('street', you); put(you, 0, 0, -5.2, POSE.phone); stage.aim([0.3, 1.5, -3.3], [0, 1.35, -5.2], 44); });
+// 14. "stop eating, for the love of God!" (him, in the office, on the phone, trembling)
+at(L0(14), (t, u) => { Wd.use('office'); place('office', suit); put(suit, 0.0, 0, 0.2, Object.assign({}, sweat(t, 2.2), { armR: [-2.6, 0.4] })); stage.aim([0.2, 1.5, 1.6], [0, 1.5, 0.2], 42); });
+// 15. day 5: rule 1 is gone, feijoada with torresmo
+at(L0(15), (t, u) => { home(false); place('home', you); put(you, 0.4, 0, 0.0, eat(t * 1.4)); stage.aim([0.6, 1.4, 1.6], [0.4, 1.1, 0], 50); });
+// 16. 3 am, a knock at the door: you asleep
+at(L0(16), (t, u) => { home(true); place('home', you); you.mesh.castShadow = false; put(you, -1.3, 0.55, -1.05, { facing: 1, lean: -1.45, armL: [0.2, -0.2], armR: [0.1, -0.1] }); stage.aim([-0.2, 1.5, 2.0], [-0.6, 0.6, -1.2], 62); });
+// 17. it's him: sweating, trembling, desperate
+at(L0(17), (t, u) => { home(true); place('home', suit); put(suit, 0.9, 0, 1.4, sweat(t, 2.6)); stage.aim([0.6, 1.5, 3.6], [0.9, 1.2, 1.4], 48); });
+// 18. "I want to return it."
+at(L0(18), (t, u) => { home(true); place('home', suit); put(suit, 0.9, 0, 1.4, sweat(t, 3)); stage.aim([0.8, 1.6, 2.7], [0.9, 1.55, 1.4], 40); });
+// 19. you point at the contract (rule 3, struck through by his finger)
+at(L0(19), (t, u) => { home(true); place('home', you, suit); put(you, -0.3, 0, 0.8, Object.assign({}, POSE.reach, { facing: 1 })); put(suit, 0.9, 0, 1.4, Object.assign({}, sweat(t, 2), { facing: -1 })); stage.aim([0.3, 1.45, 3.9], [0.3, 1.2, 1.1], 52); });
+// 20. "this rule goes both ways."
+at(L0(20), (t, u) => { home(true); place('home', suit); put(suit, 0.9, 0, 1.4, Object.assign({}, sweat(t, 1.2), { facing: 0, armR: [-0.4, 0.3] })); stage.aim([0.8, 1.6, 2.7], [0.9, 1.55, 1.4], 40); });
+// 21. he holds out his hand: five days, all at once
+at(L0(21), (t, u) => { home(true); place('home', you, suit); put(you, -0.3, 0, 0.8, Object.assign({}, POSE.tremble(t), { facing: 1 })); put(suit, 0.9, 0, 1.4, Object.assign({}, POSE.offer, { mood: 'scared' })); const k = ease(u / 4.5); stage.aim([0.3, 1.4, lerp(4.0, 3.5, k)], [0.3, 1.2, 1.1], lerp(54, 47, k)); });
+
+// 22. "five days of urge": you, close, trembling; 23. "all at once": his hand, close
+at(w(21, 'São'), (t, u) => { home(true); place('home', you); put(you, -0.3, 0, 0.8, Object.assign({}, POSE.tremble(t), { facing: 0 })); stage.aim([-0.2, 1.5, 2.3 - u * 0.15], [-0.3, 1.45, 0.8], 40); });
+at(w(21, 'Tudo'), (t, u) => { home(true); place('home', you, suit); put(you, -0.3, 0, 0.8, Object.assign({}, POSE.tremble(t), { facing: 1 })); put(suit, 0.9, 0, 1.4, Object.assign({}, POSE.offer, { mood: 'scared' })); stage.aim([0.3, 1.45, 3.9], [0.3, 1.2, 1.1], 50 - u * 2); });
+// ---------- overlay ----------
+const CLOCK = [[0, 'SÁBADO', '21:40'], [L0(10), 'DIA 1', '12:30'], [L0(11), 'DIA 1', '12:31'], [L0(12), 'DIA 3', '13:15'], [L0(15), 'DIA 5', '12:00'], [L0(16), 'DIA 5', '03:00']];
+const clockAt = t => { const r = CLOCK.filter(x => t >= x[0]).pop(); return [r[1], r[2]]; };
+const BAL = [[0, -57], [w(4, 'assina') + 0.4, 143]];
+function screen(t, i) {
+  if (i === 13) phone(c, (c, x, y, ww, hh) => { c.fillStyle = '#1c2a22'; c.fillRect(x, y, ww, hh); c.fillStyle = '#fff'; c.textAlign = 'center'; c.textBaseline = 'middle';
+    c.font = '700 40px "JetBrains Mono"'; c.fillText('CHAMADA', x + ww / 2, y + 150); c.font = '700 72px Oswald'; c.fillText('HOMEM DE TERNO', x + ww / 2, y + 260);
+    c.fillStyle = '#ffcc4d'; c.font = '700 110px Oswald'; c.fillText('URGENTE', x + ww / 2, y + 500); c.fillStyle = '#c8372d'; c.font = '700 44px Oswald'; c.fillText('47 CHAMADAS PERDIDAS', x + ww / 2, y + 700);
+    c.fillStyle = '#2e9e57'; c.beginPath(); c.arc(x + ww / 2, y + 900, 70, 0, 7); c.fill(); }, clamp((t - L0(13)) / 0.3));
+}
+function contract(t) {
+  const ts = w(4, 'assina'), te = L0(5);
+  if (t >= ts && t < te) paper(c, ease((t - ts) / 0.25), (c, w2) => { c.fillStyle = '#1f2026'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.font = '700 54px Oswald'; c.fillText('CONTRATO', w2 / 2, 90); c.font = '700 30px "JetBrains Mono"'; c.fillText('COMPRA E VENDA DE VONTADE', w2 / 2, 160);
+    c.textAlign = 'left'; c.font = '700 40px "JetBrains Mono"'; c.fillText('VALOR: R$ 200,00', 60, 300); c.fillText('PRAZO: PARA SEMPRE', 60, 370); c.fillStyle = '#9a958c'; for (let i = 0; i < 5; i++) c.fillRect(60, 450 + i * 34, w2 - 120 - (i % 2) * 120, 10);
+    c.fillStyle = '#1f2026'; c.fillRect(60, 760, w2 - 120, 4); scribble(c, 90, 720, (t - ts - 0.15) / 0.5); }, { h: 860 });
+  for (const [s, e] of [[L0(6), L0(7) - 0.05], [L0(19), w(19, 'Regra') + 0.05]]) if (t >= s && t < e) paper(c, ease((t - s) / 0.25), (c, w2) => { c.fillStyle = '#1f2026'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.font = '700 54px Oswald'; c.fillText('CONTRATO', w2 / 2, 90);
+    c.fillStyle = '#9a958c'; for (let i = 0; i < 9; i++) c.fillRect(60, 170 + i * 34, w2 - 120 - (i % 3) * 90, 10);
+    c.fillStyle = '#1f2026'; c.font = '700 24px "JetBrains Mono"'; c.textAlign = 'left'; ['1. nunca coma feijoada', '2. qualquer vontade, quem sente é ele', '3. não aceitamos devolução'].forEach((s, i) => c.fillText(s, 60, 520 + i * 38));
+    c.strokeStyle = '#c8372d'; c.lineWidth = 8; c.beginPath(); c.arc(260, 558, 175, 0, 7); c.stroke(); }, { h: 860 });
+}
+function coverArt() {
+  const gr = c.createLinearGradient(0, 0, 0, 900); gr.addColorStop(0, 'rgba(0,0,0,0.7)'); gr.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = gr; c.fillRect(0, 0, CW, 900);
+  pill(c, 'O HOMEM DE TERNO', 300); title(c, 'VENDI A MINHA', 'VONTADE DE CAGAR');
+}
+
+const CHUNKS = chunkCaptions(T); window.CHUNKS = CHUNKS;
+window.TOTAL = 65;
+window.seek = t => {
+  if (COVER) t = 0;
+  let i = 0; while (i + 1 < SH.length && t >= SH[i + 1][0]) i++;
+  SH[i][1](t, t - SH[i][0]);
+  stage.draw(t, { vignette: 0.42, bloomStrength: 0.45 });
+  if (COVER || t < L0(0)) { coverArt(); return; }          // the first frames are the cover
+  const [d, k] = clockAt(t); hud(c, d, k); balance(c, keyed(BAL, t), t);
+  const ph = i === 13; if (ph) screen(t, i);
+  contract(t);
+  if (t >= L0(1) && t < T.lines[1].end + 0.2) { const r = S.LABELS.rule; S.LABELS.rule = 'AVISO'; ruleSticker(c, '', ['BANHEIRO', 'INTERDITADO'], spring((t - L0(1)) * 1.4), 560); S.LABELS.rule = r; }
+  const R = [[7, 1, ['NUNCA COMA', 'FEIJOADA']], [8, 2, ['QUALQUER VONTADE,', 'QUEM SENTE É ELE']], [9, 3, ['NÃO ACEITAMOS', 'DEVOLUÇÃO']]];
+  for (const [li, n, txt] of R) { const s = L0(li), e = T.lines[li].end + 0.25; if (t >= s - 0.05 && t < e) ruleSticker(c, n, txt, spring((t - s + 0.05) * 1.4), 560); }
+  const r1 = L0(15); if (t >= r1 && t < w(15, 'Feijoada')) { ruleSticker(c, 1, ['NUNCA COMA', 'FEIJOADA'], 1, 560); strike(c, t, w(15, 'já')); }
+  const r3 = w(19, 'Regra'); if (t >= r3 && t < T.lines[20].end + 0.2) { ruleSticker(c, 3, ['NÃO ACEITAMOS', 'DEVOLUÇÃO'], 1, 560); if (t >= L0(20)) strike(c, t, w(20, 'dois')); }
+  if (t >= END) { const p = 1 + 0.02 * Math.sin((t - END) * 4); c.save(); c.translate(540, 900); c.scale(p, p); c.translate(-540, -900); endCard(c, END, t, ['VOCÊ PEGA', 'NA MÃO DELE?'], 'SIM: ACEITO O DESTINO', 'NÃO: ME TRANCO NO BANHEIRO', ''); c.restore(); }
+  else drawCaptions(c, CHUNKS, t, ph ? 1700 : 1310);
+};
+await loadFonts();
+window.seek(0);
+window.READY = true;
+</script>
+</body></html>
