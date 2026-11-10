@@ -1,0 +1,106 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Cocktail Explainer</title>
+<style>html,body{margin:0;background:#f3ead8;overflow:hidden}canvas{display:block}</style></head><body>
+<canvas id="c" width="1280" height="720"></canvas>
+<script>
+// Type: Explainer — recipe motion graphic, empty glass to finished cocktail, ingredients and
+// measurements shown as they go in (prompt from @Ror_Fly).
+const W=1280,H=720,c=document.getElementById('c'),x=c.getContext('2d');
+window.DURATION=24;
+const ease=t=>t<0?0:t>1?1:1-Math.pow(1-t,3), cl=(v,a=0,b=1)=>Math.max(a,Math.min(b,v)), lerp=(a,b,t)=>a+(b-a)*t;
+const bounce=t=>{t=cl(t);const n=7.5625,d=2.75;if(t<1/d)return n*t*t;if(t<2/d)return n*(t-=1.5/d)*t+.75;if(t<2.5/d)return n*(t-=2.25/d)*t+.9375;return n*(t-=2.625/d)*t+.984375};
+function rnd(i){const s=Math.sin(i*91.7+17.3)*43758.5453;return s-Math.floor(s)}
+const INK='#2a2118',CREAM='#f3ead8',MINT='#3fa66b',LIME='#9ccc3a',SYRUP='#e8b04a',RUM='#f1e6c4',SODA='#dff3ee';
+// Steps: [start, end, name, amount, unit, ml added, colour]
+const STEPS=[
+ [2,5,'Mint leaves',8,'leaves',0,MINT],
+ [5,8,'Lime wedges',2,'wedges',0,LIME],
+ [8,11,'Sugar syrup',20,'ml',20,SYRUP],
+ [11,13.5,'Muddle',5,'presses',0,INK],
+ [13.5,16.5,'White rum',50,'ml',50,RUM],
+ [16.5,19,'Crushed ice',1,'cup',0,'#bfe6f0'],
+ [19,21.5,'Soda water',60,'ml',60,SODA],
+];
+const G={cx:430,top:190,bot:600,wTop:300,wBot:230}; // glass (tumbler, slightly tapered)
+const CAP=260; // ml to the brim
+function glassX(y,side){const k=(y-G.top)/(G.bot-G.top),w=lerp(G.wTop,G.wBot,k)/2;return G.cx+side*w}
+function txt(s,px,py,size,col,weight=700,align='left',font='Georgia, serif'){x.font=`${weight} ${size}px ${font}`;x.fillStyle=col;x.textAlign=align;x.textBaseline='middle';x.fillText(s,px,py)}
+function sans(s,px,py,size,col,weight=700,align='left'){txt(s,px,py,size,col,weight,align,'"Helvetica Neue",Arial,sans-serif')}
+function mlAt(t){let ml=0;for(const s of STEPS){if(!s[5])continue;ml+=s[5]*ease((t-s[0]-.4)/(s[1]-s[0]-.8))}return ml}
+function yForMl(ml){return G.bot-(G.bot-G.top-20)*ml/CAP}
+function fillPath(y0,y1){x.beginPath();x.moveTo(glassX(y0,-1)+8,y0);x.lineTo(glassX(y0,1)-8,y0);x.lineTo(glassX(y1,1)-8,y1);x.lineTo(glassX(y1,-1)+8,y1);x.closePath()}
+function leaf(px,py,r,s){x.save();x.translate(px,py);x.rotate(r);x.scale(s,s);x.fillStyle=MINT;x.beginPath();x.moveTo(-26,0);x.quadraticCurveTo(0,-20,26,0);x.quadraticCurveTo(0,20,-26,0);x.fill();x.strokeStyle='#2c7a4c';x.lineWidth=2;x.beginPath();x.moveTo(-22,0);x.lineTo(22,0);x.stroke();x.restore()}
+function wedge(px,py,r,s){x.save();x.translate(px,py);x.rotate(r);x.scale(s,s);x.fillStyle='#6f9a1e';x.beginPath();x.arc(0,0,34,Math.PI,0);x.fill();x.fillStyle=LIME;x.beginPath();x.arc(0,0,28,Math.PI,0);x.fill();x.strokeStyle='#e8f3c8';x.lineWidth=2;for(let i=1;i<5;i++){const a=Math.PI+i*Math.PI/5;x.beginPath();x.moveTo(0,0);x.lineTo(Math.cos(a)*26,Math.sin(a)*26);x.stroke()}x.restore()}
+function cube(px,py,r,s,a){x.save();x.translate(px,py);x.rotate(r);x.globalAlpha=a;x.fillStyle='rgba(230,248,255,.85)';x.strokeStyle='rgba(120,180,200,.9)';x.lineWidth=2;x.beginPath();x.roundRect(-s,-s,s*2,s*2,5);x.fill();x.stroke();x.fillStyle='rgba(255,255,255,.9)';x.fillRect(-s*.6,-s*.6,s*.5,s*.25);x.restore()}
+
+function drawScene(t){
+  x.fillStyle=CREAM;x.fillRect(0,0,W,H);
+  // paper texture dots
+  x.fillStyle='rgba(42,33,24,.05)';for(let i=0;i<500;i++)x.fillRect(rnd(i)*W,rnd(i+999)*H,2,2);
+  // counter top
+  x.fillStyle='#e2d3b6';x.fillRect(0,610,W,110);x.fillStyle='rgba(42,33,24,.12)';x.beginPath();x.ellipse(G.cx,612,G.wBot/2+30,12,0,0,Math.PI*2);x.fill();
+
+  const ml=mlAt(t),lvl=yForMl(ml);
+  const muddle=STEPS[3],mT=(t-muddle[0])/(muddle[1]-muddle[0]);const crushed=cl((t-11.5)/1.5);
+  x.save();fillPath(G.top,G.bot);x.clip();
+  // liquid layers: syrup at bottom, then rum mixes, soda lightens
+  if(ml>0.5){const g=x.createLinearGradient(0,lvl,0,G.bot);const mix=cl((t-14)/3);
+    g.addColorStop(0,`rgba(${lerp(232,226,mix)|0},${lerp(176,236,mix)|0},${lerp(74,200,mix)|0},.75)`);g.addColorStop(1,`rgba(232,176,74,${lerp(.9,.6,cl((t-19)/2))})`);
+    x.fillStyle=g;fillPath(lvl,G.bot);x.fill();
+    // meniscus
+    x.strokeStyle='rgba(255,255,255,.7)';x.lineWidth=3;x.beginPath();x.moveTo(glassX(lvl,-1)+10,lvl);x.lineTo(glassX(lvl,1)-10,lvl);x.stroke()}
+  // mint leaves, settled at bottom (crushed after muddling)
+  for(let i=0;i<8;i++){const st=2.3+i*.3,k=bounce((t-st)/.9);if(t<st)continue;const tx=G.cx-80+rnd(i)*160,ty=G.bot-22-rnd(i+5)*30;
+    const fy=lerp(60,ty,k),fl=ml>0?Math.sin(t*2+i)*3:0;leaf(tx+Math.sin(i+t)*2*(ml>0),fy+fl,rnd(i+2)*3,lerp(1,.75,crushed))}
+  for(let i=0;i<2;i++){const st=5.5+i*.8,k=bounce((t-st)/.9);if(t<st)continue;wedge(G.cx-45+i*90,lerp(40,G.bot-35,k),i?2.5:-.4,lerp(1,.8,crushed))}
+  // bubbles when soda arrives
+  if(t>19){for(let i=0;i<40;i++){const sp=40+rnd(i)*60,p=((t-19)*sp+rnd(i+3)*400)%(G.bot-lvl+1);x.fillStyle='rgba(255,255,255,.8)';x.beginPath();x.arc(G.cx-100+rnd(i+8)*200,G.bot-p,2+rnd(i)*3,0,Math.PI*2);x.fill()}}
+  // crushed ice
+  for(let i=0;i<34;i++){const st=16.7+i*.05,k=bounce((t-st)/.8);if(t<st)continue;const col=i%6,row=Math.floor(i/6);
+    const tx=G.cx-110+col*44+rnd(i)*10,ty=G.bot-70-row*62-rnd(i+1)*14;cube(tx,lerp(-50,ty,k),rnd(i)*2,18+rnd(i+4)*6,.95)}
+  x.restore();
+  // muddler
+  if(t>10.8&&t<13.8){const a=cl((t-10.8)/.4)*cl((13.8-t)/.4),press=mT>0&&mT<1?Math.abs(Math.sin(mT*5*Math.PI)):0;
+    x.save();x.globalAlpha=a;x.translate(G.cx+10,lerp(120,G.bot-260,press));x.rotate(.06);x.fillStyle='#8a5a32';x.beginPath();x.roundRect(-16,0,32,250,10);x.fill();x.fillStyle='#6d4424';x.beginPath();x.roundRect(-22,215,44,40,8);x.fill();x.restore()}
+  // pour streams for liquid steps
+  for(const s of STEPS){if(!s[5])continue;const k=(t-s[0]-.3)/(s[1]-s[0]-.6);if(k<0||k>1)continue;const a=Math.min(cl(k*6),cl((1-k)*6));
+    const bx=G.cx+60;x.save();x.globalAlpha=a;x.fillStyle=s[6]==RUM?'#efe0b0':s[6];x.fillRect(bx-4+Math.sin(t*20)*1.5,120,8+Math.sin(t*13)*2,lvl-120);
+    // bottle/jigger
+    x.translate(bx+40,90);x.rotate(-2.2);x.fillStyle=s[6]==SODA?'#5fb7a1':s[6]==RUM?'#c9b98a':'#c98a1f';x.beginPath();x.roundRect(-30,-120,60,140,12);x.fill();x.fillRect(-10,15,20,40);x.restore()}
+  // glass outline + shine
+  x.strokeStyle=INK;x.lineWidth=5;x.beginPath();x.moveTo(glassX(G.top,-1),G.top);x.lineTo(glassX(G.bot,-1),G.bot);x.lineTo(glassX(G.bot,1),G.bot);x.lineTo(glassX(G.top,1),G.top);x.stroke();
+  x.lineWidth=12;x.beginPath();x.moveTo(glassX(G.bot,-1)+4,G.bot-2);x.lineTo(glassX(G.bot,1)-4,G.bot-2);x.stroke();
+  x.strokeStyle='rgba(255,255,255,.7)';x.lineWidth=8;x.beginPath();x.moveTo(glassX(G.top+30,-1)+22,G.top+30);x.lineTo(glassX(G.bot-40,-1)+20,G.bot-40);x.stroke();
+  // ml scale on glass
+  for(let m=50;m<=250;m+=50){const y=yForMl(m),gx=glassX(y,1);x.strokeStyle='rgba(42,33,24,.4)';x.lineWidth=2;x.beginPath();x.moveTo(gx,y);x.lineTo(gx+14,y);x.stroke();sans(m+' ml',gx+20,y,13,'rgba(42,33,24,.55)',600)}
+  // garnish
+  if(t>21.6){const k=bounce((t-21.6)/1);leaf(G.cx-70,lerp(-60,G.top-6,k),-.7,1.3);leaf(G.cx-44,lerp(-80,G.top-14,k),-1.2,1.1);wedge(glassX(G.top,1)-10,lerp(-40,G.top+4,k),.9,1);
+    x.fillStyle='#f06b3a';x.save();x.translate(G.cx+40,lerp(-200,G.top-120,ease((t-21.8)/.8)));x.rotate(.25);x.fillRect(-6,0,12,330);x.restore()}
+
+  // ---- right panel: recipe card ----
+  const px=760;txt('Mojito',px,110,64,INK,700);sans('ONE GLASS · SEVEN STEPS · 2 MINUTES',px+2,160,15,'rgba(42,33,24,.6)',700);
+  x.fillStyle=INK;x.fillRect(px,185,420,3);
+  STEPS.forEach((s,i)=>{const y=225+i*50,on=t>=s[0],done=t>=s[1],act=on&&!done,ap=ease((t-s[0])/.35);
+    x.globalAlpha=t<1.2+i*.08?cl((t-.8-i*.08)/.4):1;
+    if(act){x.fillStyle='rgba(255,255,255,.65)';x.beginPath();x.roundRect(px-12,y-22,lerp(0,444,ap),44,10);x.fill()}
+    x.strokeStyle=done?MINT:INK;x.lineWidth=3;x.beginPath();x.arc(px+12,y,11,0,Math.PI*2);x.stroke();
+    if(done){x.strokeStyle=MINT;x.lineWidth=4;x.beginPath();x.moveTo(px+6,y);x.lineTo(px+11,y+6);x.lineTo(px+19,y-6);x.stroke()}
+    sans((i+1)+'. '+s[2],px+38,y,22,done?'rgba(42,33,24,.45)':INK,act?800:600);
+    // live measurement counter
+    const prog=act?ease((t-s[0]-.3)/(s[1]-s[0]-.8)):done?1:0,val=Math.round(s[3]*prog);
+    if(on)sans((s[2]=='Crushed ice'?(prog>.99?'1':'½'):val)+' '+s[4],px+420,y,22,act?s[6]==RUM||s[6]==SODA?'#2b7f8f':s[6]:'rgba(42,33,24,.45)',800,'right');
+    x.globalAlpha=1});
+  // big current-step caption under the glass area
+  const cur=STEPS.find(s=>t>=s[0]&&t<s[1]);
+  if(cur){const k=ease((t-cur[0])/.3);x.globalAlpha=k;sans(cur[2].toUpperCase(),px,620,30,INK,900);
+    const prog=ease((t-cur[0]-.3)/(cur[1]-cur[0]-.8));sans(cur[5]?Math.round(cur[3]*prog)+' ml':cur[3]+' '+cur[4],px,660,22,'rgba(42,33,24,.65)',700);
+    x.fillStyle=INK;x.fillRect(px+260,612,160*prog,6);x.strokeStyle=INK;x.lineWidth=2;x.strokeRect(px+260,612,160,6);x.globalAlpha=1}
+  sans('total '+Math.round(ml)+' ml',G.cx,660,18,'rgba(42,33,24,.6)',700,'center');
+
+  // intro + outro overlays
+  if(t<2){const a=t<1.4?1:1-(t-1.4)/.6;x.fillStyle=`rgba(243,234,216,${a})`;x.fillRect(0,0,W,H);x.globalAlpha=a;
+    txt('How to build a',W/2,300,40,INK,400,'center');txt('Mojito',W/2,380,120*lerp(.8,1,ease(t/.6)),INK,700,'center');sans('FROM AN EMPTY GLASS',W/2,460,16,'rgba(42,33,24,.6)',700,'center');x.globalAlpha=1}
+  if(t>22.4){const a=ease((t-22.4)/.6);x.fillStyle=`rgba(42,33,24,${.85*a})`;x.beginPath();x.roundRect(760,550,440,130,16);x.fill();x.globalAlpha=a;
+    sans('READY.',790,592,36,CREAM,900);sans('130 ml liquid · 8 mint · 2 lime · ice',790,640,18,CREAM,600);x.globalAlpha=1}
+}
+window.renderFrame=drawScene;drawScene(0);
+</script></body></html>

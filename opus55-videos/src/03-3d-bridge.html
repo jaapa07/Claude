@@ -1,0 +1,94 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Fog Bridge 3D</title>
+<style>html,body{margin:0;background:#000;overflow:hidden}canvas{display:block}
+#t{position:fixed;left:48px;bottom:40px;color:#fff;font:700 13px "Helvetica Neue",Arial;letter-spacing:4px;opacity:.85;text-shadow:0 1px 6px #0008}</style></head><body>
+<div id="t"></div>
+<script src="three.min.js"></script>
+<script>
+// Type: 3D scene — the Golden Gate Bridge in Three.js with rolling fog, water and traffic
+// on the deck (prompt from @MondemSuraj). Everything is procedural: no models, no textures.
+const W=1280,H=720;window.DURATION=16;
+const r=new THREE.WebGLRenderer({antialias:true});r.setSize(W,H);r.setPixelRatio(1);document.body.appendChild(r.domElement);
+r.toneMapping=THREE.ACESFilmicToneMapping;r.toneMappingExposure=1.05;
+const scene=new THREE.Scene();const FOGC=new THREE.Color('#e9b9a0');scene.fog=new THREE.Fog(FOGC,300,2600);
+const cam=new THREE.PerspectiveCamera(42,W/H,1,8000);
+// sky dome with a low sunset gradient
+const sky=new THREE.Mesh(new THREE.SphereGeometry(6000,32,16),new THREE.ShaderMaterial({side:THREE.BackSide,fog:false,depthWrite:false,
+  vertexShader:`varying vec3 p;void main(){p=normalize(position);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+  fragmentShader:`varying vec3 p;void main(){float h=p.y;vec3 sun=normalize(vec3(-.6,.06,-1.));float s=max(dot(normalize(p),sun),0.);
+  vec3 c=mix(vec3(1.,.72,.55),vec3(.32,.42,.66),smoothstep(0.,.45,h));c=mix(c,vec3(1.,.85,.6),pow(s,8.)*.8);c+=vec3(1.,.8,.5)*pow(s,300.)*2.;gl_FragColor=vec4(c,1.);}`}));
+scene.add(sky);
+scene.add(new THREE.HemisphereLight('#ffd6b8','#24405a',1.1));const sunL=new THREE.DirectionalLight('#ffc28a',2.2);sunL.position.set(-600,250,-1000);scene.add(sunL);
+// water: displaced plane, fresnel + sun glint
+const wGeo=new THREE.PlaneGeometry(9000,9000,220,220);wGeo.rotateX(-Math.PI/2);
+const wMat=new THREE.ShaderMaterial({uniforms:{t:{value:0},fogColor:{value:FOGC},camPos:{value:new THREE.Vector3()}},
+  vertexShader:`uniform float t;varying vec3 wp;varying float hgt;
+  float w(vec2 p){return sin(p.x*.012+t*1.1)*2.2+sin(p.y*.018-t*1.4+p.x*.004)*1.6+sin((p.x+p.y)*.04+t*2.3)*.6;}
+  void main(){vec3 p=position;p.y=w(p.xz);hgt=p.y;wp=(modelMatrix*vec4(p,1.)).xyz;gl_Position=projectionMatrix*viewMatrix*vec4(wp,1.);}`,
+  fragmentShader:`uniform float t;uniform vec3 fogColor,camPos;varying vec3 wp;varying float hgt;
+  float w(vec2 p){return sin(p.x*.012+t*1.1)*2.2+sin(p.y*.018-t*1.4+p.x*.004)*1.6+sin((p.x+p.y)*.04+t*2.3)*.6+sin(p.x*.13+t*3.)*.15+sin(p.y*.17-t*2.6)*.15;}
+  void main(){float e=1.;vec3 n=normalize(vec3(w(wp.xz-vec2(e,0))-w(wp.xz+vec2(e,0)),2.*e,w(wp.xz-vec2(0,e))-w(wp.xz+vec2(0,e))));
+  vec3 v=normalize(camPos-wp);float f=pow(1.-max(dot(n,v),0.),4.);vec3 deep=vec3(.05,.17,.24),refl=vec3(1.,.74,.58);
+  vec3 c=mix(deep,refl,clamp(f*1.3+.08,0.,1.));vec3 sun=normalize(vec3(-.6,.25,-1.));vec3 h=normalize(sun+v);c+=vec3(1.,.8,.55)*pow(max(dot(n,h),0.),220.)*3.;
+  float d=length(camPos-wp);c=mix(c,fogColor,smoothstep(300.,2600.,d));gl_FragColor=vec4(c,1.);}`});
+const water=new THREE.Mesh(wGeo,wMat);scene.add(water);
+// ---- bridge (units ~ metres, scaled down: main span 1280 -> 1280 units) ----
+const ORANGE=new THREE.MeshStandardMaterial({color:'#c0392b',roughness:.55,metalness:.2});
+const DARK=new THREE.MeshStandardMaterial({color:'#3a2a26',roughness:.8});
+const SPAN=1280,SIDE=343,DECK=67,TOWER=227,WID=27;const TX=[-SPAN/2,SPAN/2];
+const bridge=new THREE.Group();scene.add(bridge);
+function box(w,h,d,m,x,y,z){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);bridge.add(o);return o}
+for(const tx of TX){
+  for(const s of[-1,1]){ // two tapering legs per tower with art-deco steps
+    for(let k=0;k<4;k++){const h0=k*TOWER/4,hh=TOWER/4+2,sc=1-k*.12;box(10*sc,hh,12*sc,ORANGE,tx,h0+hh/2,s*(WID/2+2))}}
+  for(const y of[DECK+30,DECK+80,DECK+125,DECK+158])box(7,y>DECK+150?14:8,WID+6,ORANGE,tx,y,0);
+  box(14,14,WID+10,ORANGE,tx,TOWER-6,0);
+  box(30,12,WID+28,DARK,tx,4,0); // pier
+}
+// deck + truss
+box(SPAN+2*SIDE,4,WID,ORANGE,0,DECK,0);box(SPAN+2*SIDE,8,2,ORANGE,0,DECK-5,WID/2);box(SPAN+2*SIDE,8,2,ORANGE,0,DECK-5,-WID/2);
+const road=box(SPAN+2*SIDE,.5,WID-4,new THREE.MeshStandardMaterial({color:'#2b2b2e',roughness:.9}),0,DECK+2.3,0);
+// approach piers
+for(const sx of[-1,1])for(let i=1;i<4;i++)box(8,DECK,8,ORANGE,sx*(SPAN/2+i*SIDE/3.5),DECK/2,0);
+// main cables: parabola between towers, side spans down to anchorages
+function cableY(x){const ax=Math.abs(x);if(ax<=SPAN/2){const u=x/(SPAN/2);return DECK+8+(TOWER-DECK-8)*u*u}const u=(ax-SPAN/2)/SIDE;return TOWER-(TOWER-DECK-2)*Math.pow(u,.8)}
+const susp=[];
+for(const s of[-1,1]){const pts=[];for(let i=0;i<=160;i++){const x=-SPAN/2-SIDE+i*(SPAN+2*SIDE)/160;pts.push(new THREE.Vector3(x,cableY(x),s*(WID/2+2)))}
+  bridge.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),400,1.4,6),ORANGE));
+  for(let x=-SPAN/2-SIDE+8;x<SPAN/2+SIDE;x+=15){if(Math.abs(Math.abs(x)-SPAN/2)<8)continue;susp.push([x,s*(WID/2+2),cableY(x)])}}
+const sm=new THREE.InstancedMesh(new THREE.CylinderGeometry(.25,.25,1,4),ORANGE,susp.length);const M=new THREE.Matrix4();
+susp.forEach(([x,z,y],i)=>{const h=y-DECK;M.compose(new THREE.Vector3(x,DECK+h/2,z),new THREE.Quaternion(),new THREE.Vector3(1,h,1));sm.setMatrixAt(i,M)});bridge.add(sm);
+// headlands
+const hillM=new THREE.MeshStandardMaterial({color:'#5d6b3e',roughness:1,flatShading:true});
+function hills(x0,dir){for(let i=0;i<9;i++){const g=new THREE.IcosahedronGeometry(1,2);const m=new THREE.Mesh(g,hillM);m.scale.set(260+Math.sin(i*3.1)*90,120+((i*37)%5)*35,220);m.position.set(x0+dir*(i%3)*240,-10,-500+Math.floor(i/3)*-420+(i%3)*150);scene.add(m)}}
+hills(SPAN/2+SIDE+200,1);hills(-SPAN/2-SIDE-200,-1);
+// traffic: instanced cars with head and tail lights, 4 lanes
+const NC=140,carM=new THREE.InstancedMesh(new THREE.BoxGeometry(4.6,1.6,2),new THREE.MeshStandardMaterial({roughness:.4,metalness:.5}),NC);
+const head=new THREE.InstancedMesh(new THREE.SphereGeometry(.55,6,4),new THREE.MeshBasicMaterial({color:'#fff6d8'}),NC*2);
+const tail=new THREE.InstancedMesh(new THREE.SphereGeometry(.5,6,4),new THREE.MeshBasicMaterial({color:'#ff2a1a'}),NC*2);
+const cols=['#e6e6e6','#202226','#3b5ba5','#9a1f1f','#c8c8c8','#567'];const cars=[];
+for(let i=0;i<NC;i++){const lane=i%4,dir=lane<2?1:-1;cars.push({lane,dir,off:(i*137.31)%(SPAN+2*SIDE),spd:22+((i*53)%9)});carM.setColorAt(i,new THREE.Color(cols[i%6]))}
+[carM,head,tail].forEach(m=>bridge.add(m));
+// rolling fog: soft billboards drifting through the span and under the deck
+const fc=document.createElement('canvas');fc.width=fc.height=128;const g2=fc.getContext('2d');const gr=g2.createRadialGradient(64,64,0,64,64,64);gr.addColorStop(0,'rgba(255,255,255,.75)');gr.addColorStop(.5,'rgba(255,255,255,.28)');gr.addColorStop(1,'rgba(255,255,255,0)');g2.fillStyle=gr;g2.fillRect(0,0,128,128);
+const fogTex=new THREE.CanvasTexture(fc);const puffs=[];
+for(let i=0;i<170;i++){const m=new THREE.SpriteMaterial({map:fogTex,color:'#ffe6d6',transparent:true,depthWrite:false,opacity:.0,fog:false});const s=new THREE.Sprite(m);
+  const sz=160+((i*71)%9)*45;s.scale.set(sz*1.9,sz,1);scene.add(s);puffs.push({s,x0:((i*389.7)%4200)-2100,y:8+((i*13)%11)*(i%3==0?14:5),z:((i*97.3)%1000)-640,sp:18+(i%7)*4,a:.25+(i%5)*.07})}
+// camera keyframes: [time, position, target]
+const K=[[0,[-1500,30,520],[-200,90,0]],[5,[-700,45,200],[0,110,0]],[9,[-300,95,32],[200,90,-10]],[12,[150,96,28],[700,100,0]],[16,[600,380,700],[0,110,0]]];
+const sstep=t=>t*t*(3-2*t);
+function camAt(t){let i=0;while(i<K.length-2&&t>K[i+1][0])i++;const [t0,p0,q0]=K[i],[t1,p1,q1]=K[i+1];const u=sstep(Math.min(1,Math.max(0,(t-t0)/(t1-t0))));
+  const L=(a,b)=>new THREE.Vector3(a[0]+(b[0]-a[0])*u,a[1]+(b[1]-a[1])*u,a[2]+(b[2]-a[2])*u);return [L(p0,p1),L(q0,q1)]}
+const label=document.getElementById('t');const Q=new THREE.Quaternion(),S1=new THREE.Vector3(1,1,1);
+window.renderFrame=t=>{
+  const [p,q]=camAt(t);cam.position.copy(p);cam.lookAt(q);wMat.uniforms.t.value=t;wMat.uniforms.camPos.value.copy(p);
+  const L=SPAN+2*SIDE;cars.forEach((c,i)=>{let x=((c.off+c.spd*t)%L)-L/2;x*=c.dir;const z=(c.lane-1.5)*5.4,y=DECK+3.5;
+    M.compose(new THREE.Vector3(x,y,z),Q,S1);carM.setMatrixAt(i,M);
+    for(const k of[0,1]){const zz=z+(k?.7:-.7);M.makeTranslation(x+c.dir*2.4,y,zz);head.setMatrixAt(i*2+k,M);M.makeTranslation(x-c.dir*2.4,y+.1,zz);tail.setMatrixAt(i*2+k,M)}});
+  [carM,head,tail].forEach(m=>m.instanceMatrix.needsUpdate=true);
+  puffs.forEach(f=>{let x=((f.x0+f.sp*t+2100)%4200)-2100;f.s.position.set(x,f.y+Math.sin(t*.3+f.x0)*4,f.z);
+    const d=f.s.position.distanceTo(p);f.s.material.opacity=f.a*Math.min(1,Math.max(0,(d-60)/200))});
+  label.textContent=t<4?'PROCEDURAL THREE.JS · NO ASSETS':t<9?'ROLLING FOG':t<12.5?'TRAFFIC ON THE DECK':'1280 M MAIN SPAN';
+  label.style.opacity=Math.min(1,Math.abs(Math.sin(Math.PI*((t<4?t/4:t<9?(t-4)/5:t<12.5?(t-9)/3.5:(t-12.5)/3.5))))*3)*.85;
+  r.render(scene,cam)};
+window.renderFrame(0);
+</script></body></html>
