@@ -1,0 +1,399 @@
+// Receita Viral — modelo de dados
+// Documentação: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  BLOCKED
+}
+
+enum CategoryType {
+  CUISINE
+  DISH_TYPE
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum CostLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum RecipeStatus {
+  DRAFT
+  PENDING
+  PUBLISHED
+  REJECTED
+  ARCHIVED
+}
+
+enum CommentStatus {
+  VISIBLE
+  PENDING
+  HIDDEN
+}
+
+enum MealType {
+  BREAKFAST
+  LUNCH
+  SNACK
+  DINNER
+}
+
+enum IngredientGroup {
+  HORTIFRUTI
+  CARNES
+  PEIXES
+  LATICINIOS
+  MERCEARIA
+  PADARIA
+  TEMPEROS
+  BEBIDAS
+  CONGELADOS
+  OUTROS
+}
+
+enum SocialPlatform {
+  TIKTOK
+  INSTAGRAM
+  YOUTUBE
+  PINTEREST
+}
+
+enum SourceType {
+  JSON_LD
+  API
+  MANUAL
+}
+
+model User {
+  id            String     @id @default(cuid())
+  name          String
+  email         String     @unique
+  passwordHash  String
+  role          Role       @default(USER)
+  status        UserStatus @default(ACTIVE)
+  avatarUrl     String?
+  bio           String?
+  dietaryPrefs  String[]   @default([])
+  allergies     String[]   @default([])
+  notifyNewRecipes Boolean @default(true)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  recipes       Recipe[]        @relation("RecipeAuthor")
+  ratings       Rating[]
+  comments      Comment[]
+  favorites     Favorite[]
+  collections   Collection[]
+  cookedLogs    CookedLog[]
+  viewHistory   ViewHistory[]
+  mealPlans     MealPlan[]
+  shoppingLists ShoppingList[]
+  notifications Notification[]
+}
+
+model Category {
+  id          String       @id @default(cuid())
+  slug        String       @unique
+  name        String
+  type        CategoryType
+  description String?
+  emoji       String?
+  color       String?
+  imageUrl    String?
+  sortOrder   Int          @default(0)
+  recipes     Recipe[]     @relation("RecipeCategories")
+  createdAt   DateTime     @default(now())
+}
+
+model Recipe {
+  id                 String       @id @default(cuid())
+  slug               String       @unique
+  title              String
+  description        String
+  imageUrl           String?
+  videoUrl           String?
+  prepMinutes        Int
+  cookMinutes        Int
+  servings           Int
+  difficulty         Difficulty
+  caloriesPerServing Int?
+  costLevel          CostLevel    @default(MEDIUM)
+  status             RecipeStatus @default(DRAFT)
+  featured           Boolean      @default(false)
+  emoji              String?
+  tips               String[]     @default([])
+  substitutions      Json         @default("[]")
+  nutrition          Json?
+  tags               String[]     @default([])
+  // Texto normalizado (sem acentos, minúsculo) com título, tags e ingredientes — usado na busca.
+  searchText         String       @default("")
+  viewCount          Int          @default(0)
+  sourceUrl          String?
+  sourceName         String?
+  sourceAttribution  String?
+  externalSourceId   String?
+  externalSource     ExternalSource? @relation(fields: [externalSourceId], references: [id], onDelete: SetNull)
+  authorId           String?
+  author             User?        @relation("RecipeAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  publishedAt        DateTime?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  categories   Category[]         @relation("RecipeCategories")
+  ingredients  RecipeIngredient[]
+  steps        Step[]
+  ratings      Rating[]
+  comments     Comment[]
+  favorites    Favorite[]
+  collectionItems CollectionItem[]
+  cookedLogs   CookedLog[]
+  viewHistory  ViewHistory[]
+  mealEntries  MealPlanEntry[]
+  viralTrends  ViralTrend[]
+
+  @@index([status, publishedAt])
+  @@index([featured])
+}
+
+model Ingredient {
+  id      String          @id @default(cuid())
+  name    String          @unique
+  group   IngredientGroup @default(OUTROS)
+  recipes RecipeIngredient[]
+}
+
+model RecipeIngredient {
+  id           String     @id @default(cuid())
+  recipeId     String
+  recipe       Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  ingredientId String
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Restrict)
+  quantity     Float?
+  unit         String
+  note         String?
+  optional     Boolean    @default(false)
+  position     Int        @default(0)
+
+  @@index([recipeId])
+  @@index([ingredientId])
+}
+
+model Step {
+  id           String @id @default(cuid())
+  recipeId     String
+  recipe       Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  position     Int
+  text         String
+  timerMinutes Int?
+
+  @@index([recipeId])
+}
+
+model Rating {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipeId  String
+  recipe    Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  stars     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, recipeId])
+}
+
+model Comment {
+  id        String        @id @default(cuid())
+  userId    String
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipeId  String
+  recipe    Recipe        @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  text      String
+  status    CommentStatus @default(VISIBLE)
+  createdAt DateTime      @default(now())
+
+  @@index([recipeId, status])
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipeId  String
+  recipe    Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, recipeId])
+}
+
+model Collection {
+  id          String           @id @default(cuid())
+  userId      String
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  createdAt   DateTime         @default(now())
+  items       CollectionItem[]
+}
+
+model CollectionItem {
+  id           String     @id @default(cuid())
+  collectionId String
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  recipeId     String
+  recipe       Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  addedAt      DateTime   @default(now())
+
+  @@unique([collectionId, recipeId])
+}
+
+model CookedLog {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipeId String
+  recipe   Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  notes    String?
+  cookedAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model ViewHistory {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipeId String
+  recipe   Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  viewedAt DateTime @default(now())
+
+  @@unique([userId, recipeId])
+  @@index([userId, viewedAt])
+}
+
+model MealPlan {
+  id        String          @id @default(cuid())
+  userId    String
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weekStart DateTime        @db.Date
+  entries   MealPlanEntry[]
+  createdAt DateTime        @default(now())
+
+  @@unique([userId, weekStart])
+}
+
+model MealPlanEntry {
+  id         String   @id @default(cuid())
+  mealPlanId String
+  mealPlan   MealPlan @relation(fields: [mealPlanId], references: [id], onDelete: Cascade)
+  dayIndex   Int // 0 = segunda ... 6 = domingo
+  mealType   MealType
+  recipeId   String
+  recipe     Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  servings   Int      @default(2)
+
+  @@index([mealPlanId])
+}
+
+model ShoppingList {
+  id        String         @id @default(cuid())
+  userId    String
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  items     ShoppingItem[]
+}
+
+model ShoppingItem {
+  id        String          @id @default(cuid())
+  listId    String
+  list      ShoppingList    @relation(fields: [listId], references: [id], onDelete: Cascade)
+  name      String
+  quantity  Float?
+  unit      String?
+  group     IngredientGroup @default(OUTROS)
+  checked   Boolean         @default(false)
+  recipeTitle String?
+  createdAt DateTime        @default(now())
+
+  @@index([listId])
+}
+
+model ViralTrend {
+  id              String         @id @default(cuid())
+  recipeId        String
+  recipe          Recipe         @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  platform        SocialPlatform
+  // Período em que a tendência foi documentada publicamente (ex.: "2021")
+  trendPeriod     String?
+  trendYear       Int?
+  note            String?
+  creatorName     String?
+  creatorUrl      String?
+  postUrl         String?
+  // URL de incorporação oficial (YouTube/TikTok/Instagram embed). Só preencher com conteúdo autorizado.
+  embedUrl        String?
+  referenceUrl    String?
+  // true somente quando um administrador conferiu origem, criador e link.
+  verified        Boolean        @default(false)
+  highlighted     Boolean        @default(false)
+  createdAt       DateTime       @default(now())
+
+  @@index([platform])
+}
+
+model ExternalSource {
+  id          String     @id @default(cuid())
+  name        String
+  baseUrl     String
+  type        SourceType @default(JSON_LD)
+  license     String?
+  termsUrl    String?
+  allowImport Boolean    @default(false)
+  active      Boolean    @default(true)
+  apiKeyEnv   String?
+  notes       String?
+  createdAt   DateTime   @default(now())
+  recipes     Recipe[]
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  body      String
+  link      String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId, read])
+}
+
+model SearchQuery {
+  id     String   @id @default(cuid())
+  term   String   @unique
+  count  Int      @default(1)
+  lastAt DateTime @default(now())
+}

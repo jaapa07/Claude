@@ -1,0 +1,28 @@
+export const CATEGORIES = [
+  // Culinárias internacionais
+  { slug: "brasileira", name: "Brasileira", type: "CUISINE", emoji: "🇧🇷", color: "#16a34a", description: "Do feijão com arroz à feijoada: sabores de todas as regiões do Brasil." },
+  { slug: "japonesa", name: "Japonesa", type: "CUISINE", emoji: "🍣", color: "#dc2626", description: "Sushis, lámen, teriyaki e a delicadeza da cozinha japonesa." },
+  { slug: "italiana", name: "Italiana", type: "CUISINE", emoji: "🍝", color: "#15803d", description: "Massas, pizzas, risotos e clássicos da nonna." },
+  { slug: "coreana", name: "Coreana", type: "CUISINE", emoji: "🥢", color: "#e11d48", description: "Bibimbap, kimchi e o frango frito mais crocante do mundo." },
+  { slug: "chinesa", name: "Chinesa", type: "CUISINE", emoji: "🥡", color: "#b91c1c", description: "Wok quente, molhos agridoces e técnicas milenares." },
+  { slug: "mexicana", name: "Mexicana", type: "CUISINE", emoji: "🌮", color: "#ea580c", description: "Tacos, guacamole e muita pimenta." },
+  { slug: "americana", name: "Americana", type: "CUISINE", emoji: "🍔", color: "#2563eb", description: "Burgers, panquecas, cookies e comfort food." },
+  { slug: "francesa", name: "Francesa", type: "CUISINE", emoji: "🥐", color: "#4f46e5", description: "Técnica, manteiga e clássicos de bistrô." },
+  { slug: "arabe", name: "Árabe", type: "CUISINE", emoji: "🧆", color: "#ca8a04", description: "Homus, quibe, esfiha e especiarias do Oriente Médio." },
+  // Tipos de comida
+  { slug: "massas-e-pizzas", name: "Massas e pizzas", type: "DISH_TYPE", emoji: "🍕", color: "#f97316" },
+  { slug: "carnes-e-churrasco", name: "Carnes e churrasco", type: "DISH_TYPE", emoji: "🥩", color: "#b91c1c" },
+  { slug: "frangos", name: "Frangos", type: "DISH_TYPE", emoji: "🍗", color: "#d97706" },
+  { slug: "peixes-e-frutos-do-mar", name: "Peixes e frutos do mar", type: "DISH_TYPE", emoji: "🐟", color: "#0284c7" },
+  { slug: "hamburgueres-e-lanches", name: "Hambúrgueres e lanches", type: "DISH_TYPE", emoji: "🍔", color: "#ea580c" },
+  { slug: "comidas-de-boteco", name: "Comidas de boteco", type: "DISH_TYPE", emoji: "🍻", color: "#a16207" },
+  { slug: "sopas-e-caldos", name: "Sopas e caldos", type: "DISH_TYPE", emoji: "🍲", color: "#c2410c" },
+  { slug: "saladas", name: "Saladas", type: "DISH_TYPE", emoji: "🥗", color: "#16a34a" },
+  { slug: "fitness", name: "Comida fitness", type: "DISH_TYPE", emoji: "💪", color: "#059669" },
+  { slug: "vegetarianas-e-veganas", name: "Vegetarianas e veganas", type: "DISH_TYPE", emoji: "🌱", color: "#65a30d" },
+  { slug: "sobremesas-e-doces", name: "Sobremesas e doces", type: "DISH_TYPE", emoji: "🍰", color: "#db2777" },
+  { slug: "bolos-e-tortas", name: "Bolos e tortas", type: "DISH_TYPE", emoji: "🎂", color: "#c026d3" },
+  { slug: "cafes-e-bebidas", name: "Cafés e bebidas", type: "DISH_TYPE", emoji: "☕", color: "#78350f" },
+  { slug: "air-fryer", name: "Air fryer", type: "DISH_TYPE", emoji: "🔥", color: "#f59e0b" },
+  { slug: "economicas", name: "Receitas econômicas", type: "DISH_TYPE", emoji: "💰", color: "#0d9488" },
+] as const;
