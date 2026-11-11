@@ -1,0 +1,42 @@
+{
+ "ch01": [
+  "scene1=p1,t1,smug:1.0",
+  "scene2=g1,t2,stare:0.8",
+  "scene3=c1,pause:1.4",
+  "scene4=t3,p2",
+  "scene5=g2,t4",
+  "scene6=boom:3.4,c2,beat:1.6,t5,cut:1.4"
+ ],
+ "ch02": [
+  "scene1=t1,look:0.9",
+  "scene2=r1,creepy:1.0,t2,v1",
+  "scene3=r2,t3,notes:1.4",
+  "scene4=r3,clap:1.8",
+  "scene5=t4,cheer:2.2",
+  "scene6=r4,t5,flood:3.4,cut:1.4"
+ ],
+ "ch03": [
+  "scene1=e1,c1,sip:1.0",
+  "scene2=e2,c2,wink:1.1",
+  "scene3=e3,c3,e4,dread:1.6",
+  "scene4=c4,flee:2.2",
+  "scene5=k1,chase:4.6",
+  "scene6=p1,c5,hand:2.0,c6,cut:1.0"
+ ],
+ "ch04": [
+  "scene1=m1,p1,gasp:0.9",
+  "scene2=m2,stink:1.2",
+  "scene3=t1,m3,slap:0.9",
+  "scene4=multiply:2.0,n1,p2,c0",
+  "scene5=g1,fan:2.4,g2",
+  "scene6=chaos:2.4,c1,cut:1.4"
+ ],
+ "ch05": [
+  "scene1=j1,t1,stare:0.8",
+  "scene2=c1,ouch:1.0",
+  "scene3=p1,x1,t2",
+  "scene4=gavel:1.2,j2,gasp:0.8",
+  "scene5=j3,t3,laugh:0.4,c2",
+  "scene6=door:2.6,d1,freeze:2.2,end:2.6"
+ ]
+}

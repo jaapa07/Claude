@@ -1,0 +1,73 @@
+{
+ "engine": "kokoro",
+ "voice": "pm_alex",
+ "rate": "+0%",
+ "voices": {
+  "juiz": {
+   "voice": "pm_santa@1.0",
+   "rate": "-6%"
+  },
+  "dourado": {
+   "voice": "pm_santa@0.74",
+   "rate": "-8%"
+  },
+  "claudio": {
+   "voice": "pm_alex@0.93",
+   "rate": "-6%"
+  },
+  "pinguinho": {
+   "voice": "pf_dora@1.32",
+   "rate": "+28%"
+  },
+  "tonhao": {
+   "voice": "pm_santa@0.86",
+   "rate": "+0%"
+  }
+ },
+ "beats": {
+  "j1": {
+   "speaker": "juiz",
+   "text": "O réu é acusado de entupimento, desobediência e excesso de autoestima."
+  },
+  "t1": {
+   "speaker": "tonhao",
+   "text": "Isso é perseguição política!"
+  },
+  "c1": {
+   "speaker": "claudio",
+   "text": "Excelência, esse sujeito transformou um banheiro numa empresa sem recursos humanos."
+  },
+  "p1": {
+   "speaker": "pinguinho",
+   "text": "Temos provas!"
+  },
+  "x1": {
+   "speaker": "tonhao",
+   "text": "Eu pago aluguel nessa porcelana! Fala com o meu advogado!"
+  },
+  "t2": {
+   "speaker": "tonhao",
+   "text": "Isso foi tirado de contexto!"
+  },
+  "j2": {
+   "speaker": "juiz",
+   "text": "Declaro o réu culpado!"
+  },
+  "j3": {
+   "speaker": "juiz",
+   "text": "Sentença: limpar o banheiro inteiro durante um ano."
+  },
+  "t3": {
+   "speaker": "tonhao",
+   "text": "Eu? Limpar banheiro? Eu sou o problema, não a solução!"
+  },
+  "c2": {
+   "speaker": "claudio",
+   "text": "Ha! Ha! Ha! Ha!"
+  },
+  "d1": {
+   "speaker": "dourado",
+   "text": "Quem foi que prendeu o meu filho?"
+  }
+ }
+}

@@ -1,0 +1,24 @@
+scene1 dur 4.992 (scene-clip times; the beat clock adds the scene's pre)
+   m1 @0  | Boa@0.11 noite,@0.31 seus@0.71 fracassados!@0.91
+   p1 @2.318  | Quem@2.44 soltou@2.58 esse@2.86 demônio?@3.14
+   gasp @4.156  | (silence)
+scene2 dur 5.88 (scene-clip times; the beat clock adds the scene's pre)
+   m2 @0  | Eu@0.11 sou@0.25 o@0.39 Capitão@0.52 Metano!@0.94 O@1.62 terror@1.77 dos@2.06 elevadores@2.21 e@2.94 dos@3.08 primeiros@3.23 encontros!@3.67
+   stink @4.694  | (silence)
+scene3 dur 5.64 (scene-clip times; the beat clock adds the scene's pre)
+   t1 @0  | Eu@0.12 vim@0.34 negociar@0.56 a@1.22 paz!@1.44
+   m3 @2.246  | Negociar?@2.36 Eu@3.06 sou@3.3 um@3.54 gás,@3.77 idiota!@4.12
+   slap @4.78  | (silence)
+scene4 dur 9.408 (scene-clip times; the beat clock adds the scene's pre)
+   multiply @0  | (silence)
+   n1 @2.35  | Fracassados!@2.45 Fracassados!@3.12
+   p2 @4.404  | Ele@4.51 tá@4.75 se@4.86 multiplicando!@4.98 Ele@5.68 tá@5.91 se@6.02 multiplicando!@6.14
+   c0 @7.274  | Ótimo.@7.39 Agora@7.56 virou@8.27 franquia.@8.74
+scene5 dur 6.432 (scene-clip times; the beat clock adds the scene's pre)
+   g1 @0  | Operação@0.12 Vento@0.84 Contrário!@1.19
+   fan @2.366  | (silence)
+   g2 @5.116  | Recuar!@5.24 Recuar!@5.89
+scene6 dur 8.112 (scene-clip times; the beat clock adds the scene's pre)
+   chaos @0  | (silence)
+   c1 @2.75  | Parabéns.@2.88 Transformaram@3.63 um@4.31 peido@4.48 num@4.81 problema@4.98 nacional.@5.49
+   cut @6.724  | (silence)

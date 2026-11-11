@@ -1,0 +1,4 @@
+tools/guerra/models
+books/guerra/review/
+books/guerra/export/
+*.log

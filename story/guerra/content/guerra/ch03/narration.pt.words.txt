@@ -1,0 +1,25 @@
+scene1 dur 7.104 (scene-clip times; the beat clock adds the scene's pre)
+   e1 @0  | Por@0.13 que@0.3 você@0.48 saiu@0.83 do@1.0 último@1.18 trabalho?@1.71
+   c1 @2.846  | Porque@2.99 eu@3.35 literalmente@3.53 só@4.43 recebia@4.61 merda!@5.15
+   sip @6.172  | (silence)
+scene2 dur 9.144 (scene-clip times; the beat clock adds the scene's pre)
+   e2 @0  | E@0.11 quais@0.3 são@0.5 as@0.69 suas@0.88 habilidades?@1.07
+   c2 @2.606  | Trabalho@2.74 sob@3.33 pressão,@3.52 resolução@4.18 de@4.87 problemas@5.04 e@5.56 contato@5.73 direto@6.25 com@6.77 o@6.95 cliente.@7.12
+   wink @8.092  | (silence)
+scene3 dur 8.952 (scene-clip times; the beat clock adds the scene's pre)
+   e3 @0  | Contratado!@0.12 Gerente@0.86 da@1.35 nossa@1.52 fábrica.@1.85
+   c3 @2.918  | Ótimo.@3.04 E@3.89 a@4.02 fábrica@4.15 produz@4.54 o@4.8 quê?@4.93
+   e4 @5.716  | Papel@5.84 higiênico.@6.2
+   dread @7.482  | (silence)
+scene4 dur 4.104 (scene-clip times; the beat clock adds the scene's pre)
+   c4 @0  | Não!@0.12 De@0.35 novo@0.57 não!@1.02
+   flee @1.91  | (silence)
+scene5 dur 6.192 (scene-clip times; the beat clock adds the scene's pre)
+   k1 @0  | Papai!@0.11 Papai!@0.76
+   chase @1.598  | (silence)
+scene6 dur 10.032 (scene-clip times; the beat clock adds the scene's pre)
+   p1 @0  | Foi@0.15 só@0.28 um@0.41 pesadelo?@0.54
+   c5 @1.646  | Não.@1.77 Foi@2.16 uma@2.3 previsão@2.58 da@3.0 minha@3.14 aposentadoria.@3.42
+   hand @4.924  | (silence)
+   c6 @7.274  | Ah,@7.4 vai@7.65 tomar@7.89 no...@8.38
+   cut @9.184  | (silence)

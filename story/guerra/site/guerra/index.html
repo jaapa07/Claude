@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A Grande Guerra do Cocô</title>
+<meta name="description" content="Série de comédia adulta absurda em bonecos de papel: 5 episódios de 1 minuto.">
+<link rel="stylesheet" href="lib/book.css">
+<style>
+  @font-face { font-family: Osw; font-weight: 600; src: url(lib/fonts/Oswald-normal-600-latin.woff2) format('woff2'); unicode-range: U+0000-00FF; }
+  @font-face { font-family: Osw; font-weight: 600; src: url(lib/fonts/Oswald-normal-600-latin-ext.woff2) format('woff2'); unicode-range: U+0100-024F; }
+  :root { --ink: #f6efe2; --soft: #c9b89c; --paper: #2a1a10; --card: #3a2516; --line: #5a3a22; --accent: #f6c443; --red: #c8322f; --shadow: #0008;
+    --ui: "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif; --head: Osw, Oswald, Impact, "Arial Black", sans-serif; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html, body { overflow-x: clip; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 18px/1.6 var(--ui);
+    background-image: radial-gradient(circle at 20% 10%, #4a2e18 0, transparent 40%), radial-gradient(circle at 90% 60%, #3a2412 0, transparent 45%); }
+  a { color: var(--accent); }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+  .hero { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 48px; align-items: center; max-width: 1080px; margin: 0 auto; padding: 48px 24px 32px; }
+  .cover img { display: block; width: 100%; height: auto; border-radius: 14px; box-shadow: 0 18px 50px var(--shadow); }
+  .tag { display: inline-block; padding: 4px 14px; border-radius: 99px; background: var(--red); color: #fff; font: 600 15px/1.6 var(--head); letter-spacing: .04em; }
+  h1 { margin: 14px 0 10px; font: 600 clamp(44px, 7vw, 84px)/.98 var(--head); text-transform: uppercase; letter-spacing: .01em; }
+  h1 span { color: var(--accent); }
+  .lede { margin: 0; font-size: 20px; color: var(--soft); max-width: 46ch; }
+  .action { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; margin: 26px 0 0; color: var(--soft); font-size: 15px; }
+  .watch { display: inline-flex; align-items: center; gap: 10px; padding: 14px 28px; border-radius: 99px; background: var(--accent); color: #2a1a10; font: 600 20px/1 var(--head); text-decoration: none; text-transform: uppercase; }
+  .watch:hover { background: #ffd866; }
+  .watch svg { width: 12px; height: 14px; fill: currentColor; }
+  main { max-width: 1080px; margin: 0 auto; padding: 8px 24px 72px; }
+  h2 { margin: 36px 0 18px; font: 600 34px/1.1 var(--head); text-transform: uppercase; }
+  .episodes { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 18px; }
+  .episodes a { display: block; background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; color: var(--ink); text-decoration: none; transition: transform .15s, border-color .15s; }
+  .episodes a:hover, .episodes a:focus-visible { border-color: var(--accent); transform: translateY(-3px); }
+  .episodes img { display: block; width: 100%; height: auto; aspect-ratio: 9 / 16; object-fit: cover; }
+  .episodes div { padding: 12px 14px 14px; }
+  .episodes small { display: block; color: var(--accent); font: 600 14px/1.4 var(--head); letter-spacing: .05em; }
+  .episodes b { display: block; margin: 2px 0 6px; font: 600 21px/1.15 var(--head); text-transform: uppercase; }
+  .episodes span { display: block; color: var(--soft); font-size: 15px; line-height: 1.45; }
+  .episodes .seen { margin-top: 6px; color: var(--accent); font-size: 14px; }
+  .cast { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; padding: 0; list-style: none; }
+  .cast li { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+  .cast b { font: 600 20px/1.2 var(--head); text-transform: uppercase; color: var(--accent); }
+  .cast span { display: block; color: var(--soft); font-size: 15px; }
+  footer { max-width: 1080px; margin: 0 auto; padding: 0 24px 48px; color: var(--soft); font-size: 14px; }
+  @media (prefers-reduced-motion: reduce) { .episodes a { transition: none; } .episodes a:hover { transform: none; } }
+  @media (max-width: 720px) { .hero { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-top: 24px; } .cover { max-width: 300px; } }
+</style>
+</head>
+<body>
+<header class="hero">
+  <a class="cover" href="ch01/" aria-label="Assistir ao episódio 1"><img src="img/cover.webp" alt="Tonhão, o cocô de coroa, sentado no trono dentro da privada" width="600" height="1067"></a>
+  <div>
+    <span class="tag">TEMPORADA 1 · 5 EPISÓDIOS DE 1 MINUTO</span>
+    <h1>A Grande Guerra <span>do Cocô</span></h1>
+    <p class="lede">Um cocô de coroa se recusa a descer. Uma gota de xixi entra em pânico. Um rolo de papel higiênico está cansado de limpar a sujeira dos outros. E uma privada militar acha que tudo se resolve puxando a descarga.</p>
+    <p class="action"><a class="watch" href="ch01/"><svg viewBox="0 0 11 13" aria-hidden="true"><path d="M0 0L11 6.5 0 13z"/></svg>Assistir a temporada</a> Comédia adulta · contém palavrões</p>
+  </div>
+</header>
+<main>
+  <h2>Episódios</h2>
+  <ol class="episodes">
+    <li><a href="ch01/" data-ch="1"><img src="img/ep1.webp" alt="" width="600" height="1067"><div><small>EP 1 · 1 MIN</small><b>O cocô que se recusou a descer</b><span>Três descargas, um advogado imaginário e o protocolo de desentupimento.</span></div></a></li>
+    <li><a href="ch02/" data-ch="2"><img src="img/ep2.webp" alt="" width="600" height="1067"><div><small>EP 2 · 1 MIN</small><b>A revolta do esgoto</b><span>Tonhão cai no esgoto, vira gerente e descobre que hoje é dia de limpeza.</span></div></a></li>
+    <li><a href="ch03/" data-ch="3"><img src="img/ep3.webp" alt="" width="600" height="1067"><div><small>EP 3 · 1 MIN</small><b>O papel higiênico pede demissão</b><span>Cláudio vai a uma entrevista de emprego. A fábrica produz… adivinha.</span></div></a></li>
+    <li><a href="ch04/" data-ch="4"><img src="img/ep4.webp" alt="" width="600" height="1067"><div><small>EP 4 · 1 MIN</small><b>A invasão dos puns</b><span>O Capitão Metano chega, se multiplica e vira franquia.</span></div></a></li>
+    <li><a href="ch05/" data-ch="5"><img src="img/ep5.webp" alt="" width="600" height="1067"><div><small>EP 5 · 1 MIN</small><b>O julgamento do cocô</b><span>Entupimento, desobediência e excesso de autoestima. E chega o pai.</span></div></a></li>
+  </ol>
+  <h2>Elenco</h2>
+  <ul class="cast">
+    <li><b>Tonhão</b><span>Cocô de coroa e bigode torto. Acredita que é uma autoridade mundial.</span></li>
+    <li><b>Pinguinho</b><span>Gota de xixi. Entra em pânico por qualquer coisa.</span></li>
+    <li><b>Cláudio</b><span>Rolo de papel higiênico. Exausto e sarcástico.</span></li>
+    <li><b>General Descarga</b><span>Privada militar. Resolve tudo puxando a descarga.</span></li>
+  </ul>
+</main>
+<footer>Feito com o Papermorph: bonecos de papel animados em código, vozes Kokoro em português. Cada episódio também existe em MP4 vertical com legendas.</footer>
+<script>
+// mark the episodes this browser has already watched (the player's progress, by the book's folder)
+try { const key = Object.keys(localStorage).find(k => k.startsWith('animebook:progress:') && k.includes('guerra'));
+  const done = key ? JSON.parse(localStorage.getItem(key)) : null, list = Array.isArray(done) ? done : (done && Array.isArray(done.done) ? done.done : []);
+  for (const a of document.querySelectorAll('[data-ch]')) if (list.includes(+a.dataset.ch)) a.querySelector('div').insertAdjacentHTML('beforeend', '<span class="seen">✓ assistido</span>'); } catch {}
+</script>
+</body>
+</html>

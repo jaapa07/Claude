@@ -1,0 +1,61 @@
+{
+ "engine": "kokoro",
+ "voice": "pm_alex",
+ "rate": "+0%",
+ "voices": {
+  "velho": {
+   "voice": "pm_santa@0.95",
+   "rate": "-15%"
+  },
+  "rato": {
+   "voice": "pm_alex@1.25",
+   "rate": "+12%"
+  },
+  "tonhao": {
+   "voice": "pm_santa@0.86",
+   "rate": "+0%"
+  }
+ },
+ "beats": {
+  "t1": {
+   "speaker": "tonhao",
+   "text": "Que lugar é esse? O centro de Curitiba depois da chuva?"
+  },
+  "r1": {
+   "speaker": "rato",
+   "text": "Bem-vindo ao esgoto. Aqui todo mundo é importante."
+  },
+  "t2": {
+   "speaker": "tonhao",
+   "text": "Finalmente uma sociedade que reconhece o meu talento!"
+  },
+  "v1": {
+   "speaker": "velho",
+   "text": "Eu tô boiando aqui desde dois mil e nove."
+  },
+  "r2": {
+   "speaker": "rato",
+   "text": "Você tem experiência com pressão?"
+  },
+  "t3": {
+   "speaker": "tonhao",
+   "text": "Meu amigo, eu fui criado sob pressão!"
+  },
+  "r3": {
+   "speaker": "rato",
+   "text": "Parabéns. Gerente de Operações Sanitárias."
+  },
+  "t4": {
+   "speaker": "tonhao",
+   "text": "Nossa missão é clara: ninguém mais será descartado!"
+  },
+  "r4": {
+   "speaker": "rato",
+   "text": "Chefe, esqueceram de avisar que hoje é dia de limpeza!"
+  },
+  "t5": {
+   "speaker": "tonhao",
+   "text": "Cancela o planejamento e corre, desgraça!"
+  }
+ }
+}

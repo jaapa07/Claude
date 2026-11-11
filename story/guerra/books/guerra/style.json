@@ -1,0 +1,92 @@
+{
+ "schema": 1,
+ "tier": "picture",
+ "book": {
+  "title": "A Grande Guerra do Cocô",
+  "slug": "guerra",
+  "language": "pt",
+  "readers": "jovens e adultos",
+  "pilot": "ch01"
+ },
+ "words": [
+  "Série de comédia adulta absurda, 5 episódios de 60 s conectados, PT-BR, humor escatológico, sarcasmo, palavrões ocasionais; paper-cutout 2D, olhos exagerados, bocas animadas, braços flexíveis, deformações cômicas, cenários em camadas e movimentos de câmera; sem narrador explicando piadas.",
+  "MP4 vertical 1080x1920 com SRT; página web da temporada."
+ ],
+ "look": "bonecos de papel em código (toons.js): corpo assado com filtro de papel, rosto vivo, braços de macarrão, squash/stretch; cenários SVG em papel; palco vertical 900x1600",
+ "voice": {
+  "engine": "kokoro (kokoro-onnx, local, pt-br) com fator de tom por personagem",
+  "cast": {
+   "general": {
+    "voice": "pm_alex@0.8",
+    "rate": "+6%"
+   },
+   "claudio": {
+    "voice": "pm_alex@0.93",
+    "rate": "-6%"
+   },
+   "pinguinho": {
+    "voice": "pf_dora@1.32",
+    "rate": "+28%"
+   },
+   "tonhao": {
+    "voice": "pm_santa@0.86",
+    "rate": "+0%"
+   }
+  }
+ },
+ "illustration": {
+  "sets": "banheiro, esgoto, escritório, fábrica, sala, tribunal (books/guerra/art/sets.js)",
+  "budget": "zero",
+  "cast": [
+   {
+    "name": "Tonhão",
+    "file": "site/guerra/lib/toons.js"
+   },
+   {
+    "name": "Pinguinho",
+    "file": "site/guerra/lib/toons.js"
+   },
+   {
+    "name": "Cláudio",
+    "file": "site/guerra/lib/toons.js"
+   },
+   {
+    "name": "General Descarga",
+    "file": "site/guerra/lib/toons.js"
+   },
+   {
+    "name": "Rato",
+    "file": "site/guerra/lib/toons.js"
+   },
+   {
+    "name": "Cocô veterano",
+    "file": "site/guerra/lib/toons.js"
+   },
+   {
+    "name": "Caneca (RH)",
+    "file": "site/guerra/lib/toons.js"
+   },
+   {
+    "name": "Rolinhos",
+    "file": "site/guerra/lib/toons.js"
+   },
+   {
+    "name": "Capitão Metano",
+    "file": "site/guerra/lib/toons.js"
+   },
+   {
+    "name": "Juiz",
+    "file": "site/guerra/lib/toons.js"
+   },
+   {
+    "name": "Cocô Dourado",
+    "file": "site/guerra/lib/toons.js"
+   }
+  ]
+ },
+ "engine": {
+  "source": "DozenTwelve/Papermorph",
+  "ref": "main (engine/ folder)"
+ },
+ "approved": []
+}

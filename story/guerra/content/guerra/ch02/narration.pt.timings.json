@@ -1,0 +1,462 @@
+{
+ "t1": {
+  "key": "8c112fd864de7ac8b4659e994017580f8009587d",
+  "dur": 3.792,
+  "words": [
+   [
+    0.13,
+    "Que"
+   ],
+   [
+    0.295,
+    "lugar"
+   ],
+   [
+    0.625,
+    "\u00e9"
+   ],
+   [
+    0.79,
+    "esse?"
+   ],
+   [
+    1.31,
+    "O"
+   ],
+   [
+    1.478,
+    "centro"
+   ],
+   [
+    1.813,
+    "de"
+   ],
+   [
+    1.981,
+    "Curitiba"
+   ],
+   [
+    2.652,
+    "depois"
+   ],
+   [
+    2.987,
+    "da"
+   ],
+   [
+    3.155,
+    "chuva?"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.13,
+    "Que lugar \u00e9 esse?"
+   ],
+   [
+    1.31,
+    "O centro de Curitiba depois da chuva?"
+   ]
+  ],
+  "lag": 0
+ },
+ "r1": {
+  "key": "aabba7e0659ac56eebce60b768c03a8106dfb65e",
+  "dur": 2.76,
+  "words": [
+   [
+    0.11,
+    "Bem-vindo"
+   ],
+   [
+    0.509,
+    "ao"
+   ],
+   [
+    0.641,
+    "esgoto."
+   ],
+   [
+    1.17,
+    "Aqui"
+   ],
+   [
+    1.41,
+    "todo"
+   ],
+   [
+    1.65,
+    "mundo"
+   ],
+   [
+    1.89,
+    "\u00e9"
+   ],
+   [
+    2.01,
+    "importante."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "Bem-vindo ao esgoto."
+   ],
+   [
+    1.17,
+    "Aqui todo mundo \u00e9 importante."
+   ]
+  ],
+  "lag": 0
+ },
+ "t2": {
+  "key": "7dc80bac1d5bb7fee4bf1e7002ed3dd0c6f2bf99",
+  "dur": 3.744,
+  "words": [
+   [
+    0.12,
+    "Finalmente"
+   ],
+   [
+    0.758,
+    "uma"
+   ],
+   [
+    1.077,
+    "sociedade"
+   ],
+   [
+    1.715,
+    "que"
+   ],
+   [
+    1.874,
+    "reconhece"
+   ],
+   [
+    2.512,
+    "o"
+   ],
+   [
+    2.672,
+    "meu"
+   ],
+   [
+    2.831,
+    "talento!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Finalmente uma sociedade que reconhece o meu talento!"
+   ]
+  ],
+  "lag": 0
+ },
+ "v1": {
+  "key": "5ac141b7e0caa0bf2a472204521b6c56a80e1130",
+  "dur": 3.048,
+  "words": [
+   [
+    0.12,
+    "Eu"
+   ],
+   [
+    0.31,
+    "t\u00f4"
+   ],
+   [
+    0.5,
+    "boiando"
+   ],
+   [
+    0.88,
+    "aqui"
+   ],
+   [
+    1.26,
+    "desde"
+   ],
+   [
+    1.64,
+    "dois"
+   ],
+   [
+    1.83,
+    "mil"
+   ],
+   [
+    2.02,
+    "e"
+   ],
+   [
+    2.21,
+    "nove."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Eu t\u00f4 boiando aqui desde dois mil e nove."
+   ]
+  ],
+  "lag": 0
+ },
+ "r2": {
+  "key": "4db72f1eaf588fe76ff28bbdd1afae9a4eb19e25",
+  "dur": 2.04,
+  "words": [
+   [
+    0.11,
+    "Voc\u00ea"
+   ],
+   [
+    0.444,
+    "tem"
+   ],
+   [
+    0.611,
+    "experi\u00eancia"
+   ],
+   [
+    1.279,
+    "com"
+   ],
+   [
+    1.446,
+    "press\u00e3o?"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "Voc\u00ea tem experi\u00eancia com press\u00e3o?"
+   ]
+  ],
+  "lag": 0
+ },
+ "t3": {
+  "key": "437aec93c967ea06669878d9e94c63a35e0535df",
+  "dur": 2.76,
+  "words": [
+   [
+    0.14,
+    "Meu"
+   ],
+   [
+    0.397,
+    "amigo,"
+   ],
+   [
+    1.24,
+    "eu"
+   ],
+   [
+    1.416,
+    "fui"
+   ],
+   [
+    1.591,
+    "criado"
+   ],
+   [
+    1.943,
+    "sob"
+   ],
+   [
+    2.119,
+    "press\u00e3o!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.14,
+    "Meu amigo, eu fui criado sob press\u00e3o!"
+   ]
+  ],
+  "lag": 0
+ },
+ "r3": {
+  "key": "65dbbc8a1c719ad11ac3e1ff19c74edc3752fb0d",
+  "dur": 2.568,
+  "words": [
+   [
+    0.12,
+    "Parab\u00e9ns."
+   ],
+   [
+    0.71,
+    "Gerente"
+   ],
+   [
+    1.11,
+    "de"
+   ],
+   [
+    1.243,
+    "Opera\u00e7\u00f5es"
+   ],
+   [
+    1.777,
+    "Sanit\u00e1rias."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Parab\u00e9ns."
+   ],
+   [
+    0.71,
+    "Gerente de Opera\u00e7\u00f5es Sanit\u00e1rias."
+   ]
+  ],
+  "lag": 0
+ },
+ "t4": {
+  "key": "96ccc3a916ca7eb072fa1f84d77f759ff5e3ca7c",
+  "dur": 3.504,
+  "words": [
+   [
+    0.12,
+    "Nossa"
+   ],
+   [
+    0.449,
+    "miss\u00e3o"
+   ],
+   [
+    0.777,
+    "\u00e9"
+   ],
+   [
+    0.941,
+    "clara:"
+   ],
+   [
+    1.45,
+    "ningu\u00e9m"
+   ],
+   [
+    1.821,
+    "mais"
+   ],
+   [
+    2.007,
+    "ser\u00e1"
+   ],
+   [
+    2.378,
+    "descartado!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Nossa miss\u00e3o \u00e9 clara: ningu\u00e9m mais ser\u00e1 descartado!"
+   ]
+  ],
+  "lag": 0
+ },
+ "r4": {
+  "key": "2abc6f7c653d7c68b868f096b148d9159e3984f6",
+  "dur": 2.976,
+  "words": [
+   [
+    0.11,
+    "Chefe,"
+   ],
+   [
+    0.36,
+    "esqueceram"
+   ],
+   [
+    0.906,
+    "de"
+   ],
+   [
+    1.042,
+    "avisar"
+   ],
+   [
+    1.452,
+    "que"
+   ],
+   [
+    1.588,
+    "hoje"
+   ],
+   [
+    1.861,
+    "\u00e9"
+   ],
+   [
+    1.998,
+    "dia"
+   ],
+   [
+    2.134,
+    "de"
+   ],
+   [
+    2.271,
+    "limpeza!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "Chefe, esqueceram de avisar que hoje \u00e9 dia de limpeza!"
+   ]
+  ],
+  "lag": 0
+ },
+ "t5": {
+  "key": "c4b82a5820a136cb8bf1172136a0f5232a35e441",
+  "dur": 2.976,
+  "words": [
+   [
+    0.12,
+    "Cancela"
+   ],
+   [
+    0.642,
+    "o"
+   ],
+   [
+    0.817,
+    "planejamento"
+   ],
+   [
+    1.688,
+    "e"
+   ],
+   [
+    1.862,
+    "corre,"
+   ],
+   [
+    2.28,
+    "desgra\u00e7a!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Cancela o planejamento e corre, desgra\u00e7a!"
+   ]
+  ],
+  "lag": 0
+ }
+}

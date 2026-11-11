@@ -1,0 +1,7 @@
+{
+ "1": {"title": "O cocô que se recusou a descer", "scenes": ["Três descargas", "Cinco segundos", "O feijão", "Artigo dois", "Protocolo", "Gerente"], "warm": "general(g); tonhao(g); pinguinho(g); claudio(g); throne(g);"},
+ "2": {"title": "A revolta do esgoto", "scenes": ["A queda", "O recrutador", "Pressão", "O crachá", "A reunião", "Dia de limpeza"], "warm": "tonhao(g, { hat: 'crown', badge: true }); rato(g); veteranPoo(g); crowdPoo(g, 0); crowdPoo(g, 1); crowdPoo(g, 2); crowdPoo(g, 3);"},
+ "3": {"title": "O papel higiênico pede demissão", "scenes": ["A entrevista", "Habilidades", "Contratado", "A fábrica", "Papai!", "O pesadelo"], "warm": "claudio(g); claudio(g, { kid: true }); caneca(g); pinguinho(g); general(g);"},
+ "4": {"title": "A invasão dos puns", "scenes": ["Boa noite", "Capitão Metano", "A paz", "Franquia", "Vento contrário", "Problema nacional"], "warm": "metano(g); metano(g, { mini: true }); tonhao(g, { hat: 'helmet' }); pinguinho(g); claudio(g); general(g);"},
+ "5": {"title": "O julgamento do cocô", "scenes": ["O réu", "A testemunha", "As provas", "Culpado", "A sentença", "O pai"], "warm": "juiz(g); tonhao(g); claudio(g); pinguinho(g); goldPoo(g); general(g);"}
+}

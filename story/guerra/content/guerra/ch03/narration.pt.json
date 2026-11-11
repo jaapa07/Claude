@@ -1,0 +1,73 @@
+{
+ "engine": "kokoro",
+ "voice": "pm_alex",
+ "rate": "+0%",
+ "voices": {
+  "rolinhos": {
+   "voice": "pf_dora@1.5",
+   "rate": "+10%"
+  },
+  "pinguinho": {
+   "voice": "pf_dora@1.32",
+   "rate": "+28%"
+  },
+  "caneca": {
+   "voice": "pf_dora@1.0",
+   "rate": "+0%"
+  },
+  "claudio": {
+   "voice": "pm_alex@0.93",
+   "rate": "-6%"
+  }
+ },
+ "beats": {
+  "e1": {
+   "speaker": "caneca",
+   "text": "Por que você saiu do último trabalho?"
+  },
+  "c1": {
+   "speaker": "claudio",
+   "text": "Porque eu literalmente só recebia merda!"
+  },
+  "e2": {
+   "speaker": "caneca",
+   "text": "E quais são as suas habilidades?"
+  },
+  "c2": {
+   "speaker": "claudio",
+   "text": "Trabalho sob pressão, resolução de problemas e contato direto com o cliente."
+  },
+  "e3": {
+   "speaker": "caneca",
+   "text": "Contratado! Gerente da nossa fábrica."
+  },
+  "c3": {
+   "speaker": "claudio",
+   "text": "Ótimo. E a fábrica produz o quê?"
+  },
+  "e4": {
+   "speaker": "caneca",
+   "text": "Papel higiênico."
+  },
+  "c4": {
+   "speaker": "claudio",
+   "text": "Não! De novo não!"
+  },
+  "k1": {
+   "speaker": "rolinhos",
+   "text": "Papai! Papai!"
+  },
+  "p1": {
+   "speaker": "pinguinho",
+   "text": "Foi só um pesadelo?"
+  },
+  "c5": {
+   "speaker": "claudio",
+   "text": "Não. Foi uma previsão da minha aposentadoria."
+  },
+  "c6": {
+   "speaker": "claudio",
+   "text": "Ah, vai tomar no..."
+  }
+ }
+}

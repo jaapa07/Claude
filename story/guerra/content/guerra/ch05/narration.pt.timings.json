@@ -1,0 +1,484 @@
+{
+ "j1": {
+  "key": "84e41eabd9582513d3c6b9842887e3aee821d5da",
+  "dur": 4.848,
+  "words": [
+   [
+    0.12,
+    "O"
+   ],
+   [
+    0.255,
+    "r\u00e9u"
+   ],
+   [
+    0.391,
+    "\u00e9"
+   ],
+   [
+    0.526,
+    "acusado"
+   ],
+   [
+    1.068,
+    "de"
+   ],
+   [
+    1.203,
+    "entupimento,"
+   ],
+   [
+    2.14,
+    "desobedi\u00eancia"
+   ],
+   [
+    2.994,
+    "e"
+   ],
+   [
+    3.164,
+    "excesso"
+   ],
+   [
+    3.676,
+    "de"
+   ],
+   [
+    3.847,
+    "autoestima."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "O r\u00e9u \u00e9 acusado de entupimento, desobedi\u00eancia e excesso de autoestima."
+   ]
+  ],
+  "lag": 0
+ },
+ "t1": {
+  "key": "1180f157ab07cc8dba6adc24eaa086e514c10994",
+  "dur": 2.208,
+  "words": [
+   [
+    0.12,
+    "Isso"
+   ],
+   [
+    0.46,
+    "\u00e9"
+   ],
+   [
+    0.63,
+    "persegui\u00e7\u00e3o"
+   ],
+   [
+    1.31,
+    "pol\u00edtica!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Isso \u00e9 persegui\u00e7\u00e3o pol\u00edtica!"
+   ]
+  ],
+  "lag": 0
+ },
+ "c1": {
+  "key": "70290cb7715c45eb4b7d2b2a3bc1e7e27f0ef677",
+  "dur": 5.592,
+  "words": [
+   [
+    0.12,
+    "Excel\u00eancia,"
+   ],
+   [
+    0.93,
+    "esse"
+   ],
+   [
+    1.278,
+    "sujeito"
+   ],
+   [
+    1.799,
+    "transformou"
+   ],
+   [
+    2.32,
+    "um"
+   ],
+   [
+    2.494,
+    "banheiro"
+   ],
+   [
+    3.015,
+    "numa"
+   ],
+   [
+    3.363,
+    "empresa"
+   ],
+   [
+    3.884,
+    "sem"
+   ],
+   [
+    4.058,
+    "recursos"
+   ],
+   [
+    4.579,
+    "humanos."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Excel\u00eancia, esse sujeito transformou um banheiro numa empresa sem recursos humanos."
+   ]
+  ],
+  "lag": 0
+ },
+ "p1": {
+  "key": "ce3083bd6722ddf0eded29e749b3f3d34ebb6aab",
+  "dur": 1.032,
+  "words": [
+   [
+    0.13,
+    "Temos"
+   ],
+   [
+    0.475,
+    "provas!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.13,
+    "Temos provas!"
+   ]
+  ],
+  "lag": 0
+ },
+ "x1": {
+  "key": "2bafdd156ed10332811103a49be570d0b559f0b7",
+  "dur": 4.008,
+  "words": [
+   [
+    0.12,
+    "Eu"
+   ],
+   [
+    0.283,
+    "pago"
+   ],
+   [
+    0.61,
+    "aluguel"
+   ],
+   [
+    1.1,
+    "nessa"
+   ],
+   [
+    1.427,
+    "porcelana!"
+   ],
+   [
+    2.31,
+    "Fala"
+   ],
+   [
+    2.603,
+    "com"
+   ],
+   [
+    2.75,
+    "o"
+   ],
+   [
+    2.897,
+    "meu"
+   ],
+   [
+    3.043,
+    "advogado!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Eu pago aluguel nessa porcelana!"
+   ],
+   [
+    2.31,
+    "Fala com o meu advogado!"
+   ]
+  ],
+  "lag": 0
+ },
+ "t2": {
+  "key": "17a1604bbb0240dc041a725ef1247d714285dae1",
+  "dur": 2.376,
+  "words": [
+   [
+    0.12,
+    "Isso"
+   ],
+   [
+    0.52,
+    "foi"
+   ],
+   [
+    0.72,
+    "tirado"
+   ],
+   [
+    1.32,
+    "de"
+   ],
+   [
+    1.52,
+    "contexto!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Isso foi tirado de contexto!"
+   ]
+  ],
+  "lag": 0
+ },
+ "j2": {
+  "key": "d3e3ad978329589785b77613d0afffcfcdf4724f",
+  "dur": 1.896,
+  "words": [
+   [
+    0.12,
+    "Declaro"
+   ],
+   [
+    0.709,
+    "o"
+   ],
+   [
+    0.905,
+    "r\u00e9u"
+   ],
+   [
+    1.101,
+    "culpado!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Declaro o r\u00e9u culpado!"
+   ]
+  ],
+  "lag": 0
+ },
+ "j3": {
+  "key": "638a000d7e2f67bc029f097b69135801d8ee217c",
+  "dur": 3.408,
+  "words": [
+   [
+    0.11,
+    "Senten\u00e7a:"
+   ],
+   [
+    0.94,
+    "limpar"
+   ],
+   [
+    1.227,
+    "o"
+   ],
+   [
+    1.37,
+    "banheiro"
+   ],
+   [
+    1.8,
+    "inteiro"
+   ],
+   [
+    2.23,
+    "durante"
+   ],
+   [
+    2.66,
+    "um"
+   ],
+   [
+    2.803,
+    "ano."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "Senten\u00e7a: limpar o banheiro inteiro durante um ano."
+   ]
+  ],
+  "lag": 0
+ },
+ "t3": {
+  "key": "a01eff02fb9e5b4cadf5ca6f5acfcb461aa6f476",
+  "dur": 3.456,
+  "words": [
+   [
+    0.12,
+    "Eu?"
+   ],
+   [
+    0.52,
+    "Limpar"
+   ],
+   [
+    0.788,
+    "banheiro?"
+   ],
+   [
+    1.4,
+    "Eu"
+   ],
+   [
+    1.467,
+    "sou"
+   ],
+   [
+    1.533,
+    "o"
+   ],
+   [
+    1.6,
+    "problema,"
+   ],
+   [
+    1.87,
+    "n\u00e3o"
+   ],
+   [
+    2.126,
+    "a"
+   ],
+   [
+    2.382,
+    "solu\u00e7\u00e3o!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Eu?"
+   ],
+   [
+    0.52,
+    "Limpar banheiro?"
+   ],
+   [
+    1.4,
+    "Eu sou o problema, n\u00e3o a solu\u00e7\u00e3o!"
+   ]
+  ],
+  "lag": 0
+ },
+ "c2": {
+  "key": "992930633ab0c92ef182ad8f836ff233d3b3d719",
+  "dur": 1.344,
+  "words": [
+   [
+    0.11,
+    "Ha!"
+   ],
+   [
+    0.367,
+    "Ha!"
+   ],
+   [
+    0.625,
+    "Ha!"
+   ],
+   [
+    0.882,
+    "Ha!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "Ha!"
+   ],
+   [
+    0.367,
+    "Ha!"
+   ],
+   [
+    0.625,
+    "Ha!"
+   ],
+   [
+    0.882,
+    "Ha!"
+   ]
+  ],
+  "lag": 0
+ },
+ "d1": {
+  "key": "7e502467f91a23aa4657e1eb8dafb1980e74d954",
+  "dur": 2.472,
+  "words": [
+   [
+    0.13,
+    "Quem"
+   ],
+   [
+    0.357,
+    "foi"
+   ],
+   [
+    0.583,
+    "que"
+   ],
+   [
+    0.81,
+    "prendeu"
+   ],
+   [
+    1.263,
+    "o"
+   ],
+   [
+    1.49,
+    "meu"
+   ],
+   [
+    1.717,
+    "filho?"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.13,
+    "Quem foi que prendeu o meu filho?"
+   ]
+  ],
+  "lag": 0
+ }
+}

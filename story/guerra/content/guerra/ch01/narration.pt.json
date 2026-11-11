@@ -1,0 +1,69 @@
+{
+ "engine": "kokoro",
+ "voice": "pm_alex",
+ "rate": "+0%",
+ "voices": {
+  "general": {
+   "voice": "pm_alex@0.8",
+   "rate": "+6%"
+  },
+  "claudio": {
+   "voice": "pm_alex@0.93",
+   "rate": "-6%"
+  },
+  "pinguinho": {
+   "voice": "pf_dora@1.32",
+   "rate": "+28%"
+  },
+  "tonhao": {
+   "voice": "pm_santa@0.86",
+   "rate": "+0%"
+  }
+ },
+ "beats": {
+  "p1": {
+   "speaker": "pinguinho",
+   "text": "Tonhão, pelo amor de Deus, o cara já deu descarga três vezes!"
+  },
+  "t1": {
+   "speaker": "tonhao",
+   "text": "E daí? Eu pago aluguel nessa porcelana!"
+  },
+  "g1": {
+   "speaker": "general",
+   "text": "Você tem cinco segundos pra desocupar o vaso!"
+  },
+  "t2": {
+   "speaker": "tonhao",
+   "text": "Primeiro você fala com o meu advogado!"
+  },
+  "c1": {
+   "speaker": "claudio",
+   "text": "Advogado? Irmão, você nasceu de um feijão mal digerido!"
+  },
+  "t3": {
+   "speaker": "tonhao",
+   "text": "Segundo a Constituição Federal dos Resíduos, artigo número dois..."
+  },
+  "p2": {
+   "speaker": "pinguinho",
+   "text": "Artigo dois? Ah, não!"
+  },
+  "g2": {
+   "speaker": "general",
+   "text": "Iniciando protocolo de desentupimento!"
+  },
+  "t4": {
+   "speaker": "tonhao",
+   "text": "Você não pode! Eu tenho direitos!"
+  },
+  "c2": {
+   "speaker": "claudio",
+   "text": "Finalmente, uma reunião que terminou com resultado."
+  },
+  "t5": {
+   "speaker": "tonhao",
+   "text": "Eu quero falar com o gerente!"
+  }
+ }
+}

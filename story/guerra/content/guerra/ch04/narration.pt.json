@@ -1,0 +1,77 @@
+{
+ "engine": "kokoro",
+ "voice": "pm_alex",
+ "rate": "+0%",
+ "voices": {
+  "metano": {
+   "voice": "pm_santa@1.15",
+   "rate": "+8%"
+  },
+  "nuvens": {
+   "voice": "pf_dora@1.6",
+   "rate": "+20%"
+  },
+  "tonhao": {
+   "voice": "pm_santa@0.86",
+   "rate": "+0%"
+  },
+  "claudio": {
+   "voice": "pm_alex@0.93",
+   "rate": "-6%"
+  },
+  "pinguinho": {
+   "voice": "pf_dora@1.32",
+   "rate": "+28%"
+  },
+  "general": {
+   "voice": "pm_alex@0.8",
+   "rate": "+6%"
+  }
+ },
+ "beats": {
+  "m1": {
+   "speaker": "metano",
+   "text": "Boa noite, seus fracassados!"
+  },
+  "p1": {
+   "speaker": "pinguinho",
+   "text": "Quem soltou esse demônio?"
+  },
+  "m2": {
+   "speaker": "metano",
+   "text": "Eu sou o Capitão Metano! O terror dos elevadores e dos primeiros encontros!"
+  },
+  "t1": {
+   "speaker": "tonhao",
+   "text": "Eu vim negociar a paz!"
+  },
+  "m3": {
+   "speaker": "metano",
+   "text": "Negociar? Eu sou um gás, idiota!"
+  },
+  "n1": {
+   "speaker": "nuvens",
+   "text": "Fracassados! Fracassados!"
+  },
+  "p2": {
+   "speaker": "pinguinho",
+   "text": "Ele tá se multiplicando! Ele tá se multiplicando!"
+  },
+  "c0": {
+   "speaker": "claudio",
+   "text": "Ótimo. Agora virou franquia."
+  },
+  "g1": {
+   "speaker": "general",
+   "text": "Operação Vento Contrário!"
+  },
+  "g2": {
+   "speaker": "general",
+   "text": "Recuar! Recuar!"
+  },
+  "c1": {
+   "speaker": "claudio",
+   "text": "Parabéns. Transformaram um peido num problema nacional."
+  }
+ }
+}

@@ -1,0 +1,454 @@
+{
+ "e1": {
+  "key": "39446f6b3a48e2167379a73c4eb1f0ec7288660a",
+  "dur": 2.496,
+  "words": [
+   [
+    0.13,
+    "Por"
+   ],
+   [
+    0.305,
+    "que"
+   ],
+   [
+    0.48,
+    "voc\u00ea"
+   ],
+   [
+    0.83,
+    "saiu"
+   ],
+   [
+    1.005,
+    "do"
+   ],
+   [
+    1.18,
+    "\u00faltimo"
+   ],
+   [
+    1.705,
+    "trabalho?"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.13,
+    "Por que voc\u00ea saiu do \u00faltimo trabalho?"
+   ]
+  ],
+  "lag": 0
+ },
+ "c1": {
+  "key": "487e7f40c8b4dea706543b47fcf8bf10af183be6",
+  "dur": 2.976,
+  "words": [
+   [
+    0.14,
+    "Porque"
+   ],
+   [
+    0.5,
+    "eu"
+   ],
+   [
+    0.68,
+    "literalmente"
+   ],
+   [
+    1.58,
+    "s\u00f3"
+   ],
+   [
+    1.76,
+    "recebia"
+   ],
+   [
+    2.3,
+    "merda!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.14,
+    "Porque eu literalmente s\u00f3 recebia merda!"
+   ]
+  ],
+  "lag": 0
+ },
+ "e2": {
+  "key": "4695585c723f887a919ad2533680eee6b539487d",
+  "dur": 2.256,
+  "words": [
+   [
+    0.11,
+    "E"
+   ],
+   [
+    0.303,
+    "quais"
+   ],
+   [
+    0.496,
+    "s\u00e3o"
+   ],
+   [
+    0.689,
+    "as"
+   ],
+   [
+    0.882,
+    "suas"
+   ],
+   [
+    1.075,
+    "habilidades?"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "E quais s\u00e3o as suas habilidades?"
+   ]
+  ],
+  "lag": 0
+ },
+ "c2": {
+  "key": "440cc329085f720ec9bac46bf6cffab58cd5fe02",
+  "dur": 5.136,
+  "words": [
+   [
+    0.13,
+    "Trabalho"
+   ],
+   [
+    0.72,
+    "sob"
+   ],
+   [
+    0.917,
+    "press\u00e3o,"
+   ],
+   [
+    1.57,
+    "resolu\u00e7\u00e3o"
+   ],
+   [
+    2.263,
+    "de"
+   ],
+   [
+    2.436,
+    "problemas"
+   ],
+   [
+    2.955,
+    "e"
+   ],
+   [
+    3.128,
+    "contato"
+   ],
+   [
+    3.648,
+    "direto"
+   ],
+   [
+    4.167,
+    "com"
+   ],
+   [
+    4.341,
+    "o"
+   ],
+   [
+    4.514,
+    "cliente."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.13,
+    "Trabalho sob press\u00e3o, resolu\u00e7\u00e3o de problemas e contato direto com o cliente."
+   ]
+  ],
+  "lag": 0
+ },
+ "e3": {
+  "key": "6850a57188ab58508654d7e2d94d4a1fea22d618",
+  "dur": 2.568,
+  "words": [
+   [
+    0.12,
+    "Contratado!"
+   ],
+   [
+    0.86,
+    "Gerente"
+   ],
+   [
+    1.353,
+    "da"
+   ],
+   [
+    1.518,
+    "nossa"
+   ],
+   [
+    1.847,
+    "f\u00e1brica."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Contratado!"
+   ],
+   [
+    0.86,
+    "Gerente da nossa f\u00e1brica."
+   ]
+  ],
+  "lag": 0
+ },
+ "c3": {
+  "key": "403b74723336ecf91cdf9e3ad3aac86f9063a5b4",
+  "dur": 2.448,
+  "words": [
+   [
+    0.12,
+    "\u00d3timo."
+   ],
+   [
+    0.97,
+    "E"
+   ],
+   [
+    1.1,
+    "a"
+   ],
+   [
+    1.23,
+    "f\u00e1brica"
+   ],
+   [
+    1.62,
+    "produz"
+   ],
+   [
+    1.88,
+    "o"
+   ],
+   [
+    2.01,
+    "qu\u00ea?"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "\u00d3timo."
+   ],
+   [
+    0.97,
+    "E a f\u00e1brica produz o qu\u00ea?"
+   ]
+  ],
+  "lag": 0
+ },
+ "e4": {
+  "key": "bbf109aeda0e555d130d4391dd94b9a3c1f8d95f",
+  "dur": 1.416,
+  "words": [
+   [
+    0.12,
+    "Papel"
+   ],
+   [
+    0.483,
+    "higi\u00eanico."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Papel higi\u00eanico."
+   ]
+  ],
+  "lag": 0
+ },
+ "c4": {
+  "key": "ff0302e96094ac6e97a2d3153564befec6eba72f",
+  "dur": 1.56,
+  "words": [
+   [
+    0.12,
+    "N\u00e3o!"
+   ],
+   [
+    0.346,
+    "De"
+   ],
+   [
+    0.572,
+    "novo"
+   ],
+   [
+    1.024,
+    "n\u00e3o!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "N\u00e3o!"
+   ],
+   [
+    0.346,
+    "De novo n\u00e3o!"
+   ]
+  ],
+  "lag": 0
+ },
+ "k1": {
+  "key": "098a0354a1452718f94d024cbf19a517812044c0",
+  "dur": 1.248,
+  "words": [
+   [
+    0.11,
+    "Papai!"
+   ],
+   [
+    0.76,
+    "Papai!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "Papai!"
+   ],
+   [
+    0.76,
+    "Papai!"
+   ]
+  ],
+  "lag": 0
+ },
+ "p1": {
+  "key": "85a7fbecf40533596dfa3dc01934b63349722189",
+  "dur": 1.296,
+  "words": [
+   [
+    0.15,
+    "Foi"
+   ],
+   [
+    0.28,
+    "s\u00f3"
+   ],
+   [
+    0.41,
+    "um"
+   ],
+   [
+    0.54,
+    "pesadelo?"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.15,
+    "Foi s\u00f3 um pesadelo?"
+   ]
+  ],
+  "lag": 0
+ },
+ "c5": {
+  "key": "18eaadd83e09c32b087aec4f4cea547b6c222ddc",
+  "dur": 2.928,
+  "words": [
+   [
+    0.12,
+    "N\u00e3o."
+   ],
+   [
+    0.51,
+    "Foi"
+   ],
+   [
+    0.65,
+    "uma"
+   ],
+   [
+    0.93,
+    "previs\u00e3o"
+   ],
+   [
+    1.35,
+    "da"
+   ],
+   [
+    1.49,
+    "minha"
+   ],
+   [
+    1.77,
+    "aposentadoria."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "N\u00e3o."
+   ],
+   [
+    0.51,
+    "Foi uma previs\u00e3o da minha aposentadoria."
+   ]
+  ],
+  "lag": 0
+ },
+ "c6": {
+  "key": "0ec26a16a1801611733d89738fda0312ecfe130d",
+  "dur": 1.56,
+  "words": [
+   [
+    0.13,
+    "Ah,"
+   ],
+   [
+    0.374,
+    "vai"
+   ],
+   [
+    0.618,
+    "tomar"
+   ],
+   [
+    1.106,
+    "no..."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.13,
+    "Ah, vai tomar no..."
+   ]
+  ],
+  "lag": 0
+ }
+}

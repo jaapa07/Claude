@@ -1,0 +1,416 @@
+{
+ "m1": {
+  "key": "a7a3a2c1973ef6a0353887fc50e06e40dc4d65c3",
+  "dur": 1.968,
+  "words": [
+   [
+    0.11,
+    "Boa"
+   ],
+   [
+    0.309,
+    "noite,"
+   ],
+   [
+    0.706,
+    "seus"
+   ],
+   [
+    0.905,
+    "fracassados!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "Boa noite, seus fracassados!"
+   ]
+  ],
+  "lag": 0
+ },
+ "p1": {
+  "key": "3d3cad76e6d3a7e09f58629bf6332525cd85e762",
+  "dur": 1.488,
+  "words": [
+   [
+    0.12,
+    "Quem"
+   ],
+   [
+    0.261,
+    "soltou"
+   ],
+   [
+    0.544,
+    "esse"
+   ],
+   [
+    0.826,
+    "dem\u00f4nio?"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Quem soltou esse dem\u00f4nio?"
+   ]
+  ],
+  "lag": 0
+ },
+ "m2": {
+  "key": "79d49bd02613f1c51248969aa23fc51a43215559",
+  "dur": 4.344,
+  "words": [
+   [
+    0.11,
+    "Eu"
+   ],
+   [
+    0.248,
+    "sou"
+   ],
+   [
+    0.386,
+    "o"
+   ],
+   [
+    0.523,
+    "Capit\u00e3o"
+   ],
+   [
+    0.937,
+    "Metano!"
+   ],
+   [
+    1.62,
+    "O"
+   ],
+   [
+    1.766,
+    "terror"
+   ],
+   [
+    2.059,
+    "dos"
+   ],
+   [
+    2.206,
+    "elevadores"
+   ],
+   [
+    2.938,
+    "e"
+   ],
+   [
+    3.085,
+    "dos"
+   ],
+   [
+    3.231,
+    "primeiros"
+   ],
+   [
+    3.671,
+    "encontros!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "Eu sou o Capit\u00e3o Metano!"
+   ],
+   [
+    1.62,
+    "O terror dos elevadores e dos primeiros encontros!"
+   ]
+  ],
+  "lag": 0
+ },
+ "t1": {
+  "key": "a37d0c0245d934c8af86a75f341dfa6eedd78e5c",
+  "dur": 1.896,
+  "words": [
+   [
+    0.12,
+    "Eu"
+   ],
+   [
+    0.34,
+    "vim"
+   ],
+   [
+    0.56,
+    "negociar"
+   ],
+   [
+    1.22,
+    "a"
+   ],
+   [
+    1.44,
+    "paz!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Eu vim negociar a paz!"
+   ]
+  ],
+  "lag": 0
+ },
+ "m3": {
+  "key": "18866ca7340deb2c8f1d9499fd983dda8826280a",
+  "dur": 2.184,
+  "words": [
+   [
+    0.11,
+    "Negociar?"
+   ],
+   [
+    0.817,
+    "Eu"
+   ],
+   [
+    1.053,
+    "sou"
+   ],
+   [
+    1.289,
+    "um"
+   ],
+   [
+    1.524,
+    "g\u00e1s,"
+   ],
+   [
+    1.87,
+    "idiota!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "Negociar?"
+   ],
+   [
+    0.817,
+    "Eu sou um g\u00e1s, idiota!"
+   ]
+  ],
+  "lag": 0
+ },
+ "n1": {
+  "key": "019697b4d8b8a2dc9f5035d23fda8d6343928540",
+  "dur": 1.704,
+  "words": [
+   [
+    0.1,
+    "Fracassados!"
+   ],
+   [
+    0.775,
+    "Fracassados!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.1,
+    "Fracassados!"
+   ],
+   [
+    0.775,
+    "Fracassados!"
+   ]
+  ],
+  "lag": 0
+ },
+ "p2": {
+  "key": "4316af69613b49bcb1c3be3cd8234fb33fc5da3f",
+  "dur": 2.52,
+  "words": [
+   [
+    0.11,
+    "Ele"
+   ],
+   [
+    0.343,
+    "t\u00e1"
+   ],
+   [
+    0.46,
+    "se"
+   ],
+   [
+    0.577,
+    "multiplicando!"
+   ],
+   [
+    1.28,
+    "Ele"
+   ],
+   [
+    1.507,
+    "t\u00e1"
+   ],
+   [
+    1.62,
+    "se"
+   ],
+   [
+    1.733,
+    "multiplicando!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "Ele t\u00e1 se multiplicando!"
+   ],
+   [
+    1.28,
+    "Ele t\u00e1 se multiplicando!"
+   ]
+  ],
+  "lag": 0
+ },
+ "c0": {
+  "key": "0566af78e1b0c5bf7ef522e1ad8e9ef51b291d13",
+  "dur": 2.232,
+  "words": [
+   [
+    0.12,
+    "\u00d3timo."
+   ],
+   [
+    0.29,
+    "Agora"
+   ],
+   [
+    0.997,
+    "virou"
+   ],
+   [
+    1.469,
+    "franquia."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "\u00d3timo."
+   ],
+   [
+    0.29,
+    "Agora virou franquia."
+   ]
+  ],
+  "lag": 0
+ },
+ "g1": {
+  "key": "10d47d180c1d9812ca1341cd79730dbad26dc034",
+  "dur": 2.016,
+  "words": [
+   [
+    0.12,
+    "Opera\u00e7\u00e3o"
+   ],
+   [
+    0.836,
+    "Vento"
+   ],
+   [
+    1.193,
+    "Contr\u00e1rio!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Opera\u00e7\u00e3o Vento Contr\u00e1rio!"
+   ]
+  ],
+  "lag": 0
+ },
+ "g2": {
+  "key": "b4fa07681817c394ec7d4c2b79a7a31c2aeb3dd2",
+  "dur": 1.392,
+  "words": [
+   [
+    0.12,
+    "Recuar!"
+   ],
+   [
+    0.77,
+    "Recuar!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Recuar!"
+   ],
+   [
+    0.77,
+    "Recuar!"
+   ]
+  ],
+  "lag": 0
+ },
+ "c1": {
+  "key": "5400e058f019e46f541716e74702c64705b733c4",
+  "dur": 3.624,
+  "words": [
+   [
+    0.13,
+    "Parab\u00e9ns."
+   ],
+   [
+    0.88,
+    "Transformaram"
+   ],
+   [
+    1.557,
+    "um"
+   ],
+   [
+    1.726,
+    "peido"
+   ],
+   [
+    2.065,
+    "num"
+   ],
+   [
+    2.234,
+    "problema"
+   ],
+   [
+    2.742,
+    "nacional."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.13,
+    "Parab\u00e9ns."
+   ],
+   [
+    0.88,
+    "Transformaram um peido num problema nacional."
+   ]
+  ],
+  "lag": 0
+ }
+}

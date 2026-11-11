@@ -1,0 +1,23 @@
+scene1 dur 7.44 (scene-clip times; the beat clock adds the scene's pre)
+   p1 @0  | Tonhão,@0.11 pelo@0.47 amor@0.73 de@0.99 Deus,@1.12 o@1.35 cara@1.48 já@1.75 deu@1.89 descarga@2.02 três@2.42 vezes!@2.55
+   t1 @3.398  | E@3.52 daí?@3.83 Eu@4.26 pago@4.39 aluguel@4.65 nessa@5.05 porcelana!@5.31
+   smug @6.508  | (silence)
+scene2 dur 7.368 (scene-clip times; the beat clock adds the scene's pre)
+   g1 @0  | Você@0.12 tem@0.46 cinco@0.63 segundos@0.96 pra@1.47 desocupar@1.64 o@2.31 vaso!@2.48
+   t2 @3.47  | Primeiro@3.59 você@4.08 fala@4.41 com@4.74 o@4.9 meu@5.06 advogado!@5.23
+   stare @6.628  | (silence)
+scene3 dur 5.616 (scene-clip times; the beat clock adds the scene's pre)
+   c1 @0  | Advogado?@0.12 Irmão,@0.87 você@1.49 nasceu@1.78 de@2.08 um@2.23 feijão@2.38 mal@2.67 digerido!@2.82
+   pause @4.214  | (silence)
+scene4 dur 6.264 (scene-clip times; the beat clock adds the scene's pre)
+   t3 @0  | Segundo@0.13 a@0.69 Constituição@0.88 Federal@1.62 dos@2.18 Resíduos,@2.37 artigo@3.04 número@3.59 dois...@4.14
+   p2 @4.934  | Artigo@5.05 dois?@5.55 Ah,@5.72 não!@5.89
+scene5 dur 5.64 (scene-clip times; the beat clock adds the scene's pre)
+   g2 @0  | Iniciando@0.12 protocolo@0.74 de@1.36 desentupimento!@1.52
+   t4 @3.23  | Você@3.37 não@3.81 pode!@4.04 Eu@4.56 tenho@4.71 direitos!@5.0
+scene6 dur 13.8 (scene-clip times; the beat clock adds the scene's pre)
+   boom @0  | (silence)
+   c2 @3.75  | Finalmente,@3.9 uma@4.6 reunião@4.96 que@5.31 terminou@5.48 com@6.01 resultado.@6.19
+   beat @7.652  | (silence)
+   t5 @9.602  | Eu@9.72 quero@9.91 falar@10.27 com@10.64 o@10.83 gerente!@11.01
+   cut @12.208  | (silence)

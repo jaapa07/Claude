@@ -1,0 +1,25 @@
+scene1 dur 8.496 (scene-clip times; the beat clock adds the scene's pre)
+   j1 @0  | O@0.12 réu@0.26 é@0.39 acusado@0.53 de@1.07 entupimento,@1.2 desobediência@2.14 e@2.99 excesso@3.16 de@3.68 autoestima.@3.85
+   t1 @5.198  | Isso@5.32 é@5.66 perseguição@5.83 política!@6.51
+   stare @7.756  | (silence)
+scene2 dur 6.936 (scene-clip times; the beat clock adds the scene's pre)
+   c1 @0  | Excelência,@0.12 esse@0.93 sujeito@1.28 transformou@1.8 um@2.32 banheiro@2.49 numa@3.02 empresa@3.36 sem@3.88 recursos@4.06 humanos.@4.58
+   ouch @5.942  | (silence)
+scene3 dur 8.256 (scene-clip times; the beat clock adds the scene's pre)
+   p1 @0  | Temos@0.13 provas!@0.47
+   x1 @1.382  | Eu@1.5 pago@1.66 aluguel@1.99 nessa@2.48 porcelana!@2.81 Fala@3.69 com@3.99 o@4.13 meu@4.28 advogado!@4.42
+   t2 @5.74  | Isso@5.86 foi@6.26 tirado@6.46 de@7.06 contexto!@7.26
+scene4 dur 4.608 (scene-clip times; the beat clock adds the scene's pre)
+   gavel @0  | (silence)
+   j2 @1.55  | Declaro@1.67 o@2.26 réu@2.46 culpado!@2.65
+   gasp @3.796  | (silence)
+scene5 dur 9.528 (scene-clip times; the beat clock adds the scene's pre)
+   j3 @0  | Sentença:@0.11 limpar@0.94 o@1.23 banheiro@1.37 inteiro@1.8 durante@2.23 um@2.66 ano.@2.8
+   t3 @3.758  | Eu?@3.88 Limpar@4.28 banheiro?@4.55 Eu@5.16 sou@5.22 o@5.29 problema,@5.36 não@5.63 a@5.88 solução!@6.14
+   laugh @7.564  | (silence)
+   c2 @8.314  | Ha!@8.42 Ha!@8.68 Ha!@8.94 Ha!@9.2
+scene6 dur 10.92 (scene-clip times; the beat clock adds the scene's pre)
+   door @0  | (silence)
+   d1 @2.95  | Quem@3.08 foi@3.31 que@3.53 prendeu@3.76 o@4.21 meu@4.44 filho?@4.67
+   freeze @5.772  | (silence)
+   end @8.322  | (silence)

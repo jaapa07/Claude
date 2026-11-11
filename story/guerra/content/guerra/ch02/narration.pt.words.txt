@@ -1,0 +1,23 @@
+scene1 dur 5.04 (scene-clip times; the beat clock adds the scene's pre)
+   t1 @0  | Que@0.13 lugar@0.29 é@0.62 esse?@0.79 O@1.31 centro@1.48 de@1.81 Curitiba@1.98 depois@2.65 da@2.99 chuva?@3.15
+   look @4.142  | (silence)
+scene2 dur 11.496 (scene-clip times; the beat clock adds the scene's pre)
+   r1 @0  | Bem-vindo@0.11 ao@0.51 esgoto.@0.64 Aqui@1.17 todo@1.41 mundo@1.65 é@1.89 importante.@2.01
+   creepy @3.11  | (silence)
+   t2 @4.46  | Finalmente@4.58 uma@5.22 sociedade@5.54 que@6.17 reconhece@6.33 o@6.97 meu@7.13 talento!@7.29
+   v1 @8.554  | Eu@8.67 tô@8.86 boiando@9.05 aqui@9.43 desde@9.81 dois@10.19 mil@10.38 e@10.57 nove.@10.76
+scene3 dur 6.84 (scene-clip times; the beat clock adds the scene's pre)
+   r2 @0  | Você@0.11 tem@0.44 experiência@0.61 com@1.28 pressão?@1.45
+   t3 @2.39  | Meu@2.53 amigo,@2.79 eu@3.63 fui@3.81 criado@3.98 sob@4.33 pressão!@4.51
+   notes @5.5  | (silence)
+scene4 dur 4.704 (scene-clip times; the beat clock adds the scene's pre)
+   r3 @0  | Parabéns.@0.12 Gerente@0.71 de@1.11 Operações@1.24 Sanitárias.@1.78
+   clap @2.918  | (silence)
+scene5 dur 6.048 (scene-clip times; the beat clock adds the scene's pre)
+   t4 @0  | Nossa@0.12 missão@0.45 é@0.78 clara:@0.94 ninguém@1.45 mais@1.82 será@2.01 descartado!@2.38
+   cheer @3.854  | (silence)
+scene6 dur 11.76 (scene-clip times; the beat clock adds the scene's pre)
+   r4 @0  | Chefe,@0.11 esqueceram@0.36 de@0.91 avisar@1.04 que@1.45 hoje@1.59 é@1.86 dia@2.0 de@2.13 limpeza!@2.27
+   t5 @3.326  | Cancela@3.45 o@3.97 planejamento@4.14 e@5.01 corre,@5.19 desgraça!@5.61
+   flood @6.652  | (silence)
+   cut @10.402  | (silence)

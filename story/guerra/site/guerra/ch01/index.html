@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="pt-BR" data-stage="portrait">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>O cocô que se recusou a descer · A Grande Guerra do Cocô</title>
+<link rel="stylesheet" href="../lib/engine.css">
+<link rel="expect" href="#bar" blocking="render">
+</head>
+<body>
+<script src="../lib/engine.js"></script>
+<script src="../img/sets/sets.js"></script>
+<script src="../img/puppets/baked.js" onerror="0"></script>
+<script src="../lib/paper.js"></script>
+<script src="../lib/cast.js"></script>
+<script src="../lib/toons.js"></script>
+<script src="../lib/fx.js"></script>
+<script src="audio/pt/timings.js"></script>
+<script src="audio/pt/mouths.js"></script>
+<script src="audio/pt/shots.js"></script>
+<script src="../lib/shared.js"></script>
+<script src="../lib/guerra.js"></script>
+<script src="scene1.js"></script>
+<script src="scene2.js"></script>
+<script src="scene3.js"></script>
+<script src="scene4.js"></script>
+<script src="scene5.js"></script>
+<script src="scene6.js"></script>
+<script>
+'use strict';
+const CHAPTER = { number: 1, title: "O cocô que se recusou a descer", minutes: 1, language: 'pt', film: true, next: '../ch02/' };
+try { if (localStorage.getItem('captions') === null) setCaptions(true, false); } catch {}
+const BEATS = [
+  ['scene1', "Três descargas", (m, D) => scene1(panel(0), D, m), { lead: false, pre: PRE1 }],
+  ['scene2', "Cinco segundos", (m, D) => scene2(panel(0), D, m), { lead: false, pre: PRE2 }],
+  ['scene3', "O feijão", (m, D) => scene3(panel(0), D, m), { lead: false, pre: PRE3 }],
+  ['scene4', "Artigo dois", (m, D) => scene4(panel(0), D, m), { lead: false, pre: PRE4 }],
+  ['scene5', "Protocolo", (m, D) => scene5(panel(0), D, m), { lead: false, pre: PRE5 }],
+  ['scene6', "Gerente", (m, D) => scene6(panel(0), D, m), { lead: false, pre: PRE6 }],
+].map(([id, title, run, extra]) => ({ id, title, run, ...extra }));
+music('audio/sfx/marcha.mp3', undefined, .16);
+paperWarm(g => { general(g); tonhao(g); pinguinho(g); claudio(g); throne(g); });
+boot();
+</script>
+</body>
+</html>

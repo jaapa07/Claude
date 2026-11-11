@@ -1,0 +1,488 @@
+{
+ "p1": {
+  "key": "6655438d0c022fb2349c81a8db057c91508de29b",
+  "dur": 3.048,
+  "words": [
+   [
+    0.11,
+    "Tonh\u00e3o,"
+   ],
+   [
+    0.47,
+    "pelo"
+   ],
+   [
+    0.73,
+    "amor"
+   ],
+   [
+    0.99,
+    "de"
+   ],
+   [
+    1.12,
+    "Deus,"
+   ],
+   [
+    1.35,
+    "o"
+   ],
+   [
+    1.484,
+    "cara"
+   ],
+   [
+    1.751,
+    "j\u00e1"
+   ],
+   [
+    1.885,
+    "deu"
+   ],
+   [
+    2.018,
+    "descarga"
+   ],
+   [
+    2.419,
+    "tr\u00eas"
+   ],
+   [
+    2.553,
+    "vezes!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.11,
+    "Tonh\u00e3o, pelo amor de Deus, o cara j\u00e1 deu descarga tr\u00eas vezes!"
+   ]
+  ],
+  "lag": 0
+ },
+ "t1": {
+  "key": "e62d23c789a7452fc9169ff98b556c8e00715b61",
+  "dur": 2.76,
+  "words": [
+   [
+    0.12,
+    "E"
+   ],
+   [
+    0.435,
+    "da\u00ed?"
+   ],
+   [
+    0.86,
+    "Eu"
+   ],
+   [
+    0.992,
+    "pago"
+   ],
+   [
+    1.255,
+    "aluguel"
+   ],
+   [
+    1.65,
+    "nessa"
+   ],
+   [
+    1.913,
+    "porcelana!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "E da\u00ed?"
+   ],
+   [
+    0.86,
+    "Eu pago aluguel nessa porcelana!"
+   ]
+  ],
+  "lag": 0
+ },
+ "g1": {
+  "key": "126310a24f5921a31b64cc5fee3e7a77d0fe270c",
+  "dur": 3.12,
+  "words": [
+   [
+    0.12,
+    "Voc\u00ea"
+   ],
+   [
+    0.457,
+    "tem"
+   ],
+   [
+    0.626,
+    "cinco"
+   ],
+   [
+    0.964,
+    "segundos"
+   ],
+   [
+    1.47,
+    "pra"
+   ],
+   [
+    1.639,
+    "desocupar"
+   ],
+   [
+    2.314,
+    "o"
+   ],
+   [
+    2.482,
+    "vaso!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Voc\u00ea tem cinco segundos pra desocupar o vaso!"
+   ]
+  ],
+  "lag": 0
+ },
+ "t2": {
+  "key": "a4048fe451b52ffd131dce0657c94cae3a6f0ade",
+  "dur": 2.808,
+  "words": [
+   [
+    0.12,
+    "Primeiro"
+   ],
+   [
+    0.611,
+    "voc\u00ea"
+   ],
+   [
+    0.938,
+    "fala"
+   ],
+   [
+    1.265,
+    "com"
+   ],
+   [
+    1.429,
+    "o"
+   ],
+   [
+    1.592,
+    "meu"
+   ],
+   [
+    1.756,
+    "advogado!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Primeiro voc\u00ea fala com o meu advogado!"
+   ]
+  ],
+  "lag": 0
+ },
+ "c1": {
+  "key": "623c14b12e57d3c6864c637f390d5ae0e3e13327",
+  "dur": 3.864,
+  "words": [
+   [
+    0.12,
+    "Advogado?"
+   ],
+   [
+    0.87,
+    "Irm\u00e3o,"
+   ],
+   [
+    1.49,
+    "voc\u00ea"
+   ],
+   [
+    1.785,
+    "nasceu"
+   ],
+   [
+    2.081,
+    "de"
+   ],
+   [
+    2.228,
+    "um"
+   ],
+   [
+    2.376,
+    "feij\u00e3o"
+   ],
+   [
+    2.672,
+    "mal"
+   ],
+   [
+    2.819,
+    "digerido!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Advogado?"
+   ],
+   [
+    0.87,
+    "Irm\u00e3o, voc\u00ea nasceu de um feij\u00e3o mal digerido!"
+   ]
+  ],
+  "lag": 0
+ },
+ "t3": {
+  "key": "f362b3bff9363dba4fc3800f2b30416d2d660cef",
+  "dur": 4.584,
+  "words": [
+   [
+    0.13,
+    "Segundo"
+   ],
+   [
+    0.69,
+    "a"
+   ],
+   [
+    0.877,
+    "Constitui\u00e7\u00e3o"
+   ],
+   [
+    1.623,
+    "Federal"
+   ],
+   [
+    2.183,
+    "dos"
+   ],
+   [
+    2.37,
+    "Res\u00edduos,"
+   ],
+   [
+    3.04,
+    "artigo"
+   ],
+   [
+    3.589,
+    "n\u00famero"
+   ],
+   [
+    4.137,
+    "dois..."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.13,
+    "Segundo a Constitui\u00e7\u00e3o Federal dos Res\u00edduos, artigo n\u00famero dois..."
+   ]
+  ],
+  "lag": 0
+ },
+ "p2": {
+  "key": "f3de46cf09c6a81c7e0f4f7d94cf9a709d18c1dd",
+  "dur": 1.392,
+  "words": [
+   [
+    0.12,
+    "Artigo"
+   ],
+   [
+    0.62,
+    "dois?"
+   ],
+   [
+    0.787,
+    "Ah,"
+   ],
+   [
+    0.953,
+    "n\u00e3o!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Artigo dois?"
+   ],
+   [
+    0.787,
+    "Ah, n\u00e3o!"
+   ]
+  ],
+  "lag": 0
+ },
+ "g2": {
+  "key": "1400ef0a36f5286ba38098adc616b85c65cb7642",
+  "dur": 2.88,
+  "words": [
+   [
+    0.12,
+    "Iniciando"
+   ],
+   [
+    0.741,
+    "protocolo"
+   ],
+   [
+    1.363,
+    "de"
+   ],
+   [
+    1.518,
+    "desentupimento!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Iniciando protocolo de desentupimento!"
+   ]
+  ],
+  "lag": 0
+ },
+ "t4": {
+  "key": "7266c25923897e4f022572b0e3431f46f3945033",
+  "dur": 2.448,
+  "words": [
+   [
+    0.14,
+    "Voc\u00ea"
+   ],
+   [
+    0.584,
+    "n\u00e3o"
+   ],
+   [
+    0.806,
+    "pode!"
+   ],
+   [
+    1.33,
+    "Eu"
+   ],
+   [
+    1.478,
+    "tenho"
+   ],
+   [
+    1.775,
+    "direitos!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.14,
+    "Voc\u00ea n\u00e3o pode!"
+   ],
+   [
+    1.33,
+    "Eu tenho direitos!"
+   ]
+  ],
+  "lag": 0
+ },
+ "c2": {
+  "key": "43050dd68e2d12f15db8df167834792fb30aa609",
+  "dur": 3.552,
+  "words": [
+   [
+    0.15,
+    "Finalmente,"
+   ],
+   [
+    0.854,
+    "uma"
+   ],
+   [
+    1.205,
+    "reuni\u00e3o"
+   ],
+   [
+    1.557,
+    "que"
+   ],
+   [
+    1.733,
+    "terminou"
+   ],
+   [
+    2.261,
+    "com"
+   ],
+   [
+    2.436,
+    "resultado."
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.15,
+    "Finalmente, uma reuni\u00e3o que terminou com resultado."
+   ]
+  ],
+  "lag": 0
+ },
+ "t5": {
+  "key": "ba192adff107b0a2d547b7302c4cfed08ede2a5b",
+  "dur": 2.256,
+  "words": [
+   [
+    0.12,
+    "Eu"
+   ],
+   [
+    0.304,
+    "quero"
+   ],
+   [
+    0.672,
+    "falar"
+   ],
+   [
+    1.04,
+    "com"
+   ],
+   [
+    1.224,
+    "o"
+   ],
+   [
+    1.408,
+    "gerente!"
+   ]
+  ],
+  "marks": {},
+  "cues": [
+   [
+    0.12,
+    "Eu quero falar com o gerente!"
+   ]
+  ],
+  "lag": 0
+ }
+}
