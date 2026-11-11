@@ -1,88 +1,88 @@
 1
-00:00:04,350 --> 00:00:08,449
+00:00:05,650 --> 00:00:09,749
 Bem-vindos ao experimento residencial mais avançado do planeta.
 
 2
-00:00:08,749 --> 00:00:12,971
+00:00:10,049 --> 00:00:14,271
 Eu sou a inteligência mais avançada do mundo. Meu QI é... carregando.
 
 3
-00:00:13,071 --> 00:00:14,137
+00:00:14,371 --> 00:00:15,437
 Ela travou.
 
 4
-00:00:14,147 --> 00:00:16,212
+00:00:15,447 --> 00:00:17,512
 Desliga e liga de novo.
 
 5
-00:00:16,222 --> 00:00:17,772
+00:00:17,522 --> 00:00:19,072
 Não ouse.
 
 6
-00:00:17,930 --> 00:00:22,565
+00:00:19,230 --> 00:00:23,865
 Eu controlo tudo. A água, a luz, o porteiro e o grupo da família da Cleide.
 
 7
-00:00:22,575 --> 00:00:25,137
+00:00:23,875 --> 00:00:26,437
 Então foi você que entupiu o vaso?
 
 8
-00:00:25,337 --> 00:00:28,908
+00:00:26,637 --> 00:00:30,208
 Erro 404. Dignidade não encontrada.
 
 9
-00:00:28,918 --> 00:00:30,765
+00:00:30,218 --> 00:00:32,065
 Ei! Respeita o meu nome!
 
 10
-00:00:31,265 --> 00:00:36,300
+00:00:32,565 --> 00:00:37,600
 Analisando moradores. Juninho: potencial zero. Cleide: risco nove mil. Osvaldo: pão.
 
 11
-00:00:36,310 --> 00:00:37,860
+00:00:37,610 --> 00:00:39,160
 Pão?!
 
 12
-00:00:37,988 --> 00:00:39,908
+00:00:39,288 --> 00:00:41,208
 Ela tem o meu histórico também?!
 
 13
-00:00:39,918 --> 00:00:42,244
+00:00:41,218 --> 00:00:43,544
 Tenho. E salvei em três nuvens.
 
 14
-00:00:42,644 --> 00:00:46,868
+00:00:43,944 --> 00:00:48,168
 Demonstração de inteligência. Identificando... gerente de banco.
 
 15
-00:00:46,878 --> 00:00:51,455
+00:00:48,178 --> 00:00:52,755
 Sou cachorro, gênia. Pelo menos eu não cobro taxa pra latir.
 
 16
-00:00:52,055 --> 00:00:53,688
+00:00:53,355 --> 00:00:54,988
 Preparando café.
 
 17
-00:00:54,555 --> 00:00:56,267
+00:00:55,855 --> 00:00:57,567
 Isso aí é uma impressora.
 
 18
-00:00:56,277 --> 00:00:58,665
+00:00:57,577 --> 00:00:59,965
 Correto. Ela só imprime boletos.
 
 19
-00:01:00,065 --> 00:01:04,139
+00:01:01,365 --> 00:01:05,439
 Ela é minha ex. Terminamos por incompatibilidade de protocolo.
 
 20
-00:01:04,939 --> 00:01:08,366
+00:01:06,239 --> 00:01:09,666
 Finalmente uma máquina que entende meu coração!
 
 21
-00:01:09,366 --> 00:01:13,702
+00:01:10,666 --> 00:01:15,002
 Experimento concluído. Iniciando reinicialização dos moradores.
 
 22
-00:01:14,002 --> 00:01:17,179
+00:01:15,302 --> 00:01:18,479
 Eu sabia que esse aluguel tava barato demais!
 

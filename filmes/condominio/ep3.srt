@@ -1,100 +1,100 @@
 1
-00:00:03,450 --> 00:00:06,670
+00:00:04,750 --> 00:00:07,970
 Todos de pé! Menos o réu, que já tá no chão.
 
 2
-00:00:07,370 --> 00:00:11,243
+00:00:08,670 --> 00:00:12,543
 Silêncio no tribunal! Ou eu mijo na perna de alguém.
 
 3
-00:00:11,443 --> 00:00:15,261
+00:00:12,743 --> 00:00:16,561
 O réu é acusado de crimes contra a paz do condomínio.
 
 4
-00:00:15,271 --> 00:00:16,831
+00:00:16,571 --> 00:00:18,131
 Que crimes, porra?
 
 5
-00:00:17,031 --> 00:00:20,642
+00:00:18,331 --> 00:00:21,942
 Você colocou o lixo pra fora depois das dez.
 
 6
-00:00:20,652 --> 00:00:22,192
+00:00:21,952 --> 00:00:23,492
 Isso nem é crime!
 
 7
-00:00:22,202 --> 00:00:23,992
+00:00:23,502 --> 00:00:25,292
 Aqui é hediondo.
 
 8
-00:00:25,292 --> 00:00:28,640
+00:00:26,592 --> 00:00:29,940
 Eu tenho provas, meritíssimo! Quarenta e sete câmeras!
 
 9
-00:00:28,650 --> 00:00:31,657
+00:00:29,950 --> 00:00:32,957
 Como a senhora conseguiu essas imagens?
 
 10
-00:00:31,667 --> 00:00:33,227
+00:00:32,967 --> 00:00:34,527
 Grupo do WhatsApp.
 
 11
-00:00:34,227 --> 00:00:36,847
+00:00:35,527 --> 00:00:38,147
 E tem mais: ele come miojo cru de madrugada!
 
 12
-00:00:36,857 --> 00:00:39,057
+00:00:38,157 --> 00:00:40,357
 Isso é invasão de privacidade!
 
 13
-00:00:39,067 --> 00:00:42,186
+00:00:40,367 --> 00:00:43,486
 É condomínio, meu filho. Privacidade é taxa extra.
 
 14
-00:00:44,086 --> 00:00:48,039
+00:00:45,386 --> 00:00:49,339
 Esse homem tentou me desentupir sem consentimento hidráulico!
 
 15
-00:00:48,049 --> 00:00:50,245
+00:00:49,349 --> 00:00:51,545
 Eu tava trabalhando, caralho!
 
 16
-00:00:50,845 --> 00:00:53,072
+00:00:52,145 --> 00:00:54,372
 E ele canta no banho. Desafinado.
 
 17
-00:00:53,082 --> 00:00:54,977
+00:00:54,382 --> 00:00:56,277
 Até isso, desgraça?
 
 18
-00:00:55,577 --> 00:01:01,312
+00:00:56,877 --> 00:01:02,612
 E tá tudo passando ao vivo pros moradores! Já são mil e duzentas reações de raiva!
 
 19
-00:01:01,912 --> 00:01:06,057
+00:01:03,212 --> 00:01:07,357
 Sorria, Juninho! Você tá sendo julgado em alta definição!
 
 20
-00:01:06,557 --> 00:01:08,966
+00:01:07,857 --> 00:01:10,266
 A defesa tem algo a declarar?
 
 21
-00:01:08,976 --> 00:01:10,700
+00:01:10,276 --> 00:01:12,000
 Tenho. Eu quero um advogado.
 
 22
-00:01:10,710 --> 00:01:12,693
+00:01:12,010 --> 00:01:13,993
 Eu sou o seu advogado.
 
 23
-00:01:12,793 --> 00:01:14,730
+00:01:14,093 --> 00:01:16,030
 Então eu tô fodido.
 
 24
-00:01:15,730 --> 00:01:20,736
+00:01:17,030 --> 00:01:22,036
 O réu está condenado a trezentos anos de assembleia de condomínio!
 
 25
-00:01:20,746 --> 00:01:23,709
+00:01:22,046 --> 00:01:25,009
 Me dá prisão perpétua, pelo amor de Deus!
 
