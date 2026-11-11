@@ -173,7 +173,7 @@ export async function makeShots({ talk }) {
   for (let i = 0; i < ND; i++) { const u = hash(i, 201) * 2 - 1, th = hash(i, 202) * TAU, rr_ = Math.sqrt(1 - u * u), v = 40 + hash(i, 203) * 160; dvel.push([Math.cos(th) * rr_ * v, u * v, Math.sin(th) * rr_ * v]); const w = hash(i, 204); dcol.set(w > .6 ? [1, .9, .5] : w > .3 ? [1, .45, .1] : [.6, .62, .8], i * 3); }
   const dgeo = new THREE.BufferGeometry(); dgeo.setAttribute('position', new THREE.BufferAttribute(dpos, 3)); dgeo.setAttribute('color', new THREE.BufferAttribute(dcol, 3));
   const debris = new THREE.Points(dgeo, new THREE.PointsMaterial({ size: 2.2, vertexColors: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); W3.add(debris);
-  const PT = portal(40, [.35, .95, 1]); PT.position.set(55, 360, 110); W3.add(PT);
+  const PT = portal(40, [.35, .95, 1]); PT.position.set(-70, 410, 120); W3.add(PT);
   const her = new THREE.Group(); { const h = new THREE.Mesh(saucerGeometry(), new THREE.MeshStandardMaterial({ color: 0xff7fb4, metalness: .5, roughness: .3 })); her.add(h); const d = new THREE.Mesh(new THREE.SphereGeometry(.42, 16, 10, 0, TAU, 0, Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffd21f, emissiveIntensity: .6 })); d.position.y = .2; her.add(d); her.scale.setScalar(4); W3.add(her); }
   function setWorld(t) {
     E.userData.set(t);
@@ -466,7 +466,7 @@ export async function makeShots({ talk }) {
 
   // ---------- 12. the interdimensional chinelada (80.0 – 83.6) ----------
   const C12 = camera(46); C12.position.set(90, 385, 240); C12.lookAt(M0); C12.updateMatrixWorld();
-  const mScr = proj(M0, C12), pScr = proj(new THREE.Vector3(55, 360, 110), C12);
+  const mScr = proj(M0, C12), pScr = proj(new THREE.Vector3(-70, 410, 120), C12);
   S(T.throwC, (g, lt, t, ctx) => {
     const e = t - T.boom;
     if (e > 0) { ctx.post.glitch = clamp(1 - e / 1.5) * .9; ctx.post.swirl = clamp(1 - e / 1.2) * .8; ctx.post.center = [mScr[0] / W, mScr[1] / H]; ctx.post.chroma = clamp(1 - e / 2) * 2; }
