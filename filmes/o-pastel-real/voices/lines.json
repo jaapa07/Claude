@@ -1,0 +1,292 @@
+[
+ {
+  "id": "D1",
+  "who": "dol",
+  "part": 1,
+  "text": "Tá tudo sob controle!",
+  "sub": "Tá tudo sob controle!",
+  "voice": "pm_alex",
+  "lang": "pt-br",
+  "speed": 1.08
+ },
+ {
+  "id": "S1",
+  "who": "seol",
+  "part": 1,
+  "text": "Dolsoê! O banquete de aniversário do rei é daqui a uma hora!",
+  "sub": "Dol-soe! O banquete de aniversário do rei é daqui a uma hora!",
+  "voice": "pf_dora",
+  "lang": "pt-br",
+  "speed": 1.0
+ },
+ {
+  "id": "D2",
+  "who": "dol",
+  "part": 1,
+  "text": "Relaxa, Sólrrua. Hoje eu faço o mandu mais perfeito de Jôssón!",
+  "sub": "Relaxa, Seol-hwa. Hoje eu faço o mandu mais perfeito de Joseon!",
+  "voice": "pm_alex",
+  "lang": "pt-br",
+  "speed": 1.08
+ },
+ {
+  "id": "S2",
+  "who": "seol",
+  "part": 1,
+  "text": "Hã... esse gato de novo, não.",
+  "sub": "Hã... esse gato de novo, não.",
+  "voice": "pf_dora",
+  "lang": "pt-br",
+  "speed": 1.0
+ },
+ {
+  "id": "D3",
+  "who": "dol",
+  "part": 1,
+  "text": "Ei! Volta aqui, ladrão de bigode!",
+  "sub": "Ei! Volta aqui, ladrão de bigode!",
+  "voice": "pm_alex",
+  "lang": "pt-br",
+  "speed": 1.08
+ },
+ {
+  "id": "S3",
+  "who": "seol",
+  "part": 1,
+  "text": "Você queimou o mandu do rei?",
+  "sub": "Você queimou o mandu do rei?!",
+  "voice": "pf_dora",
+  "lang": "pt-br",
+  "speed": 1.0
+ },
+ {
+  "id": "D4",
+  "who": "dol",
+  "part": 1,
+  "text": "Eu... dourei. Bem douradinho.",
+  "sub": "Eu... dourei. Bem douradinho.",
+  "voice": "pm_alex",
+  "lang": "pt-br",
+  "speed": 1.08
+ },
+ {
+  "id": "S4",
+  "who": "seol",
+  "part": 1,
+  "text": "Ai, não... os tambores! O rei chegou!",
+  "sub": "Ai, não... os tambores! O rei chegou!",
+  "voice": "pf_dora",
+  "lang": "pt-br",
+  "speed": 1.0
+ },
+ {
+  "id": "D5",
+  "who": "dol",
+  "part": 1,
+  "text": "Aaaaaaaah!",
+  "sub": "AAAAH!",
+  "voice": "pm_alex",
+  "lang": "pt-br",
+  "speed": 1.08
+ },
+ {
+  "id": "D6",
+  "who": "dol",
+  "part": 2,
+  "text": "Recapitulando: eu queimei tudo.",
+  "sub": "Recapitulando: eu queimei tudo.",
+  "voice": "pm_alex",
+  "lang": "pt-br",
+  "speed": 1.08
+ },
+ {
+  "id": "S5",
+  "who": "seol",
+  "part": 2,
+  "text": "Temos dez minutos. Faz mandu novo, agora!",
+  "sub": "Temos dez minutos. Faz mandu novo, agora!",
+  "voice": "pf_dora",
+  "lang": "pt-br",
+  "speed": 1.0
+ },
+ {
+  "id": "D7",
+  "who": "dol",
+  "part": 2,
+  "text": "Não tem mais farinha!",
+  "sub": "Não tem mais farinha!",
+  "voice": "pm_alex",
+  "lang": "pt-br",
+  "speed": 1.08
+ },
+ {
+  "id": "S6",
+  "who": "seol",
+  "part": 2,
+  "text": "Então usa o que tiver. Quíntchi, mel, batata-doce... tudo!",
+  "sub": "Então usa o que tiver. Kimchi, mel, batata-doce... tudo!",
+  "voice": "pf_dora",
+  "lang": "pt-br",
+  "speed": 1.0
+ },
+ {
+  "id": "D8",
+  "who": "dol",
+  "part": 2,
+  "text": "Mandu de quíntchi com mel! Revolucionário!",
+  "sub": "Mandu de kimchi com mel! Revolucionário!",
+  "voice": "pm_alex",
+  "lang": "pt-br",
+  "speed": 1.08
+ },
+ {
+  "id": "S7",
+  "who": "seol",
+  "part": 2,
+  "text": "Nabí, não!",
+  "sub": "Nabi, não!",
+  "voice": "pf_dora",
+  "lang": "pt-br",
+  "speed": 1.0
+ },
+ {
+  "id": "K1",
+  "who": "rei",
+  "part": 2,
+  "text": "O que... é isto?",
+  "sub": "O que... é isto?",
+  "voice": "pm_santa",
+  "lang": "pt-br",
+  "speed": 0.88
+ },
+ {
+  "id": "D9",
+  "who": "dol",
+  "part": 2,
+  "text": "O... o mandu de aniversário, Majestade!",
+  "sub": "O... o mandu de aniversário, Majestade!",
+  "voice": "pm_alex",
+  "lang": "pt-br",
+  "speed": 1.08
+ },
+ {
+  "id": "S8",
+  "who": "seol",
+  "part": 2,
+  "text": "Esse não... esse não...",
+  "sub": "Esse não... esse não...",
+  "voice": "pf_dora",
+  "lang": "pt-br",
+  "speed": 1.0
+ },
+ {
+  "id": "K2",
+  "who": "rei",
+  "part": 3,
+  "text": "Isso...",
+  "sub": "Isso...",
+  "voice": "pm_santa",
+  "lang": "pt-br",
+  "speed": 0.88
+ },
+ {
+  "id": "D10",
+  "who": "dol",
+  "part": 3,
+  "text": "Perdão, Majestade! Foi o gato!",
+  "sub": "Perdão, Majestade! Foi o gato!",
+  "voice": "pm_alex",
+  "lang": "pt-br",
+  "speed": 1.08
+ },
+ {
+  "id": "K3",
+  "who": "rei",
+  "part": 3,
+  "text": "É o melhor mandu que já comi! Crocante por fora, macio por dentro!",
+  "sub": "É o melhor mandu que já comi! Crocante por fora, macio por dentro!",
+  "voice": "pm_santa",
+  "lang": "pt-br",
+  "speed": 0.88
+ },
+ {
+  "id": "K4",
+  "who": "rei",
+  "part": 3,
+  "text": "Picante e doce... como a vida!",
+  "sub": "Picante e doce... como a vida!",
+  "voice": "pm_santa",
+  "lang": "pt-br",
+  "speed": 0.88
+ },
+ {
+  "id": "K5",
+  "who": "rei",
+  "part": 3,
+  "text": "Cozinheiro, de hoje em diante, você é o chefe da cozinha real!",
+  "sub": "Cozinheiro, de hoje em diante, você é o chefe da cozinha real!",
+  "voice": "pm_santa",
+  "lang": "pt-br",
+  "speed": 0.88
+ },
+ {
+  "id": "D11",
+  "who": "dol",
+  "part": 3,
+  "text": "Na verdade, Majestade... a ideia foi da Sólrrua.",
+  "sub": "Na verdade, Majestade... a ideia foi da Seol-hwa.",
+  "voice": "pm_alex",
+  "lang": "pt-br",
+  "speed": 1.08
+ },
+ {
+  "id": "K6",
+  "who": "rei",
+  "part": 3,
+  "text": "Então os dois cuidarão do banquete. Juntos!",
+  "sub": "Então os dois cuidarão do banquete. Juntos!",
+  "voice": "pm_santa",
+  "lang": "pt-br",
+  "speed": 0.88
+ },
+ {
+  "id": "K7",
+  "who": "rei",
+  "part": 3,
+  "text": "E o gato... fica com o cargo de provador oficial!",
+  "sub": "E o gato... fica com o cargo de provador oficial!",
+  "voice": "pm_santa",
+  "lang": "pt-br",
+  "speed": 0.88
+ },
+ {
+  "id": "D12",
+  "who": "dol",
+  "part": 3,
+  "text": "Eu não disse? Tava tudo sob controle!",
+  "sub": "Eu não disse? Tava tudo sob controle!",
+  "voice": "pm_alex",
+  "lang": "pt-br",
+  "speed": 1.08
+ },
+ {
+  "id": "S9",
+  "who": "seol",
+  "part": 3,
+  "text": "Tava nada!",
+  "sub": "Tava nada!",
+  "voice": "pf_dora",
+  "lang": "pt-br",
+  "speed": 1.0
+ },
+ {
+  "id": "K8",
+  "who": "rei",
+  "part": 3,
+  "text": "De hoje em diante, ele se chama: Mandu Real Dourado!",
+  "sub": "De hoje em diante, ele se chama: Mandu Real Dourado!",
+  "voice": "pm_santa",
+  "lang": "pt-br",
+  "speed": 0.88
+ }
+]
