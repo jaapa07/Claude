@@ -21,7 +21,7 @@ export function drawSubtitle(ctx, cue, t) {
   const size = 58, pop = easeOutBack(clamp((t - cue.start + 0.12) / 0.3));
   ctx.save(); ctx.globalAlpha = a;
   ctx.font = `900 ${size}px ${FONT}`; ctx.textBaseline = 'middle';
-  const lines = wrap(ctx, cue.words, WIDTH - 170), lh = size * 1.18, sp = ctx.measureText(' ').width;
+  const lines = wrap(ctx, cue.words, WIDTH - 170), lh = size * 1.18, sp = ctx.measureText(' ').width * 1.25;
   const y0 = HEIGHT * 0.775 - (lines.length - 1) * lh / 2;
   ctx.translate(WIDTH / 2, y0); ctx.scale(0.85 + 0.15 * pop, 0.85 + 0.15 * pop); ctx.translate(-WIDTH / 2, -y0);
   if (cue.speaker) {
@@ -37,7 +37,7 @@ export function drawSubtitle(ctx, cue, t) {
     let x = (WIDTH - lw) / 2; const y = y0 + li * lh;
     for (const w of line) {
       const on = smooth(w.start - 0.06, w.start + 0.08, t);
-      const bump = 1 - 0.12 * Math.max(0, 1 - Math.abs(t - w.start) / 0.15);
+      const bump = 1 - 0.05 * Math.max(0, 1 - Math.abs(t - w.start) / 0.15);
       ctx.save(); ctx.translate(x + w.w / 2, y); ctx.scale(1 / bump, 1 / bump); ctx.translate(-(x + w.w / 2), -y);
       ctx.lineWidth = 14; ctx.strokeStyle = '#1b1030'; ctx.strokeText(w.text, x, y);
       const c = cue.color || [255, 255, 255];

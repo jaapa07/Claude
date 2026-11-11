@@ -126,7 +126,7 @@ export class King {
 
 // Ice material: glassy, faceted, inner glow and cracks
 export function iceMaterial({ glow = 0.4 } = {}) {
-  const m = new THREE.MeshStandardMaterial({ color: 0x9fd8ff, roughness: 0.08, metalness: 0.1, transparent: true, opacity: 0.92, flatShading: true, envMapIntensity: 1.6 });
+  const m = new THREE.MeshStandardMaterial({ color: 0x9fd8ff, roughness: 0.08, metalness: 0.1, transparent: false, opacity: 1, flatShading: true, envMapIntensity: 1.6 });
   const u = { uGlow: { value: glow }, uTime: { value: 0 }, uHeat: { value: 0 } };
   m.onBeforeCompile = (sh) => {
     Object.assign(sh.uniforms, u);
@@ -137,8 +137,8 @@ export function iceMaterial({ glow = 0.4 } = {}) {
         float fr = pow(1.0 - clamp(dot(nW, vd), 0.0, 1.0), 2.0);
         float inner = fbm(vWP2 * 0.35 + uTime * 0.05);
         float crack = smoothstep(0.025, 0.0, abs(fbm(vWP2 * 0.6) - 0.5));
-        diffuseColor.rgb = mix(vec3(0.35, 0.65, 0.95), vec3(0.85, 0.97, 1.0), inner);
-        totalEmissiveRadiance += vec3(0.3, 0.7, 1.0) * (fr * 1.2 + inner * uGlow) + vec3(0.8, 0.95, 1.0) * crack * 0.6;
+        diffuseColor.rgb = mix(vec3(0.08, 0.28, 0.62), vec3(0.45, 0.78, 1.0), inner);
+        totalEmissiveRadiance += vec3(0.25, 0.65, 1.0) * (fr * 1.0 + inner * uGlow * 0.6) + vec3(0.6, 0.95, 1.0) * crack * 1.2;
         totalEmissiveRadiance += vec3(1.0, 0.5, 0.2) * uHeat * (0.4 + fr);`);
   };
   m.userData.u = u; m.customProgramCacheKey = () => 'ice';

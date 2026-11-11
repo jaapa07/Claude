@@ -91,7 +91,7 @@ export class World {
     }
     // ---------- valley & kingdom ----------
     add(new THREE.PlaneGeometry(1200, 1200), M.grass, [0, -42.05, -150], [1, 1, 1], [-Math.PI / 2, 0, 0], S, false).receiveShadow = true;
-    for (let i = 0; i < 18; i++) { const a = r() * Math.PI * 2, R = 60 + r() * 120; add(new THREE.SphereGeometry(18 + r() * 25, 16, 10), M.grass, [MARKET.x + Math.cos(a) * R, -46 - r() * 4, MARKET.z + Math.sin(a) * R], [1.6, 0.35, 1.6], [0, 0, 0], S, false); }
+    for (let i = 0; i < 18; i++) { const a = r() * Math.PI * 2, R = 80 + r() * 140; const hr = 18 + r() * 25; add(new THREE.SphereGeometry(hr, 16, 10), M.grass, [MARKET.x + Math.cos(a) * R, -42 - hr * 0.3, MARKET.z + Math.sin(a) * R], [1.6, 0.35, 1.6], [0, 0, 0], S, false); }
     add(new THREE.CylinderGeometry(14, 14, 0.15, 48), M.cobble, [MARKET.x, -41.95, MARKET.z]);
     // castle
     const C = new THREE.Group(); C.position.copy(CASTLE); S.add(C); this.castle = C;
