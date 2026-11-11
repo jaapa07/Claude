@@ -3,3 +3,6 @@ models
 **/vo/*_raw.wav
 episodes/*/mix.wav
 episodes/*/render_*.log
+out/list.txt
+out/p-0.log*
+episodes/*/cover/frames/
