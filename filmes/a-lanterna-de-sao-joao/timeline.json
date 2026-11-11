@@ -1,0 +1,284 @@
+{
+ "DUR": 120.0,
+ "L": {
+  "L1": {
+   "at": 3.2,
+   "dur": 5.313,
+   "end": 8.513,
+   "text": "No último dia de trabalho, Seu Nico, o carteiro, arrastou o armário velho da agência."
+  },
+  "L2": {
+   "at": 10.6,
+   "dur": 3.981,
+   "end": 14.581,
+   "text": "Atrás dele, havia uma carta. Presa ali fazia 40 anos."
+  },
+  "L3": {
+   "at": 18.2,
+   "dur": 3.612,
+   "end": 21.812,
+   "text": "Para Aurora, na Vila da Outra Margem. Remetente: Joaquim."
+  },
+  "L4": {
+   "at": 22.6,
+   "dur": 4.755,
+   "end": 27.355,
+   "text": "Podia deixar pra segunda-feira. Mas, na segunda, ele já não era carteiro."
+  },
+  "L5": {
+   "at": 29.0,
+   "dur": 5.011,
+   "end": 34.011,
+   "text": "Então pedalou. Ladeira abaixo, com a noite de São João acendendo as fogueiras."
+  },
+  "L6": {
+   "at": 46.0,
+   "dur": 5.025,
+   "end": 51.025,
+   "text": "Na beira do rio, a balsa já tinha ido. Seu Nico pegou uma canoa emprestada."
+  },
+  "L7": {
+   "at": 54.0,
+   "dur": 3.256,
+   "end": 57.256,
+   "text": "E remou devagar, que carteiro não aprende a remar."
+  },
+  "L8": {
+   "at": 64.2,
+   "dur": 3.599,
+   "end": 67.799,
+   "text": "Dona Aurora abriu a porta com 80 anos e nenhum susto."
+  },
+  "L9": {
+   "at": 71.0,
+   "dur": 3.376,
+   "end": 74.376,
+   "text": "Leu em pé, sem óculos, como quem lê o que sempre soube."
+  },
+  "L10a": {
+   "at": 78.6,
+   "dur": 4.646,
+   "end": 83.246,
+   "text": "“Se você ainda me quiser, acenda uma lanterna na janela, na noite de São João."
+  },
+  "L10b": {
+   "at": 84.4,
+   "dur": 2.096,
+   "end": 86.496,
+   "text": "Eu vou ver, do outro lado do rio.”"
+  },
+  "L11": {
+   "at": 90.0,
+   "dur": 4.744,
+   "end": 94.744,
+   "text": "40 São Joões ela passou no escuro, achando que ele nunca tinha escrito."
+  },
+  "L12": {
+   "at": 97.6,
+   "dur": 2.164,
+   "end": 99.764,
+   "text": "Naquela noite, ela acendeu."
+  },
+  "L13": {
+   "at": 106.0,
+   "dur": 3.724,
+   "end": 109.724,
+   "text": "E do outro lado do rio, bem devagar, uma lanterna respondeu."
+  },
+  "L14": {
+   "at": 111.8,
+   "dur": 3.823,
+   "end": 115.623,
+   "text": "Tem carta que atrasa. Mas luz, quando acende, chega na hora."
+  }
+ },
+ "cues": [
+  {
+   "id": "L1",
+   "t0": 3.05,
+   "t1": 9.113,
+   "text": "No último dia de trabalho, Seu Nico, o carteiro, arrastou o armário velho da agência."
+  },
+  {
+   "id": "L2",
+   "t0": 10.45,
+   "t1": 15.181,
+   "text": "Atrás dele, havia uma carta. Presa ali fazia 40 anos."
+  },
+  {
+   "id": "L4",
+   "t0": 22.45,
+   "t1": 27.955,
+   "text": "Podia deixar pra segunda-feira. Mas, na segunda, ele já não era carteiro."
+  },
+  {
+   "id": "L5",
+   "t0": 28.85,
+   "t1": 34.611,
+   "text": "Então pedalou. Ladeira abaixo, com a noite de São João acendendo as fogueiras."
+  },
+  {
+   "id": "L6",
+   "t0": 45.85,
+   "t1": 51.625,
+   "text": "Na beira do rio, a balsa já tinha ido. Seu Nico pegou uma canoa emprestada."
+  },
+  {
+   "id": "L7",
+   "t0": 53.85,
+   "t1": 57.856,
+   "text": "E remou devagar, que carteiro não aprende a remar."
+  },
+  {
+   "id": "L8",
+   "t0": 64.05,
+   "t1": 68.399,
+   "text": "Dona Aurora abriu a porta com 80 anos e nenhum susto."
+  },
+  {
+   "id": "L9",
+   "t0": 70.85,
+   "t1": 74.976,
+   "text": "Leu em pé, sem óculos, como quem lê o que sempre soube."
+  },
+  {
+   "id": "L10a",
+   "t0": 78.45,
+   "t1": 83.846,
+   "text": "“Se você ainda me quiser, acenda uma lanterna na janela, na noite de São João."
+  },
+  {
+   "id": "L10b",
+   "t0": 84.25,
+   "t1": 87.096,
+   "text": "Eu vou ver, do outro lado do rio.”"
+  },
+  {
+   "id": "L11",
+   "t0": 89.85,
+   "t1": 95.344,
+   "text": "40 São Joões ela passou no escuro, achando que ele nunca tinha escrito."
+  },
+  {
+   "id": "L12",
+   "t0": 97.45,
+   "t1": 100.364,
+   "text": "Naquela noite, ela acendeu."
+  },
+  {
+   "id": "L13",
+   "t0": 105.85,
+   "t1": 110.324,
+   "text": "E do outro lado do rio, bem devagar, uma lanterna respondeu."
+  },
+  {
+   "id": "L14",
+   "t0": 111.65,
+   "t1": 116.223,
+   "text": "Tem carta que atrasa. Mas luz, quando acende, chega na hora."
+  }
+ ],
+ "HIT": {
+  "cover": 2.2,
+  "push": [
+   4.4,
+   9.2
+  ],
+  "glint": 9.6,
+  "pick": 14.6,
+  "addr": [
+   18.2,
+   19.6,
+   21.0
+  ],
+  "stamp": 17.9,
+  "ride": [
+   28.0,
+   45.0
+  ],
+  "fires": [
+   32.3,
+   36.9,
+   41.6
+  ],
+  "row": [
+   45.0,
+   62.5
+  ],
+  "strokes": [
+   47.0,
+   49.2,
+   51.4,
+   53.6,
+   55.8,
+   58.0,
+   60.2
+  ],
+  "knock": [
+   63.0,
+   63.35
+  ],
+  "open": 64.0,
+  "hand": 68.6,
+  "ink": [
+   78.7,
+   80.2,
+   81.7,
+   84.5,
+   85.6
+  ],
+  "lanternDraw": 82.0,
+  "dark": 90.0,
+  "light": 100.4,
+  "answer": 105.0,
+  "bridge": [
+   108.4,
+   111.4
+  ],
+  "balloons": 110.0,
+  "pull": 114.8,
+  "end": 119.5
+ },
+ "SHOTS": [
+  [
+   "S0",
+   0.0,
+   null
+  ],
+  [
+   "S1",
+   2.2,
+   "dissolve"
+  ],
+  [
+   "S2",
+   17.4,
+   "dissolve"
+  ],
+  [
+   "S3",
+   28.0,
+   "dissolve"
+  ],
+  [
+   "S4",
+   45.0,
+   "dissolve"
+  ],
+  [
+   "S5",
+   62.5,
+   "dissolve"
+  ],
+  [
+   "S2b",
+   77.5,
+   "dissolve"
+  ],
+  [
+   "S6",
+   88.5,
+   "dissolve"
+  ]
+ ]
+}

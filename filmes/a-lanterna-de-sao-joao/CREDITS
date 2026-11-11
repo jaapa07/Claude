@@ -1,0 +1,8 @@
+A Lanterna de São João — créditos de terceiros
+
+Motor de papel (paper.js, post.js, stage.js, lib.js): adaptado do estilo "Paper-cut Lightbox" da biblioteca Lemo-Opuscar (MIT).
+Voz: Kokoro TTS v1.0 (kokoro-onnx), voz pf_dora — Apache 2.0. Fonemas: espeak-ng (usado como ferramenta).
+Amostras: VSCO 2 Community Edition (Versilian Studios) — CC0 1.0 (cellos, violas, violins); FreePats (freepats.zenvoid.org) — CC0 1.0 (accordion).
+Caixinha de música, harpa e violão de náilon: síntese por modelagem física (pluck.py, Lemo-Opuscar). Zabumba, triângulo e efeitos sonoros: sintetizados.
+Fonte: Cormorant Garamond — SIL Open Font License 1.1 (via @fontsource-variable/cormorant-garamond).
+Three.js r170 — MIT.
