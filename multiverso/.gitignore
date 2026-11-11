@@ -2,3 +2,4 @@ models
 **/frames/
 **/vo/*_raw.wav
 episodes/*/mix.wav
+episodes/*/render_*.log
