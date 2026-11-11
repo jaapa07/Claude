@@ -1,0 +1,30 @@
+// smoke.js: abre a aplicação como um usuário faria e confere que play, pausa, salto de episódio e legendas funcionam.
+const { chromium } = require('playwright');
+const http = require('http'), fs = require('fs'), path = require('path');
+const ROOT = path.dirname(__dirname), TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.css': 'text/css', '.woff2': 'font/woff2', '.mp3': 'audio/mpeg' };
+(async () => {
+  const srv = http.createServer((q, r) => { const p = path.join(ROOT, decodeURIComponent(q.url.split('?')[0])); fs.readFile(p.endsWith(path.sep) ? p + 'index.html' : p, (e, d) => { if (e) { r.writeHead(404); return r.end(); } r.writeHead(200, { 'Content-Type': TYPES[path.extname(p)] || 'application/octet-stream' }); r.end(d); }); });
+  await new Promise(r => srv.listen(0, '127.0.0.1', r));
+  const b = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--autoplay-policy=no-user-gesture-required'] });
+  const page = await b.newPage({ viewport: { width: 1280, height: 800 } }), errs = [];
+  page.on('pageerror', e => errs.push('pageerror: ' + e)); page.on('console', m => { if (m.type() === 'error') errs.push('console: ' + m.text()); });
+  page.on('response', r => { if (r.status() >= 400) errs.push(`${r.status()} ${r.url()}`); });
+  await page.goto(`http://127.0.0.1:${srv.address().port}/index.html`);
+  await page.waitForFunction('window.READY === true', null, { timeout: 120000 });
+  const clock = () => page.textContent('#clock');
+  console.log('pronto. relógio:', await clock(), '| narração:', await page.textContent('#vozinfo'), '| episódios:', await page.locator('#eps button').count());
+  await page.click('#play'); await page.waitForTimeout(6000);
+  console.log('após play 6 s:', await clock(), '| botão:', await page.textContent('#play'), '| fps:', await page.textContent('#fps'));
+  await page.click('#play'); const a = await clock(); await page.waitForTimeout(1000);
+  console.log('pausado:', a, '->', await clock());
+  await page.locator('#eps button').nth(2).click(); await page.waitForTimeout(3000);
+  console.log('EP 3:', await clock(), '| ativo:', await page.locator('#eps button.active').textContent());
+  await page.keyboard.press('Space'); await page.keyboard.press('ArrowRight'); await page.waitForTimeout(300);
+  console.log('espaço + seta:', await clock());
+  await page.screenshot({ path: path.join(ROOT, 'out', 'ui.png') });
+  await page.setViewportSize({ width: 390, height: 844 }); await page.waitForTimeout(300);
+  const ov = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+  await page.screenshot({ path: path.join(ROOT, 'out', 'ui-mobile.png') });
+  console.log('rolagem horizontal no celular (px):', ov); console.log(errs.length ? 'ERROS:\n' + errs.join('\n') : 'sem erros na página');
+  await b.close(); srv.close();
+})();

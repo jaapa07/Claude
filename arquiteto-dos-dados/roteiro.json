@@ -1,0 +1,22 @@
+{
+  "titulo": "RODRIGO HAJIME — O ARQUITETO DOS DADOS",
+  "duracaoEpisodio": 20,
+  "episodios": [
+    { "id": 1, "titulo": "O PRIMEIRO CÓDIGO", "falas": [
+      { "em": 2.6, "texto": "Todo grande sistema começa com uma conexão." },
+      { "em": 9.6, "texto": "E toda conexão começa com alguém disposto a entender o impossível." } ] },
+    { "id": 2, "titulo": "O CAOS DOS DADOS", "falas": [
+      { "em": 4.6, "texto": "Onde muitos enxergam erros, ele encontra padrões." },
+      { "em": 11.6, "texto": "Onde existe caos, ele constrói integração." } ] },
+    { "id": 3, "titulo": "A ARQUITETURA INVISÍVEL", "falas": [
+      { "em": 3.0, "texto": "Por trás de cada informação que chega ao destino," },
+      { "em": 9.2, "texto": "existe uma arquitetura que quase ninguém vê." } ] },
+    { "id": 4, "titulo": "A ERA DA INTELIGÊNCIA", "falas": [
+      { "em": 2.2, "texto": "A tecnologia evoluiu." },
+      { "em": 6.2, "texto": "Os sistemas aprenderam." },
+      { "em": 10.6, "texto": "E integrar dados deixou de ser apenas conectar máquinas." } ] },
+    { "id": 5, "titulo": "O PRÓXIMO NÍVEL", "falas": [
+      { "em": 2.6, "texto": "O futuro não pertence apenas a quem utiliza tecnologia." },
+      { "em": 9.6, "texto": "Pertence a quem aprende a construí-la." } ] }
+  ]
+}
