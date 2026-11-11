@@ -141,7 +141,7 @@ export async function renderEpisodeAudio(ep, script, voices) {
   S.master.gain.setValueAtTime(MASTER, DUR - 0.25); S.master.gain.linearRampToValueAtTime(ep === 5 ? 0.0001 : MASTER * 0.55, DUR);
   return ctx.startRendering();
 }
-const m0 = 0.8, MASTER = 0.58;
+const m0 = 0.8, MASTER = 0.5;
 
 /** AudioBuffer → WAV PCM 16 bits (para a exportação). */
 export function toWav(buf) {
