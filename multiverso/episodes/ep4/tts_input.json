@@ -1,0 +1,200 @@
+[
+ {
+  "id": "i1",
+  "who": "imperador",
+  "start": 7,
+  "caption": "VOCÊS HUMILHARAM NOSSA FAMÍLIA!",
+  "say": "Vocês humilharam nossa família!",
+  "voice": "pm_alex",
+  "speed": 0.95,
+  "pitch": -7.0,
+  "fx": "aecho=0.8:0.6:80|160:0.4|0.25,volume=1.3"
+ },
+ {
+  "id": "i2",
+  "who": "imperador",
+  "start": 9.6,
+  "caption": "Tinha trinta mil salsichas naquela nave!",
+  "say": "Tinha trinta mil salsichas naquela nave!",
+  "voice": "pm_alex",
+  "speed": 0.95,
+  "pitch": -7.0,
+  "fx": "aecho=0.8:0.6:80|160:0.4|0.25,volume=1.3"
+ },
+ {
+  "id": "j1",
+  "who": "juninho",
+  "start": 13,
+  "caption": "Mas eu nem gosto tanto de cachorro-quente!",
+  "say": "Mas eu nem gosto tanto de cachorro-quente!",
+  "voice": "pm_alex",
+  "speed": 1.12,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "i3",
+  "who": "imperador",
+  "start": 19.2,
+  "caption": "CACHORRO-QUENTE?! ISSO É GENOCÍDIO COM PURÊ!",
+  "say": "Cachorro-quente?! isso É genocídio com purê!",
+  "voice": "pm_alex",
+  "speed": 0.95,
+  "pitch": -7.0,
+  "fx": "aecho=0.8:0.6:80|160:0.4|0.25,volume=1.3"
+ },
+ {
+  "id": "i4",
+  "who": "imperador",
+  "start": 23.4,
+  "caption": "SOLDADOS! GARFOS EM POSIÇÃO!",
+  "say": "Soldados! garfos em posição!",
+  "voice": "pm_alex",
+  "speed": 0.95,
+  "pitch": -7.0,
+  "fx": "aecho=0.8:0.6:80|160:0.4|0.25,volume=1.3"
+ },
+ {
+  "id": "c1",
+  "who": "cleide",
+  "start": 33.6,
+  "caption": "JUNINHO, FAZ ALGUMA COISA, PELO AMOR DE DEUS!",
+  "say": "Juninho, faz alguma coisa, pelo amor de deus!",
+  "voice": "pf_dora",
+  "speed": 1.18,
+  "pitch": -1.0,
+  "fx": "acompressor=threshold=-18dB:ratio=4,volume=1.4"
+ },
+ {
+  "id": "j2",
+  "who": "juninho",
+  "start": 36.6,
+  "caption": "Deixa comigo, mãe. Eu tenho um plano.",
+  "say": "Deixa comigo, mãe. Eu tenho um plano.",
+  "voice": "pm_alex",
+  "speed": 1.12,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "c2",
+  "who": "cleide",
+  "start": 39,
+  "caption": "Esse é o problema.",
+  "say": "Esse é o problema.",
+  "voice": "pf_dora",
+  "speed": 1.18,
+  "pitch": -1.0,
+  "fx": "acompressor=threshold=-18dB:ratio=4,volume=1.4"
+ },
+ {
+  "id": "r1",
+  "who": "controle",
+  "start": 42,
+  "caption": "Modo comida viva. Boa sorte.",
+  "say": "Modo comida viva. Boa sorte.",
+  "voice": "pm_santa",
+  "speed": 1.0,
+  "pitch": -1.0,
+  "fx": "flanger=delay=2:depth=2:speed=8,acrusher=bits=7:mode=log:aa=1,aecho=0.6:0.5:18:0.4"
+ },
+ {
+  "id": "j3",
+  "who": "juninho",
+  "start": 46.6,
+  "caption": "CHAMA OS SALGADOS, POVO!",
+  "say": "Chama os salgados, povo!",
+  "voice": "pm_alex",
+  "speed": 1.12,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "i5",
+  "who": "imperador",
+  "start": 53.6,
+  "caption": "Recuar? Jamais! Mandem a mostarda!",
+  "say": "Recuar? Jamais! Mandem a mostarda!",
+  "voice": "pm_alex",
+  "speed": 0.95,
+  "pitch": -7.0,
+  "fx": "aecho=0.8:0.6:80|160:0.4|0.25,volume=1.3"
+ },
+ {
+  "id": "x1",
+  "who": "coxinha",
+  "start": 61.4,
+  "caption": "NINGUÉM MEXE COM A CULINÁRIA BRASILEIRA!",
+  "say": "Ninguém mexe com A culinária brasileira!",
+  "voice": "pf_dora",
+  "speed": 1.12,
+  "pitch": 3.0,
+  "fx": "aecho=0.6:0.4:60:0.3"
+ },
+ {
+  "id": "i6",
+  "who": "imperador",
+  "start": 66,
+  "caption": "Uma... coxinha?",
+  "say": "Uma... coxinha?",
+  "voice": "pm_alex",
+  "speed": 0.95,
+  "pitch": -7.0,
+  "fx": "aecho=0.8:0.6:80|160:0.4|0.25,volume=1.3"
+ },
+ {
+  "id": "x2",
+  "who": "coxinha",
+  "start": 68.2,
+  "caption": "Prova o meu requeijão!",
+  "say": "Prova o meu requeijão!",
+  "voice": "pf_dora",
+  "speed": 1.12,
+  "pitch": 3.0,
+  "fx": "aecho=0.6:0.4:60:0.3"
+ },
+ {
+  "id": "c3",
+  "who": "cleide",
+  "start": 76.2,
+  "caption": "Depois eu quero a receita!",
+  "say": "Depois eu quero a receita!",
+  "voice": "pf_dora",
+  "speed": 1.18,
+  "pitch": -1.0,
+  "fx": "acompressor=threshold=-18dB:ratio=4,volume=1.4"
+ },
+ {
+  "id": "r2",
+  "who": "controle",
+  "start": 81,
+  "caption": "Erro crítico. Realidade comprometida.",
+  "say": "Erro crítico. Realidade comprometida.",
+  "voice": "pm_santa",
+  "speed": 1.0,
+  "pitch": -1.0,
+  "fx": "flanger=delay=2:depth=2:speed=8,acrusher=bits=7:mode=log:aa=1,aecho=0.6:0.5:18:0.4"
+ },
+ {
+  "id": "j4",
+  "who": "juninho",
+  "start": 85,
+  "caption": "Desliga e liga de novo?",
+  "say": "Desliga e liga de novo?",
+  "voice": "pm_alex",
+  "speed": 1.12,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "r3",
+  "who": "controle",
+  "start": 87,
+  "caption": "Não.",
+  "say": "Não.",
+  "voice": "pm_santa",
+  "speed": 1.0,
+  "pitch": -1.0,
+  "fx": "flanger=delay=2:depth=2:speed=8,acrusher=bits=7:mode=log:aa=1,aecho=0.6:0.5:18:0.4"
+ }
+]

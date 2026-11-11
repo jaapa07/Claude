@@ -16,11 +16,11 @@ export const LINES = [
   { id: 'j1', who: 'juninho', at: 4.7, text: 'Relaxa, mãe. Um cafezinho resolve tudo.' },
   { id: 'f1', who: 'cafe', at: 12.4, text: 'EU NÃO AGUENTO MAIS SER BEBIDO POR GENTE BURRA!' },
   { id: 'j2', who: 'juninho', at: 16.0, text: 'Mas eu nem adocei ainda!' },
-  { id: 'f2', who: 'cafe', at: 17.5, text: 'Fui! Prefiro virar picolé.' },
+  { id: 'f2', who: 'cafe', at: 17.75, text: 'Fui! Prefiro virar picolé.' },
   { id: 'c1', who: 'cleide', at: 20.4, text: 'VEM CÁ, MOLEQUE!' },
   { id: 'r1', who: 'controle', at: 23.1, text: 'Portal de emergência aberto.' },
   { id: 'j3', who: 'juninho', at: 27.2, text: 'Errou, mãe.' },
-  { id: 'a0', who: 'alien', at: 29.7, text: 'Povo de Zorg! Hoje conquistaremos o planeta número mil e...', say: 'Povo de Zorg! Hoje conquistaremos o planeta número mil e' },
+  { id: 'a0', who: 'alien', at: 30.55, text: 'Povo de Zorg! Hoje conquistaremos o planeta número mil e...', say: 'Povo de Zorg! Hoje conquistaremos o planeta número mil e' },
   { id: 'a1', who: 'alien', at: 35.6, text: 'QUEM FOI O DESGRAÇADO?!' },
   { id: 'a2', who: 'alien', at: 40.8, text: 'Exijo explicações, terráqueos!' },
   { id: 'j4', who: 'juninho', at: 46.2, text: 'Calma, chefe. Aceita um pão com mortadela?' },
@@ -83,12 +83,12 @@ export async function makeShots({ talk }) {
   const E = earth(100); E.position.set(0, -150, -40); sp.add(E);
   const hs = house(); hs.scale.setScalar(.9); sp.add(hs);
   const NF = 2000, F = fleet(NF, 3); sp.add(F);
-  const MS = motherShip(); MS.scale.setScalar(1.6); sp.add(MS);
+  const MS = motherShip(); MS.scale.setScalar(3); sp.add(MS);
   const C = new THREE.Vector3(0, -150, -40), tgt = [];
   for (let i = 0; i < NF; i++) {
-    const u = hash(i, 81) * 1.6 - .6, th = hash(i, 82) * TAU, r = Math.sqrt(1 - u * u), R = 150 + hash(i, 83) * 420;
+    const u = hash(i, 81) * 1.6 - .6, th = hash(i, 82) * TAU, r = Math.sqrt(1 - u * u), R = 135 + hash(i, 83) * 380;
     const d = new THREE.Vector3(Math.cos(th) * r, u, Math.sin(th) * r);
-    tgt.push({ d, p: C.clone().addScaledVector(d, R), s: 1.4 + hash(i, 84) * 2.4, ta: T.warp + .3 + hash(i, 85) * 4.2 });
+    tgt.push({ d, p: C.clone().addScaledVector(d, R), s: 3.5 + hash(i, 84) * 5, ta: T.warp + .3 + hash(i, 85) * 4.2 });
   }
   const camS = camera(38);
   const setSpace = t => {
@@ -106,22 +106,23 @@ export async function makeShots({ talk }) {
   S(0, (g, lt, t) => {
     setSpace(t);
     const k = ease.ioC(prog(lt, .3, 4.2));      // from EP1's last wide framing in to the window
-    camS.position.set(lerp(40, 4, k), lerp(60, 13, k), lerp(260, 16, k)); camS.lookAt(lerp(0, hs.position.x, k), lerp(-40, 13, k), 0);
+    camS.position.set(lerp(40, 8, k), lerp(60, 15, k), lerp(260, 34, k)); camS.lookAt(lerp(0, hs.position.x, k), lerp(-40, 13, k), 0);
     draw3d(g, sp, camS);
     titleCard(g, t, 2, META.title, .15, 3.4);
-    if (lt > 3.6) { g.fillStyle = `rgba(255,255,255,${prog(lt, 3.6, 4.2)})`; g.fillRect(0, 0, W, H); }
+    if (lt > 3.4) { g.fillStyle = `rgba(255,255,255,${prog(lt, 3.4, 4.2)})`; g.fillRect(0, 0, W, H); }
   });
 
   // ---------- 2. zero-g coffee (4.2 – 9.6) and 3. the blobs merge (9.6 – 12.2) ----------
   const blobs = Array.from({ length: 9 }, (_, i) => ({ t0: 6.0 + i * .35, ax: (hash(i, 11) - .5) * 520, ay: -180 - hash(i, 12) * 420, r: 18 + hash(i, 13) * 22 }));
   const CUP = [330, 975], CAFE = [430, 930];
   const blobPos = (b, t) => { const k = clamp((t - b.t0) / 3); let x = CUP[0] + b.ax * ease.outQ(k) + noise(t * .8 + b.r, 2) * 40, y = CUP[1] - 60 + b.ay * ease.outQ(k) + noise(t * .7 + b.r, 5) * 30; const m = ease.inC(prog(t, T.merge, T.merge + 1.2)); return [lerp(x, CAFE[0], m), lerp(y, CAFE[1] - 160, m), b.r * (1 - m * .6)]; };
+  const cafeMouth = (g, x, y, s, tk) => { const mx = x, my = y + (-170 + 57) * s, o = clamp(tk); g.save(); g.beginPath(); g.ellipse(mx, my, (26 + o * 22) * s, (8 + o * 30) * s, 0, 0, TAU); g.fillStyle = '#2a0a05'; g.fill(); g.lineWidth = 6 * s; g.strokeStyle = '#f0c090'; g.stroke(); g.clip(); ell(g, mx, my + (10 + o * 20) * s, 20 * s, 12 * s, '#ff8fa0', 0); g.restore(); };
   const room = (g, t, extra) => livingRoom(g, t, { window: earthWindow(t, extra) });
   const plate = (g, x, y, t, full = true) => { g.save(); g.translate(x, y); g.rotate(Math.sin(t * .9) * .15); ell(g, 0, 0, 110, 26, '#ffffff', 6); if (full) sanduiche(g, { x: 0, y: 6, s: .55 }); g.restore(); };
   S(T.inside, (g, lt, t, ctx) => {
     ctx.post.wobble = .35; ctx.post.chroma = .15;
-    const m = prog(t, T.merge, T.merge + 1.2), z = t < T.merge ? 1.0 : lerp(1.0, 1.35, ease.io(prog(t, T.merge, 12.2)));
-    g.save(); cam(g, { x: t < T.merge ? 540 : lerp(540, 430, ease.io(m)), y: t < T.merge ? 960 : lerp(960, 820, ease.io(m)), z });
+    const m = prog(t, T.merge, T.merge + 1.2), z = t < T.merge ? 1.12 : lerp(1.12, 1.4, ease.io(prog(t, T.merge, 12.2)));
+    g.save(); cam(g, { x: t < T.merge ? 540 : lerp(540, 430, ease.io(m)), y: t < T.merge ? 1010 : lerp(1010, 880, ease.io(m)), z });
     room(g, t);
     // Cleide floats over the sofa with her café da tarde (setup for the finale)
     cleide(g, { x: 800, y: 1290 + Math.sin(t * 1.1) * 18, s: .9, t, pose: 'float', rot: .08 * Math.sin(t * .7), face: t > T.merge + .5 ? 'shock' : 'bored', armL: { a: .9, b: 1.3 }, armR: { a: .4, b: .3 } });
@@ -148,7 +149,7 @@ export async function makeShots({ talk }) {
     const [sx, sy] = shakes(t, [[12.4, 22, 1.2], [13.6, 16, 1.2]]);
     g.save(); radial(g, 540, 700, t, '#8a4a1e', '#5a3014', 20);
     cam(g, { x: 430, y: 760, z: lerp(2.3, 2.6, lt / 3.6), sx, sy });
-    cafe(g, { x: 430, y: 930, s: .95, t, face: 'angry', talk: talk('cafe', t), armL: 2.4 + Math.sin(t * 9) * .3, armR: 2.2 - Math.sin(t * 9) * .3, sq: 1 + talk('cafe', t) * .08 });
+    cafe(g, { x: 430, y: 930, s: .95, t, face: 'angry', talk: talk('cafe', t), armL: 2.4 + Math.sin(t * 9) * .3, armR: 2.2 - Math.sin(t * 9) * .3 }); cafeMouth(g, 430, 930, .95, talk('cafe', t));
     g.restore();
     whip(g, lt, .25);
   });
@@ -157,7 +158,7 @@ export async function makeShots({ talk }) {
   S(15.8, (g, lt, t, ctx) => {
     ctx.post.wobble = .35;
     const out = t - T.cafeOut, slapK = t - 16.9;
-    g.save(); cam(g, { x: 560, y: 900, z: 1.15 });
+    g.save(); cam(g, { x: 520, y: 1000, z: 1.15 });
     room(g, t, wg => {   // outside the window: the coffee freezes into a popsicle in the vacuum
       if (out < .5) return; const k = prog(out, .5, 1.6), x = 760 + Math.sin(t) * 30, y = 520 - out * 20;
       wg.save(); wg.translate(x, y); wg.rotate(.3 + out * .4);
@@ -168,12 +169,12 @@ export async function makeShots({ talk }) {
     });
     cleide(g, { x: 800, y: 1290 + Math.sin(t * 1.1) * 18, s: .9, t, pose: 'float', face: 'shock', armL: { a: .9, b: 1.3 }, armR: { a: .4, b: .3 } });
     plate(g, 700, 1050 + Math.sin(t * 1.3) * 20, t);
-    juninho(g, { x: 250, y: 1300 + Math.sin(t * 1.2) * 16, s: .9, t, pose: 'float', face: slapK > 0 && slapK < .7 ? 'x' : t > 18 ? 'sad' : 'shock', talk: talk('juninho', t), rot: slapK > 0 ? -.3 * Math.exp(-slapK * 3) : 0,
+    juninho(g, { x: 310, y: 1300 + Math.sin(t * 1.2) * 16, s: .9, t, pose: 'float', face: slapK > 0 && slapK < .7 ? 'x' : t > 18 ? 'sad' : 'shock', talk: talk('juninho', t), rot: slapK > 0 ? -.3 * Math.exp(-slapK * 3) : 0,
       armR: { a: 1.6, b: .4 }, armL: { a: .4, b: .5 }, inR: g2 => cup(g2, 0, 40, .9, .4), inL: remoteInHand({ t, face: 'bored' }), blush: slapK > 0 ? .6 : 0 });
     // the coffee slaps him with a spoon, then shoots out through the window
     if (out < 0) {
       const cx = 470, cy = 980;
-      cafe(g, { x: cx, y: cy, s: .8, t, face: 'angry', talk: talk('cafe', t), armL: 1.5, armR: slapK > -.3 && slapK < .3 ? 0.2 : 2.6 });
+      cafe(g, { x: cx, y: cy, s: .8, t, face: 'angry', talk: talk('cafe', t), armL: 1.5, armR: slapK > -.3 && slapK < .3 ? 0.2 : 2.6 }); cafeMouth(g, cx, cy, .8, talk('cafe', t));
       g.save(); g.translate(cx + 140, cy - 230); g.rotate(slapK > -.3 && slapK < .3 ? -1.4 : .3); line(g, [0, 0, 0, -120], 10, '#b8bcc8'); ell(g, 0, -140, 22, 30, '#b8bcc8', 6); g.restore();
     } else if (out < .5) {
       const k = out / .5; cafe(g, { x: lerp(470, 760, k), y: lerp(980, 600, k), s: lerp(.8, .5, k), t, rot: k * 6, sq: 1.4, face: 'happy' });
@@ -189,14 +190,14 @@ export async function makeShots({ talk }) {
     ctx.post.wobble = .35; ctx.post.chroma = .2;
     const charge = ease.io(prog(t, 20.2, 22.6));
     const thrown = t > T.throwC, sil = t > 26.3;
-    const z = sil ? lerp(1.2, 1.9, ease.outC(prog(t, 26.3, 26.8))) : 1.0;
-    const cxW = sil ? 700 : 540, cyW = sil ? 840 : 960;
+    const z = sil ? lerp(1.2, 1.9, ease.outC(prog(t, 26.3, 26.8))) : 1.12;
+    const cxW = sil ? 700 : 540, cyW = sil ? 840 : 1010;
     const [sx, sy] = shakes(t, [[20.4, 14, 1.0]]);
     g.save(); cam(g, { x: cxW, y: cyW, z, sx, sy });
     room(g, t);
-    portals(g, t, [[560, 760, 340, portalA(t)]]);
+    portals(g, t, [[540, 640, 300, portalA(t)]]);
     // the chinelo's flight into the portal
-    if (thrown && t < T.gone) { const k = prog(t, T.throwC, T.gone); chinelo(g, lerp(700, 560, k), lerp(700, 760, k) + 70, lerp(1, .2, k), k * 12); }
+    if (thrown && t < T.gone) { const k = prog(t, T.throwC, T.gone); chinelo(g, lerp(700, 540, k), lerp(700, 640, k) + 70, lerp(1, .2, k), k * 12); }
     const pressed = t > T.yellow;
     juninho(g, { x: 260, y: 1300 + Math.sin(t * 1.2) * 16, s: .9, t, pose: 'float', face: t > 27 ? 'smug' : pressed ? 'happy' : 'panic', talk: talk('juninho', t),
       armR: { a: 2.3, b: .5 }, armL: { a: .4, b: .5 }, inR: remoteInHand({ t, face: pressed && t < 25 ? 'evil' : 'neutral', press: pressed && t < 23.4 ? 'yellow' : null, talk: talk('controle', t) }) });
@@ -211,7 +212,7 @@ export async function makeShots({ talk }) {
 
   // ---------- 8. planet Zorg: the speech and the chinelo (29.2 – 39.9) ----------
   const zs = new THREE.Scene(); zs.add(sky(21, [.55, .1, .4], [.1, .5, .35])); const zcam = camera(50);
-  const crowd = Array.from({ length: 40 }, (_, i) => ({ x: (i % 10) * 120 + (Math.floor(i / 10) % 2) * 60, y: 1500 + Math.floor(i / 10) * 110, c: hash(i, 3) }));
+  const crowd = Array.from({ length: 40 }, (_, i) => ({ x: (i % 10) * 120 + (Math.floor(i / 10) % 2) * 60, y: 1680 + Math.floor(i / 10) * 90, c: hash(i, 3) }));
   S(T.planet, (g, lt, t) => {
     const hitK = t - T.hit;
     zcam.position.set(0, 0, 0); zcam.lookAt(Math.sin(t * .05) * 10, 3 + Math.cos(t * .04), -10); draw3d(g, zs, zcam);
@@ -243,8 +244,8 @@ export async function makeShots({ talk }) {
     g.restore();
     // the crowd of aliens (foreground, from behind)
     for (const c of crowd) { const hop = hitK > .7 && hitK < 1.6 ? Math.abs(Math.sin(t * 10 + c.c * 5)) * 30 : Math.abs(Math.sin(t * 3 + c.c * 9)) * (hitK < 0 ? 18 : 0); ell(g, c.x, c.y - hop, 70, 60, c.c > .5 ? '#9BE03A' : '#7fc72a', 6); line(g, [c.x - 20, c.y - 50 - hop, c.x - 34, c.y - 100 - hop], 6, INK); line(g, [c.x + 20, c.y - 50 - hop, c.x + 34, c.y - 100 - hop], 6, INK); ell(g, c.x - 34, c.y - 104 - hop, 9, 9, '#ff3bd1', 4); ell(g, c.x + 34, c.y - 104 - hop, 9, 9, '#ff3bd1', 4); }
-    comic(g, 'PLAFT!!', 640, 600, hitK, { size: 170, color: '#FFD21F', burst: '#ff3b5c', d: 1.2 });
-    if (hitK > 1 && hitK < 2) text(g, 'OOOH!', 300, 1420, { size: 80, color: '#fff', stroke: 12 });
+    comic(g, 'PLAFT!!', 800, 380, hitK, { size: 170, color: '#FFD21F', burst: '#ff3b5c', d: 1.2 });
+    if (hitK > 1 && hitK < 2) text(g, 'OOOH!', 220, 1330, { size: 80, color: '#fff', stroke: 12 });
     flash(g, lt, .3, '#ff3bd1');
   });
 
@@ -254,7 +255,7 @@ export async function makeShots({ talk }) {
     ctx.post.wobble = .35;
     const k = zIn.at(t - T.burst), out = t > T.burst, pt = t > T.point;
     const [sx, sy] = shakes(t, [[T.burst, 30, .7]]);
-    g.save(); cam(g, { x: 540, y: 960, z: 1.0, sx, sy });
+    g.save(); cam(g, { x: 540, y: 1010, z: 1.12, sx, sy });
     room(g, t);
     portals(g, t, [[560, 860, 420, openK(t, 39.5, 39.8, 40.6, 41.0), 1], null]);
     cleide(g, { x: 870, y: 1290 + Math.sin(t * 1.1) * 18, s: .9, t, pose: 'float', face: pt ? 'angry' : 'shock', noChinelo: true, armL: { a: pt ? 1.6 : .9, b: pt ? 0 : 1.3 }, armR: { a: .5, b: .3 } });
@@ -262,7 +263,7 @@ export async function makeShots({ talk }) {
     if (out) alien(g, { x: 560, y: k.y + Math.sin(t * 1.2) * 14, s: .82, sq: k.sq, t, face: 'angry', talk: talk('alien', t), armL: 2.6 + Math.sin(t * 6) * .1, armR: pt ? .4 : 1.2, inL: g2 => chinelo(g2, 0, 30, .7, Math.PI) });
     juninho(g, { x: 220, y: 1300 + Math.sin(t * 1.2) * 16, s: .9, t, pose: 'float', face: pt ? 'smug' : 'panic', armR: { a: pt ? 1.65 : 2.4, b: 0 }, armL: { a: .4, b: .5 }, inL: remoteInHand({ t, face: 'bored' }) });
     g.restore();
-    if (pt) { text(g, 'FOI ELA!', 300, 560, { size: 64, color: '#FFD21F', rot: -.1, alpha: clamp((t - T.point) * 4) }); text(g, 'FOI ELE!', 820, 560, { size: 64, color: '#FF7FB4', rot: .1, alpha: clamp((t - T.point) * 4) }); }
+    if (pt) { text(g, 'FOI ELA!', 280, 420, { size: 84, color: '#FFD21F', rot: -.1, alpha: clamp((t - T.point) * 4) }); text(g, 'FOI ELE!', 820, 420, { size: 84, color: '#FF7FB4', rot: .1, alpha: clamp((t - T.point) * 4) }); }
     comic(g, 'TCHUM', 560, 420, t - T.burst, { size: 120, color: '#A6FF4D', burst: '#2a0b4a', d: .8 });
     flash(g, lt, .25, '#A6FF4D');
   });
@@ -271,7 +272,7 @@ export async function makeShots({ talk }) {
   S(T.offer, (g, lt, t, ctx) => {
     ctx.post.wobble = .3;
     const grabbed = t > T.grab, offered = t > 48.4, close = t > 49.4;
-    g.save(); cam(g, { x: close ? 470 : 540, y: close ? 820 : 960, z: close ? lerp(1.6, 1.9, prog(t, 49.4, 51.3)) : 1.0 });
+    g.save(); cam(g, { x: close ? 470 : 540, y: close ? 820 : 1010, z: close ? lerp(1.6, 1.9, prog(t, 49.4, 51.3)) : 1.12 });
     room(g, t);
     cleide(g, { x: 870, y: 1290 + Math.sin(t * 1.1) * 18, s: .9, t, pose: 'float', face: grabbed ? 'shock' : 'angry', noChinelo: true, armL: { a: grabbed ? 2.2 : .9, b: .5 }, armR: { a: .5, b: .3 } });
     plate(g, 960, 1050 + Math.sin(t * 1.3) * 20, t, !grabbed);
@@ -308,8 +309,8 @@ export async function makeShots({ talk }) {
   S(T.eyes, (g, lt, t, ctx) => {
     ctx.post.wobble = .3;
     const holo = t > T.holo, zx = holo ? 620 : 560, zy = 1330 + Math.sin(t * 1.2) * 14, s = holo ? .8 : .82, hd = zHead(zx, zy, s);
-    const z = holo ? 1.0 : lerp(2.1, 2.3, prog(t, T.eyes, T.holo));
-    g.save(); cam(g, { x: holo ? 540 : hd.cx, y: holo ? 920 : hd.cy + 40, z });
+    const z = holo ? 1.1 : lerp(2.1, 2.3, prog(t, T.eyes, T.holo));
+    g.save(); cam(g, { x: holo ? 540 : hd.cx, y: holo ? 990 : hd.cy + 40, z });
     room(g, t);
     cleide(g, { x: 900, y: 1300 + Math.sin(t * 1.1) * 18, s: .85, t, pose: 'float', face: t > 69 ? 'bored' : 'shock', noChinelo: true, armL: { a: .9, b: 1.2 }, armR: { a: .5, b: .3 } });
     alien(g, { x: zx, y: zy, s, t, face: holo ? 'angry' : 'happy', talk: talk('alien', t), vein: false, armL: holo ? 2.2 : 2.6, armR: holo ? 2.0 : 1.6, inL: g2 => chinelo(g2, 0, 30, .7, Math.PI) });

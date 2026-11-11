@@ -1,0 +1,200 @@
+[
+ {
+  "id": "j1",
+  "who": "juninho",
+  "start": 4.7,
+  "caption": "Relaxa, mãe. Um cafezinho resolve tudo.",
+  "say": "Relaxa, mãe. Um cafezinho resolve tudo.",
+  "voice": "pm_alex",
+  "speed": 1.12,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "f1",
+  "who": "cafe",
+  "start": 12.4,
+  "caption": "EU NÃO AGUENTO MAIS SER BEBIDO POR GENTE BURRA!",
+  "say": "Eu não aguento mais ser bebido por gente burra!",
+  "voice": "pf_dora",
+  "speed": 1.1,
+  "pitch": -4.0,
+  "fx": "vibrato=f=9:d=0.35"
+ },
+ {
+  "id": "j2",
+  "who": "juninho",
+  "start": 16,
+  "caption": "Mas eu nem adocei ainda!",
+  "say": "Mas eu nem adocei ainda!",
+  "voice": "pm_alex",
+  "speed": 1.12,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "f2",
+  "who": "cafe",
+  "start": 17.75,
+  "caption": "Fui! Prefiro virar picolé.",
+  "say": "Fui! Prefiro virar picolé.",
+  "voice": "pf_dora",
+  "speed": 1.1,
+  "pitch": -4.0,
+  "fx": "vibrato=f=9:d=0.35"
+ },
+ {
+  "id": "c1",
+  "who": "cleide",
+  "start": 20.4,
+  "caption": "VEM CÁ, MOLEQUE!",
+  "say": "Vem cá, moleque!",
+  "voice": "pf_dora",
+  "speed": 1.18,
+  "pitch": -1.0,
+  "fx": "acompressor=threshold=-18dB:ratio=4,volume=1.4"
+ },
+ {
+  "id": "r1",
+  "who": "controle",
+  "start": 23.1,
+  "caption": "Portal de emergência aberto.",
+  "say": "Portal de emergência aberto.",
+  "voice": "pm_santa",
+  "speed": 1.0,
+  "pitch": -1.0,
+  "fx": "flanger=delay=2:depth=2:speed=8,acrusher=bits=7:mode=log:aa=1,aecho=0.6:0.5:18:0.4"
+ },
+ {
+  "id": "j3",
+  "who": "juninho",
+  "start": 27.2,
+  "caption": "Errou, mãe.",
+  "say": "Errou, mãe.",
+  "voice": "pm_alex",
+  "speed": 1.12,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "a0",
+  "who": "alien",
+  "start": 30.55,
+  "caption": "Povo de Zorg! Hoje conquistaremos o planeta número mil e...",
+  "say": "Povo de Zorg! Hoje conquistaremos o planeta número mil e",
+  "voice": "pm_santa",
+  "speed": 1.0,
+  "pitch": -5.0,
+  "fx": "aphaser=type=t:speed=0.8,aecho=0.6:0.4:40:0.3"
+ },
+ {
+  "id": "a1",
+  "who": "alien",
+  "start": 35.6,
+  "caption": "QUEM FOI O DESGRAÇADO?!",
+  "say": "Quem foi O desgraçado?!",
+  "voice": "pm_santa",
+  "speed": 1.0,
+  "pitch": -5.0,
+  "fx": "aphaser=type=t:speed=0.8,aecho=0.6:0.4:40:0.3"
+ },
+ {
+  "id": "a2",
+  "who": "alien",
+  "start": 40.8,
+  "caption": "Exijo explicações, terráqueos!",
+  "say": "Exijo explicações, terráqueos!",
+  "voice": "pm_santa",
+  "speed": 1.0,
+  "pitch": -5.0,
+  "fx": "aphaser=type=t:speed=0.8,aecho=0.6:0.4:40:0.3"
+ },
+ {
+  "id": "j4",
+  "who": "juninho",
+  "start": 46.2,
+  "caption": "Calma, chefe. Aceita um pão com mortadela?",
+  "say": "Calma, chefe. Aceita um pão com mortadela?",
+  "voice": "pm_alex",
+  "speed": 1.12,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "a3",
+  "who": "alien",
+  "start": 54,
+  "caption": "Passei 800 anos conquistando planetas… e nunca comi um negócio desses.",
+  "say": "Passei oitocentos anos conquistando planetas... e nunca comi um negócio desses.",
+  "voice": "pm_santa",
+  "speed": 1.0,
+  "pitch": -5.0,
+  "fx": "aphaser=type=t:speed=0.8,aecho=0.6:0.4:40:0.3"
+ },
+ {
+  "id": "c2",
+  "who": "cleide",
+  "start": 59,
+  "caption": "Ai, coitadinho...",
+  "say": "Ai, coitadinho...",
+  "voice": "pf_dora",
+  "speed": 1.18,
+  "pitch": -1.0,
+  "fx": "acompressor=threshold=-18dB:ratio=4,volume=1.4"
+ },
+ {
+  "id": "a4",
+  "who": "alien",
+  "start": 61,
+  "caption": "Eu quero TODA a mortadela da Terra!",
+  "say": "Eu quero toda a mortadela da Terra!",
+  "voice": "pm_santa",
+  "speed": 1.0,
+  "pitch": -5.0,
+  "fx": "aphaser=type=t:speed=0.8,aecho=0.6:0.4:40:0.3"
+ },
+ {
+  "id": "a5",
+  "who": "alien",
+  "start": 64.2,
+  "caption": "Frota de Zorg! Mudança de planos: invadam a Terra e tragam a mortadela!",
+  "say": "Frota de Zorg! Mudança de planos: invadam a Terra e tragam a mortadela!",
+  "voice": "pm_santa",
+  "speed": 1.0,
+  "pitch": -5.0,
+  "fx": "aphaser=type=t:speed=0.8,aecho=0.6:0.4:40:0.3"
+ },
+ {
+  "id": "j5",
+  "who": "juninho",
+  "start": 69,
+  "caption": "E o queijo?",
+  "say": "E o queijo?",
+  "voice": "pm_alex",
+  "speed": 1.12,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "a6",
+  "who": "alien",
+  "start": 70,
+  "caption": "O queijo pode ficar. Não sou monstro.",
+  "say": "O queijo pode ficar. Não sou monstro.",
+  "voice": "pm_santa",
+  "speed": 1.0,
+  "pitch": -5.0,
+  "fx": "aphaser=type=t:speed=0.8,aecho=0.6:0.4:40:0.3"
+ },
+ {
+  "id": "c3",
+  "who": "cleide",
+  "start": 80.9,
+  "caption": "NINGUÉM MEXE NO MEU CAFÉ DA TARDE!",
+  "say": "Ninguém mexe no meu café da tarde!",
+  "voice": "pf_dora",
+  "speed": 1.18,
+  "pitch": -1.0,
+  "fx": "acompressor=threshold=-18dB:ratio=4,volume=1.4"
+ }
+]

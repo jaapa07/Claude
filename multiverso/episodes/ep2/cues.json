@@ -1,0 +1,564 @@
+{
+ "total": 90,
+ "lines": [
+  {
+   "id": "j1",
+   "who": "juninho",
+   "at": 4.7,
+   "text": "Relaxa, mãe. Um cafezinho resolve tudo."
+  },
+  {
+   "id": "f1",
+   "who": "cafe",
+   "at": 12.4,
+   "text": "EU NÃO AGUENTO MAIS SER BEBIDO POR GENTE BURRA!"
+  },
+  {
+   "id": "j2",
+   "who": "juninho",
+   "at": 16,
+   "text": "Mas eu nem adocei ainda!"
+  },
+  {
+   "id": "f2",
+   "who": "cafe",
+   "at": 17.75,
+   "text": "Fui! Prefiro virar picolé."
+  },
+  {
+   "id": "c1",
+   "who": "cleide",
+   "at": 20.4,
+   "text": "VEM CÁ, MOLEQUE!"
+  },
+  {
+   "id": "r1",
+   "who": "controle",
+   "at": 23.1,
+   "text": "Portal de emergência aberto."
+  },
+  {
+   "id": "j3",
+   "who": "juninho",
+   "at": 27.2,
+   "text": "Errou, mãe."
+  },
+  {
+   "id": "a0",
+   "who": "alien",
+   "at": 30.55,
+   "text": "Povo de Zorg! Hoje conquistaremos o planeta número mil e...",
+   "say": "Povo de Zorg! Hoje conquistaremos o planeta número mil e"
+  },
+  {
+   "id": "a1",
+   "who": "alien",
+   "at": 35.6,
+   "text": "QUEM FOI O DESGRAÇADO?!"
+  },
+  {
+   "id": "a2",
+   "who": "alien",
+   "at": 40.8,
+   "text": "Exijo explicações, terráqueos!"
+  },
+  {
+   "id": "j4",
+   "who": "juninho",
+   "at": 46.2,
+   "text": "Calma, chefe. Aceita um pão com mortadela?"
+  },
+  {
+   "id": "a3",
+   "who": "alien",
+   "at": 54,
+   "text": "Passei 800 anos conquistando planetas… e nunca comi um negócio desses.",
+   "say": "Passei oitocentos anos conquistando planetas... e nunca comi um negócio desses."
+  },
+  {
+   "id": "c2",
+   "who": "cleide",
+   "at": 59,
+   "text": "Ai, coitadinho..."
+  },
+  {
+   "id": "a4",
+   "who": "alien",
+   "at": 61,
+   "text": "Eu quero TODA a mortadela da Terra!"
+  },
+  {
+   "id": "a5",
+   "who": "alien",
+   "at": 64.2,
+   "text": "Frota de Zorg! Mudança de planos: invadam a Terra e tragam a mortadela!"
+  },
+  {
+   "id": "j5",
+   "who": "juninho",
+   "at": 69,
+   "text": "E o queijo?"
+  },
+  {
+   "id": "a6",
+   "who": "alien",
+   "at": 70,
+   "text": "O queijo pode ficar. Não sou monstro."
+  },
+  {
+   "id": "c3",
+   "who": "cleide",
+   "at": 80.9,
+   "text": "NINGUÉM MEXE NO MEU CAFÉ DA TARDE!"
+  }
+ ],
+ "sfx": [
+  [
+   0.2,
+   "swoosh_up",
+   0.6
+  ],
+  [
+   4.2,
+   "whoosh",
+   0.6
+  ],
+  [
+   5.6,
+   "splash",
+   0.4
+  ],
+  [
+   6,
+   "plop",
+   0.5
+  ],
+  [
+   6.35,
+   "plop",
+   0.5
+  ],
+  [
+   6.7,
+   "plop",
+   0.5
+  ],
+  [
+   7.05,
+   "plop",
+   0.5
+  ],
+  [
+   7.4,
+   "plop",
+   0.5
+  ],
+  [
+   7.75,
+   "plop",
+   0.5
+  ],
+  [
+   8.1,
+   "plop",
+   0.5
+  ],
+  [
+   8.45,
+   "plop",
+   0.5
+  ],
+  [
+   9.6,
+   "squish",
+   1
+  ],
+  [
+   10.2,
+   "squish",
+   0.8
+  ],
+  [
+   10.799999999999999,
+   "magic",
+   0.6
+  ],
+  [
+   11,
+   "boing",
+   0.5
+  ],
+  [
+   12.2,
+   "scratch",
+   0.7
+  ],
+  [
+   16.9,
+   "slap",
+   0.8
+  ],
+  [
+   18.6,
+   "whoosh",
+   1
+  ],
+  [
+   19.3,
+   "glitch",
+   0.3
+  ],
+  [
+   19.4,
+   "ding",
+   0.5
+  ],
+  [
+   20.2,
+   "swoosh_up",
+   0.7
+  ],
+  [
+   22.8,
+   "click",
+   1.3
+  ],
+  [
+   24,
+   "warp",
+   1.1
+  ],
+  [
+   25.2,
+   "whoosh",
+   1
+  ],
+  [
+   25.75,
+   "zap",
+   0.9
+  ],
+  [
+   26.3,
+   "power_down",
+   0.5
+  ],
+  [
+   29.2,
+   "thunder",
+   0.5
+  ],
+  [
+   29.4,
+   "gol",
+   0.5
+  ],
+  [
+   33,
+   "warp",
+   0.8
+  ],
+  [
+   33.5,
+   "bigslap",
+   1.4
+  ],
+  [
+   33.55,
+   "honk",
+   0.7
+  ],
+  [
+   34.2,
+   "gasp",
+   1
+  ],
+  [
+   37.6,
+   "kiss",
+   0.6
+  ],
+  [
+   37.7,
+   "kiss",
+   0.6
+  ],
+  [
+   38.6,
+   "warp",
+   0.9
+  ],
+  [
+   39.199999999999996,
+   "swoosh_up",
+   0.8
+  ],
+  [
+   39.6,
+   "warp",
+   1
+  ],
+  [
+   39.9,
+   "boing",
+   1
+  ],
+  [
+   39.949999999999996,
+   "thud",
+   0.9
+  ],
+  [
+   43.2,
+   "whoosh",
+   0.6
+  ],
+  [
+   43.6,
+   "boop",
+   0.6
+  ],
+  [
+   47.6,
+   "pop",
+   0.9
+  ],
+  [
+   48.4,
+   "whoosh",
+   0.5
+  ],
+  [
+   49.5,
+   "sparkle",
+   0.9
+  ],
+  [
+   51.5,
+   "gulp",
+   1.2
+  ],
+  [
+   51.8,
+   "gulp",
+   0.8
+  ],
+  [
+   53.6,
+   "cry",
+   1
+  ],
+  [
+   56.5,
+   "cry",
+   0.7
+  ],
+  [
+   59.3,
+   "kiss",
+   0.4
+  ],
+  [
+   60.5,
+   "ding",
+   0.8
+  ],
+  [
+   60.65,
+   "sparkle",
+   0.8
+  ],
+  [
+   63.8,
+   "beep",
+   0.7
+  ],
+  [
+   63.949999999999996,
+   "power_up",
+   0.6
+  ],
+  [
+   68.5,
+   "gol",
+   0.4
+  ],
+  [
+   72.5,
+   "warp",
+   1
+  ],
+  [
+   72.9,
+   "laser",
+   0.35
+  ],
+  [
+   73.45,
+   "laser",
+   0.35
+  ],
+  [
+   74,
+   "laser",
+   0.35
+  ],
+  [
+   74.55000000000001,
+   "laser",
+   0.35
+  ],
+  [
+   75.10000000000001,
+   "laser",
+   0.35
+  ],
+  [
+   75.65,
+   "laser",
+   0.35
+  ],
+  [
+   75.2,
+   "hum",
+   1
+  ],
+  [
+   75.6,
+   "rumble",
+   0.7
+  ],
+  [
+   77.5,
+   "hum",
+   0.7
+  ],
+  [
+   78,
+   "power_up",
+   0.6
+  ],
+  [
+   79.4,
+   "gasp",
+   0.8
+  ],
+  [
+   80.5,
+   "whoosh",
+   1
+  ],
+  [
+   80.6,
+   "slap",
+   0.6
+  ],
+  [
+   80.8,
+   "thunder",
+   0.6
+  ],
+  [
+   85,
+   "swoosh_up",
+   0.8
+  ],
+  [
+   85.4,
+   "hum",
+   1.1
+  ],
+  [
+   88.6,
+   "rimshot",
+   0.9
+  ]
+ ],
+ "music": [
+  [
+   0,
+   "space",
+   0.6
+  ],
+  [
+   4.2,
+   "lounge",
+   0.5
+  ],
+  [
+   12.2,
+   "none"
+  ],
+  [
+   15.8,
+   "lounge",
+   0.5
+  ],
+  [
+   20.2,
+   "chase",
+   0.6
+  ],
+  [
+   26.3,
+   "none"
+  ],
+  [
+   29.2,
+   "epic",
+   0.55
+  ],
+  [
+   33.4,
+   "none"
+  ],
+  [
+   39.5,
+   "tension",
+   0.6
+  ],
+  [
+   46,
+   "lounge",
+   0.45
+  ],
+  [
+   51.5,
+   "none"
+  ],
+  [
+   53.6,
+   "sad",
+   0.9
+  ],
+  [
+   60.5,
+   "funk",
+   0.55
+  ],
+  [
+   63.8,
+   "epic",
+   0.6
+  ],
+  [
+   72.5,
+   "epic",
+   0.8
+  ],
+  [
+   77.5,
+   "tension",
+   0.6
+  ],
+  [
+   80.5,
+   "none"
+  ],
+  [
+   83,
+   "epic",
+   0.9
+  ]
+ ]
+}

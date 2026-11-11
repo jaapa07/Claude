@@ -1,0 +1,211 @@
+[
+ {
+  "id": "r1",
+  "who": "controle",
+  "start": 0.7,
+  "caption": "Realidade em três por cento. Recomendo pânico.",
+  "say": "Realidade em três por cento. Recomendo pânico.",
+  "voice": "pm_santa",
+  "speed": 1.0,
+  "pitch": -1.0,
+  "fx": "flanger=delay=2:depth=2:speed=8,acrusher=bits=7:mode=log:aa=1,aecho=0.6:0.5:18:0.4"
+ },
+ {
+  "id": "j1",
+  "who": "juninho",
+  "start": 7.3,
+  "caption": "Mãe, as estrelas viraram pipoca!",
+  "say": "Mãe, as estrelas viraram pipoca!",
+  "voice": "pm_alex",
+  "speed": 1.12,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "c1",
+  "who": "cleide",
+  "start": 10.4,
+  "caption": "PARA DE COMER O UNIVERSO, JUNINHO!",
+  "say": "Para de comer O universo, juninho!",
+  "voice": "pf_dora",
+  "speed": 1.18,
+  "pitch": -1.0,
+  "fx": "acompressor=threshold=-18dB:ratio=4,volume=1.4"
+ },
+ {
+  "id": "c2",
+  "who": "cleide",
+  "start": 14.4,
+  "caption": "O MEU SOFÁ, NÃO!",
+  "say": "O meu sofá, não!",
+  "voice": "pf_dora",
+  "speed": 1.18,
+  "pitch": -1.0,
+  "fx": "acompressor=threshold=-18dB:ratio=4,volume=1.4"
+ },
+ {
+  "id": "z1",
+  "who": "ze",
+  "start": 21.2,
+  "caption": "Quem foi o animal que ativou o controle universal?",
+  "say": "Quem foi o animal que ativou o controle universal?",
+  "voice": "pm_santa",
+  "speed": 0.92,
+  "pitch": -2.5,
+  "fx": "lowpass=f=5200"
+ },
+ {
+  "id": "j2",
+  "who": "juninho",
+  "start": 24.6,
+  "caption": "Foi sem querer, chefe.",
+  "say": "Foi sem querer, chefe.",
+  "voice": "pm_alex",
+  "speed": 1.12,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "z2",
+  "who": "ze",
+  "start": 27.2,
+  "caption": "SEM QUERER?! VOCÊ TRANSFORMOU SATURNO NUMA COXINHA!",
+  "say": "Sem querer?! você transformou saturno numa coxinha!",
+  "voice": "pm_santa",
+  "speed": 0.92,
+  "pitch": -2.5,
+  "fx": "lowpass=f=5200"
+ },
+ {
+  "id": "j3",
+  "who": "juninho",
+  "start": 31.4,
+  "caption": "Mas ficou bonita, né?",
+  "say": "Mas ficou bonita, né?",
+  "voice": "pm_alex",
+  "speed": 1.12,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "z3",
+  "who": "ze",
+  "start": 33.2,
+  "caption": "Multa de nível universal.",
+  "say": "Multa de nível universal.",
+  "voice": "pm_santa",
+  "speed": 0.92,
+  "pitch": -2.5,
+  "fx": "lowpass=f=5200"
+ },
+ {
+  "id": "j4",
+  "who": "juninho",
+  "start": 37.2,
+  "caption": "Aceita Pix?",
+  "say": "Aceita Pix?",
+  "voice": "pm_alex",
+  "speed": 1.12,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "z4",
+  "who": "ze",
+  "start": 40.3,
+  "caption": "O único jeito de restaurar o universo é apertar o botão de reinicialização.",
+  "say": "O único jeito de restaurar o universo é apertar o botão de reinicialização.",
+  "voice": "pm_santa",
+  "speed": 0.92,
+  "pitch": -2.5,
+  "fx": "lowpass=f=5200"
+ },
+ {
+  "id": "z5",
+  "who": "ze",
+  "start": 44.6,
+  "caption": "Mas antes, uma pergunta extremamente simples.",
+  "say": "Mas antes, uma pergunta extremamente simples.",
+  "voice": "pm_santa",
+  "speed": 0.92,
+  "pitch": -2.5,
+  "fx": "lowpass=f=5200"
+ },
+ {
+  "id": "z6",
+  "who": "ze",
+  "start": 48,
+  "caption": "Quanto é dois mais dois?",
+  "say": "Quanto é dois mais dois?",
+  "voice": "pm_santa",
+  "speed": 0.92,
+  "pitch": -2.5,
+  "fx": "lowpass=f=5200"
+ },
+ {
+  "id": "j5",
+  "who": "juninho",
+  "start": 60.2,
+  "caption": "Depende… é com ou sem imposto?",
+  "say": "Depende... é com ou sem imposto?",
+  "voice": "pm_alex",
+  "speed": 1.12,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "j6",
+  "who": "juninho",
+  "start": 69,
+  "caption": "QUATRO! QUATRO, DESGRAÇA!",
+  "say": "Quatro! quatro, desgraça!",
+  "voice": "pm_alex",
+  "speed": 1.12,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "z7",
+  "who": "ze",
+  "start": 71.8,
+  "caption": "Deferido.",
+  "say": "Deferido.",
+  "voice": "pm_santa",
+  "speed": 0.92,
+  "pitch": -2.5,
+  "fx": "lowpass=f=5200"
+ },
+ {
+  "id": "r2",
+  "who": "controle",
+  "start": 82.5,
+  "caption": "Modo inteligência ativado.",
+  "say": "Modo inteligência ativado.",
+  "voice": "pm_santa",
+  "speed": 1.0,
+  "pitch": -1.0,
+  "fx": "flanger=delay=2:depth=2:speed=8,acrusher=bits=7:mode=log:aa=1,aecho=0.6:0.5:18:0.4"
+ },
+ {
+  "id": "j7",
+  "who": "juninho",
+  "start": 84.4,
+  "caption": "Agora sim!",
+  "say": "Agora sim!",
+  "voice": "pm_alex",
+  "speed": 1.12,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "c3",
+  "who": "cleide",
+  "start": 86.9,
+  "caption": "EU DESISTO DESSE MENINO!",
+  "say": "Eu desisto desse menino!",
+  "voice": "pf_dora",
+  "speed": 1.18,
+  "pitch": -1.0,
+  "fx": "acompressor=threshold=-18dB:ratio=4,volume=1.4"
+ }
+]

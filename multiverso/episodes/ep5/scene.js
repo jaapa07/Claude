@@ -23,9 +23,9 @@ export const LINES = [
   { id: 'j3', who: 'juninho', at: 31.4, text: 'Mas ficou bonita, né?' },
   { id: 'z3', who: 'ze', at: 33.2, text: 'Multa de nível universal.' },
   { id: 'j4', who: 'juninho', at: 37.2, text: 'Aceita Pix?' },
-  { id: 'z4', who: 'ze', at: 40.3, text: 'O único jeito de restaurar o universo é apertar o botão de reinicialização.' },
-  { id: 'z5', who: 'ze', at: 44.6, text: 'Mas antes, uma pergunta extremamente simples.' },
-  { id: 'z6', who: 'ze', at: 48.0, text: 'Quanto é dois mais dois?' },
+  { id: 'z4', who: 'ze', at: 40.0, text: 'O único jeito de restaurar o universo é apertar o botão de reinicialização.' },
+  { id: 'z5', who: 'ze', at: 45.15, text: 'Mas antes, uma pergunta extremamente simples.' },
+  { id: 'z6', who: 'ze', at: 48.3, text: 'Quanto é dois mais dois?' },
   { id: 'j5', who: 'juninho', at: 60.2, text: 'Depende… é com ou sem imposto?' },
   { id: 'j6', who: 'juninho', at: 69.0, text: 'QUATRO! QUATRO, DESGRAÇA!' },
   { id: 'z7', who: 'ze', at: 71.8, text: 'Deferido.' },
@@ -124,7 +124,7 @@ export async function makeShots({ talk }) {
       const delay = Math.hypot(gx, gy) / 36, k = clamp((b * 1.6 - delay) / .8), kk = k * k;
       const dx = (hash(i, 32) - .5) * 160, dy = (hash(i, 33) - .5) * 160, dz = 160 + hash(i, 34) * 120;
       p.set(x0 + dx * kk, y0 + dy * kk, z0 + dz * kk);
-      eu.set(kk * hash(i, 35) * 9 + t * k, kk * hash(i, 36) * 9, kk * 3); q.setFromEuler(eu); sc.setScalar(5.4 * (1 - k * .5));
+      eu.set(kk * hash(i, 35) * 9 + t * k, kk * hash(i, 36) * 9, kk * 3); q.setFromEuler(eu); sc.setScalar((hash(i, 37) < .45 ? 0 : 4.2) * (1 - k * .5));
       mtx.compose(p, q, sc); cubes.setMatrixAt(i, mtx);
     }
     cubes.instanceMatrix.needsUpdate = true;
@@ -143,14 +143,14 @@ export async function makeShots({ talk }) {
     setCubes(t, b); setPlanets(t, i => prog(t, planets[i].ts, planets[i].ts + .35));
     camU.position.set(Math.sin(t * .15) * 10, Math.cos(t * .2) * 5, 40); camU.lookAt(0, 0, -60);
     draw3d(g, U, camU);
-    ctx.post.cubes = .4 + b * .6; ctx.post.glitch = (Math.floor(t * 3) % 4 === 0 ? .6 : .1); ctx.post.chroma = .5;
+    ctx.post.cubes = .15 + b * .45; ctx.post.glitch = (Math.floor(t * 3) % 5 === 0 ? .45 : 0); ctx.post.chroma = .4;
     // stars pop into popcorn
     for (let i = 0; i < 8; i++) {
       const x = 120 + hash(i, 41) * 840, y = 200 + hash(i, 42) * 1100, k = t - T.pops - i * .28;
       if (k < 0) { g.fillStyle = '#fff'; g.shadowColor = '#fff'; g.shadowBlur = 20; g.beginPath(); g.arc(x, y, 7, 0, TAU); g.fill(); g.shadowBlur = 0; }
       else { const s = ease.outBack(clamp(k / .25)) * .9; pipoca(g, x, y, s, i); }
     }
-    comic(g, 'GOL?!', 300, 560, t - T.ball, { size: 110, color: '#fff', burst: '#2fa34d', d: 1.2 });
+    comic(g, 'GOL?!', 330, 980, t - T.ball, { size: 110, color: '#fff', burst: '#2fa34d', d: 1.2 });
     // the remote, in alarm, as an inset (continuity from EP4)
     const ki = ease.outBack(prog(lt, .3, .6)) * (1 - ease.inQ(prog(lt, 4.0, 4.3)));
     if (ki > 0) { g.save(); g.translate(820, 380); g.scale(ki, ki); g.beginPath(); g.arc(0, 0, 190, 0, TAU); g.fillStyle = '#2a0410'; g.fill(); g.lineWidth = 10; g.strokeStyle = '#ff3b5c'; g.stroke();
@@ -183,7 +183,7 @@ export async function makeShots({ talk }) {
   S(T.hole, (g, lt, t, ctx) => {
     bh.userData.set(t); bh.rotation.z = t * .3;
     const burp = t - T.burp, bz = burp > 0 && burp < .5 ? 1 + .4 * Math.sin(burp / .5 * Math.PI) : 1;
-    bh.scale.setScalar(lerp(.6, 1.1, ease.outC(prog(lt, 0, 1.2))) * bz);
+    bh.scale.setScalar(lerp(.45, .72, ease.outC(prog(lt, 0, 1.2))) * bz);
     draw3d(g, BH, camB);
     ctx.post.swirl = .55 * clamp(lt) * (burp > 0 ? 1 - clamp(burp) : 1); ctx.post.center = [.5, .5];
     const cx = 540, cy = 960;
@@ -193,7 +193,7 @@ export async function makeShots({ talk }) {
     sucked(g, cx, cy, prog(t, 15.0, 17.0), 4.0, 680, gg => duck(gg, 0, 0, 1.3));
     sucked(g, cx, cy, prog(t, 17.0, 18.3), 1.2, 600, gg => sanduiche(gg, { s: .6, y: 40 }));
     // Juninho and Cleide clinging to a floating cube, hair blown towards the hole
-    g.save(); g.translate(Math.sin(t * 3) * 6, 0);
+    g.save(); g.translate(110 + Math.sin(t * 3) * 6, 0);
     rr(g, 60, 360, 200, 200, 14, '#7B3FE4', 8);
     cleide(g, { x: 150, y: 760, s: .7, t, rot: .5 + Math.sin(t * 9) * .04, face: t > 14.3 ? 'scream' : 'shock', talk: talk('cleide', t), armL: { a: 2.9, b: .1 }, armR: { a: 2.4, b: .2 }, dressUp: .6 });
     juninho(g, { x: 260, y: 860, s: .65, t, rot: .9 + Math.sin(t * 8) * .06, pose: 'float', face: 'panic', hairWind: 1, armL: { a: 2.8, b: .1 }, armR: { a: 2.6, b: .1 } });
@@ -265,9 +265,9 @@ export async function makeShots({ talk }) {
     juninho(g, { x: 420, y: 1420, s: 1.0, t, face: sk > 0 && sk < .5 ? 'x' : sk > 0 ? 'dumb' : 'smug', talk: talk('juninho', t), sq: sk > 0 ? 1 - .15 * Math.exp(-sk * 7) : 1, armL: { a: .3, b: .3 }, armR: { a: t > 37.0 ? 1.5 : .3, b: t > 37 ? 1.2 : .2 } });
     if (sk > 0) { g.save(); g.translate(424, 1420 - 1.0 * 560); g.rotate(-.12); g.font = '400 40px Bangers'; g.textAlign = 'center'; g.fillStyle = 'rgba(232,32,58,.9)'; g.fillText('MULTADO', 0, 0); g.lineWidth = 4; g.strokeStyle = 'rgba(232,32,58,.9)'; g.strokeRect(-86, -32, 172, 46); g.restore(); }
     g.restore();
-    if (sk > 0) comic(g, 'TÓIN', 640, 420, sk, { size: 110, color: '#fff', burst: '#e8203a', d: .9 });
+    if (sk > 0) comic(g, 'TÓIN', 780, 400, sk, { size: 110, color: '#fff', burst: '#e8203a', d: .9 });
     // the bill, like a receipt unrolling
-    if (t > 34.4) { const r = ease.outC(prog(t, 34.4, 35.2)); g.save(); g.translate(880, 180); rr(g, -150, 0, 300, 440 * r, 8, '#fffdf4', 6); g.save(); g.beginPath(); g.rect(-150, 0, 300, 440 * r); g.clip();
+    if (t > 34.4) { const r = ease.outC(prog(t, 34.4, 35.2)); g.save(); g.translate(230, 150); rr(g, -150, 0, 300, 440 * r, 8, '#fffdf4', 6); g.save(); g.beginPath(); g.rect(-150, 0, 300, 440 * r); g.clip();
       g.fillStyle = INK; g.font = '900 26px Nunito'; g.textAlign = 'left'; ['MULTA INTERDIMENSIONAL', 'Saturno → coxinha ... ∞', 'Sol → pipoca ....... ∞', 'Sofá da mãe ......... R$ 1.200', 'Taxa de burrice ... 100%', '', 'TOTAL: ∞ + R$ 1.200', 'Parcela em 10 mil anos'].forEach((s, i) => g.fillText(s, -136, 40 + i * 48)); g.restore(); g.restore(); }
     whip(g, lt, .25);
   });
@@ -288,9 +288,9 @@ export async function makeShots({ talk }) {
     }
     // the holographic reset button
     const bk = ease.outBack(prog(t, 41.4, 42.2));
-    if (bk > 0) { g.save(); g.translate(540, 560); g.scale(bk, bk); g.globalAlpha = .9; g.shadowColor = '#4CF7E8'; g.shadowBlur = 50; ell(g, 0, 0, 200, 70, 'rgba(76,247,232,.3)', 6); ell(g, 0, -30, 150, 70, Math.floor(t * 3) % 2 ? 'rgba(76,247,232,.75)' : 'rgba(76,247,232,.55)', 6); g.shadowBlur = 0;
+    if (bk > 0) { g.save(); g.translate(540, 430); g.scale(bk, bk); g.globalAlpha = .9; g.shadowColor = '#4CF7E8'; g.shadowBlur = 50; ell(g, 0, 0, 200, 70, 'rgba(76,247,232,.3)', 6); ell(g, 0, -30, 150, 70, Math.floor(t * 3) % 2 ? 'rgba(76,247,232,.75)' : 'rgba(76,247,232,.55)', 6); g.shadowBlur = 0;
       g.fillStyle = '#05202a'; g.font = '400 64px Bangers'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('REINICIAR', 0, -32); g.restore();
-      text(g, 'BOTÃO DE REINICIALIZAÇÃO UNIVERSAL', 540, 700, { size: 36, font: 'Nunito', weight: 900, color: '#4CF7E8', stroke: 8, alpha: bk }); }
+      text(g, 'BOTÃO DE REINICIALIZAÇÃO UNIVERSAL', 540, 560, { size: 36, font: 'Nunito', weight: 900, color: '#4CF7E8', stroke: 8, alpha: bk }); }
     ze(g, { x: 800, y: 1400, s: 1.0, t, face: 'tired', talk: talk('ze', t), armR: { a: t > 41.4 && t < 44 ? 2.2 : .3, b: .2 }, inR: show > 0 ? g2 => { rr(g2, -10, -90, 20, 90, 8, '#333', 4); ell(g2, 0, -100, 18, 22, '#888', 4); } : null });
     juninho(g, { x: 360, y: 1180, s: .85, t, face: show > 0 ? 'happy' : 'neutral', armL: { a: .3, b: .3 }, armR: { a: .3, b: .3 }, sq: 1 + Math.sin(t * 6) * .01 });
     g.restore();
@@ -342,7 +342,7 @@ export async function makeShots({ talk }) {
     const pct = inErr ? 99 : errK > 1.6 ? Math.min(100, Math.floor(prog(t, 57.2, 59.4) * 100)) : Math.floor(prog(t, 50.4, T.err) * 99);
     g.save(); g.translate(540, 1300 - 640); rr(g, -380, -38, 760, 76, 38, '#0b2a36', 6); rr(g, -372, -30, 744 * pct / 100, 60, 30, inErr ? '#e8203a' : '#4CF7E8', 0);
     g.restore();
-    text(g, inErr ? 'ERRO 404: NEURÔNIO NÃO ENCONTRADO' : errK > 1.6 ? `REINICIANDO NEURÔNIO… ${pct}%` : `CALCULANDO… ${pct}%`, 540, 590, { size: inErr ? 46 : 50, font: 'Nunito', weight: 900, color: inErr ? '#ff3b5c' : '#ffffff', stroke: 10 });
+    text(g, inErr ? 'ERRO 404: NEURÔNIO NÃO ENCONTRADO' : errK > 1.6 ? `REINICIANDO NEURÔNIO… ${pct}%` : `CALCULANDO… ${pct}%`, 540, 590, { size: inErr ? 38 : 50, font: 'Nunito', weight: 900, color: inErr ? '#ff3b5c' : '#ffffff', stroke: 10 });
     if (inErr) { ctx.post.glitch = .9; ctx.post.chroma = 1; ctx.post.invert = Math.floor(t * 10) % 3 === 0 ? 1 : 0; }
     if (t > 59.4) comic(g, 'EUREKA!', 540, 860, t - 59.4, { size: 120, color: '#FFD21F', burst: '#2fa34d', d: .7 });
     flash(g, lt, .2, '#4CF7E8');
@@ -385,7 +385,7 @@ export async function makeShots({ talk }) {
     stampMark(g, 540, 640, 'DEFERIDO', prog(t, T.deferido + .4, T.deferido + .6), '#2fe36a', -.15);
     // the reset button is pressed
     if (t > T.press) { const k = t - T.press; ctx.post.swirl = clamp(k / 1.6) * 1.4; ctx.post.center = [.5, .4]; ctx.post.chroma = clamp(k); g.save(); g.globalCompositeOperation = 'lighter'; g.fillStyle = `rgba(76,247,232,${clamp(k / 1.6) * .6})`; g.fillRect(0, 0, W, H); g.restore(); }
-    flash(g, hk, .2, '#ffffff');
+    if (hk > 0) flash(g, hk, .2, '#ffffff');
   });
 
   // ---------- 12. restoration: everything rewinds into place (75.0 – 81.0) ----------
@@ -404,7 +404,7 @@ export async function makeShots({ talk }) {
     burst(g, t - 77.0, 540, 900, { n: 90, speed: 700, g: -100, life: 2.2, colors: ['#ffffff', '#9be7ff'], size: 10, seed: 78 });
     if (t < 77.6 && Math.floor(t * 3) % 2 === 0) text(g, '◀◀ REBOBINANDO', 300, 160, { size: 54, font: 'Nunito', weight: 900, color: '#fff', stroke: 8 });
     if (t > 80.2) comic(g, 'TUDO NORMAL', 540, 520, t - 80.2, { size: 100, color: '#2fe36a', burst: '#140c1c', d: .8 });
-    flash(g, t - 77.0, .5, '#ffffff');
+    if (t > 77.0) flash(g, t - 77.0, .5, '#ffffff');
   });
 
   // ---------- 13. back in the bathroom, back on the toilet (81.0 – 90) ----------
@@ -422,10 +422,10 @@ export async function makeShots({ talk }) {
     // the green-button inset
     const ik = ease.outBack(prog(t, T.green - .3, T.green)) * (1 - ease.inQ(prog(t, 84.2, 84.5)));
     if (ik > 0) { g.save(); g.translate(820, 520); g.scale(ik, ik); g.beginPath(); g.arc(0, 0, 200, 0, TAU); g.fillStyle = '#052a14'; g.fill(); g.lineWidth = 12; g.strokeStyle = '#2fe36a'; g.stroke();
-      g.save(); g.beginPath(); g.arc(0, 0, 190, 0, TAU); g.clip(); controle(g, { x: 60, y: 40, s: 1.8, t, face: 'happy', talk: talk('controle', t), press: 'green', glow: 1 }); g.restore(); g.restore();
+      g.save(); g.beginPath(); g.arc(0, 0, 190, 0, TAU); g.clip(); controle(g, { x: 40, y: -40, s: 1.8, t, face: 'happy', talk: talk('controle', t), press: 'green', glow: 1 }); g.restore(); g.restore();
       text(g, 'QI +1000', 820, 760, { size: 64, color: '#2fe36a', alpha: ik }); }
-    if (pk > 0) comic(g, 'PUF!', 760, 420, pk, { size: 120, color: '#C9A060', burst: '#6b4a20', d: .9 });
-    if (pk > .3 && t < 86.6) text(g, 'QI: 1 BATATA', 540, 300, { size: 70, color: '#C9A060', alpha: clamp((pk - .3) * 4) });
+    if (pk > 0) comic(g, 'PUF!', 820, 640, pk, { size: 120, color: '#C9A060', burst: '#6b4a20', d: .9 });
+    if (pk > .3 && t < 86.6) text(g, 'QI: 1 BATATA', 540, 260, { size: 70, color: '#C9A060', alpha: clamp((pk - .3) * 4) });
     // END CARD
     if (endK > 0) {
       irisOut(g, t, T.end, .4, 540, 1408 - 1.08 * 520);

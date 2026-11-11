@@ -94,7 +94,7 @@ export async function boot(ep) {
     g.setTransform(1, 0, 0, 1, 0, 0); g.globalAlpha = 1; g.filter = 'none'; g.clearRect(0, 0, W, H);
     sh.draw(g, lt, t, ctx);
     g.setTransform(1, 0, 0, 1, 0, 0); g.globalAlpha = 1;
-    fg.setTransform(1, 0, 0, 1, 0, 0);
+    fg.setTransform(1, 0, 0, 1, 0, 0); fg.globalAlpha = 1; fg.fillStyle = '#000'; fg.fillRect(0, 0, W, H);
     if (Object.values(ctx.post).some(v => v)) post(buf, ctx.post, t, fg);
     else fg.drawImage(buf, 0, 0);
     if (ep.overlay) ep.overlay(fg, t);
