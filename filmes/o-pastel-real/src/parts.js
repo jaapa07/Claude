@@ -1,6 +1,6 @@
 // The three parts as beats. A beat: { scene, line | lines, lead, tail, dur, tr, cam(u,D)→[x,y,zoom], cast(u,D,S,t), set(u,D), back/front(ctx,u,D,t,S), ui(ctx,u,D,t,S), sfx:[[at,name,dB,pan]] }
 import { K, clamp, seg, ss, eo, ei, eio, back, lerp, pop, shake, TAU, hash } from './lib.js';
-import { pose, INK, seolhwa } from './chars.js';
+import { pose, INK, seolhwa, gato } from './chars.js';
 import { mandu, tray, bowl, dough, puff, boom, speedLines, sparkles, word, fire } from './scenes.js';
 
 export function defaults(scene) {
@@ -35,9 +35,42 @@ function continua(c, u, a, label, t) {
   c.restore(); mandu(c, 540, 1120 + Math.sin(t * 4) * 12, 1.6, 'burnt', t);
 }
 
+
+// —— cover: a poster frame that opens every part (also exported as the Reels thumbnail) ——
+const EPI = { 1: 'O Mandu Queimado', 2: 'O Plano Maluco', 3: 'O Banquete' };
+function cover(part) {
+  const mood = part === 1 ? 'panic' : part === 2 ? 'chase' : 'joy';
+  return { name: 'capa', scene: 'hall', dur: 1.3, mood: 'title',
+    cast(u, D, S, t) {
+      const happy = mood === 'joy';
+      show(S.seol, { x: -320, face: 1, aB: .75, aF: happy ? 2.6 : .75, bB: -2, bF: happy ? .3 : -2, E: happy ? { eye: 'happy', mouth: 'grin' } : { eye: 'open', brow: -1, mouth: 'flat' }, look: [1, 0] });
+      show(S.rei, { x: 320, face: -1, s: .95, aB: .6, aF: happy ? 2.7 : .55, bF: .2, E: happy ? { eye: 'happy', mouth: 'grin', open: .3, stache: .5 } : { eye: 'open', brow: -.8, mouth: 'flat' }, look: [1, .3] });
+      show(S.dol, { x: 0, y: 60, s: 1.12, face: 1, aB: .9, aF: .9, bB: 1.1, bF: 1.1,
+        E: mood === 'panic' ? { eye: 'wide', brow: 1, mouth: 'scream', open: .5, sweat: 1, soot: .6 } : mood === 'chase' ? { eye: 'wide', brow: 1, mouth: 'o', open: .5, sweat: 1 } : { eye: 'happy', mouth: 'grin', open: .3 } });
+      show(S.cat, { x: -150, y: 70, face: 1, s: .72, hat: happy, E: { eye: 'happy' } });
+      S.order = ['seol', 'rei', 'dol'];
+    },
+    back(c, u, D, t) {   // sunburst behind the cast
+      c.save(); c.translate(0, -560); for (let i = 0; i < 24; i++) { c.fillStyle = i % 2 ? '#e8402a' : '#f3b23a'; c.beginPath(); c.moveTo(0, 0); c.arc(0, 0, 3000, i / 24 * TAU + t * .15, (i + 1) / 24 * TAU + t * .15); c.fill(); } c.restore();
+    },
+    front(c, u, D, t, S) { tray(c, 20, -250, 1.15, mood === 'joy' ? ['raw', 'kimchi', 'burnt', 'mel', 'batata', 'raw'] : mood === 'chase' ? CRAZY : BURNT, t); sparkles(c, 0, -380, 300, t, 6, '#fff6dc'); gato(c, S.cat, t); },
+    cam: (u, D) => [0, -440, lerp(1.2, 1.23, u / D)],
+    ui(c, u, D, t) {
+      c.save(); c.translate(540, 300); c.rotate(-.04); c.fillStyle = '#c8303a'; c.strokeStyle = INK; c.lineWidth = 10; c.beginPath(); c.roundRect(-450, -130, 900, 260, 40); c.fill(); c.stroke();
+      c.fillStyle = '#f3d24a'; c.beginPath(); c.roundRect(-430, -112, 860, 16, 8); c.fill(); c.beginPath(); c.roundRect(-430, 96, 860, 16, 8); c.fill();
+      c.font = '140px "Lilita One"'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.lineJoin = 'round'; c.lineWidth = 22; c.strokeStyle = INK; c.strokeText('O PASTEL REAL', 0, -2); c.fillStyle = '#fff6dc'; c.fillText('O PASTEL REAL', 0, -2); c.restore();
+      c.save(); c.translate(540, 500); c.rotate(.05); c.fillStyle = '#2f7a62'; c.strokeStyle = INK; c.lineWidth = 8; c.beginPath(); c.roundRect(-190, -60, 380, 120, 60); c.fill(); c.stroke();
+      c.font = '86px "Lilita One"'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#ffe23a'; c.lineWidth = 14; c.strokeText(`PARTE ${part}`, 0, 4); c.fillText(`PARTE ${part}`, 0, 4); c.restore();
+      c.save(); c.translate(540, 630); c.fillStyle = 'rgba(30,14,8,.82)'; c.strokeStyle = INK; c.lineWidth = 6; c.beginPath(); c.roundRect(-330, -46, 660, 92, 46); c.fill(); c.stroke();
+      c.font = '700 54px Fredoka'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#fff'; c.fillText(EPI[part], 0, 4); c.restore();
+    },
+    sfx: [[0, 'title', -4]] };
+}
+
 // ———————————————————— PARTE 1 · O Mandu Queimado ————————————————————
 const P1 = [
-  { name: 'hook', scene: 'kitchen', dur: 2.6, mood: 'boom',
+  cover(1),
+  { name: 'hook', scene: 'kitchen', dur: 2.6, tr: 'flash', mood: 'boom',
     set: u => ({ fire: u > .15 ? 1.2 * Math.exp(-(u - .15) * 2) : 0, lid: u > .15 ? Math.min(2600, (u - .15) * 4000) : 0 }),
     cast(u, D, S, t) {
       const fly = seg(u, .15, 1.05), [x, y] = u < .15 ? [-380, 0] : arc(eo(fly), -380, 0, 260, 0, 520);
@@ -104,7 +137,7 @@ const P1 = [
     cast(u, D, S) { show(S.seol, { x: 380, face: -1, aB: .75, aF: .75, bB: -2, bF: -2, head: .12, E: { eye: 'open', brow: .2, browY: .4 * (u > .5 ? 1 : 0), mouth: 'flat', pupil: .8 }, look: [-1, -.6] }); },
     cam: (u, D) => [400, -480, 2.3], sfx: [[.5, 'tick', -10]] },
 
-  { name: 'montagem', scene: 'kitchen', dur: 9.4, tr: 'whip', mood: 'cook',
+  { name: 'montagem', scene: 'kitchen', dur: 8.6, tr: 'whip', mood: 'cook',
     set: u => ({ fire: .3 }),
     cast(u, D, S, t) {
       const knead = u < 2.6, fold = u >= 2.6 && u < 5.6;
@@ -121,7 +154,7 @@ const P1 = [
       word(c, 'PLOFT!', -150, -800, 110, back(seg(u, 5.6, 5.8)) * (1 - seg(u, 6.5, 6.8)), '#fff6dc');
       if (u < 2.6) puff(c, 260, -400, 40 + 20 * Math.sin(u * 9), .5, '#fff');
     },
-    cam: (u, D) => u < 2.6 ? [220, -380, lerp(2.2, 2.4, u / 2.6)] : u < 4.8 ? [lerp(240, 200, seg(u, 2.6, 4.8)), -400, 1.9] : u < 6.8 ? [80, -520, lerp(1.7, 1.9, seg(u, 4.8, 6.8))] : [200, -420, lerp(1.5, 1.3, seg(u, 6.8, 9.4))],
+    cam: (u, D) => u < 2.6 ? [220, -380, lerp(2.2, 2.4, u / 2.6)] : u < 4.8 ? [lerp(240, 200, seg(u, 2.6, 4.8)), -400, 1.9] : u < 6.8 ? [80, -520, lerp(1.7, 1.9, seg(u, 4.8, 6.8))] : [200, -420, lerp(1.5, 1.3, seg(u, 6.8, 8.6))],
     sfx: [[.2, 'knead', -6], [.7, 'knead', -6], [1.2, 'knead', -6], [1.7, 'knead', -6], [2.2, 'knead', -6], ...[0, 1, 2, 3, 4, 5, 6, 7].map(i => [2.6 + i * .35, 'pop', -8]), [4.8, 'whistle_up', -8], [5.6, 'splat', -3], [6.9, 'sparkle', -6]] },
 
   { name: 'gato', scene: 'kitchen', line: 'S2', lead: 1.3, tail: .5, tr: 'cut', mood: 'sneaky',
@@ -144,7 +177,7 @@ const P1 = [
     cam: (u, D) => u < 1.3 ? [lerp(300, 150, seg(u, 0, 1.3)), lerp(-650, -420, seg(u, 0, 1.3)), lerp(1.5, 1.2, seg(u, 0, 1.3))] : [lerp(40, 0, seg(u, 1.3, D)), -480, 1.55],
     sfx: [[.05, 'jump', -6], [.7, 'land_soft', -8], [.8, 'clink', -8], [.9, 'jump', -6], [1.4, 'scurry', -6]] },
 
-  { name: 'perseguição', scene: 'kitchen', dur: 8.4, tr: 'whip', mood: 'chase',
+  { name: 'perseguição', scene: 'kitchen', dur: 7.9, tr: 'whip', mood: 'chase',
     set: u => ({ fire: u > 4.3 ? 1.6 * Math.exp(-(u - 4.3) * 1.2) + .3 : .3 }),
     cast(u, D, S, t) {
       // cat runs left then circles back right past the flour spill; Dol-soe follows with the tray held high
@@ -244,7 +277,8 @@ const P1 = [
 
 // ———————————————————— PARTE 2 · O Plano Maluco ————————————————————
 const P2 = [
-  { name: 'recap', scene: 'kitchen', line: 'D6', lead: .4, tail: .5, mood: 'comic',
+  cover(2),
+  { name: 'recap', scene: 'kitchen', line: 'D6', lead: .4, tail: .5, tr: 'flash', mood: 'comic',
     set: u => ({ fire: .3 }),
     cast(u, D, S, t) { show(S.dol, { x: -150, face: 1, aB: 1.35, aF: 1.35, bB: .3, bF: .3, E: { eye: 'open', mouth: 'flat', brow: .9, sweat: 1, soot: .5 }, look: [.4, .7] }); },
     front(c, u, D, t) { tray(c, -10, -340, 1, BURNT, t); word(c, 'PARTE 2', 540 - 0, -1050, 0, 0); },
@@ -311,9 +345,9 @@ const P2 = [
     cam: (u, D) => [lerp(300, 150, seg(u, .8, D)), -470, lerp(1.25, 1.05, seg(u, .8, D))],
     sfx: [[.05, 'jump', -6], [.6, 'land_soft', -6], [1.1, 'slide', -4]] },
 
-  { name: 'pátio', scene: 'courtyard', dur: 9.6, tr: 'whip', mood: 'chase',
+  { name: 'pátio', scene: 'courtyard', dur: 8.8, tr: 'whip', mood: 'chase',
     cast(u, D, S, t) {
-      const cx = lerp(-1500, 1500, u / 9.6), dx = cx - 700 + 120 * Math.sin(u * 2);
+      const cx = lerp(-1500, 1500, u / 8.8), dx = cx - 700 + 120 * Math.sin(u * 2);
       show(S.cat, { x: cx, y: -20, face: 1, s: .9, E: { eye: 'happy' }, rot: .05 * Math.sin(u * 8) });
       show(S.dol, { x: dx, y: u > 3.0 && u < 4.2 ? -320 * 4 * seg(u, 3.0, 4.2) * (1 - seg(u, 3.0, 4.2)) : 0, face: 1, walk: 1.3, ph: u * 17, aB: 1.9, aF: 1.9, bB: .1, bF: .1, lean: .2,
         rot: u > 3.0 && u < 4.2 ? -TAU * eo(seg(u, 3.0, 4.2)) : 0, E: { eye: 'open', brow: -1, mouth: 'grin', open: .3 } });
@@ -330,7 +364,7 @@ const P2 = [
         if (k > 0) word(c, 'PLAFT!', gx + 250, -500, 90, back(seg(u, a + .3, a + .45)) * (1 - seg(u, a + .9, a + 1.1)), '#fff6dc'); }
     },
     front(c, u, D, t, S) { const P = S.cat; tray(c, P.x - 20, 14, 1.15, CRAZY, t, .04 * Math.sin(u * 20)); },
-    cam: (u, D) => [lerp(-1250, 1250, u / 9.6) - 300, -600, lerp(.85, .9, Math.sin(u))],
+    cam: (u, D) => [lerp(-1250, 1250, u / 8.8) - 300, -600, lerp(.85, .9, Math.sin(u))],
     sfx: [[0, 'slide', -6], [.2, 'run', -6], [2.5, 'clang', -4], [3.0, 'whistle_up', -6], [3.3, 'clang', -4], [4.2, 'land', -6], [4.7, 'clang', -4], [6.0, 'slide', -6]] },
 
   { name: 'escada', scene: 'courtyard', dur: 3.6, tr: 'cut', mood: 'chase',
@@ -387,7 +421,7 @@ const P2 = [
         c.restore(); c.lineWidth = 8; c.strokeStyle = INK; c.beginPath(); c.arc(0, 0, 160, 0, TAU); c.stroke(); c.restore(); } },
     sfx: [[.3, 'tension', -6]] },
 
-  { name: 'mordida', scene: 'hall', dur: 5.2, tr: 'zoom', mood: 'cliff',
+  { name: 'mordida', scene: 'hall', dur: 4.7, tr: 'zoom', mood: 'cliff',
     cast(u, D, S, t) { show(S.rei, { x: 0, y: -340, face: 1, sit: 1, aB: .9, aF: 2.1, bF: 1.2, E: { eye: u < 1.0 ? 'open' : 'closed', brow: -.3, mouth: u < .7 ? 'o' : 'flat', open: u < .7 ? .8 : 0 } }); },
     front(c, u, D, t) { if (u < 1.0) mandu(c, 175, -900, 1.1, 'burnt', t); else mandu(c, 175, -900, 1.1, 'burnt', t, 0); },
     cam: (u, D) => [80, -860, lerp(2.2, 3.4, eo(seg(u, 0, 1.0)))],
@@ -399,7 +433,8 @@ const P2 = [
 // ———————————————————— PARTE 3 · O Banquete ————————————————————
 const kingSeat = (S, o = {}) => show(S.rei, Object.assign({ x: 0, y: -340, face: 1, sit: 1, aB: .9, aF: .9, bB: .9, bF: .9, E: { eye: 'open', brow: 0, mouth: 'flat' } }, o));
 const P3 = [
-  { name: 'croc', scene: 'hall', dur: 2.4, mood: 'freeze',
+  cover(3),
+  { name: 'croc', scene: 'hall', dur: 2.4, tr: 'flash', mood: 'freeze',
     cast(u, D, S, t) { kingSeat(S, { aF: 2.1, bF: 1.2, E: { eye: 'closed', brow: -.2, mouth: 'flat', stache: .5 * Math.abs(Math.sin(u * 18)) * (1 - seg(u, .5, 1.4)) } }); },
     front(c, u, D, t) { mandu(c, 175, -900, 1.1, 'burnt', t); },
     cam: (u, D) => [80, -860, lerp(3.4, 3.0, u / 2.4)],
@@ -486,14 +521,14 @@ const P3 = [
     cam: (u, D) => [lerp(250, 120, seg(u, 0, 1)), -720, lerp(1.2, 1.45, seg(u, 0, 2))],
     sfx: [[.05, 'jump', -6], [.8, 'land_soft', -6], [1.0, 'nom', -4], [4.6, 'ding', -6], [5.0, 'purr', -8]] },
 
-  { name: 'naquela noite', scene: 'night', dur: 3.4, tr: 'iris', mood: 'party',
+  { name: 'naquela noite', scene: 'night', dur: 2.8, tr: 'iris', mood: 'party',
     set: u => ({ fw: [[0, -1700, 1.6, '#ffd23a']] }),
     cast(u, D, S) {},
     cam: (u, D) => [0, lerp(-1500, -1200, u / D), lerp(.8, .85, u / D)],
     ui(c, u, D, t) { const k = back(seg(u, .3, .8), 2) * (1 - seg(u, 2.8, 3.3)); c.save(); c.translate(540, 900); c.scale(k, k); c.fillStyle = '#2f7a62'; c.strokeStyle = INK; c.lineWidth = 8; c.beginPath(); c.roundRect(-380, -70, 760, 140, 70); c.fill(); c.stroke(); c.font = '700 70px Fredoka'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#fff'; c.fillText('Naquela noite...', 0, 4); c.restore(); },
     sfx: [[1.6, 'firework', -6], [.3, 'chime', -8]] },
 
-  { name: 'festa', scene: 'night', lines: [['D12', 3.8], ['S9', '+.3']], tail: 3.6, tr: 'iris', mood: 'party',
+  { name: 'festa', scene: 'night', lines: [['D12', 3.8], ['S9', '+.3']], tail: 2.9, tr: 'iris', mood: 'party',
     set: u => ({ fw: [[-300, -1700, .3, '#ffd23a'], [350, -1850, 1.2, '#ff6a8a'], [0, -1600, 2.4, '#9ff07a'], [-400, -1900, 3.6, '#7ad0ff'], [380, -1650, 4.6, '#ffd23a'], [-100, -1800, 5.6, '#ff6a8a'], [250, -1750, 6.4, '#ffe23a']].map(([x, y, a, col]) => [x, y, a + 0, col]) }),
     cast(u, D, S, t) { const hop = -Math.abs(Math.sin(u * 5)) * 20;
       show(S.dol, { x: -290, y: hop, face: 1, aB: 2.6, aF: u > 3.2 && u < 5.4 ? 1.6 : 2.7, bF: u > 3.2 && u < 5.4 ? .3 : .2, E: { eye: u > 5.6 ? 'closed' : 'happy', brow: -.2, mouth: 'grin', open: u > 5.6 ? .6 : 0 } });

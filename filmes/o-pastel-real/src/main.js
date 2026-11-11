@@ -73,7 +73,6 @@ function frame(t) {
   // gentle vignette and warm grade
   const g = cx.createRadialGradient(W / 2, H * .45, H * .35, W / 2, H * .45, H * .75); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(20,8,0,.35)'); cx.fillStyle = g; cx.fillRect(0, 0, W, H);
   subtitle(t);
-  if (t < .2) { cx.fillStyle = `rgba(0,0,0,${1 - t / .2})`; cx.fillRect(0, 0, W, H); }
   if (t > window.DUR - .4) { cx.fillStyle = `rgba(0,0,0,${seg(t, window.DUR - .4, window.DUR)})`; cx.fillRect(0, 0, W, H); }
 }
 
