@@ -20,7 +20,7 @@ def blacks(p):
     out = run([FF, '-hide_banner', '-i', p, '-vf', 'blackdetect=d=0.5:pix_th=0.02', '-an', '-f', 'null', '-']).stderr
     return [l.split('black_start:')[1].split()[0] + '–' + l.split('black_end:')[1].split()[0] for l in out.splitlines() if 'black_start' in l]
 def frame(p, last, dst):
-    n = 2699 if last else 0   # the exact last / first frame by index
+    n = 2699 if last else 39   # the exact last frame / the first frame after the 1.3 s cover
     run([FF, '-v', 'error', '-y', '-i', p, '-vf', f'select=eq(n\\,{n})', '-fps_mode', 'passthrough', '-frames:v', '1', dst]); return np.asarray(Image.open(dst).convert('RGB'), dtype=np.float32)
 rep, ok = {'episodios': []}, True
 tmp = tempfile.mkdtemp()
@@ -39,7 +39,7 @@ for ep in range(1, 5):
     a = frame(os.path.join(HERE, f'ep{ep}.mp4'), True, os.path.join(tmp, f'l{ep}.png')); b = frame(os.path.join(HERE, f'ep{ep + 1}.mp4'), False, os.path.join(tmp, f'f{ep + 1}.png'))
     d = float(np.abs(a - b).mean()); good = d < 3.0; ok &= good
     rep['continuidade'].append({'de': ep, 'para': ep + 1, 'diferenca_media': round(d, 3), 'ok': good})
-    print(f"continuidade EP{ep} último quadro → EP{ep + 1} primeiro quadro: diferença média {d:.3f} (0–255) → {'OK' if good else 'FALHOU'}")
+    print(f"continuidade EP{ep} último quadro → EP{ep + 1} primeiro quadro após a capa: diferença média {d:.3f} (0–255) → {'OK' if good else 'FALHOU'}")
 full = os.path.join(HERE, 'serie-completa.mp4')
 if os.path.exists(full):
     i = probe(full); i['lufs'] = loud(full); good = abs(i['dur'] - 450) < .2 and i['audio']; ok &= good; rep['serie'] = i

@@ -3,12 +3,13 @@ import { K, clamp, seg, ss, eo, ei, eio, back, lerp, pop, shake, TAU, hash } fro
 import { INK, blob, ink, lw, word, sweat } from './toon.js';
 import { puff, stars, speedLines, punch, holo, pixelate, foam, roof, ia } from './sets.js';
 import { osvaldo, juninho } from './cast.js';
-import { EP2, EP3, EP4, EP5, BR } from './eps2.js';
+import { EP2, EP3, EP4, EP5, BR, cover } from './eps2.js';
 import { E0, show, arc, walkPh, land, plunger, phone, money } from './common.js';
 
 // ———————————————————— EPISÓDIO 1 · O VASO POSSUÍDO ————————————————————
 const EP1 = [
-  { name: 'chinelo', scene: 'lobby', dur: 2.4, mood: 'deadpan',
+  cover(1),
+  { name: 'chinelo', scene: 'lobby', dur: 2.4, tr: 'flash', mood: 'deadpan',
     cast(u, D, S) { const x = lerp(-700, -150, Math.min(1, u / 1.4));
       show(S.jun, { x, face: 1, walk: u < 1.4 ? .8 : 0, ph: walkPh(x), aB: .1, aF: .1, legs: u > 1.4 ? [0, 0, -.3, .9] : null, E: { lid: .55, look: u > 1.5 ? [0, 1] : [1, 0], mouth: 'flat' } }); },
     front(c, u, D, t, S) { if (u > 1.4) { c.save(); c.translate(-120, -10); blob(c, '#2d8a5a', () => c.ellipse(60, 0, 46, 12, 0, 0, TAU)); c.restore(); word(c, 'PLEC', 30, -140, 60, back(seg(u, 1.4, 1.55)) * (1 - seg(u, 2.1, 2.4)), '#fff'); } },
@@ -187,7 +188,7 @@ const EP1 = [
     shake: u => 10 + u * 12,
     sfx: [[.2, 'beep', -4], [.65, 'beep', -4], [1.1, 'beep', -4], [1.5, 'rumble', 0]] },
 
-  { name: 'explosão', scene: 'corridor', dur: 3.0, fill: true, tr: 'flash', mood: 'boom',
+  { name: 'explosão', scene: 'corridor', dur: 2.2, fill: true, tr: 'flash', mood: 'boom',
     set: (u, D) => ({ foam: clamp(eo(seg(u, .2, D - .9)) * 1.0), foamSeed: 3 }),
     back(c, u, D, t) { if (u < 1) puff(c, 210, -400, 200 * eo(seg(u, 0, .6)), 1, '#8a5a2a'); },
     front(c, u, D, t) { word(c, 'PLOFT!', 0, -1300, 220, back(seg(u, .15, .4)) * (1 - seg(u, 1.6, 2)), '#c8965a'); for (let i = 0; i < 10; i++) { const k = seg(u, .1 + i * .05, 1.6 + i * .05), [x, y] = arc(k, 210, -400, -1400 + i * 300, -200, 900); if (k > 0 && k < 1) blob(c, '#8a5a2a', () => c.arc(x, y, 40, 0, TAU), { line: 5 }); } },

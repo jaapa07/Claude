@@ -180,7 +180,7 @@ export const EP2 = [
     front(c, u, D, t) { receipt(c, -150, -950, back(seg(u, D - 2.8, D - 2.5)), t); },
     cam: (u, D) => u < D - 2.8 ? [lerp(-500, 60, seg(u, 0, 1.2)), -560, 1.15] : [-150, -900, lerp(1.4, 2.6, eo(seg(u, D - 2.4, D - 1.4)))],
     sfx: [[.2, 'paws', -8], [.6, 'paws', -8], [(D) => D - 2.8, 'unroll', -6], [(D) => D - 1.4, 'zoom_in', -6]] },
-  { name: 'despenca', scene: 'liftInside', dur: 3.4, fill: true, tr: 'whip', mood: 'alarm',
+  { name: 'despenca', scene: 'liftInside', dur: 2.2, fill: true, tr: 'whip', mood: 'alarm',
     set: (u, D) => ({ lit: 'INFERNO', floor: ['9', '7', '3', '-6', '-66', '-666'][Math.min(5, Math.floor(u * 3))], red: u > .6 ? 1 : 0 }),
     cast(u, D, S, t) { const fl = u > .6 ? 1 : 0;
       juniorLift(S, { x: -250, y: -600 * fl * eo(seg(u, .6, 1.2)) + Math.sin(u * 3) * 40 * fl, rot: .4 * Math.sin(u * 2) * fl, aB: 2.8, aF: 2.9, legs: fl ? [.6, 1, -.4, 1.2] : null, E: { eye: 'wide', mouth: 'scream', open: .5 } });
@@ -263,7 +263,7 @@ export const EP3 = [
     cam: (u, D) => u < 5 ? [0, -1120, lerp(1.1, 1.3, u / 5)] : [-500, -600, 1.6],
     shake: u => Math.abs(shake(u, 5.0, 20, .3)),
     sfx: [[5.0, 'gavel', 2], [5.05, 'scream_crowd', -2], [3.2, 'sting_short', -4]] },
-  { name: 'martelo quebra o chão', scene: 'court', dur: 4, fill: true, tr: 'cut', mood: 'alarm',
+  { name: 'martelo quebra o chão', scene: 'court', dur: 2.8, fill: true, tr: 'cut', mood: 'alarm',
     set: (u, D) => ({ crack: eo(seg(u, .4, 1.4)), hole: eo(seg(u, 1.6, 2.6)) }),
     cast(u, D, S, t) { judge(S, { y: lerp(-940, -940, 0), aF: 2.7, bF: .2, E: { eye: 'wide', mouth: 'o', open: .4 } });
       const f = seg(u, D - 1.4, D); reu(S, { x: -150, y: 1800 * ei(f), aB: 2.8, aF: 2.9, legs: f > 0 ? [.6, 1, -.4, 1.2] : null, E: { eye: 'wide', mouth: 'scream', open: .5 } });
@@ -425,3 +425,34 @@ export const EP5 = [
     ui(c, u, D, t) { c.fillStyle = '#000'; c.fillRect(0, 0, 1080, 1920); if (u > .8) { word(c, 'SEGUNDA', 540, 820, 130, back(seg(u, .8, 1.1)), '#ffc928', -.06); word(c, 'TEMPORADA?', 540, 980, 130, back(seg(u, 1.0, 1.3)), '#ff2e88', -.06); } },
     cam: () => [0, 0, 1], sfx: [[.8, 'sting_short', -2]] },
 ];
+
+// —— the cover that opens every episode (also exported as the thumbnail) ——
+const EPN = { 1: 'O Vaso Possuído', 2: 'O Elevador do Inferno', 3: 'O Cachorro Advogado', 4: 'A Inteligência Artificial Burra', 5: 'A Revolta dos Idiotas' };
+export function cover(ep) {
+  return { name: 'capa', scene: 'lobby', dur: 1.3, mood: 'title',
+    cast(u, D, S, t) {
+      const judgeCos = ep >= 3 ? 'judge' : ep === 2 ? 'suit' : undefined;
+      show(S.cle, { x: -400, y: 40, face: 1, s: .95, aB: .3, aF: 2.0, bF: .2, E: { eye: 'wide', brow: -.6, mouth: 'grin', open: .1 }, hold: (c, x, y, a) => phone(c, x, y, a, t, 0) });
+      show(S.osv, { x: 400, y: 40, face: -1, s: .95, aB: .3, aF: ep === 4 ? 2.6 : .4, bF: .2, E: { lid: .1, brow: -.8, mouth: ep === 4 ? 'grin' : 'flat', stache: .6 } });
+      show(S.jun, { x: -40, y: 120, s: 1.1, face: 1, aB: .2, aF: 2.6, bF: .2, E: { eye: ep === 5 ? 'angry' : 'open', lid: ep === 5 ? 0 : .6, mouth: 'flat', look: [-.2, .2], brow: ep === 5 ? -1 : 0 }, hold: (c, x, y, a) => plunger(c, x, y, a, t) });
+      show(S.car, { x: 330, y: 170, face: -1, s: .8, cos: judgeCos, E: { lid: .65, mouth: 'flat' } });
+      show(S.vaso, { x: -330, y: 170, face: 1, s: .62, E: { eye: ep === 1 ? 'angry' : 'open', brow: -1, mouth: 'grin', red: ep === 1 } });
+      if (ep === 2) show(S.dem, { x: 0, y: -260, s: .7, face: 1, aB: 2.4, aF: 2.6, E: { lid: .3, mouth: 'grin', open: .2 } });
+      S.order = ['dem', 'cle', 'osv', 'jun', 'car', 'vaso'];
+    },
+    back(c, u, D, t) {
+      c.save(); c.translate(0, -700); for (let i = 0; i < 24; i++) { c.fillStyle = i % 2 ? '#2a0f5c' : '#ff2e88'; c.beginPath(); c.moveTo(0, 0); c.arc(0, 0, 4000, i / 24 * TAU + t * .2, (i + 1) / 24 * TAU + t * .2); c.fill(); } c.restore();
+      if (ep === 4) { c.save(); c.translate(0, 180); c.scale(.55, .55); ia(c, t, { mood: 'calm', text: '' }); c.restore(); }
+      if (ep === 5) { c.save(); c.translate(0, -300); c.scale(1.3, 1.3); button(c, 0, 0, 0, t); c.restore(); }
+    },
+    cam: (u, D) => [0, -430, lerp(1.04, 1.07, u / D)],
+    ui(c, u, D, t) {
+      c.save(); c.translate(540, 300); c.rotate(-.05); c.fillStyle = '#ffc928'; c.strokeStyle = INK; c.lineWidth = 10; c.beginPath(); c.roundRect(-480, -150, 960, 300, 40); c.fill(); c.stroke();
+      word(c, 'O CONDOMÍNIO', 0, -62, 104, 1, '#fff', 0); word(c, 'DOS DESGRAÇADOS', 0, 62, 104, 1, '#ff2e88', 0); c.restore();
+      c.save(); c.translate(540, 530); c.rotate(.04); c.fillStyle = '#1fd1d1'; c.strokeStyle = INK; c.lineWidth = 8; c.beginPath(); c.roundRect(-220, -56, 440, 112, 56); c.fill(); c.stroke(); word(c, `EPISÓDIO ${ep}`, 0, 4, 72, 1, '#fff', 0); c.restore();
+      c.save(); c.translate(540, 1690); c.fillStyle = 'rgba(30,14,40,.85)'; c.strokeStyle = INK; c.lineWidth = 6; c.beginPath(); c.roundRect(-440, -60, 880, 120, 60); c.fill(); c.stroke();
+      c.font = '700 60px Fredoka'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#fff'; c.fillText(EPN[ep], 0, 4); c.restore();
+    },
+    sfx: [[0, 'sting_short', -2]] };
+}
+for (const [ep, E] of [[2, EP2], [3, EP3], [4, EP4], [5, EP5]]) E.unshift(cover(ep));
