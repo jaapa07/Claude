@@ -39,15 +39,15 @@ ZÉ: Multa de nível universal.
 JUNINHO: Aceita Pix?
 
 11
-00:00:40,299 --> 00:00:45,465
+00:00:40,000 --> 00:00:45,165
 ZÉ: O único jeito de restaurar o universo é apertar o botão de reinicialização.
 
 12
-00:00:44,600 --> 00:00:47,721
+00:00:45,149 --> 00:00:48,271
 ZÉ: Mas antes, uma pergunta extremamente simples.
 
 13
-00:00:48,000 --> 00:00:49,879
+00:00:48,299 --> 00:00:50,179
 ZÉ: Quanto é dois mais dois?
 
 14

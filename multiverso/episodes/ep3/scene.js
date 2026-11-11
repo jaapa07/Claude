@@ -146,7 +146,7 @@ export async function makeShots({ talk }) {
   const HS = house(); HS.scale.setScalar(.9); HS.position.set(0, 116, 30); W3.add(HS);
   const NF = 2400, F = fleet(NF); W3.add(F);
   F.children.forEach(m => { m.frustumCulled = false; });   // lib workaround: InstancedMesh bounds are computed once from the identity matrices
-  E.rotation.x = 1.0;   // tilt the planet so the polar cap is not under the house
+  E.rotation.x = -1.0;   // tilt the planet so the polar cap is not under the house
   W3.add(new THREE.HemisphereLight(0xb0b8ff, 0x663355, 1.3));
   const MS = motherShip(); W3.add(MS); const M0 = new THREE.Vector3(0, 330, -80);
   const ships = [];
@@ -173,7 +173,7 @@ export async function makeShots({ talk }) {
   for (let i = 0; i < ND; i++) { const u = hash(i, 201) * 2 - 1, th = hash(i, 202) * TAU, rr_ = Math.sqrt(1 - u * u), v = 40 + hash(i, 203) * 160; dvel.push([Math.cos(th) * rr_ * v, u * v, Math.sin(th) * rr_ * v]); const w = hash(i, 204); dcol.set(w > .6 ? [1, .9, .5] : w > .3 ? [1, .45, .1] : [.6, .62, .8], i * 3); }
   const dgeo = new THREE.BufferGeometry(); dgeo.setAttribute('position', new THREE.BufferAttribute(dpos, 3)); dgeo.setAttribute('color', new THREE.BufferAttribute(dcol, 3));
   const debris = new THREE.Points(dgeo, new THREE.PointsMaterial({ size: 2.2, vertexColors: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); W3.add(debris);
-  const PT = portal(70, [.35, .95, 1]); PT.position.set(0, 330, 0); W3.add(PT);
+  const PT = portal(40, [.35, .95, 1]); PT.position.set(55, 360, 110); W3.add(PT);
   const her = new THREE.Group(); { const h = new THREE.Mesh(saucerGeometry(), new THREE.MeshStandardMaterial({ color: 0xff7fb4, metalness: .5, roughness: .3 })); her.add(h); const d = new THREE.Mesh(new THREE.SphereGeometry(.42, 16, 10, 0, TAU, 0, Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffd21f, emissiveIntensity: .6 })); d.position.y = .2; her.add(d); her.scale.setScalar(4); W3.add(her); }
   function setWorld(t) {
     E.userData.set(t);
@@ -192,7 +192,7 @@ export async function makeShots({ talk }) {
       dgeo.attributes.position.needsUpdate = true; debris.material.opacity = clamp(1.6 - e / 4);
     }
     PT.visible = t > T.throwC && t < T.boom + .4; PT.userData.set(t, ease.outBack(prog(t, T.throwC + .2, T.throwC + .7)) * (1 - prog(t, T.boom, T.boom + .4)));
-    PT.lookAt(0, 300, 200);
+    PT.lookAt(90, 385, 240);
     her.visible = t > T.chase && t < T.cockpit2;
   }
   const proj = (v, c) => { const p = v.clone().project(c); return [(p.x + 1) / 2 * W, (1 - p.y) / 2 * H, p.z]; };
@@ -341,7 +341,7 @@ export async function makeShots({ talk }) {
       if (e > 0 && e < .8) { const q = e / .8, bx = (1 - q) * (1 - q) * x0 + 2 * (1 - q) * q * cx + q * q * m.tg.x, by = (1 - q) * (1 - q) * y0 + 2 * (1 - q) * q * cy + q * q * m.tg.y;
         for (let j = 1; j < 7; j++) { const qq = Math.max(0, q - j * .04); const tx = (1 - qq) * (1 - qq) * x0 + 2 * (1 - qq) * qq * cx + qq * qq * m.tg.x, ty = (1 - qq) * (1 - qq) * y0 + 2 * (1 - qq) * qq * cy + qq * qq * m.tg.y; ell(g, tx, ty, 18 - j * 2, 18 - j * 2, `rgba(230,230,240,${.6 - j * .08})`, 0); }
         const ang = Math.atan2(2 * (1 - q) * (cy - y0) + 2 * q * (m.tg.y - cy), 2 * (1 - q) * (cx - x0) + 2 * q * (m.tg.x - cx));
-        sanduiche(g, { x: bx, y: by + 30, s: .42 * (1 - q * .5), rot: ang }); }
+        sanduiche(g, { x: bx, y: by + 30, s: .62 * (1 - q * .45), rot: ang }); }
       if (e >= .8) { if (m.love) { const h = e - .8; text(g, '♥', m.tg.x, m.tg.y - h * 200, { size: 90 + h * 30, color: '#ff3b8a', stroke: 8, alpha: clamp(1.6 - h) }); disco(g, m.tg.x + h * 600, m.tg.y - h * 400, .35, t, { pilot: true }); comic(g, 'AMEI', m.tg.x, m.tg.y + 80, h, { size: 70, color: '#fff', burst: '#ff3b8a', d: 1 }); }
         else burst(g, e - .8, m.tg.x, m.tg.y, { n: 26, speed: 520, g: 600, life: .9, colors: ['#ff8a2a', '#ffd21f', '#F3A3B0', '#E3A24A'], size: 12, seed: 90 + k }); } });
     roof(g, t);
@@ -466,7 +466,7 @@ export async function makeShots({ talk }) {
 
   // ---------- 12. the interdimensional chinelada (80.0 – 83.6) ----------
   const C12 = camera(46); C12.position.set(90, 385, 240); C12.lookAt(M0); C12.updateMatrixWorld();
-  const mScr = proj(M0, C12), pScr = proj(new THREE.Vector3(0, 330, 0), C12);
+  const mScr = proj(M0, C12), pScr = proj(new THREE.Vector3(55, 360, 110), C12);
   S(T.throwC, (g, lt, t, ctx) => {
     const e = t - T.boom;
     if (e > 0) { ctx.post.glitch = clamp(1 - e / 1.5) * .9; ctx.post.swirl = clamp(1 - e / 1.2) * .8; ctx.post.center = [mScr[0] / W, mScr[1] / H]; ctx.post.chroma = clamp(1 - e / 2) * 2; }
@@ -492,7 +492,7 @@ export async function makeShots({ talk }) {
     cockpit(g, t, {
       view: vg => { spaceView(vg, t, .1, 7); for (let i = 0; i < 30; i++) ell(vg, 540 + (hash(i, 1) - .5) * 900, 500 + (hash(i, 2) - .5) * 500 + lt * 20 * hash(i, 3), 6, 4, '#ff8a2a', 0); },
       mid: mg => {
-        cleide(mg, { x: 360, y: 1510, s: 1.15, t, face: 'smug', blink: .0, noChinelo: true, armR: { a: 2.2, b: 2.2 }, armL: { a: 1.3, b: 1 }, inR: g2 => { chinelo(g2, 0, 40, .8, Math.PI * .9); for (let i = 0; i < 3; i++) { const k = (lt * .7 + i / 3) % 1; g2.globalAlpha = 1 - k; ell(g2, 10 + Math.sin(k * 6) * 10, 120 + k * 120, 16 + k * 20, 14 + k * 16, '#dddddd', 0); g2.globalAlpha = 1; } } });
+        cleide(mg, { x: 360, y: 1510, s: 1.15, t, face: 'smug', blink: .0, noChinelo: true, armR: { a: 2.7, b: .5 }, armL: { a: 1.3, b: 1 }, inR: g2 => { chinelo(g2, 0, 40, .8, Math.PI * .9); for (let i = 0; i < 3; i++) { const k = (lt * .7 + i / 3) % 1; g2.globalAlpha = 1 - k; ell(g2, 10 + Math.sin(k * 6) * 10, 120 + k * 120, 16 + k * 20, 14 + k * 16, '#dddddd', 0); g2.globalAlpha = 1; } } });
       },
       front: fg => joystick(fg, 470, 1300, 0, false),
     });

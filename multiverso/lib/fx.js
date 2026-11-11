@@ -17,7 +17,7 @@ export function comic(g, text, x, y, lt, { size = 140, color = '#FFD21F', d = 1.
   g.restore();
 }
 // transitions drawn over the incoming shot during its first d seconds
-export function flash(g, lt, d = .35, color = '#ffffff') { if (lt < d) { g.save(); g.setTransform(1, 0, 0, 1, 0, 0); g.globalAlpha = 1 - lt / d; g.fillStyle = color; g.fillRect(0, 0, W, H); g.restore(); } }
+export function flash(g, lt, d = .35, color = '#ffffff') { if (lt >= 0 && lt < d) { g.save(); g.setTransform(1, 0, 0, 1, 0, 0); g.globalAlpha = 1 - lt / d; g.fillStyle = color; g.fillRect(0, 0, W, H); g.restore(); } }
 export function iris(g, lt, d = .5, cx = W / 2, cy = H / 2, close = false) {
   let k = prog(lt, 0, d); if (close) k = 1 - k; if (k >= 1) return; const r = ease.inOutCubic ? 0 : 0;
   g.save(); g.setTransform(1, 0, 0, 1, 0, 0); g.beginPath(); g.rect(0, 0, W, H); g.arc(cx, cy, Math.max(1, ease.io(k) * 1300), 0, TAU, true); g.fillStyle = '#0a0612'; g.fill(); g.restore();
