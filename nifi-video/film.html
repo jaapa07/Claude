@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Apache NiFi em 20 segundos</title>
+<style>
+@font-face { font-family: "Space Grotesk"; src: url("fonts/SpaceGrotesk.ttf"); font-weight: 300 700; }
+:root { --bg: #f1ece1; --ink: #151412; --or: #ff4d17; --mute: #cfc8b6; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1080px; overflow: hidden; background: var(--bg); }
+#film { position: relative; width: 1080px; height: 1080px; overflow: hidden; color: var(--ink);
+  font-family: "Space Grotesk", "Inter Display", sans-serif; font-weight: 700; letter-spacing: -0.02em;
+  background-color: var(--bg);
+  background-image: linear-gradient(rgba(21,20,18,.055) 1.5px, transparent 1.5px), linear-gradient(90deg, rgba(21,20,18,.055) 1.5px, transparent 1.5px);
+  background-size: 36px 36px; }
+.scene { position: absolute; inset: 0; opacity: 0; }
+.scene > *, .abs { position: absolute; }
+.mono { font-family: "JetBrains Mono", monospace; font-weight: 500; letter-spacing: 0; font-size: 26px; }
+.or { color: var(--or); }
+.hl { background: var(--or); color: var(--ink); padding: 0 10px 4px; }
+.h { left: 80px; top: 62px; font-size: 62px; }
+.sub { left: 80px; top: 152px; }
+.big { left: 74px; font-size: 168px; line-height: 1; color: var(--or); letter-spacing: -0.04em; }
+.t { left: 80px; font-size: 46px; line-height: 1.12; }
+.box { left: 80px; width: 440px; height: 120px; border: 5px solid var(--ink); border-radius: 12px; background: #f8f4eb;
+  display: flex; align-items: center; gap: 22px; padding-left: 24px; font-size: 33px; }
+.led { width: 30px; height: 30px; border: 4px solid var(--ink); flex: none; }
+.note { left: 570px; font-size: 34px; line-height: 1.15; }
+.note .mono { display: block; font-size: 22px; color: var(--or); margin-bottom: 6px; }
+.chip { display: inline-block; border: 3px solid var(--ink); padding: 6px 16px; margin-right: 12px; background: #f8f4eb; }
+.ff { width: 22px; height: 22px; background: var(--or); opacity: 0; }
+svg { left: 0; top: 0; width: 1080px; height: 1080px; overflow: visible; }
+svg * { fill: none; stroke: var(--ink); stroke-width: 5; }
+.slot { width: 28px; height: 78px; background: var(--or); opacity: 0; top: 256px; }
+.ev { left: 80px; display: flex; align-items: center; gap: 30px; font-size: 50px; }
+.ev i { width: 34px; height: 34px; border: 5px solid var(--ink); background: var(--bg); flex: none; }
+.ev .mono { font-size: 22px; color: #7a7466; }
+</style>
+</head>
+<body>
+<div id="film">
+
+<!-- 0 · abertura -->
+<div class="scene" data-scene="0,2.3">
+  <div class="mono" style="left:80px;top:110px" data-in="0.15">apache nifi · em 20 segundos</div>
+  <div style="left:80px;top:170px;font-size:98px;line-height:1.06" data-in="0.3">dados de<br>qualquer lugar<br>pra qualquer<br>lugar</div>
+  <div class="or" style="left:80px;top:610px;font-size:98px;line-height:1.06" data-in="0.95">→ só ligando<br>caixinhas</div>
+  <svg data-in="1.3"><path d="M880 800 C 880 850 820 880 820 935 a60 60 0 0 0 120 0 C 940 880 880 850 880 800 Z" style="stroke-width:9;fill:#f8f4eb"/><path d="M850 938 a30 30 0 0 0 30 30" style="stroke:var(--or);stroke-width:9"/></svg>
+</div>
+
+<!-- 1 · montar o fluxo -->
+<div class="scene" data-scene="2.3,7.7">
+  <div class="h" data-in="2.35">1. <span class="or">montar</span> o fluxo</div>
+  <div class="mono sub" data-in="2.6">arrasta · solta · conecta</div>
+
+  <div class="box" style="top:240px" data-in="3.0"><span class="led"></span>ListenHTTP</div>
+  <div class="box" style="top:460px" data-in="3.8"><span class="led"></span>JoltTransformJSON</div>
+  <div class="box" style="top:680px" data-in="4.6"><span class="led"></span>PutDatabaseRecord</div>
+  <svg>
+    <path d="M300 360 V452 M286 436 L300 454 L314 436" pathLength="1" data-draw="3.45"/>
+    <path d="M300 580 V672 M286 656 L300 674 L314 656" pathLength="1" data-draw="4.25"/>
+  </svg>
+  <div class="mono" style="left:330px;top:392px;font-size:22px" data-in="3.6">success</div>
+  <div class="mono" style="left:330px;top:612px;font-size:22px" data-in="4.4">success</div>
+  <div id="ffs"></div>
+
+  <div class="note" style="top:256px" data-in="3.2"><span class="mono">entrada</span>http · kafka · sftp</div>
+  <div class="note" style="top:476px" data-in="4.0"><span class="mono">transformação</span>json · xml · csv</div>
+  <div class="note" style="top:696px" data-in="4.8"><span class="mono">entrega</span>banco · fila · api</div>
+
+  <div class="mono" style="left:80px;top:880px">
+    <span class="chip" data-in="5.7">HTTP</span><span class="chip" data-in="5.9">Kafka</span><span class="chip" data-in="6.1">S3</span><span class="chip" data-in="6.3">SQL</span><span class="chip" data-in="6.5">SFTP</span><span class="chip" data-in="6.7">MQTT</span>
+  </div>
+</div>
+
+<!-- 2 · segurar a pressão -->
+<div class="scene" data-scene="7.7,13.3">
+  <div class="h" data-in="7.75">2. segurar a <span class="or">pressão</span></div>
+  <div class="mono sub" data-in="8.0">back pressure · em cada conexão</div>
+
+  <div class="box" style="top:240px;width:210px;height:110px;padding:0;justify-content:center" data-in="8.2">origem</div>
+  <div id="pipe" style="left:334px;top:240px;width:412px;height:110px;border:5px solid var(--ink);border-radius:12px;background:#f8f4eb" data-in="8.35"></div>
+  <div class="box" style="left:790px;top:240px;width:210px;height:110px;padding:0;justify-content:center" data-in="8.5">destino</div>
+  <svg data-in="8.5"><path d="M292 295 H330 M748 295 H786"/></svg>
+  <div id="slots"></div>
+  <div class="mono" style="left:334px;top:366px;font-size:22px" data-in="8.5">fila</div>
+  <div class="mono or" style="left:790px;top:366px;font-size:22px" data-in="8.7">lento</div>
+  <div class="mono or" id="paused" style="left:80px;top:366px;font-size:22px;opacity:0">pausada</div>
+
+  <div class="big" style="top:420px" data-in="10.0">10.000</div>
+  <div class="t" style="top:600px" data-in="10.35">flowfiles por fila, por padrão</div>
+  <div class="t" style="top:672px" data-in="10.8">encheu? a origem <span class="hl">espera</span></div>
+  <div class="mono" style="left:80px;top:756px" data-in="11.2">ou 1 GB · o que vier primeiro</div>
+  <div style="left:80px;top:850px;font-size:76px" data-in="12.0"><span class="or">nada</span> se perde.</div>
+</div>
+
+<!-- 3 · rastrear tudo -->
+<div class="scene" data-scene="13.3,17.9">
+  <div class="h" data-in="13.35">3. <span class="or">rastrear</span> tudo</div>
+  <div class="mono sub" data-in="13.6">data provenance · por flowfile</div>
+  <svg data-in="13.9"><path d="M97 280 V700" style="stroke-width:4"/></svg>
+  <div class="ev" style="top:250px" data-in="13.9"><i></i>chegou <span class="mono">RECEIVE</span></div>
+  <div class="ev" style="top:355px" data-in="14.0"><i></i>transformou <span class="mono">CONTENT_MODIFIED</span></div>
+  <div class="ev" style="top:460px" data-in="14.1"><i></i>roteou <span class="mono">ROUTE</span></div>
+  <div class="ev" style="top:565px" data-in="14.2"><i></i>entregou <span class="mono">SEND</span></div>
+  <div class="ev" style="top:670px" data-in="14.3"><i></i>encerrou <span class="mono">DROP</span></div>
+  <div id="replay" style="left:0;top:0;opacity:0">
+    <svg><path d="M905 520 C 985 520 985 400 905 400 M925 382 L903 400 L925 420" style="stroke:var(--or)"/></svg>
+    <div class="mono or abs" style="left:800px;top:445px;font-size:24px">replay</div>
+  </div>
+  <div class="t or" style="top:810px;font-size:56px" data-in="17.0">cada dado com<br>histórico completo</div>
+</div>
+
+<!-- 4 · fecho -->
+<div class="scene" data-scene="17.9,20.8">
+  <div class="big" style="top:80px" data-in="17.95">1 tela</div>
+  <div class="t" style="top:262px" data-in="18.3">pra desenhar, rodar e rastrear</div>
+  <div class="big" style="top:390px" data-in="18.8">ao vivo</div>
+  <div class="t" style="top:580px" data-in="19.2">muda o fluxo<br>sem redeploy</div>
+  <div class="mono" style="left:80px;top:740px" data-in="19.7">apache nifi · open source</div>
+</div>
+
+</div>
+<script>
+const TOTAL = 20.7; window.TOTAL = TOTAL;
+const $ = (s, r = document) => [...r.querySelectorAll(s)];
+const clamp = x => Math.max(0, Math.min(1, x));
+const ease = x => 1 - Math.pow(1 - clamp(x), 3);
+const lerp = (a, b, p) => a + (b - a) * p;
+
+// partes geradas
+const ffs = document.getElementById('ffs');
+for (let i = 0; i < 16; i++) ffs.insertAdjacentHTML('beforeend', '<div class="ff abs"></div>');
+const slots = document.getElementById('slots');
+for (let i = 0; i < 10; i++) slots.insertAdjacentHTML('beforeend', `<div class="slot abs" style="left:${352 + i * 38.4}px"></div>`);
+
+// passos do destaque na lista de proveniência: [tempo, índice]
+const STEPS = [[14.5, 0], [14.9, 1], [15.3, 2], [15.7, 3], [16.15, 1], [16.4, 2], [16.65, 3], [16.9, 4]];
+const REPLAY_AT = 15.95;
+const fillAt = i => 8.7 + i * 0.13;           // fila enchendo
+const drainAt = i => 11.6 + (9 - i) * 0.12;   // fila esvaziando (até sobrar 3)
+
+// instantes de som, lidos pelo render
+window.CUES = {
+  whoosh: $('[data-scene]').map(s => +s.dataset.scene.split(',')[0]),
+  tick: [...$('[data-in]').map(e => +e.dataset.in), ...$('[data-draw]').map(e => +e.dataset.draw)],
+  blip: [...STEPS.map(s => s[0]), ...Array.from({ length: 10 }, (_, i) => fillAt(i)), ...[5.0, 5.55, 6.1, 6.65, 7.2]],
+  thud: [10.0, 12.0, 17.0, 17.95, 18.8],
+};
+
+window.seek = t => {
+  $('[data-scene]').forEach(s => {
+    const [a, b] = s.dataset.scene.split(',').map(Number);
+    s.style.opacity = t >= a && t < b ? clamp((b - t) / 0.16) : 0;
+  });
+  $('[data-in]').forEach(e => {
+    const p = ease((t - e.dataset.in) / 0.38);
+    e.style.opacity = p; e.style.transform = `translateY(${(1 - p) * 16}px)`;
+  });
+  $('[data-draw]').forEach(e => {
+    const p = ease((t - e.dataset.draw) / 0.35);
+    e.style.strokeDasharray = 1; e.style.strokeDashoffset = 1 - p; e.style.opacity = p > 0 ? 1 : 0;
+  });
+
+  // cena 1: flowfiles descendo, processadores "rodando"
+  const run = t >= 5.0;
+  $('.led').forEach(l => l.style.background = run ? 'var(--or)' : 'transparent');
+  $('.ff').forEach((f, k) => {
+    const seg = k % 2, n = k >> 1, u = (t - 5.0 - n * 0.55 - seg * 0.75) / 0.6;
+    const on = u >= 0 && u <= 1, y0 = seg ? 580 : 360;
+    f.style.opacity = on ? 1 : 0; f.style.left = '289px'; f.style.top = lerp(y0 - 6, y0 + 78, clamp(u)) + 'px';
+  });
+
+  // cena 2: fila enche, origem pausa, fila esvazia
+  let n = 0;
+  $('.slot').forEach((s, i) => {
+    const on = t >= fillAt(i) && !(i >= 3 && t >= drainAt(i));
+    s.style.opacity = on ? ease((t - fillAt(i)) / 0.15) : 0; if (on) n++;
+  });
+  const full = n === 10;
+  document.getElementById('pipe').style.borderColor = full ? 'var(--or)' : 'var(--ink)';
+  document.getElementById('paused').style.opacity = full ? ease((t - fillAt(9)) / 0.2) : 0;
+
+  // cena 3: destaque percorre os eventos, com replay
+  let idx = -1; STEPS.forEach(([at, i]) => { if (t >= at) idx = i; });
+  $('.ev i').forEach((m, i) => m.style.background = i === idx ? 'var(--or)' : 'var(--bg)');
+  document.getElementById('replay').style.opacity = t < REPLAY_AT ? 0 : lerp(1, 0.3, clamp((t - 16.7) / 0.3)) * ease((t - REPLAY_AT) / 0.25);
+};
+
+document.fonts.ready.then(() => { seek(location.hash ? +location.hash.slice(1) : 0); window.READY = true; });
+</script>
+</body>
+</html>
