@@ -215,7 +215,7 @@ export function fleet(n, seed = 1) {
   const hull = new THREE.InstancedMesh(saucerGeometry(), new THREE.MeshStandardMaterial({ color: 0xaab0d0, metalness: .7, roughness: .3 }), n);
   const dome = new THREE.InstancedMesh(new THREE.SphereGeometry(.42, 16, 10, 0, TAU, 0, Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0x9be03a, emissive: 0x3a7a10, emissiveIntensity: .8, transparent: true, opacity: .9 }), n);
   const ring = new THREE.InstancedMesh(new THREE.TorusGeometry(.9, .06, 6, 24), new THREE.MeshBasicMaterial({ color: 0xff3bd1 }), n);
-  grp.add(hull, dome, ring);
+  grp.add(hull, dome, ring); for (const im of [hull, dome, ring]) im.frustumCulled = false;   // bounds are computed before the instances move
   const m = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler(), p = new THREE.Vector3(), sc = new THREE.Vector3(), up = new THREE.Vector3(0, .22, 0);
   grp.userData.set = (t, fn) => {
     for (let i = 0; i < n; i++) {

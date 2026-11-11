@@ -8,14 +8,14 @@ import { THREE, draw3d, camera, sky, earth, house, fleet, motherShip, portal, li
 
 export const META = { num: 3, title: 'A GUERRA INTERGALÁCTICA DA MORTADELA', total: 90 };
 const T = {
-  room: 6.5, roof: 10.8, grab: 13.9, gulp: 14.9, holo: 20.0, beams: 24.4, refuse: 28.2, stare: 32.0, yank: 34.6, protocol: 37.6,
+  room: 6.5, roof: 11.25, grab: 13.9, gulp: 14.9, holo: 20.0, beams: 24.4, refuse: 28.2, stare: 32.0, yank: 34.6, protocol: 37.6,
   battle: 40.0, laser: 43.4, shields: 44.9, reflect: 47.6, tomato: 50.0, launch: 52.2, boom1: 53.4, splat: 53.9, wiper: 55.6, salt: 57.0,
   cockpit: 60.0, honk: 63.6, chase: 70.0, cockpit2: 75.0, pull: 75.6, throwC: 80.0, smack: 81.35, boom: 81.5, quiet: 83.6, voz: 85.2,
 };
 export const LINES = [
   { id: 'j1', who: 'juninho', at: 6.9, text: 'Relaxa, mãe. Deixa que eu negocio.' },
-  { id: 'c0', who: 'cleide', at: 8.7, text: 'Você não negocia nem com o despertador!' },
-  { id: 'j2', who: 'juninho', at: 11.3, text: 'Calma, campeão! Trouxe um sanduíche da paz!' },
+  { id: 'c0', who: 'cleide', at: 9.05, text: 'Você não negocia nem com o despertador!' },
+  { id: 'j2', who: 'juninho', at: 11.45, text: 'Calma, campeão! Trouxe um sanduíche da paz!' },
   { id: 'a1', who: 'alien', at: 16.2, text: 'Um? UM?! Eu tenho dois mil estômagos!' },
   { id: 'a2', who: 'alien', at: 20.4, text: 'POVO DA TERRA! EU EXIJO TODA A MORTADELA DO PLANETA!' },
   { id: 'j3', who: 'juninho', at: 28.6, text: 'Pode levar, mas deixa pelo menos o pão francês, seu miserável!' },
@@ -173,7 +173,7 @@ export async function makeShots({ talk }) {
   for (let i = 0; i < ND; i++) { const u = hash(i, 201) * 2 - 1, th = hash(i, 202) * TAU, rr_ = Math.sqrt(1 - u * u), v = 40 + hash(i, 203) * 160; dvel.push([Math.cos(th) * rr_ * v, u * v, Math.sin(th) * rr_ * v]); const w = hash(i, 204); dcol.set(w > .6 ? [1, .9, .5] : w > .3 ? [1, .45, .1] : [.6, .62, .8], i * 3); }
   const dgeo = new THREE.BufferGeometry(); dgeo.setAttribute('position', new THREE.BufferAttribute(dpos, 3)); dgeo.setAttribute('color', new THREE.BufferAttribute(dcol, 3));
   const debris = new THREE.Points(dgeo, new THREE.PointsMaterial({ size: 2.2, vertexColors: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); W3.add(debris);
-  const PT = portal(40, [.35, .95, 1]); PT.position.set(-70, 410, 120); W3.add(PT);
+  const PT = portal(22, [.35, .95, 1]); W3.add(PT);
   const her = new THREE.Group(); { const h = new THREE.Mesh(saucerGeometry(), new THREE.MeshStandardMaterial({ color: 0xff7fb4, metalness: .5, roughness: .3 })); her.add(h); const d = new THREE.Mesh(new THREE.SphereGeometry(.42, 16, 10, 0, TAU, 0, Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffd21f, emissiveIntensity: .6 })); d.position.y = .2; her.add(d); her.scale.setScalar(4); W3.add(her); }
   function setWorld(t) {
     E.userData.set(t);
@@ -229,10 +229,10 @@ export async function makeShots({ talk }) {
   S(T.room, (g, lt, t) => {
     g.save(); cam(g, { x: 560, y: 980, z: 1.05 + lt * .02 });
     livingRoom(g, t, { window: wg => { wg.fillStyle = '#05030f'; wg.fillRect(500, 260, 520, 520); ell(wg, 760, 330, 260, 70, '#8a90b8', 6); for (let i = 0; i < 26; i++) disco(wg, 560 + hash(i, 1) * 400, 420 + hash(i, 2) * 320 + Math.sin(t * 2 + i) * 6, .18 + hash(i, 3) * .12, t, { pilot: false }); } });
-    juninho(g, { x: 330, y: 1390, s: 1.05, t, face: t > 8.7 ? 'smug' : 'happy', talk: talk('juninho', t), armR: { a: 2.6, b: .2 }, inR: handItem(cuecaFlag, 0, 0), armL: { a: 1.1, b: 1.2 }, inL: handItem(g2 => sanduiche(g2, { s: .45 }), 40) });
-    cleide(g, { x: 800, y: 1390, s: 1.05, t, face: t > 8.7 ? 'angry' : 'neutral', talk: talk('cleide', t), armR: { a: 2.4, b: .5 }, armL: { a: .6, b: 1.6 } });
+    juninho(g, { x: 330, y: 1390, s: 1.05, t, face: t > 9.05 ? 'shock' : 'happy', talk: talk('juninho', t), armR: { a: 2.6, b: .2 }, inR: handItem(cuecaFlag, 0, 0), armL: { a: 1.1, b: 1.2 }, inL: handItem(g2 => sanduiche(g2, { s: .45 }), 40) });
+    cleide(g, { x: 800, y: 1390, s: 1.05, t, face: t > 9.05 ? 'angry' : 'neutral', talk: talk('cleide', t), armR: { a: 2.4, b: .5 }, armL: { a: .6, b: 1.6 } });
     g.restore();
-    if (t > 9.3) comic(g, 'TOUCHÉ', 760, 300, t - 9.6, { size: 90, color: '#fff', burst: '#ff7fb4', d: 1.1 });
+    if (t > 9.6) comic(g, 'TOUCHÉ', 760, 300, t - 9.9, { size: 90, color: '#fff', burst: '#ff7fb4', d: 1.1 });
     whip(g, lt, .3);
   });
 
@@ -466,7 +466,8 @@ export async function makeShots({ talk }) {
 
   // ---------- 12. the interdimensional chinelada (80.0 – 83.6) ----------
   const C12 = camera(46); C12.position.set(90, 385, 240); C12.lookAt(M0); C12.updateMatrixWorld();
-  const mScr = proj(M0, C12), pScr = proj(new THREE.Vector3(-70, 410, 120), C12);
+  { const v = new THREE.Vector3(260 / W * 2 - 1, -(560 / H * 2 - 1), .5).unproject(C12).sub(C12.position).normalize(); PT.position.copy(C12.position).addScaledVector(v, 150); }
+  const mScr = proj(M0, C12), pScr = proj(PT.position, C12);
   S(T.throwC, (g, lt, t, ctx) => {
     const e = t - T.boom;
     if (e > 0) { ctx.post.glitch = clamp(1 - e / 1.5) * .9; ctx.post.swirl = clamp(1 - e / 1.2) * .8; ctx.post.center = [mScr[0] / W, mScr[1] / H]; ctx.post.chroma = clamp(1 - e / 2) * 2; }

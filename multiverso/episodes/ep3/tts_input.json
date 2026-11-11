@@ -1,0 +1,189 @@
+[
+ {
+  "id": "j1",
+  "who": "juninho",
+  "start": 6.9,
+  "caption": "Relaxa, mãe. Deixa que eu negocio.",
+  "say": "Relaxa, mãe. Deixa que eu negocio.",
+  "voice": "pm_alex",
+  "speed": 1.12,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "c0",
+  "who": "cleide",
+  "start": 9.05,
+  "caption": "Você não negocia nem com o despertador!",
+  "say": "Você não negocia nem com o despertador!",
+  "voice": "pf_dora",
+  "speed": 1.18,
+  "pitch": -1.0,
+  "fx": "acompressor=threshold=-18dB:ratio=4,volume=1.4"
+ },
+ {
+  "id": "j2",
+  "who": "juninho",
+  "start": 11.45,
+  "caption": "Calma, campeão! Trouxe um sanduíche da paz!",
+  "say": "Calma, campeão! Trouxe um sanduíche da paz!",
+  "voice": "pm_alex",
+  "speed": 1.12,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "a1",
+  "who": "alien",
+  "start": 16.2,
+  "caption": "Um? UM?! Eu tenho dois mil estômagos!",
+  "say": "Um? um?! Eu tenho dois mil estômagos!",
+  "voice": "pm_santa",
+  "speed": 1.0,
+  "pitch": -5.0,
+  "fx": "aphaser=type=t:speed=0.8,aecho=0.6:0.4:40:0.3"
+ },
+ {
+  "id": "a2",
+  "who": "alien",
+  "start": 20.4,
+  "caption": "POVO DA TERRA! EU EXIJO TODA A MORTADELA DO PLANETA!",
+  "say": "Povo da terra! eu exijo toda A mortadela do planeta!",
+  "voice": "pm_santa",
+  "speed": 1.0,
+  "pitch": -5.0,
+  "fx": "aphaser=type=t:speed=0.8,aecho=0.6:0.4:40:0.3"
+ },
+ {
+  "id": "j3",
+  "who": "juninho",
+  "start": 28.6,
+  "caption": "Pode levar, mas deixa pelo menos o pão francês, seu miserável!",
+  "say": "Pode levar, mas deixa pelo menos o pão francês, seu miserável!",
+  "voice": "pm_alex",
+  "speed": 1.12,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "a3",
+  "who": "alien",
+  "start": 34,
+  "caption": "Pão francês? Levem também.",
+  "say": "Pão francês? Levem também.",
+  "voice": "pm_santa",
+  "speed": 1.0,
+  "pitch": -5.0,
+  "fx": "aphaser=type=t:speed=0.8,aecho=0.6:0.4:40:0.3"
+ },
+ {
+  "id": "r1",
+  "who": "controle",
+  "start": 37.8,
+  "caption": "Protocolo guerra culinária: ativado.",
+  "say": "Protocolo guerra culinária: ativado.",
+  "voice": "pm_santa",
+  "speed": 1.0,
+  "pitch": -1.0,
+  "fx": "flanger=delay=2:depth=2:speed=8,acrusher=bits=7:mode=log:aa=1,aecho=0.6:0.5:18:0.4"
+ },
+ {
+  "id": "j4",
+  "who": "juninho",
+  "start": 44.3,
+  "caption": "QUEIJO, ESCUDO!",
+  "say": "Queijo, escudo!",
+  "voice": "pm_alex",
+  "speed": 1.12,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "r2",
+  "who": "controle",
+  "start": 50,
+  "caption": "Botão amarelo: tomate gigante.",
+  "say": "Botão amarelo: tomate gigante.",
+  "voice": "pm_santa",
+  "speed": 1.0,
+  "pitch": -1.0,
+  "fx": "flanger=delay=2:depth=2:speed=8,acrusher=bits=7:mode=log:aa=1,aecho=0.6:0.5:18:0.4"
+ },
+ {
+  "id": "j5",
+  "who": "juninho",
+  "start": 57.7,
+  "caption": "Hm. Faltou sal.",
+  "say": "Hm. Faltou sal.",
+  "voice": "pm_alex",
+  "speed": 1.12,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "c1",
+  "who": "cleide",
+  "start": 60.6,
+  "caption": "SAI DA FRENTE QUE A MÃE TÁ PILOTANDO!",
+  "say": "Sai da frente que A mãe tá pilotando!",
+  "voice": "pf_dora",
+  "speed": 1.18,
+  "pitch": -1.0,
+  "fx": "acompressor=threshold=-18dB:ratio=4,volume=1.4"
+ },
+ {
+  "id": "j6",
+  "who": "juninho",
+  "start": 66.3,
+  "caption": "Mãe, eu vou vomitar!",
+  "say": "Mãe, eu vou vomitar!",
+  "voice": "pm_alex",
+  "speed": 1.12,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "c2",
+  "who": "cleide",
+  "start": 67.9,
+  "caption": "ENGOLE!",
+  "say": "Engole!",
+  "voice": "pf_dora",
+  "speed": 1.18,
+  "pitch": -1.0,
+  "fx": "acompressor=threshold=-18dB:ratio=4,volume=1.4"
+ },
+ {
+  "id": "r3",
+  "who": "controle",
+  "start": 76,
+  "caption": "Aviso: o chinelo era o volante.",
+  "say": "Aviso: o chinelo era o volante.",
+  "voice": "pm_santa",
+  "speed": 1.0,
+  "pitch": -1.0,
+  "fx": "flanger=delay=2:depth=2:speed=8,acrusher=bits=7:mode=log:aa=1,aecho=0.6:0.5:18:0.4"
+ },
+ {
+  "id": "c3",
+  "who": "cleide",
+  "start": 78.4,
+  "caption": "EU SEI!",
+  "say": "Eu sei!",
+  "voice": "pf_dora",
+  "speed": 1.18,
+  "pitch": -1.0,
+  "fx": "acompressor=threshold=-18dB:ratio=4,volume=1.4"
+ },
+ {
+  "id": "v1",
+  "who": "voz",
+  "start": 85.3,
+  "caption": "Vocês acabaram de declarar guerra ao Império da Salsicha.",
+  "say": "Vocês acabaram de declarar guerra ao Império da Salsicha.",
+  "voice": "pm_santa",
+  "speed": 0.85,
+  "pitch": -9.0,
+  "fx": "aecho=0.8:0.7:120|240:0.5|0.3,lowpass=f=3500"
+ }
+]
