@@ -11,7 +11,8 @@ Formato vertical nativo **9:16, 1080 × 1920, 60 fps** (Reels, TikTok, Shorts).
 | 4 | A Última Batalha | Estações e horas trocam a cada golpe, a flecha de Yuna, o abraço e a explosão de luz azul |
 | 5 | Um Novo Amanhecer | O futuro se desfaz em pétalas, a katana é quebrada, o mundo se reconstrói |
 
-Os vídeos prontos estão em [`out/`](out/): `ep1.mp4` … `ep5.mp4` e `serie-completa.mp4` (100 s).
+Os vídeos prontos estão em [`videos/`](videos/): `ep1.mp4` … `ep5.mp4` (1080 × 1920, 60 fps, H.264 + AAC).
+A exportação escreve os originais em `out/`, que fica fora do git.
 
 ## Rodar
 
