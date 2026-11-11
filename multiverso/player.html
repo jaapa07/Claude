@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>O Multiverso da Burrice</title>
+<style>
+:root{--bg:#0d0718;--panel:#1a0f2e;--line:#3a2a5e;--txt:#f1eaff;--mute:#a99bd0;--acc:#5CF2FF;--yel:#FFD21F;--pink:#FF7FB4}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font:600 15px/1.35 system-ui,sans-serif}
+body{display:grid;grid-template-columns:minmax(260px,330px) 1fr;height:100vh}
+aside{background:var(--panel);border-right:1px solid var(--line);padding:18px;overflow:auto}
+h1{font:900 22px/1.1 system-ui;margin:0 0 4px;color:var(--yel);letter-spacing:.5px}
+.sub{color:var(--mute);font-size:13px;margin-bottom:16px}
+.ep{display:block;width:100%;text-align:left;background:#22163b;border:1px solid var(--line);color:var(--txt);border-radius:12px;padding:10px 12px;margin:0 0 8px;cursor:pointer;font:inherit}
+.ep b{color:var(--acc);display:block;font-size:12px}.ep.on{border-color:var(--yel);background:#2e1d52}
+.mode{display:flex;gap:6px;margin:14px 0}.mode button{flex:1}
+button.c{background:#2a1c48;border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:8px 10px;cursor:pointer;font:inherit}
+button.c:hover,.ep:hover{border-color:var(--acc)}
+main{display:grid;grid-template-rows:1fr auto;min-width:0;min-height:0}
+#stage{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:0}
+#wrap{position:relative;flex:none;box-shadow:0 0 0 1px var(--line),0 20px 60px #0008;border-radius:10px;overflow:hidden;background:#000}
+#wrap iframe,#wrap video{position:absolute;left:0;top:0;width:1080px;height:1920px;border:0;transform-origin:0 0}
+#wrap video{display:none}
+.bar{padding:10px 16px 14px;background:var(--panel);border-top:1px solid var(--line)}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+#tl{position:relative;height:34px;margin:6px 0 8px;cursor:pointer;border-radius:8px;background:#22163b;overflow:hidden}
+#tl .fill{position:absolute;left:0;top:0;bottom:0;background:#5CF2FF33}
+#tl .head{position:absolute;top:0;bottom:0;width:2px;background:var(--yel)}
+#tl .ln{position:absolute;top:6px;height:22px;border-radius:4px;opacity:.85}
+#time{font-variant-numeric:tabular-nums;min-width:120px}
+#now{color:var(--mute);font-size:13px;flex:1;min-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:760px){body{grid-template-columns:1fr;grid-template-rows:auto 1fr}aside{border-right:0;border-bottom:1px solid var(--line);max-height:34vh}}
+</style></head>
+<body>
+<aside>
+  <h1>O MULTIVERSO DA BURRICE</h1>
+  <div class="sub">Série animada programática · 5 × 90 s · 9:16 · PT-BR</div>
+  <div id="eps"></div>
+  <div class="mode"><button class="c" id="mLive" title="Renderiza ao vivo pelo mesmo motor determinístico">Ao vivo (motor)</button><button class="c" id="mMp4" title="Toca o MP4 exportado">MP4 exportado</button></div>
+  <div class="sub">Atalhos: espaço = play/pausa · ←/→ = ±1 s · , / . = ±1 quadro · 1–5 = episódio</div>
+</aside>
+<main>
+  <div id="stage"><div id="wrap"><iframe id="film" title="episódio"></iframe><video id="vid" playsinline></video></div></div>
+  <div class="bar">
+    <div id="tl"><div class="fill"></div><div class="head"></div></div>
+    <div class="row">
+      <button class="c" id="play">▶ Play</button>
+      <button class="c" id="back">−1 s</button><button class="c" id="fwd">+1 s</button>
+      <button class="c" id="prevF">◀ quadro</button><button class="c" id="nextF">quadro ▶</button>
+      <span id="time">0:00.00 / 1:30.00</span><span id="now"></span>
+    </div>
+  </div>
+</main>
+<audio id="aud" preload="auto"></audio>
+<script>
+const TITLES = ['O BOTÃO DO COCÔ INFINITO', 'A GRAVIDADE FOI PRO SACO', 'A GUERRA INTERGALÁCTICA DA MORTADELA', 'O IMPÉRIO DA SALSICHA', 'O FIM DA BURRICE'];
+const COLORS = { juninho: '#FFD21F', cleide: '#FF7FB4', controle: '#5CF2FF', ze: '#4CE08A', coco: '#D9A066', cocozinho: '#D9A066', cafe: '#C8875A', alien: '#A6FF4D', imperador: '#FF8A5C', coxinha: '#FFB347', voz: '#FF5C5C' };
+const $ = id => document.getElementById(id), film = $('film'), vid = $('vid'), aud = $('aud'), tl = $('tl');
+let ep = +(new URLSearchParams(location.search).get('ep') || 1), mode = 'live', t = 0, playing = false, t0 = 0, c0 = 0, total = 90, lines = [];
+TITLES.forEach((n, i) => { const b = document.createElement('button'); b.className = 'ep'; b.innerHTML = `<b>EPISÓDIO ${i + 1}</b>${n}`; b.onclick = () => load(i + 1); $('eps').appendChild(b); });
+function fit() { const s = $('stage'), k = Math.min((s.clientWidth - 24) / 1080, (s.clientHeight - 24) / 1920); $('wrap').style.width = 1080 * k + 'px'; $('wrap').style.height = 1920 * k + 'px'; film.style.transform = vid.style.transform = `scale(${k})`; }
+addEventListener('resize', fit);
+const fmt = s => `${Math.floor(s / 60)}:${(s % 60).toFixed(2).padStart(5, '0')}`;
+function load(n) {
+  pause(); ep = n; t = 0; lines = [];
+  document.querySelectorAll('.ep').forEach((b, i) => b.classList.toggle('on', i + 1 === n));
+  film.src = `film.html?ep=${n}`; aud.src = `out/ep${n}.mp4`; vid.src = `out/ep${n}.mp4`;
+  history.replaceState(null, '', `?ep=${n}`);
+  film.onload = () => { const w = film.contentWindow, wait = () => { if (!w.READY) return setTimeout(wait, 100); total = w.TOTAL; markers(w); draw(); }; wait(); };
+}
+function markers(w) {
+  tl.querySelectorAll('.ln').forEach(e => e.remove());
+  fetch(`episodes/ep${ep}/timing.json`).then(r => r.ok ? r.json() : { lines: [] }).catch(() => ({ lines: [] })).then(tm => {
+    const byId = Object.fromEntries((w.LINES || []).map(l => [l.id, l]));
+    lines = (tm.lines.length ? tm.lines : (w.LINES || []).map(l => ({ ...l, start: l.at, dur: 2 }))).map(l => ({ ...l, text: byId[l.id]?.text || '' }));
+    for (const l of lines) { const d = document.createElement('div'); d.className = 'ln'; d.style.left = l.start / total * 100 + '%'; d.style.width = Math.max(.4, l.dur / total * 100) + '%'; d.style.background = COLORS[l.who] || '#fff'; d.title = l.text; tl.appendChild(d); }
+  });
+}
+function draw() {
+  if (mode === 'live') { const w = film.contentWindow; if (w && w.READY) w.seek(t); }
+  tl.querySelector('.fill').style.width = t / total * 100 + '%'; tl.querySelector('.head').style.left = t / total * 100 + '%';
+  $('time').textContent = `${fmt(t)} / ${fmt(total)}`;
+  const l = lines.find(l => t >= l.start && t <= l.start + l.dur); $('now').textContent = l ? `${l.who.toUpperCase()}: ${l.text}` : '';
+}
+function tick() {
+  if (!playing) return;
+  if (mode === 'mp4') t = vid.currentTime; else t = aud.readyState >= 2 && !aud.paused ? aud.currentTime : c0 + (performance.now() - t0) / 1000;
+  if (t >= total) { t = total; pause(); }
+  draw(); requestAnimationFrame(tick);
+}
+function play() { if (t >= total - .05) t = 0; playing = true; $('play').textContent = '❚❚ Pausa'; t0 = performance.now(); c0 = t;
+  if (mode === 'mp4') { vid.currentTime = t; vid.play(); } else { aud.currentTime = t; aud.play().catch(() => { }); } requestAnimationFrame(tick); }
+function pause() { playing = false; $('play').textContent = '▶ Play'; aud.pause(); vid.pause(); }
+function seekTo(s) { t = Math.max(0, Math.min(total, s)); c0 = t; t0 = performance.now(); if (mode === 'mp4') vid.currentTime = t; else if (playing) aud.currentTime = t; draw(); }
+function setMode(m) { pause(); mode = m; vid.style.display = m === 'mp4' ? 'block' : 'none'; film.style.visibility = m === 'mp4' ? 'hidden' : 'visible'; $('mLive').style.borderColor = m === 'live' ? 'var(--yel)' : ''; $('mMp4').style.borderColor = m === 'mp4' ? 'var(--yel)' : ''; seekTo(t); }
+$('play').onclick = () => playing ? pause() : play();
+$('back').onclick = () => seekTo(t - 1); $('fwd').onclick = () => seekTo(t + 1);
+$('prevF').onclick = () => { pause(); seekTo(Math.round(t * 30 - 1) / 30); }; $('nextF').onclick = () => { pause(); seekTo(Math.round(t * 30 + 1) / 30); };
+$('mLive').onclick = () => setMode('live'); $('mMp4').onclick = () => setMode('mp4');
+let drag = false; const scrub = e => { const r = tl.getBoundingClientRect(); seekTo((e.clientX - r.left) / r.width * total); };
+tl.onpointerdown = e => { drag = true; tl.setPointerCapture(e.pointerId); scrub(e); }; tl.onpointermove = e => drag && scrub(e); tl.onpointerup = () => drag = false;
+addEventListener('keydown', e => { if (e.key === ' ') { e.preventDefault(); playing ? pause() : play(); } else if (e.key === 'ArrowLeft') seekTo(t - 1); else if (e.key === 'ArrowRight') seekTo(t + 1);
+  else if (e.key === ',') { pause(); seekTo(Math.round(t * 30 - 1) / 30); } else if (e.key === '.') { pause(); seekTo(Math.round(t * 30 + 1) / 30); } else if (/^[1-5]$/.test(e.key)) load(+e.key); });
+fit(); setMode('live'); load(ep);
+</script></body></html>

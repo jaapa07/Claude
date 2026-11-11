@@ -1,0 +1,506 @@
+{
+ "total": 90,
+ "lines": [
+  {
+   "id": "j1",
+   "who": "juninho",
+   "at": 0.9,
+   "text": "Ué, que controle é esse? Será que liga o ventilador?"
+  },
+  {
+   "id": "k1",
+   "who": "coco",
+   "at": 9.4,
+   "text": "FINALMENTE! TRINTA ANOS ESPERANDO A LIBERDADE!"
+  },
+  {
+   "id": "j2",
+   "who": "juninho",
+   "at": 12.85,
+   "text": "QUE PORRA É ESSA?!",
+   "voice": {
+    "speed": 1.2
+   }
+  },
+  {
+   "id": "j3",
+   "who": "juninho",
+   "at": 17.4,
+   "text": "VOLTA PRO VASO, DESGRAÇA!"
+  },
+  {
+   "id": "k2",
+   "who": "coco",
+   "at": 20.2,
+   "text": "Agora é tarde, pai! A família cresceu!"
+  },
+  {
+   "id": "c1",
+   "who": "cleide",
+   "at": 36,
+   "text": "JUNINHO! POR QUE TEM UM COCÔ FAZENDO EMBAIXADINHA NA MINHA PIA?!"
+  },
+  {
+   "id": "z1",
+   "who": "cocozinho",
+   "at": 41.2,
+   "text": "É TREINO PRO BRASILEIRÃO, TIA!"
+  },
+  {
+   "id": "j4",
+   "who": "juninho",
+   "at": 50.7,
+   "text": "Mãe, calma! Eu tenho um controle!"
+  },
+  {
+   "id": "r1",
+   "who": "controle",
+   "at": 56.5,
+   "text": "Gravidade: desligada."
+  },
+  {
+   "id": "c2",
+   "who": "cleide",
+   "at": 62.6,
+   "text": "JUNINHO, EU VOU TE BATER ATÉ EM OUTRA DIMENSÃO!"
+  },
+  {
+   "id": "j5",
+   "who": "juninho",
+   "at": 68,
+   "text": "Olha, mãe, eu tô voando! Ai!"
+  },
+  {
+   "id": "r2",
+   "who": "controle",
+   "at": 78.9,
+   "text": "Parabéns. Você desbloqueou o modo apocalipse."
+  },
+  {
+   "id": "j6",
+   "who": "juninho",
+   "at": 84.4,
+   "text": "Mãe… acho que apertei o botão errado."
+  },
+  {
+   "id": "c3",
+   "who": "cleide",
+   "at": 88,
+   "text": "VOCÊ ACHA?!"
+  }
+ ],
+ "sfx": [
+  [
+   0.25,
+   "swoosh_up",
+   0.6
+  ],
+  [
+   3.9,
+   "beep",
+   0.5
+  ],
+  [
+   5.6,
+   "drumroll",
+   0.5
+  ],
+  [
+   6.35,
+   "click",
+   1.4
+  ],
+  [
+   6.3999999999999995,
+   "boop",
+   0.8
+  ],
+  [
+   7,
+   "rumble",
+   0.9
+  ],
+  [
+   7.45,
+   "boing",
+   0.9
+  ],
+  [
+   7.9,
+   "choir",
+   0.8
+  ],
+  [
+   8.2,
+   "sparkle",
+   0.7
+  ],
+  [
+   12.6,
+   "scratch",
+   0.5
+  ],
+  [
+   12.7,
+   "whoosh",
+   0.7
+  ],
+  [
+   15.2,
+   "boing",
+   1
+  ],
+  [
+   15.7,
+   "plop",
+   1
+  ],
+  [
+   16,
+   "pop",
+   1
+  ],
+  [
+   16.6,
+   "pop",
+   0.92
+  ],
+  [
+   17.2,
+   "pop",
+   0.84
+  ],
+  [
+   17.8,
+   "pop",
+   0.76
+  ],
+  [
+   18.4,
+   "pop",
+   0.6799999999999999
+  ],
+  [
+   19,
+   "pop",
+   0.6
+  ],
+  [
+   19.2,
+   "squish",
+   0.7
+  ],
+  [
+   22.3,
+   "plop",
+   1.1
+  ],
+  [
+   22.35,
+   "squish",
+   0.8
+  ],
+  [
+   24.4,
+   "step",
+   0.7
+  ],
+  [
+   24.6,
+   "step",
+   0.7
+  ],
+  [
+   25,
+   "flush",
+   1.2
+  ],
+  [
+   25.7,
+   "splash",
+   1.1
+  ],
+  [
+   25.8,
+   "fart",
+   0.9
+  ],
+  [
+   26,
+   "cuica",
+   0.7
+  ],
+  [
+   31.6,
+   "sparkle",
+   0.7
+  ],
+  [
+   33.6,
+   "click",
+   1
+  ],
+  [
+   33.620000000000005,
+   "ding",
+   0.3
+  ],
+  [
+   34.85,
+   "scratch",
+   1
+  ],
+  [
+   35,
+   "crash",
+   1.3
+  ],
+  [
+   35.1,
+   "thunder",
+   0.6
+  ],
+  [
+   40.1,
+   "apito",
+   0.8
+  ],
+  [
+   40.5,
+   "tick",
+   0.9
+  ],
+  [
+   41.05,
+   "tick",
+   0.9
+  ],
+  [
+   41.6,
+   "tick",
+   0.9
+  ],
+  [
+   42.15,
+   "tick",
+   0.9
+  ],
+  [
+   42.7,
+   "tick",
+   0.9
+  ],
+  [
+   43.25,
+   "tick",
+   0.9
+  ],
+  [
+   43.8,
+   "tick",
+   0.9
+  ],
+  [
+   44.35,
+   "tick",
+   0.9
+  ],
+  [
+   45.3,
+   "crickets",
+   0.9
+  ],
+  [
+   48.1,
+   "whoosh",
+   1
+  ],
+  [
+   48.75,
+   "boing",
+   1
+  ],
+  [
+   49.25,
+   "bigslap",
+   1.3
+  ],
+  [
+   49.75,
+   "cuica",
+   0.5
+  ],
+  [
+   54,
+   "rimshot",
+   0.7
+  ],
+  [
+   56,
+   "click",
+   1.4
+  ],
+  [
+   57.3,
+   "power_down",
+   1
+  ],
+  [
+   58.6,
+   "swoosh_up",
+   1
+  ],
+  [
+   58.9,
+   "slide_up",
+   0.6
+  ],
+  [
+   65.5,
+   "boing",
+   0.5
+  ],
+  [
+   67,
+   "splash",
+   0.5
+  ],
+  [
+   70.6,
+   "thud",
+   1.2
+  ],
+  [
+   70.64999999999999,
+   "honk",
+   0.8
+  ],
+  [
+   70.89999999999999,
+   "slide_down",
+   0.5
+  ],
+  [
+   75,
+   "rumble",
+   1
+  ],
+  [
+   75.9,
+   "thud",
+   0.7
+  ],
+  [
+   76.55000000000001,
+   "thud",
+   0.7
+  ],
+  [
+   77.2,
+   "thud",
+   0.7
+  ],
+  [
+   77.85000000000001,
+   "thud",
+   0.7
+  ],
+  [
+   78.5,
+   "thud",
+   0.7
+  ],
+  [
+   79.15,
+   "thud",
+   0.7
+  ],
+  [
+   79.80000000000001,
+   "thud",
+   0.7
+  ],
+  [
+   80.45,
+   "thud",
+   0.7
+  ],
+  [
+   78.4,
+   "fanfare",
+   1
+  ],
+  [
+   81.3,
+   "swoosh_up",
+   1.1
+  ],
+  [
+   82,
+   "whoosh",
+   0.6
+  ],
+  [
+   87.6,
+   "whoosh",
+   0.4
+  ],
+  [
+   89.2,
+   "rimshot",
+   0.9
+  ]
+ ],
+ "music": [
+  [
+   0,
+   "lounge",
+   0.5
+  ],
+  [
+   7,
+   "none"
+  ],
+  [
+   15,
+   "chase",
+   0.55
+  ],
+  [
+   28.8,
+   "funk",
+   0.9
+  ],
+  [
+   34.85,
+   "none"
+  ],
+  [
+   40,
+   "none"
+  ],
+  [
+   55.6,
+   "none"
+  ],
+  [
+   58.5,
+   "space",
+   0.8
+  ],
+  [
+   75,
+   "epic",
+   0.7
+  ],
+  [
+   82,
+   "space",
+   0.6
+  ],
+  [
+   87.6,
+   "none"
+  ]
+ ]
+}

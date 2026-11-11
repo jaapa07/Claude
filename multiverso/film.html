@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>O Multiverso da Burrice</title>
+<style>html,body{margin:0;background:#000;overflow:hidden}canvas#film{display:block;width:1080px;height:1920px}
+body.fit canvas#film{width:auto;height:100vh;margin:0 auto}</style>
+<script src="vendor/gsap.min.js"></script></head>
+<body><canvas id="film" width="1080" height="1920"></canvas>
+<script type="module">
+// film.html?ep=N : one episode, driven only by window.seek(t). Add &fit to scale it to the window.
+const q = new URLSearchParams(location.search), ep = q.get('ep') || '1';
+if (q.has('fit')) document.body.classList.add('fit');
+const mod = await import(`./episodes/ep${ep}/scene.js`);
+const { boot } = await import('./lib/stage.js');
+await boot(mod);
+</script></body></html>

@@ -1,0 +1,156 @@
+[
+ {
+  "id": "j1",
+  "who": "juninho",
+  "start": 0.9,
+  "caption": "Ué, que controle é esse? Será que liga o ventilador?",
+  "say": "Ué, que controle é esse? Será que liga o ventilador?",
+  "voice": "pm_alex",
+  "speed": 1.12,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "k1",
+  "who": "coco",
+  "start": 9.4,
+  "caption": "FINALMENTE! TRINTA ANOS ESPERANDO A LIBERDADE!",
+  "say": "Finalmente! trinta anos esperando A liberdade!",
+  "voice": "pm_alex",
+  "speed": 1.15,
+  "pitch": 6.0,
+  "fx": "aecho=0.7:0.4:30:0.25"
+ },
+ {
+  "id": "j2",
+  "who": "juninho",
+  "start": 12.85,
+  "caption": "QUE PORRA É ESSA?!",
+  "say": "Que porra É essa?!",
+  "voice": "pm_alex",
+  "speed": 1.2,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "j3",
+  "who": "juninho",
+  "start": 17.4,
+  "caption": "VOLTA PRO VASO, DESGRAÇA!",
+  "say": "Volta pro vaso, desgraça!",
+  "voice": "pm_alex",
+  "speed": 1.12,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "k2",
+  "who": "coco",
+  "start": 20.2,
+  "caption": "Agora é tarde, pai! A família cresceu!",
+  "say": "Agora é tarde, pai! A família cresceu!",
+  "voice": "pm_alex",
+  "speed": 1.15,
+  "pitch": 6.0,
+  "fx": "aecho=0.7:0.4:30:0.25"
+ },
+ {
+  "id": "c1",
+  "who": "cleide",
+  "start": 36,
+  "caption": "JUNINHO! POR QUE TEM UM COCÔ FAZENDO EMBAIXADINHA NA MINHA PIA?!",
+  "say": "Juninho! por que tem um cocô fazendo embaixadinha na minha pia?!",
+  "voice": "pf_dora",
+  "speed": 1.18,
+  "pitch": -1.0,
+  "fx": "acompressor=threshold=-18dB:ratio=4,volume=1.4"
+ },
+ {
+  "id": "z1",
+  "who": "cocozinho",
+  "start": 41.2,
+  "caption": "É TREINO PRO BRASILEIRÃO, TIA!",
+  "say": "É treino pro brasileirão, tia!",
+  "voice": "pm_alex",
+  "speed": 1.25,
+  "pitch": 10.0,
+  "fx": ""
+ },
+ {
+  "id": "j4",
+  "who": "juninho",
+  "start": 50.7,
+  "caption": "Mãe, calma! Eu tenho um controle!",
+  "say": "Mãe, calma! Eu tenho um controle!",
+  "voice": "pm_alex",
+  "speed": 1.12,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "r1",
+  "who": "controle",
+  "start": 56.5,
+  "caption": "Gravidade: desligada.",
+  "say": "Gravidade: desligada.",
+  "voice": "pm_santa",
+  "speed": 1.0,
+  "pitch": -1.0,
+  "fx": "flanger=delay=2:depth=2:speed=8,acrusher=bits=7:mode=log:aa=1,aecho=0.6:0.5:18:0.4"
+ },
+ {
+  "id": "c2",
+  "who": "cleide",
+  "start": 62.6,
+  "caption": "JUNINHO, EU VOU TE BATER ATÉ EM OUTRA DIMENSÃO!",
+  "say": "Juninho, eu vou te bater até em outra dimensão!",
+  "voice": "pf_dora",
+  "speed": 1.18,
+  "pitch": -1.0,
+  "fx": "acompressor=threshold=-18dB:ratio=4,volume=1.4"
+ },
+ {
+  "id": "j5",
+  "who": "juninho",
+  "start": 68,
+  "caption": "Olha, mãe, eu tô voando! Ai!",
+  "say": "Olha, mãe, eu tô voando! Ai!",
+  "voice": "pm_alex",
+  "speed": 1.12,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "r2",
+  "who": "controle",
+  "start": 78.9,
+  "caption": "Parabéns. Você desbloqueou o modo apocalipse.",
+  "say": "Parabéns. Você desbloqueou o modo apocalipse.",
+  "voice": "pm_santa",
+  "speed": 1.0,
+  "pitch": -1.0,
+  "fx": "flanger=delay=2:depth=2:speed=8,acrusher=bits=7:mode=log:aa=1,aecho=0.6:0.5:18:0.4"
+ },
+ {
+  "id": "j6",
+  "who": "juninho",
+  "start": 84.4,
+  "caption": "Mãe… acho que apertei o botão errado.",
+  "say": "Mãe... acho que apertei o botão errado.",
+  "voice": "pm_alex",
+  "speed": 1.12,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "c3",
+  "who": "cleide",
+  "start": 88,
+  "caption": "VOCÊ ACHA?!",
+  "say": "Você acha?!",
+  "voice": "pf_dora",
+  "speed": 1.18,
+  "pitch": -1.0,
+  "fx": "acompressor=threshold=-18dB:ratio=4,volume=1.4"
+ }
+]
