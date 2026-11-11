@@ -5,13 +5,13 @@ import json, os, subprocess, sys
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE); OUT = os.path.join(ROOT, 'out')
 os.makedirs(OUT, exist_ok=True)
 def run(*a): return subprocess.run(a, check=True, capture_output=True, text=True)
-def probe(path, want_dur):
+def probe(path, want_dur, frame_tol=2):
     p = json.loads(run('ffprobe', '-v', 'error', '-show_streams', '-show_format', '-of', 'json', path).stdout)
     v = [s for s in p['streams'] if s['codec_type'] == 'video'][0]; a = [s for s in p['streams'] if s['codec_type'] == 'audio']
     dur = float(p['format']['duration']); nb = int(run('ffprobe', '-v', 'error', '-count_packets', '-select_streams', 'v:0', '-show_entries', 'stream=nb_read_packets', '-of', 'csv=p=0', path).stdout.strip())
     vol = run('ffmpeg', '-hide_banner', '-i', path, '-af', 'volumedetect', '-vn', '-f', 'null', '-').stderr
     mean = [l.split(':')[1].strip() for l in vol.splitlines() if 'mean_volume' in l]
-    ok = v['width'] == 1080 and v['height'] == 1920 and a and abs(dur - want_dur) < .2 and abs(nb - round(want_dur * 30)) <= 2
+    ok = v['width'] == 1080 and v['height'] == 1920 and a and abs(dur - want_dur) < .2 and abs(nb - round(want_dur * 30)) <= frame_tol
     print(f"{os.path.basename(path)}: {v['width']}x{v['height']} {v['codec_name']} {v['r_frame_rate']} fps, {nb} frames, audio {a[0]['codec_name'] if a else 'NONE'} "
           f"{a[0].get('sample_rate', '') if a else ''} Hz, {dur:.2f} s, {os.path.getsize(path) / 1e6:.1f} MB, mean volume {mean[0] if mean else '?'} -> {'OK' if ok else 'PROBLEM'}")
     if not ok: sys.exit(1)
@@ -26,7 +26,7 @@ if ep == 'season':
     for f in os.listdir(OUT):
         if f.startswith('p-0'): os.remove(os.path.join(OUT, f))
     run('ffmpeg', '-y', '-loglevel', 'error', '-i', out, '-vf', r"select='not(mod(n\,300))',scale=216:384,tile=10x2", '-frames:v', '1', '-fps_mode', 'vfr', os.path.join(OUT, 'temporada_sheet.jpg'))
-    os.remove(lst); probe(out, 462.5); sys.exit(0)
+    os.remove(lst); probe(out, 462.5, frame_tol=5)   # each join may add a frame: every episode's AAC track ends ~20 ms after its video; sys.exit(0)
 d = os.path.join(ROOT, 'episodes', f'ep{ep}'); os.makedirs(os.path.join(OUT, 'corpo'), exist_ok=True)
 out = os.path.join(OUT, 'corpo', f'ep{ep}.mp4')   # the 90 s episode body; tools/cover.py puts the cover in front -> out/epN.mp4
 n = len([f for f in os.listdir(os.path.join(d, 'frames')) if f.endswith('.jpg')])
