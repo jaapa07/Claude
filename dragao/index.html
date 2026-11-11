@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>O Dragão que Tinha Medo de Fogo</title>
+<style>
+  @font-face { font-family: Fredoka; font-weight: 600; src: url(assets/fonts/fredoka-latin-600-normal.woff2) format('woff2'); }
+  @font-face { font-family: Fredoka; font-weight: 700; src: url(assets/fonts/fredoka-latin-700-normal.woff2) format('woff2'); }
+  @font-face { font-family: Nunito; font-weight: 700; src: url(assets/fonts/nunito-latin-700-normal.woff2) format('woff2'); }
+  @font-face { font-family: Nunito; font-weight: 800; src: url(assets/fonts/nunito-latin-800-normal.woff2) format('woff2'); }
+  @font-face { font-family: Nunito; font-weight: 900; src: url(assets/fonts/nunito-latin-900-normal.woff2) format('woff2'); }
+  :root { --bg: #1d1238; --panel: #2a1b4d; --line: #463374; --text: #fff4e0; --dim: #c2b4e6; --accent: #49e0c8; --accent2: #ff7a5c; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font-family: Nunito, system-ui, sans-serif; }
+  body { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 10px 16px 16px; overflow-x: hidden; }
+  header { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; justify-content: center; }
+  h1 { font-family: Fredoka, sans-serif; font-weight: 800; letter-spacing: .28em; font-size: 18px; margin: 0; }
+  header span { color: var(--dim); font-size: 12px; letter-spacing: .1em; }
+  #stage { position: relative; height: calc(100vh - 190px); min-height: 420px; aspect-ratio: 9 / 16; max-width: 100%; background: #000; border-radius: 10px; overflow: hidden; box-shadow: 0 0 0 1px var(--line), 0 20px 60px #0008; }
+  #view { width: 100%; height: 100%; display: block; }
+  #loading { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: #1d1238; font-family: Fredoka, sans-serif; letter-spacing: .2em; font-size: 12px; color: var(--dim); }
+  #loading .bar { width: 60%; height: 3px; background: var(--line); }
+  #loading .bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width .2s; }
+  #bigplay { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; background: radial-gradient(#0000, #0008); cursor: pointer; border: 0; }
+  #bigplay svg { width: 88px; height: 88px; filter: drop-shadow(0 0 18px var(--accent)); }
+  .bar-ctrl { width: min(980px, 100%); background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  button, select { background: #111a29; color: var(--text); border: 1px solid var(--line); border-radius: 7px; padding: 7px 10px; font: 800 13px Nunito, sans-serif; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+  button:hover { border-color: var(--accent); }
+  button.on { background: #12304d; border-color: var(--accent); }
+  button svg { width: 16px; height: 16px; fill: currentColor; }
+  .eps button { font-family: Fredoka, sans-serif; letter-spacing: .08em; }
+  #scrub { flex: 1; min-width: 160px; accent-color: var(--accent); }
+  #time { font: 600 12px ui-monospace, monospace; color: var(--dim); min-width: 120px; text-align: right; }
+  #status { font-size: 12px; color: var(--dim); min-height: 16px; }
+  .sp { flex: 1; }
+  @media (max-width: 640px) { #stage { height: auto; width: 100%; } }
+</style>
+<script src="vendor/gsap.min.js"></script>
+<script type="importmap">
+{ "imports": { "three": "./vendor/three/three.module.min.js", "three/addons/": "./vendor/three/addons/" } }
+</script>
+</head>
+<body>
+<header><h1>O DRAGÃO QUE TINHA MEDO DE FOGO</h1><span>MINISSÉRIE DE COMÉDIA · 5 EPISÓDIOS × 20 s · 1080×1920 · 60 FPS</span></header>
+<div id="stage">
+  <canvas id="view"></canvas>
+  <button id="bigplay" aria-label="Reproduzir"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="none" stroke="#49e0c8" stroke-width="1.2"/><path d="M9.5 7.5v9l7-4.5z" fill="#fff"/></svg></button>
+  <div id="loading"><div>ENCHENDO AS BOLHAS…</div><div class="bar"><i id="prog"></i></div><div id="loadlabel"></div></div>
+</div>
+<div class="bar-ctrl">
+  <div class="row">
+    <button id="play" title="Reproduzir/pausar (espaço)"><svg viewBox="0 0 24 24" id="playicon"><path d="M7 5v14l11-7z"/></svg></button>
+    <input id="scrub" type="range" min="0" max="100" step="0.001" value="0">
+    <span id="time">EP1 00.00 / 20.00</span>
+  </div>
+  <div class="row eps" id="eps"></div>
+  <div class="row">
+    <button id="mode" class="on" title="Reprodução contínua dos 5 episódios">Contínuo</button>
+    <button id="subs" class="on">Legendas</button>
+    <button id="mute">Som</button>
+    <select id="quality" title="Resolução interna da prévia">
+      <option value="0.35">Prévia 35%</option><option value="0.5" selected>Prévia 50%</option><option value="0.75">Prévia 75%</option><option value="1">1080×1920</option>
+    </select>
+    <span class="sp"></span>
+    <button id="shot" title="Capturar frame PNG 1080×1920"><svg viewBox="0 0 24 24"><path d="M9 4 7.5 6H4v13h16V6h-3.5L15 4zm3 4.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9z"/></svg>Frame</button>
+    <button id="export" title="Exporta o episódio atual (ou a série no modo contínuo) em MP4 1080×1920 60fps, quadro a quadro"><svg viewBox="0 0 24 24"><path d="M11 4h2v9l3.5-3.5 1.4 1.4L12 16.8l-5.9-5.9 1.4-1.4L11 13zM5 18h14v2H5z"/></svg>Exportar MP4</button>
+  </div>
+  <div id="status"></div>
+</div>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>

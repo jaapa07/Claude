@@ -1,0 +1,9 @@
+node_modules/
+tools/models/
+out/frames/
+out/tmp/
+*.part
+out/stills/
+out/speedtest*
+# full-quality masters (large); compressed copies are committed in video/
+out/*.mp4

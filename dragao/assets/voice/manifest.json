@@ -1,0 +1,717 @@
+{
+ "e1_riso1": {
+  "duration": 1.501,
+  "words": [
+   {
+    "text": "Rá",
+    "start": 0.05,
+    "end": 0.312
+   },
+   {
+    "text": "rá",
+    "start": 0.312,
+    "end": 0.574
+   },
+   {
+    "text": "rá",
+    "start": 0.574,
+    "end": 0.836
+   },
+   {
+    "text": "rá",
+    "start": 0.836,
+    "end": 1.098
+   },
+   {
+    "text": "rá!",
+    "start": 1.098,
+    "end": 1.36
+   }
+  ]
+ },
+ "e1_riso2": {
+  "duration": 1.806,
+  "words": [
+   {
+    "text": "Rô",
+    "start": 0.07,
+    "end": 0.583
+   },
+   {
+    "text": "rô",
+    "start": 0.583,
+    "end": 1.097
+   },
+   {
+    "text": "rô!",
+    "start": 1.097,
+    "end": 1.61
+   }
+  ]
+ },
+ "e1_brasa": {
+  "duration": 3.358,
+  "words": [
+   {
+    "text": "Você",
+    "start": 0.03,
+    "end": 0.39
+   },
+   {
+    "text": "não",
+    "start": 0.39,
+    "end": 0.57
+   },
+   {
+    "text": "é",
+    "start": 0.57,
+    "end": 0.75
+   },
+   {
+    "text": "dragão!",
+    "start": 0.75,
+    "end": 1.11
+   },
+   {
+    "text": "É",
+    "start": 1.11,
+    "end": 1.29
+   },
+   {
+    "text": "uma",
+    "start": 1.29,
+    "end": 1.65
+   },
+   {
+    "text": "máquina",
+    "start": 1.65,
+    "end": 2.19
+   },
+   {
+    "text": "de",
+    "start": 2.19,
+    "end": 2.37
+   },
+   {
+    "text": "lavar",
+    "start": 2.37,
+    "end": 2.73
+   },
+   {
+    "text": "com",
+    "start": 2.73,
+    "end": 2.91
+   },
+   {
+    "text": "asas!",
+    "start": 2.91,
+    "end": 3.27
+   }
+  ]
+ },
+ "e1_diretor": {
+  "duration": 1.82,
+  "words": [
+   {
+    "text": "ALGUÉM",
+    "start": 0.04,
+    "end": 0.489
+   },
+   {
+    "text": "ME",
+    "start": 0.489,
+    "end": 0.713
+   },
+   {
+    "text": "TIRA",
+    "start": 0.713,
+    "end": 1.161
+   },
+   {
+    "text": "DAQUI!",
+    "start": 1.161,
+    "end": 1.61
+   }
+  ]
+ },
+ "e2_pipo1": {
+  "duration": 2.12,
+  "words": [
+   {
+    "text": "Aguenta",
+    "start": 0.03,
+    "end": 0.471
+   },
+   {
+    "text": "firme,",
+    "start": 0.471,
+    "end": 0.854
+   },
+   {
+    "text": "diretor!",
+    "start": 0.854,
+    "end": 1.295
+   },
+   {
+    "text": "Eu",
+    "start": 1.295,
+    "end": 1.442
+   },
+   {
+    "text": "vou",
+    "start": 1.442,
+    "end": 1.589
+   },
+   {
+    "text": "te",
+    "start": 1.589,
+    "end": 1.736
+   },
+   {
+    "text": "salvar!",
+    "start": 1.736,
+    "end": 2.03
+   }
+  ]
+ },
+ "e2_luna": {
+  "duration": 2.919,
+  "words": [
+   {
+    "text": "Você",
+    "start": 0.02,
+    "end": 0.328
+   },
+   {
+    "text": "sabe",
+    "start": 0.328,
+    "end": 0.636
+   },
+   {
+    "text": "que",
+    "start": 0.636,
+    "end": 0.79
+   },
+   {
+    "text": "dragões",
+    "start": 0.79,
+    "end": 1.098
+   },
+   {
+    "text": "normalmente",
+    "start": 1.098,
+    "end": 1.714
+   },
+   {
+    "text": "assustam",
+    "start": 1.714,
+    "end": 2.176
+   },
+   {
+    "text": "pessoas,",
+    "start": 2.176,
+    "end": 2.576
+   },
+   {
+    "text": "né?",
+    "start": 2.576,
+    "end": 2.73
+   }
+  ]
+ },
+ "e2_pipo2": {
+  "duration": 2.327,
+  "words": [
+   {
+    "text": "Eu",
+    "start": 0.01,
+    "end": 0.158
+   },
+   {
+    "text": "assusto!",
+    "start": 0.158,
+    "end": 0.602
+   },
+   {
+    "text": "Principalmente",
+    "start": 0.602,
+    "end": 1.342
+   },
+   {
+    "text": "quando",
+    "start": 1.342,
+    "end": 1.638
+   },
+   {
+    "text": "tento",
+    "start": 1.638,
+    "end": 1.934
+   },
+   {
+    "text": "pousar!",
+    "start": 1.934,
+    "end": 2.23
+   }
+  ]
+ },
+ "e2_narr": {
+  "duration": 4.028,
+  "words": [
+   {
+    "text": "Mas",
+    "start": 0.04,
+    "end": 0.223
+   },
+   {
+    "text": "o",
+    "start": 0.223,
+    "end": 0.405
+   },
+   {
+    "text": "reino",
+    "start": 0.405,
+    "end": 0.77
+   },
+   {
+    "text": "estava",
+    "start": 0.77,
+    "end": 1.318
+   },
+   {
+    "text": "prestes",
+    "start": 1.318,
+    "end": 1.683
+   },
+   {
+    "text": "a",
+    "start": 1.683,
+    "end": 1.865
+   },
+   {
+    "text": "enfrentar",
+    "start": 1.865,
+    "end": 2.413
+   },
+   {
+    "text": "um",
+    "start": 2.413,
+    "end": 2.595
+   },
+   {
+    "text": "problema",
+    "start": 2.595,
+    "end": 3.143
+   },
+   {
+    "text": "muito",
+    "start": 3.143,
+    "end": 3.508
+   },
+   {
+    "text": "maior.",
+    "start": 3.508,
+    "end": 3.8
+   }
+  ]
+ },
+ "e3_rei": {
+  "duration": 2.017,
+  "words": [
+   {
+    "text": "EU",
+    "start": 0.0,
+    "end": 0.001
+   },
+   {
+    "text": "SOU",
+    "start": 0.001,
+    "end": 0.002
+   },
+   {
+    "text": "O",
+    "start": 0.002,
+    "end": 0.002
+   },
+   {
+    "text": "REI!",
+    "start": 0.002,
+    "end": 0.003
+   },
+   {
+    "text": "NÃO",
+    "start": 0.003,
+    "end": 0.004
+   },
+   {
+    "text": "UMA",
+    "start": 0.004,
+    "end": 0.005
+   },
+   {
+    "text": "BOLINHA",
+    "start": 0.005,
+    "end": 0.008
+   },
+   {
+    "text": "DE",
+    "start": 0.008,
+    "end": 0.008
+   },
+   {
+    "text": "SABÃO!",
+    "start": 0.008,
+    "end": 0.01
+   }
+  ]
+ },
+ "e3_luna": {
+  "duration": 2.403,
+  "words": [
+   {
+    "text": "Pipo!",
+    "start": 0.04,
+    "end": 0.332
+   },
+   {
+    "text": "Suas",
+    "start": 0.332,
+    "end": 0.478
+   },
+   {
+    "text": "bolhas",
+    "start": 0.478,
+    "end": 0.77
+   },
+   {
+    "text": "podem",
+    "start": 0.77,
+    "end": 1.062
+   },
+   {
+    "text": "proteger",
+    "start": 1.062,
+    "end": 1.5
+   },
+   {
+    "text": "todo",
+    "start": 1.5,
+    "end": 1.792
+   },
+   {
+    "text": "o",
+    "start": 1.792,
+    "end": 1.938
+   },
+   {
+    "text": "reino!",
+    "start": 1.938,
+    "end": 2.23
+   }
+  ]
+ },
+ "e4_hic": {
+  "duration": 0.939,
+  "words": [
+   {
+    "text": "Ai,",
+    "start": 0.01,
+    "end": 0.345
+   },
+   {
+    "text": "não…",
+    "start": 0.345,
+    "end": 0.68
+   },
+   {
+    "text": "hic!",
+    "start": 0.68,
+    "end": 0.89
+   }
+  ]
+ },
+ "e4_luna": {
+  "duration": 1.984,
+  "words": [
+   {
+    "text": "Pipo,",
+    "start": 0.03,
+    "end": 0.41
+   },
+   {
+    "text": "você",
+    "start": 0.41,
+    "end": 0.702
+   },
+   {
+    "text": "consegue!",
+    "start": 0.702,
+    "end": 1.14
+   },
+   {
+    "text": "Respira",
+    "start": 1.14,
+    "end": 1.578
+   },
+   {
+    "text": "fundo!",
+    "start": 1.578,
+    "end": 1.87
+   }
+  ]
+ },
+ "e4_monstro": {
+  "duration": 2.441,
+  "words": [
+   {
+    "text": "EI!",
+    "start": 0.03,
+    "end": 0.243
+   },
+   {
+    "text": "EU",
+    "start": 0.243,
+    "end": 0.456
+   },
+   {
+    "text": "TENHO",
+    "start": 0.456,
+    "end": 0.882
+   },
+   {
+    "text": "MEDO",
+    "start": 0.882,
+    "end": 1.308
+   },
+   {
+    "text": "DE",
+    "start": 1.308,
+    "end": 1.521
+   },
+   {
+    "text": "ALTURA!",
+    "start": 1.521,
+    "end": 2.16
+   }
+  ]
+ },
+ "e5_luna": {
+  "duration": 2.12,
+  "words": [
+   {
+    "text": "Ele",
+    "start": 0.02,
+    "end": 0.262
+   },
+   {
+    "text": "só",
+    "start": 0.262,
+    "end": 0.383
+   },
+   {
+    "text": "queria",
+    "start": 0.383,
+    "end": 0.626
+   },
+   {
+    "text": "um",
+    "start": 0.626,
+    "end": 0.747
+   },
+   {
+    "text": "lugar",
+    "start": 0.747,
+    "end": 0.989
+   },
+   {
+    "text": "seguro",
+    "start": 0.989,
+    "end": 1.353
+   },
+   {
+    "text": "para",
+    "start": 1.353,
+    "end": 1.595
+   },
+   {
+    "text": "viver.",
+    "start": 1.595,
+    "end": 1.91
+   }
+  ]
+ },
+ "e5_rei1": {
+  "duration": 2.192,
+  "words": [
+   {
+    "text": "Eu",
+    "start": 0.0,
+    "end": 0.001
+   },
+   {
+    "text": "declaro",
+    "start": 0.001,
+    "end": 0.003
+   },
+   {
+    "text": "Pipo",
+    "start": 0.003,
+    "end": 0.004
+   },
+   {
+    "text": "herói",
+    "start": 0.004,
+    "end": 0.006
+   },
+   {
+    "text": "oficial",
+    "start": 0.006,
+    "end": 0.008
+   },
+   {
+    "text": "do",
+    "start": 0.008,
+    "end": 0.009
+   },
+   {
+    "text": "reino!",
+    "start": 0.009,
+    "end": 0.01
+   }
+  ]
+ },
+ "e5_brasa": {
+  "duration": 2.892,
+  "words": [
+   {
+    "text": "Desculpa",
+    "start": 0.04,
+    "end": 0.595
+   },
+   {
+    "text": "por",
+    "start": 0.595,
+    "end": 0.78
+   },
+   {
+    "text": "te",
+    "start": 0.78,
+    "end": 0.965
+   },
+   {
+    "text": "chamar",
+    "start": 0.965,
+    "end": 1.335
+   },
+   {
+    "text": "de",
+    "start": 1.335,
+    "end": 1.519
+   },
+   {
+    "text": "máquina",
+    "start": 1.519,
+    "end": 2.074
+   },
+   {
+    "text": "de",
+    "start": 2.074,
+    "end": 2.259
+   },
+   {
+    "text": "lavar.",
+    "start": 2.259,
+    "end": 2.74
+   }
+  ]
+ },
+ "e5_pipo": {
+  "duration": 2.287,
+  "words": [
+   {
+    "text": "Tudo",
+    "start": 0.02,
+    "end": 0.274
+   },
+   {
+    "text": "bem.",
+    "start": 0.274,
+    "end": 0.478
+   },
+   {
+    "text": "Pelo",
+    "start": 0.478,
+    "end": 0.732
+   },
+   {
+    "text": "menos",
+    "start": 0.732,
+    "end": 0.986
+   },
+   {
+    "text": "eu",
+    "start": 0.986,
+    "end": 1.113
+   },
+   {
+    "text": "deixo",
+    "start": 1.113,
+    "end": 1.367
+   },
+   {
+    "text": "o",
+    "start": 1.367,
+    "end": 1.494
+   },
+   {
+    "text": "reino",
+    "start": 1.494,
+    "end": 1.749
+   },
+   {
+    "text": "limpinho!",
+    "start": 1.749,
+    "end": 2.13
+   }
+  ]
+ },
+ "e5_rei2": {
+  "duration": 1.358,
+  "words": [
+   {
+    "text": "DE",
+    "start": 0.03,
+    "end": 0.328
+   },
+   {
+    "text": "NOVO",
+    "start": 0.328,
+    "end": 0.922
+   },
+   {
+    "text": "NÃÃÃO!",
+    "start": 0.922,
+    "end": 1.22
+   }
+  ]
+ },
+ "e1_atchim": {
+  "duration": 0.939,
+  "words": [
+   {
+    "text": "Ah…",
+    "start": 0.01,
+    "end": 0.284
+   },
+   {
+    "text": "ah…",
+    "start": 0.284,
+    "end": 0.558
+   },
+   {
+    "text": "ATCHIM!",
+    "start": 0.558,
+    "end": 0.9
+   }
+  ]
+ }
+}
