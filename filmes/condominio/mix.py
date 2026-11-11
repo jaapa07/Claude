@@ -79,6 +79,13 @@ def boop(): d = .3; return norm(sin(660, d) * env_exp(d, .1))
 def swoosh_up(): return norm(chirp(200, 2000, .5) * np.sin(np.pi * t_(.5) / .5))
 def dial(): d = 1.0; return norm(sin(425, d) * (np.sin(2 * np.pi * 2 * t_(d)) > 0))
 def silence(): return np.zeros(10)
+def unroll(): d = 1.4; x = t_(d); return norm(bp(noise(d), 800, 5000) * (.5 + .5 * np.abs(np.sin(2 * np.pi * 9 * x))) * np.exp(-x / 1.0))
+def zoom_in(): d = .6; return norm(chirp(300, 1600, d) * np.sin(np.pi * t_(d) / d) * .6 + bp(noise(d), 1000, 4000) * np.sin(np.pi * t_(d) / d))
+def birds(): o = np.zeros(int(1.6 * SR)); [at(o, chirp(3000, 4200, .12) * env_exp(.12, .05), i * .2) for i in range(7)]; return norm(o)
+def harp_up(): o = np.zeros(int(1.6 * SR)); [at(o, PL.pluck('harp', m, vel=.7), i * .07) for i, m in enumerate([62, 66, 69, 74, 78, 81, 86])]; return norm(o)
+def sigh(): d = 1.4; return norm(bp(noise(d), 300, 2000) * np.sin(np.pi * t_(d) / d) ** 2)
+def slap(): d = .2; return norm(hp(noise(d), 800) * env_exp(d, .02))
+def snort(): d = .6; return norm(lp(noise(d), 600) * np.sin(np.pi * t_(d) / d) * (1 + np.sin(2 * np.pi * 30 * t_(d))))
 FX = {k: v for k, v in globals().items() if callable(v) and k not in ('db', 'rms', 'sin', 'chirp', 'S_', 'at', 'seq', 'hz', 'add', 'bp', 'lp', 'hp', 'noise', 'brown', 'norm', 't_', 'env_exp', 'limit', 'uniform_filter1d', 'maximum_filter1d')}
 FX['whoosh'] = lambda: whoosh(.6); FX['eyes_open'] = lambda: norm(chirp(400, 1400, .4) * np.sin(np.pi * t_(.4) / .4))
 FX['whistle_up'] = lambda: whistle(500, 1900, .7); FX['whistle_down'] = lambda: whistle(1800, 400, .9)
@@ -164,8 +171,19 @@ for e in E:
     if e['type'] != 'line': continue
     w, sr = sf.read(os.path.join(HERE, 'voices', e['id'] + '.wav'), dtype='float32'); w = w if w.ndim == 1 else w.mean(1)
     w = soxr.resample(w, sr, SR); s = int(e['t'] * SR); n = min(len(w), N - s); vo[s:s + n] += w[:n]
-extra = os.path.join(HERE, 'out', f'karaoke{EP}.npy')
-if os.path.exists(extra): k = np.load(extra); vo[:len(k)] += k[:N]
+# episode 5: everyone sings "lá" on a melody during the karaoke (the TTS syllables re-pitched note by note)
+for b in [e for e in E if e['type'] == 'beat' and e['name'] == 'karaokê']:
+    MEL = [67, 69, 71, 72, 74, 72, 71, 69, 67, 67, 74, 74, 76, 74, 72, 71, 69, 71, 72, 74, 76, 74, 72, 71, 72, 72, 74, 76, 79, 76, 74, 72]
+    who = ['LAjun', 'LAcle', 'LAosv', 'LAcar', 'LAvaso']; Bk = 60 / 112 / 2 * 2
+    la = {w: soxr.resample(sf.read(os.path.join(HERE, 'voices', w + '.wav'), dtype='float32')[0], 24000, SR) for w in who}
+    k, tt0 = 0, b['t'] + .2
+    while tt0 < b['t'] + b['d'] - .4:
+        m = MEL[k % len(MEL)]; ratio = 2 ** ((m - 67) / 12)
+        for j, w in enumerate(who):
+            if (k + j) % 2 and j > 1: continue
+            x = soxr.resample(la[w].astype(np.float64), SR, SR / ratio)[:int(Bk * .95 * SR)]; x = x * np.minimum(1, np.minimum(np.arange(len(x)) / 200, (len(x) - np.arange(len(x))) / 800))
+            s0 = int((tt0 + j * .012) * SR); n = min(len(x), N - s0); vo[s0:s0 + n] += x[:n] * .45
+        tt0 += Bk; k += 1
 vo = hp(vo, 90)
 def comp(x, thr_db=-22, ratio=3.):
     e = np.sqrt(uniform_filter1d(x ** 2, int(.02 * SR)) + 1e-12); ed = 20 * np.log10(e)

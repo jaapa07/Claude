@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>O Condomínio dos Desgraçados</title>
+<style>
+  :root { --bg: #120a1e; --panel: #1e1430; --ink: #f4ecff; --muted: #a898c0; --accent: #ff2e88; --gold: #ffc928; --line: #34264a; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 1040px; margin: 0 auto; padding: 20px 16px 40px; display: grid; grid-template-columns: minmax(0, 420px) 1fr; gap: 24px; align-items: start; }
+  h1 { grid-column: 1 / -1; margin: 0; font-size: 26px; letter-spacing: .02em; }
+  h1 small { display: block; font-size: 14px; color: var(--muted); font-weight: 400; margin-top: 4px; }
+  .stage { background: #000; border-radius: 18px; overflow: hidden; border: 1px solid var(--line); aspect-ratio: 9 / 16; position: relative; }
+  video { width: 100%; height: 100%; display: block; background: #000; }
+  .controls { margin-top: 12px; display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; }
+  button { font: inherit; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; cursor: pointer; }
+  button:hover { border-color: var(--accent); }
+  button:focus-visible, input:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  #play { width: 56px; font-size: 18px; }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+  .time { font-variant-numeric: tabular-nums; color: var(--muted); min-width: 92px; text-align: right; }
+  .row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .eps { display: grid; gap: 10px; }
+  .ep { text-align: left; display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center; padding: 12px 14px; }
+  .ep b { font-size: 22px; color: var(--gold); }
+  .ep span { color: var(--muted); font-size: 13px; display: block; }
+  .ep[aria-current="true"] { border-color: var(--accent); background: #2a1640; }
+  .note { color: var(--muted); font-size: 13px; margin-top: 14px; }
+  @media (max-width: 760px) { main { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>O Condomínio dos Desgraçados<small>Comédia adulta · 5 episódios de 90 s · pt-BR</small></h1>
+  <section>
+    <div class="stage"><video id="v" playsinline preload="metadata"></video></div>
+    <div class="controls">
+      <button id="play" aria-label="Play">▶</button>
+      <input id="seek" type="range" min="0" max="90" step="0.01" value="0" aria-label="Linha do tempo">
+      <div class="time" id="time">0:00 / 1:30</div>
+    </div>
+    <div class="row">
+      <button id="back5">−5 s</button><button id="fwd5">+5 s</button>
+      <button id="subs" aria-pressed="true">Legendas: SRT ligadas</button>
+      <button id="auto" aria-pressed="true">Próximo automático: ligado</button>
+    </div>
+  </section>
+  <section>
+    <div class="eps" id="eps"></div>
+    <p class="note">As legendas animadas estão gravadas no vídeo; o botão de legendas liga uma faixa SRT/VTT extra (útil para acessibilidade). Abra este arquivo na mesma pasta dos MP4.</p>
+  </section>
+</main>
+<script>
+const EPS = [
+  { n: 1, title: 'O Vaso Possuído', src: 'ep1.mp4', vtt: 'ep1.vtt' },
+  { n: 2, title: 'O Elevador do Inferno', src: 'ep2.mp4', vtt: 'ep2.vtt' },
+  { n: 3, title: 'O Cachorro Advogado', src: 'ep3.mp4', vtt: 'ep3.vtt' },
+  { n: 4, title: 'A Inteligência Artificial Burra', src: 'ep4.mp4', vtt: 'ep4.vtt' },
+  { n: 5, title: 'A Revolta dos Idiotas', src: 'ep5.mp4', vtt: 'ep5.vtt' },
+  { n: '∑', title: 'Série completa (7:30)', src: 'serie-completa.mp4', vtt: 'serie-completa.vtt' },
+];
+const v = document.getElementById('v'), play = document.getElementById('play'), seek = document.getElementById('seek'), time = document.getElementById('time');
+const list = document.getElementById('eps'); let cur = 0, subsOn = true, auto = true;
+const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+EPS.forEach((e, i) => { const b = document.createElement('button'); b.className = 'ep'; b.innerHTML = `<b>${e.n}</b><div>${e.title}<span>${i < 5 ? 'Episódio ' + e.n + ' · 1:30' : 'Os cinco em sequência'}</span></div><span>▶</span>`; b.onclick = () => load(i, true); list.appendChild(b); });
+function load(i, go) {
+  cur = i; const e = EPS[i]; v.src = e.src; v.querySelectorAll('track').forEach(t => t.remove());
+  const tr = document.createElement('track'); tr.kind = 'subtitles'; tr.srclang = 'pt-BR'; tr.label = 'Português'; tr.src = e.vtt; tr.default = true; v.appendChild(tr);
+  v.addEventListener('loadedmetadata', () => { for (const t of v.textTracks) t.mode = subsOn ? 'showing' : 'hidden'; seek.max = v.duration || 90; }, { once: true });
+  [...list.children].forEach((b, k) => b.setAttribute('aria-current', k === i));
+  if (go) v.play();
+}
+play.onclick = () => v.paused ? v.play() : v.pause();
+v.onplay = () => { play.textContent = '❚❚'; play.setAttribute('aria-label', 'Pausar'); };
+v.onpause = () => { play.textContent = '▶'; play.setAttribute('aria-label', 'Play'); };
+v.ontimeupdate = () => { seek.value = v.currentTime; time.textContent = `${fmt(v.currentTime)} / ${fmt(v.duration || 90)}`; };
+seek.oninput = () => { v.currentTime = +seek.value; };
+v.onended = () => { if (auto && cur < 4) load(cur + 1, true); };
+document.getElementById('back5').onclick = () => v.currentTime = Math.max(0, v.currentTime - 5);
+document.getElementById('fwd5').onclick = () => v.currentTime = Math.min(v.duration, v.currentTime + 5);
+document.getElementById('subs').onclick = e => { subsOn = !subsOn; for (const t of v.textTracks) t.mode = subsOn ? 'showing' : 'hidden'; e.target.textContent = `Legendas: SRT ${subsOn ? 'ligadas' : 'desligadas'}`; e.target.setAttribute('aria-pressed', subsOn); };
+document.getElementById('auto').onclick = e => { auto = !auto; e.target.textContent = `Próximo automático: ${auto ? 'ligado' : 'desligado'}`; e.target.setAttribute('aria-pressed', auto); };
+document.addEventListener('keydown', e => { if (e.key === ' ' && e.target === document.body) { e.preventDefault(); play.click(); } });
+load(0, false);
+</script>
+</body>
+</html>

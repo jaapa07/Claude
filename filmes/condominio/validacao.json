@@ -1,0 +1,118 @@
+{
+ "episodios": [
+  {
+   "dur": 90.0,
+   "w": 1080,
+   "h": 1920,
+   "fps": "30/1",
+   "frames": 2700,
+   "audio": true,
+   "lufs": -13.9,
+   "black": [
+    "86.333333–87.8"
+   ],
+   "linhas": 23,
+   "falas_mudas": [],
+   "srt_cues": 23,
+   "ok": true,
+   "ep": 1
+  },
+  {
+   "dur": 90.0,
+   "w": 1080,
+   "h": 1920,
+   "fps": "30/1",
+   "frames": 2700,
+   "audio": true,
+   "lufs": -14.5,
+   "black": [],
+   "linhas": 23,
+   "falas_mudas": [],
+   "srt_cues": 23,
+   "ok": true,
+   "ep": 2
+  },
+  {
+   "dur": 90.0,
+   "w": 1080,
+   "h": 1920,
+   "fps": "30/1",
+   "frames": 2700,
+   "audio": true,
+   "lufs": -14.6,
+   "black": [],
+   "linhas": 25,
+   "falas_mudas": [],
+   "srt_cues": 25,
+   "ok": true,
+   "ep": 3
+  },
+  {
+   "dur": 90.0,
+   "w": 1080,
+   "h": 1920,
+   "fps": "30/1",
+   "frames": 2700,
+   "audio": true,
+   "lufs": -14.2,
+   "black": [],
+   "linhas": 22,
+   "falas_mudas": [],
+   "srt_cues": 22,
+   "ok": true,
+   "ep": 4
+  },
+  {
+   "dur": 90.0,
+   "w": 1080,
+   "h": 1920,
+   "fps": "30/1",
+   "frames": 2700,
+   "audio": true,
+   "lufs": -14.0,
+   "black": [
+    "86–86.9"
+   ],
+   "linhas": 19,
+   "falas_mudas": [],
+   "srt_cues": 19,
+   "ok": true,
+   "ep": 5
+  }
+ ],
+ "continuidade": [
+  {
+   "de": 1,
+   "para": 2,
+   "diferenca_media": 0.485,
+   "ok": true
+  },
+  {
+   "de": 2,
+   "para": 3,
+   "diferenca_media": 0.339,
+   "ok": true
+  },
+  {
+   "de": 3,
+   "para": 4,
+   "diferenca_media": 1.674,
+   "ok": true
+  },
+  {
+   "de": 4,
+   "para": 5,
+   "diferenca_media": 1.026,
+   "ok": true
+  }
+ ],
+ "serie": {
+  "dur": 450.033333,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "frames": 13500,
+  "audio": true,
+  "lufs": -14.3
+ }
+}

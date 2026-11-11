@@ -44,12 +44,12 @@ function renderBeat(B, t, ctx) {
   let u = t - B.t0, tDraw = t;
   if (B.bridge) { const [J, side] = B.bridge; u = side === 'out' ? J - (B.D - u) + FR : J + u; tDraw = 1000 + u; }   // shared clock across the episode cut
   const uq = Math.floor(u * 15 + 1e-6) / 15, tq = Math.floor(tDraw * 15 + 1e-6) / 15;                                   // characters on twos
-  const S = { jun: pose({ vis: 0 }), osv: pose({ vis: 0 }), cle: pose({ vis: 0 }), car: pose({ vis: 0 }), vaso: pose({ vis: 0 }), dem: pose({ vis: 0 }), chefe: pose({ vis: 0 }) };
+  const S = { jun: pose({ vis: 0 }), osv: pose({ vis: 0 }), cle: pose({ vis: 0 }), car: pose({ vis: 0 }), vaso: pose({ vis: 0 }), dem: pose({ vis: 0 }), chefe: pose({ vis: 0 }), ia: pose({ vis: 0 }), elev: pose({ vis: 0 }) };
   if (B.cast) B.cast(uq, B.D, S, tq);
   const ul = t - B.t0;
   for (const l of B.ls) if (ul >= l.at && ul < l.at + l.d) { const ch = S[l.who]; if (ch && !ch.mute) { const m = mouthAt(l.id, ul - l.at); ch.E.open = Math.max(ch.E.open || 0, m * (ch.E.mouth === 'scream' ? 1.6 : 1)); } }
   for (const [k, P] of Object.entries(S)) {   // blinks, breathing
-    if (!P.vis) continue;
+    if (!P.vis || !P.E) continue;
     const per = BLINK[k] || 4, ph = (tq + hash(k.length * 7.1) * per) % per;
     if (ph < .12 && (P.E.eye || 'open') === 'open' && !P.E.noblink) P.E.eye = 'closed';
     P.sq *= 1 + .012 * Math.sin(tq * 2.4 + k.length);
@@ -60,7 +60,7 @@ function renderBeat(B, t, ctx) {
   ctx.setTransform(z, 0, 0, z, W / 2 - x * z, H / 2 - y * z);
   SETS[B.scene](ctx, tDraw, B.set ? B.set(u, B.D) : {});
   if (B.back) B.back(ctx, u, B.D, tq, S);
-  for (const k of (S.order || ['vaso', 'cle', 'osv', 'dem', 'chefe', 'jun', 'car'])) { const P = S[k]; if (P && P.vis) { ctx.save(); DRAW[k](ctx, P, tq); ctx.restore(); } }
+  for (const k of (S.order || ['vaso', 'cle', 'osv', 'dem', 'chefe', 'jun', 'car'])) { const P = S[k]; if (P && P.vis && DRAW[k]) { ctx.save(); DRAW[k](ctx, P, tq); ctx.restore(); } }
   if (B.front) B.front(ctx, u, B.D, tq, S);
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   if (B.ui) B.ui(ctx, u, B.D, tDraw, S);

@@ -1,0 +1,8 @@
+O Condomínio dos Desgraçados — créditos de terceiros
+
+Vozes: Kokoro TTS v1.0 (kokoro-onnx) — Apache 2.0; vozes pt-BR pf_dora, pm_alex, pm_santa, diferenciadas por tom e efeito por personagem. Fonemas: espeak-ng.
+Instrumentos: violão e baixo pizzicato por modelagem física (pluck.py, Lemo-Opuscar); percussão (surdo, pandeiro, tamborim), baixo, teremim, drones e todos os efeitos sonoros: sintetizados.
+Fontes: Fredoka e Lilita One — SIL Open Font License 1.1 (core/fonts da biblioteca Lemo-Opuscar).
+Ferramentas de render: Lemo-Opuscar (MIT) — core/render, core/audio, core/tts.
+Personagens, roteiro adaptado, cenários, trilha e animação: originais, feitos em código para esta série.
+Referências de estilo (só gramática): Sci-Fi Sitcom Toon, 1930s Rubber Hose Cartoon, Microgame Frenzy (styles/*/STYLE.md).

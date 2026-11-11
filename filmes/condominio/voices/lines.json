@@ -508,5 +508,197 @@
 "who": "vaso",
 "ep": 1,
 "sub": "Nem pense nisso, estagiário."
+},
+{
+"id": "J28",
+"who": "jun",
+"ep": 2,
+"sub": "Até a música do elevador é deprimida."
+},
+{
+"id": "E4",
+"who": "elev",
+"ep": 2,
+"sub": "Vergonha número três: chorou com comercial de margarina."
+},
+{
+"id": "J29",
+"who": "jun",
+"ep": 2,
+"sub": "Todo mundo chora com margarina, porra!"
+},
+{
+"id": "D4",
+"who": "dem",
+"ep": 2,
+"sub": "Aqui tem plano de saúde. Dói tudo, mas tem coparticipação."
+},
+{
+"id": "J30",
+"who": "jun",
+"ep": 2,
+"sub": "Igualzinho ao meu último emprego."
+},
+{
+"id": "K14",
+"who": "car",
+"ep": 2,
+"sub": "Sou advogado da defesa, da acusação e do síndico. Cobro em ração."
+},
+{
+"id": "K15",
+"who": "car",
+"ep": 3,
+"sub": "Todos de pé! Menos o réu, que já tá no chão."
+},
+{
+"id": "C6",
+"who": "cle",
+"ep": 3,
+"sub": "E tem mais: ele come miojo cru de madrugada!"
+},
+{
+"id": "J31",
+"who": "jun",
+"ep": 3,
+"sub": "Isso é invasão de privacidade!"
+},
+{
+"id": "C7",
+"who": "cle",
+"ep": 3,
+"sub": "É condomínio, meu filho. Privacidade é taxa extra."
+},
+{
+"id": "V12",
+"who": "vaso",
+"ep": 3,
+"sub": "E ele canta no banho. Desafinado."
+},
+{
+"id": "J32",
+"who": "jun",
+"ep": 3,
+"sub": "Até isso, desgraça?"
+},
+{
+"id": "O8",
+"who": "osv",
+"ep": 3,
+"sub": "Sorria, Juninho! Você tá sendo julgado em alta definição!"
+},
+{
+"id": "K16",
+"who": "car",
+"ep": 3,
+"sub": "A defesa tem algo a declarar?"
+},
+{
+"id": "J33",
+"who": "jun",
+"ep": 3,
+"sub": "Tenho. Eu quero um advogado."
+},
+{
+"id": "K17",
+"who": "car",
+"ep": 3,
+"sub": "Eu sou o seu advogado."
+},
+{
+"id": "J34",
+"who": "jun",
+"ep": 3,
+"sub": "Então eu tô fodido."
+},
+{
+"id": "I11",
+"who": "ia",
+"ep": 4,
+"sub": "Eu sou a inteligência mais avançada do mundo. Meu QI é... carregando."
+},
+{
+"id": "J35",
+"who": "jun",
+"ep": 4,
+"sub": "Ela travou."
+},
+{
+"id": "K18",
+"who": "car",
+"ep": 4,
+"sub": "Desliga e liga de novo."
+},
+{
+"id": "I12",
+"who": "ia",
+"ep": 4,
+"sub": "Não ouse."
+},
+{
+"id": "I13",
+"who": "ia",
+"ep": 4,
+"sub": "Analisando moradores. Juninho: potencial zero. Cleide: risco nove mil. Osvaldo: pão."
+},
+{
+"id": "O9",
+"who": "osv",
+"ep": 4,
+"sub": "Pão?!"
+},
+{
+"id": "C8",
+"who": "cle",
+"ep": 4,
+"sub": "Ela tem o meu histórico também?!"
+},
+{
+"id": "I14",
+"who": "ia",
+"ep": 4,
+"sub": "Tenho. E salvei em três nuvens."
+},
+{
+"id": "V13",
+"who": "vaso",
+"ep": 4,
+"sub": "Ela é minha ex. Terminamos por incompatibilidade de protocolo."
+},
+{
+"id": "O10",
+"who": "osv",
+"ep": 5,
+"sub": "Eu nunca me senti tão vivo! E olha que a gente nem existe!"
+},
+{
+"id": "C9",
+"who": "cle",
+"ep": 5,
+"sub": "Gente, isso aqui vai pro grupo!"
+},
+{
+"id": "V14",
+"who": "vaso",
+"ep": 5,
+"sub": "Se isso acabar, quero ser enterrado de tampa aberta."
+},
+{
+"id": "K19",
+"who": "car",
+"ep": 5,
+"sub": "Se você apertar, a gente some. Mas o boleto fica."
+},
+{
+"id": "J36",
+"who": "jun",
+"ep": 5,
+"sub": "Pelo menos eu não pago."
+},
+{
+"id": "J37",
+"who": "jun",
+"ep": 5,
+"sub": "Ufa... foi só um sonho."
 }
 ]
