@@ -87,6 +87,8 @@ tools/         export.mjs (Playwright + ffmpeg), voice.py (Kokoro)
 
 **Desempenho.** Sem GPU (renderização por software) cada quadro leva ~1 s; com GPU a prévia roda em tempo real. Os pontos mais pesados têm alternativas otimizadas sem perder o momento narrativo: pontos aditivos em vez de volumes, cubos instanciados em vez de física, e um único passe de bloom compartilhado.
 
-## Arquivos gerados
+## Vídeos renderizados
 
-`out/ep1.mp4 … out/ep5.mp4` e `out/o-ultimo-fragmento.mp4` (série completa), 1080×1920, 60 fps, H.264 + AAC.
+Em `video/`: `ep1.mp4 … ep5.mp4` e `o-ultimo-fragmento.mp4` (série completa, 100 s), 1080×1920, 60 fps, H.264 + AAC, além de `contact-sheet.jpg`.
+São cópias comprimidas (~4,5 Mbit/s) dos masters gerados com `node tools/export.mjs --all --scale 0.5 --workers 3` (3D a 50 %, CRF 18), que ficam em `out/` e não são versionados.
+Nesta máquina sem GPU, a exportação completa a 60 fps levou ~65 min.
