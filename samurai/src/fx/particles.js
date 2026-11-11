@@ -149,7 +149,7 @@ export class Shards {
   }
 }
 export const shardGeo = () => { const g = new THREE.TetrahedronGeometry(1, 0); g.scale(1, 2.2, 0.35); return g; };
-export const shardMat = (color = 0x9fdcff, emissive = 0x3a9cff, ei = 1.6) => new THREE.MeshStandardMaterial({ color, emissive, emissiveIntensity: ei, metalness: 0.6, roughness: 0.25, flatShading: true });
+export const shardMat = (color = 0x7fbcf0, emissive = 0x2a7cff, ei = 0.9) => new THREE.MeshStandardMaterial({ color, emissive, emissiveIntensity: ei, metalness: 0.6, roughness: 0.25, flatShading: true });
 
 /** Voo balístico com pouso: retorna a posição no instante age (para em repouso ao tocar o chão). */
 export function ballistic(d, p0x, p0y, p0z, vx, vy, vz, age, g = 9.8, ground = 0) {

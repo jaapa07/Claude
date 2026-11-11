@@ -36,7 +36,7 @@ const frag = /* glsl */`
     float alpha = clamp(glow + 0.06 + cr, 0.0, 1.0) * uOpacity;
     // modo sólido: pedra escura com as marcas incrustadas (plataformas de batalha)
     vec3 stone = uBase * (0.75 + 0.35 * hash(floor(p * 40.0))) * (0.6 + 0.4 * smoothstep(1.0, 0.2, r));
-    col = mix(col, stone + col * 1.4, uSolid); alpha = mix(alpha, uOpacity, uSolid);
+    col = mix(col, stone + col * 0.45, uSolid); alpha = mix(alpha, uOpacity, uSolid);
     gl_FragColor = vec4(col, alpha);
     #ifdef USE_FOG
       float fogFactor = 1.0 - exp(-fogDensity * fogDensity * vFogDepth * vFogDepth);

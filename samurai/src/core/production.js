@@ -43,6 +43,7 @@ export class Production {
     this.sunDisc = new THREE.Mesh(new THREE.SphereGeometry(1, 20, 14), new THREE.MeshBasicMaterial({ color: 0xffe2b0, toneMapped: false, fog: false })); this.sunDisc.visible = false;
     sc.add(this.petals.mesh, this.rain.mesh, this.motes.points, this.birds.group, this.big.points, this.shards.mesh, this.shards2.mesh, this.discs.mesh, this.portal, this.beam, this.arrow, this.sunDisc, ...this.arcs, ...this.rings);
     for (const b of [...this.gold, ...this.blue, ...this.dust]) sc.add(b.points);
+    this.fill = new THREE.DirectionalLight(0xffe6cc, 0); sc.add(this.fill, this.fill.target);   // luz de preenchimento presa à câmera (rostos)
     this.cam = { p: new THREE.Vector3(0, 2, 10), l: new THREE.Vector3(0, 1, 0), fov: 40, roll: 0, shake: 0 };
     this.focus = new THREE.Vector3(); this.v = new THREE.Vector3(); this.v2 = new THREE.Vector3();
   }
@@ -53,15 +54,15 @@ export class Production {
     this.village.group.visible = false; this.temple.group.visible = false; this.arena.group.visible = false;
     for (const a of this.actors) { a.root.visible = false; a.reset(); a.root.scale.setScalar(1); a.dissolve(0); a.katana?.userData.setGlow(a === this.akio ? 1 : a === this.lord ? 1 : 0); if (a.katana) a.katana.visible = true; }
     this.lord.breakMask(0);
-    this.relic.visible = false; this.skyClock.group.visible = false; this.skyClock.group.scale.setScalar(120);
+    this.relic.visible = false; this.skyClock.group.visible = false; this.skyClock.hour.visible = this.skyClock.minute.visible = true; this.skyClock.mat.uniforms.uCrack.value = 0; this.skyClock.group.scale.setScalar(120);
     this.petals.mesh.visible = false; this.rain.mesh.visible = false; this.motes.points.visible = false; this.birds.group.visible = false;
     for (const b of this.birds.birds) { b.visible = true; b.scale.setScalar(1); }
     for (const b of [...this.gold, ...this.blue, ...this.dust, this.big]) b.points.visible = false;
     this.shards.mesh.visible = false; this.shards2.mesh.visible = false; this.discs.mesh.visible = false; this.portal.visible = false; this.beam.visible = false; this.arrow.visible = false; this.sunDisc.visible = false;
     for (const a of [...this.arcs, ...this.rings]) a.visible = false;
     this.village.setChasm(0); this.village.setSeason(0); this.village.vanishDis.uDissolve.value = 0; this.village.bigDis.uDissolve.value = 0; this.village.vanishHouse.visible = true; this.village.bigMountain.visible = true;
-    this.petals.u.uBox.value.set(30, 16, 30); this.rain.u.uBox.value.set(22, 18, 22); for (const b of this.blue) b.u.uDirBias.value.set(0, 0, 0);
-    this.cam.roll = 0; this.cam.shake = 0;
+    this.petals.u.uBox.value.set(30, 16, 30); this.petals.u.uColA.value.setHex(0xffc2d6); this.petals.u.uColB.value.setHex(0xfff0f4); this.petals.u.uFall.value = 0.75; this.petals.u.uGlow.value = 0; this.big.u.uCol.value.setHex(0x7fc8ff); this.arena.setSeason(0); this.yuna.bow.userData.setDraw(0); this.yuna.bow.visible = true; this.beam.scale.set(1, 1, 1); this.rain.u.uBox.value.set(22, 18, 22); for (const b of this.blue) { b.u.uDirBias.value.set(0, 0, 0); b.u.uGain.value = 1.0; } for (const b of this.gold) { b.u.uStagger.value = 0; b.u.uDirBias.value.set(0, 0, 0); b.u.uGain.value = 1.6; }
+    this.cam.roll = 0; this.cam.shake = 0; this.fill.intensity = 0.4;
   }
   show(...actors) { for (const a of actors) a.root.visible = true; }
   /** Fim do frame: aplica rostos/balanços, câmera (com tremor determinístico) e renderiza. */
@@ -78,6 +79,7 @@ export class Production {
     cam.up.set(Math.sin(c.roll + noise1(t * 21 + 7) * 0.012 * s), Math.cos(c.roll), 0);
     cam.lookAt(c.l.x + noise1(t * 25.0 + 1) * 0.06 * s, c.l.y + noise1(t * 22.0 + 4) * 0.06 * s, c.l.z);
     cam.fov = c.fov; cam.updateProjectionMatrix(); cam.updateMatrixWorld();
+    this.fill.position.copy(cam.position); this.fill.position.y += 1.5; this.fill.target.position.copy(c.l);
   }
   wave(slot, worldPos, radius, amp) { this.applyCam(); this.stage.wave(slot, worldPos, radius, amp); }
   /** raios de luz a partir do sol (ou de um ponto de energia) em espaço de tela. */
@@ -101,9 +103,9 @@ function discFace() {                                             // mostrador d
 }
 function makeArrow() {                                            // flecha de energia (aponta para +Z)
   const g = new THREE.Group();
-  const core = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 1.6, 6), new THREE.MeshBasicMaterial({ color: 0xcff0ff, toneMapped: false })); core.rotation.x = Math.PI / 2; g.add(core);
-  const tip = new THREE.Mesh(new THREE.ConeGeometry(0.11, 0.4, 6), new THREE.MeshBasicMaterial({ color: 0xffffff, toneMapped: false })); tip.rotation.x = Math.PI / 2; tip.position.z = 0.95; g.add(tip);
-  const halo = new THREE.Mesh(new THREE.SphereGeometry(0.3, 10, 8), new THREE.MeshBasicMaterial({ color: 0x4fb8ff, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); halo.position.z = 0.8; halo.scale.set(1, 1, 3); g.add(halo);
-  const l = new THREE.PointLight(0x6fc8ff, 30, 14, 2); g.add(l);
+  const core = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 1.6, 6), new THREE.MeshBasicMaterial({ color: 0x8fd0ff })); core.rotation.x = Math.PI / 2; g.add(core);
+  const tip = new THREE.Mesh(new THREE.ConeGeometry(0.11, 0.4, 6), new THREE.MeshBasicMaterial({ color: 0xbfe6ff })); tip.rotation.x = Math.PI / 2; tip.position.z = 0.95; g.add(tip);
+  const halo = new THREE.Mesh(new THREE.SphereGeometry(0.3, 10, 8), new THREE.MeshBasicMaterial({ color: 0x4fb8ff, transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); halo.position.z = 0.8; halo.scale.set(1, 1, 3); g.add(halo);
+  const l = new THREE.PointLight(0x6fc8ff, 5, 14, 2); g.add(l); g.userData = { light: l, halo };
   return g;
 }

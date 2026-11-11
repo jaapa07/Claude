@@ -184,7 +184,7 @@ export class Actor {
   }
   /** arco armado: braço esquerdo estica segurando o arco, direito puxa a corda. draw 0..1 */
   aim(k, draw = 1, pitch = 0) {
-    this.set('spine', -0.05 - pitch * 0.5, 1.2, 0, k); this.set('chest', 0, 0.3, 0, k); this.set('head', 0.05, -1.35, 0, k);
+    this.set('spine', -0.05, -1.2, 0, k); this.set('chest', 0, -0.3, 0, k); this.set('head', -pitch * 0.6, 1.35, 0, k);
     this.set('armL', -0.15, 0, 1.5 + pitch, k); this.set('foreL', 0, 0, 0.05, k);
     this.set('armR', -0.2, 0, -1.45 - pitch, k); this.set('foreR', 0, 0, -lerp(0.3, 2.3, draw), k);
     this.set('legL', -0.25, 0, 0.2, k); this.set('legR', 0.2, 0, -0.2, k);

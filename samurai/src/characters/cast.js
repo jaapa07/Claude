@@ -45,7 +45,7 @@ export function makeKatana({ blade = COLORS.steel, rune = COLORS.rune, dark = fa
   k.add(mesh(C(0.055, 0.055, 0.014, 12), new THREE.MeshStandardMaterial({ color: dark ? 0x30343c : 0xb8923c, metalness: 0.8, roughness: 0.35 }), 0, 0.125, 0));   // tsuba
   k.add(mesh(C(0.019, 0.021, 0.27, 8), new THREE.MeshStandardMaterial({ color: dark ? 0x111118 : 0x1a2148, roughness: 0.8 }), 0, -0.015, 0));                       // tsuka
   const glow = new THREE.PointLight(rune, 0, 4, 2); glow.position.set(0, 0.6, 0); k.add(glow);
-  k.userData = { runeMat, glow, steel, setGlow(v) { runeMat.color.set(rune).multiplyScalar(v); glow.intensity = v * 0.7; steel.emissiveIntensity = 0.5 + v * 0.25; } };
+  k.userData = { runeMat, glow, steel, setGlow(v) { runeMat.color.set(rune).multiplyScalar(v); glow.intensity = v * 0.22; steel.emissiveIntensity = 0.5 + v * 0.25; } };
   k.userData.setGlow(1);
   return k;
 }

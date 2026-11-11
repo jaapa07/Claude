@@ -27,7 +27,8 @@ body.render { background: #000; } body.render #app { padding: 0; display: block;
 .sub .txt { display: inline; font-weight: 700; font-size: 56px; line-height: 1.24; padding: 4px 0; text-shadow: 0 3px 0 #000, 0 0 18px #000, 0 0 40px #000c; }
 .sub.narr .txt { font-family: 'Cinzel', serif; font-weight: 700; font-size: 50px; font-style: normal; }
 .sub.whisper .txt { letter-spacing: .05em; }
-.final { position: absolute; left: 40px; right: 40px; top: 600px; text-align: center; font-family: 'Cinzel', serif; text-shadow: 0 4px 40px #000c, 0 0 80px #ffb04a; }
+.final::before { content: ''; position: absolute; inset: -160px -40px; background: radial-gradient(closest-side, #0a0612cc, #0a061200); z-index: -1; }
+.final { position: absolute; left: 40px; right: 40px; top: 470px; text-align: center; font-family: 'Cinzel', serif; text-shadow: 0 4px 40px #000c, 0 0 80px #ffb04a; }
 .final .f1 { font-weight: 700; font-size: 60px; } .final .f2 { font-weight: 900; font-size: 150px; color: #fff3d0; line-height: 1.15; margin-top: 12px; }
 .final .fim { font-family: 'DM Sans'; font-weight: 700; font-size: 26px; letter-spacing: .6em; margin-top: 22px; padding-left: .6em; }
 .next { position: absolute; left: 0; right: 0; top: 1620px; text-align: center; font-weight: 700; font-size: 28px; letter-spacing: .3em; color: var(--gold); }

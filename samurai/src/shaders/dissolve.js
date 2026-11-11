@@ -24,7 +24,7 @@ export function patchDissolve(material, uniforms) {
         if (uDissolve > 0.0005) {
           float dn = dNoise(vDisPos * uDisScale) * 0.75 + dNoise(vDisPos * uDisScale * 2.7) * 0.25;
           if (dn < uDissolve) discard;
-          totalEmissiveRadiance += uDisColor * smoothstep(uDissolve + 0.09, uDissolve, dn) * 5.0;
+          totalEmissiveRadiance += uDisColor * smoothstep(uDissolve + 0.07, uDissolve, dn) * 2.4;
         }`);
   };
   material.customProgramCacheKey = () => 'dissolve';

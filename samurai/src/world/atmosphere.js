@@ -11,7 +11,9 @@ export const MOODS = {
   night: P({ top: 0x05081c, mid: 0x152456, low: 0x2c4a86, sun: 0x9ab8ff, sunI: 1.3, hemiSky: 0x4a66b8, hemiGround: 0x1a1f33, hemiI: 0.85, fog: 0x18264d, fogD: 0.0040, az: -0.4, el: 0.6, stars: 1.0, cloud: 0.25, cloudCol: 0x39508a }),
   winter: P({ top: 0x7f9cc4, mid: 0xcfdcec, low: 0xf4f8fc, sun: 0xeef4ff, sunI: 2.6, hemiSky: 0xe2ecff, hemiGround: 0xa8b4c8, hemiI: 1.35, fog: 0xe4ecf5, fogD: 0.0058, az: 0.3, el: 0.4, stars: 0.0, cloud: 0.8, cloudCol: 0xffffff }),
   spring: P({ top: 0x5a9ae0, mid: 0xf7c6d9, low: 0xffeef2, sun: 0xfff0e0, sunI: 3.4, hemiSky: 0xffd9ea, hemiGround: 0x7a8a55, hemiI: 1.15, fog: 0xf5d5e0, fogD: 0.0029, az: 0.8, el: 0.55, stars: 0.0, cloud: 0.4, cloudCol: 0xffffff }),
-  void: P({ top: 0x060418, mid: 0x1c1a5a, low: 0x1f6f9a, sun: 0x8fc8ff, sunI: 2.4, hemiSky: 0x5a78e0, hemiGround: 0x2a1a4a, hemiI: 1.0, fog: 0x141a44, fogD: 0.0022, az: 0.4, el: 0.55, stars: 1.0, cloud: 0.5, cloudCol: 0x3f5fc0 }),
+  void: P({ top: 0x060418, mid: 0x1c1a5a, low: 0x1f6f9a, sun: 0xe6e2ff, sunI: 2.6, hemiSky: 0x8a96e0, hemiGround: 0x3a2a5a, hemiI: 1.05, fog: 0x141a44, fogD: 0.0022, az: 0.4, el: 0.55, stars: 1.0, cloud: 0.5, cloudCol: 0x3f5fc0 }),
+  sunrise: P({ top: 0x2a52b0, mid: 0xf5a070, low: 0xffd9a0, sun: 0xffc890, sunI: 3.4, hemiSky: 0xb0c0f0, hemiGround: 0x705848, hemiI: 1.0, fog: 0xf0c0a0, fogD: 0.0034, az: 0.02, el: 0.5, stars: 0.0, cloud: 0.42, cloudCol: 0xffe6d0 }),
+  morning: P({ top: 0x3f86e0, mid: 0xbfe0fa, low: 0xfff2dc, sun: 0xfff2d8, sunI: 3.8, hemiSky: 0xcfe2ff, hemiGround: 0x7a7050, hemiI: 1.15, fog: 0xe8e4d8, fogD: 0.0026, az: 0.02, el: 0.74, stars: 0.0, cloud: 0.4, cloudCol: 0xffffff }),
   temple: P({ top: 0x0a1430, mid: 0x12305a, low: 0x1c4a7a, sun: 0xbfe0ff, sunI: 4.0, hemiSky: 0x3a6ac0, hemiGround: 0x182440, hemiI: 1.2, fog: 0x0c1a36, fogD: 0.0240, az: 0.0, el: 1.38, stars: 0.0, cloud: 0.9, cloudCol: 0x5a6f98 }),
   blue: P({ top: 0x6fb8ff, mid: 0xbfe6ff, low: 0xffffff, sun: 0xcfe8ff, sunI: 4.5, hemiSky: 0xcfe8ff, hemiGround: 0x9fc8ff, hemiI: 2.0, fog: 0xbfe2ff, fogD: 0.0072, az: 0.4, el: 0.6, stars: 0.0, cloud: 0.2, cloudCol: 0xffffff }),
 };

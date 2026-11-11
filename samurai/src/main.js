@@ -34,7 +34,6 @@ const audioCache = new Map();
 const episodeAudio = (ep) => { if (!audioCache.has(ep)) audioCache.set(ep, renderEpisodeAudio(ep, script, voices)); return audioCache.get(ep); };
 
 // ---------- API usada pela exportação determinística
-window.__P = P;
 window.__sam = {
   ready: true, fps: FPS, frames: DURATION * FPS, episodes: EPISODES.length, width: W, height: H,
   renderFrame(ep, frame) { draw(ep, frame / FPS); return true; },
@@ -59,10 +58,10 @@ npm run export -- --series # + série completa</pre>`;
   const fit = () => { const pw = innerWidth > 760 ? 360 + 28 : 0, s = Math.min((innerHeight - 32) / H, (innerWidth - 32 - pw) / W); stageEl.style.transform = `scale(${s})`; frameEl.style.width = W * s + 'px'; frameEl.style.height = H * s + 'px'; };
   addEventListener('resize', fit); fit();
 
-  let ctx = null, src = null, gain = null, t0 = 0, token = 0;
+  let ctx = null, src = null, gain = null, t0 = 0, token = 0, pending = false;
   const now = () => (ctx && src ? ctx.currentTime : performance.now() / 1000);
   async function play() {
-    const my = ++token; state.playing = true; ui();
+    const my = ++token; state.playing = true; pending = true; ui();              // o relógio fica parado até o áudio começar
     try { ctx ??= new AudioContext({ sampleRate: 48000 }); await ctx.resume(); } catch { ctx = null; }
     stopSrc();
     if (ctx) {
@@ -71,7 +70,7 @@ npm run export -- --series # + série completa</pre>`;
       src = ctx.createBufferSource(); src.buffer = buf; src.connect(gain); src.start(0, state.t);
       if (state.ep < EPISODES.length) episodeAudio(state.ep + 1);           // adianta o próximo
     }
-    t0 = now() - state.t;
+    t0 = now() - state.t; pending = false;
   }
   function stopSrc() { if (src) { try { src.stop(); } catch { /* já parado */ } src.disconnect(); src = null; } }
   function pause() { token++; state.playing = false; stopSrc(); ui(); }
@@ -97,7 +96,7 @@ npm run export -- --series # + série completa</pre>`;
   let last = performance.now(), fps = 60, n = 0;
   function loop() {
     const pn = performance.now(); fps += (1000 / Math.max(1, pn - last) - fps) * 0.05; last = pn;
-    if (state.playing) {
+    if (state.playing && !pending) {
       state.t = now() - t0;
       if (state.t >= DURATION) {                                              // fim do episódio: emenda no próximo
         if (state.continuous && state.ep < EPISODES.length) { state.ep++; state.t = 0; play(); }

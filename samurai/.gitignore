@@ -2,4 +2,7 @@ node_modules/
 out/frames/
 out/stills/
 out/*.wav
+out/*.log
+out/*.png
+out/*.tmp.mp4
 tools/models/

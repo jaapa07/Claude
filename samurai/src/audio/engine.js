@@ -22,7 +22,7 @@ class Synth {
   constructor(ctx) {
     this.ctx = ctx; this.noise = noiseBuffer(ctx, 4, 1234); this.r = rng(99);
     const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 4; comp.attack.value = 0.005; comp.release.value = 0.2;
-    this.master = ctx.createGain(); this.master.gain.value = 0.9; this.master.connect(comp); comp.connect(ctx.destination);
+    this.master = ctx.createGain(); this.master.gain.value = MASTER; this.master.connect(comp); comp.connect(ctx.destination);
     this.rev = ctx.createConvolver(); this.rev.buffer = impulse(ctx, 2.8, 7); const rg = ctx.createGain(); rg.gain.value = 0.5; this.rev.connect(rg); rg.connect(this.master);
     this.music = ctx.createGain(); this.music.connect(this.master); this.sfx = ctx.createGain(); this.sfx.gain.value = 0.9; this.sfx.connect(this.master); this.voice = ctx.createGain(); this.voice.gain.value = 1.5; this.voice.connect(this.master);
     this.send(this.music, 0.35); this.send(this.sfx, 0.25); this.send(this.voice, 0.16);
@@ -137,11 +137,11 @@ export async function renderEpisodeAudio(ep, script, voices) {
     src.start(l.at);
     S.music.gain.setTargetAtTime(m0 * 0.42, l.at - 0.15, 0.12); S.music.gain.setTargetAtTime(m0, l.at + b.duration, 0.3);
   }
-  S.master.gain.setValueAtTime(0.0001, 0); S.master.gain.linearRampToValueAtTime(0.9, 0.12);
-  S.master.gain.setValueAtTime(0.9, DUR - 0.25); S.master.gain.linearRampToValueAtTime(ep === 5 ? 0.0001 : 0.5, DUR);
+  S.master.gain.setValueAtTime(0.0001, 0); S.master.gain.linearRampToValueAtTime(MASTER, 0.12);
+  S.master.gain.setValueAtTime(MASTER, DUR - 0.25); S.master.gain.linearRampToValueAtTime(ep === 5 ? 0.0001 : MASTER * 0.55, DUR);
   return ctx.startRendering();
 }
-const m0 = 0.8;
+const m0 = 0.8, MASTER = 0.58;
 
 /** AudioBuffer → WAV PCM 16 bits (para a exportação). */
 export function toWav(buf) {

@@ -56,11 +56,11 @@ export const TimePostShader = {
       col = mix(col, frozen, uFreeze);
       col += vec3(0.5, 0.8, 1.0) * (r1 + r2) * 0.35;
       // metade "passado" sépia / metade "futuro" azul
-      col = mix(col, mix(vec3(l) * vec3(1.25, 1.0, 0.7), vec3(l) * vec3(0.6, 0.85, 1.4) , side), uSplit * 0.75);
+      col = mix(col, mix(vec3(l) * vec3(1.25, 1.0, 0.7), vec3(l) * vec3(0.6, 0.85, 1.4) , side), uSplit * 0.45);
       float vig = smoothstep(1.05, 0.25, length(c * vec2(1.0, 0.82)));
       col *= mix(1.0, vig, uVignette);
       col += (hash(vUv * 1733.0 + fract(uTime * 7.31) * 91.0) - 0.5) * 0.035;
-      col = mix(col, uFlash.rgb * 2.2, clamp(uFlash.a, 0.0, 1.0));
+      col = mix(col, uFlash.rgb * 1.5, clamp(uFlash.a, 0.0, 1.0));
       col *= 1.0 - uFade;
       gl_FragColor = vec4(max(col, 0.0), 1.0);
     }`,

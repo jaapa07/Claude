@@ -44,12 +44,12 @@ const eFrag = /* glsl */`
     } else if (uMode < 1.5) {     // anel de choque
       vec2 p = vUv * 2.0 - 1.0; float r = length(p); float an = atan(p.y, p.x);
       a = smoothstep(0.12, 0.0, abs(r - uK * 0.95)) * (0.6 + 0.8 * noise(vec2(an * 6.0, uTime * 6.0))) * (1.0 - uK);
-      a += smoothstep(0.5, 0.0, abs(r - uK * 0.95)) * 0.15 * (1.0 - uK);
+      a += smoothstep(0.3, 0.0, abs(r - uK * 0.95)) * 0.06 * (1.0 - uK);
     } else {                      // feixe / pilar de luz
       float w = abs(vUv.x - 0.5) * 2.0;
       a = (smoothstep(1.0, 0.0, w) * 0.35 + smoothstep(0.35, 0.0, w)) * uK * (0.7 + 0.5 * noise(vec2(vUv.x * 8.0, vUv.y * 14.0 - uTime * 5.0))) * smoothstep(0.0, 0.1, vUv.y) * smoothstep(1.0, 0.6, vUv.y);
     }
-    gl_FragColor = vec4(uCol * a * 2.2, a);
+    gl_FragColor = vec4(uCol * a * (uMode > 0.5 && uMode < 1.5 ? 1.1 : 2.2), a);
   }`;
 export function energyMaterial(mode, color = 0x66c8ff) {
   return new THREE.ShaderMaterial({ uniforms: { uTime: { value: 0 }, uK: { value: 0 }, uMode: { value: mode }, uCol: { value: new THREE.Color(color) } },
