@@ -186,7 +186,7 @@ export class SnowSpirit {
     this.root = new THREE.Group(); this.group = new THREE.Group(); this.root.add(this.group);
     const M = { skin: toon(0xf6fbff, { rough: 0.95 }), white: toon(0xffffff, { rough: 0.2, rim: 0.2 }), cheek: new THREE.MeshBasicMaterial({ color: 0x8fd0ff, transparent: true, opacity: 0.8 }), mouth: toon(0x2a3a6a, { rim: 0 }), ice: iceMaterial({ glow: 0.6 }) };
     this.body = add(sph(0.3, 28, 20), M.skin, this.group, [0, 0.3, 0], [1, 0.92, 1]);
-    for (let i = 0; i < 18; i++) { const a = i * 2.4, y = (i / 18) * 0.5; add(sph(0.08, 10, 8), M.skin, this.group, [Math.cos(a) * 0.26, 0.06 + y, Math.sin(a) * 0.26]); }
+    for (let i = 0; i < 18; i++) { const a = i * 2.4, y = (i / 18) * 0.5; if (Math.sin(a) > 0.35 && y > 0.12) continue; add(sph(0.08, 10, 8), M.skin, this.group, [Math.cos(a) * 0.26, 0.06 + y, Math.sin(a) * 0.26]); }
     this.head = new THREE.Group(); this.head.position.y = 0.32; this.group.add(this.head);
     this.eyes = cartoonEyes(this.head, M, { r: 0.07, sep: 0.1, y: 0.06, z: 0.24, iris: 0x14284a });
     for (const s of [-1, 1]) add(new THREE.CircleGeometry(0.04, 14), M.cheek, this.head, [s * 0.17, -0.03, 0.245], [1.3, 0.8, 1], [0, s * 0.5, 0]);
