@@ -139,7 +139,7 @@ export function iceMaterial({ glow = 0.4 } = {}) {
         float crack = smoothstep(0.025, 0.0, abs(fbm(vWP2 * 0.6) - 0.5));
         diffuseColor.rgb = mix(vec3(0.08, 0.28, 0.62), vec3(0.45, 0.78, 1.0), inner);
         totalEmissiveRadiance += vec3(0.25, 0.65, 1.0) * (fr * 1.0 + inner * uGlow * 0.6) + vec3(0.6, 0.95, 1.0) * crack * 1.2;
-        totalEmissiveRadiance += vec3(1.0, 0.5, 0.2) * uHeat * (0.4 + fr);`);
+        totalEmissiveRadiance += vec3(1.0, 0.42, 0.12) * uHeat * (0.9 + fr * 1.5) * (0.6 + inner);`);
   };
   m.userData.u = u; m.customProgramCacheKey = () => 'ice';
   return m;

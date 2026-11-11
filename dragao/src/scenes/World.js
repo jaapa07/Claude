@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { toon, FREEZE } from '../characters/materials.js';
+import { toonF as toon, FREEZE } from '../characters/materials.js';
 import { NOISE } from '../effects/glsl.js';
 import { rng, clamp } from '../core/util.js';
 

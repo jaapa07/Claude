@@ -6,13 +6,13 @@ import { NOISE, GLOBAL } from './glsl.js';
 // if they were emitted inside the [uOn, uOff] window. Colour ramps from
 // white-hot → yellow → orange → red → dark smoke.
 export class FireJet {
-  constructor({ count = 1400, life = 0.9, speed = 14, spread = 0.18, size = 1.0, seed = 1 } = {}) {
+  constructor({ count = 1400, life = 0.9, speed = 14, spread = 0.18, size = 1.0, seed = 1, alpha = 0.85 } = {}) {
     const a = new Float32Array(count * 4);
     let s = seed * 9301 + 49297; const r = () => ((s = (s * 9301 + 49297) % 233280) / 233280);
     for (let i = 0; i < count; i++) a.set([r(), r() * 2 - 1, r() * 2 - 1, r()], i * 4);
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(count * 3), 3)); g.setAttribute('aR', new THREE.BufferAttribute(a, 4));
     this.u = { uTime: { value: 0 }, uOn: { value: -10 }, uOff: { value: -9 }, uLife: { value: life }, uSpeed: { value: speed }, uSpread: { value: spread }, uSize: { value: size },
-      uOrigin: { value: new THREE.Vector3() }, uDir: { value: new THREE.Vector3(0, 1, 0) }, uScale: GLOBAL.uScale, uSuck: { value: new THREE.Vector4(0, 0, 0, 0) } };
+      uOrigin: { value: new THREE.Vector3() }, uDir: { value: new THREE.Vector3(0, 1, 0) }, uScale: GLOBAL.uScale, uSuck: { value: new THREE.Vector4(0, 0, 0, 0) }, uIce: { value: 0 }, uAlpha: { value: alpha } };
     this.points = new THREE.Points(g, new THREE.ShaderMaterial({ uniforms: this.u, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
       vertexShader: `uniform float uTime, uOn, uOff, uLife, uSpeed, uSpread, uSize, uScale; uniform vec3 uOrigin, uDir; uniform vec4 uSuck;
         attribute vec4 aR; varying float vAge; varying float vAlive; varying float vR;
@@ -32,12 +32,14 @@ export class FireJet {
           gl_PointSize = uSize * (0.25 + k * 1.6) * (0.7 + aR.w * 0.6) * uScale * projectionMatrix[1][1] / -mv.z * vAlive;
           vAge = k; vR = aR.w;
         }`,
-      fragmentShader: `varying float vAge; varying float vAlive; varying float vR;
+      fragmentShader: `uniform float uIce, uAlpha; varying float vAge; varying float vAlive; varying float vR;
         void main(){ if (vAlive < 0.5) discard; vec2 c = gl_PointCoord - 0.5; float d = length(c); if (d > 0.5) discard;
           float soft = smoothstep(0.5, 0.0, d);
           vec3 hot = vec3(1.0, 0.98, 0.85), yel = vec3(1.0, 0.8, 0.2), ora = vec3(1.0, 0.42, 0.08), red = vec3(0.75, 0.1, 0.03), smoke = vec3(0.12, 0.08, 0.08);
           vec3 col = vAge < 0.15 ? mix(hot, yel, vAge / 0.15) : vAge < 0.45 ? mix(yel, ora, (vAge - 0.15) / 0.3) : vAge < 0.75 ? mix(ora, red, (vAge - 0.45) / 0.3) : mix(red, smoke, (vAge - 0.75) / 0.25);
-          float a = soft * (1.0 - smoothstep(0.7, 1.0, vAge)) * 0.85;
+          vec3 ice = mix(mix(vec3(1.0), vec3(0.55, 0.9, 1.0), smoothstep(0.0, 0.3, vAge)), vec3(0.85, 0.95, 1.0), smoothstep(0.5, 1.0, vAge));
+          col = mix(col, ice * 0.9, uIce);
+          float a = soft * (1.0 - smoothstep(0.7, 1.0, vAge)) * mix(uAlpha, 0.22, uIce);
           gl_FragColor = vec4(col * (1.6 - vAge), a); }` }));
     this.points.frustumCulled = false;
   }
