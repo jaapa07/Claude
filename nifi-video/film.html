@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<title>Apache NiFi em 20 segundos</title>
+<title>Apache NiFi em meio minuto</title>
 <style>
 @font-face { font-family: "Space Grotesk"; src: url("fonts/SpaceGrotesk.ttf"); font-weight: 300 700; }
 :root { --bg: #f1ece1; --ink: #151412; --or: #ff4d17; --mute: #cfc8b6; }
@@ -42,7 +42,7 @@ svg * { fill: none; stroke: var(--ink); stroke-width: 5; }
 
 <!-- 0 · abertura -->
 <div class="scene" data-scene="0,2.3">
-  <div class="mono" style="left:80px;top:110px" data-in="0.15">apache nifi · em 20 segundos</div>
+  <div class="mono" style="left:80px;top:110px" data-in="0.15">apache nifi · em meio minuto</div>
   <div style="left:80px;top:170px;font-size:98px;line-height:1.06" data-in="0.3">dados de<br>qualquer lugar<br>pra qualquer<br>lugar</div>
   <div class="or" style="left:80px;top:610px;font-size:98px;line-height:1.06" data-in="0.95">→ só ligando<br>caixinhas</div>
   <svg data-in="1.3"><path d="M880 800 C 880 850 820 880 820 935 a60 60 0 0 0 120 0 C 940 880 880 850 880 800 Z" style="stroke-width:9;fill:#f8f4eb"/><path d="M850 938 a30 30 0 0 0 30 30" style="stroke:var(--or);stroke-width:9"/></svg>
@@ -122,30 +122,37 @@ svg * { fill: none; stroke: var(--ink); stroke-width: 5; }
 
 </div>
 <script>
-const TOTAL = 20.7; window.TOTAL = TOTAL;
+// respiros: [instante no roteiro original, segundos a mais de tela antes de seguir]
+const HOLDS = [[2.3, 0.7], [7.7, 0.8], [13.3, 1.0], [17.9, 1.3]], TAIL = 1.5;
+const S = t => t + HOLDS.reduce((a, [at, h]) => a + (t >= at ? h : 0), 0);
+const TOTAL = S(20.7) + TAIL; window.TOTAL = TOTAL;
 const $ = (s, r = document) => [...r.querySelectorAll(s)];
 const clamp = x => Math.max(0, Math.min(1, x));
 const ease = x => 1 - Math.pow(1 - clamp(x), 3);
 const lerp = (a, b, p) => a + (b - a) * p;
 
+document.querySelectorAll('[data-in]').forEach(e => e.dataset.in = S(+e.dataset.in));
+document.querySelectorAll('[data-draw]').forEach(e => e.dataset.draw = S(+e.dataset.draw));
+document.querySelectorAll('[data-scene]').forEach(e => e.dataset.scene = e.dataset.scene.split(',').map((v, i) => i ? (+v >= 20.7 ? TOTAL + 1 : S(+v)) : S(+v)).join(','));
+
 // partes geradas
 const ffs = document.getElementById('ffs');
-for (let i = 0; i < 16; i++) ffs.insertAdjacentHTML('beforeend', '<div class="ff abs"></div>');
+for (let i = 0; i < 20; i++) ffs.insertAdjacentHTML('beforeend', '<div class="ff abs"></div>');
 const slots = document.getElementById('slots');
 for (let i = 0; i < 10; i++) slots.insertAdjacentHTML('beforeend', `<div class="slot abs" style="left:${352 + i * 38.4}px"></div>`);
 
 // passos do destaque na lista de proveniência: [tempo, índice]
-const STEPS = [[14.5, 0], [14.9, 1], [15.3, 2], [15.7, 3], [16.15, 1], [16.4, 2], [16.65, 3], [16.9, 4]];
-const REPLAY_AT = 15.95;
-const fillAt = i => 8.7 + i * 0.13;           // fila enchendo
-const drainAt = i => 11.6 + (9 - i) * 0.12;   // fila esvaziando (até sobrar 3)
+const STEPS = [[14.5, 0], [14.9, 1], [15.3, 2], [15.7, 3], [16.15, 1], [16.4, 2], [16.65, 3], [16.9, 4]].map(([at, i]) => [S(at), i]);
+const REPLAY_AT = S(15.95), RUN_AT = S(5.0);
+const fillAt = i => S(8.7) + i * 0.13;           // fila enchendo
+const drainAt = i => S(11.6) + (9 - i) * 0.12;   // fila esvaziando (até sobrar 3)
 
 // instantes de som, lidos pelo render
 window.CUES = {
   whoosh: $('[data-scene]').map(s => +s.dataset.scene.split(',')[0]),
   tick: [...$('[data-in]').map(e => +e.dataset.in), ...$('[data-draw]').map(e => +e.dataset.draw)],
-  blip: [...STEPS.map(s => s[0]), ...Array.from({ length: 10 }, (_, i) => fillAt(i)), ...[5.0, 5.55, 6.1, 6.65, 7.2]],
-  thud: [10.0, 12.0, 17.0, 17.95, 18.8],
+  blip: [...STEPS.map(s => s[0]), ...Array.from({ length: 10 }, (_, i) => fillAt(i)), ...Array.from({ length: 6 }, (_, i) => RUN_AT + i * 0.55)],
+  thud: [10.0, 12.0, 17.0, 17.95, 18.8].map(S),
 };
 
 window.seek = t => {
@@ -163,10 +170,10 @@ window.seek = t => {
   });
 
   // cena 1: flowfiles descendo, processadores "rodando"
-  const run = t >= 5.0;
+  const run = t >= RUN_AT;
   $('.led').forEach(l => l.style.background = run ? 'var(--or)' : 'transparent');
   $('.ff').forEach((f, k) => {
-    const seg = k % 2, n = k >> 1, u = (t - 5.0 - n * 0.55 - seg * 0.75) / 0.6;
+    const seg = k % 2, n = k >> 1, u = (t - RUN_AT - n * 0.55 - seg * 0.75) / 0.6;
     const on = u >= 0 && u <= 1, y0 = seg ? 580 : 360;
     f.style.opacity = on ? 1 : 0; f.style.left = '289px'; f.style.top = lerp(y0 - 6, y0 + 78, clamp(u)) + 'px';
   });
@@ -184,7 +191,7 @@ window.seek = t => {
   // cena 3: destaque percorre os eventos, com replay
   let idx = -1; STEPS.forEach(([at, i]) => { if (t >= at) idx = i; });
   $('.ev i').forEach((m, i) => m.style.background = i === idx ? 'var(--or)' : 'var(--bg)');
-  document.getElementById('replay').style.opacity = t < REPLAY_AT ? 0 : lerp(1, 0.3, clamp((t - 16.7) / 0.3)) * ease((t - REPLAY_AT) / 0.25);
+  document.getElementById('replay').style.opacity = t < REPLAY_AT ? 0 : lerp(1, 0.3, clamp((t - S(16.7)) / 0.3)) * ease((t - REPLAY_AT) / 0.25);
 };
 
 document.fonts.ready.then(() => { seek(location.hash ? +location.hash.slice(1) : 0); window.READY = true; });

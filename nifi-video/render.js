@@ -1,4 +1,4 @@
-// film.html -> nifi.mp4 (1080x1080, 60 fps). A página expõe window.seek(t), window.TOTAL e window.CUES.
+// film.html -> nifi.mp4 (1080x1080, 60 fps, 26 s). A página expõe window.seek(t), window.TOTAL e window.CUES.
 //   node render.js                 vídeo completo (quadros -> ffmpeg) + cues.json, depois: python3 sfx.py
 //   node render.js --at 1.8,6.9    só estes instantes, como PNG em stills/
 const { chromium } = require('playwright');
