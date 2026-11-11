@@ -3,3 +3,5 @@ tools/models/
 out/frames/
 out/tmp/
 *.part
+out/stills/
+out/speedtest*
