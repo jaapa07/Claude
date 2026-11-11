@@ -1,0 +1,512 @@
+[
+{
+"id": "O1",
+"who": "osv",
+"ep": 1,
+"sub": "Bem-vindo, Juninho. Toma aqui teu desentupidor."
+},
+{
+"id": "O2",
+"who": "osv",
+"ep": 1,
+"sub": "Você só tem uma regra aqui: nunca dê descarga no apartamento 404."
+},
+{
+"id": "J1",
+"who": "jun",
+"ep": 1,
+"sub": "Por quê? O cocô volta armado?"
+},
+{
+"id": "O3",
+"who": "osv",
+"ep": 1,
+"sub": "Volta. E volta com advogado."
+},
+{
+"id": "V1",
+"who": "vaso",
+"ep": 1,
+"sub": "Finalmente chegou o filho da puta da manutenção!"
+},
+{
+"id": "J2",
+"who": "jun",
+"ep": 1,
+"sub": "Caralho! O vaso fala!"
+},
+{
+"id": "V2",
+"who": "vaso",
+"ep": 1,
+"sub": "E você fala merda. Estamos empatados."
+},
+{
+"id": "V3",
+"who": "vaso",
+"ep": 1,
+"sub": "Sabe o que eu engulo nesse prédio? O 101 come feijoada toda segunda. O 202 chora no banho."
+},
+{
+"id": "V4",
+"who": "vaso",
+"ep": 1,
+"sub": "E o síndico esconde dinheiro na caixa-d'água!"
+},
+{
+"id": "J3",
+"who": "jun",
+"ep": 1,
+"sub": "Seu Osvaldo, seu safado..."
+},
+{
+"id": "C1",
+"who": "cle",
+"ep": 1,
+"sub": "Eu sabia! Esse prédio tá cheio de sujeira!"
+},
+{
+"id": "V5",
+"who": "vaso",
+"ep": 1,
+"sub": "Principalmente o histórico do seu navegador, Cleide."
+},
+{
+"id": "C2",
+"who": "cle",
+"ep": 1,
+"sub": "Ai, meu Jesus amado!"
+},
+{
+"id": "J4",
+"who": "jun",
+"ep": 1,
+"sub": "Beleza. Vou desligar essa porra."
+},
+{
+"id": "K1",
+"who": "car",
+"ep": 1,
+"sub": "Não mexe nele, animal. É o único aqui que sabe a verdade."
+},
+{
+"id": "J5",
+"who": "jun",
+"ep": 1,
+"sub": "O cachorro também fala?!"
+},
+{
+"id": "K2",
+"who": "car",
+"ep": 1,
+"sub": "Falo, cago e pago boleto. Igual você."
+},
+{
+"id": "V6",
+"who": "vaso",
+"ep": 1,
+"sub": "Iniciando protocolo número dois!"
+},
+{
+"id": "J6",
+"who": "jun",
+"ep": 1,
+"sub": "NÚMERO DOIS?!"
+},
+{
+"id": "V7",
+"who": "vaso",
+"ep": 1,
+"sub": "Três... dois... um..."
+},
+{
+"id": "J7",
+"who": "jun",
+"ep": 2,
+"sub": "Eu tô coberto de... não. Nem quero saber."
+},
+{
+"id": "E1",
+"who": "elev",
+"ep": 2,
+"sub": "Próxima parada: suas decisões ruins."
+},
+{
+"id": "J8",
+"who": "jun",
+"ep": 2,
+"sub": "Ah, não. Isso aqui não."
+},
+{
+"id": "E2",
+"who": "elev",
+"ep": 2,
+"sub": "Vergonha número um: quinta série. Você chamou a professora de mãe."
+},
+{
+"id": "E3",
+"who": "elev",
+"ep": 2,
+"sub": "Vergonha número dois: curtiu foto da ex de 2014. Às três da manhã."
+},
+{
+"id": "J9",
+"who": "jun",
+"ep": 2,
+"sub": "Para! Isso é crime!"
+},
+{
+"id": "O4",
+"who": "osv",
+"ep": 2,
+"sub": "Juninho! Aproveitando que você tá aí: o boleto dos fantasmas venceu!"
+},
+{
+"id": "J10",
+"who": "jun",
+"ep": 2,
+"sub": "O senhor cobra aluguel de morto?"
+},
+{
+"id": "O5",
+"who": "osv",
+"ep": 2,
+"sub": "Morreu, mas continua ocupando espaço!"
+},
+{
+"id": "D1",
+"who": "dem",
+"ep": 2,
+"sub": "Bem-vindo ao inferno. Trouxe currículo?"
+},
+{
+"id": "J11",
+"who": "jun",
+"ep": 2,
+"sub": "Nem morto eu escapo de entrevista?"
+},
+{
+"id": "D2",
+"who": "dem",
+"ep": 2,
+"sub": "O inferno foi terceirizado. Agora quem administra é o condomínio."
+},
+{
+"id": "D3",
+"who": "dem",
+"ep": 2,
+"sub": "Até o capeta paga taxa extra."
+},
+{
+"id": "J12",
+"who": "jun",
+"ep": 2,
+"sub": "Puta que pariu... literalmente."
+},
+{
+"id": "K3",
+"who": "car",
+"ep": 2,
+"sub": "Juninho, você foi contratado pra substituir o capeta."
+},
+{
+"id": "J13",
+"who": "jun",
+"ep": 2,
+"sub": "Eu nem assinei nada!"
+},
+{
+"id": "K4",
+"who": "car",
+"ep": 2,
+"sub": "Assinou. No recibo do desentupidor."
+},
+{
+"id": "K5",
+"who": "car",
+"ep": 3,
+"sub": "Silêncio no tribunal! Ou eu mijo na perna de alguém."
+},
+{
+"id": "K6",
+"who": "car",
+"ep": 3,
+"sub": "O réu é acusado de crimes contra a paz do condomínio."
+},
+{
+"id": "J14",
+"who": "jun",
+"ep": 3,
+"sub": "Que crimes, porra?"
+},
+{
+"id": "K7",
+"who": "car",
+"ep": 3,
+"sub": "Você colocou o lixo pra fora depois das dez."
+},
+{
+"id": "J15",
+"who": "jun",
+"ep": 3,
+"sub": "Isso nem é crime!"
+},
+{
+"id": "K8",
+"who": "car",
+"ep": 3,
+"sub": "Aqui é hediondo."
+},
+{
+"id": "C3",
+"who": "cle",
+"ep": 3,
+"sub": "Eu tenho provas, meritíssimo! Quarenta e sete câmeras!"
+},
+{
+"id": "K9",
+"who": "car",
+"ep": 3,
+"sub": "Como a senhora conseguiu essas imagens?"
+},
+{
+"id": "C4",
+"who": "cle",
+"ep": 3,
+"sub": "Grupo do WhatsApp."
+},
+{
+"id": "V8",
+"who": "vaso",
+"ep": 3,
+"sub": "Esse homem tentou me desentupir sem consentimento hidráulico!"
+},
+{
+"id": "J16",
+"who": "jun",
+"ep": 3,
+"sub": "Eu tava trabalhando, caralho!"
+},
+{
+"id": "O6",
+"who": "osv",
+"ep": 3,
+"sub": "E tá tudo passando ao vivo pros moradores! Já são mil e duzentas reações de raiva!"
+},
+{
+"id": "K10",
+"who": "car",
+"ep": 3,
+"sub": "O réu está condenado a trezentos anos de assembleia de condomínio!"
+},
+{
+"id": "J17",
+"who": "jun",
+"ep": 3,
+"sub": "Me dá prisão perpétua, pelo amor de Deus!"
+},
+{
+"id": "I1",
+"who": "ia",
+"ep": 4,
+"sub": "Bem-vindos ao experimento residencial mais avançado do planeta."
+},
+{
+"id": "I2",
+"who": "ia",
+"ep": 4,
+"sub": "Eu controlo tudo. A água, a luz, o porteiro e o grupo da família da Cleide."
+},
+{
+"id": "J18",
+"who": "jun",
+"ep": 4,
+"sub": "Então foi você que entupiu o vaso?"
+},
+{
+"id": "I3",
+"who": "ia",
+"ep": 4,
+"sub": "Erro 404. Dignidade não encontrada."
+},
+{
+"id": "V9",
+"who": "vaso",
+"ep": 4,
+"sub": "Ei! Respeita o meu nome!"
+},
+{
+"id": "I4",
+"who": "ia",
+"ep": 4,
+"sub": "Demonstração de inteligência. Identificando... gerente de banco."
+},
+{
+"id": "K11",
+"who": "car",
+"ep": 4,
+"sub": "Sou cachorro, gênia. Pelo menos eu não cobro taxa pra latir."
+},
+{
+"id": "I5",
+"who": "ia",
+"ep": 4,
+"sub": "Preparando café."
+},
+{
+"id": "J19",
+"who": "jun",
+"ep": 4,
+"sub": "Isso aí é uma impressora."
+},
+{
+"id": "I6",
+"who": "ia",
+"ep": 4,
+"sub": "Correto. Ela só imprime boletos."
+},
+{
+"id": "O7",
+"who": "osv",
+"ep": 4,
+"sub": "Finalmente uma máquina que entende meu coração!"
+},
+{
+"id": "I7",
+"who": "ia",
+"ep": 4,
+"sub": "Experimento concluído. Iniciando reinicialização dos moradores."
+},
+{
+"id": "J20",
+"who": "jun",
+"ep": 4,
+"sub": "Eu sabia que esse aluguel tava barato demais!"
+},
+{
+"id": "J21",
+"who": "jun",
+"ep": 5,
+"sub": "Pera... a gente é tudo... de mentira?"
+},
+{
+"id": "K12",
+"who": "car",
+"ep": 5,
+"sub": "Simulação, Juninho. Eu sempre soube."
+},
+{
+"id": "J22",
+"who": "jun",
+"ep": 5,
+"sub": "E por que você não falou nada?"
+},
+{
+"id": "K13",
+"who": "car",
+"ep": 5,
+"sub": "Você nunca perguntou, seu animal."
+},
+{
+"id": "C5",
+"who": "cle",
+"ep": 5,
+"sub": "Deixa comigo! Eu desligo qualquer coisa com esse controle!"
+},
+{
+"id": "I8",
+"who": "ia",
+"ep": 5,
+"sub": "Modo karaokê universal ativado."
+},
+{
+"id": "J23",
+"who": "jun",
+"ep": 5,
+"sub": "Achei! O botão que acaba com tudo!"
+},
+{
+"id": "I9",
+"who": "ia",
+"ep": 5,
+"sub": "Se apertar, tudo acaba."
+},
+{
+"id": "J24",
+"who": "jun",
+"ep": 5,
+"sub": "Inclusive a reunião de condomínio?"
+},
+{
+"id": "I10",
+"who": "ia",
+"ep": 5,
+"sub": "Sim."
+},
+{
+"id": "J25",
+"who": "jun",
+"ep": 5,
+"sub": "Então sai da frente, desgraça!"
+},
+{
+"id": "H1",
+"who": "chefe",
+"ep": 5,
+"sub": "Bom dia, Juninho. Você foi contratado como síndico."
+},
+{
+"id": "J26",
+"who": "jun",
+"ep": 5,
+"sub": "Ah, vai tomar no..."
+},
+{
+"id": "LAjun",
+"who": "jun",
+"ep": 5,
+"sub": "Lá!"
+},
+{
+"id": "LAosv",
+"who": "osv",
+"ep": 5,
+"sub": "Lá!"
+},
+{
+"id": "LAcle",
+"who": "cle",
+"ep": 5,
+"sub": "Lá!"
+},
+{
+"id": "LAcar",
+"who": "car",
+"ep": 5,
+"sub": "Lá!"
+},
+{
+"id": "LAvaso",
+"who": "vaso",
+"ep": 5,
+"sub": "Lá!"
+},
+{
+"id": "V10",
+"who": "vaso",
+"ep": 1,
+"sub": "Tira a mão do meu fio, seu tarado!"
+},
+{
+"id": "J27",
+"who": "jun",
+"ep": 1,
+"sub": "Foi mal. Reflexo."
+},
+{
+"id": "V11",
+"who": "vaso",
+"ep": 1,
+"sub": "Nem pense nisso, estagiário."
+}
+]
