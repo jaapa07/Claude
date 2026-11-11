@@ -30,7 +30,7 @@ function build(ctx, narr) {
   const ir = ctx.createBuffer(2, SR * 3.2, SR); for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < d.length; i++) d[i] = (rnd() * 2 - 1) * Math.pow(1 - i / d.length, 2.6); }
   const G = (v, to) => { const g = ctx.createGain(); g.gain.value = v; if (to) g.connect(to); return g; };
   const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 4; comp.attack.value = 0.005; comp.release.value = 0.2;
-  const out = G(0.72, dest); comp.connect(out);
+  const out = G(0.55, dest); comp.connect(out);
   const music = G(1, comp), duck = G(1, music), drums = G(1, music), fxBus = G(0.9, comp), voice = G(1.5, comp);
   const rev = ctx.createConvolver(); rev.buffer = ir; const revG = G(0.5, comp); rev.connect(revG); const send = G(1, rev);
   const dly = ctx.createDelay(1); dly.delayTime.value = BEAT * 0.75; const fb = G(0.38, dly); dly.connect(fb); const dlyOut = G(0.5, duck); dly.connect(dlyOut); dly.connect(send); const dsend = G(1, dly);
@@ -117,7 +117,7 @@ function build(ctx, narr) {
     if (c.buffer) { const s = ctx.createBufferSource(); s.buffer = c.buffer; s.connect(voice); s.connect(G(0.12, send)); s.start(c.T0); }
     if (c.buffer || c.duck) { music.gain.setTargetAtTime(0.5, c.T0 - 0.15, 0.08); music.gain.setTargetAtTime(1, c.T0 + c.dur + 0.1, 0.25); }
   }
-  out.gain.setValueAtTime(0.72, TOTAL - 1.6); out.gain.linearRampToValueAtTime(0, TOTAL - 0.05);
+  out.gain.setValueAtTime(0.55, TOTAL - 1.6); out.gain.linearRampToValueAtTime(0, TOTAL - 0.05);
 }
 
 // narr: [{T0, dur, buffer?}] ; devolve um AudioBuffer estéreo de TOTAL segundos
