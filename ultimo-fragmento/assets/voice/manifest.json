@@ -1,0 +1,437 @@
+{
+ "e1a": {
+  "duration": 2.727,
+  "words": [
+   {
+    "text": "Ele",
+    "start": 0.03,
+    "end": 0.32
+   },
+   {
+    "text": "acreditava",
+    "start": 0.32,
+    "end": 1.044
+   },
+   {
+    "text": "ser",
+    "start": 1.044,
+    "end": 1.189
+   },
+   {
+    "text": "o",
+    "start": 1.189,
+    "end": 1.334
+   },
+   {
+    "text": "último",
+    "start": 1.334,
+    "end": 1.769
+   },
+   {
+    "text": "sobrevivente…",
+    "start": 1.769,
+    "end": 2.58
+   }
+  ]
+ },
+ "e1b": {
+  "duration": 2.748,
+  "words": [
+   {
+    "text": "…até",
+    "start": 0.03,
+    "end": 0.357
+   },
+   {
+    "text": "descobrir",
+    "start": 0.357,
+    "end": 0.847
+   },
+   {
+    "text": "que",
+    "start": 0.847,
+    "end": 1.011
+   },
+   {
+    "text": "alguém",
+    "start": 1.011,
+    "end": 1.338
+   },
+   {
+    "text": "estava",
+    "start": 1.338,
+    "end": 1.828
+   },
+   {
+    "text": "observando.",
+    "start": 1.828,
+    "end": 2.58
+   }
+  ]
+ },
+ "e2a": {
+  "duration": 2.343,
+  "words": [
+   {
+    "text": "Quando",
+    "start": 0.04,
+    "end": 0.33
+   },
+   {
+    "text": "o",
+    "start": 0.33,
+    "end": 0.476
+   },
+   {
+    "text": "mundo",
+    "start": 0.476,
+    "end": 0.766
+   },
+   {
+    "text": "começou",
+    "start": 0.766,
+    "end": 1.202
+   },
+   {
+    "text": "a",
+    "start": 1.202,
+    "end": 1.347
+   },
+   {
+    "text": "desaparecer,",
+    "start": 1.347,
+    "end": 2.16
+   }
+  ]
+ },
+ "e2b": {
+  "duration": 2.129,
+  "words": [
+   {
+    "text": "fugir",
+    "start": 0.04,
+    "end": 0.373
+   },
+   {
+    "text": "deixou",
+    "start": 0.373,
+    "end": 0.706
+   },
+   {
+    "text": "de",
+    "start": 0.706,
+    "end": 0.872
+   },
+   {
+    "text": "ser",
+    "start": 0.872,
+    "end": 1.038
+   },
+   {
+    "text": "uma",
+    "start": 1.038,
+    "end": 1.371
+   },
+   {
+    "text": "escolha.",
+    "start": 1.371,
+    "end": 1.97
+   }
+  ]
+ },
+ "e3a": {
+  "duration": 3.217,
+  "words": [
+   {
+    "text": "Do",
+    "start": 0.04,
+    "end": 0.208
+   },
+   {
+    "text": "outro",
+    "start": 0.208,
+    "end": 0.543
+   },
+   {
+    "text": "lado",
+    "start": 0.543,
+    "end": 0.878
+   },
+   {
+    "text": "da",
+    "start": 0.878,
+    "end": 1.045
+   },
+   {
+    "text": "queda,",
+    "start": 1.045,
+    "end": 1.481
+   },
+   {
+    "text": "nada",
+    "start": 1.481,
+    "end": 1.816
+   },
+   {
+    "text": "obedecia",
+    "start": 1.816,
+    "end": 2.487
+   },
+   {
+    "text": "às",
+    "start": 2.487,
+    "end": 2.654
+   },
+   {
+    "text": "regras.",
+    "start": 2.654,
+    "end": 3.09
+   }
+  ]
+ },
+ "e3b": {
+  "duration": 3.441,
+  "words": [
+   {
+    "text": "Você",
+    "start": 0.05,
+    "end": 0.566
+   },
+   {
+    "text": "não",
+    "start": 0.566,
+    "end": 0.823
+   },
+   {
+    "text": "deveria",
+    "start": 0.823,
+    "end": 1.597
+   },
+   {
+    "text": "ter",
+    "start": 1.597,
+    "end": 1.854
+   },
+   {
+    "text": "acordado.",
+    "start": 1.854,
+    "end": 3.04
+   }
+  ]
+ },
+ "e4a": {
+  "duration": 3.495,
+  "words": [
+   {
+    "text": "Cada",
+    "start": 0.04,
+    "end": 0.364
+   },
+   {
+    "text": "tela",
+    "start": 0.364,
+    "end": 0.688
+   },
+   {
+    "text": "guardava",
+    "start": 0.688,
+    "end": 1.173
+   },
+   {
+    "text": "um",
+    "start": 1.173,
+    "end": 1.335
+   },
+   {
+    "text": "fim",
+    "start": 1.335,
+    "end": 1.497
+   },
+   {
+    "text": "diferente.",
+    "start": 1.497,
+    "end": 2.242
+   },
+   {
+    "text": "Todos",
+    "start": 2.242,
+    "end": 2.565
+   },
+   {
+    "text": "eram",
+    "start": 2.565,
+    "end": 2.889
+   },
+   {
+    "text": "ele.",
+    "start": 2.889,
+    "end": 3.31
+   }
+  ]
+ },
+ "e4b": {
+  "duration": 3.913,
+  "words": [
+   {
+    "text": "Você",
+    "start": 0.04,
+    "end": 0.401
+   },
+   {
+    "text": "não",
+    "start": 0.401,
+    "end": 0.582
+   },
+   {
+    "text": "é",
+    "start": 0.582,
+    "end": 0.763
+   },
+   {
+    "text": "o",
+    "start": 0.763,
+    "end": 0.943
+   },
+   {
+    "text": "sobrevivente.",
+    "start": 0.943,
+    "end": 1.955
+   },
+   {
+    "text": "Você",
+    "start": 1.955,
+    "end": 2.317
+   },
+   {
+    "text": "é",
+    "start": 2.317,
+    "end": 2.497
+   },
+   {
+    "text": "quem",
+    "start": 2.497,
+    "end": 2.678
+   },
+   {
+    "text": "criou",
+    "start": 2.678,
+    "end": 2.859
+   },
+   {
+    "text": "este",
+    "start": 2.859,
+    "end": 3.22
+   },
+   {
+    "text": "mundo.",
+    "start": 3.22,
+    "end": 3.69
+   }
+  ]
+ },
+ "e5a": {
+  "duration": 3.879,
+  "words": [
+   {
+    "text": "Para",
+    "start": 0.04,
+    "end": 0.363
+   },
+   {
+    "text": "trazer",
+    "start": 0.363,
+    "end": 0.687
+   },
+   {
+    "text": "o",
+    "start": 0.687,
+    "end": 0.849
+   },
+   {
+    "text": "mundo",
+    "start": 0.849,
+    "end": 1.172
+   },
+   {
+    "text": "de",
+    "start": 1.172,
+    "end": 1.334
+   },
+   {
+    "text": "volta,",
+    "start": 1.334,
+    "end": 1.754
+   },
+   {
+    "text": "ele",
+    "start": 1.754,
+    "end": 2.078
+   },
+   {
+    "text": "teria",
+    "start": 2.078,
+    "end": 2.401
+   },
+   {
+    "text": "que",
+    "start": 2.401,
+    "end": 2.563
+   },
+   {
+    "text": "deixar",
+    "start": 2.563,
+    "end": 2.886
+   },
+   {
+    "text": "de",
+    "start": 2.886,
+    "end": 3.048
+   },
+   {
+    "text": "existir.",
+    "start": 3.048,
+    "end": 3.63
+   }
+  ]
+ },
+ "e5b": {
+  "duration": 2.513,
+  "words": [
+   {
+    "text": "Toda",
+    "start": 0.07,
+    "end": 0.388
+   },
+   {
+    "text": "luz",
+    "start": 0.388,
+    "end": 0.547
+   },
+   {
+    "text": "que",
+    "start": 0.547,
+    "end": 0.707
+   },
+   {
+    "text": "se",
+    "start": 0.707,
+    "end": 0.866
+   },
+   {
+    "text": "apaga…",
+    "start": 0.866,
+    "end": 1.439
+   },
+   {
+    "text": "acende",
+    "start": 1.439,
+    "end": 1.916
+   },
+   {
+    "text": "outra.",
+    "start": 1.916,
+    "end": 2.33
+   }
+  ]
+ }
+}

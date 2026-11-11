@@ -1,0 +1,5 @@
+node_modules/
+tools/models/
+out/frames/
+out/tmp/
+*.part
