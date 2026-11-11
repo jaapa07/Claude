@@ -1,0 +1,18 @@
+{
+  "voices": {
+    "narrador": { "label": "Narrador", "kokoro": "pm_alex", "speed": 0.98, "pitch": 0.96 },
+    "akio": { "label": "Akio", "kokoro": "pm_santa", "speed": 1.0, "pitch": 1.05 },
+    "yuna": { "label": "Yuna", "kokoro": "pf_dora", "speed": 1.02, "pitch": 1.0 },
+    "senhor": { "label": "Senhor das Horas", "kokoro": "pm_santa", "speed": 0.9, "pitch": 0.8 }
+  },
+  "lines": [
+    { "id": "e1_narr", "ep": 1, "who": "narrador", "at": 8.5, "text": "Naquele dia, Akio descobriu um poder que nenhum guerreiro deveria possuir." },
+    { "id": "e1_senhor", "ep": 1, "who": "senhor", "at": 17.1, "fx": "whisper", "text": "Você acabou de roubar o primeiro segundo." },
+    { "id": "e2_narr", "ep": 2, "who": "narrador", "at": 10.2, "text": "Para salvar aqueles que amava, ele estava destruindo tudo ao redor." },
+    { "id": "e2_yuna", "ep": 2, "who": "yuna", "at": 15.5, "text": "Cada vez que usa essa espada, nosso mundo perde alguma coisa!" },
+    { "id": "e3_narr", "ep": 3, "who": "narrador", "at": 5.4, "text": "O maior inimigo de Akio era o homem que ele ainda se tornaria." },
+    { "id": "e3_senhor", "ep": 3, "who": "senhor", "at": 15.9, "text": "Eu sou você… depois de tentar salvar todo mundo." },
+    { "id": "e4_akio", "ep": 4, "who": "akio", "at": 15.5, "text": "Eu não preciso controlar o tempo para proteger quem amo." },
+    { "id": "e5_yuna", "ep": 5, "who": "yuna", "at": 17.3, "text": "Agora temos todo o tempo do mundo." }
+  ]
+}
