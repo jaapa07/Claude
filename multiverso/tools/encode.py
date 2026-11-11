@@ -25,8 +25,10 @@ if ep == 'season':
     run('ffmpeg', '-y', '-loglevel', 'error', *common, '-pass', '2', '-passlogfile', os.path.join(OUT, 'p'), '-c:a', 'aac', '-b:a', '128k', '-movflags', '+faststart', out)
     for f in os.listdir(OUT):
         if f.startswith('p-0'): os.remove(os.path.join(OUT, f))
-    os.remove(lst); probe(out, 450.0); sys.exit(0)
-d = os.path.join(ROOT, 'episodes', f'ep{ep}'); out = os.path.join(OUT, f'ep{ep}.mp4')
+    run('ffmpeg', '-y', '-loglevel', 'error', '-i', out, '-vf', r"select='not(mod(n\,300))',scale=216:384,tile=10x2", '-frames:v', '1', '-fps_mode', 'vfr', os.path.join(OUT, 'temporada_sheet.jpg'))
+    os.remove(lst); probe(out, 462.5); sys.exit(0)
+d = os.path.join(ROOT, 'episodes', f'ep{ep}'); os.makedirs(os.path.join(OUT, 'corpo'), exist_ok=True)
+out = os.path.join(OUT, 'corpo', f'ep{ep}.mp4')   # the 90 s episode body; tools/cover.py puts the cover in front -> out/epN.mp4
 n = len([f for f in os.listdir(os.path.join(d, 'frames')) if f.endswith('.jpg')])
 if n != 2700: sys.exit(f'STOP: ep{ep} has {n} frames, needs 2700')
 run('ffmpeg', '-y', '-loglevel', 'error', '-framerate', '30', '-i', os.path.join(d, 'frames', 'f%05d.jpg'), '-i', os.path.join(d, 'mix.wav'),

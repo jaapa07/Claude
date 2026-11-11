@@ -8,7 +8,8 @@ body.fit canvas#film{width:auto;height:100vh;margin:0 auto}</style>
 // film.html?ep=N : one episode, driven only by window.seek(t). Add &fit to scale it to the window.
 const q = new URLSearchParams(location.search), ep = q.get('ep') || '1';
 if (q.has('fit')) document.body.classList.add('fit');
-const mod = await import(`./episodes/ep${ep}/scene.js`);
+// ep=cN is the cover of episode N
+const mod = ep.startsWith('c') ? (await import('./lib/cover.js')).coverFor(+ep.slice(1)) : await import(`./episodes/ep${ep}/scene.js`);
 const { boot } = await import('./lib/stage.js');
 await boot(mod);
 </script></body></html>

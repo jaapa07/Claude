@@ -6,8 +6,10 @@ Tudo foi feito em código: HTML, Canvas 2D, Three.js, GLSL e GSAP. A série não
 
 | Arquivo | O que é |
 |---|---|
-| `out/ep1.mp4` … `out/ep5.mp4` | os episódios exportados (H.264 + AAC 48 kHz, verificados) |
-| `out/temporada_completa.mp4` | a temporada inteira, 450 s |
+| `out/ep1.mp4` … `out/ep5.mp4` | os episódios exportados, cada um com capa de 2,5 s + 90 s de episódio (H.264 + AAC 48 kHz, verificados) |
+| `out/capas/capa_epN.jpg` | a capa de cada episódio (também serve de thumbnail) |
+| `out/corpo/epN.mp4` | só os 90 s do episódio, sem a capa |
+| `out/temporada_completa.mp4` | a temporada inteira, com as 5 capas (462,5 s) |
 | `out/epN_sheet.jpg` | folha de contato: um quadro a cada 3 s |
 | `player.html` | player com seleção de episódio, play/pausa, timeline com as falas marcadas e passo por quadro. O modo "Ao vivo" desenha pelo motor e o modo "MP4" toca o exportado |
 | `film.html?ep=N` | a página de um episódio, controlada só por `window.seek(t)` |
@@ -37,6 +39,7 @@ Tudo foi feito em código: HTML, Canvas 2D, Three.js, GLSL e GSAP. A série não
 pip install kokoro-onnx soundfile numpy scipy    # + Playwright (Node) e ffmpeg
 # modelos Kokoro em ./models: kokoro-v1.0.onnx e voices-v1.0.bin (github.com/thewh1teagle/kokoro-onnx, releases)
 bash tools/build.sh 1 4          # falas -> voz -> 2700 quadros em 4 processos -> mixagem -> MP4 verificado
+python3 tools/cover.py 1          # capa (lib/cover.js) + locução do Controle na frente -> out/ep1.mp4
 python3 tools/encode.py season   # junta os 5 episódios
 node tools/render.js 1 /tmp/st --at 3,14.5   # só alguns quadros, para conferir
 ```
