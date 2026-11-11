@@ -44,7 +44,7 @@ npm run verify -- 2               # prova de determinismo do episódio 2
 npm run stills -- 4 1,5.5,12      # stills de conferência em out/stills
 ```
 
-Outras opções: `--workers 4`, `--crf 17`, `--from 0 --to 1200` (faixa de frames), `--keep` (mantém os JPEG).
+Outras opções: `--workers 4`, `--crf 20`, `--from 0 --to 1200` (faixa de frames), `--keep` (mantém os JPEG).
 
 Sem GPU (renderização por software), a exportação faz cerca de 1 frame por segundo: os cinco episódios levam perto de duas horas.
 Com `--gpu` numa máquina com placa de vídeo o tempo cai muito, mas os pixels deixam de ser comparáveis entre máquinas diferentes.

@@ -126,7 +126,7 @@ export class Village {
     this.vanishHouse = this.houses[1];
     const pagoda = makeHouse(7, 7, 3.4, this.M, 4); pagoda.position.set(-17, 0, -30); g.add(pagoda); this.pagoda = pagoda;
     const shrine = makeHouse(9, 7, 3.6, this.M, 2); shrine.position.set(15, 0, -34); g.add(shrine);
-    const torii = makeTorii(this.M); torii.position.set(0, 0, 17); g.add(torii);
+    const torii = makeTorii(this.M); torii.position.set(0, 0, 12.5); g.add(torii);
     const torii2 = makeTorii(this.M); torii2.position.set(0, 0, -16); g.add(torii2);
     for (const [x, z] of [[-3.6, 10.5], [3.6, 10.5], [-3.6, 24], [3.6, 24], [-3.6, 44], [3.6, 44], [-7.5, -6], [7.5, -6]]) { const l = makeLantern(this.M); l.position.set(x, 0, z); g.add(l); }
 

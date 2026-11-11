@@ -19,7 +19,7 @@ export default {
     shot(tl, cam, 8, 9.6, { p: [-1.5, 0.8, 9.2], l: [0.3, 3.0, 0], fov: 52 }, { p: [-1.9, 1.4, 6.0], l: [0.2, 2.6, 0], fov: 50 }, 'sine.out');
     shot(tl, cam, 9.6, 11.25, { p: [1.7, 2.5, -1.9], l: [0, 2.25, 0.8], fov: 38 }, { p: [1.2, 2.45, -1.2], l: [0, 2.25, 0.8], fov: 34 }, 'sine.inOut');
     key(tl, s, 'orbit', 11.25, 13, 0, 1, 'power1.inOut');
-    shot(tl, cam, 13, 14.9, { p: [-3.3, 1.15, 19.6], l: [0, 1.35, 20.6], fov: 42 }, { p: [-2.5, 1.5, 15.7], l: [0, 1.4, 17.3], fov: 40 }, 'none');
+    shot(tl, cam, 13, 14.9, { p: [3.1, 1.15, 19.8], l: [0, 1.35, 20.6], fov: 42 }, { p: [2.4, 1.5, 15.9], l: [0, 1.4, 17.3], fov: 40 }, 'none');
     shot(tl, cam, 14.9, 17, { p: [1.7, 1.75, 13.8], l: [-0.25, 1.75, 15.8], fov: 36 }, { p: [1.15, 1.85, 14.3], l: [-0.3, 1.78, 15.8], fov: 33 }, 'sine.out');
     shot(tl, cam, 17, 20, { p: [1.3, 1.0, 18.9], l: [0, 6, 5], fov: 48 }, SKY_END.cam, 'power2.inOut');
 
@@ -66,7 +66,7 @@ export default {
         } else if (inTemple) {                                          // templo subterrâneo
           P.temple.group.visible = true;
           P.atmo.apply('temple', null, 0, w, V.set(0, 0, 0));
-          const touched = t >= 11.3, energy = 1 + pulse(t, 11.3, 12.8, 0.25) * 1.5;
+          const touched = t >= 11.3, energy = 1 + pulse(t, 11.3, 12.8, 0.25) * 0.7;
           P.temple.update(w, energy);
           const walk = seg(t, 8, 9.9), z = lerp(5.6, 1.08, walk), y = z < 1.8 ? 0.6 : z < 2.9 ? lerp(0.6, 0.3, seg(z, 1.8, 2.1)) : lerp(0.3, 0, seg(z, 2.9, 3.2));
           akio.place(0, y, z, Math.PI);
@@ -76,13 +76,13 @@ export default {
             akio.reach(sseg(t, 9.9, 11.25)); akio.look(0, -0.25, sseg(t, 8.6, 9.6));
             akio.face({ brow: -0.6, mouth: 0.25 * sseg(t, 9.2, 10) });
             P.relic.visible = true; P.relic.position.set(0, 2.05 + y - 0.6 + Math.sin(t * 2.2) * 0.04, 0.44); P.relic.rotation.set(-1.16, 0, Math.sin(t * 1.3) * 0.12);
-            P.relic.userData.setGlow(1.2 + 0.5 * Math.sin(t * 6));
+            P.relic.userData.setGlow(1.0 + 0.3 * Math.sin(t * 6));
           } else {                                                      // ergue a espada: o poder desperta
             const up = easeOut(seg(t, 11.3, 12.1));
             akio.reach(1 - up); akio.set('armR', -2.65, 0, -0.25, up); akio.set('foreR', -0.2, 0, 0, up); akio.set('handR', 1.3, 0, 0, up);
             akio.set('spine', -0.12, 0, 0, up); akio.look(0, -0.45, up);
             akio.face({ brow: 0.5 * up - 0.6 * (1 - up), mouth: 0.5 });
-            akio.katana.userData.setGlow(1 + energy);
+            akio.katana.userData.setGlow(0.6 + energy);
           }
           P.petals.u.uBox.value.set(7, 16, 7); P.petals.update(w, V.set(0, 8, 0), 0.7, COOL);
           P.rain.u.uBox.value.set(7.5, 20, 7.5); P.rain.update(w, t, V.set(0, 9.5, 0), 0.45, frozen);
@@ -110,7 +110,7 @@ export default {
           P.gold[0].set(heroBird, t - 15.8, [0.22, 0.12, 0.22]);
           cam.shake = 0.15;
           P.stage.fx.uWarp.value = sseg(t, 17.3, 20) * 0.55;
-          P.stage.flash(0.75, 0.9, 1, pulse(t, 12.95, 13.35, 0.12) * 0.5);
+          P.stage.flash(0.75, 0.9, 1, pulse(t, 12.95, 13.35, 0.12) * 0.3);
         }
         P.stage.fx.uFreeze.value = frozen * (t < 13 ? 0.8 : 0.9);
         P.stage.fx.uFade.value = 1 - sseg(t, 0, 0.35);

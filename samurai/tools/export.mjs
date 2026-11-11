@@ -3,7 +3,7 @@
 //   node tools/export.mjs --ep 2          → só o episódio 2
 //   node tools/export.mjs --series        → também junta tudo em out/serie-completa.mp4
 //   node tools/export.mjs --audio          → refaz só o áudio dos MP4 existentes (sem re-renderizar o vídeo)
-//   opções: --workers 4  --scale 1  --crf 17  --from 0 --to 1200 (faixa de frames)  --keep (mantém os JPEG)
+//   opções: --workers 4  --scale 1  --crf 20  --from 0 --to 1200 (faixa de frames)  --keep (mantém os JPEG)
 // Cada frame é desenhado a partir de t = frame/60, sem depender do frame anterior; por isso vários
 // navegadores renderizam faixas diferentes em paralelo e o resultado é idêntico ao de um só.
 import { createRequire } from 'node:module';
@@ -21,7 +21,7 @@ const has = (bin) => spawnSync(bin, ['-version']).status === 0;
 if (!has('ffmpeg')) { console.error('ffmpeg não encontrado no PATH: os frames podem ser gerados, mas não o MP4.'); process.exit(1); }
 
 const eps = arg('ep') ? String(arg('ep')).split(',').map(Number) : [1, 2, 3, 4, 5];
-const workers = arg('audio') ? 1 : Number(arg('workers', 4)), scale = Number(arg('scale', 1)), crf = String(arg('crf', 17));
+const workers = arg('audio') ? 1 : Number(arg('workers', 4)), scale = Number(arg('scale', 1)), crf = String(arg('crf', 20));
 const OUT = path.join(ROOT, 'out'); fs.mkdirSync(OUT, { recursive: true });
 const port = 5180 + Math.floor(Math.random() * 400), server = await startServer(port);
 const GL = ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--disable-gpu-vsync'];
@@ -61,7 +61,7 @@ for (const ep of eps.filter((e) => e <= info.episodes)) {
   }));
   const mp4 = path.join(OUT, `ep${ep}.mp4`);
   const r = spawnSync('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', String(info.fps), '-i', path.join(dir, '%05d.jpg'), '-ss', String(from / info.fps), '-i', wav,
-    '-c:v', 'libx264', '-preset', 'medium', '-crf', crf, '-pix_fmt', 'yuv420p', '-r', String(info.fps), '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', mp4], { stdio: 'inherit' });
+    '-c:v', 'libx264', '-preset', 'medium', '-crf', crf, '-maxrate', '12M', '-bufsize', '24M', '-pix_fmt', 'yuv420p', '-r', String(info.fps), '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', mp4], { stdio: 'inherit' });
   if (r.status !== 0) process.exit(1);
   if (!arg('keep')) fs.rmSync(dir, { recursive: true, force: true });
   fs.rmSync(wav, { force: true });

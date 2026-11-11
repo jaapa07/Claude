@@ -28,13 +28,13 @@ export class Temple {
     add(g, new THREE.CylinderGeometry(2.6, 2.9, 0.3, 24), stone, 0, 0.15, 0); add(g, new THREE.CylinderGeometry(1.8, 2.0, 0.3, 24), stone, 0, 0.45, 0);
     add(g, new THREE.CylinderGeometry(0.42, 0.62, 1.0, 8), stone, 0, 1.1, 0); add(g, new THREE.CylinderGeometry(0.7, 0.5, 0.16, 8), stone, 0, 1.66, 0);
     const ring = new THREE.Mesh(new THREE.TorusGeometry(0.72, 0.025, 6, 32), this.glow); ring.rotation.x = Math.PI / 2; ring.position.y = 1.76; g.add(ring);
-    this.light = new THREE.PointLight(0x48b0ff, 45, 40, 1.7); this.light.position.set(0, 3.2, 0); g.add(this.light);
+    this.light = new THREE.PointLight(0x48b0ff, 20, 40, 1.7); this.light.position.set(0, 3.2, 0); g.add(this.light);
     this.light2 = new THREE.PointLight(0x2a70ff, 25, 30, 1.7); this.light2.position.set(0, 9, 0); g.add(this.light2);
     this.beam = makeBeam(0x9fd4ff, 5.5, 30); g.add(this.beam);
     this.pedestalTop = new THREE.Vector3(0, 1.75, 0);
   }
   update(t, energy = 1) {
-    this.seal.set(-t * 0.04, 0.9, t); this.light.intensity = 45 * energy * (0.9 + 0.1 * Math.sin(t * 5)); this.beam.userData.set(0.16, t);
+    this.seal.set(-t * 0.04, 0.9, t); this.light.intensity = 20 * energy * (0.9 + 0.1 * Math.sin(t * 5)); this.beam.userData.set(0.16, t);
     this.glow.color.setHex(0x3aa8ff).multiplyScalar(0.6 + 0.6 * energy);
   }
 }

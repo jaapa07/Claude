@@ -25,7 +25,7 @@ export class Production {
     this.actors = [this.akio, this.yuna, this.lord, ...this.warriors, ...this.children];
     for (const a of this.actors) sc.add(a.root);
     this.relic = makeKatana(); sc.add(this.relic);
-    const halo = new THREE.Mesh(new THREE.SphereGeometry(0.5, 12, 8), new THREE.MeshBasicMaterial({ color: 0x3f9cff, transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); halo.scale.set(0.6, 1.5, 0.6); halo.position.y = 0.45; this.relic.add(halo);
+    const halo = new THREE.Mesh(new THREE.SphereGeometry(0.5, 12, 8), new THREE.MeshBasicMaterial({ color: 0x3f9cff, transparent: true, opacity: 0.1, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); halo.scale.set(0.6, 1.5, 0.6); halo.position.y = 0.45; this.relic.add(halo);
     // partículas e efeitos
     this.petals = new Petals(1100); this.rain = new Rain(2600); this.motes = new Motes(520); this.birds = new Birds(8);
     this.gold = [0, 1, 2].map((i) => new Burst(1400, { color: 0xffc050, color2: 0xfff0b8, speed: 2.4, life: 3, size: 0.034, gravity: 0.5 }, 21 + i));
