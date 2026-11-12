@@ -1,0 +1,295 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Sem Água</title>
+<script type="importmap">{"imports": {"three": "../engine/vendor/three.module.js"}}</script>
+<style>
+@font-face { font-family: 'Oswald'; font-weight: 700; src: url('../engine/vendor/fonts/oswald-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 700; src: url('../engine/vendor/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+html, body { margin: 0; background: #000; } canvas { display: block; }
+</style>
+<script src="timing.js"></script>
+</head><body>
+<canvas id="film" width="1080" height="1920"></canvas>
+<script type="module">
+import * as S from '../engine/stage.js';
+import { buildWorld } from './world.js';
+import { FACE, mixFace } from './toon.js';
+const { THREE, clamp, lerp, ease, spring, chunkCaptions, loadFonts } = S;
+const T = window.TIMING;
+const w = (li, word, n = 0) => { const b = s => s.toLowerCase().replace(/[^\p{L}0-9:]/gu, ''); let k = 0; for (const x of T.lines[li].words) if (b(x.w) === b(word) && k++ === n) return x.s; throw new Error(`word "${word}" not in line ${li}`); };
+const L0 = li => T.lines[li].start, L1 = li => T.lines[li].end;
+const c = document.getElementById('film').getContext('2d');
+const stage = S.createStage(document.getElementById('film'));
+stage.renderer.toneMappingExposure = 1.05;
+const Wd = buildWorld(stage);
+const { hero, beto, carla, ze, lady, waiter, put, seat, T: TB } = Wd;
+const COVER = location.hash === '#cover';
+
+// ---------------- the beats (seconds); sound.py reads the same numbers from window.BEATS ----------------
+const B = {};
+B.clink = w(0, 'amigos') + 0.18; B.fuga = w(1, 'fuga');
+B.growl = L1(1) + 0.45; B.mont = B.growl + 1.85; B.m = [0, 1, 2, 3].map(k => B.mont + k * 1.27); B.ask = L0(2); B.reply = L0(3); B.muscle = L0(4);
+B.stand = L0(5) - 0.15; B.slam = L0(7) - 1.35; B.sigh = L0(7) - 1.0;
+B.flush1 = L1(7) + 0.55; B.flush2 = B.flush1 + 1.8; B.holy = B.flush2 + 2.9; B.grab = B.holy + 1.7; B.tap = B.grab + 0.9; B.puff = B.tap + 0.12;
+B.lookToilet = L1(8) + 0.25; B.lookDoor = B.lookToilet + 1.3; B.breath = L1(9) + 0.25; B.open = B.breath + 1.5; B.reveal = B.open + 0.9;
+B.herLook = B.reveal + 1.2; B.hisFace = B.herLook + 1.1; B.wave = B.hisFace + 1.2; B.nod = B.wave + 0.8; B.leave = B.nod + 1.7; B.herIn = B.leave + 0.8; B.doorShut = B.herIn + 0.55;
+B.whisper = L0(10); B.laugh = w(10, 'descar') + 0.3; B.hide = B.laugh + 0.9; B.getUp = L1(11) + 0.1; B.out = L0(12); B.interd = w(13, 'impressão') - 0.15;
+B.credits = L1(13) + 0.6; B.black = B.credits + 4.0; B.flushOK = B.black + 0.25; B.end = B.flushOK + 2.3;
+window.BEATS = B; window.TOTAL = B.end;
+
+// ---------------- small helpers ----------------
+const fwd = ry => new THREE.Vector3(Math.sin(ry), 0, Math.cos(ry)), rightOf = ry => new THREE.Vector3(Math.cos(ry), 0, -Math.sin(ry));
+// a camera in front of someone's face: dist forward, side to their left(-)/right(+) as we see it, up; looks at the head (+ aim offset)
+function faceCam(who, dist, side = 0, up = 0, fov = 40, aim = [0, 0, 0]) {
+  const h = who.headPos(), ry = who.root.rotation.y, f = fwd(ry), r = rightOf(ry);
+  dist *= 2.0; side *= 1.6; const p = h.clone().addScaledVector(f, dist).addScaledVector(r, -side).add(new THREE.Vector3(0, up, 0));
+  stage.aim([p.x, p.y, p.z], [h.x + aim[0], h.y + aim[1], h.z + aim[2]], fov);
+}
+const shake = (t, a) => [a * Math.sin(t * 53), a * Math.cos(t * 41)];
+const sitPose = (o = {}) => Object.assign({ sit: 1, armL: [0.95, 0.12, 0.85], armR: [0.95, 0.12, 0.85], legL: [0, 0.06, 0], legR: [0, 0.06, 0] }, o);
+// friends at the table: chatting, laughing (k: 0..1 laugh strength)
+function friends(t, mood = 'chat', k = 1) {
+  const L = mood === 'laugh';
+  const bob = L ? Math.abs(Math.sin(t * 9)) * 0.12 * k : 0;
+  put(beto, seat.beto[0], seat.beto[1], seat.beto[2], sitPose(L ? { lean: -0.2 * k + bob, head: [-0.25 * k, 0, 0], armR: [0.6 + 1.2 * Math.abs(Math.sin(t * 7)) * k, 0.2, 0.5], armL: [0.3, 0.3, 1.9] } : { armR: [0.95 + 0.25 * Math.sin(t * 2.3), 0.15, 0.9], head: [0, 0.25 * Math.sin(t * 0.7), 0] }), L ? FACE.laugh : (mood === 'ask' ? FACE.worried : FACE.smile), L ? [0, 0] : [0.3, 0], Wd.blink(t, 1));
+  put(carla, seat.carla[0], seat.carla[1], seat.carla[2], sitPose(L ? { lean: -0.3 * k + bob, head: [-0.35 * k, 0, 0.1], armL: [2.0, 0.3, 1.6], armR: [2.0, 0.3, 1.6] } : { head: [0, -0.2 + 0.15 * Math.sin(t * 0.9), 0.05], armL: [1.0, 0.1, 1.3 + 0.3 * Math.sin(t * 1.6)] }), L ? FACE.laugh : FACE.smile, L ? [0, 0] : [-0.3, 0], Wd.blink(t, 2));
+  put(ze, seat.ze[0], seat.ze[1], seat.ze[2], sitPose(L ? { lean: 0.35 * k * Math.abs(Math.sin(t * 5)), side: 0.1 * Math.sin(t * 6), armL: [0.4, 0.2, 2.3], armR: [0.9, 0.1, 0.4] } : { head: [0, 0.2 * Math.sin(t * 0.5), 0] }), L ? FACE.laugh : FACE.happy, [0, 0], Wd.blink(t, 3));
+}
+// background patrons: sitting at the other tables, talking
+function patrons(t) {
+  const P = Wd.extras, tb = Wd.bgTables;
+  [[0, -1], [1, 1], [2, -1], [3, 1]].forEach(([i, sd], k) => { const [x, z] = tb[k]; put(P[i], x + sd * 0.6, z, -sd * Math.PI / 2, sitPose({ armR: [0.9 + 0.3 * Math.sin(t * (1.3 + k)), 0.15, 1.0], head: [0, 0.2 * Math.sin(t * 0.6 + k), 0] }), k % 2 ? FACE.laugh : FACE.smile, [0, 0], Wd.blink(t, 5 + k)); });
+}
+// the hero at the table, glass placement
+function heroAtTable(t, pose, face, look = [0, 0], extra) { put(hero, seat.hero[0], seat.hero[1], 0, sitPose(pose), face, look, Wd.blink(t, 0), extra); }
+function glassInHand(g, who, side = 'R', dy = -0.06) { const p = who.handPos(side); g.position.set(p.x, p.y + dy, p.z); }
+function resetGlasses() { const T0 = TB, Y = 0.74; Wd.glasses.hero.position.set(T0[0], Y, T0[1] - 0.28); Wd.glasses.beto.position.set(T0[0] - 0.28, Y, T0[1]); Wd.glasses.carla.position.set(T0[0] + 0.28, Y, T0[1]); Wd.glasses.ze.position.set(T0[0], Y, T0[1] + 0.28); }
+function barScene(t) { stage.use('bar'); Wd.hideAll(); resetGlasses(); Wd.fanBlades.rotation.y = t * 4.2; Wd.setClock(12 + (t - 8) / 80); Wd.corBulb.intensity = 4; Wd.holyOn(t, 0); Wd.puffAt(-1); Wd.bdoor.userData.open(0); Wd.bucket.position.set(...Wd.bucketHome); Wd.bucket.rotation.set(0, 0, 0); Wd.tapHandle.rotation.y = 0; Wd.interditado.visible = false; }
+function table(t, opts = {}) { barScene(t); patrons(t); friends(t, opts.mood || 'chat', opts.k ?? 1); }
+// the hero walking: x, z position, facing ry, stride phase speed; stiff tiny steps (knees together, arms stiff)
+function stiffWalk(who, x, z, ry, t, face, look = [0, 0], amp = 0.16) {
+  const ph = t * 11; put(who, x, z, ry, { lean: -0.04, hipY: -0.01 + 0.01 * Math.abs(Math.sin(ph)), legL: [amp * Math.sin(ph), -0.04, 0.12 + 0.12 * Math.max(0, Math.sin(ph))], legR: [-amp * Math.sin(ph), -0.04, 0.12 + 0.12 * Math.max(0, -Math.sin(ph))], armL: [0.05, 0.05, 0.1], armR: [0.05, 0.05, 0.1], side: 0.03 * Math.sin(ph), head: [-0.05, 0, 0] }, face, look, 0, { sweatT: t }); }
+// the waddle on the street: bow-legged, slow, chin up
+function waddle(who, x, z, ry, t, face) { const ph = t * 6.5; put(who, x, z, ry, { lean: -0.06, side: 0.09 * Math.sin(ph), hipSide: -0.06 * Math.sin(ph), legL: [0.3 * Math.sin(ph), 0.2, 0.2 + 0.15 * Math.max(0, Math.sin(ph))], legR: [-0.3 * Math.sin(ph), 0.2, 0.2 + 0.15 * Math.max(0, -Math.sin(ph))], armL: [0.2 * Math.sin(ph), 0.25, 0.3], armR: [-0.2 * Math.sin(ph), 0.25, 0.3], head: [-0.12, 0, 0] }, face, [0, -0.2], 0); }
+const BATH_SEAT = [1.38, -10.35, Math.PI / 2];
+const onToilet = (o = {}) => Object.assign({ sit: 1, hipY: 0.0, armL: [0.6, 0.2, 1.2], armR: [0.6, 0.2, 1.2], legL: [0, 0.12, 0], legR: [0, 0.12, 0] }, o);
+function bathScene(t, { door = 0, holy = 0 } = {}) { barScene(t); Wd.bdoor.userData.open(door); Wd.holyOn(t, holy); }
+
+// ---------------- the shots ----------------
+const SH = [], at = (t0, f) => SH.push([t0, f]);
+// ===== 1. a cervejinha inocente =====
+at(0, (t, u) => { table(t); heroAtTable(t, { armR: [0.95 + 0.2 * Math.sin(t * 1.5), 0.15, 1.0] }, FACE.smile, [-0.3, 0]);
+  const k = ease(clamp(u / 3)); stage.aim([lerp(2.6, 1.9, k), lerp(2.5, 1.75, k), lerp(3.6, 2.5, k)], [0.55, 0.95, 0.2], 52); });
+at(w(0, 'cervejinha') - 0.1, (t, u) => { table(t); const k = ease(clamp((t - (B.clink - 0.8)) / 0.8)), sh = t >= B.clink ? 0.01 * Math.max(0, 1 - (t - B.clink) * 4) : 0;
+  const up = (o) => ({ armR: [lerp(0.95, 1.45, k), lerp(0.12, -0.32, k), lerp(0.85, 0.15, k)] });
+  heroAtTable(t, up(), FACE.happy); put(beto, seat.beto[0], seat.beto[1], seat.beto[2], sitPose(up()), FACE.happy);
+  put(carla, seat.carla[0], seat.carla[1], seat.carla[2], sitPose({ armL: [lerp(0.95, 1.45, k), lerp(0.12, -0.32, k), lerp(0.85, 0.15, k)] }), FACE.happy); put(ze, seat.ze[0], seat.ze[1], seat.ze[2], sitPose(up()), FACE.happy);
+  glassInHand(Wd.glasses.hero, hero); glassInHand(Wd.glasses.beto, beto); glassInHand(Wd.glasses.carla, carla, 'L'); glassInHand(Wd.glasses.ze, ze);
+  stage.aim([TB[0] + 0.45 + sh, 1.5, TB[1] + 1.05], [TB[0], 1.08, TB[1] - 0.1], lerp(50, 42, ease(u / 2))); });
+at(L0(1), (t, u) => { table(t); const sip = clamp((t - (L0(1) + 0.3)) / 1.2); const up = Math.sin(Math.PI * clamp(sip)); heroAtTable(t, { armR: [0.95 + 0.75 * up, 0.15 - 0.45 * up, 0.85 + 1.35 * up], head: [-0.18 * up, 0, 0] }, up > 0.5 ? FACE.bliss : FACE.smile, [0.2, 0]); glassInHand(Wd.glasses.hero, hero, 'R', -0.05);
+  faceCam(hero, 0.85, 0.25, -0.05, 38, [0, -0.08, 0]); });
+at(w(1, 'operação') - 0.2, (t, u) => { table(t); heroAtTable(t, {}, FACE.happy); const k = ease(clamp(u / 1.4)); faceCam(hero, lerp(0.75, 0.42, k), 0.0, 0.0, 38); });
+// ===== 2. o aviso =====
+at(B.growl - 0.05, (t, u) => { table(t); heroAtTable(t, { lean: 0.03 * Math.sin(t * 40) * Math.max(0, 1 - u) }, FACE.happy);           // the belly, close: the shirt shakes
+  const s = shake(t, 0.006 * Math.max(0, 1 - u * 0.8)); const h = hero.headPos(); stage.aim([h.x + 0.95 + s[0], h.y - 0.38 + s[1], h.z + 0.35], [h.x, h.y - 0.5, h.z + 0.05], 38); });
+at(B.growl + 0.75, (t, u) => { table(t); const k = clamp((u - 0.15) / 1.0);                                                              // the smile dies, dolly-zoom
+  const f = k < 0.5 ? mixFace(FACE.happy, FACE.smile, k * 2) : mixFace(FACE.smile, FACE.worried, (k - 0.5) * 2); heroAtTable(t, {}, f, [0, 0]);
+  const d = lerp(1.35, 0.72, ease(clamp(u / 1.1))), fov = lerp(24, 44, ease(clamp(u / 1.1))); const h = hero.headPos(); stage.aim([h.x, h.y + 0.02, h.z + d], [h.x, h.y - 0.03, h.z], fov); });
+// the montage: the clock, adjusting, the clock, crossing the legs, the clock, sweat
+const clockShot = (mins) => (t, u) => { table(t); Wd.setClock(mins + u * 0.4); heroAtTable(t, {}, FACE.worried); const s = u < 0.15 ? 0.008 : 0; stage.aim([-0.6 + s, 2.35, -3.2], [-0.6, 2.35, -4], lerp(30, 24, ease(u / 0.6))); };
+at(B.m[0], clockShot(12));
+at(B.m[0] + 0.55, (t, u) => { table(t); const k = Math.sin(clamp(u / 0.6) * Math.PI); heroAtTable(t, { hipY: 0.03 * k, side: 0.12 * k, twist: 0.1 * k }, mixFace(FACE.worried, FACE.forced, 0.6), [0.6, 0.3], { sweatT: t }); faceCam(hero, 1.5, -0.5, -0.1, 44, [0, -0.25, 0]); });
+at(B.m[1], clockShot(13));
+at(B.m[1] + 0.5, (t, u) => { table(t); const k = ease(clamp(u / 0.5));                                                                    // under the table: the legs cross, tight
+  heroAtTable(t, { legR: [lerp(0, 0.35, k), lerp(0.06, -0.38, k), lerp(0, -0.25, k)], legL: [0, lerp(0.06, -0.05, k), 0] }, FACE.worried);
+  stage.aim([seat.hero[0] + 2.2, 0.5, seat.hero[1] - 0.05], [seat.hero[0], 0.45, seat.hero[1] + 0.15], 40); });
+at(B.m[2], clockShot(14));
+at(B.m[2] + 0.5, (t, u) => { table(t); heroAtTable(t, { legR: [0.35, -0.38, -0.25], legL: [0, -0.05, 0], lean: 0.04 }, FACE.forced, [0, 0], { sweatT: t }); const k = ease(clamp(u / 1.6)); faceCam(hero, lerp(0.7, 0.45, k), 0, 0.02, 38); });
+// "Tá tudo bem?": Beto, over the hero's shoulder
+at(B.ask - 0.2, (t, u) => { table(t, { mood: 'ask' }); heroAtTable(t, { legR: [0.35, -0.38, -0.25], legL: [0, -0.05, 0] }, FACE.forced, [-1, 0], { sweatT: t });
+  const b = beto.headPos(); stage.aim([b.x + 1.05, b.y + 0.08, b.z + 0.45], [b.x, b.y - 0.03, b.z], 36); });
+// "Tô só... prestando atenção.": the frozen smile, pushing in
+at(B.reply - 0.1, (t, u) => { table(t, { mood: 'ask' }); const twitch = Math.sin(t * 31) > 0.85 ? 0.04 : 0; heroAtTable(t, { legR: [0.35, -0.38, -0.25], legL: [0, -0.05, 0], head: [0, twitch, 0] }, Object.assign({}, FACE.forced, { smile: 1.1 }), [0.9, 0], { sweatT: t });
+  const k = ease(clamp(u / 2.2)); faceCam(hero, lerp(0.6, 0.38, k), 0.1, 0.0, 38); });
+// "Em um único músculo.": wide, he sits like a statue while the table chats; a slow dramatic zoom
+at(B.muscle - 0.1, (t, u) => { table(t); heroAtTable(t, { lean: -0.06, legR: [0.35, -0.38, -0.25], legL: [0, -0.05, 0], armL: [0.3, 0.05, 0.2], armR: [0.3, 0.05, 0.2] }, FACE.determined, [0, 0], { sweatT: t });
+  const k = ease(clamp(u / 2.3)); stage.aim([TB[0] + 0.9, lerp(1.85, 1.7, k), TB[1] + lerp(1.5, 1.2, k)], [seat.hero[0], 0.95, seat.hero[1]], lerp(50, 34, k)); });
+// ===== 3. a caminhada (the mission) =====
+at(B.stand, (t, u) => { table(t); const k = ease(clamp(u / 0.8)); put(hero, seat.hero[0], seat.hero[1] - 0.15 * k, 0, { sit: 1 - k, armL: [0.3, 0.05, 0.1], armR: [0.3, 0.05, 0.1], lean: 0.25 * (1 - k) - 0.05 * k, legL: [0, 0.02, 0], legR: [0, 0.02, 0] }, FACE.determined, [0, 0], 0, { sweatT: t });
+  Wd.heroChair.position.z = TB[1] - 0.62 - 0.12 * k; stage.aim([TB[0] + 2.1, 1.3, TB[1] - 1.5], [seat.hero[0], 1.0, seat.hero[1]], 44); });
+// tracking alongside: through the bar towards the corridor (path: from the table to the corridor mouth at (3.4, -4))
+const path = u => { const a = new THREE.Vector3(TB[0] + 0.3, 0, TB[1] - 0.9), b = new THREE.Vector3(2.2, 0, -2.6), cc = new THREE.Vector3(3.4, 0, -4.3); return u < 0.5 ? a.clone().lerp(b, u * 2) : b.clone().lerp(cc, (u - 0.5) * 2); };
+at(B.stand + 1.2, (t, u) => { table(t); const p = path(clamp(u / 4.2 * 0.75)); const ry = Math.atan2(2.2 - TB[0], -2.6 - TB[1]) + Math.PI; stiffWalk(hero, p.x, p.z, Math.atan2(2.8 - TB[0] - 0.3, -3.5 - TB[1] + 0.9), t, FACE.determined, [0.6, 0]);
+  const h = hero.headPos(); stage.aim([h.x + 1.9, 1.35, h.z + 0.4], [h.x, 1.05, h.z], 48); stage.camera.rotation.z += 0.08; });
+at(B.stand + 2.5, (t, u) => { table(t); const p = path(clamp(0.2 + u / 4.2 * 0.75)); stiffWalk(hero, p.x, p.z, Math.atan2(2.8 - TB[0] - 0.3, -3.5 - TB[1] + 0.9), t, FACE.determined);      // the feet, low: tiny steps
+  stage.aim([p.x + 1.0, 0.14, p.z + 0.55], [p.x, 0.22, p.z], 48); });
+at(B.stand + 3.7, (t, u) => { table(t); const p = path(clamp(0.38 + u / 4.2 * 0.6)); const k = clamp((u - 0.2) / 0.8);                     // the waiter crosses: he slides sideways, rigid
+  stiffWalk(hero, p.x - 0.25 * Math.sin(Math.PI * k), p.z, Math.atan2(2.8 - TB[0] - 0.3, -3.5 - TB[1] + 0.9), t, FACE.panic, [-0.8, 0]);
+  const wx = lerp(3.4, 0.9, clamp(u / 1.5)); put(waiter, wx, p.z - 0.55, -Math.PI / 2, { armL: [1.5, 0.3, 1.5], armR: [0.1 * Math.sin(t * 9), 0.1, 0.2], legL: [0.4 * Math.sin(t * 9), 0.03, 0.2], legR: [-0.4 * Math.sin(t * 9), 0.03, 0.2] }, FACE.calm);
+  const tp = waiter.handPos('L'); if (!Wd.tray) { Wd.tray = new THREE.Group(); const tr = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.015, 18), new THREE.MeshStandardMaterial({ color: '#c9ccd1', metalness: 0.8, roughness: 0.3 })); Wd.tray.add(tr); Wd.tray.add(Wd.bottle(-0.05, 0.01, 0), Wd.bottle(0.07, 0.01, 0.04)); Wd.sets.bar.add(Wd.tray); }
+  Wd.tray.visible = true; Wd.tray.position.set(tp.x, tp.y + 0.06, tp.z);
+  const h = hero.headPos(); stage.aim([h.x + 0.1, 1.5, h.z + 1.9], [h.x, 1.15, h.z], 52); stage.camera.rotation.z -= 0.12; });
+// the corridor, from its far end: he comes towards us, the bulb flickers
+at(B.stand + 5.0, (t, u) => { barScene(t); const z = lerp(-4.6, -7.6, clamp(u / 2.6)); stiffWalk(hero, 3.4, z, Math.PI, t, FACE.determined, [0, 0]); Wd.corBulb.intensity = Math.sin(t * 37) > 0.6 ? 1.0 : 4;
+  stage.aim([3.35, 1.55, -10.4], [3.4, 1.1, -5.5], 40); });
+// close: determined, sweating, the red HUD heavy
+at(B.stand + 6.4, (t, u) => { barScene(t); const z = lerp(-7.4, -8.6, clamp(u / 1.3)); stiffWalk(hero, 3.4, z, Math.PI, t, FACE.determined, [0, 0]); Wd.corBulb.intensity = 4; const s = shake(t, 0.004);
+  const h = hero.headPos(); stage.aim([h.x + 0.08 + s[0], h.y + 0.02 + s[1], h.z - 0.55], [h.x, h.y - 0.01, h.z], lerp(40, 34, u)); });
+// the door: he turns into it and pushes; the door shuts
+at(B.slam - 0.9, (t, u) => { barScene(t); const k = ease(clamp(u / 0.7)); const open = t < B.slam - 0.1 ? 1.2 * ease(clamp((u - 0.2) / 0.4)) : 1.2 * (1 - ease(clamp((t - B.slam + 0.1) / 0.12)));
+  Wd.bdoor.userData.open(-open); stiffWalk(hero, lerp(3.4, 2.4, ease(clamp((u - 0.35) / 0.5))), lerp(-9.3, -10.0, k), lerp(Math.PI, -Math.PI / 2, k), t, FACE.determined); if (t > B.slam) hero.root.visible = false;
+  stage.aim([3.85, 1.35, -8.5], [2.8, 1.1, -10.0], 46); });
+// ===== 4. o alívio =====
+at(B.slam + 0.25, (t, u) => { bathScene(t); const k = clamp((t - B.sigh) / 0.9); const f = t < B.sigh ? FACE.determined : (k < 1 ? mixFace(FACE.determined, FACE.relief, ease(k)) : (t < L0(7) + 1.3 ? FACE.relief : FACE.bliss));
+  const breathe = t > B.sigh ? -0.06 * Math.sin(clamp(k) * Math.PI) : 0;
+  put(hero, ...BATH_SEAT, onToilet({ lean: 0.1 + breathe, head: [-0.1 * clamp(k), 0, 0.06 * clamp(k)] }), f, [0, 0], 0);
+  const h = hero.headPos(); const d = lerp(1.35, 1.1, ease(clamp(u / 4))); stage.aim([h.x + d, h.y + 0.02, h.z + 0.2], [h.x, h.y - 0.1, h.z], 40); });
+// a warmer, happier angle on "o homem mais feliz do Brasil"
+at(w(7, 'homem') - 0.15, (t, u) => { bathScene(t); put(hero, ...BATH_SEAT, onToilet({ lean: 0.05, head: [-0.12, 0, -0.05 + 0.05 * Math.sin(t * 2)] }), FACE.bliss, [0, 0], 0);
+  const h = hero.headPos(); stage.aim([h.x + 1.0, h.y + 0.25, h.z - 0.5], [h.x, h.y - 0.1, h.z], lerp(40, 34, ease(u / 1.6))); });
+// the hand on the lever: click. nothing.
+const leverShot = (tc) => (t, u) => { bathScene(t); const pulls = tc.filter(x => t >= x && t < x + 0.22).length; Wd.lever.rotation.x = pulls ? -0.5 : 0;
+  put(hero, ...BATH_SEAT, onToilet({ twist: -0.5, armR: [0.4, -0.2, 0.3, 0.6], lean: 0.05 }), FACE.dead, [0, 0], 0);
+  const L = Wd.lever.getWorldPosition(new THREE.Vector3()); const hp = new THREE.Vector3(L.x + 0.03, L.y + 0.02 - (pulls ? 0.035 : 0), L.z + 0.07);
+  // a hand puppet: we pose an arm-sized hand right on the lever (the hero's own hand would fight the twist)
+  if (!Wd.handM) { Wd.handM = new THREE.Group(); const sk = new THREE.MeshStandardMaterial({ color: '#e3ae88', roughness: 0.7 }); const pm = new THREE.Mesh(new THREE.SphereGeometry(0.055, 16, 12), sk); pm.scale.set(1, 0.7, 1.2); Wd.handM.add(pm); for (let i = 0; i < 4; i++) { const fg = new THREE.Mesh(new THREE.CapsuleGeometry(0.014, 0.05, 4, 8), sk); fg.position.set(-0.035 + i * 0.023, -0.02, 0.07); fg.rotation.x = 1.2; Wd.handM.add(fg); } const arm = new THREE.Mesh(new THREE.CapsuleGeometry(0.045, 0.4, 4, 10), sk); arm.rotation.x = Math.PI / 2; arm.rotation.z = 0.0; arm.position.set(0.0, 0.03, 0.27); Wd.handM.add(arm); const sl = new THREE.Mesh(new THREE.CapsuleGeometry(0.07, 0.12, 4, 10), new THREE.MeshStandardMaterial({ color: '#e0a326', roughness: 0.7 })); sl.rotation.x = Math.PI / 2; sl.position.set(0, 0.04, 0.5); Wd.handM.add(sl); Wd.handM.traverse(o => o.castShadow = true); Wd.bath.add(Wd.handM); }
+  Wd.handM.visible = true; Wd.handM.position.copy(hp); Wd.handM.rotation.set(0, 0.6, 0); hero.root.visible = false;
+  stage.aim([L.x + 0.62, L.y + 0.32, L.z + 0.5], [L.x + 0.05, L.y - 0.05, L.z + 0.05], 40); };
+at(B.flush1 - 0.4, leverShot([B.flush1]));
+at(B.flush1 + 0.65, (t, u) => { bathScene(t); put(hero, ...BATH_SEAT, onToilet({ lean: 0.05, head: [0.05, -0.15, 0] }), mixFace(FACE.bliss, FACE.worried, ease(clamp(u / 0.8))), [-0.6, 0.5], 0); const h = hero.headPos(); stage.aim([h.x + 1.1, h.y + 0.02, h.z + 0.1], [h.x, h.y - 0.08, h.z], 38); });
+at(B.flush2 - 0.25, leverShot([B.flush2, B.flush2 + 0.3, B.flush2 + 0.6]));
+at(B.flush2 + 1.0, (t, u) => { bathScene(t); put(hero, ...BATH_SEAT, onToilet({ lean: 0.03 }), FACE.dead, [0, 0], 0); const h = hero.headPos(); const k = ease(clamp(u / 1.9)); stage.aim([h.x + lerp(1.3, 0.85, k), h.y, h.z], [h.x, h.y - 0.05, h.z], 38); });
+// ===== 5. a falsa esperança =====
+at(B.holy, (t, u) => { bathScene(t, { holy: ease(clamp(u / 0.35)) }); Wd.handM && (Wd.handM.visible = false); hero.root.visible = false; const k = ease(clamp(u / 1.7)); stage.aim([2.0, lerp(1.0, 0.75, k), -9.6], [2.55, 0.25, -10.7], lerp(46, 38, k)); });
+at(B.holy + 0.9, (t, u) => { bathScene(t, { holy: 1 }); put(hero, ...BATH_SEAT, onToilet({ lean: 0.0, head: [-0.1, -0.5, 0] }), FACE.hope, [1, 0.2], 0); const h = hero.headPos(); stage.aim([h.x + 1.05, h.y + 0.05, h.z - 0.35], [h.x, h.y - 0.05, h.z], 38); });
+// the tap: he holds the bucket under it and turns the handle: a dry puff
+at(B.grab, (t, u) => { bathScene(t, { holy: t < B.puff + 0.1 ? 1 : Math.max(0, 1 - (t - B.puff - 0.1) / 0.6) }); const turn = ease(clamp((t - B.tap) / 0.25)); Wd.tapHandle.rotation.y = 1.2 * turn;
+  put(hero, 2.2, -10.35, Math.PI, { armL: [1.0, 0.15, 0.9], armR: [1.25, -0.1, 0.9], lean: 0.12, head: [0.25, 0, 0] }, t < B.puff ? FACE.hope : FACE.shock, [0, 0.6], 0);
+  const hl = hero.handPos('L'), hr = hero.handPos('R'); Wd.bucket.position.set((hl.x + hr.x) / 2 - 0.0, Math.min(hl.y, hr.y) - 0.3, (hl.z + hr.z) / 2); Wd.bucket.position.set(2.15, 0.62, -10.75);
+  Wd.puffAt((t - B.puff) / 0.9); stage.aim([1.72, 1.3, -10.5], [2.15, 0.95, -10.88], 50); });
+at(B.puff + 0.9, (t, u) => { bathScene(t); Wd.bucket.position.set(2.15, 0.62, -10.75); put(hero, 2.2, -10.35, Math.PI, { armL: [1.0, 0.15, 0.9], armR: [1.0, 0.15, 0.9], lean: 0.05 }, FACE.dead, [0, 0], 0); Wd.tapHandle.rotation.y = 1.2;
+  hero.root.rotation.y = 0; hero.root.position.set(1.9, 0, -10.45); hero.pose({ armL: [0.9, 0.15, 1.0], armR: [0.9, 0.15, 1.0] }); const hl = hero.handPos('L'), hr = hero.handPos('R'); Wd.bucket.position.set((hl.x + hr.x) / 2, (hl.y + hr.y) / 2 - 0.3, (hl.z + hr.z) / 2 + 0.05);
+  faceCam(hero, 0.6, 0.0, -0.05, 40, [0, -0.12, 0]); });
+// "Fiquei segurando um balde vazio diante de uma situação cheia": waist-up, holding it, a slow push
+at(L0(8), (t, u) => { bathScene(t); Wd.tapHandle.rotation.y = 1.2; hero.root.visible = true; put(hero, 1.9, -10.45, -0.15, { armL: [0.9, 0.15, 1.0], armR: [0.9, 0.15, 1.0] }, FACE.dead, [0, 0], Wd.blink(t, 2)); const hl = hero.handPos('L'), hr = hero.handPos('R'); Wd.bucket.position.set((hl.x + hr.x) / 2, (hl.y + hr.y) / 2 - 0.3, (hl.z + hr.z) / 2 + 0.05);
+  const k = ease(clamp(u / 3.6)); faceCam(hero, lerp(1.2, 0.85, k), 0.1, -0.2, 44, [0, -0.3, 0]); });
+// he looks down at the toilet (off-frame), then at the door
+at(B.lookToilet, (t, u) => { bathScene(t); Wd.tapHandle.rotation.y = 1.2; Wd.bucket.position.set(...Wd.bucketHome); const toD = t > B.lookDoor;
+  put(hero, 1.9, -10.45, -0.15, { head: toD ? [0, -0.9, 0] : [0.4, 0.7, 0] }, toD ? FACE.determined : FACE.worried, toD ? [0.9, 0] : [-0.8, 0.8], Wd.blink(t, 2)); faceCam(hero, 0.62, 0, 0.0, 38); });
+// ===== 6. a fuga =====
+at(L0(9), (t, u) => { bathScene(t); Wd.bucket.position.set(...Wd.bucketHome); hero.root.visible = false; const k = ease(clamp(u / 1.6)); stage.aim([lerp(1.15, 1.45, k), 1.3, -10.3], [2.8, 1.05, -10.0], lerp(78, 52, k)); });       // the door. the only way out.
+at(B.breath, (t, u) => { bathScene(t); Wd.bucket.position.set(...Wd.bucketHome); const b = Math.sin(clamp(u / 1.2) * Math.PI);                    // the deep breath
+  put(hero, 2.35, -10.0, Math.PI / 2, { lean: -0.12 * b, armL: [0.1, 0.25 + 0.15 * b, 0.2], armR: [0.1, 0.25 + 0.15 * b, 0.2], head: [-0.2 * b, 0, 0] }, b > 0.4 ? Object.assign({}, FACE.determined, { mouth: 'o', open: 0.2, eye: 0.0 }) : FACE.calm, [0, 0], 0);
+  const h = hero.headPos(); stage.aim([2.76, h.y + 0.02, -10.25], [h.x, h.y - 0.06, h.z], 56); });
+// from the corridor: the door opens, he steps out trying to look casual; pull back to reveal the sign
+at(B.open, (t, u) => { bathScene(t, { door: -1.25 * ease(clamp(u / 0.45)) }); const k = ease(clamp((u - 0.3) / 0.7));
+  put(hero, lerp(2.45, 2.95, k), -10.0, Math.PI / 2, { armL: [0.0, 0.08, 0.1], armR: [0.0, 0.08, 0.1], legL: [0.2 * Math.sin(k * 6), 0.03, 0.1], legR: [-0.2 * Math.sin(k * 6), 0.03, 0.1], head: [-0.05, 0, 0] }, FACE.calm, [0, 0], 0);
+  put(lady, 3.45, -9.25, -2.5, { armL: [0.2, 0.1, 1.6], armR: [0.25, 0.1, 1.4] }, FACE.polite, [0.4, 0], Wd.blink(t, 4)); lady.root.visible = false;
+  stage.aim([3.85, 1.35, -10.55], [2.85, 1.25, -10.0], 44); });
+at(B.reveal, (t, u) => { bathScene(t, { door: -1.25 }); put(hero, 2.95, -10.0, Math.PI / 2, { armL: [0.0, 0.08, 0.1], armR: [0.0, 0.08, 0.1] }, FACE.shock, [0.6, 0], 0);                     // the reveal: the unisex sign, and her
+  put(lady, 3.45, -9.25, -2.5, { armL: [0.3, 0.15, 1.7], armR: [0.25, 0.1, 1.5] }, FACE.polite, [0, 0], Wd.blink(t, 4));
+  const k = ease(clamp(u / 1.1)); stage.aim([lerp(3.25, 3.35, k), lerp(1.6, 1.55, k), lerp(-8.1, -7.3, k)], [3.1, lerp(1.45, 1.25, k), -9.7], lerp(32, 52, k)); });
+at(B.herLook, (t, u) => { bathScene(t, { door: -1.25 }); put(hero, 2.95, -10.0, Math.PI / 2, {}, FACE.shock, [0.6, 0], 0); put(lady, 3.45, -9.25, -2.5, { armL: [0.3, 0.15, 1.7], armR: [0.25, 0.1, 1.5], head: [0, 0, 0.05] }, Object.assign({}, FACE.polite, { brow: 0.45, browY: 0.03, smile: 0.25 }), [0.2, 0], 0);      // her: calm, eyebrows up a little
+  faceCam(lady, 0.62, 0.1, 0.0, 38); });
+at(B.hisFace, (t, u) => { bathScene(t, { door: -1.25 }); put(lady, 3.45, -9.25, -2.5, {}, FACE.polite, [0, 0], 0); put(hero, 2.95, -10.0, 0.9, { head: [0.05, 0.1, 0] }, FACE.awkward, [0.7, 0], 0); const k = ease(clamp(u / 1.1)); faceCam(hero, lerp(0.6, 0.48, k), -0.1, 0, 38); });
+// the wave, and her polite nod: a long, quiet two-shot
+at(B.wave, (t, u) => { bathScene(t, { door: -1.25 }); const wv = clamp((t - B.wave - 0.15) / 0.9); const wave = wv > 0 && wv < 1 ? Math.sin(wv * Math.PI * 4) * 0.35 : 0, up = Math.sin(clamp(wv) * Math.PI);
+  put(hero, 2.95, -10.0, 0.9, { armR: [1.25 * up, 0.3, 1.55 * up, 0, 0], side: 0, head: [0.04, 0.1, wave * 0.15] }, FACE.awkward, [0.7, 0], Wd.blink(t, 1));
+  hero.armR.sh.rotation.y += wave; const nod = clamp((t - B.nod) / 0.6); put(lady, 3.45, -9.25, -2.5, { armL: [0.3, 0.15, 1.7], armR: [0.25, 0.1, 1.5], head: [0.18 * Math.sin(nod * Math.PI), 0, 0] }, t > B.nod ? FACE.polite : Object.assign({}, FACE.polite, { smile: 0.25 }), [0, 0], Wd.blink(t, 4));
+  stage.aim([4.45, 1.45, -10.75], [3.2, 1.3, -9.62], 68); });
+at(B.leave, (t, u) => { const k = clamp(u / 1.6); bathScene(t, { door: t < B.doorShut ? -1.25 : -1.25 * (1 - ease(clamp((t - B.doorShut) / 0.15))) });                      // he walks off fast, she goes in, the door shuts
+  stiffWalk(hero, 3.35, lerp(-9.8, -7.4, k), 0, t, FACE.awkward, [0, 0], 0.22);
+  const lk = ease(clamp((t - B.herIn + 0.5) / 0.6)); put(lady, lerp(3.45, 2.5, lk), lerp(-9.25, -10.0, lk), lerp(-2.5, -Math.PI / 2, lk), { legL: [0.3 * Math.sin(t * 8) * (lk > 0 && lk < 1), 0.03, 0.1], legR: [-0.3 * Math.sin(t * 8) * (lk > 0 && lk < 1), 0.03, 0.1] }, FACE.calm, [0, 0], 0); if (t > B.doorShut) lady.root.visible = false;
+  stage.aim([3.4, 1.45, -5.4], [3.3, 1.0, -9.5], 42); });
+// ===== 7. a confissão =====
+at(B.whisper - 0.1, (t, u) => { table(t, { mood: 'chat' }); const lean = ease(clamp(u / 0.6));
+  heroAtTable(t, { lean: 0.35 * lean, armL: [0.9, 0.3, 1.2], armR: [1.2, 0.0, 1.8] }, FACE.whisper, [0, 0]);
+  put(beto, seat.beto[0], seat.beto[1], seat.beto[2], sitPose({ lean: 0.3 * lean }), FACE.worried, [0, 0], 0); put(carla, seat.carla[0], seat.carla[1], seat.carla[2], sitPose({ lean: 0.3 * lean }), FACE.worried, [0, 0], 0); put(ze, seat.ze[0], seat.ze[1], seat.ze[2], sitPose({ lean: 0.3 * lean }), FACE.neutral, [0, 0], 0);
+  stage.aim([TB[0] + 1.25, 1.55, TB[1] + 1.2], [TB[0], 1.0, TB[1] - 0.1], 46); });
+at(w(10, 'água') - 0.25, (t, u) => { table(t); heroAtTable(t, { lean: 0.35, armL: [0.9, 0.3, 1.2], armR: [1.2, 0.0, 1.8] }, FACE.whisper, [0.5, 0]); put(beto, seat.beto[0], seat.beto[1], seat.beto[2], sitPose({ lean: 0.3 }), FACE.worried, [0, 0], 0); put(carla, seat.carla[0], seat.carla[1], seat.carla[2], sitPose({ lean: 0.3 }), FACE.worried, [0, 0], 0); put(ze, seat.ze[0], seat.ze[1], seat.ze[2], sitPose({ lean: 0.3 }), FACE.neutral, [0, 0], 0);
+  const k = ease(clamp(u / 1.8)); faceCam(hero, lerp(0.7, 0.5, k), -0.25, 0.05, 38); });
+// the laugh: they explode; he hides his face in his hands
+at(B.laugh, (t, u) => { table(t, { mood: 'laugh', k: ease(clamp(u / 0.3)) }); heroAtTable(t, { lean: 0.3 }, FACE.awkward, [0, 0]); const s = shake(t, 0.01 * Math.max(0, 1 - u)); stage.aim([TB[0] - 1.4 + s[0], 1.35 + s[1], TB[1] + 1.25], [TB[0] + 0.1, 1.1, TB[1]], 44); });
+const hidePose = (t, k) => ({ lean: 0.25 + 0.05 * Math.sin(t * 3), armL: [lerp(0.95, 1.95, k), lerp(0.12, -0.15, k), lerp(0.85, 2.35, k)], armR: [lerp(0.95, 1.95, k), lerp(0.12, -0.15, k), lerp(0.85, 2.35, k)], head: [0.35 * k, 0, 0] });
+at(B.hide, (t, u) => { table(t, { mood: 'laugh' }); const k = ease(clamp(u / 0.5)); heroAtTable(t, hidePose(t, k), FACE.awkward, [0, 0.6]); faceCam(hero, 0.75, 0.15, 0.05, 40, [0, -0.08, 0]); });
+// "Eles começaram a rir antes de eu terminar a palavra descarga": wide, pulling back; then Carla wiping tears
+at(L0(11), (t, u) => { table(t, { mood: 'laugh' }); heroAtTable(t, hidePose(t, 1), FACE.awkward); const k = ease(clamp(u / 2.2)); stage.aim([TB[0] + lerp(1.0, 1.4, k), lerp(1.7, 1.95, k), TB[1] + lerp(1.4, 2.3, k)], [TB[0], 0.95, TB[1] - 0.2], 48); });
+at(w(11, 'terminar') - 0.1, (t, u) => { table(t, { mood: 'laugh' }); heroAtTable(t, hidePose(t, 1), FACE.awkward); put(beto, seat.beto[0], seat.beto[1], seat.beto[2], sitPose({ lean: -0.1, head: [-0.3, 0, 0], armR: [0.6 + 0.9 * Math.abs(Math.sin(t * 8)), 0.25, 0.6] }), FACE.laugh); faceCam(beto, 0.7, 0.2, 0.05, 40); });
+// ===== 8. a despedida =====
+at(B.getUp, (t, u) => { table(t, { mood: 'laugh', k: 0.7 }); const p = path(clamp(u / 1.6) * 0.3); const k = ease(clamp(u / 0.5));
+  if (u < 0.5) put(hero, seat.hero[0], seat.hero[1] - 0.15 * k, 0, { sit: 1 - k, lean: 0.2 * (1 - k) }, FACE.awkward); else waddle(hero, lerp(seat.hero[0], -1.5, clamp((u - 0.5) / 1.2)), lerp(seat.hero[1] - 0.2, 1.6, clamp((u - 0.5) / 1.2)), 2.5, t, FACE.awkward);
+  stage.aim([TB[0] + 1.8, 1.7, TB[1] + 2.4], [TB[0] - 0.4, 1.0, TB[1] + 0.3], 50); });
+at(B.out, (t, u) => { stage.use('street'); const x = lerp(-0.2, 1.8, clamp(u / 2.6)); waddle(Wd.walker, x, lerp(-0.9, 0.3, clamp(u / 1.2)), 1.35, t, Object.assign({}, FACE.determined, { brow: 0.1, mouth: 'flat', smile: -0.1, sweat: 1 }));                           // out the door, chin up
+  stage.aim([lerp(3.6, 4.0, u / 2.6), 1.1, 3.8], [x, 1.0, 0.0], 44); });
+at(L0(13) - 0.05, (t, u) => { stage.use('street'); const x = lerp(2.2, 4.2, clamp(u / 2.0)); waddle(Wd.walker, x, 0.4, 1.45, t, Object.assign({}, FACE.awkward, { sweat: 1 }));                                  // tracking: the dignity walk
+  const h = Wd.walker.headPos(); stage.aim([h.x + 0.9, h.y - 0.05, h.z + 1.1], [h.x, h.y - 0.25, h.z], 42); });
+at(B.interd, (t, u) => { barScene(t); Wd.interditado.visible = true; Wd.bdoor.userData.open(0); const k = ease(clamp(u / 1.5)); stage.aim([lerp(3.9, 3.55, k), 1.25, lerp(-10.0, -10.0, k)], [2.8, 1.2, -10.0], lerp(46, 34, k)); });
+at(B.credits, (t, u) => { barScene(t); Wd.interditado.visible = true; stage.aim([3.55, 1.25, -10.0], [2.8, 1.2, -10.0], 34); });
+
+// ---------------- the 2D overlay ----------------
+function txt(s, x, y, font, fill, o = {}) { c.font = font; c.textAlign = o.align || 'center'; c.textBaseline = 'middle'; if (o.stroke) { c.lineJoin = 'round'; c.lineWidth = o.stroke; c.strokeStyle = o.strokeColor || '#0b0c0f'; c.strokeText(s, x, y); } c.fillStyle = fill; c.fillText(s, x, y); }
+function bang(s, k, { x = 540, y = 820, col = '#ffcc4d', size = 200, rot = -0.08 } = {}) { if (k <= 0) return; const sc = clamp(spring(k * 1.3), 0, 1.2); c.save(); c.translate(x, y); c.rotate(rot); c.scale(sc, sc); txt(s, 0, 0, `700 ${size}px Oswald`, col, { stroke: 20 }); c.restore(); }
+// the clock card in the montage: big digital time
+function clockCard(s, k) { c.save(); c.globalAlpha = clamp(k * 4); c.fillStyle = 'rgba(8,9,12,0.7)'; c.beginPath(); c.roundRect(300, 330, 480, 170, 26); c.fill(); txt(s, 540, 418, '700 120px "JetBrains Mono"', '#ff5a4f'); c.restore(); }
+// the mission HUD: a red frame, MISSÃO: BANHEIRO, the distance counting down
+function missionHUD(t, dist, done) {
+  c.save(); const pulse = 0.5 + 0.5 * Math.sin(t * 9);
+  c.strokeStyle = `rgba(255,60,50,${0.35 + 0.25 * pulse})`; c.lineWidth = 10; c.strokeRect(36, 36, 1008, 1848);
+  for (const [x, y, sx, sy] of [[60, 60, 1, 1], [1020, 60, -1, 1], [60, 1860, 1, -1], [1020, 1860, -1, -1]]) { c.strokeStyle = '#ff3b30'; c.lineWidth = 12; c.beginPath(); c.moveTo(x, y + sy * 90); c.lineTo(x, y); c.lineTo(x + sx * 90, y); c.stroke(); }
+  c.fillStyle = 'rgba(8,9,12,0.72)'; c.beginPath(); c.roundRect(150, 120, 780, 190, 24); c.fill();
+  txt('MISSÃO: BANHEIRO', 540, 175, '700 64px Oswald', '#ff5a4f'); txt(done ? 'ALVO ALCANÇADO ✓' : `DISTÂNCIA: ${dist.toFixed(1).replace('.', ',')} m`, 540, 260, '700 48px "JetBrains Mono"', done ? '#4fe08a' : '#f3eee4');
+  // scan line
+  const y = 330 + ((t * 600) % 1500); c.fillStyle = 'rgba(255,60,50,0.08)'; c.fillRect(40, y, 1000, 40); c.restore();
+}
+// captions: bottom area, chunky, key words coloured
+const CHUNKS = chunkCaptions(T); window.CHUNKS = CHUNKS;
+function captions(t, y = 1500) { const ch = CHUNKS.find(x => t >= x.s && t < x.e); if (!ch) return; const ln = T.lines[ch.li]; const quote = ln.voice && ln.voice !== 'pm_alex';
+  c.save(); c.font = '700 78px Oswald'; const parts = ch.words.map(x => ({ ...x, s: x.w.toUpperCase() })); const sp = 22; const ws = parts.map(p => c.measureText(p.s).width); const tot = ws.reduce((a, b) => a + b, 0) + sp * (parts.length - 1);
+  let x = 540 - tot / 2; parts.forEach((p, i) => { txt(p.s, x + ws[i] / 2, y, '700 78px Oswald', p.key ? (p.color || '#ffcc4d') : (quote ? '#bfe6ff' : '#ffffff'), { stroke: 14 }); x += ws[i] + sp; }); c.restore(); }
+// the friend's line is speech: a small name tag above the caption
+function speaker(t) { const ln = T.lines.find(l => t >= l.start - 0.05 && t < l.end + 0.3); if (!ln) return; const who = ln.voice === 'pm_santa' ? 'BETO' : (ln.i === 3 || ln.i === 10 ? 'EU' : null); if (!who) return; c.save(); c.font = '700 40px Oswald'; const wd = c.measureText(who).width + 40; c.fillStyle = who === 'EU' ? '#e0a326' : '#b8322a'; c.beginPath(); c.roundRect(540 - wd / 2, 1395, wd, 56, 28); c.fill(); txt(who, 540, 1424, '700 40px Oswald', '#fff'); c.restore(); }
+function credits(t) { const k = t - B.credits; c.save(); c.fillStyle = '#07080b'; c.fillRect(0, 0, 1080, 1920); c.globalAlpha = clamp(k / 0.4);
+  txt('SEM ÁGUA', 540, 760, '700 190px Oswald', '#ffcc4d', { stroke: 0 }); c.fillStyle = '#e0a326'; c.fillRect(380, 875, 320, 8);
+  c.globalAlpha = clamp((k - 0.6) / 0.4); txt('um curta de comédia', 540, 960, '700 56px Oswald', '#f3eee4');
+  c.globalAlpha = clamp((k - 1.3) / 0.4); txt('baseado em fatos que', 540, 1120, '700 48px Oswald', '#9aa0aa'); txt('ninguém admite em voz alta', 540, 1180, '700 48px Oswald', '#9aa0aa');
+  c.globalAlpha = clamp((k - 2.1) / 0.4); txt('nenhum vaso foi ferido', 540, 1360, '700 44px Oswald', '#6d737d'); txt('durante as gravações', 540, 1412, '700 44px Oswald', '#6d737d'); c.restore(); }
+
+// ---------------- render ----------------
+window.seek = t => {
+  if (COVER) return cover();
+  if (Wd.handM) Wd.handM.visible = false; if (Wd.tray) Wd.tray.visible = false; Wd.heroChair.position.z = TB[1] - 0.62; Wd.lever.rotation.x = 0;
+  if (t >= B.black) { c.setTransform(1, 0, 0, 1, 0, 0); c.fillStyle = '#000'; c.fillRect(0, 0, 1080, 1920); return; }
+  if (t >= B.credits) { credits(t); return; }
+  let i = 0; while (i + 1 < SH.length && t >= SH[i + 1][0]) i++;
+  SH[i][1](t, t - SH[i][0]);
+  { const cp = stage.camera.position; for (const p of Wd.people) if (p.root.visible && p.root.parent && p.root.parent.visible) { const r = p.root.position; if (Math.hypot(cp.x - r.x, cp.z - r.z) < 0.42 && cp.y < 2.0) p.root.visible = false; }
+    const dir = new THREE.Vector3(); stage.camera.getWorldDirection(dir); const hit = new THREE.Raycaster(cp, dir, 0, 1.9); const heads = Wd.people.filter(p => p.root.visible && p.root.parent && p.root.parent.visible);
+    const front = heads.map(p => ({ p, d: p.headPos().sub(cp) })).filter(o => o.d.dot(dir) > 0).sort((a, b) => a.d.length() - b.d.length());
+    const target = front.find(o => o.d.clone().normalize().dot(dir) > 0.985 && o.d.length() < 1.9);
+    if (target) for (const o of front) { if (o === target || o.d.length() >= target.d.length()) continue; const r = o.p.root.position, along = new THREE.Vector3(r.x - cp.x, 0, r.z - cp.z), dh = new THREE.Vector3(dir.x, 0, dir.z).normalize(); const perp = along.clone().sub(dh.clone().multiplyScalar(along.dot(dh))).length(); if (perp < 0.4) o.p.root.visible = false; } }
+  { const cp = stage.camera.position; Wd.wallN.visible = cp.z < -9.0; Wd.wallS.visible = cp.z > -11.0; Wd.wallW.visible = cp.x > 1.0; }
+  const inBath = t >= B.slam + 0.25 && t < B.open, warm = t >= L0(7) - 0.2 && t < B.flush1;
+  stage.draw(t, { vignette: inBath ? 0.55 : 0.42, bloomStrength: warm ? 0.7 : (t >= B.holy && t < B.puff + 0.5 ? 0.55 : 0.35) });
+  // overlays
+  if (t >= B.growl && t < B.growl + 0.75) bang('RONC!', (t - B.growl) / 0.75 * 1.2, { y: 620, col: '#ff8a3d', size: 210 });
+  B.m.forEach((m, k) => { if (t >= m && t < m + 0.55) clockCard(`21:1${2 + k}`, (t - m) / 0.55); });
+  if (t >= B.m[3] && t < B.ask - 0.2) clockCard('21:15', 1);
+  if (t >= B.stand + 0.4 && t < B.slam + 0.25) { const prog = clamp((t - B.stand - 1.0) / (B.slam - 0.3 - B.stand - 1.0)); missionHUD(t, 12 * (1 - prog), t >= B.slam - 0.05); }
+  if (t >= B.flush1 && t < B.flush1 + 0.6) bang('clic.', (t - B.flush1) * 2, { y: 640, col: '#ffffff', size: 120, rot: 0 });
+  if (t >= B.flush2 && t < B.flush2 + 0.95) bang(t < B.flush2 + 0.3 ? 'clic.' : t < B.flush2 + 0.6 ? 'clic. clic.' : 'clic. clic. clic.', 1, { y: 640, col: '#ffffff', size: 110, rot: 0 });
+  if (t >= B.flush2 + 1.2 && t < B.holy) { c.save(); c.globalAlpha = 0.85; txt('...', 540, 330, '700 150px Oswald', '#ffffff', { stroke: 14 }); c.restore(); }
+  if (t >= B.puff && t < B.puff + 0.8) bang('PFFF', (t - B.puff) * 2, { y: 560, col: '#d9d2c2', size: 170 });
+  if (t >= B.laugh && t < B.laugh + 1.0) bang('KKKKKK', (t - B.laugh) * 1.6, { y: 520, col: '#4fe08a', size: 170 });
+  if (t >= B.interd + 0.3) { /* the sign speaks for itself */ }
+  speaker(t); captions(t);
+};
+function cover() {
+  const tt = B.reply + 1.0; SH.find(s => s[0] <= tt && true); let i = 0; while (i + 1 < SH.length && tt >= SH[i + 1][0]) i++; SH[i][1](tt, tt - SH[i][0]);
+  faceCam(hero, 0.8, 0.05, 0.05, 40, [0, -0.17, 0]); ze.root.visible = false; stage.draw(tt, { vignette: 0.45, bloomStrength: 0.5 });
+  c.save(); c.font = '700 44px Oswald'; const s = 'UM CURTA DE COMÉDIA'; const wd = c.measureText(s).width + 70; c.fillStyle = '#d93b30'; c.beginPath(); c.roundRect(540 - wd / 2, 1180, wd, 80, 40); c.fill(); txt(s, 540, 1222, '700 44px Oswald', '#fff'); c.restore();
+  for (const [s, y, col] of [['SEM ÁGUA', 1380, '#ffcc4d'], ['NO BANHEIRO DO BAR', 1520, '#ffffff']]) { let fs = 170; c.font = `700 ${fs}px Oswald`; while (c.measureText(s).width > 960 && fs > 60) { fs -= 6; c.font = `700 ${fs}px Oswald`; } txt(s, 540, y, `700 ${fs}px Oswald`, col, { stroke: 18 }); }
+}
+await loadFonts();
+window.seek(0);
+window.READY = true;
+</script>
+</body></html>

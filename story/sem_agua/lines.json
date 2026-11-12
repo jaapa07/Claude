@@ -1,0 +1,112 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.0,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lead": 1.4,
+ "lines": [
+  {
+   "text": "Era pra ser só uma cervejinha com os amigos.",
+   "key": {
+    "cervejinha": "yellow"
+   },
+   "pause": 0.35
+  },
+  {
+   "text": "Eu não sabia que aquela noite ia terminar numa operação de fuga.",
+   "key": {
+    "fuga": "red"
+   },
+   "pause": 7.4
+  },
+  {
+   "text": "Tá tudo bem?",
+   "voice": "pm_santa",
+   "speed": 1.0,
+   "pause": 0.7
+  },
+  {
+   "text": "Tô só... prestando atenção.",
+   "say": "Tô só. Prestando atenção.",
+   "speed": 0.9,
+   "key": {
+    "atenção": "yellow"
+   },
+   "pause": 0.9
+  },
+  {
+   "text": "Em um único músculo.",
+   "key": {
+    "músculo": "red"
+   },
+   "pause": 1.0
+  },
+  {
+   "text": "Doze metros até o banheiro.",
+   "key": {
+    "Doze": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Os doze mais longos da minha vida.",
+   "key": {
+    "longos": "red"
+   },
+   "pause": 4.6
+  },
+  {
+   "text": "Por trinta segundos, eu fui o homem mais feliz do Brasil.",
+   "key": {
+    "feliz": "green"
+   },
+   "pause": 10.0
+  },
+  {
+   "text": "Fiquei segurando um balde vazio diante de uma situação cheia.",
+   "key": {
+    "vazio": "yellow",
+    "cheia": "red"
+   },
+   "pause": 3.2
+  },
+  {
+   "text": "Só restava uma saída.",
+   "key": {
+    "saída": "red"
+   },
+   "pause": 10.5
+  },
+  {
+   "text": "Gente... o banheiro tá sem água, e eu tentei dar a descar...",
+   "say": "Gente. O banheiro tá sem água, e eu tentei dar a descár",
+   "speed": 0.95,
+   "key": {
+    "água": "yellow"
+   },
+   "pause": 2.6
+  },
+  {
+   "text": "Eles começaram a rir antes de eu terminar a palavra descarga.",
+   "key": {
+    "rir": "green",
+    "descarga": "yellow"
+   },
+   "pause": 1.6
+  },
+  {
+   "text": "Fui embora com a bunda assada e uma certeza:",
+   "key": {
+    "assada": "red"
+   },
+   "pause": 0.5
+  },
+  {
+   "text": "naquele bar, eu deixei uma impressão muito forte.",
+   "key": {
+    "forte": "yellow"
+   },
+   "pause": 0.4
+  }
+ ]
+}
