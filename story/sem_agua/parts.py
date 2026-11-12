@@ -5,7 +5,7 @@ import json, os, subprocess
 HERE = os.path.dirname(os.path.abspath(__file__)); os.chdir(HERE)
 B = json.load(open("beats.json")); FPS = 30
 PARTS = [(0, B["slam"] + 0.25), (B["slam"] + 0.25, B["breath"]), (B["breath"], B["end"])]
-X264 = ["-c:v", "libx264", "-preset", "slow", "-crf", "21", "-pix_fmt", "yuv420p", "-r", "30", "-c:a", "aac", "-b:a", "160k", "-ar", "48000", "-movflags", "+faststart"]
+X264 = ["-c:v", "libx264", "-preset", "slow", "-crf", "23", "-maxrate", "1500k", "-bufsize", "3000k", "-pix_fmt", "yuv420p", "-r", "30", "-c:a", "aac", "-b:a", "160k", "-ar", "48000", "-movflags", "+faststart"]
 def run(a): subprocess.run(["ffmpeg", "-y", "-loglevel", "error"] + a, check=True)
 def build(out, cover, a, b, end=None):
     n0, n1 = round(a * FPS), round(b * FPS); dur = (n1 - n0) / FPS
