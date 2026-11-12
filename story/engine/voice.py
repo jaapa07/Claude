@@ -142,7 +142,10 @@ async def speak(i, line):
     if engine == "kokoro":
         import soundfile as sf
         a, sr = kokoro().create(text, voice=line.get("voice", VOICE), speed=float(line.get("speed", SPEED)), lang=spec.get("lang", "en-us"))
-        sf.write(path + ".wav", a, sr); raw = decode(path + ".wav"); return raw, align(text, raw)
+        sf.write(path + ".wav", a, sr)
+        if line.get("pitch"):                                         # a different voice from the same model: pitch moved, length kept
+            p_ = float(line["pitch"]); subprocess.run([FF, "-y", "-loglevel", "error", "-i", path + ".wav", "-af", f"asetrate={sr}*{p_},aresample={sr},atempo={1 / p_:.4f}", path + "_p.wav"], check=True); os.replace(path + "_p.wav", path + ".wav")
+        raw = decode(path + ".wav"); return raw, align(text, raw)
     if engine == "edge":
         bounds = await edge(text, line.get("voice", VOICE), path + ".mp3"); return decode(path + ".mp3"), bounds
     offline(text, path + ".wav"); raw = decode(path + ".wav"); return raw, align(text, raw)
@@ -179,7 +182,7 @@ async def main():
                     for j, w in enumerate(ws):
                         s = off - a + d * j / len(ws); e = off - a + d * (j + 1) / len(ws)
                         words.append({"w": w, "s": round(cursor + s, 3), "e": round(cursor + e, 3)})
-                extra = {k: v for k, v in line.items() if k not in ("text", "pause", "speed")}
+                extra = {k: v for k, v in line.items() if k not in ("text", "pause", "speed", "pitch")}
                 out.append({"i": i, "text": text, "start": round(cursor, 3), "end": round(cursor + dur, 3), "words": words, **extra})
                 pcm += raw; gap = float(line.get("pause", 0.25))
                 pcm += b"\0\0" * int(gap * SR); cursor += dur + gap

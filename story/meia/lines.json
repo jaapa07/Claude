@@ -1,0 +1,26 @@
+{
+"voice": "pm_alex",
+"speed": 1.0,
+"lang": "pt-br",
+"align": "estimate",
+"lead": 9.2,
+"lines": [
+{"who": "RENY", "text": "Rapaziada... preciso ir no banheiro. Agora.", "say": "Rapaziada. Preciso ir no banheiro. Agora.", "key": {"banheiro": "yellow", "Agora": "red"}, "pause": 0.35},
+{"who": "DUDU", "text": "Vai lá, guerreiro!", "voice": "pm_santa", "speed": 1.05, "key": {"guerreiro": "yellow"}, "pause": 7.0},
+{"who": "RENY", "text": "Sem tranca... vai ter que ser no modo expresso.", "say": "Sem tranca. Vai ter que ser no modo expresso.", "speed": 0.95, "key": {"tranca": "red", "expresso": "yellow"}, "pause": 4.2},
+{"who": "FILA", "text": "Vai demorar?", "voice": "pf_dora", "speed": 1.0, "pause": 0.3},
+{"who": "RENY", "text": "Tô finalizando!", "speed": 1.1, "key": {"finalizando": "yellow"}, "pause": 6.2},
+{"who": "RENY", "text": "Você faz tanta coisa... mas agora não ajuda.", "say": "Você faz tanta coisa. Mas agora não ajuda.", "speed": 0.95, "key": {"ajuda": "red"}, "pause": 4.0},
+{"who": "RENY", "text": "Me perdoa, companheira.", "speed": 0.82, "key": {"companheira": "yellow"}, "pause": 8.2},
+{"who": "DUDU", "text": "Que demora foi essa?", "voice": "pm_santa", "speed": 1.05, "key": {"demora": "yellow"}, "pause": 0.8},
+{"who": "RENY", "text": "Não tinha papel. Tive que usar a meia.", "speed": 0.92, "key": {"papel": "red", "meia": "yellow"}, "pause": 2.4},
+{"who": "DUDU", "text": "Mentira! Você não fez isso!", "voice": "pm_santa", "speed": 1.15, "key": {"Mentira": "red"}, "pause": 1.6},
+{"who": "LÉO", "text": "NÃO ACREDITO QUE VOCÊ GUARDOU!", "say": "Não acredito que você guardou!", "pitch": 0.84, "speed": 1.15, "key": {"GUARDOU": "red"}, "pause": 0.3},
+{"who": "RENY", "text": "Eu entrei em pânico!", "speed": 1.1, "key": {"pânico": "red"}, "pause": 4.4},
+{"who": "LÉO", "text": "Reny... você ainda tá com a meia?", "say": "Reny. Você ainda tá com a meia?", "pitch": 0.84, "speed": 0.95, "key": {"meia": "yellow"}, "pause": 1.3},
+{"who": "RENY", "text": "Depende. Você vai ficar bravo?", "speed": 0.95, "key": {"bravo": "red"}, "pause": 0.6},
+{"who": "LÉO", "text": "A MEIA, RENY! SE LIVRA DA MEIA!", "say": "A meia, Reny! Se livra da meia!", "pitch": 0.84, "speed": 1.2, "key": {"MEIA": "red"}, "pause": 6.0},
+{"who": "RENY", "text": "Obrigado pelo serviço prestado.", "speed": 0.88, "key": {"prestado": "yellow"}, "pause": 0.5},
+{"who": "LÉO", "text": "Amanhã você paga a lavagem.", "pitch": 0.84, "speed": 1.0, "key": {"lavagem": "yellow"}, "pause": 0.4}
+]
+}
