@@ -22,7 +22,7 @@ const stage = S.createStage(document.getElementById('film'));
 stage.renderer.toneMappingExposure = 1.05;
 const Wd = buildWorld(stage);
 const { hero, beto, carla, ze, lady, waiter, put, seat, T: TB } = Wd;
-const COVER = location.hash === '#cover';
+const MODE = location.hash.slice(1), COVER = MODE.startsWith('cover');
 
 // ---------------- the beats (seconds); sound.py reads the same numbers from window.BEATS ----------------
 const B = {};
@@ -242,11 +242,11 @@ function missionHUD(t, dist, done) {
 }
 // captions: bottom area, chunky, key words coloured
 const CHUNKS = chunkCaptions(T); window.CHUNKS = CHUNKS;
-function captions(t, y = 1500) { const ch = CHUNKS.find(x => t >= x.s && t < x.e); if (!ch) return; const ln = T.lines[ch.li]; const quote = ln.voice && ln.voice !== 'pm_alex';
+function captions(t, y = 1500) { if (window._inEnd) return; const ch = CHUNKS.find(x => t >= x.s && t < x.e); if (!ch) return; const ln = T.lines[ch.li]; const quote = ln.voice && ln.voice !== 'pm_alex';
   c.save(); c.font = '700 78px Oswald'; const parts = ch.words.map(x => ({ ...x, s: x.w.toUpperCase() })); const sp = 22; const ws = parts.map(p => c.measureText(p.s).width); const tot = ws.reduce((a, b) => a + b, 0) + sp * (parts.length - 1);
   let x = 540 - tot / 2; parts.forEach((p, i) => { txt(p.s, x + ws[i] / 2, y, '700 78px Oswald', p.key ? (p.color || '#ffcc4d') : (quote ? '#bfe6ff' : '#ffffff'), { stroke: 14 }); x += ws[i] + sp; }); c.restore(); }
 // the friend's line is speech: a small name tag above the caption
-function speaker(t) { const ln = T.lines.find(l => t >= l.start - 0.05 && t < l.end + 0.3); if (!ln) return; const who = ln.voice === 'pm_santa' ? 'BETO' : (ln.i === 3 || ln.i === 10 ? 'EU' : null); if (!who) return; c.save(); c.font = '700 40px Oswald'; const wd = c.measureText(who).width + 40; c.fillStyle = who === 'EU' ? '#e0a326' : '#b8322a'; c.beginPath(); c.roundRect(540 - wd / 2, 1395, wd, 56, 28); c.fill(); txt(who, 540, 1424, '700 40px Oswald', '#fff'); c.restore(); }
+function speaker(t) { if (window._inEnd) return; const ln = T.lines.find(l => t >= l.start - 0.05 && t < l.end + 0.3); if (!ln) return; const who = ln.voice === 'pm_santa' ? 'BETO' : (ln.i === 3 || ln.i === 10 ? 'EU' : null); if (!who) return; c.save(); c.font = '700 40px Oswald'; const wd = c.measureText(who).width + 40; c.fillStyle = who === 'EU' ? '#e0a326' : '#b8322a'; c.beginPath(); c.roundRect(540 - wd / 2, 1395, wd, 56, 28); c.fill(); txt(who, 540, 1424, '700 40px Oswald', '#fff'); c.restore(); }
 function credits(t) { const k = t - B.credits; c.save(); c.fillStyle = '#07080b'; c.fillRect(0, 0, 1080, 1920); c.globalAlpha = clamp(k / 0.4);
   txt('SEM ÁGUA', 540, 760, '700 190px Oswald', '#ffcc4d', { stroke: 0 }); c.fillStyle = '#e0a326'; c.fillRect(380, 875, 320, 8);
   c.globalAlpha = clamp((k - 0.6) / 0.4); txt('um curta de comédia', 540, 960, '700 56px Oswald', '#f3eee4');
@@ -255,7 +255,8 @@ function credits(t) { const k = t - B.credits; c.save(); c.fillStyle = '#07080b'
 
 // ---------------- render ----------------
 window.seek = t => {
-  if (COVER) return cover();
+  if (COVER) return MODE === 'cover' ? coverFull() : cover();
+  if ((MODE === 'end1' || MODE === 'end2') && !window._inEnd) { window._inEnd = true; endCard(Number(MODE.slice(3)) - 1); window._inEnd = false; return; }
   if (Wd.handM) Wd.handM.visible = false; if (Wd.tray) Wd.tray.visible = false; Wd.heroChair.position.z = TB[1] - 0.62; Wd.lever.rotation.x = 0;
   if (t >= B.black) { c.setTransform(1, 0, 0, 1, 0, 0); c.fillStyle = '#000'; c.fillRect(0, 0, 1080, 1920); return; }
   if (t >= B.credits) { credits(t); return; }
@@ -282,7 +283,28 @@ window.seek = t => {
   if (t >= B.interd + 0.3) { /* the sign speaks for itself */ }
   speaker(t); captions(t);
 };
+// the three parts: where each starts, its cover (shot time, pill, two title lines, face framing), its end card
+const PARTS = [
+  { at: 0, end: B.slam + 0.25, shot: B.reply + 1.0, pill: 'SEM ÁGUA · PARTE 1', title: ['ERA SÓ UMA', 'CERVEJINHA'], q: ['SERÁ QUE', 'TEM ÁGUA?'] },
+  { at: B.slam + 0.25, end: B.breath, shot: L0(8) + 1.2, pill: 'SEM ÁGUA · PARTE 2', title: ['A DESCARGA', 'NÃO FUNCIONOU'], q: ['ELE ABRE', 'A PORTA?'] },
+  { at: B.breath, end: B.end, shot: B.hisFace + 0.6, pill: 'SEM ÁGUA · PARTE 3 · FINAL', title: ['A FILA DO', 'BANHEIRO'] },
+];
+window.PARTS = PARTS.map(p => ({ at: p.at, end: p.end }));
+function endCard(k) { const P = PARTS[k]; window.seek(P.end - 0.05); c.save(); c.fillStyle = 'rgba(6,7,10,0.72)'; c.fillRect(0, 0, 1080, 1920);
+  P.q.forEach((s, i) => txt(s, 540, 760 + i * 130, '700 130px Oswald', i ? '#ffcc4d' : '#ffffff', { stroke: 14 }));
+  c.fillStyle = '#d93b30'; c.beginPath(); c.roundRect(190, 1080, 700, 130, 65); c.fill(); txt(`PARTE ${k + 2} NO PERFIL →`, 540, 1146, '700 64px Oswald', '#fff');
+  txt('COMENTE O QUE VOCÊ FARIA 👇', 540, 1300, '700 50px Oswald', '#ffffff', { stroke: 8 }); c.restore(); }
 function cover() {
+  const k = Number(MODE.slice(5) || 1) - 1; const P = PARTS[k]; const tt = P.shot; let i = 0; while (i + 1 < SH.length && tt >= SH[i + 1][0]) i++; SH[i][1](tt, tt - SH[i][0]);
+  if (k === 0) { faceCam(hero, 0.8, 0.05, 0.05, 40, [0, -0.17, 0]); ze.root.visible = false; }
+  if (k === 1) faceCam(hero, 0.75, 0.05, 0.05, 40, [0, -0.2, 0]);
+  if (k === 2) faceCam(hero, 0.72, 0.0, 0.05, 40, [0, -0.17, 0]);
+  { const cp = stage.camera.position; Wd.wallN.visible = cp.z < -9.0; Wd.wallS.visible = cp.z > -11.0; Wd.wallW.visible = cp.x > 1.0; }
+  stage.draw(tt, { vignette: 0.45, bloomStrength: 0.35 });
+  c.save(); c.font = '700 44px Oswald'; const wd = c.measureText(P.pill).width + 70; c.fillStyle = '#d93b30'; c.beginPath(); c.roundRect(540 - wd / 2, 1180, wd, 80, 40); c.fill(); txt(P.pill, 540, 1222, '700 44px Oswald', '#fff'); c.restore();
+  for (const [s, y, col] of [[P.title[0], 1380, '#ffffff'], [P.title[1], 1520, '#ffcc4d']]) { let fs = 150; c.font = `700 ${fs}px Oswald`; while (c.measureText(s).width > 960 && fs > 60) { fs -= 6; c.font = `700 ${fs}px Oswald`; } txt(s, 540, y, `700 ${fs}px Oswald`, col, { stroke: 18 }); }
+}
+function coverFull() {
   const tt = B.reply + 1.0; SH.find(s => s[0] <= tt && true); let i = 0; while (i + 1 < SH.length && tt >= SH[i + 1][0]) i++; SH[i][1](tt, tt - SH[i][0]);
   faceCam(hero, 0.8, 0.05, 0.05, 40, [0, -0.17, 0]); ze.root.visible = false; stage.draw(tt, { vignette: 0.45, bloomStrength: 0.5 });
   c.save(); c.font = '700 44px Oswald'; const s = 'UM CURTA DE COMÉDIA'; const wd = c.measureText(s).width + 70; c.fillStyle = '#d93b30'; c.beginPath(); c.roundRect(540 - wd / 2, 1180, wd, 80, 40); c.fill(); txt(s, 540, 1222, '700 44px Oswald', '#fff'); c.restore();
