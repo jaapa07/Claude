@@ -213,6 +213,17 @@ export class Stickman {
         c.fillStyle = '#121014'; c.beginPath(); c.arc(head[0], head[1] - 4, BONES.head + 6, Math.PI, 0); c.fill();
         c.fillRect(head[0] - BONES.head - 6, head[1] - 4, 18, BONES.head + 10); c.fillRect(head[0] + BONES.head - 12, head[1] - 4, 18, BONES.head + 10);
         c.fillRect(head[0] - BONES.head + 4, head[1] - BONES.head - 2, (BONES.head - 4) * 2, 26); }
+      else if (o.mark.type === 'guy') {                                   // a casual guy: shirt, hair (short or curly), optional cap, glasses, sneakers, ankle socks
+        const m = o.mark; stroke([hip, neck], 34, m.color);
+        if (m.shoes) for (const P of [LL, LR]) { c.fillStyle = m.shoes; c.beginPath(); c.ellipse(P[1][0] + (f || 0) * 10, P[1][1] - 4, 26, 16, 0, 0, 7); c.fill(); }
+        if (m.socks) [[LL, 'L'], [LR, 'R']].forEach(([P, sd]) => { if ((m.bare || '').includes(sd)) return; const k = P[0], ft = P[1], dx = k[0] - ft[0], dy = k[1] - ft[1]; const top = [ft[0] + dx * 0.24, ft[1] + dy * 0.24];
+          stroke([[ft[0] + dx * 0.04, ft[1] + dy * 0.04], top], 30, m.socks); stroke([[ft[0] + dx * 0.2, ft[1] + dy * 0.2], top], 30, m.stripe || '#c8372d'); });
+        if (m.hair && !m.cap) { c.fillStyle = m.hair; if (m.curly) { for (const [dx, dy, r] of [[-40, -38, 26], [0, -52, 28], [40, -38, 26], [-52, -6, 20], [52, -6, 20]]) { c.beginPath(); c.arc(head[0] + dx, head[1] + dy, r, 0, 7); c.fill(); } }
+          else { c.beginPath(); c.arc(head[0], head[1] - 6, BONES.head + 5, Math.PI * 1.02, Math.PI * 1.98); c.fill(); c.beginPath(); c.arc(head[0] + (f || 0) * -30 + 20, head[1] - BONES.head + 4, 16, 0, 7); c.fill(); } }
+        if (m.cap) { c.fillStyle = m.cap; c.beginPath(); c.arc(head[0], head[1] - 6, BONES.head + 4, Math.PI, 0); c.fill(); c.fillRect(head[0] + (f >= 0 ? -BONES.head - 30 : 0), head[1] - 12, BONES.head + 30, 14); }
+        if (m.beard) { c.strokeStyle = m.beard; c.lineWidth = 12; c.lineCap = 'round'; c.beginPath(); c.arc(head[0] + (f || 0) * 10, head[1] + 4, BONES.head - 8, Math.PI * 0.2, Math.PI * 0.8); c.stroke(); }
+        if (m.glasses) { c.strokeStyle = '#111'; c.lineWidth = 7; const ex = head[0] + (f === 0 ? 0 : f * 18), ey = head[1] - 6;
+          c.beginPath(); if (f === 0) { c.arc(ex - 18, ey, 17, 0, 7); c.moveTo(ex + 35, ey); c.arc(ex + 18, ey, 17, 0, 7); c.moveTo(ex - 2, ey); c.lineTo(ex + 2, ey); } else c.arc(ex + f * 12, ey, 18, 0, 7); c.stroke(); } }
       else if (o.mark.type === 'band') { stroke([[head[0] - BONES.head, head[1] - 18], [head[0] + BONES.head, head[1] - 18]], 16, o.mark.color); }
       else { stroke([hip, neck], 24, o.mark.color); }
     }

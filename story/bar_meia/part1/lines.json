@@ -1,0 +1,180 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.1,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lines": [
+  {
+   "text": "Imagine que o seu nome é Reny e é quarta no Bar da Univel.",
+   "key": {
+    "Reny": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Mesa de plástico. Cerveja trincando.",
+   "key": {
+    "trincando": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "O Dudu faz piada de tudo. O Léo não bebe. Ele dirige.",
+   "key": {
+    "dirige": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Brinde. Risada. Mais um brinde.",
+   "key": {
+    "brinde": "green"
+   },
+   "pause": 0.37
+  },
+  {
+   "text": "O Dudu imita o garçom. O Léo ri de refrigerante na mão.",
+   "key": {
+    "refrigerante": "yellow"
+   },
+   "pause": 0.37
+  },
+  {
+   "text": "Aí a sua barriga ronca.",
+   "key": {
+    "ronca": "red"
+   },
+   "pause": 0.27
+  },
+  {
+   "text": "O sorriso some do seu rosto.",
+   "key": {
+    "some": "red"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Rapaziada... preciso ir no banheiro. Agora.",
+   "key": {
+    "Agora": "red"
+   },
+   "pause": 0.32,
+   "say": "Rapaziada. Preciso ir no banheiro. Agora.",
+   "voice": "pm_alex",
+   "speed": 1.0
+  },
+  {
+   "text": "Vai lá, guerreiro!",
+   "key": {
+    "guerreiro": "yellow"
+   },
+   "pause": 0.42,
+   "voice": "pm_santa",
+   "speed": 1.05
+  },
+  {
+   "text": "Banheiro dos fundos. Você entra. Vai trancar...",
+   "key": {
+    "trancar": "yellow"
+   },
+   "pause": 0.22,
+   "say": "Banheiro dos fundos. Você entra. Vai trancar."
+  },
+  {
+   "text": "E não tem tranca. Só dois furos.",
+   "key": {
+    "tranca": "red"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Você fecha a porta. Ela volta. Devagar.",
+   "key": {
+    "Devagar": "yellow"
+   },
+   "pause": 0.62
+  },
+  {
+   "text": "Sem tranca... vai ter que ser no modo expresso.",
+   "key": {
+    "expresso": "yellow"
+   },
+   "pause": 0.42,
+   "say": "Sem tranca. Vai ter que ser no modo expresso.",
+   "voice": "pm_alex",
+   "speed": 1.0
+  },
+  {
+   "text": "Uma mão segura a porta. A outra segura a fé.",
+   "key": {
+    "fé": "green"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Lá fora, uma fila começa a crescer.",
+   "key": {
+    "fila": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Um. Dois. Três.",
+   "key": {
+    "Três": "red"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Três pessoas na fila. Você ouve cada respiração.",
+   "key": {
+    "respiração": "red"
+   },
+   "pause": 0.37
+  },
+  {
+   "text": "Vai demorar?",
+   "key": {},
+   "pause": 0.32,
+   "voice": "pf_dora",
+   "speed": 1.0
+  },
+  {
+   "text": "Tô finalizando!",
+   "key": {
+    "finalizando": "yellow"
+   },
+   "pause": 0.42,
+   "speed": 1.1,
+   "voice": "pm_alex"
+  },
+  {
+   "text": "Você termina. Alívio.",
+   "key": {
+    "Alívio": "green"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Aí você olha pro lado.",
+   "key": {
+    "lado": "yellow"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "O suporte de papel.",
+   "key": {
+    "papel": "yellow"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Vazio.",
+   "key": {
+    "Vazio": "red"
+   },
+   "pause": 0.52
+  }
+ ]
+}

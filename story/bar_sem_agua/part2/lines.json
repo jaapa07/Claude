@@ -1,0 +1,168 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.1,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lines": [
+  {
+   "text": "Imagine que você puxa a descarga de novo. Com força.",
+   "key": {
+    "força": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Clic. Clic. Clic.",
+   "key": {},
+   "pause": 0.52
+  },
+  {
+   "text": "Nada. Nem um pingo.",
+   "key": {
+    "pingo": "red"
+   },
+   "pause": 0.52
+  },
+  {
+   "text": "Silêncio absoluto. Só um grilo, em algum lugar.",
+   "key": {
+    "grilo": "yellow"
+   },
+   "pause": 0.52
+  },
+  {
+   "text": "Aí uma luz acende no canto.",
+   "key": {
+    "luz": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Um balde. Azul. Brilhando.",
+   "key": {
+    "balde": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Um coral de anjos começa a cantar.",
+   "key": {
+    "anjos": "green"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Você pega o balde. Abre a torneira.",
+   "key": {
+    "torneira": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "E sai um sopro.",
+   "key": {
+    "sopro": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Seco. Quente. Debochado.",
+   "key": {
+    "Debochado": "red"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "O coral desafina.",
+   "key": {
+    "desafina": "red"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Você fica ali, segurando um balde vazio diante de uma situação cheia.",
+   "key": {
+    "vazio": "yellow",
+    "cheia": "red"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Na parede, um aviso que você não tinha visto.",
+   "key": {
+    "aviso": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Falta água desde terça.",
+   "key": {
+    "terça": "red"
+   },
+   "pause": 0.47
+  },
+  {
+   "text": "Você olha pro vaso. Olha pra porta.",
+   "key": {
+    "porta": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Só existe uma saída.",
+   "key": {
+    "saída": "red"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Você respira fundo. Ajeita a camiseta.",
+   "key": {
+    "camiseta": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Abre a porta como quem não fez nada.",
+   "key": {
+    "nada": "green"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "E dá de cara com uma fila.",
+   "key": {
+    "fila": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Na frente, uma moça. Olhando pra você.",
+   "key": {
+    "moça": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Do lado da porta, a placa: unissex.",
+   "key": {
+    "unissex": "red"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Ela sorri. Educada.",
+   "key": {
+    "Educada": "green"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "E você acena. Ninguém sabe por quê.",
+   "key": {
+    "acena": "yellow"
+   },
+   "pause": 0.42
+  }
+ ]
+}

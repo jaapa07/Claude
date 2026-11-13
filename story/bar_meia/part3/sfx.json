@@ -1,0 +1,149 @@
+{
+ "mixkit": false,
+ "roomtone": false,
+ "bed": [
+  {
+   "at": 0,
+   "level": 0.5
+  },
+  {
+   "at": "Silêncio@4",
+   "level": 0.0
+  },
+  {
+   "at": "rir@5",
+   "level": 0.6
+  },
+  {
+   "at": "trás@8",
+   "level": 1.0
+  },
+  {
+   "at": "Meia-noite@14",
+   "level": 0.4
+  },
+  {
+   "at": "funga@18",
+   "level": 0.8
+  },
+  {
+   "at": "verde@20",
+   "level": 1.1
+  }
+ ],
+ "music": {
+  "level": -15
+ },
+ "sfx": [
+  {
+   "at": "demora@1",
+   "type": "glass",
+   "vol": 0.3
+  },
+  {
+   "at": "cochicha@2",
+   "type": "hiss",
+   "vol": 0.2
+  },
+  {
+   "at": "meia@3",
+   "type": "sting",
+   "vol": 0.4
+  },
+  {
+   "at": "rir@5",
+   "type": "file:../../meia/vo_extra/laugh_dudu.wav",
+   "vol": 0.9
+  },
+  {
+   "at": "rir@5+0.2",
+   "type": "file:../../meia/vo_extra/laugh_leo.wav",
+   "vol": 0.8
+  },
+  {
+   "at": "Mentira@6",
+   "type": "file:../../meia/vo_extra/laugh_dudu2.wav",
+   "vol": 0.4
+  },
+  {
+   "at": "pontinha@7",
+   "type": "sting",
+   "vol": 0.4
+  },
+  {
+   "at": "trás@8",
+   "type": "slam",
+   "vol": 0.8
+  },
+  {
+   "at": "trás@8+0.1",
+   "type": "thud",
+   "vol": 0.7
+  },
+  {
+   "at": "guardou@9",
+   "type": "hit",
+   "vol": 0.6
+  },
+  {
+   "at": "foto@11",
+   "type": "click",
+   "vol": 1.0
+  },
+  {
+   "at": "lugar@12",
+   "type": "floorcreak",
+   "vol": 0.6
+  },
+  {
+   "at": "ré@13",
+   "type": "floorcreak",
+   "vol": 0.5
+  },
+  {
+   "at": "carona@14",
+   "type": "engine",
+   "vol": 0.7
+  },
+  {
+   "at": "olfato@15",
+   "type": "sting",
+   "vol": 0.4
+  },
+  {
+   "at": "batalha@17",
+   "type": "hit",
+   "vol": 0.4
+  },
+  {
+   "at": "funga@18",
+   "type": "hiss",
+   "vol": 0.6
+  },
+  {
+   "at": "Duas@19",
+   "type": "hiss",
+   "vol": 0.7
+  },
+  {
+   "at": "Duas@19+0.3",
+   "type": "hiss",
+   "vol": 0.7
+  },
+  {
+   "at": "verde@20",
+   "type": "rumble",
+   "vol": 0.7
+  },
+  {
+   "at": "meia@21",
+   "type": "hit",
+   "vol": 0.7
+  },
+  {
+   "at": 56.5,
+   "type": "hit",
+   "vol": 0.5
+  }
+ ]
+}

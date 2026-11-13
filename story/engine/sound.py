@@ -80,6 +80,9 @@ def mixkit(kind):
     return x
 FALLBACK = {"slam": "thud", "floorcreak": "creak", "lock": "click", "boom": "hit", "meow": "hiss", "catangry": "hiss", "swell": "rumble"}
 def make(kind):
+    if kind.startswith("file:"):                                  # a wav made elsewhere (a Kokoro laugh, a sigh), path relative to the part folder
+        raw = subprocess.run([FF, "-loglevel", "error", "-i", os.path.join(part, kind[5:]), "-ac", "1", "-ar", str(SR), "-f", "s16le", "-"], capture_output=True, check=True).stdout
+        return np.frombuffer(raw, np.int16).astype(np.float64) / 32768
     if kind in MIXKIT and kind != "roomtone":
         x = mixkit(kind)
         if x is not None: return x

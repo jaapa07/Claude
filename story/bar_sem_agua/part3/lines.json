@@ -1,0 +1,162 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.1,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lines": [
+  {
+   "text": "Imagine que você não avisa. Só sai andando.",
+   "key": {
+    "andando": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Rápido. Sem olhar pra trás.",
+   "key": {
+    "trás": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Atrás de você, a porta fecha.",
+   "key": {
+    "fecha": "yellow"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Clic. Ela também tentou.",
+   "key": {
+    "tentou": "red"
+   },
+   "pause": 0.47
+  },
+  {
+   "text": "Você senta na mesa como se nada tivesse acontecido.",
+   "key": {
+    "nada": "green"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Demorou, hein?",
+   "key": {
+    "Demorou": "yellow"
+   },
+   "pause": 0.37,
+   "voice": "pf_dora",
+   "speed": 1.05
+  },
+  {
+   "text": "Você se inclina. E cochicha.",
+   "key": {
+    "cochicha": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Gente, o banheiro tá sem água. E eu tentei dar a descar...",
+   "key": {
+    "água": "yellow"
+   },
+   "pause": 0.22,
+   "say": "Gente. O banheiro tá sem água. E eu tentei dar a descár",
+   "speed": 1.05
+  },
+  {
+   "text": "Eles começam a rir antes de você terminar a palavra.",
+   "key": {
+    "rir": "green"
+   },
+   "pause": 0.37
+  },
+  {
+   "text": "O Beto chora. A Carla bate na mesa. O Zé quase cai da cadeira.",
+   "key": {
+    "chora": "green"
+   },
+   "pause": 0.37
+  },
+  {
+   "text": "Você esconde o rosto nas mãos.",
+   "key": {
+    "mãos": "yellow"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Aí a moça da fila passa pela mesa.",
+   "key": {
+    "moça": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Ela te olha. Sorri. Não fala nada.",
+   "key": {
+    "nada": "yellow"
+   },
+   "pause": 0.37
+  },
+  {
+   "text": "Não precisava.",
+   "key": {
+    "precisava": "red"
+   },
+   "pause": 0.37
+  },
+  {
+   "text": "Ela tava carregando um balde.",
+   "key": {
+    "balde": "red"
+   },
+   "pause": 0.52
+  },
+  {
+   "text": "O garçom chega com a conta.",
+   "key": {
+    "conta": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Essa é por conta da casa, campeão.",
+   "key": {
+    "casa": "green"
+   },
+   "pause": 0.42,
+   "voice": "pm_alex",
+   "pitch": 0.84,
+   "speed": 1.0
+  },
+  {
+   "text": "Você sai andando de perna aberta.",
+   "key": {
+    "aberta": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Bunda assada. Dignidade zero.",
+   "key": {
+    "zero": "red"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Na porta do banheiro, um papel novo: interditado.",
+   "key": {
+    "interditado": "red"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Naquele bar, você deixou uma impressão muito forte.",
+   "key": {
+    "forte": "yellow"
+   },
+   "pause": 0.42
+  }
+ ]
+}

@@ -1,0 +1,150 @@
+{
+ "mixkit": false,
+ "roomtone": false,
+ "bed": [
+  {
+   "at": 0,
+   "level": 0.4
+  },
+  {
+   "at": "ronca@4",
+   "level": 0.8
+  },
+  {
+   "at": "Missão@14",
+   "level": 1.1
+  },
+  {
+   "at": "entra@19",
+   "level": 0.6
+  },
+  {
+   "at": "Alívio@20",
+   "level": 0.2
+  },
+  {
+   "at": "Nada@23",
+   "level": 1.0
+  }
+ ],
+ "music": {
+  "level": -15
+ },
+ "sfx": [
+  {
+   "at": "cervejinha@0",
+   "type": "glass",
+   "vol": 0.6
+  },
+  {
+   "at": "ri@3",
+   "type": "file:../../sem_agua/vo_extra/laugh_beto.wav",
+   "vol": 0.6
+  },
+  {
+   "at": "ri@3+0.3",
+   "type": "file:../../sem_agua/vo_extra/laugh_carla.wav",
+   "vol": 0.5
+  },
+  {
+   "at": "ronca@4",
+   "type": "growl",
+   "vol": 1.0
+  },
+  {
+   "at": "ronca@4+0.4",
+   "type": "growl",
+   "vol": 0.8
+  },
+  {
+   "at": "trovão@6+0.4",
+   "type": "rumble",
+   "vol": 0.6
+  },
+  {
+   "at": "pernas@8",
+   "type": "tick",
+   "vol": 0.8
+  },
+  {
+   "at": "cadeira@9",
+   "type": "tick",
+   "vol": 0.8
+  },
+  {
+   "at": "suar@10",
+   "type": "tick",
+   "vol": 0.8
+  },
+  {
+   "at": "suar@10+0.4",
+   "type": "growl",
+   "vol": 0.6
+  },
+  {
+   "at": "músculo@13",
+   "type": "heartbeat",
+   "vol": 0.9
+  },
+  {
+   "at": "Missão@14",
+   "type": "sting",
+   "vol": 0.6
+  },
+  {
+   "at": "Postura@15",
+   "type": "thud",
+   "vol": 0.3
+  },
+  {
+   "at": "garçom@17",
+   "type": "whoosh",
+   "vol": 0.6
+  },
+  {
+   "at": "lâmpada@18",
+   "type": "click",
+   "vol": 0.5
+  },
+  {
+   "at": "entra@19",
+   "type": "creak",
+   "vol": 0.6
+  },
+  {
+   "at": "Tranca@19",
+   "type": "lock",
+   "vol": 0.8
+  },
+  {
+   "at": "Senta@19",
+   "type": "thud",
+   "vol": 0.4
+  },
+  {
+   "at": "Alívio@20",
+   "type": "file:../../sem_agua/vo_extra/sigh.wav",
+   "vol": 0.7
+  },
+  {
+   "at": "descarga@21",
+   "type": "click",
+   "vol": 0.3
+  },
+  {
+   "at": "Clic@22",
+   "type": "click",
+   "vol": 1.0
+  },
+  {
+   "at": "Nada@23",
+   "type": "hit",
+   "vol": 0.7
+  },
+  {
+   "at": 56.5,
+   "type": "hit",
+   "vol": 0.5
+  }
+ ]
+}

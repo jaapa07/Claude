@@ -1,0 +1,175 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.1,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lines": [
+  {
+   "text": "Imagine que você responde a verdade.",
+   "key": {
+    "verdade": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Depende. Você vai ficar bravo?",
+   "key": {
+    "bravo": "red"
+   },
+   "pause": 0.42,
+   "voice": "pm_alex",
+   "speed": 1.0
+  },
+  {
+   "text": "O Léo abre todas as janelas.",
+   "key": {
+    "janelas": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "A meia, Reny! Se livra da meia!",
+   "key": {
+    "meia": "red"
+   },
+   "pause": 0.42,
+   "voice": "pm_alex",
+   "pitch": 0.84,
+   "speed": 1.2
+  },
+  {
+   "text": "Vento na cara. Lágrima no olho.",
+   "key": {
+    "Lágrima": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Não sabe se é do vento.",
+   "key": {
+    "vento": "yellow"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Uma rua vazia. Você tira a meia do bolso.",
+   "key": {
+    "meia": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Olha pra ela uma última vez.",
+   "key": {
+    "última": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Ela te salvou hoje.",
+   "key": {
+    "salvou": "green"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Você estica o braço pra fora da janela.",
+   "key": {
+    "janela": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "E solta.",
+   "key": {
+    "solta": "red"
+   },
+   "pause": 0.52
+  },
+  {
+   "text": "Em câmera lenta, ela voa pela noite.",
+   "key": {
+    "voa": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Gira. Brilha no poste. Some no escuro.",
+   "key": {
+    "escuro": "yellow"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Uma música emocionante toca. De novo, só na sua cabeça.",
+   "key": {
+    "emocionante": "yellow"
+   },
+   "pause": 0.37
+  },
+  {
+   "text": "Obrigado pelo serviço prestado.",
+   "key": {
+    "prestado": "yellow"
+   },
+   "pause": 0.42,
+   "speed": 0.9,
+   "voice": "pm_alex"
+  },
+  {
+   "text": "Amanhã você paga a lavagem.",
+   "key": {
+    "lavagem": "yellow"
+   },
+   "pause": 0.42,
+   "voice": "pm_alex",
+   "pitch": 0.84,
+   "speed": 1.0
+  },
+  {
+   "text": "E do banco do carona.",
+   "key": {
+    "carona": "red"
+   },
+   "pause": 0.42,
+   "voice": "pm_alex",
+   "pitch": 0.84,
+   "speed": 1.0
+  },
+  {
+   "text": "No dia seguinte, um gari acha uma meia no asfalto.",
+   "key": {
+    "gari": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Ele não toca. Ninguém toca.",
+   "key": {
+    "toca": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Ela tá lá até hoje.",
+   "key": {
+    "hoje": "yellow"
+   },
+   "pause": 0.52
+  },
+  {
+   "text": "Dizem que, nas noites de quarta, ela ainda cheira.",
+   "key": {
+    "cheira": "red"
+   },
+   "pause": 0.37
+  },
+  {
+   "text": "Uma noite. Três amigos. Uma meia a menos.",
+   "key": {
+    "menos": "yellow"
+   },
+   "pause": 0.42
+  }
+ ]
+}

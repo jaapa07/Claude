@@ -1,0 +1,134 @@
+{
+ "mixkit": false,
+ "roomtone": false,
+ "bed": [
+  {
+   "at": 0,
+   "level": 0.7
+  },
+  {
+   "at": "fecha@2",
+   "level": 0.4
+  },
+  {
+   "at": "senta@4",
+   "level": 0.3
+  },
+  {
+   "at": "rir@8",
+   "level": 0.6
+  },
+  {
+   "at": "balde@14",
+   "level": 0.9
+  },
+  {
+   "at": "conta@15",
+   "level": 0.4
+  },
+  {
+   "at": "interditado@19",
+   "level": 0.6
+  }
+ ],
+ "music": {
+  "level": -15
+ },
+ "sfx": [
+  {
+   "at": "andando@0",
+   "type": "floorcreak",
+   "vol": 0.3
+  },
+  {
+   "at": "fecha@2",
+   "type": "slam",
+   "vol": 0.7
+  },
+  {
+   "at": "Clic@3",
+   "type": "click",
+   "vol": 1.0
+  },
+  {
+   "at": "senta@4",
+   "type": "thud",
+   "vol": 0.4
+  },
+  {
+   "at": "cochicha@6",
+   "type": "hiss",
+   "vol": 0.2
+  },
+  {
+   "at": "rir@8",
+   "type": "file:../../sem_agua/vo_extra/laugh_beto.wav",
+   "vol": 0.9
+  },
+  {
+   "at": "rir@8+0.2",
+   "type": "file:../../sem_agua/vo_extra/laugh_carla.wav",
+   "vol": 0.8
+  },
+  {
+   "at": "rir@8+0.4",
+   "type": "file:../../sem_agua/vo_extra/laugh_ze.wav",
+   "vol": 0.7
+  },
+  {
+   "at": "chora@9",
+   "type": "file:../../sem_agua/vo_extra/laugh_beto2.wav",
+   "vol": 0.6
+  },
+  {
+   "at": "mesa@9",
+   "type": "thud",
+   "vol": 0.6
+  },
+  {
+   "at": "cadeira@9",
+   "type": "thud",
+   "vol": 0.7
+  },
+  {
+   "at": "mãos@10",
+   "type": "file:../../sem_agua/vo_extra/laugh_carla.wav",
+   "vol": 0.4
+  },
+  {
+   "at": "balde@14",
+   "type": "sting",
+   "vol": 0.6
+  },
+  {
+   "at": "conta@15",
+   "type": "click",
+   "vol": 0.4
+  },
+  {
+   "at": "casa@16",
+   "type": "glass",
+   "vol": 0.4
+  },
+  {
+   "at": "aberta@17",
+   "type": "whoosh",
+   "vol": 0.3
+  },
+  {
+   "at": "interditado@19",
+   "type": "hit",
+   "vol": 0.6
+  },
+  {
+   "at": "forte@20",
+   "type": "sting",
+   "vol": 0.5
+  },
+  {
+   "at": 56.4,
+   "type": "hit",
+   "vol": 0.5
+  }
+ ]
+}

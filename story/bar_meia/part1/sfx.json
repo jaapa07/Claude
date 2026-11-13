@@ -1,0 +1,145 @@
+{
+ "mixkit": false,
+ "roomtone": false,
+ "bed": [
+  {
+   "at": 0,
+   "level": 0.4
+  },
+  {
+   "at": "ronca@5",
+   "level": 0.8
+  },
+  {
+   "at": "tranca@10",
+   "level": 1.0
+  },
+  {
+   "at": "fila@14",
+   "level": 1.1
+  },
+  {
+   "at": "Alívio@19",
+   "level": 0.2
+  },
+  {
+   "at": "Vazio@22",
+   "level": 1.1
+  }
+ ],
+ "music": {
+  "level": -15
+ },
+ "sfx": [
+  {
+   "at": "trincando@1",
+   "type": "glass",
+   "vol": 0.5
+  },
+  {
+   "at": "brinde@3",
+   "type": "glass",
+   "vol": 0.7
+  },
+  {
+   "at": "Risada@3",
+   "type": "file:../../meia/vo_extra/laugh_dudu2.wav",
+   "vol": 0.6
+  },
+  {
+   "at": "Léo@4",
+   "type": "file:../../meia/vo_extra/laugh_leo2.wav",
+   "vol": 0.5
+  },
+  {
+   "at": "ronca@5",
+   "type": "growl",
+   "vol": 1.0
+  },
+  {
+   "at": "ronca@5+0.4",
+   "type": "growl",
+   "vol": 0.8
+  },
+  {
+   "at": "some@6",
+   "type": "sting",
+   "vol": 0.4
+  },
+  {
+   "at": "Agora@7",
+   "type": "heartbeat",
+   "vol": 0.7
+  },
+  {
+   "at": "guerreiro@8",
+   "type": "glass",
+   "vol": 0.4
+  },
+  {
+   "at": "entra@9",
+   "type": "creak",
+   "vol": 0.5
+  },
+  {
+   "at": "tranca@10",
+   "type": "hit",
+   "vol": 0.6
+  },
+  {
+   "at": "Devagar@11",
+   "type": "creak",
+   "vol": 0.9
+  },
+  {
+   "at": "fé@13",
+   "type": "heartbeat",
+   "vol": 0.5
+  },
+  {
+   "at": "Um@15",
+   "type": "floorcreak",
+   "vol": 0.4
+  },
+  {
+   "at": "Dois@15",
+   "type": "floorcreak",
+   "vol": 0.4
+  },
+  {
+   "at": "Três@15",
+   "type": "floorcreak",
+   "vol": 0.4
+  },
+  {
+   "at": "respiração@16",
+   "type": "hiss",
+   "vol": 0.3
+  },
+  {
+   "at": "demorar@17-0.6",
+   "type": "knock",
+   "vol": 0.9
+  },
+  {
+   "at": "Alívio@19",
+   "type": "file:../../meia/vo_extra/sigh.wav",
+   "vol": 0.7
+  },
+  {
+   "at": "papel@21",
+   "type": "sting",
+   "vol": 0.4
+  },
+  {
+   "at": "Vazio@22",
+   "type": "hit",
+   "vol": 0.8
+  },
+  {
+   "at": 56.5,
+   "type": "hit",
+   "vol": 0.5
+  }
+ ]
+}

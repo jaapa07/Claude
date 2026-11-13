@@ -1,0 +1,133 @@
+{
+ "mixkit": false,
+ "roomtone": false,
+ "bed": [
+  {
+   "at": 0,
+   "level": 0.8
+  },
+  {
+   "at": "janelas@2",
+   "level": 1.1
+  },
+  {
+   "at": "vazia@6",
+   "level": 0.5
+  },
+  {
+   "at": "solta@10",
+   "level": 0.3
+  },
+  {
+   "at": "emocionante@13",
+   "level": 0.9
+  },
+  {
+   "at": "seguinte@17",
+   "level": 0.3
+  },
+  {
+   "at": "cheira@20",
+   "level": 0.7
+  },
+  {
+   "at": "menos@21",
+   "level": 0.6
+  }
+ ],
+ "music": {
+  "level": -15
+ },
+ "sfx": [
+  {
+   "at": "bravo@1",
+   "type": "heartbeat",
+   "vol": 0.6
+  },
+  {
+   "at": "janelas@2",
+   "type": "whoosh",
+   "vol": 0.9
+  },
+  {
+   "at": "janelas@2+0.4",
+   "type": "whoosh",
+   "vol": 0.9
+  },
+  {
+   "at": "meia@3",
+   "type": "hit",
+   "vol": 0.6
+  },
+  {
+   "at": "Vento@4",
+   "type": "whoosh",
+   "vol": 0.7
+  },
+  {
+   "at": "bolso@6",
+   "type": "hiss",
+   "vol": 0.2
+  },
+  {
+   "at": "salvou@8",
+   "type": "glass",
+   "vol": 0.4
+  },
+  {
+   "at": "janela@9",
+   "type": "whoosh",
+   "vol": 0.4
+  },
+  {
+   "at": "solta@10",
+   "type": "whoosh",
+   "vol": 1.0
+  },
+  {
+   "at": "voa@11",
+   "type": "swell",
+   "vol": 0.6
+  },
+  {
+   "at": "poste@12",
+   "type": "glass",
+   "vol": 0.5
+  },
+  {
+   "at": "emocionante@13",
+   "type": "sting",
+   "vol": 0.5
+  },
+  {
+   "at": "lavagem@15",
+   "type": "click",
+   "vol": 0.3
+  },
+  {
+   "at": "gari@17",
+   "type": "floorcreak",
+   "vol": 0.3
+  },
+  {
+   "at": "toca@18",
+   "type": "sting",
+   "vol": 0.4
+  },
+  {
+   "at": "cheira@20",
+   "type": "rumble",
+   "vol": 0.6
+  },
+  {
+   "at": "menos@21",
+   "type": "glass",
+   "vol": 0.6
+  },
+  {
+   "at": 56.4,
+   "type": "hit",
+   "vol": 0.5
+  }
+ ]
+}

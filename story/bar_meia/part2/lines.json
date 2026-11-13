@@ -1,0 +1,177 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.1,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lines": [
+  {
+   "text": "Imagine que você procura nos bolsos.",
+   "key": {
+    "bolsos": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Bolso da frente: nada.",
+   "key": {
+    "nada": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Bolso de trás: nada.",
+   "key": {
+    "nada": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Só o celular. Doze por cento de bateria.",
+   "key": {
+    "Doze": "red"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Você faz tanta coisa... mas agora não ajuda.",
+   "key": {
+    "ajuda": "red"
+   },
+   "pause": 0.42,
+   "say": "Você faz tanta coisa. Mas agora não ajuda.",
+   "voice": "pm_alex",
+   "speed": 1.0
+  },
+  {
+   "text": "Toc toc toc. Mais forte.",
+   "key": {
+    "forte": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Você pensa em gritar: alguém tem papel? Mas você tem orgulho.",
+   "key": {
+    "orgulho": "yellow"
+   },
+   "pause": 0.37
+  },
+  {
+   "text": "Moço, a fila tá grande!",
+   "key": {
+    "grande": "red"
+   },
+   "pause": 0.42,
+   "voice": "pf_dora",
+   "speed": 1.0
+  },
+  {
+   "text": "Você olha pros seus pés.",
+   "key": {
+    "pés": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Tênis. E uma meia branca. Listra vermelha.",
+   "key": {
+    "meia": "yellow",
+    "vermelha": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Presente da sua mãe.",
+   "key": {
+    "mãe": "red"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Fiel há três anos.",
+   "key": {
+    "Fiel": "green"
+   },
+   "pause": 0.37
+  },
+  {
+   "text": "Uma música dramática começa a tocar. Só na sua cabeça.",
+   "key": {
+    "dramática": "yellow"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Me perdoa, companheira.",
+   "key": {
+    "companheira": "yellow"
+   },
+   "pause": 0.52,
+   "speed": 0.85,
+   "voice": "pm_alex"
+  },
+  {
+   "text": "Você tira o tênis. Tira a meia.",
+   "key": {
+    "meia": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "O resto fica entre você e Deus.",
+   "key": {
+    "Deus": "green"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Agora: o que fazer com ela?",
+   "key": {
+    "ela": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Lixo? Não tem. Janela? Não tem.",
+   "key": {
+    "tem": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Você enrola a meia. Com carinho.",
+   "key": {
+    "carinho": "green"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "E guarda no bolso.",
+   "key": {
+    "bolso": "red"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Respira fundo. Ajeita a camiseta. Abre a porta.",
+   "key": {
+    "porta": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "A fila inteira te olha.",
+   "key": {
+    "fila": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Você passa sorrindo. Com uma meia a menos.",
+   "key": {
+    "menos": "yellow"
+   },
+   "pause": 0.42
+  }
+ ]
+}

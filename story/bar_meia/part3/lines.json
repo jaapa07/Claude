@@ -1,0 +1,178 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.1,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lines": [
+  {
+   "text": "Imagine que você conta tudo pros seus amigos.",
+   "key": {
+    "tudo": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Que demora foi essa?",
+   "key": {
+    "demora": "yellow"
+   },
+   "pause": 0.32,
+   "voice": "pm_santa",
+   "speed": 1.05
+  },
+  {
+   "text": "Você olha pros lados. E cochicha.",
+   "key": {
+    "cochicha": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Não tinha papel. Tive que usar a meia.",
+   "key": {
+    "papel": "red",
+    "meia": "yellow"
+   },
+   "pause": 0.42,
+   "speed": 0.95,
+   "voice": "pm_alex"
+  },
+  {
+   "text": "Silêncio. Três segundos.",
+   "key": {
+    "Silêncio": "yellow"
+   },
+   "pause": 0.72
+  },
+  {
+   "text": "Aí os dois explodem de rir.",
+   "key": {
+    "rir": "green"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Mentira! Você não fez isso!",
+   "key": {
+    "Mentira": "red"
+   },
+   "pause": 0.32,
+   "voice": "pm_santa",
+   "speed": 1.05
+  },
+  {
+   "text": "Você puxa a pontinha da meia do bolso.",
+   "key": {
+    "pontinha": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Os dois arrastam a cadeira pra trás. Ao mesmo tempo.",
+   "key": {
+    "trás": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Não acredito que você guardou!",
+   "key": {
+    "guardou": "red"
+   },
+   "pause": 0.32,
+   "voice": "pm_alex",
+   "pitch": 0.84,
+   "speed": 1.15
+  },
+  {
+   "text": "Eu entrei em pânico!",
+   "key": {
+    "pânico": "red"
+   },
+   "pause": 0.42,
+   "speed": 1.1,
+   "voice": "pm_alex"
+  },
+  {
+   "text": "O Dudu tira uma foto. Pra posteridade.",
+   "key": {
+    "foto": "yellow"
+   },
+   "pause": 0.37
+  },
+  {
+   "text": "A mesa do lado muda de lugar.",
+   "key": {
+    "lugar": "red"
+   },
+   "pause": 0.37
+  },
+  {
+   "text": "O garçom traz a conta. E se afasta de ré.",
+   "key": {
+    "ré": "yellow"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Meia-noite. O Léo te dá carona.",
+   "key": {
+    "carona": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Ele não bebeu. Ele tá sóbrio. Ele tem olfato.",
+   "key": {
+    "olfato": "red"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Carro em silêncio. Rádio desligado.",
+   "key": {
+    "silêncio": "yellow"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "O cheirinho de pinheiro do retrovisor perde a batalha.",
+   "key": {
+    "batalha": "red"
+   },
+   "pause": 0.37
+  },
+  {
+   "text": "Aí o Léo funga. Uma vez.",
+   "key": {
+    "funga": "yellow"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Duas vezes.",
+   "key": {
+    "Duas": "red"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Uma nuvem verde sai do seu bolso.",
+   "key": {
+    "verde": "green"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Reny... você ainda tá com a meia?",
+   "key": {
+    "meia": "red"
+   },
+   "pause": 0.42,
+   "say": "Reny. Você ainda tá com a meia?",
+   "voice": "pm_alex",
+   "pitch": 0.84,
+   "speed": 1.0
+  }
+ ]
+}

@@ -1,0 +1,145 @@
+{
+ "mixkit": false,
+ "roomtone": false,
+ "bed": [
+  {
+   "at": 0,
+   "level": 0.6
+  },
+  {
+   "at": "Silêncio@3",
+   "level": 0.0
+  },
+  {
+   "at": "luz@4",
+   "level": 0.9
+  },
+  {
+   "at": "desafina@10",
+   "level": 0.5
+  },
+  {
+   "at": "fila@18",
+   "level": 1.1
+  },
+  {
+   "at": "acena@22",
+   "level": 0.6
+  }
+ ],
+ "music": {
+  "level": -15
+ },
+ "sfx": [
+  {
+   "at": "força@0",
+   "type": "click",
+   "vol": 1.0
+  },
+  {
+   "at": "Clic@1",
+   "type": "click",
+   "vol": 1.0
+  },
+  {
+   "at": "Clic@1+0.55",
+   "type": "click",
+   "vol": 1.0
+  },
+  {
+   "at": "Clic@1+1.1",
+   "type": "click",
+   "vol": 1.0
+  },
+  {
+   "at": "pingo@2",
+   "type": "drip",
+   "vol": 0.5
+  },
+  {
+   "at": "grilo@3",
+   "type": "tick",
+   "vol": 0.4
+  },
+  {
+   "at": "grilo@3+0.15",
+   "type": "tick",
+   "vol": 0.4
+  },
+  {
+   "at": "grilo@3+0.8",
+   "type": "tick",
+   "vol": 0.4
+  },
+  {
+   "at": "grilo@3+0.95",
+   "type": "tick",
+   "vol": 0.4
+  },
+  {
+   "at": "luz@4",
+   "type": "glass",
+   "vol": 0.5
+  },
+  {
+   "at": "anjos@6",
+   "type": "sting",
+   "vol": 0.6
+  },
+  {
+   "at": "torneira@7",
+   "type": "creak",
+   "vol": 0.4
+  },
+  {
+   "at": "sopro@8",
+   "type": "hiss",
+   "vol": 1.0
+  },
+  {
+   "at": "desafina@10",
+   "type": "sting",
+   "vol": 0.4
+  },
+  {
+   "at": "cheia@11",
+   "type": "thud",
+   "vol": 0.4
+  },
+  {
+   "at": "terça@13",
+   "type": "hit",
+   "vol": 0.6
+  },
+  {
+   "at": "saída@15",
+   "type": "heartbeat",
+   "vol": 0.7
+  },
+  {
+   "at": "fundo@16",
+   "type": "hiss",
+   "vol": 0.3
+  },
+  {
+   "at": "porta@17",
+   "type": "creak",
+   "vol": 0.7
+  },
+  {
+   "at": "fila@18",
+   "type": "hit",
+   "vol": 0.6
+  },
+  {
+   "at": "unissex@20",
+   "type": "sting",
+   "vol": 0.5
+  },
+  {
+   "at": 56.4,
+   "type": "hit",
+   "vol": 0.5
+  }
+ ]
+}

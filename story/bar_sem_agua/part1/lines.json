@@ -1,0 +1,181 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.1,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lines": [
+  {
+   "text": "Imagine que é sexta, 22:10, e era pra ser só uma cervejinha.",
+   "key": {
+    "cervejinha": "yellow"
+   },
+   "pause": 0.32,
+   "say": "Imagine que é sexta, dez e dez da noite, e era pra ser só uma cervejinha."
+  },
+  {
+   "text": "Boteco do Tonho. Você e três amigos.",
+   "key": {
+    "Tonho": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "O Beto conta a mesma piada de sempre.",
+   "key": {
+    "piada": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Todo mundo ri. Você ri mais alto.",
+   "key": {
+    "alto": "green"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Aí a sua barriga ronca.",
+   "key": {
+    "ronca": "red"
+   },
+   "pause": 0.27
+  },
+  {
+   "text": "Mais alto que a risada.",
+   "key": {
+    "risada": "red"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Foi trovão?",
+   "key": {
+    "trovão": "yellow"
+   },
+   "pause": 0.42,
+   "voice": "pm_santa",
+   "speed": 1.0
+  },
+  {
+   "text": "O céu tá limpo. Estrelado.",
+   "key": {
+    "limpo": "yellow"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "22:12. Você cruza as pernas.",
+   "key": {
+    "pernas": "yellow"
+   },
+   "pause": 0.27,
+   "say": "Dez e doze. Você cruza as pernas."
+  },
+  {
+   "text": "22:13. Você se ajeita na cadeira.",
+   "key": {
+    "cadeira": "yellow"
+   },
+   "pause": 0.27,
+   "say": "Dez e treze. Você se ajeita na cadeira."
+  },
+  {
+   "text": "22:14. Você começa a suar.",
+   "key": {
+    "suar": "red"
+   },
+   "pause": 0.32,
+   "say": "Dez e catorze. Você começa a suar."
+  },
+  {
+   "text": "Tá tudo bem?",
+   "key": {},
+   "pause": 0.37,
+   "voice": "pm_santa",
+   "speed": 1.0
+  },
+  {
+   "text": "Você sorri, travado: tô só prestando atenção.",
+   "key": {
+    "atenção": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Em um único músculo.",
+   "key": {
+    "músculo": "red"
+   },
+   "pause": 0.47
+  },
+  {
+   "text": "Missão: banheiro. Doze metros.",
+   "key": {
+    "banheiro": "red",
+    "Doze": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Passinho curto. Joelho colado. Postura de estátua.",
+   "key": {
+    "estátua": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Cada passo, uma oração.",
+   "key": {
+    "oração": "yellow"
+   },
+   "pause": 0.37
+  },
+  {
+   "text": "O garçom passa. Você desvia sem dobrar o corpo.",
+   "key": {
+    "desvia": "green"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Corredor dos fundos. Uma lâmpada piscando.",
+   "key": {
+    "piscando": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Você entra. Tranca. Senta.",
+   "key": {
+    "Senta": "green"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Alívio. Trinta segundos de paz.",
+   "key": {
+    "paz": "green"
+   },
+   "pause": 0.47
+  },
+  {
+   "text": "Aí você puxa a descarga.",
+   "key": {
+    "descarga": "yellow"
+   },
+   "pause": 0.42
+  },
+  {
+   "text": "Clic.",
+   "key": {},
+   "pause": 0.62
+  },
+  {
+   "text": "Nada.",
+   "key": {
+    "Nada": "red"
+   },
+   "pause": 0.42
+  }
+ ]
+}
