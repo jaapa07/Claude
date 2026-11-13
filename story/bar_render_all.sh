@@ -5,7 +5,7 @@ for d in bar_sem_agua/part1 bar_sem_agua/part2 bar_sem_agua/part3 bar_meia/part1
   n=$(basename $d)
   [ -f $d/$n.mp4 ] && { echo "$d already done"; continue; }
   node engine/render.js "$d/film.html#cover" $d/cover > /dev/null && cp $d/cover/at_0.00.jpg $d/cover.jpg
-  rm -rf $d/frames; node engine/render.js $d/film.html $d/frames > $d/render.log 2>&1 || { echo "$d render failed"; tail -3 $d/render.log; continue; }
+  rm -rf $d/frames; node engine/render.js $d/film.html $d/frames --force > $d/render.log 2>&1 || { echo "$d render failed"; tail -3 $d/render.log; continue; }
   python3 engine/encode.py $d | grep -E "mp4|pacing"
   ffmpeg -v error -y -loop 1 -framerate 30 -t 0.5 -i $d/cover.jpg -f lavfi -t 0.5 -i anullsrc=r=48000:cl=stereo -i $d/$n.mp4 \
     -filter_complex "[0:v]format=yuv420p,setsar=1[c];[2:v]setsar=1[m];[2:a]aresample=48000,aformat=channel_layouts=stereo[ma];[c][1:a][m][ma]concat=n=2:v=1:a=1[v][a]" \
