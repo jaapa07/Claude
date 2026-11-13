@@ -105,7 +105,7 @@ export class Burst {
           vA = step(0.0, age) * step(age, life) * smoothstep(0.0, 0.08, k) * (1.0 - smoothstep(0.55, 1.0, k)) * uGain * (0.6 + 0.4 * sin(age * 9.0 + aSeed.z * 30.0));
           vMix = aSeed.z;
           vec4 mv = viewMatrix * vec4(p, 1.0); gl_Position = projectionMatrix * mv;
-          gl_PointSize = max(1.0, uSize * (0.5 + aSeed.y) * uPx * 2.4 / -mv.z) * step(0.0001, vA);
+          gl_PointSize = min(max(1.0, uSize * (0.5 + aSeed.y) * uPx * 2.4 / -mv.z), uPx * 0.16) * step(0.0001, vA);
         }`, fragmentShader: POINT_FRAG }));
     this.points.frustumCulled = false; this.points.visible = false;
   }

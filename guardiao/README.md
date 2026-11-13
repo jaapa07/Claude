@@ -41,6 +41,7 @@ npm run export                 # filme completo → out/guardiao-das-estrelas.mp
 npm run export -- --split      # filme completo + as cinco sequências (out/seq1.mp4 …)
 npm run export -- --seq 3      # só a sequência 3
 npm run export -- --audio      # refaz só o áudio do MP4 já renderizado
+npm run export -- --resume     # continua um render interrompido
 npm run export -- --gpu        # usa a GPU da máquina (bem mais rápido)
 npm run verify                 # prova de determinismo
 npm run stills -- 5,22.5,61    # stills em out/stills (tempos em segundos)

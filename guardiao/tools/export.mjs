@@ -3,6 +3,7 @@
 //   node tools/export.mjs --seq 2         → só a sequência 2 (18 s) em out/seq2.mp4
 //   node tools/export.mjs --split         → filme completo + as cinco sequências separadas
 //   node tools/export.mjs --audio         → refaz só o áudio do MP4 já renderizado
+//   node tools/export.mjs --resume        → continua um render interrompido (aproveita os quadros já feitos)
 //   opções: --workers 4  --scale 1  --crf 20  --from <frame> --to <frame>  --keep (mantém os JPEG)  --gpu
 // Cada quadro é desenhado a partir de T = quadro/60, sem depender do anterior: vários navegadores renderizam
 // quadros diferentes em paralelo e o resultado é idêntico ao de um só.
@@ -36,12 +37,13 @@ const enc = ['-c:v', 'libx264', '-preset', 'medium', '-crf', crf, '-maxrate', '1
 const run = (args) => { const r = spawnSync('ffmpeg', ['-y', '-loglevel', 'error', ...args], { stdio: 'inherit' }); if (r.status !== 0) process.exit(1); };
 if (arg('audio')) { const tmp = mp4.replace('.mp4', '.tmp.mp4'); run(['-i', mp4, '-i', wav, '-map', '0:v', '-map', '1:a', '-c:v', 'copy', ...aenc, '-shortest', tmp]); fs.renameSync(tmp, mp4); console.log('áudio refeito em', mp4); }
 else {
-  fs.rmSync(dir, { recursive: true, force: true }); fs.mkdirSync(dir, { recursive: true });
+  if (!arg('resume')) fs.rmSync(dir, { recursive: true, force: true }); fs.mkdirSync(dir, { recursive: true });   // --resume aproveita os quadros já feitos
   const t0 = Date.now(); let next = from, done = 0;
   await Promise.all(pages.map(async (page) => {                         // fila compartilhada: cada navegador pega o próximo quadro livre
     for (;;) { const f = next++; if (f >= to) return;
+      const file = path.join(dir, String(f - from).padStart(5, '0') + '.jpg'); if (arg('resume') && fs.existsSync(file) && fs.statSync(file).size > 2000) { done++; continue; }
       await page.evaluate((n) => window.__film.renderFrame(n), f);
-      await page.screenshot({ path: path.join(dir, String(f - from).padStart(5, '0') + '.jpg'), type: 'jpeg', quality: 96 });
+      await page.screenshot({ path: file + '.tmp', type: 'jpeg', quality: 96, timeout: 300000 }); fs.renameSync(file + '.tmp', file);
       if (++done % 60 === 0) process.stdout.write(`\r${done}/${to - from} quadros · ${(done / ((Date.now() - t0) / 1000)).toFixed(2)} fps de render   `);
     }
   }));
