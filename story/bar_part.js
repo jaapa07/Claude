@@ -22,7 +22,7 @@ export async function run(cfg) {
   SH.sort((a, b) => a[0] - b[0]);
   const clock = cfg.clock(ctx), pressure = pressureOf(cfg.pressure(ctx));
   const tEnd = T.voice_end + 0.3;
-  const CHUNKS = chunkCaptions(T); window.CHUNKS = CHUNKS; window.TOTAL = 60;
+  const CHUNKS = chunkCaptions(T); window.CHUNKS = CHUNKS; window.TOTAL = Math.max(70, Math.ceil(T.voice_end + 4.7));
   const COVER = location.hash === '#cover';
   function frame(t) {
     let i = 0; while (i + 1 < SH.length && t >= SH[i + 1][0]) i++;

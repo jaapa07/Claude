@@ -34,6 +34,13 @@
    "pause": 0.32
   },
   {
+   "text": "A Carla ri tanto que derruba o petisco.",
+   "key": {
+    "petisco": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
    "text": "Aí a sua barriga ronca.",
    "key": {
     "ronca": "red"
@@ -62,6 +69,13 @@
     "limpo": "yellow"
    },
    "pause": 0.42
+  },
+  {
+   "text": "O Zé te olha. Desconfiado.",
+   "key": {
+    "Desconfiado": "red"
+   },
+   "pause": 0.32
   },
   {
    "text": "22:12. Você cruza as pernas.",
@@ -109,6 +123,13 @@
    "pause": 0.47
   },
   {
+   "text": "Você levanta devagar. Como quem vai buscar um guardanapo.",
+   "key": {
+    "guardanapo": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
    "text": "Missão: banheiro. Doze metros.",
    "key": {
     "banheiro": "red",
@@ -138,6 +159,13 @@
    "pause": 0.32
   },
   {
+   "text": "Alguém grita o seu nome. Você finge que não ouviu.",
+   "key": {
+    "nome": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
    "text": "Corredor dos fundos. Uma lâmpada piscando.",
    "key": {
     "piscando": "yellow"
@@ -150,6 +178,13 @@
     "Senta": "green"
    },
    "pause": 0.42
+  },
+  {
+   "text": "O bar inteiro some. Só existe você e o vaso.",
+   "key": {
+    "vaso": "yellow"
+   },
+   "pause": 0.32
   },
   {
    "text": "Alívio. Trinta segundos de paz.",

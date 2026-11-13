@@ -14,45 +14,49 @@ import { run } from '../../bar_part.js';
 import { shots } from '../../bar_common_shots.js';
 run({
   which: 'meia', hud: 'BAR DA UNIVEL',
-  clock: ({ L0 }) => [[0, '22:06'], [L0(12), '22:08'], [L0(20), '22:11']],
-  pressure: ({ w, L0 }) => [[0, 70], [w(1, 'nada'), 76], [w(2, 'nada'), 82], [w(3, 'Doze'), 86], [L0(5), 92], [w(7, 'grande'), 96], [w(9, 'meia'), 98], [w(13, 'companheira'), 100], [L0(15), 40], [w(19, 'bolso'), 55], [w(21, 'olha'), 75], [w(22, 'menos'), 30]],
+  clock: ({ L0 }) => [[0, '22:06'], [L0(14), '22:08'], [L0(23), '22:11']],
+  pressure: ({ w, L0 }) => [[0, 70], [w(1, 'nada'), 76], [w(2, 'nada'), 82], [w(3, 'Doze'), 86], [L0(6), 92], [w(8, 'grande'), 96], [w(10, 'meia'), 98], [w(15, 'companheira'), 100], [L0(17), 40], [w(22, 'bolso'), 55], [w(24, 'olha'), 75], [w(26, 'menos'), 30]],
   shots: ctx => {
     const { X, POSE, w, L0, stage, clamp, lerp, ease, THREE } = ctx; const S = shots(ctx); const Wd = X.Wd;
-    const tOff = w(14, 'meia') + 0.2; const at = (t0, f) => ctx.at(t0, (t, u) => { X.you.o.mark.bare = t >= tOff ? 'R' : ''; f(t, u); });
+    const tOff = w(16, 'meia') + 0.2; const at = (t0, f) => ctx.at(t0, (t, u) => { X.you.o.mark.bare = t >= tOff ? 'R' : ''; f(t, u); });
     const feet = (o = {}) => (t, u) => { X.bath(t, { pose: o.pose || POSE.sit }); const p = X.you.mesh.position; const k = ease(clamp(u / (o.dur || 2))); stage.aim([p.x + lerp(o.d0 || 0.9, o.d1 || 0.6, k), 0.3, p.z + lerp(0.7, 0.45, k)], [p.x + 0.35, 0.12, p.z], o.fov || 44); };
     const pocket = { facing: 0, mood: 'scared', legL: [1.0, -1.4], legR: [-1.0, 1.4], armL: [0.15, -0.5], armR: [-0.15, 0.5] };
     at(0, S.bathFace({ pose: POSE.sitScared, d0: 0.9, d1: 0.75 }));
     at(L0(1), S.bathFace({ pose: Object.assign({}, pocket, { headTilt: 0.3 }), d0: 0.95, d1: 0.85 }));
     at(L0(2), S.bathFace({ pose: Object.assign({}, pocket, { facing: 1, armR: [-0.6, -0.5] }), d0: 0.95, d1: 0.85 }));
     at(L0(3), (t, u) => { X.bath(t, { pose: POSE.sitPhone }); const h = X.head(X.you); Wd.phone.visible = true; Wd.phone.position.set(h.x, h.y - 0.12, h.z + 0.25); Wd.phone.rotation.set(-0.3, 0, 0); stage.aim([h.x + 0.04, h.y - 0.02, h.z + 0.55], [h.x, h.y - 0.17, h.z + 0.25], 36); });
-    at(L0(4), (t, u) => { X.bath(t, { pose: POSE.sitPhone }); const h = X.head(X.you); Wd.phone.visible = true; Wd.phone.position.set(h.x + 0.05, h.y - 0.25, h.z + 0.3); Wd.phone.rotation.set(-0.6, 0, 0); stage.aim([h.x + 0.15, h.y + 0.05, Math.min(-9.1, h.z + 1.0)], [h.x, h.y - 0.08, h.z], 46); });
-    at(L0(5), (t, u) => { X.bath(t, { pose: POSE.sitScared, door: 0.03 + 0.03 * Math.max(0, Math.sin(t * 25)) }); X.you.mesh.visible = false; stage.aim([1.3, 1.4, -10.4], [2.8, 1.1, -10.0], 54); });
-    at(L0(6), S.bathFace({ pose: Object.assign({}, POSE.sit, { headTilt: -0.2 }), d0: 0.9, d1: 0.75 }));
-    at(L0(7), (t, u) => { S.doorOut({ door: 0.03, queue: 3 })(t, u); X.put(X.lady, 3.35, 0, -9.55, { facing: -1, armR: [-1.6 - 0.3 * Math.sin(t * 20), 0.2], armL: [0.6, -1.6] }); stage.aim([4.4, 1.5, -10.6], [3.0, 1.35, -9.7], 50); });
-    at(L0(8), S.bathFace({ pose: Object.assign({}, POSE.sit, { headTilt: 0.4 }), d0: 0.9, d1: 0.8 }));
-    at(L0(9), feet({ d0: 1.0, d1: 0.7 }));
-    at(L0(10), feet({ d0: 0.7, d1: 0.5 }));
-    at(L0(11), feet({ d0: 0.55, d1: 0.45 }));
-    at(L0(12), S.bathFace({ pose: POSE.sitScared, d0: 1.0, d1: 0.6, dur: 3.5 }));
-    at(L0(13), S.bathFace({ pose: Object.assign({}, POSE.sit, { headTilt: 0.35 }), d0: 0.7, d1: 0.6 }));
-    at(L0(14), (t, u) => { feet({ d0: 0.85, d1: 0.7, pose: Object.assign({}, POSE.sit, { lean: 0.5, armR: [1.1, -0.2] }) })(t, u); if (t >= tOff) { const p = X.you.mesh.position; Wd.sockBar.visible = true; Wd.sockBar.position.set(p.x + 0.25, 0.6, p.z + 0.12); Wd.sockBar.rotation.set(0.4, 0, 1.2); } });
-    at(L0(15), (t, u) => { X.bath(t, { pose: POSE.sitRelief }); const k = ease(clamp(u / 2)); stage.aim([1.9, lerp(1.6, 1.4, k), -9.3], [1.9, 2.45, -10.0], 52); });
-    at(L0(16), (t, u) => { X.bath(t, { pose: POSE.sitScared }); const h = X.head(X.you); Wd.sockBar.visible = true; Wd.sockBar.position.set(h.x + 0.18, h.y - 0.05, h.z + 0.12); Wd.sockBar.rotation.set(0.2, 0.3, 0.1 * Math.sin(t * 3)); stage.aim([h.x + 0.12, h.y + 0.03, Math.min(-9.1, h.z + 0.85)], [h.x + 0.08, h.y - 0.04, h.z], 46); });
-    at(L0(17), S.bathFace({ pose: (t) => Object.assign({}, POSE.sitScared, { facing: t < w(17, 'Janela') ? -1 : 1 }), d0: 0.85, d1: 0.8 }));
-    at(L0(18), (t, u) => { X.bath(t, { pose: POSE.sit }); const h = X.head(X.you); Wd.sockBall.visible = true; const k = ease(clamp(u / 1.8)); Wd.sockBall.position.set(h.x + 0.15, h.y - 0.35, h.z + 0.15); Wd.sockBall.rotation.y = t * 2; Wd.sockBall.scale.setScalar(lerp(1.4, 1.0, k)); stage.aim([h.x + 0.2, h.y - 0.2, h.z + 0.5], [h.x + 0.15, h.y - 0.35, h.z + 0.15], 40); });
-    at(L0(19), (t, u) => { X.bath(t, { you: false }); X.put(X.you, 2.1, 0, -10.05, POSE.pocket); const p = X.you.mesh.position; const k = ease(clamp(u / 1.4)); Wd.sockBall.visible = k < 0.98; Wd.sockBall.position.set(p.x + 0.12, lerp(0.75, 0.6, k), p.z + 0.05); Wd.sockBall.scale.setScalar(lerp(1.1, 0.6, k)); stage.aim([p.x + 0.5, 0.85, p.z + 0.7], [p.x + 0.08, 0.62, p.z], 42); });
-    at(L0(20), (t, u) => { X.bath(t, { you: false, door: t > w(20, 'porta') - 0.2 ? 1.2 * ease(clamp((t - w(20, 'porta') + 0.2) / 0.5)) : 0 }); X.put(X.you, 2.25, 0, -10.0, POSE.breath(clamp(u / 1.4))); const h = X.head(X.you); stage.aim([h.x - 0.75, h.y + 0.05, h.z - 0.6], [h.x, h.y - 0.05, h.z], 46); });
-    at(L0(21), S.doorOut({ door: 1.2, you: () => [3.0, -10.0], pose: POSE.stand, queue: 3, cam: [3.3, 1.55, -7.2], look: [3.1, 1.25, -9.7], fov: 54 }));
-    at(L0(22), (t, u) => { X.bar(t); X.queue(t, 3); const z = lerp(-9.9, -7.4, clamp(u / 2.5)); X.you.walk(t, { speed: 1.0, facing: 0 }); X.you.mesh.position.set(3.15, 0, z); X.you.mesh.visible = true; stage.aim([3.4, 1.45, -5.6], [3.3, 1.1, -9.0], 46); });
+    at(L0(5), (t, u) => { X.bath(t, { pose: POSE.sitPhone }); const h = X.head(X.you); Wd.phone.visible = true; Wd.phone.position.set(h.x + 0.05, h.y - 0.25, h.z + 0.3); Wd.phone.rotation.set(-0.6, 0, 0); stage.aim([h.x + 0.15, h.y + 0.05, Math.min(-9.1, h.z + 1.0)], [h.x, h.y - 0.08, h.z], 46); });
+    at(L0(6), (t, u) => { X.bath(t, { pose: POSE.sitScared, door: 0.03 + 0.03 * Math.max(0, Math.sin(t * 25)) }); X.you.mesh.visible = false; stage.aim([1.3, 1.4, -10.4], [2.8, 1.1, -10.0], 54); });
+    at(L0(7), S.bathFace({ pose: Object.assign({}, POSE.sit, { headTilt: -0.2 }), d0: 0.9, d1: 0.75 }));
+    at(L0(8), (t, u) => { S.doorOut({ door: 0.03, queue: 3 })(t, u); X.put(X.lady, 3.35, 0, -9.55, { facing: -1, armR: [-1.6 - 0.3 * Math.sin(t * 20), 0.2], armL: [0.6, -1.6] }); stage.aim([4.4, 1.5, -10.6], [3.0, 1.35, -9.7], 50); });
+    at(L0(9), S.bathFace({ pose: Object.assign({}, POSE.sit, { headTilt: 0.4 }), d0: 0.9, d1: 0.8 }));
+    at(L0(10), feet({ d0: 1.0, d1: 0.7 }));
+    at(L0(11), feet({ d0: 0.7, d1: 0.5 }));
+    at(L0(12), feet({ d0: 0.55, d1: 0.45 }));
+    at(L0(14), S.bathFace({ pose: POSE.sitScared, d0: 1.0, d1: 0.6, dur: 3.5 }));
+    at(L0(15), S.bathFace({ pose: Object.assign({}, POSE.sit, { headTilt: 0.35 }), d0: 0.7, d1: 0.6 }));
+    at(L0(16), (t, u) => { feet({ d0: 0.85, d1: 0.7, pose: Object.assign({}, POSE.sit, { lean: 0.5, armR: [1.1, -0.2] }) })(t, u); if (t >= tOff) { const p = X.you.mesh.position; Wd.sockBar.visible = true; Wd.sockBar.position.set(p.x + 0.25, 0.6, p.z + 0.12); Wd.sockBar.rotation.set(0.4, 0, 1.2); } });
+    at(L0(17), (t, u) => { X.bath(t, { pose: POSE.sitRelief }); const k = ease(clamp(u / 2)); stage.aim([1.9, lerp(1.6, 1.4, k), -9.3], [1.9, 2.45, -10.0], 52); });
+    at(L0(18), (t, u) => { X.bath(t, { pose: POSE.sitScared }); const h = X.head(X.you); Wd.sockBar.visible = true; Wd.sockBar.position.set(h.x + 0.18, h.y - 0.05, h.z + 0.12); Wd.sockBar.rotation.set(0.2, 0.3, 0.1 * Math.sin(t * 3)); stage.aim([h.x + 0.12, h.y + 0.03, Math.min(-9.1, h.z + 0.85)], [h.x + 0.08, h.y - 0.04, h.z], 46); });
+    at(L0(19), S.bathFace({ pose: (t) => Object.assign({}, POSE.sitScared, { facing: t < w(19, 'Janela') ? -1 : 1 }), d0: 0.85, d1: 0.8 }));
+    at(L0(21), (t, u) => { X.bath(t, { pose: POSE.sit }); const h = X.head(X.you); Wd.sockBall.visible = true; const k = ease(clamp(u / 1.8)); Wd.sockBall.position.set(h.x + 0.15, h.y - 0.35, h.z + 0.15); Wd.sockBall.rotation.y = t * 2; Wd.sockBall.scale.setScalar(lerp(1.4, 1.0, k)); stage.aim([h.x + 0.2, h.y - 0.2, h.z + 0.5], [h.x + 0.15, h.y - 0.35, h.z + 0.15], 40); });
+    at(L0(22), (t, u) => { X.bath(t, { you: false }); X.put(X.you, 2.1, 0, -10.05, POSE.pocket); const p = X.you.mesh.position; const k = ease(clamp(u / 1.4)); Wd.sockBall.visible = k < 0.98; Wd.sockBall.position.set(p.x + 0.12, lerp(0.75, 0.6, k), p.z + 0.05); Wd.sockBall.scale.setScalar(lerp(1.1, 0.6, k)); stage.aim([p.x + 0.5, 0.85, p.z + 0.7], [p.x + 0.08, 0.62, p.z], 42); });
+    at(L0(23), (t, u) => { X.bath(t, { you: false, door: t > w(23, 'porta') - 0.2 ? 1.2 * ease(clamp((t - w(23, 'porta') + 0.2) / 0.5)) : 0 }); X.put(X.you, 2.25, 0, -10.0, POSE.breath(clamp(u / 1.4))); const h = X.head(X.you); stage.aim([h.x - 0.75, h.y + 0.05, h.z - 0.6], [h.x, h.y - 0.05, h.z], 46); });
+    at(L0(24), S.doorOut({ door: 1.2, you: () => [3.0, -10.0], pose: POSE.stand, queue: 3, cam: [3.3, 1.55, -7.2], look: [3.1, 1.25, -9.7], fov: 54 }));
+    at(L0(26), (t, u) => { X.bar(t); X.queue(t, 3); const z = lerp(-9.9, -7.4, clamp(u / 2.5)); X.you.walk(t, { speed: 1.0, facing: 0 }); X.you.mesh.position.set(3.15, 0, z); X.you.mesh.visible = true; stage.aim([3.4, 1.45, -5.6], [3.3, 1.1, -9.0], 46); });
+    at(L0(4), (t, u) => { X.bath(t, { pose: POSE.sitPhone }); const h = X.head(X.you); Wd.phone.visible = true; Wd.phone.position.set(h.x, h.y - 0.12, h.z + 0.25); Wd.phone.rotation.set(-0.3, 0, 0); stage.aim([h.x + 0.1, h.y + 0.05, Math.min(-9.1, h.z + 0.8)], [h.x, h.y - 0.1, h.z + 0.2], 44); });
+    at(L0(13), feet({ d0: 0.6, d1: 0.5 }));
+    at(L0(20), S.bathFace({ pose: Object.assign({}, POSE.sitScared, { facing: -1 }), d0: 0.9, d1: 0.8 }));
+    at(L0(25), (t, u) => { S.doorOut({ door: 1.2, you: () => [3.0, -10.0], queue: 3 })(t, u); const h = X.head(X.lady); stage.aim([h.x - 0.25, h.y + 0.08, h.z + 1.2], [h.x, h.y - 0.05, h.z], 42); });
   },
   overlay: (ctx, t) => { const { w, L0, bang } = ctx;
     if (t >= w(1, 'nada') && t < w(1, 'nada') + 0.7) bang('NADA', (t - w(1, 'nada')) * 2, { y: 640, col: '#ff5a4f', size: 150, rot: 0 });
     if (t >= w(2, 'nada') && t < w(2, 'nada') + 0.7) bang('NADA', (t - w(2, 'nada')) * 2, { y: 640, col: '#ff5a4f', size: 150, rot: 0.06 });
-    if (t >= L0(5) && t < L0(5) + 0.9) bang('TOC TOC TOC!', (t - L0(5)) * 2, { y: 560, col: '#ff5a4f', size: 130 });
-    if (t >= w(9, 'meia') && t < w(9, 'meia') + 1.4) bang('🧦', 1, { y: 420, size: 1 });
+    if (t >= L0(6) && t < L0(6) + 0.9) bang('TOC TOC TOC!', (t - L0(6)) * 2, { y: 560, col: '#ff5a4f', size: 130 });
+    if (t >= w(10, 'meia') && t < w(10, 'meia') + 1.4) bang('🧦', 1, { y: 420, size: 1 });
   },
   end: { q: ['VOCÊ CONTA', 'PROS AMIGOS?'], a: 'SIM: CONTO TUDO', b: 'NÃO: LEVO PRO TÚMULO', next: 3 },
-  cover: { at: ({ L0 }) => L0(13) + 0.6, pill: 'A MEIA DO RENY · PARTE 2', title: ['ME PERDOA,', 'COMPANHEIRA'], color: '#ffcc4d', gauge: 100 },
+  cover: { at: ({ L0 }) => L0(15) + 0.6, pill: 'A MEIA DO RENY · PARTE 2', title: ['ME PERDOA,', 'COMPANHEIRA'], color: '#ffcc4d', gauge: 100 },
 });
 </script>
 </body></html>

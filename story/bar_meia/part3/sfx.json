@@ -7,27 +7,27 @@
    "level": 0.5
   },
   {
-   "at": "Silêncio@4",
+   "at": "Silêncio@5",
    "level": 0.0
   },
   {
-   "at": "rir@5",
+   "at": "rir@6",
    "level": 0.6
   },
   {
-   "at": "trás@8",
+   "at": "trás@9",
    "level": 1.0
   },
   {
-   "at": "Meia-noite@14",
+   "at": "Meia-noite@17",
    "level": 0.4
   },
   {
-   "at": "funga@18",
+   "at": "funga@22",
    "level": 0.8
   },
   {
-   "at": "verde@20",
+   "at": "verde@25",
    "level": 1.1
   }
  ],
@@ -51,97 +51,97 @@
    "vol": 0.4
   },
   {
-   "at": "rir@5",
+   "at": "rir@6",
    "type": "file:../../meia/vo_extra/laugh_dudu.wav",
    "vol": 0.9
   },
   {
-   "at": "rir@5+0.2",
+   "at": "rir@6+0.2",
    "type": "file:../../meia/vo_extra/laugh_leo.wav",
    "vol": 0.8
   },
   {
-   "at": "Mentira@6",
+   "at": "Mentira@7",
    "type": "file:../../meia/vo_extra/laugh_dudu2.wav",
    "vol": 0.4
   },
   {
-   "at": "pontinha@7",
+   "at": "pontinha@8",
    "type": "sting",
    "vol": 0.4
   },
   {
-   "at": "trás@8",
+   "at": "trás@9",
    "type": "slam",
    "vol": 0.8
   },
   {
-   "at": "trás@8+0.1",
+   "at": "trás@9+0.1",
    "type": "thud",
    "vol": 0.7
   },
   {
-   "at": "guardou@9",
+   "at": "guardou@10",
    "type": "hit",
    "vol": 0.6
   },
   {
-   "at": "foto@11",
+   "at": "foto@13",
    "type": "click",
    "vol": 1.0
   },
   {
-   "at": "lugar@12",
+   "at": "lugar@14",
    "type": "floorcreak",
    "vol": 0.6
   },
   {
-   "at": "ré@13",
+   "at": "ré@15",
    "type": "floorcreak",
    "vol": 0.5
   },
   {
-   "at": "carona@14",
+   "at": "carona@17",
    "type": "engine",
    "vol": 0.7
   },
   {
-   "at": "olfato@15",
+   "at": "olfato@18",
    "type": "sting",
    "vol": 0.4
   },
   {
-   "at": "batalha@17",
+   "at": "batalha@21",
    "type": "hit",
    "vol": 0.4
   },
   {
-   "at": "funga@18",
+   "at": "funga@22",
    "type": "hiss",
    "vol": 0.6
   },
   {
-   "at": "Duas@19",
+   "at": "Duas@23",
    "type": "hiss",
    "vol": 0.7
   },
   {
-   "at": "Duas@19+0.3",
+   "at": "Duas@23+0.3",
    "type": "hiss",
    "vol": 0.7
   },
   {
-   "at": "verde@20",
+   "at": "verde@25",
    "type": "rumble",
    "vol": 0.7
   },
   {
-   "at": "meia@21",
+   "at": "meia@26",
    "type": "hit",
    "vol": 0.7
   },
   {
-   "at": 56.5,
+   "at": 65.43,
    "type": "hit",
    "vol": 0.5
   }

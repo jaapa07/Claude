@@ -11,27 +11,27 @@
    "level": 1.1
   },
   {
-   "at": "vazia@6",
+   "at": "vazia@7",
    "level": 0.5
   },
   {
-   "at": "solta@10",
+   "at": "solta@12",
    "level": 0.3
   },
   {
-   "at": "emocionante@13",
+   "at": "emocionante@16",
    "level": 0.9
   },
   {
-   "at": "seguinte@17",
+   "at": "seguinte@21",
    "level": 0.3
   },
   {
-   "at": "cheira@20",
+   "at": "cheira@25",
    "level": 0.7
   },
   {
-   "at": "menos@21",
+   "at": "menos@26",
    "level": 0.6
   }
  ],
@@ -60,72 +60,72 @@
    "vol": 0.6
   },
   {
-   "at": "Vento@4",
+   "at": "Vento@5",
    "type": "whoosh",
    "vol": 0.7
   },
   {
-   "at": "bolso@6",
+   "at": "bolso@7",
    "type": "hiss",
    "vol": 0.2
   },
   {
-   "at": "salvou@8",
+   "at": "salvou@9",
    "type": "glass",
    "vol": 0.4
   },
   {
-   "at": "janela@9",
+   "at": "janela@11",
    "type": "whoosh",
    "vol": 0.4
   },
   {
-   "at": "solta@10",
+   "at": "solta@12",
    "type": "whoosh",
    "vol": 1.0
   },
   {
-   "at": "voa@11",
+   "at": "voa@13",
    "type": "swell",
    "vol": 0.6
   },
   {
-   "at": "poste@12",
+   "at": "poste@14",
    "type": "glass",
    "vol": 0.5
   },
   {
-   "at": "emocionante@13",
+   "at": "emocionante@16",
    "type": "sting",
    "vol": 0.5
   },
   {
-   "at": "lavagem@15",
+   "at": "lavagem@18",
    "type": "click",
    "vol": 0.3
   },
   {
-   "at": "gari@17",
+   "at": "gari@21",
    "type": "floorcreak",
    "vol": 0.3
   },
   {
-   "at": "toca@18",
+   "at": "toca@22",
    "type": "sting",
    "vol": 0.4
   },
   {
-   "at": "cheira@20",
+   "at": "cheira@25",
    "type": "rumble",
    "vol": 0.6
   },
   {
-   "at": "menos@21",
+   "at": "menos@26",
    "type": "glass",
    "vol": 0.6
   },
   {
-   "at": 56.4,
+   "at": 67.55,
    "type": "hit",
    "vol": 0.5
   }

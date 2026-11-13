@@ -38,6 +38,13 @@
    "voice": "pm_alex"
   },
   {
+   "text": "O Dudu engasga com a cerveja.",
+   "key": {
+    "engasga": "red"
+   },
+   "pause": 0.32
+  },
+  {
    "text": "Silêncio. Três segundos.",
    "key": {
     "Silêncio": "yellow"
@@ -94,6 +101,13 @@
    "voice": "pm_alex"
   },
   {
+   "text": "Pânico com planejamento: você até enrolou ela.",
+   "key": {
+    "enrolou": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
    "text": "O Dudu tira uma foto. Pra posteridade.",
    "key": {
     "foto": "yellow"
@@ -113,6 +127,15 @@
     "ré": "yellow"
    },
    "pause": 0.42
+  },
+  {
+   "text": "Tchau, Reny! Tchau, meia!",
+   "key": {
+    "meia": "yellow"
+   },
+   "pause": 0.32,
+   "voice": "pm_santa",
+   "speed": 1.05
   },
   {
    "text": "Meia-noite. O Léo te dá carona.",
@@ -136,6 +159,13 @@
    "pause": 0.42
   },
   {
+   "text": "O Léo abre um pouquinho a janela. Só um dedo.",
+   "key": {
+    "dedo": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
    "text": "O cheirinho de pinheiro do retrovisor perde a batalha.",
    "key": {
     "batalha": "red"
@@ -155,6 +185,13 @@
     "Duas": "red"
    },
    "pause": 0.42
+  },
+  {
+   "text": "Ele te olha de canto de olho.",
+   "key": {
+    "canto": "yellow"
+   },
+   "pause": 0.32
   },
   {
    "text": "Uma nuvem verde sai do seu bolso.",

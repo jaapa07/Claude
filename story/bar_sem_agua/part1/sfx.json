@@ -7,23 +7,23 @@
    "level": 0.4
   },
   {
-   "at": "ronca@4",
+   "at": "ronca@5",
    "level": 0.8
   },
   {
-   "at": "Missão@14",
+   "at": "Missão@17",
    "level": 1.1
   },
   {
-   "at": "entra@19",
+   "at": "entra@23",
    "level": 0.6
   },
   {
-   "at": "Alívio@20",
+   "at": "Alívio@25",
    "level": 0.2
   },
   {
-   "at": "Nada@23",
+   "at": "Nada@28",
    "level": 1.0
   }
  ],
@@ -47,102 +47,102 @@
    "vol": 0.5
   },
   {
-   "at": "ronca@4",
+   "at": "ronca@5",
    "type": "growl",
    "vol": 1.0
   },
   {
-   "at": "ronca@4+0.4",
+   "at": "ronca@5+0.4",
    "type": "growl",
    "vol": 0.8
   },
   {
-   "at": "trovão@6+0.4",
+   "at": "trovão@7+0.4",
    "type": "rumble",
    "vol": 0.6
   },
   {
-   "at": "pernas@8",
+   "at": "pernas@10",
    "type": "tick",
    "vol": 0.8
   },
   {
-   "at": "cadeira@9",
+   "at": "cadeira@11",
    "type": "tick",
    "vol": 0.8
   },
   {
-   "at": "suar@10",
+   "at": "suar@12",
    "type": "tick",
    "vol": 0.8
   },
   {
-   "at": "suar@10+0.4",
+   "at": "suar@12+0.4",
    "type": "growl",
    "vol": 0.6
   },
   {
-   "at": "músculo@13",
+   "at": "músculo@15",
    "type": "heartbeat",
    "vol": 0.9
   },
   {
-   "at": "Missão@14",
+   "at": "Missão@17",
    "type": "sting",
    "vol": 0.6
   },
   {
-   "at": "Postura@15",
+   "at": "Postura@18",
    "type": "thud",
    "vol": 0.3
   },
   {
-   "at": "garçom@17",
+   "at": "garçom@20",
    "type": "whoosh",
    "vol": 0.6
   },
   {
-   "at": "lâmpada@18",
+   "at": "lâmpada@22",
    "type": "click",
    "vol": 0.5
   },
   {
-   "at": "entra@19",
+   "at": "entra@23",
    "type": "creak",
    "vol": 0.6
   },
   {
-   "at": "Tranca@19",
+   "at": "Tranca@23",
    "type": "lock",
    "vol": 0.8
   },
   {
-   "at": "Senta@19",
+   "at": "Senta@23",
    "type": "thud",
    "vol": 0.4
   },
   {
-   "at": "Alívio@20",
+   "at": "Alívio@25",
    "type": "file:../../sem_agua/vo_extra/sigh.wav",
    "vol": 0.7
   },
   {
-   "at": "descarga@21",
+   "at": "descarga@26",
    "type": "click",
    "vol": 0.3
   },
   {
-   "at": "Clic@22",
+   "at": "Clic@27",
    "type": "click",
    "vol": 1.0
   },
   {
-   "at": "Nada@23",
+   "at": "Nada@28",
    "type": "hit",
    "vol": 0.7
   },
   {
-   "at": 56.5,
+   "at": 68.81,
    "type": "hit",
    "vol": 0.5
   }

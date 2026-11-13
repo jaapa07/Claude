@@ -11,23 +11,23 @@
    "level": 0.4
   },
   {
-   "at": "senta@4",
+   "at": "senta@5",
    "level": 0.3
   },
   {
-   "at": "rir@8",
+   "at": "rir@9",
    "level": 0.6
   },
   {
-   "at": "balde@14",
+   "at": "balde@16",
    "level": 0.9
   },
   {
-   "at": "conta@15",
+   "at": "conta@18",
    "level": 0.4
   },
   {
-   "at": "interditado@19",
+   "at": "interditado@23",
    "level": 0.6
   }
  ],
@@ -51,82 +51,82 @@
    "vol": 1.0
   },
   {
-   "at": "senta@4",
+   "at": "senta@5",
    "type": "thud",
    "vol": 0.4
   },
   {
-   "at": "cochicha@6",
+   "at": "cochicha@7",
    "type": "hiss",
    "vol": 0.2
   },
   {
-   "at": "rir@8",
+   "at": "rir@9",
    "type": "file:../../sem_agua/vo_extra/laugh_beto.wav",
    "vol": 0.9
   },
   {
-   "at": "rir@8+0.2",
+   "at": "rir@9+0.2",
    "type": "file:../../sem_agua/vo_extra/laugh_carla.wav",
    "vol": 0.8
   },
   {
-   "at": "rir@8+0.4",
+   "at": "rir@9+0.4",
    "type": "file:../../sem_agua/vo_extra/laugh_ze.wav",
    "vol": 0.7
   },
   {
-   "at": "chora@9",
+   "at": "chora@10",
    "type": "file:../../sem_agua/vo_extra/laugh_beto2.wav",
    "vol": 0.6
   },
   {
-   "at": "mesa@9",
+   "at": "mesa@10",
    "type": "thud",
    "vol": 0.6
   },
   {
-   "at": "cadeira@9",
+   "at": "cadeira@10",
    "type": "thud",
    "vol": 0.7
   },
   {
-   "at": "mãos@10",
+   "at": "mãos@12",
    "type": "file:../../sem_agua/vo_extra/laugh_carla.wav",
    "vol": 0.4
   },
   {
-   "at": "balde@14",
+   "at": "balde@16",
    "type": "sting",
    "vol": 0.6
   },
   {
-   "at": "conta@15",
+   "at": "conta@18",
    "type": "click",
    "vol": 0.4
   },
   {
-   "at": "casa@16",
+   "at": "casa@19",
    "type": "glass",
    "vol": 0.4
   },
   {
-   "at": "aberta@17",
+   "at": "aberta@20",
    "type": "whoosh",
    "vol": 0.3
   },
   {
-   "at": "interditado@19",
+   "at": "interditado@23",
    "type": "hit",
    "vol": 0.6
   },
   {
-   "at": "forte@20",
+   "at": "forte@25",
    "type": "sting",
    "vol": 0.5
   },
   {
-   "at": 56.4,
+   "at": 68.73,
    "type": "hit",
    "vol": 0.5
   }

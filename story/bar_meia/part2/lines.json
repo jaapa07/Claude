@@ -33,6 +33,13 @@
    "pause": 0.42
   },
   {
+   "text": "Você pensa em pedir papel por mensagem. Pra quem? Pro Dudu? Nunca.",
+   "key": {
+    "Nunca": "red"
+   },
+   "pause": 0.32
+  },
+  {
    "text": "Você faz tanta coisa... mas agora não ajuda.",
    "key": {
     "ajuda": "red"
@@ -95,6 +102,13 @@
    "pause": 0.37
   },
   {
+   "text": "Sobreviveu a duas lavagens e um churrasco.",
+   "key": {
+    "churrasco": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
    "text": "Uma música dramática começa a tocar. Só na sua cabeça.",
    "key": {
     "dramática": "yellow"
@@ -139,6 +153,13 @@
    "pause": 0.32
   },
   {
+   "text": "Deixar ali? Alguém vai achar. E vai saber que foi você.",
+   "key": {
+    "você": "red"
+   },
+   "pause": 0.32
+  },
+  {
    "text": "Você enrola a meia. Com carinho.",
    "key": {
     "carinho": "green"
@@ -163,6 +184,13 @@
    "text": "A fila inteira te olha.",
    "key": {
     "fila": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "A moça da frente prende a respiração. Por precaução.",
+   "key": {
+    "precaução": "yellow"
    },
    "pause": 0.32
   },

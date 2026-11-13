@@ -31,6 +31,13 @@
    "pause": 0.52
   },
   {
+   "text": "Você puxa mais uma vez. Por esporte.",
+   "key": {
+    "esporte": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
    "text": "Aí uma luz acende no canto.",
    "key": {
     "luz": "yellow"
@@ -80,6 +87,13 @@
    "pause": 0.42
   },
   {
+   "text": "Um anjo tosse.",
+   "key": {
+    "tosse": "red"
+   },
+   "pause": 0.32
+  },
+  {
    "text": "Você fica ali, segurando um balde vazio diante de uma situação cheia.",
    "key": {
     "vazio": "yellow",
@@ -102,6 +116,13 @@
    "pause": 0.47
   },
   {
+   "text": "Hoje é sexta.",
+   "key": {
+    "sexta": "red"
+   },
+   "pause": 0.32
+  },
+  {
    "text": "Você olha pro vaso. Olha pra porta.",
    "key": {
     "porta": "yellow"
@@ -114,6 +135,13 @@
     "saída": "red"
    },
    "pause": 0.42
+  },
+  {
+   "text": "E ela dá direto pro corredor.",
+   "key": {
+    "corredor": "yellow"
+   },
+   "pause": 0.32
   },
   {
    "text": "Você respira fundo. Ajeita a camiseta.",
@@ -140,6 +168,13 @@
    "text": "Na frente, uma moça. Olhando pra você.",
    "key": {
     "moça": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Ela tá com pressa. Você conhece esse olhar.",
+   "key": {
+    "pressa": "red"
    },
    "pause": 0.32
   },

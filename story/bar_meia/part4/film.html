@@ -14,8 +14,8 @@ import { run } from '../../bar_part.js';
 import { shots } from '../../bar_common_shots.js';
 run({
   which: 'meia', hud: 'BAR DA UNIVEL',
-  clock: ({ L0 }) => [[0, '00:15'], [L0(6), '00:19'], [L0(17), '07:30'], [L0(20), '00:00']],
-  pressure: ({ w, L0 }) => [[0, 99], [w(3, 'meia', 1), 100], [w(10, 'solta'), 20], [L0(13), 5], [L0(17), 0]],
+  clock: ({ L0 }) => [[0, '00:15'], [L0(7), '00:19'], [L0(21), '07:30'], [L0(25), '00:00']],
+  pressure: ({ w, L0 }) => [[0, 99], [w(3, 'meia', 1), 100], [w(12, 'solta'), 20], [L0(16), 5], [L0(21), 0]],
   shots: ctx => {
     const { X, POSE, at, w, L0, stage, clamp, lerp, ease, THREE } = ctx; const S = shots(ctx); const Wd = X.Wd;
     X.you.o.mark.bare = 'R';
@@ -28,29 +28,34 @@ run({
     at(L0(1), youFace({ mood: 'scared', armL: [0.05, -0.05], armR: [-0.05, 0.05] }));
     at(L0(2), two);
     at(L0(3), leoFace({ mood: 'scared', armR: [-2.5, 0.5], shake: true }));
-    at(L0(4), (t, u) => { X.car(t, { winL: 1, winR: 1 }); stage.aim([-3.2, 1.6, 2.6], [-0.3, 1.0, -0.3], 46); });
-    at(L0(5), youFace({ mood: 'scared', facing: 0 }));
-    at(L0(6), (t, u) => { youFace({ armR: [-1.0, 1.9] })(t, u); sockInHand(t, -0.1 + 0.1 * ease(clamp(u / 1))); });
-    at(L0(7), (t, u) => { X.car(t, { winL: 1, winR: 1, you: { facing: 0, armR: [-1.6, 1.4], armL: [0.6, -1.5] } }); sockInHand(t, 0.05); const s = Wd.sockFly.position; stage.aim([s.x + 0.18, s.y + 0.05, s.z + 0.35], [s.x, s.y, s.z], 40); });
-    at(L0(8), (t, u) => { youFace({ armR: [-1.6, 1.4] })(t, u); sockInHand(t, 0.05); });
-    at(L0(9), (t, u) => { X.car(t, { winL: 1, winR: 1, you: { facing: -1, armR: [-0.4, 0.2], armL: [-2.0, 0.3] } }); const k = ease(clamp(u / 1.6)); Wd.sockFly.visible = true; Wd.sockFly.position.set(lerp(-0.6, -1.15, k), 1.25, 0.1); stage.aim([-2.4, 1.35, 1.8], [-0.7, 1.15, 0], 46); });
-    at(L0(10), (t, u) => { X.car(t, { winL: 1, winR: 1, you: { facing: -1, armL: [-2.0, 0.3] } }); const k = clamp(u / 1.2); Wd.sockFly.visible = true; Wd.sockFly.position.set(-1.15 - 0.6 * k, 1.25 + 0.2 * Math.sin(k * 3), 0.1 - 1.2 * k); Wd.sockFly.rotation.set(u * 4, u * 3, 0); stage.aim([-2.4, 1.35, 1.8], [-1.2, 1.2, -0.3], 46); });
+    at(L0(5), (t, u) => { X.car(t, { winL: 1, winR: 1 }); stage.aim([-3.2, 1.6, 2.6], [-0.3, 1.0, -0.3], 46); });
+    at(L0(6), youFace({ mood: 'scared', facing: 0 }));
+    at(L0(7), (t, u) => { youFace({ armR: [-1.0, 1.9] })(t, u); sockInHand(t, -0.1 + 0.1 * ease(clamp(u / 1))); });
+    at(L0(8), (t, u) => { X.car(t, { winL: 1, winR: 1, you: { facing: 0, armR: [-1.6, 1.4], armL: [0.6, -1.5] } }); sockInHand(t, 0.05); const s = Wd.sockFly.position; stage.aim([s.x + 0.18, s.y + 0.05, s.z + 0.35], [s.x, s.y, s.z], 40); });
+    at(L0(9), (t, u) => { youFace({ armR: [-1.6, 1.4] })(t, u); sockInHand(t, 0.05); });
+    at(L0(11), (t, u) => { X.car(t, { winL: 1, winR: 1, you: { facing: -1, armR: [-0.4, 0.2], armL: [-2.0, 0.3] } }); const k = ease(clamp(u / 1.6)); Wd.sockFly.visible = true; Wd.sockFly.position.set(lerp(-0.6, -1.15, k), 1.25, 0.1); stage.aim([-2.4, 1.35, 1.8], [-0.7, 1.15, 0], 46); });
+    at(L0(12), (t, u) => { X.car(t, { winL: 1, winR: 1, you: { facing: -1, armL: [-2.0, 0.3] } }); const k = clamp(u / 1.2); Wd.sockFly.visible = true; Wd.sockFly.position.set(-1.15 - 0.6 * k, 1.25 + 0.2 * Math.sin(k * 3), 0.1 - 1.2 * k); Wd.sockFly.rotation.set(u * 4, u * 3, 0); stage.aim([-2.4, 1.35, 1.8], [-1.2, 1.2, -0.3], 46); });
     const fly = (t, u, t0) => { X.car(t, { winL: 1, winR: 1, speed: 0.5 }); const k = (t - t0) / 5; Wd.sockFly.visible = true; Wd.sockFly.position.set(lerp(-1.8, -4.5, k), 1.4 + 0.8 * Math.sin(k * Math.PI), lerp(-1.0, -6, k)); Wd.sockFly.rotation.set(t * 1.6, t * 1.1, t * 0.7); Wd.sockFly.scale.setScalar(1.8); return Wd.sockFly.position; };
-    at(L0(11), (t, u) => { const s = fly(t, u, L0(11)); stage.aim([s.x - 0.9, s.y + 0.05, s.z - 0.8], [s.x, s.y, s.z], 40); });
-    at(L0(12), (t, u) => { const s = fly(t, u, L0(11)); stage.aim([s.x + 0.6, s.y - 0.3, s.z + 1.6], [s.x, s.y, s.z], 34); });
-    at(L0(13), (t, u) => { const s = fly(t, u, L0(11)); const k = ease(clamp(u / 3)); stage.aim([s.x + 1 + 2 * k, s.y + 0.4, s.z + 3 + 3 * k], [s.x, s.y, s.z], 50); });
-    at(L0(14), youFace({ facing: -1, armR: [-2.6, 0.4] }, -1));
-    at(L0(15), leoFace({ facing: 0, mood: '' }));
-    at(L0(16), leoFace({ facing: -1 }));
-    at(L0(17), (t, u) => { X.car(t, { body: false, people: false, speed: 0, day: true }); Wd.sockFly.visible = true; Wd.sockFly.position.set(-3.0, 0.05, -2.0); Wd.sockFly.rotation.set(Math.PI / 2, 0, 0.4); Wd.sockFly.scale.setScalar(1.6); X.gari.walk(t, { speed: 0.9, facing: -1 }); X.gari.mesh.position.set(lerp(-1.0, -2.4, clamp(u / 2.6)), 0, -1.9); X.gari.mesh.visible = true; stage.aim([-1.4, 1.2, 1.4], [-2.6, 0.6, -2.0], 48); });
-    at(L0(18), (t, u) => { X.car(t, { body: false, people: false, speed: 0, day: true }); Wd.sockFly.visible = true; Wd.sockFly.position.set(-3.0, 0.05, -2.0); Wd.sockFly.rotation.set(Math.PI / 2, 0, 0.4); Wd.sockFly.scale.setScalar(1.6); const k = ease(clamp(u / 0.8)); X.gari.mesh.position.set(-2.4 + 0.5 * k, 0, -1.9); X.gari.pose({ facing: 1, mood: 'scared', lean: -0.2, armL: [2.4, 0.3], armR: [-2.4, -0.3] }); X.gari.mesh.visible = true; const h = X.gari.headWorld(); stage.aim([h.x + 0.6, h.y, h.z + 1.2], [h.x - 0.2, h.y - 0.2, h.z], 44); });
-    at(L0(19), (t, u) => { X.car(t, { body: false, people: false, speed: 0, day: true }); Wd.sockFly.visible = true; Wd.sockFly.position.set(-3.0, 0.05, -2.0); Wd.sockFly.rotation.set(Math.PI / 2, 0, 0.4); Wd.sockFly.scale.setScalar(1.6); const k = ease(clamp(u / 2)); stage.aim([-3.0 + 0.35, lerp(0.6, 0.4, k), -2.0 + 0.45], [-3.0, 0.05, -2.0], 40); });
-    at(L0(20), (t, u) => { X.car(t, { body: false, people: false, speed: 0 }); Wd.sockFly.visible = true; Wd.sockFly.position.set(-3.0, 0.05, -2.0); Wd.sockFly.rotation.set(Math.PI / 2, 0, 0.4); Wd.sockFly.scale.setScalar(1.6); Wd.stinkAt(t, 1, new THREE.Vector3(-3.0, 0.05, -2.0)); stage.aim([-2.4, 0.7, -1.0], [-3.0, 0.2, -2.0], 46); });
-    at(L0(21), S.wideFront({ mood: 'cheers', you: POSE.cheers }));
+    at(L0(13), (t, u) => { const s = fly(t, u, L0(13)); stage.aim([s.x - 0.9, s.y + 0.05, s.z - 0.8], [s.x, s.y, s.z], 40); });
+    at(L0(14), (t, u) => { const s = fly(t, u, L0(13)); stage.aim([s.x + 0.6, s.y - 0.3, s.z + 1.6], [s.x, s.y, s.z], 34); });
+    at(L0(16), (t, u) => { const s = fly(t, u, L0(13)); const k = ease(clamp(u / 3)); stage.aim([s.x + 1 + 2 * k, s.y + 0.4, s.z + 3 + 3 * k], [s.x, s.y, s.z], 50); });
+    at(L0(17), youFace({ facing: -1, armR: [-2.6, 0.4] }, -1));
+    at(L0(18), leoFace({ facing: 0, mood: '' }));
+    at(L0(19), leoFace({ facing: -1 }));
+    at(L0(21), (t, u) => { X.car(t, { body: false, people: false, speed: 0, day: true }); Wd.sockFly.visible = true; Wd.sockFly.position.set(-3.0, 0.05, -2.0); Wd.sockFly.rotation.set(Math.PI / 2, 0, 0.4); Wd.sockFly.scale.setScalar(1.6); X.gari.walk(t, { speed: 0.9, facing: -1 }); X.gari.mesh.position.set(lerp(-1.0, -2.4, clamp(u / 2.6)), 0, -1.9); X.gari.mesh.visible = true; stage.aim([-1.4, 1.2, 1.4], [-2.6, 0.6, -2.0], 48); });
+    at(L0(22), (t, u) => { X.car(t, { body: false, people: false, speed: 0, day: true }); Wd.sockFly.visible = true; Wd.sockFly.position.set(-3.0, 0.05, -2.0); Wd.sockFly.rotation.set(Math.PI / 2, 0, 0.4); Wd.sockFly.scale.setScalar(1.6); const k = ease(clamp(u / 0.8)); X.gari.mesh.position.set(-2.4 + 0.5 * k, 0, -1.9); X.gari.pose({ facing: 1, mood: 'scared', lean: -0.2, armL: [2.4, 0.3], armR: [-2.4, -0.3] }); X.gari.mesh.visible = true; const h = X.gari.headWorld(); stage.aim([h.x + 0.6, h.y, h.z + 1.2], [h.x - 0.2, h.y - 0.2, h.z], 44); });
+    at(L0(23), (t, u) => { X.car(t, { body: false, people: false, speed: 0, day: true }); Wd.sockFly.visible = true; Wd.sockFly.position.set(-3.0, 0.05, -2.0); Wd.sockFly.rotation.set(Math.PI / 2, 0, 0.4); Wd.sockFly.scale.setScalar(1.6); const k = ease(clamp(u / 2)); stage.aim([-3.0 + 0.35, lerp(0.6, 0.4, k), -2.0 + 0.45], [-3.0, 0.05, -2.0], 40); });
+    at(L0(25), (t, u) => { X.car(t, { body: false, people: false, speed: 0 }); Wd.sockFly.visible = true; Wd.sockFly.position.set(-3.0, 0.05, -2.0); Wd.sockFly.rotation.set(Math.PI / 2, 0, 0.4); Wd.sockFly.scale.setScalar(1.6); Wd.stinkAt(t, 1, new THREE.Vector3(-3.0, 0.05, -2.0)); stage.aim([-2.4, 0.7, -1.0], [-3.0, 0.2, -2.0], 46); });
+    at(L0(26), S.wideFront({ mood: 'cheers', you: POSE.cheers }));
+    at(L0(4), leoFace({ facing: -1, mood: 'scared' }));
+    at(L0(10), (t, u) => { X.car(t, { winL: 1, winR: 1, you: { facing: 0, armR: [-1.6, 1.4], armL: [0.6, -1.5] } }); sockInHand(t, 0.05); const s = Wd.sockFly.position; stage.aim([s.x + 0.25, s.y + 0.1, s.z + 0.45], [s.x, s.y, s.z], 44); });
+    at(L0(15), (t, u) => { X.car(t, { winL: 1, winR: 1, speed: 0.5 }); stage.aim([-3, 1.0, 2], [-8, 12 + u, -30], 60); });
+    at(L0(20), youFace({ facing: 0, mood: '', armL: [0.6, -1.5], armR: [-0.6, 1.5] }));
+    at(L0(24), (t, u) => { X.car(t, { body: false, people: false, speed: 0, day: true }); Wd.sockFly.visible = true; Wd.sockFly.position.set(-3.0, 0.05, -2.0); Wd.sockFly.rotation.set(Math.PI / 2, 0, 0.4); Wd.sockFly.scale.setScalar(1.6); X.put(X.gari, -1.6, 0, -1.6, POSE.point(-1)); X.gari.mesh.parent !== Wd.carSet && Wd.carSet.add(X.gari.mesh); stage.aim([-0.6, 1.4, 1.8], [-2.4, 0.5, -1.9], 50); });
   },
   overlay: (ctx, t) => { const { w, L0, bang, c } = ctx;
-    if (t >= w(10, 'solta') && t < w(10, 'solta') + 1.2) bang('ADEUS, COMPANHEIRA', (t - w(10, 'solta')) * 1.4, { y: 560, col: '#ffffff', size: 90, rot: 0 });
-    if (t >= L0(17) && t < L0(17) + 1.6) bang('NO DIA SEGUINTE...', (t - L0(17)) * 1.4, { y: 520, col: '#ffcc4d', size: 90, rot: 0 });
+    if (t >= w(12, 'solta') && t < w(12, 'solta') + 1.2) bang('ADEUS, COMPANHEIRA', (t - w(12, 'solta')) * 1.4, { y: 560, col: '#ffffff', size: 90, rot: 0 });
+    if (t >= L0(21) && t < L0(21) + 1.6) bang('NO DIA SEGUINTE...', (t - L0(21)) * 1.4, { y: 520, col: '#ffcc4d', size: 90, rot: 0 });
   },
   end: { q: ['VOCÊ TERIA', 'USADO A MEIA?'], a: 'SIM: SEM PENSAR', b: 'NUNCA NA VIDA', next: 'FIM' },
   cover: { at: ({ L0 }) => L0(3) + 0.8, pill: 'A MEIA DO RENY · PARTE 4 · FINAL', title: ['SE LIVRA', 'DA MEIA!'], color: '#ff5a4f', gauge: 100 },

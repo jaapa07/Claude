@@ -7,23 +7,23 @@
    "level": 0.4
   },
   {
-   "at": "ronca@5",
+   "at": "ronca@6",
    "level": 0.8
   },
   {
-   "at": "tranca@10",
+   "at": "tranca@11",
    "level": 1.0
   },
   {
-   "at": "fila@14",
+   "at": "fila@17",
    "level": 1.1
   },
   {
-   "at": "Alívio@19",
+   "at": "Alívio@23",
    "level": 0.2
   },
   {
-   "at": "Vazio@22",
+   "at": "Vazio@26",
    "level": 1.1
   }
  ],
@@ -37,107 +37,107 @@
    "vol": 0.5
   },
   {
-   "at": "brinde@3",
+   "at": "brinde@4",
    "type": "glass",
    "vol": 0.7
   },
   {
-   "at": "Risada@3",
+   "at": "Risada@4",
    "type": "file:../../meia/vo_extra/laugh_dudu2.wav",
    "vol": 0.6
   },
   {
-   "at": "Léo@4",
+   "at": "Léo@5",
    "type": "file:../../meia/vo_extra/laugh_leo2.wav",
    "vol": 0.5
   },
   {
-   "at": "ronca@5",
+   "at": "ronca@6",
    "type": "growl",
    "vol": 1.0
   },
   {
-   "at": "ronca@5+0.4",
+   "at": "ronca@6+0.4",
    "type": "growl",
    "vol": 0.8
   },
   {
-   "at": "some@6",
+   "at": "some@7",
    "type": "sting",
    "vol": 0.4
   },
   {
-   "at": "Agora@7",
+   "at": "Agora@8",
    "type": "heartbeat",
    "vol": 0.7
   },
   {
-   "at": "guerreiro@8",
+   "at": "guerreiro@9",
    "type": "glass",
    "vol": 0.4
   },
   {
-   "at": "entra@9",
+   "at": "entra@10",
    "type": "creak",
    "vol": 0.5
   },
   {
-   "at": "tranca@10",
+   "at": "tranca@11",
    "type": "hit",
    "vol": 0.6
   },
   {
-   "at": "Devagar@11",
+   "at": "Devagar@13",
    "type": "creak",
    "vol": 0.9
   },
   {
-   "at": "fé@13",
+   "at": "fé@15",
    "type": "heartbeat",
    "vol": 0.5
   },
   {
-   "at": "Um@15",
+   "at": "Um@18",
    "type": "floorcreak",
    "vol": 0.4
   },
   {
-   "at": "Dois@15",
+   "at": "Dois@18",
    "type": "floorcreak",
    "vol": 0.4
   },
   {
-   "at": "Três@15",
+   "at": "Três@18",
    "type": "floorcreak",
    "vol": 0.4
   },
   {
-   "at": "respiração@16",
+   "at": "respiração@19",
    "type": "hiss",
    "vol": 0.3
   },
   {
-   "at": "demorar@17-0.6",
+   "at": "demorar@20-0.6",
    "type": "knock",
    "vol": 0.9
   },
   {
-   "at": "Alívio@19",
+   "at": "Alívio@23",
    "type": "file:../../meia/vo_extra/sigh.wav",
    "vol": 0.7
   },
   {
-   "at": "papel@21",
+   "at": "papel@25",
    "type": "sting",
    "vol": 0.4
   },
   {
-   "at": "Vazio@22",
+   "at": "Vazio@26",
    "type": "hit",
    "vol": 0.8
   },
   {
-   "at": 56.5,
+   "at": 65.34,
    "type": "hit",
    "vol": 0.5
   }

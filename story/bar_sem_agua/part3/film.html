@@ -14,8 +14,8 @@ import { run } from '../../bar_part.js';
 import { shots } from '../../bar_common_shots.js';
 run({
   which: 'sa', hud: 'BAR',
-  clock: ({ L0 }) => [[0, '22:22'], [L0(4), '22:23'], [L0(15), '22:41'], [L0(17), '22:45']],
-  pressure: ({ w, L0 }) => [[0, 99], [L0(4), 80], [w(7, 'água'), 92], [w(8, 'rir'), 99], [L0(11), 99], [w(14, 'balde'), 100], [L0(16), 60], [L0(18), 30], [L0(20), 12]],
+  clock: ({ L0 }) => [[0, '22:22'], [L0(5), '22:23'], [L0(18), '22:41'], [L0(20), '22:45']],
+  pressure: ({ w, L0 }) => [[0, 99], [L0(5), 80], [w(8, 'água'), 92], [w(9, 'rir'), 99], [L0(13), 99], [w(16, 'balde'), 100], [L0(19), 60], [L0(21), 30], [L0(25), 12]],
   shots: ctx => {
     const { X, POSE, at, w, L0, stage, clamp, lerp, ease, THREE } = ctx; const S = shots(ctx); const Wd = X.Wd, TB = X.TB;
     const corr = (u, z0, z1, dur) => lerp(z0, z1, clamp(u / dur));
@@ -24,33 +24,38 @@ run({
     at(L0(2), S.doorOut({ door: u => u < 0.9 ? 1.2 : 1.2 * (1 - ease(clamp((u - 0.9) / 0.2))), queue: 0, cam: [3.4, 1.5, -6.4], look: [3.0, 1.15, -9.8], fov: 44 }));
     at(L0(2) + 0.01, (t, u) => { S.doorOut({ door: u < 0.9 ? 1.2 : 1.2 * (1 - ease(clamp((u - 0.9) / 0.2))), queue: 0, cam: [3.4, 1.5, -6.4], look: [3.0, 1.15, -9.8], fov: 44 })(t, u); const k = clamp(u / 0.9); X.lady.walk(t, { speed: 1, facing: -1 }); X.lady.mesh.position.set(lerp(3.4, 2.5, k), 0, lerp(-9.3, -10.0, k)); X.lady.mesh.visible = u < 1.0; X.q1.mesh.visible = false; });
     at(L0(3), (t, u) => { X.bar(t); X.put(X.you, 3.35, 0, -5.3, Object.assign({}, POSE.scared, { facing: 0 })); const h = X.head(X.you); stage.aim([h.x + 0.1, h.y + 0.05, h.z - 0.9], [h.x, h.y - 0.03, h.z], 42); });
-    at(L0(4), S.wide({ you: POSE.table }));
-    at(L0(5), S.friendFace(X.f2, { you: POSE.table }));
-    at(L0(6), S.wide({ mood: 'stare', you: POSE.whisper }));
-    at(L0(7), S.youFace({ mood: 'stare', you: POSE.whisper, d0: 1.0, d1: 0.8 }));
-    at(L0(8), S.wideFront({ mood: 'laugh', you: POSE.scared }));
-    at(L0(9), S.friendFace(X.f1, { mood: 'laugh', you: POSE.hide }));
-    at(w(9, 'Carla'), S.friendFace(X.f2, { mood: 'laugh', you: POSE.hide }));
-    at(w(9, 'Zé'), (t, u) => { X.table(t, { mood: 'laugh', you: POSE.hide }); const k = ease(clamp(u / 0.8)); X.put(X.f3, X.seat.f3[0] + 0.1 * k, X.SEAT - 0.35 * k, X.seat.f3[1], Object.assign(POSE.laugh(t), { lean: -0.9 * k })); stage.aim([TB[0] + 1.6, 1.3, TB[1] + 1.6], [TB[0], 0.7, TB[1] + 0.4], 50); });
-    at(L0(10), S.youFace({ mood: 'laugh', you: POSE.hide, d0: 1.0, d1: 0.75 }));
-    at(L0(11), (t, u) => { X.table(t, { mood: 'laugh', you: POSE.hide }); X.lady.walk(t, { speed: 1, facing: -1 }); X.lady.mesh.position.set(lerp(3.2, 0.6, clamp(u / 2.4)), 0, TB[1] - 1.1); X.lady.mesh.visible = true; stage.aim([TB[0] + 0.4, 1.6, TB[1] + 2.4], [TB[0] + 0.4, 1.0, TB[1] - 0.6], 54); });
-    at(L0(12), (t, u) => { X.table(t, { mood: 'laugh', you: POSE.hide }); X.put(X.lady, TB[0] + 0.5, 0, TB[1] - 1.1, { facing: -1 }); const h = X.head(X.lady); stage.aim([h.x - 0.4, h.y + 0.08, h.z + 1.35], [h.x, h.y - 0.04, h.z], 42); });
-    at(L0(13), S.youFace({ mood: 'laugh', you: Object.assign({}, POSE.hide(0), { armL: [2.0, 0.9] }), d0: 0.85, d1: 0.7 }));
-    at(L0(14), (t, u) => { X.table(t, { mood: 'laugh', you: POSE.hide }); X.lady.walk(t, { speed: 1, facing: -1 }); const x = lerp(TB[0] + 0.3, -1.6, clamp(u / 2.3)); X.lady.mesh.position.set(x, 0, TB[1] - 1.1); X.lady.mesh.visible = true; Wd.bucket.position.set(x - 0.22, 0.38, TB[1] - 1.05); stage.aim([x + 0.4, 1.1, TB[1] - 3.0], [x, 0.75, TB[1] - 1.1], 50); });
-    at(L0(15), (t, u) => { X.table(t, { mood: 'laugh', you: POSE.table }); X.waiter.walk(t, { speed: 1.2, facing: -1 }); X.waiter.mesh.position.set(lerp(2.8, TB[0] + 0.55, clamp(u / 1.6)), 0, TB[1] - 0.9); X.waiter.mesh.visible = true; stage.aim([TB[0] + 1.9, 1.5, TB[1] + 1.4], [TB[0] + 0.4, 1.0, TB[1] - 0.6], 52); });
-    at(L0(16), (t, u) => { X.table(t, { mood: 'laugh', you: POSE.table }); X.put(X.waiter, TB[0] + 0.55, 0, TB[1] - 0.9, POSE.point(-1)); const h = X.head(X.waiter); stage.aim([h.x - 0.45, h.y + 0.08, h.z + 1.3], [h.x, h.y - 0.04, h.z], 42); });
+    at(L0(5), S.wide({ you: POSE.table }));
+    at(L0(6), S.friendFace(X.f2, { you: POSE.table }));
+    at(L0(7), S.wide({ mood: 'stare', you: POSE.whisper }));
+    at(L0(8), S.youFace({ mood: 'stare', you: POSE.whisper, d0: 1.0, d1: 0.8 }));
+    at(L0(9), S.wideFront({ mood: 'laugh', you: POSE.scared }));
+    at(L0(10), S.friendFace(X.f1, { mood: 'laugh', you: POSE.hide }));
+    at(w(10, 'Carla'), S.friendFace(X.f2, { mood: 'laugh', you: POSE.hide }));
+    at(w(10, 'Zé'), (t, u) => { X.table(t, { mood: 'laugh', you: POSE.hide }); const k = ease(clamp(u / 0.8)); X.put(X.f3, X.seat.f3[0] + 0.1 * k, X.SEAT - 0.35 * k, X.seat.f3[1], Object.assign(POSE.laugh(t), { lean: -0.9 * k })); stage.aim([TB[0] + 1.6, 1.3, TB[1] + 1.6], [TB[0], 0.7, TB[1] + 0.4], 50); });
+    at(L0(12), S.youFace({ mood: 'laugh', you: POSE.hide, d0: 1.0, d1: 0.75 }));
+    at(L0(13), (t, u) => { X.table(t, { mood: 'laugh', you: POSE.hide }); X.lady.walk(t, { speed: 1, facing: -1 }); X.lady.mesh.position.set(lerp(3.2, 0.6, clamp(u / 2.4)), 0, TB[1] - 1.1); X.lady.mesh.visible = true; stage.aim([TB[0] + 0.4, 1.6, TB[1] + 2.4], [TB[0] + 0.4, 1.0, TB[1] - 0.6], 54); });
+    at(L0(14), (t, u) => { X.table(t, { mood: 'laugh', you: POSE.hide }); X.put(X.lady, TB[0] + 0.5, 0, TB[1] - 1.1, { facing: -1 }); const h = X.head(X.lady); stage.aim([h.x - 0.4, h.y + 0.08, h.z + 1.35], [h.x, h.y - 0.04, h.z], 42); });
+    at(L0(15), S.youFace({ mood: 'laugh', you: Object.assign({}, POSE.hide(0), { armL: [2.0, 0.9] }), d0: 0.85, d1: 0.7 }));
+    at(L0(16), (t, u) => { X.table(t, { mood: 'laugh', you: POSE.hide }); X.lady.walk(t, { speed: 1, facing: -1 }); const x = lerp(TB[0] + 0.3, -1.6, clamp(u / 2.3)); X.lady.mesh.position.set(x, 0, TB[1] - 1.1); X.lady.mesh.visible = true; Wd.bucket.position.set(x - 0.22, 0.38, TB[1] - 1.05); stage.aim([x + 0.4, 1.1, TB[1] - 3.0], [x, 0.75, TB[1] - 1.1], 50); });
+    at(L0(18), (t, u) => { X.table(t, { mood: 'laugh', you: POSE.table }); X.waiter.walk(t, { speed: 1.2, facing: -1 }); X.waiter.mesh.position.set(lerp(2.8, TB[0] + 0.55, clamp(u / 1.6)), 0, TB[1] - 0.9); X.waiter.mesh.visible = true; stage.aim([TB[0] + 1.9, 1.5, TB[1] + 1.4], [TB[0] + 0.4, 1.0, TB[1] - 0.6], 52); });
+    at(L0(19), (t, u) => { X.table(t, { mood: 'laugh', you: POSE.table }); X.put(X.waiter, TB[0] + 0.55, 0, TB[1] - 0.9, POSE.point(-1)); const h = X.head(X.waiter); stage.aim([h.x - 0.45, h.y + 0.08, h.z + 1.3], [h.x, h.y - 0.04, h.z], 42); });
     const streetWalk = (cam) => (t, u) => { stage.use('street'); Wd.hideAll(); X.hideSticks(); const ph = t * 6.5; X.walker.pose({ facing: 1, lean: -0.08, legL: [0.5 + 0.3 * Math.sin(ph), -0.1], legR: [-0.5 + 0.3 * Math.sin(ph), 0.1], armL: [0.6, -0.4], armR: [-0.6, 0.4] }); const x = lerp(-0.4, 3.2, clamp(u / 4.5)); X.walker.mesh.position.set(x, 0, lerp(-0.6, 0.4, clamp(u / 1.5))); X.walker.mesh.visible = true; cam(x, u); };
-    at(L0(17), streetWalk((x, u) => stage.aim([x + 2.8, 1.2, 4.2], [x, 1.0, 0.0], 44)));
-    at(L0(18), streetWalk((x, u) => { const h = X.walker.headWorld(); stage.aim([h.x + 0.6, h.y, h.z + 1.0], [h.x, h.y - 0.15, h.z], 42); }));
-    at(L0(19), (t, u) => { X.bar(t); Wd.interditado.visible = true; const k = ease(clamp(u / 2)); stage.aim([lerp(3.9, 3.55, k), 1.25, -10.0], [2.8, 1.2, -10.0], lerp(46, 34, k)); });
-    at(L0(20), (t, u) => { stage.use('street'); Wd.hideAll(); X.hideSticks(); const k = ease(clamp(u / 4)); stage.aim([lerp(-0.6, -2.0, k), lerp(2.2, 1.6, k), lerp(6.5, 13, k)], [0, 2.6, -1.4], 50); });
+    at(L0(20), streetWalk((x, u) => stage.aim([x + 2.8, 1.2, 4.2], [x, 1.0, 0.0], 44)));
+    at(L0(21), streetWalk((x, u) => { const h = X.walker.headWorld(); stage.aim([h.x + 0.6, h.y, h.z + 1.0], [h.x, h.y - 0.15, h.z], 42); }));
+    at(L0(23), (t, u) => { X.bar(t); Wd.interditado.visible = true; const k = ease(clamp(u / 2)); stage.aim([lerp(3.9, 3.55, k), 1.25, -10.0], [2.8, 1.2, -10.0], lerp(46, 34, k)); });
+    at(L0(25), (t, u) => { stage.use('street'); Wd.hideAll(); X.hideSticks(); const k = ease(clamp(u / 4)); stage.aim([lerp(-0.6, -2.0, k), lerp(2.2, 1.6, k), lerp(6.5, 13, k)], [0, 2.6, -1.4], 50); });
+    at(L0(4), S.doorOut({ door: 0, cam: [3.6, 1.4, -8.6], look: [2.85, 1.2, -9.95], fov: 44 }));
+    at(L0(11), (t, u) => { X.table(t, { mood: 'laugh', you: POSE.hide }); X.put(X.waiter, TB[0] + 0.55, 0, TB[1] - 0.95, { facing: -1 }); stage.aim([TB[0] + 1.9, 1.5, TB[1] + 1.4], [TB[0] + 0.4, 1.0, TB[1] - 0.4], 52); });
+    at(L0(17), (t, u) => { X.bath(t, { you: false }); stage.aim([1.7, 1.45, -10.6], [1.06, 1.45, -10.65], 38); });
+    at(L0(22), S.friendFace(X.f1, { mood: 'laugh', youOn: false }));
+    at(L0(24), (t, u) => { X.bar(t); Wd.interditado.visible = true; stage.aim([3.3, 1.0, -10.0], [2.8, 1.1, -10.0], 30); });
   },
   overlay: (ctx, t) => { const { w, L0, bang } = ctx;
     if (t >= L0(3) && t < L0(3) + 0.8) bang('clic.', (t - L0(3)) * 2, { y: 640, col: '#ffffff', size: 150, rot: 0 });
-    if (t >= w(8, 'rir') && t < w(8, 'rir') + 1.0) bang('KKKKKK', (t - w(8, 'rir')) * 1.6, { y: 620, col: '#4fe08a', size: 170 });
+    if (t >= w(9, 'rir') && t < w(9, 'rir') + 1.0) bang('KKKKKK', (t - w(9, 'rir')) * 1.6, { y: 620, col: '#4fe08a', size: 170 });
   },
   end: { q: ['VOCÊ VOLTA', 'NESSE BAR?'], a: 'SIM: SEXTA QUE VEM', b: 'NÃO: NUNCA MAIS', next: 'FIM' },
-  cover: { at: ({ L0 }) => L0(9) + 0.4, pill: 'BANHEIRO SEM ÁGUA · PARTE 3 · FINAL', title: ['ELES RIRAM', 'ANTES DO FIM'], color: '#4fe08a', gauge: 99 },
+  cover: { at: ({ L0 }) => L0(10) + 0.4, pill: 'BANHEIRO SEM ÁGUA · PARTE 3 · FINAL', title: ['ELES RIRAM', 'ANTES DO FIM'], color: '#4fe08a', gauge: 99 },
 });
 </script>
 </body></html>

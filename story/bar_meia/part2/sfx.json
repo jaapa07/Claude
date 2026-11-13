@@ -11,23 +11,23 @@
    "level": 0.5
   },
   {
-   "at": "forte@5",
+   "at": "forte@6",
    "level": 0.9
   },
   {
-   "at": "dramática@12",
+   "at": "dramática@14",
    "level": 1.2
   },
   {
-   "at": "Deus@15",
+   "at": "Deus@17",
    "level": 0.3
   },
   {
-   "at": "bolso@19",
+   "at": "bolso@22",
    "level": 0.6
   },
   {
-   "at": "olha@21",
+   "at": "olha@24",
    "level": 1.0
   }
  ],
@@ -61,87 +61,87 @@
    "vol": 0.4
   },
   {
-   "at": "ajuda@4",
+   "at": "ajuda@5",
    "type": "sting",
    "vol": 0.3
   },
   {
-   "at": "Toc@5",
+   "at": "Toc@6",
    "type": "knock",
    "vol": 1.0
   },
   {
-   "at": "orgulho@6",
+   "at": "orgulho@7",
    "type": "heartbeat",
    "vol": 0.5
   },
   {
-   "at": "grande@7",
+   "at": "grande@8",
    "type": "knock",
    "vol": 0.7
   },
   {
-   "at": "meia@9",
+   "at": "meia@10",
    "type": "sting",
    "vol": 0.6
   },
   {
-   "at": "mãe@10",
+   "at": "mãe@11",
    "type": "glass",
    "vol": 0.3
   },
   {
-   "at": "dramática@12",
+   "at": "dramática@14",
    "type": "swell",
    "vol": 0.8
   },
   {
-   "at": "dramática@12+1.5",
+   "at": "dramática@14+1.5",
    "type": "hit",
    "vol": 0.7
   },
   {
-   "at": "companheira@13",
+   "at": "companheira@15",
    "type": "hit",
    "vol": 0.8
   },
   {
-   "at": "tênis@14",
+   "at": "tênis@16",
    "type": "thud",
    "vol": 0.4
   },
   {
-   "at": "meia@14",
+   "at": "meia@16",
    "type": "whoosh",
    "vol": 0.4
   },
   {
-   "at": "Deus@15",
+   "at": "Deus@17",
    "type": "sting",
    "vol": 0.4
   },
   {
-   "at": "carinho@18",
+   "at": "carinho@21",
    "type": "glass",
    "vol": 0.3
   },
   {
-   "at": "bolso@19",
+   "at": "bolso@22",
    "type": "thud",
    "vol": 0.3
   },
   {
-   "at": "porta@20",
+   "at": "porta@23",
    "type": "creak",
    "vol": 0.7
   },
   {
-   "at": "fila@21",
+   "at": "fila@24",
    "type": "hit",
    "vol": 0.5
   },
   {
-   "at": 56.5,
+   "at": 68.52,
    "type": "hit",
    "vol": 0.5
   }

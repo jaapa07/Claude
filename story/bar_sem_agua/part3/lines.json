@@ -33,6 +33,13 @@
    "pause": 0.47
   },
   {
+   "text": "Lá de dentro, um ai, meu Deus abafado.",
+   "key": {
+    "Deus": "red"
+   },
+   "pause": 0.32
+  },
+  {
    "text": "Você senta na mesa como se nada tivesse acontecido.",
    "key": {
     "nada": "green"
@@ -79,6 +86,13 @@
    "pause": 0.37
   },
   {
+   "text": "O garçom pergunta se tá tudo bem. Ninguém consegue responder.",
+   "key": {
+    "responder": "green"
+   },
+   "pause": 0.32
+  },
+  {
    "text": "Você esconde o rosto nas mãos.",
    "key": {
     "mãos": "yellow"
@@ -114,6 +128,13 @@
    "pause": 0.52
   },
   {
+   "text": "Ela também conheceu o aviso de terça.",
+   "key": {
+    "terça": "red"
+   },
+   "pause": 0.32
+  },
+  {
    "text": "O garçom chega com a conta.",
    "key": {
     "conta": "yellow"
@@ -145,11 +166,27 @@
    "pause": 0.42
   },
   {
+   "text": "Volta sexta! A gente traz água!",
+   "key": {
+    "água": "yellow"
+   },
+   "pause": 0.32,
+   "voice": "pm_santa",
+   "speed": 1.0
+  },
+  {
    "text": "Na porta do banheiro, um papel novo: interditado.",
    "key": {
     "interditado": "red"
    },
    "pause": 0.42
+  },
+  {
+   "text": "Embaixo, escrito à mão: e não adianta puxar.",
+   "key": {
+    "puxar": "red"
+   },
+   "pause": 0.32
   },
   {
    "text": "Naquele bar, você deixou uma impressão muito forte.",

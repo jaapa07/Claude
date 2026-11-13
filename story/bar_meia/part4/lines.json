@@ -38,6 +38,13 @@
    "speed": 1.2
   },
   {
+   "text": "Você pensa em negociar. O olhar dele diz que não.",
+   "key": {
+    "não": "red"
+   },
+   "pause": 0.32
+  },
+  {
    "text": "Vento na cara. Lágrima no olho.",
    "key": {
     "Lágrima": "yellow"
@@ -73,6 +80,13 @@
    "pause": 0.42
   },
   {
+   "text": "Merecia um enterro digno. Não vai ter.",
+   "key": {
+    "digno": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
    "text": "Você estica o braço pra fora da janela.",
    "key": {
     "janela": "yellow"
@@ -99,6 +113,13 @@
     "escuro": "yellow"
    },
    "pause": 0.42
+  },
+  {
+   "text": "As estrelas fingem que não viram.",
+   "key": {
+    "estrelas": "yellow"
+   },
+   "pause": 0.32
   },
   {
    "text": "Uma música emocionante toca. De novo, só na sua cabeça.",
@@ -137,6 +158,13 @@
    "speed": 1.0
   },
   {
+   "text": "Você chega em casa com um pé de meia e outro de fé.",
+   "key": {
+    "fé": "green"
+   },
+   "pause": 0.32
+  },
+  {
    "text": "No dia seguinte, um gari acha uma meia no asfalto.",
    "key": {
     "gari": "yellow"
@@ -156,6 +184,13 @@
     "hoje": "yellow"
    },
    "pause": 0.52
+  },
+  {
+   "text": "Virou ponto de referência: vira à esquerda na meia.",
+   "key": {
+    "meia": "yellow"
+   },
+   "pause": 0.32
   },
   {
    "text": "Dizem que, nas noites de quarta, ela ainda cheira.",
