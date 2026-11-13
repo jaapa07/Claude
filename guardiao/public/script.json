@@ -1,0 +1,97 @@
+{
+  "voices": {
+    "narrador": {
+      "label": "Narrador",
+      "kokoro": "pm_alex",
+      "speed": 0.95,
+      "pitch": 0.9
+    },
+    "kaito": {
+      "label": "Kaito",
+      "kokoro": "pm_santa",
+      "speed": 1.0,
+      "pitch": 1.09
+    },
+    "lumi": {
+      "label": "Lumi",
+      "kokoro": "pf_dora",
+      "speed": 1.04,
+      "pitch": 1.22
+    },
+    "voz": {
+      "label": "Voz misteriosa",
+      "kokoro": "pm_alex",
+      "speed": 0.86,
+      "pitch": 0.78
+    }
+  },
+  "lines": [
+    {
+      "id": "n1",
+      "who": "narrador",
+      "at": 0.35,
+      "text": "Imagine acordar em um mundo onde as estrelas estão morrendo."
+    },
+    {
+      "id": "k1",
+      "who": "kaito",
+      "at": 10.3,
+      "text": "Então… ainda existe uma?"
+    },
+    {
+      "id": "n2",
+      "who": "narrador",
+      "at": 13.5,
+      "text": "E a última esperança estava escondida além do próprio céu."
+    },
+    {
+      "id": "l1",
+      "who": "lumi",
+      "at": 28.3,
+      "text": "Estamos chegando ao lugar onde tudo começou."
+    },
+    {
+      "id": "n3",
+      "who": "narrador",
+      "at": 40.8,
+      "text": "Ali estava guardado o segredo que ninguém deveria descobrir."
+    },
+    {
+      "id": "v1",
+      "who": "voz",
+      "at": 48.9,
+      "text": "Você não está procurando a última estrela…"
+    },
+    {
+      "id": "v2",
+      "who": "voz",
+      "at": 52.2,
+      "text": "…você é a última estrela.",
+      "say": "Você é a última estrela."
+    },
+    {
+      "id": "n4",
+      "who": "narrador",
+      "at": 63.5,
+      "text": "Às vezes, a luz que procuramos sempre esteve dentro de nós."
+    },
+    {
+      "id": "k2",
+      "who": "kaito",
+      "at": 81.4,
+      "text": "Então… o céu nunca esteve realmente vazio."
+    },
+    {
+      "id": "l2",
+      "who": "lumi",
+      "at": 84.15,
+      "text": "Ele só estava esperando você."
+    },
+    {
+      "id": "n5",
+      "who": "narrador",
+      "at": 86.1,
+      "text": "Porque até a menor luz pode iluminar um universo inteiro."
+    }
+  ]
+}
