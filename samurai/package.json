@@ -8,7 +8,8 @@
     "export": "node tools/export.mjs",
     "stills": "node tools/stills.mjs",
     "verify": "node tools/verify.mjs",
-    "voice": "python3 tools/voice.py"
+    "voice": "python3 tools/voice.py",
+    "cover": "node tools/cover.mjs"
   },
   "dependencies": {
     "@fontsource/cinzel": "^5.3.0",

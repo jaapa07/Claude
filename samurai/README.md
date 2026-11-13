@@ -11,7 +11,8 @@ Formato vertical nativo **9:16, 1080 × 1920, 60 fps** (Reels, TikTok, Shorts).
 | 4 | A Última Batalha | Estações e horas trocam a cada golpe, a flecha de Yuna, o abraço e a explosão de luz azul |
 | 5 | Um Novo Amanhecer | O futuro se desfaz em pétalas, a katana é quebrada, o mundo se reconstrói |
 
-Os vídeos prontos estão em [`videos/`](videos/): `ep1.mp4` … `ep5.mp4` (1080 × 1920, 60 fps, H.264 + AAC).
+Os vídeos prontos estão em [`videos/`](videos/): `serie-completa.mp4` (os cinco episódios em sequência, 100 s, com a capa embutida como miniatura),
+`ep1.mp4` … `ep5.mp4` e a capa `capa.jpg` (1080 × 1920). Tudo em 1080 × 1920, 60 fps, H.264 + AAC.
 A exportação escreve os originais em `out/`, que fica fora do git.
 
 ## Rodar
@@ -43,6 +44,7 @@ npm run export -- --audio         # refaz só o áudio dos MP4 existentes
 npm run export -- --gpu           # usa a GPU da máquina (bem mais rápido)
 npm run verify -- 2               # prova de determinismo do episódio 2
 npm run stills -- 4 1,5.5,12      # stills de conferência em out/stills
+npm run cover                     # refaz a capa (videos/capa.jpg); aceita: -- <ep> <t> <saída>
 ```
 
 Outras opções: `--workers 4`, `--crf 20`, `--from 0 --to 1200` (faixa de frames), `--keep` (mantém os JPEG).
