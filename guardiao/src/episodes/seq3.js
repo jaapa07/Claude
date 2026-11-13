@@ -21,7 +21,7 @@ export default {
   build(F) {
     const tl = newTimeline(), cam = F.cam, kaito = F.kaito, D = F.desert, TU = F.tunnel;
     shot(tl, cam, 4, 6.5, { p: [14, 11, -18], l: [0, 36, -150], fov: 52 }, { p: [8, 21, -54], l: [0, 44, -150], fov: 50 }, 'sine.inOut');
-    shot(tl, cam, 6.5, 9.6, { p: [3.6, 2.0, HZ + 5.2], l: [0, 2.9, HZ - 0.6], fov: 52 }, { p: [2.3, 2.2, HZ + 2.9], l: [0, 2.7, HZ - 0.6], fov: 48 }, 'sine.out');
+    shot(tl, cam, 6.5, 9.6, { p: [4.4, 1.4, HZ + 10.5], l: [0, 6.6, HZ - 1], fov: 58 }, { p: [3.0, 1.5, HZ + 7.2], l: [0, 6.0, HZ - 1], fov: 56 }, 'sine.out');
     shot(tl, cam, 9.6, 11.8, { p: [1.6, 9, 2.2], l: [0, -30, 0], fov: 58 }, { p: [3.5, 5, 4.5], l: [0, -4, 0], fov: 54 }, 'sine.inOut');
     shot(tl, cam, 11.8, 14, { p: [5.5, 0.6, 3.5], l: [0, 0.4, 0], fov: 46 }, { p: [-4.6, -1.5, 4.6], l: [0, 0.4, 0], fov: 44 }, 'sine.inOut');
     shot(tl, cam, 14, 18, { p: [-4.6, -1.5, 4.6], l: [0, 0.4, 0], fov: 44 }, { p: [0.6, -1.0, 13.5], l: [0, 0.6, 0], fov: 50 }, 'sine.inOut');
@@ -35,7 +35,7 @@ export default {
           D.group.visible = true;
           kaitoPos(t, V); const touch = sseg(t, 8.0, TOUCH), gone = sseg(t, TOUCH, 9.9);
           F.atmo.apply('desert', null, 0, T, V);
-          D.update(T, F.atmo, sseg(t, 6.5, TOUCH) * 0.3 + pulse(t, TOUCH - 0.05, 9.6, 0.1) * 2, gone, lerp(48, 19.4, sseg(t, 6.0, 8.4)));
+          D.update(T, F.atmo, sseg(t, 6.5, TOUCH) * 0.3 + pulse(t, TOUCH - 0.05, 9.6, 0.1) * 2, gone, lerp(48, 8.9, sseg(t, 6.0, 8.4)), lerp(1, 0.32, sseg(t, 6.0, 8.4)));
           F.motes.update(T, F.ahead(6), 1);
           if (t < 4) {                                                // pouso + órbita de 360°
             const land = seg(t, 0, 0.7), rise = sseg(t, 1.0, 2.2);

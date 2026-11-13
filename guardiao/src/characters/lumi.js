@@ -30,13 +30,14 @@ export class Lumi {
   update(t, path, lookAt, o = {}) {
     const p = path(t, this._v); this.pos.copy(p); this.group.position.copy(p);
     if (lookAt) this.group.lookAt(lookAt);
+    const dim = o.dim ?? 0; this.coreMat.color.setRGB(1.6, 1.25, 0.6).multiplyScalar(1 - dim * 0.42);
     const size = o.size ?? 1, sun = o.sun ?? 0, happy = o.happy ?? 0, blink = Math.max(o.blink ?? 0, (t * 0.37 % 1) > 0.95 ? 1 : 0);
     const bob = 1 + Math.sin(t * 7) * 0.035;
     this.group.scale.setScalar(size * (1 + sun * 2.2));
     this.core.scale.set(bob, 2 - bob, bob);
     for (const e of this.eyes) { e.scale.set(1, (1 - 0.88 * blink) * (1 - happy * 0.45), 1); e.visible = sun < 0.6; }
     this.ears.forEach((e, i) => { e.rotation.x = Math.sin(t * 5 + i) * 0.25 + happy * 0.3; e.visible = sun < 0.6; });
-    this.halo.scale.setScalar(0.8 + sun * 1.6 + Math.sin(t * 3.1) * 0.06); this.halo.material.opacity = 0.75; this.light.intensity = (0.8 + sun * 8) * (o.light ?? 1);
+    this.halo.scale.setScalar(0.8 + sun * 1.6 + Math.sin(t * 3.1) * 0.06); this.halo.material.opacity = 0.75 * (1 - dim * 0.6); this.light.intensity = (0.8 + sun * 8) * (o.light ?? 1);
     this.corona.material.opacity = sun * 0.5; this.corona.scale.setScalar(1 + Math.sin(t * 6) * 0.08);
     this.tail.update(t, path, 0.035 * size * (1 + sun));
     this.group.visible = true; this.tail.points.visible = true;

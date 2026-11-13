@@ -35,12 +35,12 @@ export default {
         // ---- 0–3 s: a estrela explode em silêncio e as constelações se apagam
         if (t < 5) {
           const boom = t - 0.3;
-          F.star.visible = t < 0.42; F.star.position.copy(STAR); F.star.scale.setScalar(70 * (1 + sseg(t, 0, 0.3) * 0.5 + pulse(t, 0.28, 0.45, 0.05) * 3));
+          F.star.visible = t < 0.42; F.star.position.copy(STAR); F.star.scale.setScalar(70 * (1 + sseg(t, 0, 0.3) * 0.5 + pulse(t, 0.28, 0.45, 0.05) * 1.6));
           F.big.set(STAR, boom, [30, 30, 30]);
           F.rings[0].position.copy(STAR); F.rings[0].lookAt(cam.p); F.rings[0].scale.setScalar(1500); F.rings[0].userData.set(clamp(boom / 2.6), T);
-          F.stage.flash(1, 0.92, 0.75, pulse(t, 0.27, 0.75, 0.06) * 0.32);
+          F.stage.flash(1, 0.92, 0.75, pulse(t, 0.27, 0.7, 0.06) * 0.22);
           if (boom > 0 && boom < 2) F.wave(1, STAR, boom * 0.75, 0.05 * (1 - boom / 2));
-          F.rays(0.8 * (1 - sseg(t, 0.3, 2.2)), STAR, [1, 0.85, 0.6]);
+          F.rays(0.5 * (1 - sseg(t, 0.3, 2.2)), STAR, [1, 0.85, 0.6]);
           cam.shake = pulse(t, 0.3, 2.4, 0.3) * 1.2; cam.roll = sseg(t, 0, 3) * 0.35 * (t < 3 ? 1 : 0);
         }
         // ---- Kaito no mirante

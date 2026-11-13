@@ -21,7 +21,7 @@ const sandFrag = /* glsl */`precision highp float; uniform float uTime; uniform 
 const heartFrag = /* glsl */`precision highp float; uniform float uTime, uPulse; varying vec3 vN; varying vec3 vV; varying vec3 vP; ${NOISE}
   void main(){ float fres = pow(1.0 - abs(dot(normalize(vN), normalize(vV))), 1.6);
     float inner = fbm(vP.xy * 3.0 + uTime * 0.3) * fbm(vP.yz * 4.0 - uTime * 0.2);
-    vec3 col = mix(vec3(0.5, 0.2, 0.9), vec3(1.0, 0.75, 0.4), inner * 2.2) * (0.35 + uPulse * 0.6) + vec3(0.8, 0.9, 1.0) * fres * (0.5 + uPulse * 0.5);
+    vec3 col = mix(vec3(0.5, 0.2, 0.9), vec3(1.0, 0.75, 0.4), inner * 2.2) * (0.22 + uPulse * 0.32) + vec3(0.7, 0.8, 1.0) * fres * (0.3 + uPulse * 0.3);
     gl_FragColor = vec4(col, 1.0); }`;
 const tunnelFrag = /* glsl */`precision highp float; uniform float uTime, uScroll, uHue, uOpen; varying vec2 vUv; ${NOISE}
   vec3 pal(float t){ return 0.5 + 0.5 * cos(6.28318 * (t + vec3(0.0, 0.33, 0.6))); }
@@ -86,12 +86,12 @@ export class CelestialDesert {
     for (let i = 0; i < 14; i++) { const st = new THREE.Mesh(new THREE.BoxGeometry(30, 1.2, 5), stone); st.position.set(0, -1 + i * 0.02, 84 + i * 4.5); st.position.y = -2.2 - i * 0.0; T.add(st); }
     this.heartPos = new THREE.Vector3(TEMPLE.x, 48, TEMPLE.z);
   }
-  update(t, atmo, pulse = 0, floorGone = 0, heartY = 48) {
+  update(t, atmo, pulse = 0, floorGone = 0, heartY = 48, hs = 1) {
     const u = this.sandU; u.uTime.value = t; u.uSun.value.copy(atmo.sunDir); u.uSunCol.value.copy(atmo.sun.color).multiplyScalar(atmo.sun.intensity / 2.4); u.uSky.value.copy(atmo.hemi.color); u.uFog.value.copy(atmo.scene.fog.color); u.uFogD.value = atmo.scene.fog.density;
     const d = this.d; this.pd.forEach((p, i) => { const a = p.a + t * p.sp; d.position.set(Math.cos(a) * p.rr, p.y + Math.sin(t * 0.5 + p.ph) * 0.8, Math.sin(a) * p.rr); d.rotation.set(0.3, t * 0.2 + p.ph, 0); d.scale.setScalar(p.s); d.updateMatrix(); this.planets.setMatrixAt(i, d.matrix); }); this.planets.instanceMatrix.needsUpdate = true;
     for (const [m, sp] of this.drums) m.rotation.y = t * sp;
     this.arm.forEach((r, i) => r.rotation.set(t * (0.3 + i * 0.11) + i, t * (0.2 + i * 0.07) * (i % 2 ? -1 : 1), i * 0.6));
-    const beat = 0.5 + 0.5 * Math.pow(Math.sin(t * 2.1) * 0.5 + 0.5, 3); this.heartU.uTime.value = t; this.heartU.uPulse.value = beat * 0.6 + pulse; this.heart.rotation.y = t * 0.25; this.heart.position.y = this.heartLight.position.y = heartY; this.heartPos.y = heartY; this.heart.scale.set(11 * (1 + beat * 0.05), 17 * (1 + beat * 0.05), 11 * (1 + beat * 0.05));
+    const beat = 0.5 + 0.5 * Math.pow(Math.sin(t * 2.1) * 0.5 + 0.5, 3); this.heartU.uTime.value = t; this.heartU.uPulse.value = beat * 0.6 + pulse; this.heart.rotation.y = t * 0.25; this.heart.position.y = this.heartLight.position.y = heartY; this.heartPos.y = heartY; this.heart.scale.set(11 * hs * (1 + beat * 0.05), 17 * hs * (1 + beat * 0.05), 11 * hs * (1 + beat * 0.05));
     this.heartLight.intensity = 260 * (0.5 + beat * 0.5 + pulse * 1.5);
     this.floorDis.uDissolve.value = floorGone * 1.05; this.floor.visible = floorGone < 0.99;
   }
