@@ -11,8 +11,9 @@ export class Player {
   now() { return this.ctx && this.src ? this.ctx.currentTime : performance.now() / 1000; }
   _stop() { if (this.src) { try { this.src.stop(); } catch { /* já parado */ } this.src.disconnect(); this.src = null; } }
   async play() {
-    const my = ++this.token; this.playing = true; this.pending = true; this.onTick(this);
+    const my = ++this.token; this.playing = true; this.pending = true;
     if (this.T >= DURATION - 0.05) this.T = 0;
+    this.draw(this.T); this.onTick(this);                               // mostra o quadro atual enquanto o áudio é preparado
     try { this.ctx ??= new AudioContext({ sampleRate: 48000 }); await this.ctx.resume(); } catch { this.ctx = null; }
     this._stop();
     if (this.ctx) {

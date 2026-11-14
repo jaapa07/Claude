@@ -11,7 +11,8 @@
     "stills": "node tools/stills.mjs",
     "verify": "node tools/verify.mjs",
     "cover": "node tools/cover.mjs",
-    "voice": "python3 tools/voice.py"
+    "voice": "python3 tools/voice.py",
+    "audio": "node tools/audio.mjs"
   },
   "dependencies": {
     "@fontsource/cinzel": "^5.3.0",

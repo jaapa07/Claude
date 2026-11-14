@@ -31,6 +31,10 @@ Parâmetros de URL: `?t=45` abre num instante, `?scale=0.75` muda a resolução 
 
 `npm run build` gera a versão estática em `dist/`.
 
+A prévia toca a trilha já mixada em `public/audio/trilha.mp3`, que carrega em instantes. Sem esse arquivo o app
+sintetiza os 90 s ao vivo antes de tocar, o que pode levar perto de um minuto. Depois de mexer em `src/audio/` ou em
+`public/script.json`, rode `npm run audio` para regravar o arquivo. A exportação sempre usa a síntese, não o arquivo.
+
 ## Exportar MP4
 
 Precisa de `ffmpeg` no PATH e do Playwright com Chromium
@@ -108,7 +112,7 @@ src/
                 cues.js                 trilha e efeitos em tempo absoluto
   episodes/     seq1.js … seq5.js       decupagem de cada sequência
   export/       api.js                  renderFrame(n) e áudio expostos à página
-tools/          export.mjs, verify.mjs, stills.mjs, cover.mjs, voice.py
+tools/          export.mjs, verify.mjs, stills.mjs, cover.mjs, audio.mjs, voice.py
 ```
 
 ### Personagens e continuidade

@@ -11,7 +11,7 @@ const RENDER = q.has('render');
 
 export default function App() {
   const canvas = useRef(null), hud = useRef(null), stage = useRef(null), frame = useRef(null), api = useRef(null);
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(false), [audioReady, setAudioReady] = useState(false);
   const [ui, setUi] = useState({ T: 0, playing: false, fps: 60 });
   const [quality, setQuality] = useState(Number(q.get('scale') ?? (RENDER ? 1 : 0.5)));
 
@@ -23,7 +23,8 @@ export default function App() {
       installExportApi(eng.draw, eng.getAudio);
       const start = Number(q.get('t') ?? 0);
       if (!RENDER) {
-        const player = new Player(eng.draw, eng.getAudio); player.T = start;
+        const player = new Player(eng.draw, eng.getPlayback); player.T = start;
+        eng.getPlayback().then(() => !dead && setAudioReady(true), () => !dead && setAudioReady(true));   // pré-carrega a trilha
         let n = 0; player.onTick = (p) => { if (!p.playing || n++ % 6 === 0) setUi({ T: p.T, playing: p.playing, fps: p.fps }); };
         api.current = { player, eng }; if (q.has('autoplay')) player.play();
       } else api.current = { eng };
@@ -50,7 +51,7 @@ export default function App() {
   return (
     <div id="app">
       <div id="frame" ref={frame}><div id="stage" ref={stage}><canvas id="gl" ref={canvas} /><div id="hud" ref={hud} /></div>{!ready && <div className="loading">Preparando o universo…</div>}</div>
-      {!RENDER && <Controls ui={ui} ready={ready} quality={quality} sequences={SEQUENCES} duration={DURATION} seqLen={SEQ_LEN} fps={FPS}
+      {!RENDER && <Controls ui={ui} ready={ready && audioReady} loading={ready && !audioReady} quality={quality} sequences={SEQUENCES} duration={DURATION} seqLen={SEQ_LEN} fps={FPS}
         onToggle={() => p()?.toggle()} onSeek={(T) => p()?.seek(T)} onVolume={(v) => p()?.setVolume(v)} onLoop={(v) => { if (p()) p().loop = v; }}
         onQuality={(s) => { setQuality(s); api.current.eng.film.setScale(s); api.current.eng.draw(p().T); }} onWav={() => downloadWav(api.current.eng.getAudio)} />}
     </div>

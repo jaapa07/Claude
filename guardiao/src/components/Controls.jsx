@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 const fmt = (T) => `${String(Math.floor(T / 60)).padStart(1, '0')}:${(T % 60).toFixed(1).padStart(4, '0')}`;
 
 /** Painel: reprodução, pausa, timeline com marcas de sequência, volume, seleção de sequências e exportação. */
-export default function Controls({ ui, ready, quality, sequences, duration, seqLen, fps, onToggle, onSeek, onVolume, onLoop, onQuality, onWav }) {
+export default function Controls({ ui, ready, loading, quality, sequences, duration, seqLen, fps, onToggle, onSeek, onVolume, onLoop, onQuality, onWav }) {
   const [vol, setVol] = useState(0.9), [loop, setLoop] = useState(true);
   const cur = Math.min(sequences.length - 1, Math.floor(ui.T / seqLen));
   return (
@@ -17,7 +17,7 @@ export default function Controls({ ui, ready, quality, sequences, duration, seqL
         <div className="marks">{sequences.map((s, i) => <span key={s.id} style={{ left: `${(i * seqLen / duration) * 100}%` }} />)}</div>
       </div>
       <div className="row">
-        <button className="primary" disabled={!ready} onClick={onToggle}>{ui.playing ? '❚❚ Pausar' : '▶ Assistir'}</button>
+        <button className="primary" disabled={!ready} onClick={onToggle}>{loading ? 'Carregando áudio…' : ui.playing ? '❚❚ Pausar' : '▶ Assistir'}</button>
         <button onClick={() => onSeek(0)}>⟲ Início</button>
         <span className="time">{fmt(ui.T)} / {fmt(duration)}</span>
       </div>
