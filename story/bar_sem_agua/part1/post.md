@@ -11,22 +11,27 @@ Imagine que é sexta, 22:10, e era pra ser só uma cervejinha.
 Boteco do Tonho. Você e três amigos.
 O Beto conta a mesma piada de sempre.
 Todo mundo ri. Você ri mais alto.
+A Carla ri tanto que derruba o petisco.
 Aí a sua barriga ronca.
 Mais alto que a risada.
 Foi trovão?
 O céu tá limpo. Estrelado.
+O Zé te olha. Desconfiado.
 22:12. Você cruza as pernas.
 22:13. Você se ajeita na cadeira.
 22:14. Você começa a suar.
 Tá tudo bem?
 Você sorri, travado: tô só prestando atenção.
 Em um único músculo.
+Você levanta devagar. Como quem vai buscar um guardanapo.
 Missão: banheiro. Doze metros.
 Passinho curto. Joelho colado. Postura de estátua.
 Cada passo, uma oração.
 O garçom passa. Você desvia sem dobrar o corpo.
+Alguém grita o seu nome. Você finge que não ouviu.
 Corredor dos fundos. Uma lâmpada piscando.
 Você entra. Tranca. Senta.
+O bar inteiro some. Só existe você e o vaso.
 Alívio. Trinta segundos de paz.
 Aí você puxa a descarga.
 Clic.

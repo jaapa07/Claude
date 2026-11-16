@@ -11,6 +11,7 @@ Imagine que você puxa a descarga de novo. Com força.
 Clic. Clic. Clic.
 Nada. Nem um pingo.
 Silêncio absoluto. Só um grilo, em algum lugar.
+Você puxa mais uma vez. Por esporte.
 Aí uma luz acende no canto.
 Um balde. Azul. Brilhando.
 Um coral de anjos começa a cantar.
@@ -18,15 +19,19 @@ Você pega o balde. Abre a torneira.
 E sai um sopro.
 Seco. Quente. Debochado.
 O coral desafina.
+Um anjo tosse.
 Você fica ali, segurando um balde vazio diante de uma situação cheia.
 Na parede, um aviso que você não tinha visto.
 Falta água desde terça.
+Hoje é sexta.
 Você olha pro vaso. Olha pra porta.
 Só existe uma saída.
+E ela dá direto pro corredor.
 Você respira fundo. Ajeita a camiseta.
 Abre a porta como quem não fez nada.
 E dá de cara com uma fila.
 Na frente, uma moça. Olhando pra você.
+Ela tá com pressa. Você conhece esse olhar.
 Do lado da porta, a placa: unissex.
 Ela sorri. Educada.
 
