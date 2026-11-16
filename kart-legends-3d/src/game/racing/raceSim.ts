@@ -53,7 +53,7 @@ export class RaceSim {
   private readonly watch: { progress: number; time: number }[] = [];
 
   constructor(
-    private readonly R: Rapier,
+    R: Rapier,
     readonly world: RAPIER.World,
     data: TrackData,
     readonly config: RaceConfig,
@@ -130,7 +130,7 @@ export class RaceSim {
       // comandos
       if (!racing) Object.assign(k.input, NEUTRAL_INPUT);
       else if (k.ai) (this.drivers[k.index] ?? this.autopilot).update(k, this.aiWorld, dt);
-      else if (this.opts.playerInput) Object.assign(k.input, this.opts.playerInput());
+      else if (k.isPlayer && this.opts.playerInput) Object.assign(k.input, this.opts.playerInput());
       if (k.finished) k.input.item = false;
       stepKart(k, this.ctx, dt);
     }
@@ -255,7 +255,7 @@ export class RaceSim {
     const best = k.lapTimes.length ? Math.min(...k.lapTimes) : null;
     const next = k.driftLevel >= 3 ? 1 : (() => {
       const lo = k.driftLevel === 0 ? 0 : PHYS.driftLevels[k.driftLevel - 1]!;
-      const hi = PHYS.driftLevels[k.driftLevel]!;
+      const hi = PHYS.driftLevels[Math.min(2, k.driftLevel)]!;
       return Math.max(0, Math.min(1, (k.driftCharge - lo) / (hi - lo)));
     })();
     return {

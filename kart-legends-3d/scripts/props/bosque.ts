@@ -111,7 +111,7 @@ function arvoreBosque(rand: Rand): Model {
   const [c0, c1] = pick(rand, CANOPY);
   const glow = pick(rand, GLOWS);
   const lx = rr(rand, -1.4, 1.4), lz = rr(rand, -1.4, 1.4), tH = H * 0.62;
-  const ax = (t: number): V3 => [lx * Math.sin(t * Math.PI) + lz * 0.5 * t * t, -0.1 + t * (tH + 0.1), lz * Math.sin(t * Math.PI * 0.8) - lx * 0.5 * t * t];
+  const ax = (t: number): V3 => [lx * Math.sin(t * Math.PI) * t + lz * 0.5 * t * t, 0.15 + t * (tH - 0.15), lz * Math.sin(t * Math.PI * 0.8) - lx * 0.5 * t * t];
   put(m, tube([ax(0), ax(0.2), ax(0.45), ax(0.7), ax(1)], (t) => 0.62 - 0.36 * t + 0.35 * Math.exp(-t * 9), 8, 7), 'aur_bark', bark, undefined, 0.4, lite(bark, 0.25));
   for (let k = 0; k < 4; k++) {
     const a = (k / 4) * TAU + rand(), L = rr(rand, 1.4, 2.2);
@@ -263,7 +263,7 @@ function cachoeira(rand: Rand): Model {
   for (let i = 0; i < 5; i++) put(m, blob(rr(rand, 0.3, 0.55), 0, rand() * 30, 0.2, 1.4, [1.3, 0.5, 1.1]), 'glow_white', '#ffffff', { p: [rr(rand, -1.6, 1.6), midY - 0.25, 2.5 + rr(rand, -0.2, 0.4)] }, 0.05);
   for (let i = 0; i < 8; i++) {
     const a = -0.5 + (i / 7) * (Math.PI + 1.0), r = rr(rand, 0.7, 1.3);
-    put(m, rockGeo(r, rand() * 30, [1.1, 0.7, 1], 1, 0.25), 'aur_rock', jit('#56557a', rand), { p: [Math.cos(a) * 5.9, r * 0.45, 4.6 + Math.sin(a) * 4.2] }, 0.35, '#8f8cb4');
+    put(m, rockGeo(r, rand() * 30, [1.1, 0.7, 1], 1, 0.25), 'aur_rock', jit('#56557a', rand), { p: [Math.cos(a) * 5.9, r * 0.66, 4.6 + Math.sin(a) * 4.2] }, 0.35, '#8f8cb4');
   }
   // cristais nas laterais
   const glow = pick(rand, GLOWS);
@@ -402,14 +402,14 @@ function plantaTopo(rand: Rand): Model {
 
 function samambaia(rand: Rand): Model {
   const m = new Model();
-  const c = jit(pick(rand, ['#1a8a44', '#0f7a56', '#2f9a2c', '#0f7a76']), rand);
+  const c = jit(pick(rand, ['#0f9a3a', '#08865a', '#2aa81c', '#078a80']), rand);
   const n = 9 + Math.floor(rand() * 3);
   for (let i = 0; i < n; i++) {
     const a = (i / n) * TAU + rr(rand, -0.2, 0.2), L = rr(rand, 1.1, 1.7) * (i % 2 ? 0.7 : 1), up = rr(rand, 0.6, 1.0) * (i % 2 ? 1.35 : 1);
     const segs = 10;
     const pts: V3[] = Array.from({ length: segs + 1 }, (_, k) => { const t = k / segs; return [Math.cos(a) * (0.08 + t * L), 0.05 + Math.sin(t * Math.PI * 0.8) * up, Math.sin(a) * (0.08 + t * L)] as V3; });
     const g = strip(pts, (t) => (0.3 * Math.sin(Math.PI * (0.1 + 0.88 * t)) + 0.02) * (Math.round(t * segs) % 2 ? 1 : 0.55), [-Math.sin(a), 0, Math.cos(a)], 0.3);
-    m.add(tone(g, c, 0.4, lite(c, 0.15)), 'leaf');
+    m.add(tone(g, c, 0.35, c), 'leaf');
   }
   put(m, flat(ico(0.16, 0)), 'aur_bark', '#5a4030', { p: [0, 0.06, 0], s: [1.2, 0.8, 1.2] });
   if (rand() < 0.6) m.add(flat(ico(0.08, 0)), 'glow_green', '#d8ffb0', { p: [0.1, 0.5, 0.05] });

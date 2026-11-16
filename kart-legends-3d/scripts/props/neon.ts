@@ -2,7 +2,7 @@
  * CIDADE NEON — circuito urbano noturno (Copa Eclipse).
  * Arranha-céus com recuos e janelas acesas, letreiros de marcas fictícias originais, mobiliário urbano futurista.
  */
-import { Model, box, cone, cyl, extrude, gradY, ico, mix, smoothOutline, sphere, torus, tube, type ColorLike, type V3, type Xf } from '../lib/geo';
+import { Model, box, cone, cyl, extrude, gradY, ico, mix, smoothOutline, torus, tube, type ColorLike, type V3, type Xf } from '../lib/geo';
 import { TAU, archOutline, blob, fora, ngon, panel, pick, polar, prism, rectPts, revolve, ri, rr, shade, uvBox, vary, type P2, type Rand } from './kit-eclipse';
 import { JANELA_TILE, UV_PAINEL, UV_SINAL_LOJA, UV_SINAL_VERTICAL } from './textures-eclipse';
 import type { PropLibrary } from './types';
@@ -345,7 +345,7 @@ function porticoNeon(rand: Rand, span = 16): Model {
     m.add(prism(rectPts(1.3, 1.5, 0.3), -0.2, 0.9, { top: 0.8, at: [s * x, 0], uv: 3 }), 'ecl_concreto', '#8a90a6');
     m.add(prism(rectPts(0.62, 0.8, 0.14), 0.9, yb + 1.9, { at: [s * x, 0], top: 0.85 }), 'paint', gradY('#232a44', '#4c5886', 0, 9));
     m.add(box(0.1, yb - 1.6, 0.3), neon, '#ffffff', { p: [s * (x - 0.34), 1.2 + (yb - 1.6) / 2, 0] });
-    m.add(box(1.6, 0.14, 0.14), 'paint', '#7f89a3', { p: [s * (x - 0.7), yb - 0.5, 0], r: [0, 0, s * 0.75] });
+    m.add(box(0.9, 0.14, 0.14), 'paint', '#7f89a3', { p: [s * (x - 0.42), yb - 0.3, 0], r: [0, 0, s * 0.75] });
   }
   // viga treliçada
   for (const [y, z] of [[yb + 0.1, 0.5], [yb + 0.1, -0.5], [yb + 1.7, 0.5], [yb + 1.7, -0.5]] as P2[]) m.add(box(x * 2, 0.16, 0.16), 'paint', '#7f89a3', { p: [0, y, z] });
@@ -557,6 +557,3 @@ export const NEON_PROPS: PropLibrary = {
   semaforo: { build: semaforo, radius: 1, collider: { radius: 0.3, height: 6.5 } },
   'carro-estacionado': { build: carroEstacionado, radius: 2.6, collider: { radius: 1.5, height: 1.4 } },
 };
-
-void [cone, sphere, TAU, UV_SINAL_LOJA];
-export type { ColorLike };

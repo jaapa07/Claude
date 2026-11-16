@@ -1,6 +1,6 @@
 /** Roupas e acessórios que acompanham o tronco/cabeça: faixas, coletes, cintos, capas. */
 import { THREE, mix, type ColorLike, type V3 } from '../lib/geo';
-import { darken, lighten, paintUV, ringAt, ringFn, sstep, surf, type Ring, type SurfFn, type UVColorFn } from './shapes';
+import { darken, lighten, ringAt, ringFn, sstep, surf, type Ring, type SurfFn, type UVColorFn } from './shapes';
 
 /** v (0..1) em que a tabela de anéis passa pela altura y (tabela com y crescente). */
 export function vAtY(rings: Ring[], y: number): number {
@@ -45,14 +45,14 @@ export function clothPaint(base: ColorLike, y0: number, y1: number, amt = 0.25):
 export const v3 = (v: THREE.Vector3): V3 => [v.x, v.y, v.z];
 
 /** Touca/capacete/cabelo: casca do y0 até o topo da cabeça, fechada em cima. `grow` afasta e levanta o topo. */
-export function cap(rings: Ring[], y0: number, grow: number | ((t: number) => number), o: { nu?: number; nv?: number; skip?: (u: number, y: number) => boolean; mod?: (p: THREE.Vector3, th: number, v: number) => void; yTop?: number } = {}): { geo: THREE.BufferGeometry; fn: SurfFn; yOf: (v: number) => number } {
+export function cap(rings: Ring[], y0: number, grow: number | ((t: number) => number), o: { nu?: number; nv?: number; skip?: (u: number, y: number) => boolean; mod?: (p: THREE.Vector3, th: number, v: number) => void; yTop?: number; noCap?: boolean } = {}): { geo: THREE.BufferGeometry; fn: SurfFn; yOf: (v: number) => number } {
   const top = o.yTop ?? rings[rings.length - 1]!.y;
   const g = (t: number): number => (typeof grow === 'number' ? grow : grow(t));
   const sh = shellRings(rings, y0, top, g, 9).map((r, i) => ({ ...r, y: r.y + g(i / 9) * sstep(0.55, 1, i / 9) }));
   const fn = ringFn(sh, o.mod);
   const yOf = (v: number): number => y0 + (top - y0) * v;
   const skip = o.skip;
-  return { geo: surf(fn, o.nu ?? 28, o.nv ?? 12, { capEnd: true, skip: skip ? (u, v) => skip(u, yOf(v)) : undefined }), fn, yOf };
+  return { geo: surf(fn, o.nu ?? 28, o.nv ?? 12, { capEnd: !o.noCap, skip: skip ? (u, v) => skip(u, yOf(v)) : undefined }), fn, yOf };
 }
 
 /** Contorno (fechado) de uma abertura retangular em (u,v) de uma superfície — para aros, bordas de pelo. */

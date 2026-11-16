@@ -3,7 +3,7 @@ import { Model, cyl, sphere, torus, type V3 } from '../lib/geo';
 import { steeringCenter, type KartParts } from './assemble';
 import {
   bar, both, buildSeat, buildSteering, buildSuspension, buildWheel, cbox, exhaustPipe, fender, numberPlate, pedals,
-  profileX, quads, rod, shell, steeringColumn, tubShell,
+  plateXZ, profileX, quads, rod, shell, steeringColumn, tubShell,
 } from './common';
 
 const BLUE = '#1f8fc4', BLUE_D = '#156a94', CREAM = '#f3ead7', RED = '#d8402f', WOOD = '#b98248', WOOD_D = '#7c5127', BRASS = '#d1a64a', ROPE = '#d9c69a', NAVY = '#1d3b57';
@@ -77,9 +77,7 @@ export function buildMare(plate: string): KartParts {
   for (const sg of [1, -1]) b.add(cbox(0.03, 0.03, 0.09, 0.008), 'kart_metal', BRASS, { p: [sg * 0.14, 0.59, 0.66] }); // cunhos
   // para-brisa curvo
   b.add(torus(0.3, 0.012, 4, 12, Math.PI).rotateX(-0.75), 'kart_metal', BRASS, { p: [0, 0.535, 0.5] });
-  const glassG = torus(0.3, 0.3, 3, 12, Math.PI);
-  glassG.scale(1, 1, 0.02);
-  b.add(glassG.rotateX(-0.75), 'glass', '#cdeeff', { p: [0, 0.53, 0.5] });
+  b.add(plateXZ([[-0.29, 0], [0.29, 0], [0.2, 0.2], [0.08, 0.27], [-0.08, 0.27], [-0.2, 0.2]], 0.01), 'glass', '#cdeeff', { p: [0, 0.535, 0.5], r: [-0.82, 0, 0] });
   b.add(cbox(0.46, 0.09, 0.03, 0.012), 'kart_wood', WOOD, { p: [0, 0.51, 0.46], r: [-0.3, 0, 0] });
   b.add(cyl(0.045, 0.045, 0.02, 12).rotateX(Math.PI / 2 - 0.3), 'kart_metal', BRASS, { p: [0.14, 0.515, 0.44] });
   b.add(cyl(0.036, 0.036, 0.022, 12).rotateX(Math.PI / 2 - 0.3), 'glossy', CREAM, { p: [0.14, 0.515, 0.438] });

@@ -1,0 +1,178 @@
+import * as THREE from 'three';
+
+/** Índices das células do atlas (4×4) em assets/vfx/particles.webp. */
+export const SPRITE = {
+  smoke: 0, spark: 1, dust: 2, flame: 3, snow: 4, leaf: 5, confetti: 6, drop: 7, ring: 8, petal: 9, glow: 10, star: 11,
+  rain: 12, grain: 13, bolt: 14, mist: 15,
+} as const;
+
+export interface EmitOptions {
+  x: number; y: number; z: number;
+  vx?: number; vy?: number; vz?: number;
+  /** Espalhamento aleatório da velocidade. */
+  spread?: number;
+  life: number;
+  size: number;
+  /** Tamanho final relativo ao inicial. */
+  grow?: number;
+  sprite: number;
+  r: number; g: number; b: number;
+  alpha?: number;
+  gravity?: number;
+  drag?: number;
+  spin?: number;
+}
+
+const vertex = /* glsl */ `
+attribute vec4 aColor; attribute float aSize; attribute float aSprite; attribute float aRot;
+varying vec4 vColor; varying float vSprite; varying float vRot;
+uniform float uScale;
+void main() {
+  vColor = aColor; vSprite = aSprite; vRot = aRot;
+  vec4 mv = modelViewMatrix * vec4(position, 1.0);
+  gl_Position = projectionMatrix * mv;
+  gl_PointSize = aSize * uScale / max(0.1, -mv.z);
+}`;
+
+const fragment = /* glsl */ `
+precision highp float;
+uniform sampler2D uMap;
+varying vec4 vColor; varying float vSprite; varying float vRot;
+void main() {
+  vec2 p = gl_PointCoord - 0.5;
+  float c = cos(vRot), s = sin(vRot);
+  p = vec2(c * p.x - s * p.y, s * p.x + c * p.y) + 0.5;
+  if (p.x < 0.0 || p.x > 1.0 || p.y < 0.0 || p.y > 1.0) discard;
+  vec2 cell = vec2(mod(vSprite, 4.0), floor(vSprite / 4.0));
+  // a textura é carregada com flipY: a linha 0 do atlas fica no topo da imagem
+  vec4 t = texture2D(uMap, vec2((cell.x + p.x) * 0.25, 1.0 - (cell.y + p.y) * 0.25));
+  float a = t.a * vColor.a;
+  if (a < 0.01) discard;
+  gl_FragColor = vec4(vColor.rgb * t.rgb, a);
+  #include <colorspace_fragment>
+}`;
+
+/**
+ * Partículas em pool (sem alocação por quadro): um único draw call por sistema.
+ * A simulação é feita na CPU; o shader desenha sprites do atlas com rotação.
+ */
+export class ParticleSystem extends THREE.Points {
+  private readonly max: number;
+  private count = 0;
+  private readonly pos: Float32Array;
+  private readonly col: Float32Array;
+  private readonly size: Float32Array;
+  private readonly sprite: Float32Array;
+  private readonly rot: Float32Array;
+  private readonly vel: Float32Array;
+  private readonly life: Float32Array;
+  private readonly maxLife: Float32Array;
+  private readonly size0: Float32Array;
+  private readonly grow: Float32Array;
+  private readonly alpha0: Float32Array;
+  private readonly gravity: Float32Array;
+  private readonly drag: Float32Array;
+  private readonly spin: Float32Array;
+
+  constructor(map: THREE.Texture, max: number, additive: boolean) {
+    const geo = new THREE.BufferGeometry();
+    const mat = new THREE.ShaderMaterial({
+      uniforms: { uMap: { value: map }, uScale: { value: 600 } },
+      vertexShader: vertex, fragmentShader: fragment,
+      transparent: true, depthWrite: false,
+      blending: additive ? THREE.AdditiveBlending : THREE.NormalBlending,
+    });
+    super(geo, mat);
+    this.max = max;
+    this.pos = new Float32Array(max * 3);
+    this.col = new Float32Array(max * 4);
+    this.size = new Float32Array(max);
+    this.sprite = new Float32Array(max);
+    this.rot = new Float32Array(max);
+    this.vel = new Float32Array(max * 3);
+    this.life = new Float32Array(max);
+    this.maxLife = new Float32Array(max);
+    this.size0 = new Float32Array(max);
+    this.grow = new Float32Array(max);
+    this.alpha0 = new Float32Array(max);
+    this.gravity = new Float32Array(max);
+    this.drag = new Float32Array(max);
+    this.spin = new Float32Array(max);
+    const dyn = (arr: Float32Array, n: number): THREE.BufferAttribute => new THREE.BufferAttribute(arr, n).setUsage(THREE.DynamicDrawUsage);
+    geo.setAttribute('position', dyn(this.pos, 3));
+    geo.setAttribute('aColor', dyn(this.col, 4));
+    geo.setAttribute('aSize', dyn(this.size, 1));
+    geo.setAttribute('aSprite', dyn(this.sprite, 1));
+    geo.setAttribute('aRot', dyn(this.rot, 1));
+    geo.setDrawRange(0, 0);
+    this.frustumCulled = false;
+    this.renderOrder = additive ? 11 : 10;
+  }
+
+  get alive(): number { return this.count; }
+
+  setViewportHeight(h: number, fovDeg: number): void {
+    (this.material as THREE.ShaderMaterial).uniforms.uScale!.value = h / (2 * Math.tan((fovDeg * Math.PI) / 360));
+  }
+
+  emit(o: EmitOptions): void {
+    if (this.count >= this.max) return;
+    const i = this.count++;
+    const s = o.spread ?? 0;
+    this.pos[i * 3] = o.x; this.pos[i * 3 + 1] = o.y; this.pos[i * 3 + 2] = o.z;
+    this.vel[i * 3] = (o.vx ?? 0) + (Math.random() - 0.5) * s;
+    this.vel[i * 3 + 1] = (o.vy ?? 0) + (Math.random() - 0.5) * s;
+    this.vel[i * 3 + 2] = (o.vz ?? 0) + (Math.random() - 0.5) * s;
+    this.life[i] = this.maxLife[i] = o.life * (0.8 + Math.random() * 0.4);
+    this.size0[i] = o.size; this.grow[i] = o.grow ?? 1;
+    this.alpha0[i] = o.alpha ?? 1;
+    this.gravity[i] = o.gravity ?? 0; this.drag[i] = o.drag ?? 0;
+    this.spin[i] = (o.spin ?? 0) * (Math.random() - 0.5) * 2;
+    this.sprite[i] = o.sprite;
+    this.rot[i] = o.spin ? Math.random() * 6.283 : 0;
+    this.col[i * 4] = o.r; this.col[i * 4 + 1] = o.g; this.col[i * 4 + 2] = o.b; this.col[i * 4 + 3] = this.alpha0[i]!;
+    this.size[i] = o.size;
+  }
+
+  private kill(i: number): void {
+    const j = --this.count;
+    if (i === j) return;
+    for (let k = 0; k < 3; k++) { this.pos[i * 3 + k] = this.pos[j * 3 + k]!; this.vel[i * 3 + k] = this.vel[j * 3 + k]!; }
+    for (let k = 0; k < 4; k++) this.col[i * 4 + k] = this.col[j * 4 + k]!;
+    for (const a of [this.size, this.sprite, this.rot, this.life, this.maxLife, this.size0, this.grow, this.alpha0, this.gravity, this.drag, this.spin]) a[i] = a[j]!;
+  }
+
+  update(dt: number): void {
+    for (let i = this.count - 1; i >= 0; i--) {
+      this.life[i]! -= dt;
+      if (this.life[i]! <= 0) { this.kill(i); continue; }
+      const t = 1 - this.life[i]! / this.maxLife[i]!;
+      const d = Math.max(0, 1 - this.drag[i]! * dt);
+      this.vel[i * 3] = this.vel[i * 3]! * d;
+      this.vel[i * 3 + 1] = this.vel[i * 3 + 1]! * d - this.gravity[i]! * dt;
+      this.vel[i * 3 + 2] = this.vel[i * 3 + 2]! * d;
+      this.pos[i * 3] = this.pos[i * 3]! + this.vel[i * 3]! * dt;
+      this.pos[i * 3 + 1] = this.pos[i * 3 + 1]! + this.vel[i * 3 + 1]! * dt;
+      this.pos[i * 3 + 2] = this.pos[i * 3 + 2]! + this.vel[i * 3 + 2]! * dt;
+      this.size[i] = this.size0[i]! * (1 + (this.grow[i]! - 1) * t);
+      this.rot[i] = this.rot[i]! + this.spin[i]! * dt;
+      const fadeIn = Math.min(1, t * 8);
+      this.col[i * 4 + 3] = this.alpha0[i]! * fadeIn * (1 - t * t);
+    }
+    const g = this.geometry;
+    g.setDrawRange(0, this.count);
+    for (const name of ['position', 'aColor', 'aSize', 'aSprite', 'aRot']) {
+      const a = g.getAttribute(name) as THREE.BufferAttribute;
+      a.clearUpdateRanges();
+      a.addUpdateRange(0, this.count * a.itemSize);
+      a.needsUpdate = true;
+    }
+  }
+
+  reset(): void { this.count = 0; this.geometry.setDrawRange(0, 0); }
+
+  dispose(): void {
+    this.geometry.dispose();
+    (this.material as THREE.Material).dispose();
+  }
+}

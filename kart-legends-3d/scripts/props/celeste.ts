@@ -2,7 +2,7 @@
  * JARDIM CELESTE — ilhas suspensas, ruínas aéreas e jardins sobre as nuvens (Copa Eclipse).
  */
 import { Model, box, cone, cyl, extrude, gradY, ico, mix, plane, sphere, torus, tube, warp, type V3 } from '../lib/geo';
-import { TAU, archOutline, blob, capped, fora, loft, ngon, pick, polar, prism, rectPts, revolve, ri, rr, shade, uvBox, uvScale, vary, wobbleRing, type P2, type Rand } from './kit-eclipse';
+import { TAU, archOutline, blob, capped, loft, ngon, pick, polar, prism, rectPts, revolve, ri, rr, shade, uvBox, uvScale, vary, wobbleRing, type P2, type Rand } from './kit-eclipse';
 import type { PropLibrary } from './types';
 
 const ROCHA_ALTA = '#b89a86', ROCHA_MEIO = '#8a7596', ROCHA_FUNDA = '#4c4a80';
@@ -81,10 +81,10 @@ const COPAS = ['#ff9ccf', '#c9a2ff', '#ffb8a8', '#f7a6e8'];
 const marmore = (y0: number, y1: number) => shade(MARMORE_A, MARMORE_B, y0, y1, 0.18);
 
 /** Copa "em nuvem": lóbulos arredondados com luz no topo. */
-function copa(m: Model, rand: Rand, c: V3, r: number, cor: string, n = 5): void {
+function copa(m: Model, rand: Rand, c: V3, r: number, cor: string, n = 5, det = 2): void {
   for (let i = 0; i < n; i++) {
     const a = (i / (n - 1)) * TAU + rand(), d = i === 0 ? 0 : r * rr(rand, 0.55, 0.8), rk = i === 0 ? r : r * rr(rand, 0.5, 0.72);
-    m.add(blob(rk, rand, { detail: 2, jitter: 0.1, s: [1, 0.82, 1], faceted: false }), 'matte', shade(mix(cor, '#6a3f9a', 0.45), mix(cor, '#fff4fa', 0.45), -rk * 0.8, rk * 0.8, 0.1), { p: [c[0] + Math.cos(a) * d, c[1] + (i === 0 ? r * 0.25 : rr(rand, -0.25, 0.1) * r), c[2] + Math.sin(a) * d] });
+    m.add(blob(rk, rand, { detail: det, jitter: 0.1, s: [1, 0.82, 1], faceted: false }), 'matte', shade(mix(cor, '#6a3f9a', 0.45), mix(cor, '#fff4fa', 0.45), -rk * 0.8, rk * 0.8, 0.1), { p: [c[0] + Math.cos(a) * d, c[1] + (i === 0 ? r * 0.25 : rr(rand, -0.25, 0.1) * r), c[2] + Math.sin(a) * d] });
   }
 }
 
@@ -128,7 +128,7 @@ function arvoreCeleste(rand: Rand): Model {
   const galhos: V3[] = [[lean + 1.7, H * 0.8, 0.4], [lean - 1.6, H * 0.76, -0.5], [lean + 0.1, H * 0.84, -1.5], [lean - 0.2, H * 0.78, 1.5]];
   for (const g of galhos) m.add(tube([[lean * 0.85, H * 0.5, 0], [(lean + g[0]) / 2, H * 0.66, g[2] * 0.5], g], (t) => 0.2 - t * 0.12, 6, 5), 'matte', casca);
   copa(m, rand, [lean, H * 0.92, 0], H * 0.24, cor, 6);
-  for (const g of galhos) copa(m, rand, [g[0], g[1] + 0.3, g[2]], H * 0.17, pick(rand, [cor, cor, pick(rand, COPAS)]), 4);
+  for (const g of galhos) copa(m, rand, [g[0], g[1] + 0.3, g[2]], H * 0.17, pick(rand, [cor, cor, pick(rand, COPAS)]), 4, 1);
   // pétalas caídas e brilho
   for (let i = 0; i < 6; i++) m.add(ico(0.12, 0), 'leaf', cor, { p: polar(rand() * TAU, rr(rand, 0.8, 2.4), 0.04), s: [1, 0.15, 1] });
   for (let i = 0; i < 4; i++) m.add(ico(0.07, 0), 'glow_white', '#ffffff', { p: [lean + rr(rand, -2, 2), H * rr(rand, 0.6, 0.78), rr(rand, -2, 2)] });
@@ -142,26 +142,26 @@ function fuste(m: Model, r: number, y0: number, y1: number, cx = 0, cz = 0, r1 =
 }
 
 /** Pilar de ruína: plinto, fuste canelado, capitel. Devolve a altura do topo. */
-function pilar(m: Model, rand: Rand, x: number, z: number, h: number, r = 0.7): void {
+function pilar(m: Model, _rand: Rand, x: number, z: number, h: number, r = 0.7): void {
   m.add(uvBox(prism(rectPts(r * 2.8, r * 2.8, 0.12), -0.2, 0.5, { at: [x, z] }), 2.5), 'ecl_marmore', marmore(0, 0.6));
   m.add(revolve([[r * 1.25, 0.5], [r * 1.3, 0.68], [r * 1.05, 0.86]], 12), 'ecl_marmore', MARMORE_B, { p: [x, 0, z] });
   fuste(m, r, 0.86, h - 0.7, x, z);
   m.add(revolve([[r * 0.9, h - 0.7], [r * 1.0, h - 0.5], [r * 1.3, h - 0.28]], 12), 'ecl_marmore', MARMORE_B, { p: [x, 0, z] });
   m.add(torus(r * 0.98, 0.05, 4, 12), 'glossy', OURO, { p: [x, h - 0.62, z], r: [Math.PI / 2, 0, 0] });
   m.add(uvBox(prism(rectPts(r * 2.9, r * 2.9, 0.1), h - 0.28, h, { at: [x, z], cap: 'both' }), 2.5), 'ecl_marmore', marmore(h - 1, h));
-  void rand;
 }
 
 function ruinaArcoCeleste(rand: Rand, span = 16): Model {
   const m = new Model();
-  const x = span / 2 + 1.0, spring = 6.6, rise = Math.min(span * 0.3, 4.6);
+  const x = span / 2 + 1.4, spring = 6.6, rise = Math.min(span * 0.3, 4.6);
   for (const s of [-1, 1]) {
     pilar(m, rand, s * x, 0, spring, 0.78);
-    trepadeira(m, rand, 0.9, 0.3, rr(rand, 4, 6.4), s * x, 0, 1.4);
+    trepadeira(m, rand, 0.86, 0.3, rr(rand, 4, 6.4), s * x, 0, 1.4);
   }
   // arco de aduelas com fecho dourado
-  const ring = archOutline(span + 0.5, spring, rise, 1.3, 1.2, 14);
-  m.add(uvBox(extrude([[-(span / 2 + 1.55), spring], ...ring.slice(1, 3), [span / 2 + 1.55, spring], ...ring.slice(5, -1)], 1.5, 0.05), 2.5), 'ecl_marmore', marmore(spring, spring + rise + 1.4));
+  const ring = archOutline(span + 0.5, spring, rise, 1.3, 1.2, 14), xo = span / 2 + 2.45, yt = spring + rise + 1.2;
+  const quebrado: P2[] = [[-xo, spring], [-xo, spring + rise * 0.5], [-xo + 0.9, spring + rise * 0.5 + 0.5], [-xo + 1.1, yt - 0.4], [-span * 0.2, yt], [-span * 0.16, yt - 0.5], [span * 0.05, yt - 0.3], [span * 0.1, yt + 0.1], [xo - 2.2, yt], [xo - 1.8, spring + rise * 0.7], [xo - 0.7, spring + rise * 0.62], [xo, spring + rise * 0.2], [xo, spring]];
+  m.add(uvBox(extrude([...quebrado, ...ring.slice(5, -1)], 1.5, 0.05), 2.5), 'ecl_marmore', marmore(spring, spring + rise + 1.4));
   const nv = 9;
   for (let i = 0; i <= nv; i++) {
     const a = (i / nv) * Math.PI, rx = span / 2 + 0.25, px = Math.cos(a) * rx, py = spring + Math.sin(a) * rise;
@@ -176,8 +176,8 @@ function ruinaArcoCeleste(rand: Rand, span = 16): Model {
     const s = rr(rand, 0.4, 0.9), px = rr(rand, -0.5, 0.5) * span;
     m.add(uvBox(box(s * 1.4, s, s, 0.06, 1), 2.5), 'ecl_marmore', marmore(-0.5, 0.5), { p: [px, top + rr(rand, 0.8, 2.6), rr(rand, -0.4, 0.4)], r: [rand(), rand(), rand()] });
   }
-  copa(m, rand, [-(span / 2) * 0.55, top + 0.3, 0], 0.9, pick(rand, COPAS), 3);
-  copa(m, rand, [span / 2 + 0.9, top - rise * 0.5, 0.2], 0.8, '#8fd66a', 3);
+  copa(m, rand, [-(span / 2) * 0.55, top + 0.3, 0], 0.9, pick(rand, COPAS), 3, 1);
+  copa(m, rand, [span / 2 + 1.6, top - rise * 0.42, 0.2], 0.8, '#8fd66a', 3, 1);
   for (const s of [-1, 1]) m.add(tube([[s * span * 0.3, top - 0.1, 0.8], [s * span * 0.31, top - 0.8, 0.86], [s * span * 0.3, top - 1.3, 0.82]], 0.04, 4, 4), 'matte', '#3f8f52');
   return m;
 }
@@ -285,7 +285,7 @@ function florHaste(rand: Rand): Model {
 
 function pergolaCeleste(rand: Rand, span = 16): Model {
   const m = new Model();
-  const x = span / 2 + 0.8, yb = 6.7, zs = 2.6;
+  const x = span / 2 + 1.05, yb = 6.9, zs = 2.6;
   for (const s of [-1, 1]) for (const z of [-zs, zs]) {
     pilar(m, rand, s * x, z, yb, 0.42);
     trepadeira(m, rand, 0.52, 0.3, yb - 0.4, s * x, z, 2.4);
@@ -305,7 +305,7 @@ function pergolaCeleste(rand: Rand, span = 16): Model {
     m.add(prism(ngon(0.17, 5), -len, 0.05, { top: 1, cap: 'none' }), 'matte', gradY(mix(cor, '#fff4fa', 0.5), cor, -len, 0), { p: [px, yb + 0.02, z] });
     m.add(prism(ngon(0.17, 5), 0, 0.14, { top: 0.1, cap: 'none' }), 'matte', mix(cor, '#fff4fa', 0.5), { p: [px, yb - len - 0.14 + 0.02, z], r: [Math.PI, 0, 0] });
   }
-  for (let i = 0; i < Math.round(span / 3.2); i++) copa(m, rand, [rr(rand, -0.5, 0.5) * span, yb + 1.05, rr(rand, -0.8, 0.8) * zs], rr(rand, 0.7, 1.1), i % 3 ? '#8fd66a' : cor, 3);
+  for (let i = 0; i < Math.round(span / 3.2); i++) copa(m, rand, [rr(rand, -0.5, 0.5) * span, yb + 1.05, rr(rand, -0.8, 0.8) * zs], rr(rand, 0.7, 1.1), i % 3 ? '#8fd66a' : cor, 3, 1);
   for (let i = 0; i < 4; i++) m.add(ico(0.12, 1), 'glow_white', '#ffffff', { p: [(-0.5 + (i + 0.5) / 4) * span, yb + 0.2, (i % 2 ? 1 : -1) * zs] });
   return m;
 }
@@ -346,7 +346,7 @@ function ponteCelesteCorrimao(rand: Rand): Model {
     m.add(uvBox(prism(rectPts(0.5, 0.5, 0.06), 0.2, 1.22, { at: [x, 0] }), 2.5), 'ecl_marmore', marmore(0, 1.3));
     m.add(uvBox(prism(rectPts(0.62, 0.62, 0.06), 1.22, 1.34, { at: [x, 0], cap: 'both' }), 2.5), 'ecl_marmore', MARMORE_B);
     m.add(revolve([[0.1, 1.34], [0.2, 1.46], [0.24, 1.66], [0.17, 1.74], [0.22, 1.8], [0.16, 1.8], [0.001, 1.72]], 8), 'glossy', mix(OURO, '#ffffff', 0.2), { p: [x, 0, 0] });
-    copa(m, rand, [x, 2.0, 0], 0.3, pick(rand, COPAS), 3);
+    copa(m, rand, [x, 2.0, 0], 0.3, pick(rand, COPAS), 3, 1);
     m.add(tube([[x, 1.78, 0.1], [x + 0.05, 1.6, 0.3], [x, 1.3, 0.34]], 0.025, 4, 4), 'matte', '#3f8f52');
   }
   return m;
@@ -435,13 +435,13 @@ function moinhoPas(rand: Rand): Model {
 }
 
 export const CELESTE_PROPS: PropLibrary = {
-  'ilha-flutuante': { build: ilhaFlutuante, radius: 11.5 },
+  'ilha-flutuante': { build: ilhaFlutuante, radius: 12 },
   'ilha-pequena': { build: ilhaPequena, radius: 5 },
   'arvore-celeste': { build: arvoreCeleste, radius: 3, collider: { radius: 0.5, height: 5 } },
   'ruina-arco-celeste': { build: ruinaArcoCeleste, radius: 11 },
   'ruina-coluna-celeste': { build: ruinaColunaCeleste, radius: 2.4, collider: { radius: 0.9, height: 4.5 } },
   nuvem: { build: nuvem, radius: 9 },
-  'cachoeira-celeste': { build: cachoeiraCeleste, radius: 8 },
+  'cachoeira-celeste': { build: cachoeiraCeleste, radius: 9 },
   'flor-gigante': { build: florBase, radius: 1.7, animated: { build: florHaste, pivot: [0, 0.3, 0], motion: { kind: 'sway', axis: 'x', angle: 0.1, period: 3.6 } } },
   'pergola-celeste': { build: pergolaCeleste, radius: 11 },
   'fonte-celeste': { build: fonteCeleste, radius: 3.2, collider: { radius: 2.9, height: 1.2 } },
@@ -451,5 +451,3 @@ export const CELESTE_PROPS: PropLibrary = {
   'passaro-estatua': { build: passaroEstatua, radius: 1.1, collider: { radius: 0.7, height: 2.4 } },
   'moinho-de-vento-celeste': { build: moinhoBase, radius: 1, collider: { radius: 0.4, height: 5 }, animated: { build: moinhoPas, pivot: [0, 5, 0.5], motion: { kind: 'spin', axis: 'z', period: 4 } } },
 };
-
-void [box, fora];

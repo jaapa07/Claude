@@ -2,7 +2,7 @@
  * PICO BOREAL — montanhas congeladas, gelo translúcido e abrigos de expedição (Copa Eclipse).
  */
 import { Model, box, cone, cyl, extrude, gradY, ico, mix, plane, torus, tube, warp, type V3 } from '../lib/geo';
-import { TAU, archOutline, blob, capped, fora, loft, ngon, pick, polar, prism, rectPts, revolve, ri, rr, shade, uvBox, vary, wobbleRing, type P2, type Rand } from './kit-eclipse';
+import { TAU, archOutline, blob, capped, loft, ngon, pick, polar, prism, rectPts, revolve, ri, rr, shade, uvBox, vary, wobbleRing, type P2, type Rand } from './kit-eclipse';
 import type { PropLibrary } from './types';
 
 const NEVE = '#f4f8ff', NEVE_SOMBRA = '#b9cdf0', GELO_A = '#7fc4f0', GELO_B = '#e4f6ff';
@@ -42,7 +42,7 @@ function pinheiroNevado(rand: Rand): Model {
     const ringsFolha = [{ y: y + h, pts: star(0.06, 0) }, { y: y + h * 0.45, pts: star(0.62, 0.22) }, { y: y - droop * 0.2, pts: star(1, 0.34) }, { y: y - droop, pts: star(0.86, 0.5) }, { y: y - droop * 0.3, pts: star(0.3, 0) }];
     m.add(loft(ringsFolha), 'matte', shade(mix(verde, '#06182a', 0.5), mix(verde, '#8fe0b8', 0.2), y - droop, y + h, 0.35));
     // neve assentada por cima dos galhos
-    const sn = [{ y: y + h + 0.06, pts: star(0.07, 0) }, { y: y + h * 0.45 + 0.1, pts: star(0.6, 0.3) }, { y: y - droop * 0.05 + 0.1, pts: star(0.9, 0.62) }, { y: y - droop * 0.4, pts: star(0.82, 0.72) }];
+    const sn = [{ y: y + h + 0.2, pts: star(0.1, 0) }, { y: y + h * 0.45 + 0.34, pts: star(0.72, 0.3) }, { y: y - droop * 0.05 + 0.34, pts: star(1.0, 0.6) }, { y: y - droop * 0.4 + 0.1, pts: star(0.92, 0.72) }];
     m.add(loft(sn, { uv: 2 }), 'ecl_neve', neve(y - droop, y + h));
   }
   m.add(blob(R * 0.14, rand, { detail: 1, s: [1, 1.5, 1], faceted: false }), 'ecl_neve', NEVE, { p: [lean, H * 0.95, 0] });
@@ -52,10 +52,10 @@ function pinheiroNevado(rand: Rand): Model {
 function rochaGelo(rand: Rand): Model {
   const m = new Model();
   const r = rr(rand, 1.3, 2.1), sy = rr(rand, 0.8, 1.2);
-  m.add(blob(r, rand, { detail: 1, jitter: 0.3, s: [1.1, sy, 0.9], fn: (p) => { p.y = Math.max(p.y, -r * 0.42); } }), 'ecl_gelo', shade(GELO_A, GELO_B, -r * 0.4, r * sy), { p: [0, r * 0.4, 0] });
+  m.add(blob(r, rand, { detail: 1, jitter: 0.3, s: [1.1, sy, 0.9], fn: (p) => { p.y = Math.max(p.y, -r * 0.42); } }), 'ecl_gelo', shade(GELO_A, GELO_B, -r * 0.4, r * sy), { p: [0, r * 0.36, 0] });
   m.add(blob(r * 0.5, rand, { detail: 1, jitter: 0.3 }), 'ecl_gelo_solido', '#bfe9ff', { p: [0, r * 0.55, 0] });
   const k = ri(rand, 2, 4);
-  for (let i = 0; i < k; i++) { const a = rand() * TAU; lasca(m, rand, r * rr(rand, 0.22, 0.34), r * rr(rand, 0.9, 1.5), { p: polar(a, r * 0.85, 0), r: [rr(rand, -0.25, 0.25), 0, rr(rand, -0.25, 0.25)] }); }
+  for (let i = 0; i < k; i++) { const a = rand() * TAU; lasca(m, rand, r * rr(rand, 0.22, 0.34), r * rr(rand, 0.9, 1.5), { p: polar(a, r * 0.85, 0.12), r: [rr(rand, -0.25, 0.25), 0, rr(rand, -0.25, 0.25)] }); }
   m.add(blob(r * 0.62, rand, { detail: 1, s: [1.15, 0.3, 0.95], faceted: false }), 'ecl_neve', neve(-0.3, 0.3), { p: [0, r * 0.4 + r * sy * 0.82, 0] });
   monte(m, rand, r * 1.25, 0.3);
   return m;
@@ -87,7 +87,7 @@ function arcoGelo(rand: Rand, span = 16): Model {
   }
   // cristais e neve do lado de fora
   for (const s of [-1, 1]) {
-    for (let k = 0; k < 3; k++) lasca(m, rand, rr(rand, 0.4, 0.8), rr(rand, 2, 4.5), { p: [s * (half + rr(rand, 3.4, 4.6)), 0, rr(rand, -5, 5)], r: [0, 0, -s * rr(rand, 0, 0.3)] });
+    for (let k = 0; k < 3; k++) lasca(m, rand, rr(rand, 0.4, 0.8), rr(rand, 2, 4.5), { p: [s * (half + rr(rand, 3.4, 4.6)), 0.2, rr(rand, -5, 5)], r: [0, 0, -s * rr(rand, 0, 0.3)] });
     monte(m, rand, 2.4, 0.8, [s * (half + 3.6), 0, 5.6]);
     monte(m, rand, 2.4, 0.8, [s * (half + 3.6), 0, -5.6]);
   }
@@ -397,7 +397,5 @@ export const BOREAL_PROPS: PropLibrary = {
   'lampiao-boreal': { build: lampiaoBoreal, radius: 0.9, collider: { radius: 0.2, height: 3.5 } },
   'teleferico-torre': { build: telefericoTorre, radius: 5, collider: { radius: 3.2, height: 16 } },
   'ponte-gelo-corrimao': { build: ponteGeloCorrimao, radius: 3.1, collider: { radius: 0.4, height: 1.2 } },
-  'bandeira-expedicao': { build: bandeiraMastro, radius: 1.2, collider: { radius: 0.2, height: 6 }, animated: { build: bandeiraPano, pivot: [0, 5.8, 0], motion: { kind: 'sway', axis: 'z', angle: 0.12, period: 2.2 } } },
+  'bandeira-expedicao': { build: bandeiraMastro, radius: 1.6, collider: { radius: 0.2, height: 6 }, animated: { build: bandeiraPano, pivot: [0, 5.8, 0], motion: { kind: 'sway', axis: 'z', angle: 0.12, period: 2.2 } } },
 };
-
-void [cone, ico, fora];

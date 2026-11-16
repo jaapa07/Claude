@@ -250,3 +250,10 @@ export function revolve(profile: [number, number][], seg = 16, o: LoftOpts = {})
 /** Rotação Y que vira o +Z local para fora no ângulo `a` (posição = cos a, sen a). */
 export const fora = (a: number): number => Math.PI / 2 - a;
 export const polar = (a: number, r: number, y: number): V3 => [Math.cos(a) * r, y, Math.sin(a) * r];
+
+/** Ângulos de Euler (XYZ) que levam o eixo +Y local à direção `d` (para espetar peças numa superfície). */
+export function alignY(d: V3): V3 {
+  const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(...d).normalize());
+  const e = new THREE.Euler().setFromQuaternion(q, 'XYZ');
+  return [e.x, e.y, e.z];
+}

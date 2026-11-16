@@ -24,8 +24,8 @@ const lerp = (a: number, b: number, stat: number): number => a + (b - a) * ((sta
 
 export function tuningFromStats(s: KartStats): KartTuning {
   return {
-    topSpeed: lerp(26.2, 29.4, s.topSpeed),
-    accel: lerp(13.5, 21, s.acceleration),
+    topSpeed: lerp(27.2, 28.5, s.topSpeed),
+    accel: lerp(12.5, 23, s.acceleration),
     brake: lerp(24, 38, s.braking),
     turnRate: lerp(1.75, 2.35, s.handling),
     grip: lerp(0.8, 1.25, s.grip),
@@ -63,7 +63,7 @@ export const PHYS = {
   boostAccel: 34,
   reverseSpeed: 9,
   /** Limiares de carga para os níveis 1, 2 e 3 de drift. */
-  driftLevels: [0.9, 1.9, 3.0] as const,
+  driftLevels: [0.7, 1.5, 2.5] as const,
   /** Duração do miniturbo por nível. */
   driftBoostTime: [0.7, 1.35, 2.3] as const,
   spinTime: 1.15,

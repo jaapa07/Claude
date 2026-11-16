@@ -12,6 +12,8 @@ export interface AiProfile {
   line: number;
   /** Probabilidade de derrapar em uma curva que permite drift. */
   drift: number;
+  /** Fração da velocidade máxima do kart usada nas retas. */
+  cruise: number;
   /** Atraso de reação na largada (s). */
   reaction: number;
   /** Probabilidade de pegar um atalho. */
@@ -24,9 +26,9 @@ export interface AiProfile {
 
 /** Perfis de dificuldade. A IA usa a mesma física e os mesmos karts que o jogador: muda só a pilotagem. */
 export const AI_PROFILES: Record<Difficulty, AiProfile> = {
-  easy: { speed: 0.84, line: 0.45, drift: 0.12, reaction: 0.55, shortcut: 0.08, wander: 1.7, itemDelay: 4 },
-  normal: { speed: 0.93, line: 0.8, drift: 0.6, reaction: 0.3, shortcut: 0.45, wander: 1.0, itemDelay: 2 },
-  hard: { speed: 1, line: 1, drift: 0.95, reaction: 0.12, shortcut: 0.85, wander: 0.45, itemDelay: 0.9 },
+  easy: { speed: 0.84, cruise: 0.9, line: 0.45, drift: 0.12, reaction: 0.55, shortcut: 0.08, wander: 1.7, itemDelay: 4 },
+  normal: { speed: 0.93, cruise: 0.96, line: 0.8, drift: 0.6, reaction: 0.3, shortcut: 0.45, wander: 1.0, itemDelay: 2 },
+  hard: { speed: 1, cruise: 1, line: 1, drift: 0.95, reaction: 0.12, shortcut: 0.85, wander: 0.45, itemDelay: 0.9 },
 };
 
 export interface AiWorld {
@@ -90,7 +92,9 @@ export class AiDriver {
         const rel = (sc.data.from - k.mainIndex + n) % n;
         if (rel > 20 && rel < 34 && this.shortcutDecided !== s) {
           this.shortcutDecided = s;
-          const ok = !sc.data.risky || p.shortcut > 0.4 || k.boostTime > 0.5;
+          // atalho por areia/grama só compensa com turbo (ou com um Pulso Solar na mão)
+          const slow = sc.path.surface[sc.path.n >> 1]! >= 2 && sc.path.surface[sc.path.n >> 1]! <= 3;
+          const ok = slow ? k.boostTime > 0.6 || k.item === 'pulso-solar' : !sc.data.risky || p.shortcut > 0.4 || k.boostTime > 0.5;
           this.plannedShortcut = ok && this.rng() < p.shortcut ? s : -1;
         }
         if (rel > n - 12 && rel < n - 4 && this.shortcutDecided === s) { this.shortcutDecided = -1; if (this.plannedShortcut === s) this.plannedShortcut = -1; }
@@ -133,7 +137,9 @@ export class AiDriver {
     let steer = clamp(-diff * 2.6, -1, 1);
 
     // velocidade
-    const target = targetHint * V_REF * this.personalSpeed;
+    // karts com mais aderência e dirigibilidade sustentam mais velocidade nas curvas
+    const cornering = targetHint < 0.95 ? 0.95 + 0.1 * (((k.tuning.turnRate - 1.75) / 0.6) * 0.5 + ((k.tuning.grip - 0.8) / 0.45) * 0.5) : 1;
+    const target = Math.min(targetHint * V_REF * this.personalSpeed * cornering, k.boostTime > 0 ? Infinity : k.tuning.topSpeed * p.cruise);
     let throttle = k.speed < target ? 1 : 0;
     let brake = k.speed > target + 3.5 ? 1 : 0;
     if (Math.abs(diff) > 1.1 && k.speed > 12) { throttle = 0; brake = 1; }
@@ -142,7 +148,7 @@ export class AiDriver {
 
     // drift nas curvas que comportam
     const ice = k.surface === 4;
-    const sharp = Math.abs(curvature) > 0.017;
+    const sharp = Math.abs(curvature) > 0.0145;
     if (!sharp) { this.cornerDecided = false; this.driftCorner = false; }
     else if (!this.cornerDecided) { this.cornerDecided = true; this.driftCorner = this.rng() < p.drift; }
     if (this.wantDrift) {
@@ -225,6 +231,7 @@ export class AiDriver {
     const late = this.itemTimer > this.profile.itemDelay + 6;
     switch (k.item) {
       case 'pulso-solar':
+        if (k.pathId >= 0 && k.surface >= 2 && k.surface <= 3) return true;
         return (w.track.speedHint[k.mainIndex]! > 0.92 && k.grounded && k.boostTime <= 0 && Math.abs(k.steer) < 0.35) || late;
       case 'bolha-guardia':
         return this.itemTimer > this.profile.itemDelay || w.projectiles.some((p) => p.target === k.index);

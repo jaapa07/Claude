@@ -26,8 +26,8 @@ const ROOT = path.resolve(import.meta.dirname, '../..');
 const OUT = process.env.ECLIPSE_PREVIEW_DIR ?? '/tmp/claude-0/-home-user-Claude/63dcf86c-35a6-58f8-b340-e0296e5742d9/scratchpad/props-eclipse';
 const LINK = path.join(ROOT, 'node_modules/.cache/props-eclipse');
 const LIBS: Record<string, PropLibrary> = { neon: NEON_PROPS, boreal: BOREAL_PROPS, celeste: CELESTE_PROPS, fortaleza: FORTALEZA_PROPS, obstaculos: OBSTACULO_PROPS };
-/** Objetos cuja geometria desce abaixo do chão de propósito (ilhas suspensas e bordas de ilha). */
-const BELOW_GROUND = new Set(['ilha-flutuante', 'ilha-pequena', 'cachoeira-celeste', 'martelo-pendulo']);
+/** Exceções à regra da base em y≈0: ilhas suspensas, o martelo (origem no centro da cabeça) e os obstáculos que pairam a ~0,3 m. */
+const BELOW_GROUND = new Set(['ilha-flutuante', 'ilha-pequena', 'cachoeira-celeste', 'martelo-pendulo', 'drone-carga', 'nuvem-trovao']);
 const SPAN_IDS = new Set(['tunel-neon', 'portico-neon', 'arco-gelo', 'ruina-arco-celeste', 'pergola-celeste', 'portao-fortaleza', 'salao-arco']);
 
 const args = process.argv.slice(2);
@@ -65,7 +65,6 @@ function clearance(model: Model, span: number): number {
 function check(): boolean {
   let ok = true;
   const rows: string[] = [];
-  const budget = (r: number): number => (r >= 5 ? 5000 : r >= 1.5 ? 2500 : 600);
   for (const { lib, id, def } of entries) {
     let tris = 0, minY = Infinity, maxY = -Infinity, maxR = 0, animTris = 0;
     const notes: string[] = [];
@@ -82,7 +81,7 @@ function check(): boolean {
       if (def.animated) animTris = Math.max(animTris, def.animated.build(rng(seed)).triangleCount());
     }
     const total = tris + animTris;
-    if (total > 5000 || total > budget(def.radius) * 1.0 && total > 5000) { notes.push('TRIS>5000'); ok = false; }
+    if (total > 5000) { notes.push('TRIS>5000'); ok = false; }
     if (!BELOW_GROUND.has(id) && (minY < -0.3 || minY > 0.05)) { notes.push('minY fora de [-0.3, 0.05]'); ok = false; }
     if (SPAN_IDS.has(id)) {
       for (const span of [16, 24]) {

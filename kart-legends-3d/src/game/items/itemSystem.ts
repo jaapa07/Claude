@@ -159,9 +159,12 @@ export class ItemSystem {
           if (d > WIND_RADIUS || Math.abs(dy) > 5) continue;
           if (o.shield > 0) { o.shield = 0; this.emit({ type: 'shield_break', kart: o.index }); continue; }
           if (o.invuln > 0) continue;
-          const f = (1 - d / WIND_RADIUS) * 13 + 5;
+          const f = (1 - d / WIND_RADIUS) * 13 + 8;
           const inv = 1 / (d || 1);
           o.vx += dx * inv * f / o.tuning.mass; o.vz += dz * inv * f / o.tuning.mass; o.vy += 3;
+          // o empurrão desvia o kart, mas não pode lançá-lo acima da velocidade de turbo
+          const cap = o.tuning.topSpeed * 1.25, hv = Math.hypot(o.vx, o.vz);
+          if (hv > cap) { o.vx *= cap / hv; o.vz *= cap / hv; }
           o.body.setLinvel({ x: o.vx, y: o.vy, z: o.vz }, true);
           o.stun = 0.45 / o.tuning.recovery;
           o.drifting = false; o.driftCharge = 0; o.driftLevel = 0;
@@ -208,11 +211,12 @@ export class ItemSystem {
       p.s += (PROJECTILE_SPEED * dt) / this.track.data.spacing;
       const target = p.target >= 0 ? karts[p.target] : undefined;
       let wanted = this.track.racingLine[main.wrap(Math.floor(p.s))]!;
+      let rate = 10;
       if (target && !target.finished && target.pathId < 0) {
         const gapSamples = (target.mainIndex - main.wrap(Math.floor(p.s)) + main.n) % main.n;
-        if (gapSamples < 16) wanted = target.lateral;
+        if (gapSamples < 16) { wanted = target.lateral; rate = 26; }
       }
-      p.lateral += Math.max(-10 * dt, Math.min(10 * dt, wanted - p.lateral));
+      p.lateral += Math.max(-rate * dt, Math.min(rate * dt, wanted - p.lateral));
       main.point(Math.floor(p.s), p.lateral, this.tmp);
       p.x = this.tmp.x; p.y = this.tmp.y + 1; p.z = this.tmp.z;
       let dead = p.life <= 0;

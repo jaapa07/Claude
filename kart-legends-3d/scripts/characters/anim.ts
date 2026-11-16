@@ -102,7 +102,7 @@ const hit: ClipDef = {
   name: 'hit', dur: 0.9, loop: false, wind: 0.3, sway: 0.5,
   pose: (t) => {
     const fade = 1 - ss(0.68, 0.9, t);
-    const A = (x: number): number => (x <= 0 ? 0 : Math.exp(-4.2 * x) * Math.sin(TAU * 1.55 * x) * 1.6);
+    const A = (x: number): number => (x <= 0 ? 0 : Math.exp(-4.2 * x) * Math.sin(TAU * 1.55 * x) * 1.3);
     const a = A(t) * fade, ah = A(t - 0.05) * fade;
     const m = win(t, 0.0, 0.1, 0.42, 0.78);
     const hop = Math.sin(Math.PI * Math.min(1, t / 0.32)) * 0.045;
@@ -158,9 +158,9 @@ const defeat: ClipDef = {
     const shake = Math.sin(TAU * 1.5 * (t - 1.0)) * win(t, 1.0, 1.2, 1.9, 2.25);
     return {
       rot: {
-        ...torso(0.03 * shake, 0.34 * d - 0.1 * sigh, 0.04 * shake),
+        ...torso(0.03 * shake, 0.3 * d - 0.1 * sigh, 0.04 * shake),
         neck: [0.16 * d, 0.1 * shake, 0],
-        head: [0.4 * d - 0.12 * sigh, 0.24 * shake, 0.05 * d],
+        head: [0.3 * d - 0.12 * sigh, 0.24 * shake, 0.05 * d],
         legL: [0.04 * d, 0, 0.03 * d], legR: [0.04 * d, 0, -0.03 * d],
       },
       hips: [0, -0.008 * d, 0],

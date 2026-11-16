@@ -77,7 +77,7 @@ export const PORTO_LANTERNAS: TrackDef = {
     { prop: 'balao-ar', at: 'mirante', offset: 46, dy: 30 },
   ],
   scatter: [
-    { prop: ['casa-porto', 'casa-porto-torre'], count: 40, dist: [26, 70] },
+    { prop: ['casa-porto', 'casa-porto-torre'], count: 24, dist: [26, 70] },
     { prop: 'arvore-campo', count: 30, dist: [20, 90], scale: [0.8, 1.2] },
   ],
   intro: [
@@ -122,7 +122,7 @@ export const BOSQUE_CRISTAL: TrackDef = {
   boostPads: [{ at: 'ponte-34' }, { at: 'caverna+40', offset: 2 }, { at: 'retorno+20', offset: -3 }],
   ramps: [{ at: 'clareira-30', offset: 3, width: 6, height: 1.4 }, { at: 'cachoeira+60', offset: 0, width: 7, height: 1.2 }],
   scenery: [
-    { prop: ['arvore-bosque', 'arvore-bosque', 'arvore-gigante'], from: 'largada', to: 'largada-2', side: 'both', every: 17, dist: [5, 16], face: 'random', scale: [0.85, 1.2] },
+    { prop: ['arvore-bosque', 'arvore-bosque', 'arvore-bosque', 'arvore-gigante'], from: 'largada', to: 'largada-2', side: 'both', every: 20, dist: [5, 16], face: 'random', scale: [0.85, 1.2] },
     { prop: ['cristal-grande', 'cristal-pequeno', 'cristal-pequeno'], from: 'cristais-40', to: 'ponte-20', side: 'both', every: 9, dist: [1.5, 6], face: 'random' },
     { prop: ['cogumelo-luminoso', 'samambaia', 'pedra-musgo', 'tronco-caido', 'samambaia'], from: 'largada', to: 'largada-2', side: 'both', every: 8, dist: [1, 5], face: 'random', noCollide: true },
     { prop: 'ponte-madeira-corrimao', from: 'ponte-10', to: 'ponte+58', side: 'both', every: 6, dist: [-1.4, -1.4], face: 'along', noCollide: true },
@@ -146,7 +146,7 @@ export const BOSQUE_CRISTAL: TrackDef = {
     { prop: 'arvore-gigante', at: 'retorno-40', offset: 20 },
   ],
   scatter: [
-    { prop: ['arvore-gigante', 'arvore-bosque', 'arvore-bosque'], count: 150, dist: [16, 120], scale: [0.9, 1.5] },
+    { prop: ['arvore-gigante', 'arvore-bosque', 'arvore-bosque', 'arvore-bosque', 'arvore-bosque'], count: 120, dist: [16, 120], scale: [0.9, 1.5] },
     { prop: ['cristal-grande'], count: 30, dist: [12, 70], scale: [1, 2] },
   ],
   intro: [

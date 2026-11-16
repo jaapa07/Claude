@@ -132,6 +132,8 @@ export function stepKart(k: KartState, ctx: PhysicsContext, dt: number): void {
       vf = Math.min(vf, top);
     }
     if (vf > top) vf = Math.max(top, vf - (off ? 26 : 10) * dt);
+    // teto absoluto: empurrões, quedas e ladeiras não podem render mais que o turbo do próprio kart
+    vf = Math.min(vf, t.topSpeed * PHYS.boostSpeed * 1.1);
     if (brake > 0) {
       if (vf > 0.6) vf = Math.max(0, vf - t.brake * brake * (surf.grip < 3 ? 0.35 : 1) * dt);
       else vf = Math.max(-PHYS.reverseSpeed * penalty(surf.speed), vf - 11 * brake * dt);
@@ -185,10 +187,13 @@ export function stepKart(k: KartState, ctx: PhysicsContext, dt: number): void {
     k.heading -= yaw * dt;
 
     // ----- aderência lateral -----
-    const grip = (k.drifting ? 3.4 : surf.grip) * t.grip * (k.spinTime > 0 ? 0.4 : 1);
+    // empurrado (onda de vento) ou rodando: quase sem aderência, o impulso lateral se mantém
+    const grip = (k.drifting ? 3.4 : surf.grip) * t.grip * (k.stun > 0 ? 0.12 : k.spinTime > 0 ? 0.4 : 1);
     vl *= Math.exp(-grip * dt);
     // no drift o kart é empurrado para fora da curva (derrapa de lado)
     if (k.drifting) vl += k.driftDir * vf * 0.42 * dt * (surf.grip < 3 ? 1.6 : 1);
+
+    if (!ctx.controlsEnabled || k.freeze > 0) { vf = 0; vl = 0; }
 
     // segue o chão: remove a componente normal e corrige a altura
     const err = PHYS.rideHeight - dist;

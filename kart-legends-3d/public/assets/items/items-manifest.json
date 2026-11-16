@@ -1,0 +1,230 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "item-box",
+      "file": "items/item-box.glb",
+      "bytes": 40160,
+      "triangles": 1348,
+      "clips": [
+        {
+          "name": "loop",
+          "duration": 4
+        }
+      ],
+      "size": [
+        1.59,
+        1.3,
+        1.43
+      ],
+      "note": "Origem no centro do cristal (1,2 m de altura); o runtime posiciona acima da pista."
+    },
+    {
+      "id": "pulso-solar",
+      "file": "items/pulso-solar.glb",
+      "bytes": 20468,
+      "triangles": 660,
+      "clips": [
+        {
+          "name": "loop",
+          "duration": 2
+        }
+      ],
+      "size": [
+        0.78,
+        0.88,
+        0.87
+      ],
+      "note": "Pequeno sol (≈0,9 m de ponta a ponta), origem no centro."
+    },
+    {
+      "id": "bolha-guardia",
+      "file": "items/bolha-guardia.glb",
+      "bytes": 29516,
+      "triangles": 1672,
+      "clips": [
+        {
+          "name": "loop",
+          "duration": 3
+        }
+      ],
+      "size": [
+        2.1,
+        2,
+        2.1
+      ],
+      "note": "Esfera de raio 1 m (unitária), origem no centro; o runtime escala em volta do kart."
+    },
+    {
+      "id": "nevoa-prisma",
+      "file": "items/nevoa-prisma.glb",
+      "bytes": 42704,
+      "triangles": 2160,
+      "clips": [
+        {
+          "name": "loop",
+          "duration": 3
+        }
+      ],
+      "size": [
+        2.96,
+        1.13,
+        3.01
+      ],
+      "note": "Nuvem baixa de ≈3 m de diâmetro, origem no chão ao centro."
+    },
+    {
+      "id": "faisca-rastreadora",
+      "file": "items/faisca-rastreadora.glb",
+      "bytes": 39960,
+      "triangles": 1072,
+      "clips": [
+        {
+          "name": "loop",
+          "duration": 0.8
+        }
+      ],
+      "size": [
+        0.51,
+        0.51,
+        1.2
+      ],
+      "note": "Projétil apontando para +Z (≈1,0 m com a cauda), origem no centro do núcleo."
+    },
+    {
+      "id": "onda-vento",
+      "file": "items/onda-vento.glb",
+      "bytes": 29468,
+      "triangles": 2336,
+      "clips": [
+        {
+          "name": "loop",
+          "duration": 1
+        }
+      ],
+      "size": [
+        2.01,
+        0.31,
+        2.01
+      ],
+      "note": "Anel/espiral de raio 1 m (unitário) no plano XZ, origem no centro; o runtime expande."
+    },
+    {
+      "id": "cristal-salto",
+      "file": "items/cristal-salto.glb",
+      "bytes": 31328,
+      "triangles": 1188,
+      "clips": [
+        {
+          "name": "loop",
+          "duration": 1.2
+        }
+      ],
+      "size": [
+        0.82,
+        0.92,
+        0.44
+      ],
+      "note": "Cristal alado sobre mola (≈1,0 m de altura), origem na base."
+    },
+    {
+      "id": "boost-pad",
+      "file": "items/boost-pad.glb",
+      "bytes": 34368,
+      "triangles": 1104,
+      "clips": [],
+      "size": [
+        4.04,
+        0.14,
+        6.04
+      ],
+      "note": "Placa de 4 × 6 m rente ao chão (altura 0,14 m), origem no centro, setas para +Z."
+    },
+    {
+      "id": "ramp",
+      "file": "items/ramp.glb",
+      "bytes": 17096,
+      "triangles": 272,
+      "clips": [],
+      "size": [
+        1,
+        1,
+        1
+      ],
+      "note": "Rampa unitária 1 × 1 × 1 m (x,z em −0,5..0,5; sobe de y=0 em z=−0,5 a y=1 em z=+0,5); origem no chão ao centro; o runtime escala em x,y,z."
+    },
+    {
+      "id": "finish-arch",
+      "file": "items/finish-arch.glb",
+      "bytes": 162076,
+      "triangles": 5564,
+      "clips": [],
+      "size": [
+        23.96,
+        11.3,
+        2
+      ],
+      "note": "Pórtico com vão livre de 20 m × 7 m; origem no chão ao centro; a pista passa ao longo de Z."
+    },
+    {
+      "id": "trophy-gold",
+      "file": "items/trophy-gold.glb",
+      "bytes": 42632,
+      "triangles": 1896,
+      "clips": [],
+      "size": [
+        0.56,
+        0.57,
+        0.33
+      ],
+      "note": "Taça de ≈0,58 m, origem na base."
+    },
+    {
+      "id": "trophy-silver",
+      "file": "items/trophy-silver.glb",
+      "bytes": 42664,
+      "triangles": 1896,
+      "clips": [],
+      "size": [
+        0.56,
+        0.57,
+        0.33
+      ],
+      "note": "Taça de ≈0,58 m, origem na base."
+    },
+    {
+      "id": "trophy-bronze",
+      "file": "items/trophy-bronze.glb",
+      "bytes": 42636,
+      "triangles": 1896,
+      "clips": [],
+      "size": [
+        0.56,
+        0.57,
+        0.33
+      ],
+      "note": "Taça de ≈0,58 m, origem na base."
+    },
+    {
+      "id": "podium",
+      "file": "items/podium.glb",
+      "bytes": 90716,
+      "triangles": 2686,
+      "clips": [],
+      "size": [
+        13.42,
+        4.43,
+        5.09
+      ],
+      "note": "Topos planos: 1º (0, 1.0, 0), 2º (−4.2, 0.6, 0), 3º (4.2, 0.3, 0); cada plataforma 4,2 × 4,4 m; origem no chão."
+    }
+  ],
+  "icons": [
+    "ui/items/pulso-solar.webp",
+    "ui/items/bolha-guardia.webp",
+    "ui/items/nevoa-prisma.webp",
+    "ui/items/faisca-rastreadora.webp",
+    "ui/items/onda-vento.webp",
+    "ui/items/cristal-salto.webp"
+  ]
+}

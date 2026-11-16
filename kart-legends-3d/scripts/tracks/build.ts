@@ -15,6 +15,8 @@ import { RoadIndex, buildTerrain, terrainTiles, type Terrain } from './terrain';
 import type { CP, TrackDef } from './types';
 
 const SECTOR = 48;
+/** Tamanho (m) de uma repetição da textura do piso, por estilo. */
+const TILE: Record<string, number> = { cobble: 5, flagstone: 7, marble: 8, wood: 6, asphalt: 12, wet: 12, dirt: 10, sand: 10, snow: 12, ice: 14, grass: 10 };
 
 /** Acumulador de quadriláteros com normais e cores explícitas. */
 class Acc {
@@ -76,7 +78,6 @@ export async function buildTrack(def: TrackDef, opts: BuildOptions): Promise<Bui
   const rand = rng(def.seed);
   const main = samplePath(def.points, true);
   const n = main.n;
-  const next = (i: number): number => (i + 1) % n;
 
   /* ---------- atalhos ---------- */
   const shortcuts = (def.shortcuts ?? []).map((sc) => {
@@ -121,14 +122,15 @@ export async function buildTrack(def: TrackDef, opts: BuildOptions): Promise<Bui
     let dist = 0;
     for (let i = 0; i < last; i++) {
       const j = closed ? (i + 1) % s.n : i + 1;
-      const v0 = dist / 16, v1 = (dist + SPACING) / 16;
+      const tile = TILE[s.style[i] || styleOf(s.surface[i]!)] ?? 12;
+      const v0 = dist / tile, v1 = (dist + SPACING) / tile;
       dist += SPACING;
       if (s.gap[i]) continue;
       const S = sec(i);
       const hw = (k: number): number => s.halfWidth[k]!;
       const upN = (k: number): THREE.Vector3 => s.up[k]!;
       const mat = `road_${s.style[i] || styleOf(s.surface[i]!)}`;
-      const u = (lat: number): number => (hw(i) - lat) / 16;
+      const u = (lat: number): number => (hw(i) - lat) / tile;
       const edge = 1.1;
       const stops: Stop[] = [
         { lat: (k) => hw(k) + 1.5, h: 0, u: u(hw(i) + 1.5), shade: 0.72 },

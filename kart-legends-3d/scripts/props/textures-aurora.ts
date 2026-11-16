@@ -154,7 +154,7 @@ export async function registerAuroraTextures(): Promise<void> {
   defineMaterial('aur_metal', { map: 'aur_metal', roughness: 0.45, metalness: 0.6 });
   defineMaterial('aur_woven', { map: 'aur_woven', roughness: 0.9, doubleSided: true });
   defineMaterial('aur_glyph', { map: 'aur_glyph', roughness: 0.9 });
-  defineMaterial('aur_chevron', { map: 'aur_chevron', roughness: 0.5, noVertexColor: true, emissive: [0.25, 0.2, 0.05], emissiveStrength: 1 });
+  defineMaterial('aur_chevron', { map: 'aur_chevron', roughness: 0.6, noVertexColor: true });
   defineMaterial('aur_sign_turbo', { map: 'aur_sign_turbo', roughness: 0.5, noVertexColor: true });
   defineMaterial('aur_sign_pneus', { map: 'aur_sign_pneus', roughness: 0.5, noVertexColor: true });
   defineMaterial('aur_sign_tiko', { map: 'aur_sign_tiko', roughness: 0.5, noVertexColor: true });

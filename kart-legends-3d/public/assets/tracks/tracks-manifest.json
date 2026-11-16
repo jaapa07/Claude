@@ -1,0 +1,98 @@
+[
+  {
+    "id": "porto-lanternas",
+    "length": 1226,
+    "samples": 613,
+    "triangles": 523736,
+    "glbBytes": 13065020,
+    "jsonBytes": 107386,
+    "props": 217,
+    "animated": 1,
+    "colliders": 188,
+    "warnings": []
+  },
+  {
+    "id": "bosque-cristal",
+    "length": 1098,
+    "samples": 549,
+    "triangles": 638956,
+    "glbBytes": 22147768,
+    "jsonBytes": 97494,
+    "props": 556,
+    "animated": 3,
+    "colliders": 174,
+    "warnings": []
+  },
+  {
+    "id": "vale-moinhos",
+    "length": 1206,
+    "samples": 603,
+    "triangles": 367190,
+    "glbBytes": 11126948,
+    "jsonBytes": 106114,
+    "props": 465,
+    "animated": 8,
+    "colliders": 196,
+    "warnings": []
+  },
+  {
+    "id": "canion-solar",
+    "length": 1132,
+    "samples": 566,
+    "triangles": 337019,
+    "glbBytes": 10138028,
+    "jsonBytes": 93921,
+    "props": 391,
+    "animated": 2,
+    "colliders": 60,
+    "warnings": []
+  },
+  {
+    "id": "cidade-neon",
+    "length": 1516,
+    "samples": 758,
+    "triangles": 416500,
+    "glbBytes": 8110388,
+    "jsonBytes": 122515,
+    "props": 362,
+    "animated": 27,
+    "colliders": 290,
+    "warnings": []
+  },
+  {
+    "id": "pico-boreal",
+    "length": 1126,
+    "samples": 563,
+    "triangles": 447362,
+    "glbBytes": 16413944,
+    "jsonBytes": 102402,
+    "props": 466,
+    "animated": 4,
+    "colliders": 253,
+    "warnings": []
+  },
+  {
+    "id": "jardim-celeste",
+    "length": 1134,
+    "samples": 567,
+    "triangles": 410394,
+    "glbBytes": 8895480,
+    "jsonBytes": 61337,
+    "props": 266,
+    "animated": 42,
+    "colliders": 102,
+    "warnings": []
+  },
+  {
+    "id": "fortaleza-tempestade",
+    "length": 1206,
+    "samples": 603,
+    "triangles": 453388,
+    "glbBytes": 8613424,
+    "jsonBytes": 103797,
+    "props": 314,
+    "animated": 15,
+    "colliders": 276,
+    "warnings": []
+  }
+]

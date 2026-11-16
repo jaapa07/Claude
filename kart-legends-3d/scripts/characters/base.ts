@@ -82,7 +82,7 @@ const lerp3 = (a: THREE.Vector3, b: THREE.Vector3, t: number): V3 => a.clone().l
 export function buildBody(c: Ctx, b: BodySpec): void {
   const rig = c.rig;
   // tronco
-  const torso = surf(ringFn(b.torso), 24, 20, { capStart: true });
+  const torso = surf(ringFn(b.torso), 22, 17, { capStart: true });
   c.soft(paintUV(torso, b.torsoColor), b.torsoMat ?? 'cloth', rig.torsoW);
 
   for (const [sfx, sg] of [['L', 1], ['R', -1]] as ['L' | 'R', number][]) {
@@ -147,7 +147,7 @@ export interface HeadSpec {
  */
 export function buildHead(c: Ctx, h: HeadSpec): { fn: (u: number, v: number) => THREE.Vector3 } {
   const fn = ringFn(h.rings, h.mod);
-  const nu = h.nu ?? 36, nv = h.nv ?? 26;
+  const nu = h.nu ?? 32, nv = h.nv ?? 24;
   const inFace = (u: number, v: number): boolean => Math.abs(u - 0.5) < h.faceU && v > h.faceV0 && v < h.faceV1;
   const head = surf(fn, nu, nv, { capStart: true, capEnd: true, skip: inFace });
   c.rigid('head', paintUV(head, h.color), h.mat ?? 'skin');

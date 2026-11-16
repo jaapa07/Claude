@@ -4,8 +4,8 @@
     {
       "id": "flecha",
       "file": "karts/flecha.glb",
-      "bytes": 241524,
-      "triangles": 18582,
+      "bytes": 234880,
+      "triangles": 17990,
       "wheelRadiusFront": 0.29,
       "wheelRadiusRear": 0.31,
       "wheelWidthFront": 0.2,
@@ -66,8 +66,8 @@
     {
       "id": "engrenagem",
       "file": "karts/engrenagem.glb",
-      "bytes": 252268,
-      "triangles": 21220,
+      "bytes": 217920,
+      "triangles": 17460,
       "wheelRadiusFront": 0.33,
       "wheelRadiusRear": 0.33,
       "wheelWidthFront": 0.27,
@@ -121,9 +121,9 @@
       "size": [
         1.51,
         1.112,
-        2.459
+        2.46
       ],
-      "minBodyY": 0.063
+      "minBodyY": 0.067
     },
     {
       "id": "cometa",
@@ -190,8 +190,8 @@
     {
       "id": "broto",
       "file": "karts/broto.glb",
-      "bytes": 214796,
-      "triangles": 16536,
+      "bytes": 214388,
+      "triangles": 16344,
       "wheelRadiusFront": 0.31,
       "wheelRadiusRear": 0.31,
       "wheelWidthFront": 0.13,
@@ -247,7 +247,255 @@
         1.083,
         2.329
       ],
-      "minBodyY": 0.059
+      "minBodyY": 0.07
+    },
+    {
+      "id": "faisca",
+      "file": "karts/faisca.glb",
+      "bytes": 209504,
+      "triangles": 16432,
+      "wheelRadiusFront": 0.27,
+      "wheelRadiusRear": 0.36,
+      "wheelWidthFront": 0.16,
+      "wheelWidthRear": 0.36,
+      "seat": [
+        0,
+        0.34,
+        -0.24
+      ],
+      "steering": [
+        0,
+        0.84,
+        0.18
+      ],
+      "track": 1.17,
+      "trackFront": 1.22,
+      "trackRear": 1.12,
+      "wheelbase": 1.48,
+      "wheels": {
+        "fl": [
+          0.61,
+          0.27,
+          0.82
+        ],
+        "fr": [
+          -0.61,
+          0.27,
+          0.82
+        ],
+        "rl": [
+          0.56,
+          0.36,
+          -0.66
+        ],
+        "rr": [
+          -0.56,
+          0.36,
+          -0.66
+        ]
+      },
+      "exhaustL": [
+        0.443,
+        0.272,
+        -0.29
+      ],
+      "exhaustR": [
+        -0.443,
+        0.272,
+        -0.29
+      ],
+      "size": [
+        1.48,
+        0.993,
+        2.295
+      ],
+      "minBodyY": 0.09
+    },
+    {
+      "id": "mare",
+      "file": "karts/mare.glb",
+      "bytes": 216872,
+      "triangles": 17744,
+      "wheelRadiusFront": 0.29,
+      "wheelRadiusRear": 0.29,
+      "wheelWidthFront": 0.2,
+      "wheelWidthRear": 0.2,
+      "seat": [
+        0,
+        0.38,
+        -0.15
+      ],
+      "steering": [
+        0,
+        0.88,
+        0.27
+      ],
+      "track": 1.24,
+      "trackFront": 1.24,
+      "trackRear": 1.24,
+      "wheelbase": 1.48,
+      "wheels": {
+        "fl": [
+          0.62,
+          0.29,
+          0.74
+        ],
+        "fr": [
+          -0.62,
+          0.29,
+          0.74
+        ],
+        "rl": [
+          0.62,
+          0.29,
+          -0.74
+        ],
+        "rr": [
+          -0.62,
+          0.29,
+          -0.74
+        ]
+      },
+      "exhaustL": [
+        0.17,
+        0.3,
+        -1.18
+      ],
+      "exhaustR": [
+        -0.17,
+        0.3,
+        -1.18
+      ],
+      "size": [
+        1.47,
+        1.536,
+        2.457
+      ],
+      "minBodyY": 0.07
+    },
+    {
+      "id": "duna",
+      "file": "karts/duna.glb",
+      "bytes": 201800,
+      "triangles": 16582,
+      "wheelRadiusFront": 0.36,
+      "wheelRadiusRear": 0.36,
+      "wheelWidthFront": 0.34,
+      "wheelWidthRear": 0.34,
+      "seat": [
+        0,
+        0.42,
+        -0.12
+      ],
+      "steering": [
+        0,
+        0.92,
+        0.3
+      ],
+      "track": 1.14,
+      "trackFront": 1.14,
+      "trackRear": 1.14,
+      "wheelbase": 1.48,
+      "wheels": {
+        "fl": [
+          0.57,
+          0.36,
+          0.74
+        ],
+        "fr": [
+          -0.57,
+          0.36,
+          0.74
+        ],
+        "rl": [
+          0.57,
+          0.36,
+          -0.74
+        ],
+        "rr": [
+          -0.57,
+          0.36,
+          -0.74
+        ]
+      },
+      "exhaustL": [
+        0.28,
+        0.849,
+        -1.146
+      ],
+      "exhaustR": [
+        -0.28,
+        0.849,
+        -1.146
+      ],
+      "size": [
+        1.48,
+        1.692,
+        2.396
+      ],
+      "minBodyY": 0.14
+    },
+    {
+      "id": "geada",
+      "file": "karts/geada.glb",
+      "bytes": 219172,
+      "triangles": 13868,
+      "wheelRadiusFront": 0.28,
+      "wheelRadiusRear": 0.3,
+      "wheelWidthFront": 0.18,
+      "wheelWidthRear": 0.24,
+      "seat": [
+        0,
+        0.33,
+        -0.18
+      ],
+      "steering": [
+        0,
+        0.83,
+        0.24
+      ],
+      "track": 1.23,
+      "trackFront": 1.24,
+      "trackRear": 1.22,
+      "wheelbase": 1.46,
+      "wheels": {
+        "fl": [
+          0.62,
+          0.28,
+          0.76
+        ],
+        "fr": [
+          -0.62,
+          0.28,
+          0.76
+        ],
+        "rl": [
+          0.61,
+          0.3,
+          -0.7
+        ],
+        "rr": [
+          -0.61,
+          0.3,
+          -0.7
+        ]
+      },
+      "exhaustL": [
+        0.13,
+        0.21,
+        -1.16
+      ],
+      "exhaustR": [
+        -0.13,
+        0.21,
+        -1.16
+      ],
+      "size": [
+        1.48,
+        1.004,
+        2.47
+      ],
+      "minBodyY": 0.07
     }
   ]
 }

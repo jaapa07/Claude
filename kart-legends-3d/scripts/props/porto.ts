@@ -421,7 +421,7 @@ function arcoPedra(rand: Rand, span = 20): Model {
   // ameias nas pontas do parapeito
   for (const sx of [-1, 1]) for (const sz of [-1, 1]) for (let i = 0; i < 3; i++) {
     const x = sx * (gw / 2 + 0.6 + i * ((hw + ringT + pw - gw / 2 - 1.0) / 2.2));
-    put(m, cbox(0.7, 0.7, 0.5, 0.05), 'aur_block', lite(stone, 0.2), { p: [x, top + 0.55, sz * (depth / 2 - 0.25)] });
+    put(m, box(0.7, 0.7, 0.5), 'aur_block', lite(stone, 0.2), { p: [x, top + 0.55, sz * (depth / 2 - 0.25)] });
   }
   return fin(m);
 }

@@ -10,8 +10,14 @@ import { exportCharacter, type CharDef, type CharStats } from './characters/expo
 import { REQUIRED_BONES } from './characters/rig';
 import { nilo } from './characters/nilo';
 import { boro } from './characters/boro';
+import { lumi } from './characters/lumi';
+import { kora } from './characters/kora';
+import { tiko } from './characters/tiko';
+import { mavi } from './characters/mavi';
+import { runi } from './characters/runi';
+import { zera } from './characters/zera';
 
-const ALL: CharDef[] = [nilo, boro];
+const ALL: CharDef[] = [nilo, boro, lumi, kora, tiko, mavi, runi, zera];
 
 const only = process.argv.slice(2).filter((a) => !a.startsWith('--'));
 const list = only.length ? ALL.filter((d) => only.includes(d.id)) : ALL;

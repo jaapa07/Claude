@@ -405,9 +405,12 @@ export const TIRE_MAT = 'kart_tire';
 
 export function buildWheel(s: WheelSpec): Model {
   const m = new Model();
-  const hw = s.w / 2, r = s.r, rr = r * (s.rim ?? 0.62);
+  const hw = s.w / 2, rr = s.r * (s.rim ?? 0.62);
   const tireCol = s.tireCol ?? '#3a3d44';
   const sh = s.balloon ? 0.5 : 0.24; // quanto o ombro "come" da largura
+  const lugs = s.lugs ?? 14, lugH = s.lugH ?? 0.014;
+  const R0 = s.r; // raio nominal: topo das travas (ou da banda lisa) — é o que toca o chão
+  const r = lugs > 0 ? R0 - lugH : R0;
   const side = r - rr;
   /* pneu */
   const prof: P2[] = [
@@ -433,27 +436,22 @@ export function buildWheel(s: WheelSpec): Model {
   m.add(tire, TIRE_MAT, (p) => {
     const rad = Math.hypot(p.y, p.z);
     const onWall = Math.abs(p.x) > hw * 0.8 && rad < r - side * 0.2 && rad > rr + side * 0.08;
-    if (onWall && sectors && p.x > 0) {
-      const a = (Math.atan2(p.z, p.y) + Math.PI) / (Math.PI * 2);
-      return sectors[Math.floor(a * nsec) % 2]!;
-    }
     if (onWall && s.wallBand && rad > rr + side * 0.3 && rad < r - side * 0.3) return s.wallBand;
     return tireCol;
   });
   if (sectors || s.wallBand) {
     // anel sólido na parede externa para a pintura ficar nítida
-    const rA = rr + side * 0.2, rB = r - side * 0.32;
-    const band = latheX([[rB + 0.004, hw * 0.97], [rB, hw * 1.0], [rA, hw * 0.985], [rA - 0.004, hw * 0.95]] as P2[], sectors ? nsec * 4 : 28);
-    m.add(band, 'std', (p) => {
+    const rA = rr + side * (sectors ? 0.1 : 0.2), rB = r - side * (sectors ? 0.2 : 0.32);
+    const band = latheX([[rB + 0.004, hw * 0.97], [rB, hw * 1.0], [rA, hw * 0.985], [rA - 0.004, hw * 0.95]] as P2[], sectors ? nsec * 3 : 20);
+    m.add(quads(band.toNonIndexed(), (c) => {
       if (!sectors) return s.wallBand!;
-      const a = (Math.atan2(p.z, p.y) + Math.PI + 1e-4) / (Math.PI * 2);
-      return sectors[Math.floor(a * nsec + 0.02) % 2]!;
-    });
+      const a = (Math.atan2(c.z, c.y) + Math.PI) / (Math.PI * 2);
+      return sectors[Math.floor(a * nsec) % 2]!;
+    }), 'std');
   }
   /* travas da banda */
-  const lugs = s.lugs ?? 14;
   if (lugs > 0) {
-    const lugH = s.lugH ?? 0.014, rows = s.lugRows ?? 2;
+    const rows = s.lugRows ?? 2;
     const lugLen = ((Math.PI * 2 * r) / lugs) * (s.lugLen ?? 0.5);
     const lw = hw * (1 - sh) * (rows === 2 ? 1.0 : 1.7);
     for (let i = 0; i < lugs * rows; i++) {
@@ -461,7 +459,7 @@ export function buildWheel(s: WheelSpec): Model {
       const a = (Math.floor(i / rows) + (i % 2) * 0.5) / lugs * Math.PI * 2;
       const g = cbox(lw, lugH * 2, lugLen);
       g.rotateY(sideSign * 0.32);
-      g.translate(sideSign * hw * (1 - sh) * 0.52, r - lugH * 0.55, 0);
+      g.translate(sideSign * hw * (1 - sh) * 0.52, Math.sqrt(R0 * R0 - (lugLen / 2 + (rows === 2 ? lw * 0.16 : 0)) ** 2) - lugH, 0);
       g.rotateX(a);
       m.add(g, 'rubber', s.lugCol ?? '#4a4e57');
     }

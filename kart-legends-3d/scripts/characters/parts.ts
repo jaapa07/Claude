@@ -113,8 +113,8 @@ export function ribbon(pts: V3[], width: number | ((t: number) => number), thick
 }
 
 /** Folha: lâmina fina com nervura central, base na primeira ponta do caminho. */
-export function leafBlade(pts: V3[], w: number, c0: ColorLike, c1: ColorLike, ref: V3 = [1, 0, 0], nv = 8): Painted {
-  const g = sweep(pts, (t) => [Math.max(0.002, w * 0.5 * Math.sin(Math.PI * t ** 0.62) ** 0.8), 0.0045 + 0.004 * (1 - t)], 8, nv, { ref });
+export function leafBlade(pts: V3[], w: number, c0: ColorLike, c1: ColorLike, ref: V3 = [1, 0, 0], nv = 5): Painted {
+  const g = sweep(pts, (t) => [Math.max(0.002, w * 0.5 * Math.sin(Math.PI * t ** 0.62) ** 0.8), 0.0045 + 0.004 * (1 - t)], 6, Math.min(nv, 5), { ref });
   return paintUV(g, (u, v) => {
     const rib = Math.abs(Math.cos(Math.PI * 2 * u)) < 0.22 ? 0.25 : 0; // nervura no meio da lâmina
     return darken(mix(c0, c1, v), rib * 0.5);

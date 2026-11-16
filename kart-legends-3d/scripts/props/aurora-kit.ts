@@ -60,6 +60,20 @@ export function tone(geo: Geo, c: ColorLike, amt = 0.18, top?: ColorLike): Geo {
   return paint(geo, (p, n) => mix(lo, hi, (p.y - y0) / h).multiplyScalar(1 + n.y * 0.07));
 }
 
+/** Pinta por triângulo (cor única por face, a partir do centroide): faixas nítidas em malhas facetadas. */
+export function paintTri(geo: Geo, fn: (c: THREE.Vector3) => ColorLike): Geo {
+  const g = paint(geo, '#ffffff');
+  const pos = g.getAttribute('position'), colr = g.getAttribute('color');
+  const c = new THREE.Vector3(), p = new THREE.Vector3();
+  for (let i = 0; i < pos.count; i += 3) {
+    c.set(0, 0, 0);
+    for (let k = 0; k < 3; k++) c.add(p.fromBufferAttribute(pos, i + k));
+    const k2 = col(fn(c.multiplyScalar(1 / 3)));
+    for (let k = 0; k < 3; k++) colr.setXYZ(i + k, k2.r, k2.g, k2.b);
+  }
+  return g;
+}
+
 /** Adiciona uma peça transformada e tonalizada com `tone`. */
 export function put(m: Model, geo: Geo, mat: string, c: ColorLike, x?: Xf, amt?: number, top?: ColorLike): void {
   m.add(tone(x ? xf(geo, x) : geo, c, amt, top), mat);
@@ -417,6 +431,34 @@ export function openingProf(hw: number, spring: number, rise: number, n = 10): P
   for (const [x, y] of archProf(hw, rise, n)) out.push([x, y + spring]);
   out.push([hw, spring * 0.5], [hw, -0.1]);
   return out;
+}
+
+/** Relevo em disco (dunas, montes): grade polar com altura h(x,z); borda no chão. Normais suaves. */
+export function heightDisc(R: number, rings: number, k: number, h: (x: number, z: number) => number, squash: P2 = [1, 1]): Geo {
+  const pos: number[] = [];
+  const P = (i: number, j: number): V3 => {
+    const r = (i / rings) * R, a = (j / k) * TAU;
+    const x = Math.cos(a) * r * squash[0], z = Math.sin(a) * r * squash[1];
+    return [x, i === rings ? -0.05 : h(x, z), z];
+  };
+  for (let i = 0; i < rings; i++) for (let j = 0; j < k; j++) {
+    const a = P(i, j), b = P(i + 1, j), c = P(i + 1, j + 1), d = P(i, j + 1);
+    pos.push(...a, ...c, ...b);
+    if (i > 0) pos.push(...a, ...d, ...c);
+  }
+  let g: Geo = rawGeo(pos);
+  g.deleteAttribute('normal');
+  g = mergeVertices(g, 1e-4);
+  g.computeVertexNormals();
+  return g.toNonIndexed();
+}
+
+/** Plano texturizado voltado para +Z com a imagem em pé no glTF (v invertido); `mirror` espelha em X. */
+export function signPlane(w: number, h: number, mirror = false): Geo {
+  const g = new THREE.PlaneGeometry(w, h);
+  const uv = g.getAttribute('uv');
+  for (let i = 0; i < uv.count; i++) uv.setXY(i, mirror ? 1 - uv.getX(i) : uv.getX(i), 1 - uv.getY(i));
+  return g;
 }
 
 /* ---------- peças de arquitetura ---------- */

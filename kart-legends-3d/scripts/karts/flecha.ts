@@ -23,7 +23,7 @@ export function buildFlecha(plate: string): KartParts {
   ], { sub: 3, n: 2 }), (c, n) => (Math.abs(n.x) > 0.7 && Math.abs(c.x) > 0.36 && c.y > 0.2 && c.y < 0.33 ? CREAM : n.y > 0.7 && c.y < 0.2 ? DARK : c.y < 0.15 ? RED_D : RED)), 'paint');
   // tapete do piso
   b.add(cbox(0.5, 0.012, 0.62, 0.004), 'rubber', '#3a3d44', { p: [0, 0.131, 0.22] });
-  for (let i = 0; i < 6; i++) b.add(box(0.44, 0.008, 0.02), 'rubber', '#565a63', { p: [0, 0.139, 0.0 + i * 0.09] });
+  for (let i = 0; i < 3; i++) b.add(box(0.44, 0.008, 0.02), 'rubber', '#565a63', { p: [0, 0.139, 0.04 + i * 0.18] });
 
   /* bico */
   b.add(quads(shell([
@@ -84,7 +84,7 @@ export function buildFlecha(plate: string): KartParts {
   pod.add(cbox(0.11, 0.11, 0.03, 0.02), 'matte', DARK, { p: [0.455, 0.19, 0.395] });
   for (let i = 0; i < 3; i++) pod.add(box(0.1, 0.012, 0.02), 'kart_metal', '#b9bec7', { p: [0.455, 0.158 + i * 0.032, 0.408] });
   numberPlate(pod, plate, 0.085, { p: [0.574, 0.21, -0.06], r: [0, Math.PI / 2, 0] });
-  boltRow(pod, [0.565, 0.3, -0.3], [0.565, 0.29, 0.3], 5, 0.011, 'x');
+  boltRow(pod, [0.565, 0.3, -0.3], [0.565, 0.29, 0.3], 3, 0.011, 'x');
   both(b, pod);
 
   /* assento */
@@ -109,7 +109,7 @@ export function buildFlecha(plate: string): KartParts {
   /* bagageiro com mochila e mapa enrolado */
   const rackY = 0.615;
   bar(b, [[0.29, rackY - 0.06, -0.48], [0.3, rackY, -0.54], [0.3, rackY, -0.98], [0.26, rackY, -1.07], [0, rackY, -1.09]], 0.014, '#c9a24a', 'kart_metal', true, 5);
-  for (const z of [-0.6, -0.72, -0.84, -0.96]) b.add(rod([-0.3, rackY - 0.006, z], [0.3, rackY - 0.006, z], 0.01, 0.01, 6), 'kart_metal', '#c9a24a');
+  for (const z of [-0.62, -0.78, -0.94]) b.add(rod([-0.3, rackY - 0.006, z], [0.3, rackY - 0.006, z], 0.01, 0.01, 6), 'kart_metal', '#c9a24a');
   for (const [x, z] of [[0.3, -0.56], [0.3, -0.95], [-0.3, -0.56], [-0.3, -0.95]] as [number, number][]) {
     b.add(rod([x * 0.93, 0.52, z], [x, rackY, z], 0.011, 0.011, 6), 'kart_metal', '#c9a24a');
   }
@@ -164,12 +164,11 @@ export function buildFlecha(plate: string): KartParts {
   /* pedais */
   b.addModel(pedals(0.13, 0.46));
   // parafusos da borda do cockpit
-  for (const sg of [1, -1]) boltRow(b, [sg * 0.368, 0.41, -0.3], [sg * 0.362, 0.42, 0.4], 4, 0.01, 'y', '#f2e6c4');
   b.add(bolt(0.02, 0.02, 'z'), 'kart_metal', '#c9a24a', { p: [0, 0.23, 1.165] });
   b.add(sphere(0.03, 10, 8), 'kart_metal', '#c9a24a', { p: [0, 0.23, 1.165] });
 
-  const wheelFront = buildWheel({ r: front.r, w: front.w, spokes: 6, sw0: 0.1, sw1: 0.06, rimCol: '#d9dce2', spokeCol: CREAM, hubCol: RED });
-  const wheelRear = buildWheel({ r: rear.r, w: rear.w, spokes: 6, sw0: 0.1, sw1: 0.06, rimCol: '#d9dce2', spokeCol: CREAM, hubCol: RED });
+  const wheelFront = buildWheel({ r: front.r, w: front.w, spokes: 5, sw0: 0.11, sw1: 0.065, rimCol: '#d9dce2', spokeCol: CREAM, hubCol: RED });
+  const wheelRear = buildWheel({ r: rear.r, w: rear.w, spokes: 5, sw0: 0.11, sw1: 0.065, rimCol: '#d9dce2', spokeCol: CREAM, hubCol: RED });
   const steering = buildSteering({ rimCol: '#3a3028', spokeCol: '#c9ced6', hubCol: '#8d939d', accent: RED });
   return { body: b, wheelFront, wheelRear, steering, seat, front, rear, exhaustL: tipL, exhaustR: tipR };
 }

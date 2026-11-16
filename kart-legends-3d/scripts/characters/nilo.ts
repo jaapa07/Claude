@@ -131,6 +131,14 @@ function build(c: Ctx): FaceSpec {
   const bz = ringAtY(T, 0.218);
   c.soft(box(0.05, 0.04, 0.014, 0.006, 1), METAL, rig.torsoW, BRASS, { p: [0, 0.218, bz.z + bz.rz + 0.012] });
 
+  // bolsa de explorador com mapa enrolado (quadril direito) e alça cruzada
+  c.rigid('hips', box(0.035, 0.1, 0.11, 0.012, 1), 'std', (p) => mix(darken(LEATHER, 0.3), LEATHER, sstep(-0.05, 0.05, p.y)), { p: [-(bz.rx + 0.03), 0.15, 0.0] });
+  c.rigid('hips', box(0.04, 0.045, 0.118, 0.01, 1), 'std', '#7d4f2e', { p: [-(bz.rx + 0.032), 0.185, 0.0] });
+  c.rigid('hips', sphere(0.009, 6, 4), METAL, BRASS, { p: [-(bz.rx + 0.054), 0.17, 0.0] });
+  c.rigid('hips', cyl(0.018, 0.018, 0.15, 8), 'std', (p) => mix('#d9c69a', '#fff4d6', sstep(-0.07, 0.07, p.y)), { p: [-(bz.rx + 0.03), 0.235, -0.03], r: [-0.5, 0, 0.1] });
+  c.rigid('hips', cyl(0.0195, 0.0195, 0.02, 8), 'cloth', '#c0392b', { p: [-(bz.rx + 0.03), 0.235, -0.03], r: [-0.5, 0, 0.1] });
+  c.soft(ribbon([[-(bz.rx + 0.02), 0.19, 0.03], [-0.1, 0.33, 0.125], [0.03, 0.45, 0.13], [0.12, 0.525, 0.03], [0.1, 0.48, -0.1], [-0.05, 0.3, -0.14], [-(bz.rx + 0.02), 0.19, -0.04]], 0.026, 0.008, () => LEATHER, { ref: [0, 0, 1], nv: 20, nu: 6 }), 'std', rig.torsoW);
+
   // bandana: gola + triângulo no peito + pontas atrás (osso próprio)
   c.soft(paintUV(band(T, 0.525, 0.6, 0.024, 24), (_u, _v, p) => mix(darken(TEAL, 0.25), TEAL, sstep(0.52, 0.6, p.y))), 'cloth', rig.torsoW);
   const tri = surf((u, v) => {

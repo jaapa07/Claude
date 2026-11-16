@@ -223,7 +223,7 @@ export async function registerEclipseTextures(): Promise<void> {
     defineMaterial(`ecl_sinal_${layer}`, { color: luz[layer], roughness: 0.5, emissive: luz[layer], emissiveStrength: 1.5, map: `ecl_sinal_${layer}`, alpha: 0.999 });
   }
   for (const layer of ['v', 'w', 'c', 'm'] as const) {
-    defineMaterial(`ecl_vitral_${layer}`, { color: luz[layer], roughness: 0.3, emissive: luz[layer], emissiveStrength: 1.8, map: `ecl_vitral_${layer}`, alpha: 0.999 });
+    defineMaterial(`ecl_vitral_${layer}`, { color: [luz[layer][0] * 0.55, luz[layer][1] * 0.55, luz[layer][2] * 0.55], roughness: 0.3, emissive: [luz[layer][0] * 0.7, luz[layer][1] * 0.7, luz[layer][2] * 0.7], map: `ecl_vitral_${layer}`, alpha: 0.999 });
   }
   defineMaterial('ecl_gelo', { roughness: 0.12, alpha: 0.82, map: 'ecl_gelo', emissive: [0.05, 0.14, 0.2], emissiveStrength: 1, doubleSided: true });
   defineMaterial('ecl_gelo_solido', { roughness: 0.2, map: 'ecl_gelo', emissive: [0.03, 0.08, 0.12], emissiveStrength: 1 });
@@ -235,6 +235,7 @@ export async function registerEclipseTextures(): Promise<void> {
   defineMaterial('ecl_pedra', { roughness: 0.9, map: 'ecl_pedra' });
   defineMaterial('ecl_ardosia', { roughness: 0.7, metalness: 0.1, map: 'ecl_ardosia' });
   defineMaterial('ecl_nuvem', { roughness: 1, emissive: [0.2, 0.2, 0.24], emissiveStrength: 1 });
+  defineMaterial('ecl_chama', { color: [1, 0.5, 0.15], roughness: 0.6, emissive: [1, 0.36, 0.06], emissiveStrength: 1.15 });
   defineMaterial('ecl_agua', { color: [0.6, 0.88, 1], roughness: 0.1, alpha: 0.72, doubleSided: true, emissive: [0.08, 0.2, 0.26], emissiveStrength: 1 });
   defineMaterial('water_fall', { color: [0.75, 0.92, 1], roughness: 0.15, alpha: 0.78, doubleSided: true, emissive: [0.1, 0.25, 0.3], emissiveStrength: 1 });
   done = true;
