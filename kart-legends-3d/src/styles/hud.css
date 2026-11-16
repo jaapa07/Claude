@@ -1,0 +1,97 @@
+/* KART LEGENDS 3D — HUD de corrida. */
+
+.hud { position: absolute; inset: 0; pointer-events: none !important; font-variant-numeric: tabular-nums; }
+.hud > div { position: absolute; }
+.hud__top-left { top: 1.2rem; left: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-start; }
+.hud__top-right { top: 1.2rem; right: 1.5rem; }
+.hud__top-center { top: 1.4rem; left: 50%; transform: translateX(-50%); width: min(46%, 34rem); }
+.hud__bottom-left { bottom: 1.3rem; left: 1.5rem; }
+.hud__bottom-right { bottom: 1.3rem; right: 1.5rem; display: flex; align-items: flex-end; gap: 0.9rem; }
+.hud__hint { position: absolute; bottom: 1.3rem; left: 50%; transform: translateX(-50%); font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); background: rgba(10, 7, 24, 0.6); padding: 0.25rem 0.9rem; }
+
+.hud-panel { background: rgba(14, 9, 34, 0.62); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12); clip-path: var(--cut-shape); padding: 0.55rem 0.9rem; }
+.hud-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+.hud-value { font-weight: 900; font-style: italic; font-size: 1.25rem; }
+.hud-value--mono { font-family: var(--font-mono); font-style: normal; font-weight: 700; font-size: 1.1rem; }
+
+/* Posição */
+.hud-position { font-family: var(--font-display); font-style: italic; font-weight: 900; line-height: 0.9; filter: drop-shadow(0 0.2rem 0.5rem rgba(0, 0, 0, 0.6)); padding-right: 0.4rem; }
+.hud-position__value { font-size: 4.6rem; background: var(--aurora); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: 0.08em; }
+.hud-position[data-place="1"] .hud-position__value { background: linear-gradient(100deg, #fff3b0, #ffc93c 55%, #ff8a3c); -webkit-background-clip: text; background-clip: text; }
+.hud-position__total { font-size: 1.7rem; color: #fff; opacity: 0.85; }
+
+/* Volta e tempos */
+.hud-timing { display: flex; flex-direction: column; gap: 0.05rem; min-width: 12.5rem; }
+.hud-timing__row { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+.hud-timing__row--lap .hud-value { font-size: 1.6rem; color: var(--amber); }
+.hud-timing__row--small .hud-value { font-size: 0.85rem; opacity: 0.85; }
+
+/* Minimapa */
+.hud-minimap { width: 13rem; height: 13rem; padding: 0.4rem; }
+.hud-minimap svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.hud-minimap__track-edge { fill: none; stroke: rgba(10, 7, 24, 0.85); stroke-linejoin: round; }
+.hud-minimap__track { fill: none; stroke: rgba(255, 255, 255, 0.88); stroke-linejoin: round; }
+.hud-minimap__dot { stroke: rgba(10, 7, 24, 0.9); }
+.hud-minimap__dot--player { stroke: #fff; animation: dot-pulse 900ms ease-in-out infinite alternate; }
+@keyframes dot-pulse { from { stroke-opacity: 1; } to { stroke-opacity: 0.45; } }
+.hud-minimap__error { display: block; font-size: 0.7rem; color: #ffc2ca; padding: 0.4rem; }
+
+/* Item */
+.hud-item { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+.hud-item__box { width: 6rem; height: 6rem; padding: 0.45rem; background: rgba(14, 9, 34, 0.7); box-shadow: inset 0 0 0 0.19rem rgba(255, 255, 255, 0.3), 0 0 1.4rem -0.3rem var(--item-color); transform: rotate(-4deg); clip-path: var(--cut-shape); }
+.hud-item:not([data-item="none"]) .hud-item__box { box-shadow: inset 0 0 0 0.19rem var(--item-color); }
+.hud-item[data-rolling="true"] .hud-item__box { animation: item-roll 170ms linear infinite; }
+@keyframes item-roll { 0% { transform: rotate(-4deg) translateY(-0.2rem); } 50% { transform: rotate(-4deg) translateY(0.2rem); } 100% { transform: rotate(-4deg) translateY(-0.2rem); } }
+.hud-item__img { width: 100%; height: 100%; background: transparent; }
+.hud-item__img img { object-fit: contain; }
+.hud-item__img .asset-img__fallback { background: var(--img-color); }
+.hud-item__name { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; background: rgba(10, 7, 24, 0.7); padding: 0.1rem 0.6rem; min-width: 6rem; text-align: center; }
+
+/* Drift / turbo / escudo */
+.hud-meters { display: flex; flex-direction: column; gap: 0.4rem; width: 14rem; }
+.hud-drift__segments { display: flex; gap: 0.25rem; margin-top: 0.15rem; }
+.hud-drift__seg { flex: 1; height: 0.7rem; background: rgba(255, 255, 255, 0.12); transform: skewX(-20deg); overflow: hidden; }
+.hud-drift__fill { display: block; width: 100%; height: 100%; transform-origin: left center; transition: transform 70ms linear; }
+/* Três níveis com cores bem distintas: azul, laranja e magenta. */
+.hud-drift__seg[data-seg="1"] .hud-drift__fill { background: #3fa9ff; }
+.hud-drift__seg[data-seg="2"] .hud-drift__fill { background: #ff8a1f; }
+.hud-drift__seg[data-seg="3"] .hud-drift__fill { background: #ff2fb0; }
+.hud-drift__seg[data-full="true"] { box-shadow: 0 0 0.6rem currentColor; }
+.hud-drift[data-level="1"] .hud-label { color: #3fa9ff; }
+.hud-drift[data-level="2"] .hud-label { color: #ff8a1f; }
+.hud-drift[data-level="3"] .hud-label { color: #ff2fb0; }
+.hud-boost__bar { height: 0.55rem; margin-top: 0.15rem; background: rgba(255, 255, 255, 0.12); transform: skewX(-20deg); overflow: hidden; }
+.hud-boost__fill { display: block; width: 100%; height: 100%; transform-origin: left center; background: linear-gradient(90deg, #fff3b0, var(--amber), #ff5b3a); transition: transform 90ms linear; }
+.hud-boost[data-active="true"] .hud-label { color: var(--amber); }
+.hud-shield { display: flex; align-items: center; gap: 0.4rem; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255, 255, 255, 0.28); }
+.hud-shield svg { width: 1.1rem; height: 1.1rem; }
+.hud-shield[data-active="true"] { color: var(--cyan); text-shadow: 0 0 0.6rem var(--cyan); }
+
+/* Velocímetro */
+.hud-speed { position: relative; width: 9.5rem; height: 9.5rem; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle, rgba(14, 9, 34, 0.78) 0%, rgba(14, 9, 34, 0.5) 62%, transparent 72%); }
+.hud-speed svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(135deg); }
+.hud-speed__track, .hud-speed__fill { fill: none; stroke-width: 7; stroke-linecap: butt; }
+.hud-speed__track { stroke: rgba(255, 255, 255, 0.14); }
+.hud-speed__fill { stroke: var(--amber); transition: stroke-dasharray 90ms linear; }
+.hud-speed[data-boosting="true"] .hud-speed__fill { stroke: var(--magenta); filter: drop-shadow(0 0 0.3rem var(--magenta)); }
+.hud-speed__value { position: relative; font-family: var(--font-display); font-style: italic; font-weight: 900; font-size: 3rem; line-height: 1; padding-right: 0.08em; }
+.hud-speed__unit { position: relative; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+
+/* Contagem regressiva */
+.hud-countdown { inset: 0; display: flex; align-items: center; justify-content: center; }
+.hud-countdown__text { font-family: var(--font-display); font-style: italic; font-weight: 900; font-size: 13rem; line-height: 1; color: #fff; -webkit-text-stroke: 0.35rem #14092a; paint-order: stroke fill; text-shadow: 0 0.6rem 2.5rem rgba(255, 61, 154, 0.7); animation: count-pop 900ms var(--ease) both; padding-right: 0.1em; }
+.hud-countdown[data-go="true"] .hud-countdown__text { color: var(--amber); font-size: 11rem; text-shadow: 0 0.6rem 2.5rem rgba(255, 179, 71, 0.8); }
+@keyframes count-pop { 0% { transform: scale(1.9); opacity: 0; } 22% { transform: scale(1); opacity: 1; } 78% { transform: scale(1); opacity: 1; } 100% { transform: scale(0.82); opacity: 0.25; } }
+
+/* Alertas */
+.hud-alerts { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
+.hud-alert { padding: 0.3rem 1.4rem; font-weight: 900; font-style: italic; font-size: 1.15rem; letter-spacing: 0.06em; text-transform: uppercase; color: #fff; background: rgba(14, 9, 34, 0.82); transform: skewX(-10deg); box-shadow: inset 0.3rem 0 0 var(--cyan); animation: alert-in 220ms var(--ease) both; }
+.hud-alert--warn { box-shadow: inset 0.3rem 0 0 var(--warn); color: var(--warn); }
+.hud-alert--good { box-shadow: inset 0.3rem 0 0 var(--good); color: var(--good); }
+.hud-alert--wrongway { background: rgba(120, 12, 30, 0.9); color: #fff; box-shadow: inset 0.3rem 0 0 var(--danger); animation: alert-in 220ms var(--ease) both, pulse 500ms ease-in-out 220ms infinite alternate; }
+.hud-alert--finish { font-size: 2rem; background: var(--aurora); color: #14092a; box-shadow: none; }
+@keyframes alert-in { from { opacity: 0; transform: skewX(-10deg) translateY(-0.6rem); } to { opacity: 1; transform: skewX(-10deg); } }
+
+@media (max-width: 1100px) {
+  .hud-minimap { width: 11rem; height: 11rem; }
+}

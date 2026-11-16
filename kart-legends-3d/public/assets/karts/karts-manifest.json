@@ -1,0 +1,253 @@
+{
+  "version": 1,
+  "karts": [
+    {
+      "id": "flecha",
+      "file": "karts/flecha.glb",
+      "bytes": 241524,
+      "triangles": 18582,
+      "wheelRadiusFront": 0.29,
+      "wheelRadiusRear": 0.31,
+      "wheelWidthFront": 0.2,
+      "wheelWidthRear": 0.25,
+      "seat": [
+        0,
+        0.36,
+        -0.15
+      ],
+      "steering": [
+        0,
+        0.86,
+        0.27
+      ],
+      "track": 1.23,
+      "trackFront": 1.24,
+      "trackRear": 1.22,
+      "wheelbase": 1.44,
+      "wheels": {
+        "fl": [
+          0.62,
+          0.29,
+          0.72
+        ],
+        "fr": [
+          -0.62,
+          0.29,
+          0.72
+        ],
+        "rl": [
+          0.61,
+          0.31,
+          -0.72
+        ],
+        "rr": [
+          -0.61,
+          0.31,
+          -0.72
+        ]
+      },
+      "exhaustL": [
+        0.23,
+        0.215,
+        -1.17
+      ],
+      "exhaustR": [
+        -0.23,
+        0.215,
+        -1.17
+      ],
+      "size": [
+        1.509,
+        0.935,
+        2.476
+      ],
+      "minBodyY": 0.08
+    },
+    {
+      "id": "engrenagem",
+      "file": "karts/engrenagem.glb",
+      "bytes": 252268,
+      "triangles": 21220,
+      "wheelRadiusFront": 0.33,
+      "wheelRadiusRear": 0.33,
+      "wheelWidthFront": 0.27,
+      "wheelWidthRear": 0.27,
+      "seat": [
+        0,
+        0.4,
+        -0.12
+      ],
+      "steering": [
+        0,
+        0.9,
+        0.3
+      ],
+      "track": 1.2,
+      "trackFront": 1.2,
+      "trackRear": 1.2,
+      "wheelbase": 1.44,
+      "wheels": {
+        "fl": [
+          0.6,
+          0.33,
+          0.72
+        ],
+        "fr": [
+          -0.6,
+          0.33,
+          0.72
+        ],
+        "rl": [
+          0.6,
+          0.33,
+          -0.72
+        ],
+        "rr": [
+          -0.6,
+          0.33,
+          -0.72
+        ]
+      },
+      "exhaustL": [
+        0.2,
+        1.11,
+        -0.56
+      ],
+      "exhaustR": [
+        -0.2,
+        1.11,
+        -0.56
+      ],
+      "size": [
+        1.51,
+        1.112,
+        2.459
+      ],
+      "minBodyY": 0.063
+    },
+    {
+      "id": "cometa",
+      "file": "karts/cometa.glb",
+      "bytes": 210340,
+      "triangles": 15960,
+      "wheelRadiusFront": 0.27,
+      "wheelRadiusRear": 0.3,
+      "wheelWidthFront": 0.17,
+      "wheelWidthRear": 0.26,
+      "seat": [
+        0,
+        0.31,
+        -0.22
+      ],
+      "steering": [
+        0,
+        0.81,
+        0.2
+      ],
+      "track": 1.22,
+      "trackFront": 1.24,
+      "trackRear": 1.2,
+      "wheelbase": 1.46,
+      "wheels": {
+        "fl": [
+          0.62,
+          0.27,
+          0.76
+        ],
+        "fr": [
+          -0.62,
+          0.27,
+          0.76
+        ],
+        "rl": [
+          0.6,
+          0.3,
+          -0.7
+        ],
+        "rr": [
+          -0.6,
+          0.3,
+          -0.7
+        ]
+      },
+      "exhaustL": [
+        0.27,
+        0.2,
+        -1.09
+      ],
+      "exhaustR": [
+        -0.27,
+        0.2,
+        -1.09
+      ],
+      "size": [
+        1.474,
+        0.871,
+        2.452
+      ],
+      "minBodyY": 0.07
+    },
+    {
+      "id": "broto",
+      "file": "karts/broto.glb",
+      "bytes": 214796,
+      "triangles": 16536,
+      "wheelRadiusFront": 0.31,
+      "wheelRadiusRear": 0.31,
+      "wheelWidthFront": 0.13,
+      "wheelWidthRear": 0.15,
+      "seat": [
+        0,
+        0.36,
+        -0.12
+      ],
+      "steering": [
+        0,
+        0.86,
+        0.3
+      ],
+      "track": 1.22,
+      "trackFront": 1.22,
+      "trackRear": 1.22,
+      "wheelbase": 1.46,
+      "wheels": {
+        "fl": [
+          0.61,
+          0.31,
+          0.74
+        ],
+        "fr": [
+          -0.61,
+          0.31,
+          0.74
+        ],
+        "rl": [
+          0.61,
+          0.31,
+          -0.72
+        ],
+        "rr": [
+          -0.61,
+          0.31,
+          -0.72
+        ]
+      },
+      "exhaustL": [
+        0.305,
+        0.433,
+        -1.086
+      ],
+      "exhaustR": [
+        -0.305,
+        0.433,
+        -1.086
+      ],
+      "size": [
+        1.465,
+        1.083,
+        2.329
+      ],
+      "minBodyY": 0.059
+    }
+  ]
+}

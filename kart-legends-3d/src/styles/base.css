@@ -1,0 +1,172 @@
+/* KART LEGENDS 3D — fundamentos: tokens, reset, tipografia e controles básicos. */
+:root {
+  --bg-0: #0a0718;
+  --bg-1: #140d2e;
+  --ink: #f6f2ff;
+  --muted: #b9afd9;
+  --amber: #ffb347;
+  --magenta: #ff3d9a;
+  --violet: #7b5cff;
+  --cyan: #4fd8e8;
+  --good: #7df0a8;
+  --warn: #ffcf4d;
+  --danger: #ff5a6e;
+  --panel: rgba(20, 13, 46, 0.72);
+  --panel-solid: rgba(14, 9, 34, 0.94);
+  --line: rgba(255, 255, 255, 0.14);
+  --aurora: linear-gradient(100deg, var(--amber) 0%, var(--magenta) 52%, var(--violet) 100%);
+  --cut: 0.9rem;
+  --cut-shape: polygon(0 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% 100%, var(--cut) 100%, 0 calc(100% - var(--cut)));
+  --font-ui: "Segoe UI", "Inter", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Segoe UI", "Arial Black", "Helvetica Neue", system-ui, sans-serif;
+  --font-mono: "Cascadia Mono", "Consolas", "SF Mono", ui-monospace, monospace;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  /* Escala tudo (rem) de 1024 px a 1920 px de largura. */
+  font-size: clamp(12px, 1.09vw, 21px);
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-0);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  line-height: 1.35;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+#root { height: 100%; }
+
+h1, h2, h3, p, ul, ol, dl, dd, figure { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; border: 0; background: none; padding: 0; }
+button:disabled { cursor: not-allowed; }
+img { display: block; max-width: 100%; }
+table { border-collapse: collapse; width: 100%; }
+
+/* O canvas 3D (do núcleo) fica atrás de tudo, em tela cheia. */
+.game-canvas { position: fixed; inset: 0; z-index: 0; }
+
+.ui-layer { position: fixed; inset: 0; z-index: 10; pointer-events: none; overflow: hidden; }
+.ui-layer > * { pointer-events: auto; }
+
+/* Foco de teclado/gamepad sempre visível. */
+:focus { outline: none; }
+:focus-visible { outline: 0.19rem solid var(--amber); outline-offset: 0.16rem; }
+
+.display-title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 900;
+  font-size: 2.5rem;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  background: var(--aurora);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  padding-right: 0.25em; /* o itálico não pode ser cortado */
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 900;
+  font-size: 5rem;
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  text-shadow: 0 0.35rem 1.5rem rgba(123, 92, 255, 0.45);
+}
+.logo span { display: inline-block; }
+.logo__accent { background: var(--aurora); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: 0.12em; text-shadow: none; }
+.logo__3d { color: var(--amber); font-size: 0.62em; vertical-align: 0.42em; margin-left: 0.1em; }
+
+.group-title {
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 0.6rem;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  clip-path: var(--cut-shape);
+  padding: 1rem 1.2rem;
+}
+.ui-layer[data-quality="low"] .panel,
+.ui-layer[data-quality="low"] .screen__inner,
+.ui-layer[data-quality="low"] .overlay { backdrop-filter: none; -webkit-backdrop-filter: none; }
+.ui-layer[data-quality="low"] .panel { background: var(--panel-solid); }
+
+.tag {
+  display: inline-block;
+  margin-left: 0.5em;
+  padding: 0.05em 0.5em;
+  font-size: 0.68em;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-style: normal;
+  color: #1a0f2e;
+  background: var(--amber);
+  transform: skewX(-10deg);
+  vertical-align: middle;
+}
+
+/* ---------- Botões ---------- */
+.btn {
+  --btn-bg: rgba(255, 255, 255, 0.08);
+  --btn-ink: var(--ink);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.6rem;
+  padding: 0.5rem 1.5rem;
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--btn-ink);
+  background: var(--btn-bg);
+  box-shadow: inset 0 0 0 1px var(--line);
+  clip-path: polygon(0.7rem 0, 100% 0, calc(100% - 0.7rem) 100%, 0 100%);
+  transition: transform 120ms var(--ease), filter 120ms var(--ease), background 120ms var(--ease);
+}
+.btn:hover:not(:disabled) { filter: brightness(1.2); transform: translateX(0.2rem); }
+.btn:active:not(:disabled) { transform: translateX(0.2rem) scale(0.98); }
+.btn:focus-visible { outline: none; box-shadow: inset 0 0 0 0.19rem var(--amber); filter: brightness(1.2); transform: translateX(0.3rem); }
+.btn:disabled { opacity: 0.4; }
+.btn--primary { --btn-bg: var(--aurora); --btn-ink: #14092a; box-shadow: none; }
+.btn--primary:focus-visible { box-shadow: inset 0 0 0 0.19rem #fff; }
+.btn--ghost { --btn-bg: transparent; padding-inline: 1rem; font-size: 0.85rem; }
+.btn--danger { --btn-bg: rgba(255, 90, 110, 0.18); --btn-ink: #ffc2ca; box-shadow: inset 0 0 0 1px rgba(255, 90, 110, 0.6); }
+.btn--xl { min-height: 3.6rem; font-size: 1.35rem; justify-content: flex-start; padding-left: 2rem; width: 100%; }
+
+.notice { padding: 0.6rem 0.9rem; font-size: 0.85rem; border-left: 0.25rem solid var(--cyan); background: rgba(79, 216, 232, 0.12); }
+.notice--warn { border-color: var(--warn); background: rgba(255, 207, 77, 0.12); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
