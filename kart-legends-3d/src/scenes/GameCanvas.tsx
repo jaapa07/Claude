@@ -51,6 +51,7 @@ export function GameCanvas(): JSX.Element {
   const qualityId = useSettingsStore((s) => s.quality);
   const quality = QUALITY[qualityId];
   const loading = useSceneStore((s) => s.loading);
+  const fps = useSceneStore((s) => s.fps);
   const studio = useMemo(studioRequest, []);
 
   const podium = useMemo((): PodiumEntry[] => {
@@ -66,7 +67,7 @@ export function GameCanvas(): JSX.Element {
   const mode = studio ? 'studio' : (screen === 'race' || screen === 'results') && race ? 'race' : screen === 'podium' && podium.length ? 'podium' : screen === 'loading' ? 'none' : 'showcase';
 
   return (
-    <div className="game-canvas" data-testid="game-canvas" data-mode={mode} data-loading={loading ? '1' : '0'}>
+    <div className="game-canvas" data-testid="game-canvas" data-mode={mode} data-loading={loading ? '1' : '0'} data-fps={fps}>
       <Canvas
         key={qualityId}
         shadows={quality.shadows ? { type: THREE.PCFSoftShadowMap } : false}

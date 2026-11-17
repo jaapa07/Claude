@@ -16,7 +16,7 @@ import type { CP, TrackDef } from './types';
 
 const SECTOR = 48;
 /** Tamanho (m) de uma repetição da textura do piso, por estilo. */
-const TILE: Record<string, number> = { cobble: 5, flagstone: 7, marble: 8, wood: 6, asphalt: 12, wet: 12, dirt: 10, sand: 10, snow: 12, ice: 14, grass: 10 };
+const TILE: Record<string, number> = { cobble: 5, flagstone: 4.5, marble: 8, wood: 6, asphalt: 12, wet: 12, dirt: 10, sand: 10, snow: 12, ice: 14, grass: 10 };
 
 /** Acumulador de quadriláteros com normais e cores explícitas. */
 class Acc {

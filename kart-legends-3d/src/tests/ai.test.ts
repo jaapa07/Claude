@@ -101,13 +101,22 @@ describe('níveis de dificuldade', () => {
     expect(easy.reaction).toBeGreaterThan(hard.reaction);
   });
 
-  it.each(['vale-moinhos', 'canion-solar'] as const)('%s — Fácil é mais lento que Normal, que é mais lento que Difícil', async (track) => {
-    const mean = async (d: Difficulty): Promise<number> => {
-      const t = (await aiRace(track, d, 21)).times.filter((x) => Number.isFinite(x));
-      return t.reduce((a, b) => a + b, 0) / t.length;
+  it.each(['vale-moinhos', 'canion-solar', 'porto-lanternas'] as const)('%s — o ritmo do piloto (sozinho, sem itens) cresce de Fácil para Normal para Difícil', async (track) => {
+    // Medido sem tráfego: num pelotão, a troca de itens entre os próprios adversários mascara o ritmo.
+    const pace = async (d: Difficulty): Promise<number> => {
+      const h = createHarness({ track, opponents: 1, player: false, difficulty: d, mode: 'timetrial', seed: 3 });
+      h.start();
+      let steps = 0;
+      while (!h.sim.karts[0]!.finished && h.sim.raceTime < 330) {
+        if (++steps % 1500 === 0) await new Promise((r) => setTimeout(r, 0));
+        h.sim.step();
+        h.sim.drainEvents();
+      }
+      expect(h.sim.karts[0]!.finished).toBe(true);
+      return h.sim.karts[0]!.finishTime;
     };
-    const easy = await mean('easy'), mid = await mean('normal'), hard = await mean('hard');
-    expect(easy).toBeGreaterThan(mid + 1500);
-    expect(mid).toBeGreaterThan(hard + 500);
+    const easy = await pace('easy'), mid = await pace('normal'), hard = await pace('hard');
+    expect(easy).toBeGreaterThan(mid + 3000);
+    expect(mid).toBeGreaterThan(hard + 1000);
   });
 });

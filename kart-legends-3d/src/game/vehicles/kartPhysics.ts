@@ -149,6 +149,8 @@ export function stepKart(k: KartState, ctx: PhysicsContext, dt: number): void {
     // ----- drift -----
     const driftPressed = controllable && inp.drift;
     const fast = vf > t.topSpeed * 0.42;
+    // segurar o botão e depois virar também inicia o drift; `driftHeld` trava só depois de um drift encerrado
+    if (!driftPressed) k.driftHeld = false;
     if (driftPressed && !k.driftHeld && !k.drifting && fast && Math.abs(steerIn) > 0.2) {
       k.drifting = true;
       k.driftDir = Math.sign(steerIn);
@@ -165,6 +167,7 @@ export function stepKart(k: KartState, ctx: PhysicsContext, dt: number): void {
           ctx.emit({ type: 'turbo', kart: k.index, level: lvl });
         }
         k.drifting = false; k.driftCharge = 0; k.driftLevel = 0;
+        k.driftHeld = driftPressed;
       } else {
         const inward = steerIn * k.driftDir;
         k.driftCharge += dt * (0.55 + 0.5 * Math.max(0, inward)) * t.driftCharge;
@@ -172,7 +175,6 @@ export function stepKart(k: KartState, ctx: PhysicsContext, dt: number): void {
         if (lv > k.driftLevel) { k.driftLevel = lv as 1 | 2 | 3; ctx.emit({ type: 'drift_level', kart: k.index, level: lv }); }
       }
     }
-    k.driftHeld = driftPressed;
 
     // ----- direção -----
     const speedAbs = Math.abs(vf);
@@ -205,8 +207,8 @@ export function stepKart(k: KartState, ctx: PhysicsContext, dt: number): void {
     // no ar: gravidade, leve controle de direção, sem tração
     k.vy -= PHYS.gravity * dt;
     k.heading -= k.steer * 0.9 * dt;
-    if (k.drifting && k.airTime > 0.5) { k.drifting = false; k.driftCharge = 0; k.driftLevel = 0; }
-    k.driftHeld = controllable && inp.drift;
+    if (k.drifting && k.airTime > 0.5) { k.drifting = false; k.driftCharge = 0; k.driftLevel = 0; k.driftHeld = true; }
+    if (!(controllable && inp.drift)) k.driftHeld = false;
     if (k.freeze > 0) { k.vx = 0; k.vz = 0; }
   }
 
@@ -224,7 +226,7 @@ export function syncKart(k: KartState, emit: (e: SimEvent) => void): void {
   const impact = Math.hypot(dvx, dvz) + Math.max(0, Math.abs(dvy) - 4) * 0.5;
   if (impact > 2.5) {
     emit({ type: 'collision', kart: k.index, strength: impact, x: p.x, y: p.y, z: p.z });
-    if (k.drifting && impact > 7) { k.drifting = false; k.driftCharge = 0; k.driftLevel = 0; }
+    if (k.drifting && impact > 7) { k.drifting = false; k.driftCharge = 0; k.driftLevel = 0; k.driftHeld = true; }
   }
   k.x = p.x; k.y = p.y; k.z = p.z;
   k.vx = v.x; k.vy = v.y; k.vz = v.z;

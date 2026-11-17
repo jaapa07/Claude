@@ -65,6 +65,21 @@ export async function buildManifest(): Promise<ManifestEntry[]> {
 if (import.meta.url === `file://${process.argv[1]}`) {
   const entries = await buildManifest();
   await writeFile(path.join(ASSETS_DIR, 'manifest.json'), JSON.stringify({ version: 1, generatedBy: 'scripts/build-manifest.ts', assets: entries }, null, 1));
+  // resumo legível na raiz do projeto
+  const groups = new Map<string, ManifestEntry[]>();
+  for (const e of entries) { const g = e.path.split('/')[0]!; groups.set(g, [...(groups.get(g) ?? []), e]); }
+  const kb = (n: number): string => `${(n / 1024).toFixed(0)} kB`;
+  let md = `# Manifesto de assets — KART LEGENDS 3D\n\nGerado por \`scripts/build-manifest.ts\` a partir de \`public/assets\`. O registro completo, com todos os campos\n(id, nome, tipo, caminho, formato, origem, autor, licença, tamanho, status de validação e local de uso), está em\n\`public/assets/manifest.json\`. A validação automática é \`npm run validate:assets\`.\n\n`;
+  md += `- **Total:** ${entries.length} arquivos, ${(entries.reduce((s, e) => s + e.bytes, 0) / 1048576).toFixed(1)} MB\n- **Autor de todos os recursos:** ${AUTHOR}\n- **Licença:** ${LICENSE}\n- **Recursos de terceiros:** nenhum\n\n`;
+  md += '| Pasta | Arquivos | Tamanho | Origem | Onde é usado |\n|---|---:|---:|---|---|\n';
+  for (const [g, list] of groups) md += `| \`${g}/\` | ${list.length} | ${kb(list.reduce((s, e) => s + e.bytes, 0))} | ${list[0]!.origin} | ${list[0]!.usedIn} |\n`;
+  for (const [g, list] of groups) {
+    if (g === 'textures' || g === 'audio') continue;
+    md += `\n## ${g}/\n\n| Arquivo | Tipo | Tamanho |\n|---|---|---:|\n`;
+    for (const e of list) md += `| \`${e.path}\` | ${e.type} | ${kb(e.bytes)} |\n`;
+  }
+  md += `\n## audio/ e textures/\n\n${groups.get('audio')?.length ?? 0} arquivos de áudio (lista e durações em \`public/assets/audio/audio-manifest.json\` e \`docs/AUDIO.md\`) e ${groups.get('textures')?.length ?? 0} texturas (todas também embutidas nos GLB que as usam).\n`;
+  await writeFile(path.resolve(ASSETS_DIR, '../../ASSET_MANIFEST.md'), md);
   const total = entries.reduce((s, e) => s + e.bytes, 0);
   console.log(`manifesto: ${entries.length} recursos, ${(total / 1048576).toFixed(1)} MB (status "pendente" até rodar validate:assets)`);
 }

@@ -95,9 +95,33 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
     useHudStore.getState().setHud(sim.hud());
     audio.playAmbience(meta.ambience);
     audio.playMusic(null, { fadeMs: 600 });
-    const skipIntro = new URLSearchParams(window.location.search).has('fast');
-    if (skipIntro) state.current.intro = 999;
+    const query = new URLSearchParams(window.location.search);
+    if (query.has('fast')) state.current.intro = 999;
+    // Gancho exclusivo dos testes de ponta a ponta (?e2e=1): lê o estado real da simulação e permite
+    // adiantar o relógio rodando os MESMOS passos fixos, sem renderizar. Não existe fora desse modo.
+    const w = window as unknown as { __kl3d?: unknown };
+    if (query.has('e2e')) {
+      w.__kl3d = {
+        snapshot: () => {
+          const p = sim.player ?? sim.karts[0]!;
+          return {
+            phase: sim.phase, raceTime: sim.raceTime, racers: sim.karts.length, lap: p.lap, position: p.position, speed: p.speed,
+            heading: p.heading, x: p.x, z: p.z, drifting: p.drifting, driftLevel: p.driftLevel, boost: p.boostTime, item: p.item,
+            grounded: p.grounded, progress: p.progress, finished: sim.karts.filter((k) => k.finished).length,
+            aiMoving: sim.karts.filter((k) => !k.isPlayer && Math.abs(k.speed) > 3).length,
+          };
+        },
+        fastForward: (seconds: number) => {
+          const steps = Math.round(seconds / PHYS.dt);
+          for (let i = 0; i < steps; i++) { sim.step(); for (const e of sim.drainEvents()) if (e.type === 'finish' || e.type === 'lap') handleEvent(e); }
+          useHudStore.getState().setHud(sim.hud());
+        },
+        setAutopilot: (on: boolean) => { if (sim.player) sim.player.ai = on; },
+        giveItem: (item: KartState['item']) => { if (sim.player) sim.player.item = item; },
+      };
+    }
     return () => {
+      delete w.__kl3d;
       audio.stopAllRaceSounds();
       useHudStore.getState().reset();
       for (const m of models) m.dispose();
