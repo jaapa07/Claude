@@ -14,7 +14,7 @@ export async function run(cfg) {
   await loadFonts();                                       // before the world: the signs are painted with Oswald
   const canvas = document.getElementById('film'), c = canvas.getContext('2d');
   const stage = S.createStage(canvas); stage.renderer.toneMappingExposure = 1.05;
-  const X = setup(stage, cfg.which);
+  const X = (cfg.setup || setup)(stage, cfg.which);
   S.LABELS.day = ''; S.LABELS.follow = cfg.end.next === 'FIM' ? 'FIM · SIGA PARA MAIS HISTÓRIAS' : 'SIGA PARA A PARTE ';
   const SH = [], at = (t0, f) => SH.push([t0, f]);
   const ctx = { X, POSE, at, w, L0, L1, T, stage, c, THREE, clamp, lerp, ease, spring, bang: (s, k, o) => bang(c, s, k, o), sticker: (n, txt, k, y) => ruleSticker(c, n, txt, k, y) };
@@ -33,7 +33,7 @@ export async function run(cfg) {
   window.seek = t => {
     if (COVER) return cover();
     frame(t);
-    const ck = clock.filter(x => t >= x[0]).pop(); hud(c, cfg.hud, ck[1]); gauge(c, pressure(t), t);
+    const ck = clock.filter(x => t >= x[0]).pop(); hud(c, typeof cfg.hud === 'function' ? cfg.hud(t, ctx) : cfg.hud, ck[1]); gauge(c, pressure(t), t);
     if (cfg.overlay) cfg.overlay(ctx, t);
     if (t >= tEnd) endCard(c, tEnd, t, cfg.end.q, cfg.end.a, cfg.end.b, cfg.end.next === 'FIM' ? '' : cfg.end.next);
     else drawCaptions(c, CHUNKS, t);

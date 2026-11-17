@@ -215,6 +215,10 @@ export class Stickman {
         c.fillRect(head[0] - BONES.head + 4, head[1] - BONES.head - 2, (BONES.head - 4) * 2, 26); }
       else if (o.mark.type === 'guy') {                                   // a casual guy: shirt, hair (short or curly), optional cap, glasses, sneakers, ankle socks
         const m = o.mark; stroke([hip, neck], 34, m.color);
+        if (m.belly) { const bx = (hip[0] + neck[0]) / 2 + (f || 0) * 22 * m.belly, by = (hip[1] + neck[1]) / 2 + 34, r = 30 + 48 * m.belly;   // a pizza belly: the shirt stretched round, skin peeking below
+          c.fillStyle = o.outline; c.beginPath(); c.arc(bx, by, r + 11, 0, 7); c.fill(); c.fillStyle = m.color; c.beginPath(); c.arc(bx, by, r, 0, 7); c.fill();
+          c.save(); c.beginPath(); c.arc(bx, by, r, 0, 7); c.clip(); c.fillStyle = o.body; c.fillRect(bx - r, by + r * 0.5, 2 * r, r); c.fillStyle = o.outline; c.fillRect(bx - r, by + r * 0.5 - 5, 2 * r, 8); c.beginPath(); c.arc(bx + (f || 0) * 8, by + r * 0.74, 5, 0, 7); c.fill(); c.restore();
+          c.strokeStyle = 'rgba(255,255,255,0.28)'; c.lineWidth = 9; c.beginPath(); c.arc(bx, by, r * 0.72, Math.PI * 1.1, Math.PI * 1.45); c.stroke(); }
         if (m.shoes) for (const P of [LL, LR]) { c.fillStyle = m.shoes; c.beginPath(); c.ellipse(P[1][0] + (f || 0) * 10, P[1][1] - 4, 26, 16, 0, 0, 7); c.fill(); }
         if (m.socks) [[LL, 'L'], [LR, 'R']].forEach(([P, sd]) => { if ((m.bare || '').includes(sd)) return; const k = P[0], ft = P[1], dx = k[0] - ft[0], dy = k[1] - ft[1]; const top = [ft[0] + dx * 0.24, ft[1] + dy * 0.24];
           stroke([[ft[0] + dx * 0.04, ft[1] + dy * 0.04], top], 30, m.socks); stroke([[ft[0] + dx * 0.2, ft[1] + dy * 0.2], top], 30, m.stripe || '#c8372d'); });

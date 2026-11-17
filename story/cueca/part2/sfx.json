@@ -1,0 +1,180 @@
+{
+ "mixkit": false,
+ "roomtone": false,
+ "bed": [
+  {
+   "at": 0,
+   "level": 0.7
+  },
+  {
+   "at": "lombada@7",
+   "level": 1.0
+  },
+  {
+   "at": "favorita@10",
+   "level": 0.3
+  },
+  {
+   "at": "guerreira@14",
+   "level": 0.9
+  },
+  {
+   "at": "bomba@23",
+   "level": 1.1
+  },
+  {
+   "at": "portão@26",
+   "level": 0.5
+  }
+ ],
+ "music": {
+  "level": -16
+ },
+ "sfx": [
+  {
+   "at": "acelera@0",
+   "type": "engine",
+   "vol": 0.8
+  },
+  {
+   "at": "terremoto@2",
+   "type": "thud",
+   "vol": 0.9
+  },
+  {
+   "at": "careta@3",
+   "type": "thud",
+   "vol": 0.5
+  },
+  {
+   "at": "Deus@4",
+   "type": "choir",
+   "vol": 0.35
+  },
+  {
+   "at": "pizza@5",
+   "type": "hit",
+   "vol": 0.4
+  },
+  {
+   "at": "banheiro@6",
+   "type": "click",
+   "vol": 0.3
+  },
+  {
+   "at": "lombada@7",
+   "type": "heartbeat",
+   "vol": 0.6
+  },
+  {
+   "at": "Aaaai@8",
+   "type": "thud",
+   "vol": 1.0
+  },
+  {
+   "at": "Aaaai@8+0.1",
+   "type": "hit",
+   "vol": 0.8
+  },
+  {
+   "at": "detalhe@9",
+   "type": "sting",
+   "vol": 0.4
+  },
+  {
+   "at": "favorita@10",
+   "type": "choir",
+   "vol": 0.9
+  },
+  {
+   "at": "dourado@11",
+   "type": "glass",
+   "vol": 0.5
+  },
+  {
+   "at": "anjos@12",
+   "type": "choir",
+   "vol": 0.8
+  },
+  {
+   "at": "casamento@13",
+   "type": "click",
+   "vol": 0.4
+  },
+  {
+   "at": "entrevista@13",
+   "type": "click",
+   "vol": 0.4
+  },
+  {
+   "at": "churrasco@13",
+   "type": "click",
+   "vol": 0.4
+  },
+  {
+   "at": "guerreira@14",
+   "type": "hit",
+   "vol": 0.5
+  },
+  {
+   "at": "minutos@15",
+   "type": "tick",
+   "vol": 0.6
+  },
+  {
+   "at": "respiração@16",
+   "type": "tick",
+   "vol": 0.5
+  },
+  {
+   "at": "suor@17",
+   "type": "drip",
+   "vol": 0.6
+  },
+  {
+   "at": "arregalado@18",
+   "type": "tick",
+   "vol": 0.5
+  },
+  {
+   "at": "tremendo@19",
+   "type": "growl",
+   "vol": 0.6
+  },
+  {
+   "at": "oração@20",
+   "type": "choir",
+   "vol": 0.3
+  },
+  {
+   "at": "chorando@21",
+   "type": "tick",
+   "vol": 0.5
+  },
+  {
+   "at": "destino@22",
+   "type": "sting",
+   "vol": 0.6
+  },
+  {
+   "at": "bomba@23",
+   "type": "alarm",
+   "vol": 0.4
+  },
+  {
+   "at": "vencido@24",
+   "type": "hit",
+   "vol": 0.6
+  },
+  {
+   "at": "pouquinho@25",
+   "type": "heartbeat",
+   "vol": 0.6
+  },
+  {
+   "at": "portão@26",
+   "type": "victory",
+   "vol": 0.5
+  }
+ ]
+}

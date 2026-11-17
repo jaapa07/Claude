@@ -1,0 +1,220 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.1,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lines": [
+  {
+   "text": "Imagine que você chega. E estaciona torto.",
+   "key": {
+    "torto": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Sai do carro andando igual pinguim.",
+   "key": {
+    "pinguim": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Passinho curto. Joelho colado. Dignidade em contagem regressiva.",
+   "key": {
+    "regressiva": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Você tira a chave do bolso. E ela cai.",
+   "key": {
+    "cai": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Não! A chave não! Tudo, menos a chave!",
+   "key": {
+    "chave": "red"
+   },
+   "pause": 0.42,
+   "voice": "pm_alex",
+   "speed": 1.15
+  },
+  {
+   "text": "Abaixar é perigoso. Você abaixa assim mesmo.",
+   "key": {
+    "perigoso": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Pega a chave com dois dedos. Tremendo.",
+   "key": {
+    "dedos": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "O portão abre. E a barriga ruge de novo.",
+   "key": {
+    "ruge": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Três metros da salvação.",
+   "key": {
+    "salvação": "green"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Mas o seu intestino já declarou independência.",
+   "key": {
+    "independência": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Você corre pelo corredor. Quase escorrega.",
+   "key": {
+    "escorrega": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Bate o ombro na parede. Nem sente.",
+   "key": {
+    "ombro": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "A porta do banheiro abre. Em câmera lenta.",
+   "key": {
+    "lenta": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "O vaso brilha. Raios celestiais. Música de vitória.",
+   "key": {
+    "brilha": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "É o amor da sua vida. Pela segunda vez na noite.",
+   "key": {
+    "amor": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Você desabotoa a calça no caminho.",
+   "key": {
+    "calça": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Vai dar tempo! Vai dar tempo! Vai...",
+   "key": {
+    "tempo": "green"
+   },
+   "pause": 0.42,
+   "voice": "pm_alex",
+   "speed": 1.15
+  },
+  {
+   "text": "Silêncio absoluto.",
+   "key": {
+    "Silêncio": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Você senta.",
+   "key": {
+    "senta": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "E o som chega antes de você entender.",
+   "key": {
+    "som": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Você olha pra baixo. Devagar.",
+   "key": {
+    "Devagar": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Você esqueceu de abaixar a cueca.",
+   "key": {
+    "cueca": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Dez minutos de sofrimento. Você chegou no vaso.",
+   "key": {
+    "vaso": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "O problema é que a cueca chegou junto.",
+   "key": {
+    "junto": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Eu salvei a minha vida. Mas perdi um soldado.",
+   "key": {
+    "soldado": "red"
+   },
+   "pause": 0.42,
+   "voice": "pm_alex",
+   "speed": 1.0
+  },
+  {
+   "text": "No dia seguinte, um funeral. Chuva. Música triste.",
+   "key": {
+    "funeral": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Na lápide: aqui jaz uma guerreira. Morreu em serviço.",
+   "key": {
+    "serviço": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Descansa em paz, minha querida. Você segurou o que pôde.",
+   "key": {
+    "pôde": "yellow"
+   },
+   "pause": 0.42,
+   "voice": "pm_alex",
+   "speed": 1.0
+  },
+  {
+   "text": "Baseado em fatos que você gostaria de esquecer.",
+   "key": {
+    "esquecer": "yellow"
+   },
+   "pause": 0.32,
+   "nocap": true
+  }
+ ]
+}

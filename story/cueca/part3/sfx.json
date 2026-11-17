@@ -1,0 +1,178 @@
+{
+ "mixkit": false,
+ "roomtone": false,
+ "bed": [
+  {
+   "at": 0,
+   "level": 0.6
+  },
+  {
+   "at": "cai@3",
+   "level": 0.9
+  },
+  {
+   "at": "salvação@8",
+   "level": 0.7
+  },
+  {
+   "at": "brilha@13",
+   "level": 0.5
+  },
+  {
+   "at": "Silêncio@17",
+   "level": 0.0
+  },
+  {
+   "at": "som@19",
+   "level": 0.5
+  },
+  {
+   "at": "funeral@25",
+   "level": 0.6
+  },
+  {
+   "at": "esquecer@28",
+   "level": 0.4
+  }
+ ],
+ "music": {
+  "level": -16
+ },
+ "sfx": [
+  {
+   "at": "torto@0",
+   "type": "thud",
+   "vol": 0.5
+  },
+  {
+   "at": "pinguim@1",
+   "type": "click",
+   "vol": 0.3
+  },
+  {
+   "at": "regressiva@2",
+   "type": "tick",
+   "vol": 0.5
+  },
+  {
+   "at": "cai@3",
+   "type": "keys",
+   "vol": 0.9
+  },
+  {
+   "at": "chave@4",
+   "type": "sting",
+   "vol": 0.4
+  },
+  {
+   "at": "perigoso@5",
+   "type": "heartbeat",
+   "vol": 0.6
+  },
+  {
+   "at": "dedos@6",
+   "type": "keys",
+   "vol": 0.4
+  },
+  {
+   "at": "abre@7",
+   "type": "creak",
+   "vol": 0.6
+  },
+  {
+   "at": "ruge@7",
+   "type": "growl",
+   "vol": 1.0
+  },
+  {
+   "at": "ruge@7+0.4",
+   "type": "rumble",
+   "vol": 0.7
+  },
+  {
+   "at": "salvação@8",
+   "type": "tick",
+   "vol": 0.5
+  },
+  {
+   "at": "independência@9",
+   "type": "hit",
+   "vol": 0.6
+  },
+  {
+   "at": "escorrega@10",
+   "type": "whoosh",
+   "vol": 0.6
+  },
+  {
+   "at": "ombro@11",
+   "type": "thud",
+   "vol": 1.0
+  },
+  {
+   "at": "lenta@12",
+   "type": "creak",
+   "vol": 0.5
+  },
+  {
+   "at": "brilha@13",
+   "type": "choir",
+   "vol": 1.0
+  },
+  {
+   "at": "vitória@13",
+   "type": "victory",
+   "vol": 0.6
+  },
+  {
+   "at": "tempo@16",
+   "type": "heartbeat",
+   "vol": 0.5
+  },
+  {
+   "at": "som@19-0.15",
+   "type": "fart",
+   "vol": 1.0
+  },
+  {
+   "at": "Devagar@20",
+   "type": "sting",
+   "vol": 0.4
+  },
+  {
+   "at": "cueca@21",
+   "type": "hit",
+   "vol": 0.5
+  },
+  {
+   "at": "junto@23",
+   "type": "sad",
+   "vol": 0.7
+  },
+  {
+   "at": "soldado@24",
+   "type": "hit",
+   "vol": 0.3
+  },
+  {
+   "at": "funeral@25",
+   "type": "rain",
+   "vol": 0.6
+  },
+  {
+   "at": "serviço@26",
+   "type": "rain",
+   "vol": 0.5
+  },
+  {
+   "at": "pôde@27",
+   "type": "rain",
+   "vol": 0.4
+  },
+  {
+   "at": "esquecer@28",
+   "type": "glass",
+   "vol": 0.4
+  }
+ ]
+}

@@ -1,0 +1,91 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Minha Cueca Virou História</title>
+<script type="importmap">{"imports": {"three": "../../engine/vendor/three.module.js"}}</script>
+<style>
+@font-face { font-family: 'Oswald'; font-weight: 700; src: url('../../engine/vendor/fonts/oswald-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 700; src: url('../../engine/vendor/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+html, body { margin: 0; background: #000; } canvas { display: block; }
+</style>
+<script src="timing.js"></script>
+</head><body>
+<canvas id="film" width="1080" height="1920"></canvas>
+<script type="module">
+import { run } from '../../bar_part.js';
+import { missionHUD } from '../../bar_common_shots.js';
+import { setup, P } from '../stick.js';
+run({
+  setup, which: 'cueca',
+  hud: (t, { L0 }) => t < L0(8) ? 'PORTÃO' : t < L0(25) ? 'CASA' : 'CEMITÉRIO',
+  clock: ({ L0 }) => [[0, '00:12'], [L0(8), '00:13'], [L0(22), '00:14'], [L0(25), '10:00']],
+  pressure: ({ w, L0 }) => [[0, 99], [w(3, 'cai'), 100], [w(19, 'som'), 100], [L0(20), 0]],
+  shots: ctx => {
+    const { X, at, w, L0, L1, stage, clamp, lerp, ease, THREE } = ctx; const C = X.C;
+    const GX = 2.25, GZ = 0.35;                                         // where he stands at the small gate
+    const you = X.youGate, put = (x, y, z, p) => X.put(you, x, y, z, p);
+    const gate = (o = {}) => t => { X.gate(t, o); X.belly(0.95); };
+    const keyAt = (x, y, z, r = 0) => { C.key.visible = true; C.key.position.set(x, y, z); C.key.rotation.set(0, 0.4, r); };
+    const gFace = (o = {}) => (t, u) => { gate(o)(t); put(GX, 0, GZ, typeof o.pose === 'function' ? o.pose(t) : (o.pose || P.stiff)); if (o.key) keyAt(...o.key); const h = you.headWorld(); const sh = o.shake ? o.shake * Math.sin(t * 60) : 0; const k = ease(clamp(u / 2)); stage.aim([h.x + 0.05 + sh, h.y + 0.08, h.z + lerp(o.d0 || 0.95, o.d1 || 0.8, k)], [h.x, h.y - 0.04, h.z], 42); };
+    const tKey = w(3, 'cai'), keyFall = t => { const d = Math.max(0, t - tKey); const y = d < 0.42 ? 0.95 - 0.5 * 9.8 * d * d : 0.012 + 0.08 * Math.abs(Math.sin((d - 0.42) * 9)) * Math.exp(-(d - 0.42) * 6); return Math.max(0.012, y); };
+    // the street, the gate, the key
+    at(0, (t, u) => { gate()(t); const k = ease(clamp(u / 3)); stage.aim([lerp(-8, -6, k), 1.6, lerp(8.5, 7, k)], [-2.5, 0.6, 2.5], 44); });
+    at(L0(1), (t, u) => { gate()(t); const k = clamp(u / (L1(2) - L0(1))); put(lerp(-1.6, GX, k), 0, lerp(2.4, GZ, k), P.penguin(t)); you.mesh.position.y = 0.03 * Math.abs(Math.sin(t * 11)); stage.aim([lerp(-1.6, GX, k) + 0.3, 1.2, lerp(2.4, GZ, k) + 2.6], [lerp(-1.6, GX, k), 0.9, lerp(2.4, GZ, k)], 46); });
+    at(L0(2), (t, u) => { gate()(t); const k = clamp((t - L0(1)) / (L1(2) - L0(1))); const x = lerp(-1.6, GX, k), z = lerp(2.4, GZ, k); put(x, 0.03 * Math.abs(Math.sin(t * 11)), z, P.penguin(t)); stage.aim([x + 0.4, 0.35, z + 1.0], [x, 0.3, z], 46); });
+    at(w(2, 'Dignidade'), (t, u) => { gate()(t); const k = clamp((t - L0(1)) / (L1(2) - L0(1))); const x = lerp(-1.6, GX, k), z = lerp(2.4, GZ, k); put(x, 0, z, P.penguin(t)); const h = you.headWorld(); stage.aim([h.x + 0.1, h.y + 0.08, h.z + 0.9], [h.x, h.y - 0.05, h.z], 42); });
+    at(L0(3), (t, u) => { gate()(t); const up = t < tKey; put(GX, 0, GZ, up ? { facing: 1, mood: 'scared', armL: [0.2, -0.2], armR: [-1.4, -0.9] } : P.shock); const h = you.headWorld(); keyAt(h.x + 0.22, keyFall(t), h.z + 0.05, t * (up ? 0 : 9)); stage.aim([GX + 1.4, 1.1, GZ + 1.6], [GX + 0.1, 0.8, GZ], 44); });
+    at(L0(4), gFace({ pose: P.shout, shake: 0.012, d0: 0.8, d1: 0.65 }));
+    at(w(4, 'Tudo'), (t, u) => { gate()(t); put(GX, 0, GZ, P.shock); keyAt(GX + 0.22, 0.012, GZ + 0.05, Math.PI / 2); const k = ease(clamp(u / 2)); stage.aim([GX + 0.38, lerp(0.16, 0.1, k), GZ + 0.35], [GX + 0.22, 0.02, GZ + 0.05], 34); });
+    at(L0(5), (t, u) => { gate()(t); const k = ease(clamp(u / (L1(5) - L0(5)))); const p = { facing: 1, mood: 'scared', lean: lerp(0, 0.55, k), legL: [lerp(0.05, 0.95, k), lerp(0, -1.75, k)], legR: [lerp(-0.05, 0.75, k), lerp(0, -1.5, k)], armR: [lerp(-0.2, 1.2, k), 0.2], armL: [0.6, -0.2] }; put(GX, -0.32 * k, GZ, p); keyAt(GX + 0.22, 0.012, GZ + 0.05, Math.PI / 2); const sh = 0.01 * Math.sin(t * 50) * k; stage.aim([GX - 1.7 + sh, 0.95, GZ + 1.1], [GX, 0.6 - 0.15 * k, GZ], 46); });
+    at(L0(6), (t, u) => { gate()(t); put(GX, -0.32, GZ, P.crouch); const k = ease(clamp(u / 1.6)), tr = 0.006 * Math.sin(t * 70); keyAt(GX + 0.22 + tr, 0.012 + 0.25 * k, GZ + 0.05, Math.PI / 2 * (1 - k)); stage.aim([GX + 0.6, 0.35, GZ + 0.55], [GX + 0.22, 0.12 + 0.18 * k, GZ + 0.05], 38); });
+    at(L0(7), (t, u) => { gate({ open: ease(clamp(u / 1.2)) * 1.4 })(t); put(GX, 0, GZ - 0.1, w(7, 'ruge') <= t ? P.belly : P.stiff); stage.aim([GX + 0.5, 1.45, -2.15], [GX + 0.1, 1.0, GZ], 52); });
+    at(w(7, 'ruge'), (t, u) => { gate({ open: 1.4 })(t); put(GX, 0, GZ - 0.1, P.belly); const h = you.headWorld(); const sh = 0.012 * Math.sin(t * 70); stage.aim([h.x + 0.5 + sh, h.y - 0.3, h.z + 1.1], [h.x, h.y - 0.45, h.z], 44); });
+    // the hallway
+    const hy = X.youHome, hput = (x, z, p) => X.put(hy, x, 0, z, p);
+    const home = (o = {}) => t => { X.home(t, o); X.belly(0.95); };
+    at(L0(8), (t, u) => { home()(t); const k = ease(clamp(u / 2)); stage.aim([0, 1.5, lerp(0.8, 0.2, k)], [0, 1.0, -6], 52); });
+    at(L0(9), (t, u) => { home()(t); hput(0, 0.3, P.shock); const h = hy.headWorld(); const k = ease(clamp(u / 0.3)); stage.aim([h.x + 0.04, h.y + 0.05, h.z - lerp(1.0, 0.78, k)], [h.x, h.y - 0.03, h.z], 42); });
+    const runZ = t => lerp(0.3, -4.6, clamp((t - L0(10)) / (L1(11) - L0(10) + 0.2)));
+    at(L0(10), (t, u) => { home()(t); const z = runZ(t); const slip = t >= w(10, 'escorrega') && t < w(10, 'escorrega') + 0.7; hput(slip ? 0.15 * Math.sin((t - w(10, 'escorrega')) * 9) : 0, z, slip ? { facing: 0, mood: 'scared', lean: -0.4, armL: [2.6, 0.3], armR: [-2.6, -0.3], legL: [-0.5, 0.2], legR: [0.3, 0] } : P.run(t)); stage.aim([0.2, 1.3, z - 1.9], [0, 0.95, z], 52); });
+    at(L0(11), (t, u) => { home()(t); const z = runZ(t), hit = t >= w(11, 'ombro'); hput(hit ? -0.55 : lerp(0, -0.55, clamp(u / 0.3)), z, hit && t < w(11, 'ombro') + 0.5 ? { facing: -1, mood: 'scared', lean: -0.3, armL: [1.0, 0], armR: [-1.0, 0] } : P.run(t)); const sh = hit ? 0.04 * Math.sin(t * 60) * Math.max(0, 1 - (t - w(11, 'ombro')) * 2) : 0; stage.aim([0.5 + sh, 1.4, z + 1.6], [-0.4, 1.0, z], 50); });
+    at(L0(12), (t, u) => { const k = clamp(u / (L1(12) - L0(12) + 0.2)); home({ door: 1.45 * ease(k), holy: k })(t); hput(0, -5.1, P.stand); stage.aim([0.35, 1.65, -3.5], [0, 1.0, -6.5], 46); });
+    // the bathroom: the heavenly toilet
+    at(L0(13), (t, u) => { home({ door: 1.45, holy: 1 })(t); const k = ease(clamp(u / 3)); stage.aim([0.15, 1.35, lerp(-5.4, -6.4, k)], [0, 0.6, -8.05], 50); });
+    at(L0(14), (t, u) => { home({ door: 1.45, holy: 1 })(t); hput(0, -5.6, { facing: 0, headTilt: -0.15, armL: [0.9, 0.6], armR: [-0.9, -0.6] }); const h = hy.headWorld(); stage.aim([h.x + 0.05, h.y + 0.02, h.z - 0.85], [h.x, h.y - 0.02, h.z], 40); });
+    const walkZ = t => lerp(-6.1, -7.55, clamp((t - L0(15)) / (L1(16) - L0(15))));
+    at(L0(15), (t, u) => { home({ door: 1.45, holy: 1 })(t); hput(0, walkZ(t), P.belt); stage.aim([0.95, 1.4, -6.6], [0, 0.8, -7.4], 56); });
+    at(L0(16), (t, u) => { home({ door: 1.45, holy: 1 })(t); hput(0, walkZ(t), P.belt); const h = hy.headWorld(); const sh = 0.01 * Math.sin(t * 60); stage.aim([h.x + 0.3 + sh, h.y + 0.05, h.z - 0.7], [h.x, h.y - 0.03, h.z], 44); });
+    const SIT = [0, -0.15, -7.95];
+    at(L0(17), (t, u) => { home({ door: 1.45, holy: 0.15 })(t); hput(0, -7.55, Object.assign({}, P.belt, { mood: '' })); stage.aim([0.95, 1.4, -6.6], [0, 0.8, -7.4], 56); });
+    at(L0(18), (t, u) => { home({ door: 1.45, holy: 0.15 })(t); X.put(hy, ...SIT, P.sit); stage.aim([0.1, 1.2, -6.3], [0, 0.75, -8.0], 50); });
+    const seatFace = (pose, o = {}) => (t, u) => { home({ door: 1.45, holy: o.holy ?? 0 })(t); X.put(hy, ...SIT, typeof pose === 'function' ? pose(t, u) : pose); const h = hy.headWorld(); const sh = o.shake ? o.shake * Math.sin(t * 60) : 0; const k = ease(clamp(u / (o.dur || 2))); stage.aim([h.x + 0.04 + sh, h.y + 0.06, h.z + lerp(o.d0 || 0.9, o.d1 || 0.75, k)], [h.x, h.y - 0.04, h.z], 42); if (o.tears) X.tears(hy, t); };
+    at(L0(19), seatFace(P.sitHope));
+    at(w(19, 'som') - 0.15, seatFace(P.sitTerror, { shake: 0.02, d0: 0.8, d1: 0.7, dur: 0.6 }));
+    at(L0(20), seatFace((t, u) => Object.assign({}, P.sitDown, { headTilt: 0.5 * ease(clamp(u / 1.5)) }), { d0: 0.85, d1: 0.8 }));
+    at(L0(21), seatFace(P.sitTerror, { d0: 0.8, d1: 0.45, dur: 2.6 }));
+    at(L0(22), (t, u) => { home({ door: 1.45, holy: Math.max(0, Math.sin(t * 13)) * 0.3 })(t); X.put(hy, ...SIT, P.sitDown); const k = ease(clamp(u / 3)); stage.aim([0.1, lerp(1.3, 1.7, k), lerp(-6.4, -5.6, k)], [0, 0.7, -8.0], 52); });
+    at(L0(23), seatFace(P.sitDown, { tears: true }));
+    at(L0(24), seatFace({ facing: 0, mood: 'scared', legL: [1.0, -1.4], legR: [-1.0, 1.4], armL: [0.3, -0.4], armR: [-0.3, 0.4] }, { tears: true, d0: 0.75, d1: 0.6, dur: 3 }));
+    // the funeral
+    const SPOTS = [[-0.25, 1.0], [0.45, 1.1], [-1.0, 0.8], [1.15, 0.75], [-0.65, 1.7], [0.95, 1.75]];
+    const fun = (t, youPose = P.mourn) => { X.funeral(t); X.belly(0.3); const ppl = [X.youFun, X.herFun, ...X.mourners]; ppl.forEach((p, i) => X.put(p, SPOTS[i][0], 0, SPOTS[i][1], i === 0 ? youPose : { facing: 0, headTilt: 0.3, armL: [0.3, -0.3], armR: [-1.2, 1.6] })); [0, 1, 2, 3, 5].forEach((pi, ui) => X.umbrella(ui, ppl[pi])); };
+    at(L0(25), (t, u) => { fun(t); const k = ease(clamp(u / 4)); stage.aim([lerp(3.0, 2.2, k), 1.9, lerp(5.2, 4.2, k)], [0, 0.8, -0.2], 46); });
+    at(L0(26), (t, u) => { fun(t); const k = ease(clamp(u / 2.5)); stage.aim([0.05, 0.85, lerp(0.9, 0.35, k)], [0, 0.7, -1], 50); });
+    at(w(26, 'Morreu'), (t, u) => { fun(t); const p = C.photo.position; stage.aim([p.x + 0.08, p.y + 0.05, p.z + 0.7], [p.x, p.y, p.z], 40); });
+    at(L0(27), (t, u) => { fun(t); const h = X.youFun.headWorld(); X.tears(X.youFun, t); const k = ease(clamp(u / 3)); stage.aim([h.x + 0.1, h.y + 0.05, h.z + lerp(1.1, 0.85, k)], [h.x, h.y - 0.05, h.z], 42); });
+    at(L0(28), (t, u) => { stage.use('none'); X.hideAll(); });
+  },
+  overlay: (ctx, t) => { const { w, L0, L1, bang, c, clamp } = ctx;
+    const pop = (s, t0, o, dur = 1.3) => { if (t >= t0 && t < t0 + dur) bang(s, (t - t0) * 1.4, o); };
+    pop('TLIM!', w(3, 'cai') + 0.4, { y: 560, col: '#ffcc4d', size: 160 });
+    pop('GRUUUOOONNN!', w(7, 'ruge'), { y: 600, col: '#8fe06a', size: 140, shake: 1 }, 1.6);
+    if (t >= L0(8) && t < L0(9)) missionHUD(c, t, 3.0, false);
+    pop('INDEPENDÊNCIA!', w(9, 'independência'), { y: 560, col: '#4fe08a', size: 130, shake: 1 });
+    pop('TUM!', w(11, 'ombro'), { y: 560, col: '#ffcc4d', size: 170, shake: 1 });
+    pop('PRRRÓÓÓÓT!', w(19, 'som') - 0.15, { y: 600, col: '#c8a06a', size: 150, shake: 1 }, 2.0);
+    pop('NO DIA SEGUINTE...', L0(25), { y: 520, col: '#ffffff', size: 100, rot: 0 }, 1.8);
+    if (t >= L0(28)) { const k = clamp((t - L0(28)) / 0.6); c.save(); c.globalAlpha = k; c.fillStyle = '#000'; c.fillRect(0, 0, 1080, 1920); c.font = '700 66px Oswald'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#f3eee4'; c.fillText('BASEADO EM FATOS', 540, 860); c.fillText('QUE VOCÊ GOSTARIA', 540, 950); c.fillText('DE ESQUECER.', 540, 1040); c.restore(); }
+  },
+  end: { q: ['VOCÊ JÁ PERDEU', 'UM SOLDADO?'], a: 'JÁ... DESCANSE EM PAZ', b: 'NUNCA (MENTIRA)', next: 'FIM' },
+  cover: { at: ({ L0 }) => L0(24) + 1.2, pill: 'MINHA CUECA VIROU HISTÓRIA · PARTE 3 · FINAL', title: ['PERDI', 'UM SOLDADO'], color: '#ff5a4f', gauge: 100 },
+});
+</script>
+</body></html>

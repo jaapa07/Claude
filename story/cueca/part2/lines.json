@@ -1,0 +1,203 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.1,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lines": [
+  {
+   "text": "Imagine que você acelera pra casa.",
+   "key": {
+    "casa": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Mão no volante. Perna apertada. Cara de quem segura o mundo.",
+   "key": {
+    "mundo": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Cada lombada é um terremoto.",
+   "key": {
+    "terremoto": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Cada buraco é uma careta nova.",
+   "key": {
+    "careta": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Na segunda quadra, você já tá negociando com Deus.",
+   "key": {
+    "Deus": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Na terceira, jura que nunca mais come pizza.",
+   "key": {
+    "pizza": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Na quarta, oferece o carro em troca de um banheiro.",
+   "key": {
+    "banheiro": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Aí aparece a maior lombada do bairro.",
+   "key": {
+    "lombada": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Aaaai! Essa lombada foi pessoal!",
+   "key": {
+    "pessoal": "red"
+   },
+   "pause": 0.42,
+   "voice": "pm_alex",
+   "speed": 1.15
+  },
+  {
+   "text": "Você olha pra baixo. E lembra de um detalhe.",
+   "key": {
+    "detalhe": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Você tá usando a sua cueca favorita.",
+   "key": {
+    "favorita": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Limpinha. Dobradinha. Num pedestal dourado.",
+   "key": {
+    "dourado": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Um coral de anjos canta só de lembrar.",
+   "key": {
+    "anjos": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Ela sobreviveu a casamento, entrevista de emprego e churrasco de família.",
+   "key": {
+    "churrasco": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Hoje você não vai morrer, guerreira!",
+   "key": {
+    "guerreira": "red"
+   },
+   "pause": 0.42,
+   "voice": "pm_alex",
+   "speed": 1.15
+  },
+  {
+   "text": "Faltam sete quadras. E dez minutos.",
+   "key": {
+    "minutos": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Primeira quadra: respiração profunda.",
+   "key": {
+    "respiração": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Segunda: suor escorrendo.",
+   "key": {
+    "suor": "blue"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Terceira: olho arregalado.",
+   "key": {
+    "arregalado": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Quarta: perna tremendo.",
+   "key": {
+    "tremendo": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Quinta: oração desesperada.",
+   "key": {
+    "oração": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Sexta: quase chorando.",
+   "key": {
+    "chorando": "blue"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Sétima: a cara de quem viu o próprio destino.",
+   "key": {
+    "destino": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Você não tá mais dirigindo. Tá pilotando uma bomba biológica.",
+   "key": {
+    "bomba": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Com prazo de validade vencido.",
+   "key": {
+    "vencido": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Segura... segura... só mais um pouquinho.",
+   "key": {
+    "pouquinho": "yellow"
+   },
+   "pause": 0.42,
+   "voice": "pm_alex",
+   "speed": 0.9
+  },
+  {
+   "text": "Lá na frente, o seu portão.",
+   "key": {
+    "portão": "green"
+   },
+   "pause": 0.32
+  }
+ ]
+}

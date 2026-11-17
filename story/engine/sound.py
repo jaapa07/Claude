@@ -138,6 +138,38 @@ def synth(kind):
         return 0.7 * band(saw + 0.4 * np.sin(2 * ph), 30, 900) * np.minimum(1, t / 0.4) * np.minimum(1, (n - np.arange(n)) / L(0.3)) + 0.4 * crank
     if kind == "cityhum":                                         # distant night traffic
         n = L(6); return 0.6 * band(noise(n), 60, 600) * (0.7 + 0.3 * np.sin(np.linspace(0, 3 * np.pi, n)))
+    if kind == "fart":                                            # a long comic raspberry: a buzzy low tone, wobbling, falling
+        n = L(1.6); t = np.arange(n) / SR; f = np.interp(t, [0, 0.3, 1.2, 1.6], [120, 95, 70, 55]) * (1 + 0.12 * np.sin(2 * np.pi * 7 * t))
+        ph = np.cumsum(f) / SR; saw = 2 * (ph % 1) - 1; flap = 0.6 + 0.4 * np.sign(np.sin(2 * np.pi * 23 * t))
+        return band(saw * flap + 0.25 * noise(n), 50, 1400) * np.minimum(1, t / 0.03) * np.minimum(1, (n - np.arange(n)) / L(0.25))
+    if kind == "choir":                                           # a heavenly "aaah": a bright major chord, slow attack
+        n = L(3.0); t = np.arange(n) / SR; x = np.zeros(n)
+        for f in (261.6, 329.6, 392.0, 523.3, 659.3):
+            for det in (-1.5, 0, 1.5):
+                ph = 2 * np.pi * (f + det) * t + 0.08 * np.sin(2 * np.pi * 5 * t); x += np.sin(ph) + 0.35 * np.sin(2 * ph) + 0.15 * np.sin(3 * ph)
+        return band(x, 200, 3500) * np.minimum(1, t / 0.6) * np.minimum(1, (n - np.arange(n)) / L(0.8))
+    if kind == "keys":                                            # keys hitting the pavement: a few metal tinks
+        n = L(0.9); x = np.zeros(n)
+        for k, (d, a) in enumerate([(0.0, 1.0), (0.18, 0.6), (0.3, 0.4), (0.38, 0.25)]):
+            i = L(d); m = n - i; x[i:] += a * sum(tone(f, m) for f in (3100 + 300 * k, 4500, 6200)) * env(m, 0.0005, 0.04)
+        return x
+    if kind == "rain":                                            # steady rain
+        n = L(8); return band(noise(n), 800, 8000) * (0.8 + 0.2 * np.sin(np.linspace(0, 6 * np.pi, n))) * np.minimum(1, np.arange(n) / L(0.8)) * np.minimum(1, (n - np.arange(n)) / L(1.0))
+    if kind == "victory":                                         # a short triumphant arpeggio
+        n = L(1.8); t = np.arange(n) / SR; x = np.zeros(n)
+        for d, f in [(0, 523.3), (0.14, 659.3), (0.28, 784.0), (0.42, 1046.5)]:
+            i = L(d); m = n - i; x[i:] += (np.sign(np.sin(2 * np.pi * f * t[:m])) * 0.3 + np.sin(2 * np.pi * f * t[:m])) * env(m, 0.005, 0.5 if d > 0.4 else 0.15)
+        return band(x, 200, 6000)
+    if kind == "sad":                                             # a sad trombone: wah wah wah waaah
+        n = L(3.2); t = np.arange(n) / SR; f = np.zeros(n); amp = np.zeros(n)
+        for d, f0, f1, ln in [(0, 233.1, 220, 0.5), (0.6, 220, 207.7, 0.5), (1.2, 207.7, 196, 0.5), (1.8, 196, 175, 1.3)]:
+            a, b = L(d), min(n, L(d + ln)); tt = np.arange(b - a) / SR; f[a:b] = np.linspace(f0, f1, b - a) * (1 + (0.03 * np.sin(2 * np.pi * 6 * tt) if ln > 1 else 0)); amp[a:b] = np.sin(np.linspace(0, np.pi, b - a)) ** 0.5
+        ph = 2 * np.pi * np.cumsum(f) / SR; return band(np.sin(ph) + 0.6 * np.sin(2 * ph) + 0.4 * np.sin(3 * ph) + 0.2 * np.sin(4 * ph), 100, 2500) * amp
+    if kind == "gurgle":                                          # a stomach bubbling: little rising blips
+        n = L(1.4); x = np.zeros(n); r = np.random.default_rng(3)
+        for k in range(9):
+            i = int(r.random() * (n - L(0.15))); m = L(0.06 + 0.06 * r.random()); x[i:i + m] += tone(180 + 260 * r.random(), m, 420 + 300 * r.random()) * np.sin(np.linspace(0, np.pi, m))
+        return band(x, 80, 1500)
     sys.exit(f"unknown sfx type {kind}")
 
 with wave.open(os.path.join(part, "narration.wav")) as w:

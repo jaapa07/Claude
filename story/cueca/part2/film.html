@@ -1,0 +1,87 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Minha Cueca Virou História</title>
+<script type="importmap">{"imports": {"three": "../../engine/vendor/three.module.js"}}</script>
+<style>
+@font-face { font-family: 'Oswald'; font-weight: 700; src: url('../../engine/vendor/fonts/oswald-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 700; src: url('../../engine/vendor/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+html, body { margin: 0; background: #000; } canvas { display: block; }
+</style>
+<script src="timing.js"></script>
+</head><body>
+<canvas id="film" width="1080" height="1920"></canvas>
+<script type="module">
+import { run } from '../../bar_part.js';
+import { setup, P } from '../stick.js';
+const CLK = ['00:02', '00:03', '00:05', '00:06', '00:08', '00:09', '00:11', '00:12'];
+run({
+  setup, which: 'cueca',
+  hud: (t, { L0 }) => t >= L0(10) && t < L0(14) ? 'LEMBRANÇA' : t >= L0(26) ? 'CHEGANDO' : 'NO CARRO',
+  clock: ({ L0 }) => [[0, '00:02'], ...CLK.slice(1).map((c, i) => [L0(16 + i), c])],
+  pressure: ({ w, L0 }) => [[0, 85], [w(2, 'terremoto'), 88], [w(7, 'lombada'), 90], [w(8, 'pessoal'), 97], [L0(10), 92], [L0(14), 95], [L0(16), 90], [L0(19), 95], [L0(22), 98], [L0(26), 99]],
+  shots: ctx => {
+    const { X, at, w, L0, L1, stage, clamp, lerp, ease, THREE } = ctx; const C = X.C, Wd = X.Wd;
+    // the speed bump: yellow and black stripes across the road, sliding towards the car
+    const bt = (() => { const cv = document.createElement('canvas'); cv.width = 512; cv.height = 64; const g = cv.getContext('2d'); for (let i = 0; i < 16; i++) { g.fillStyle = i % 2 ? '#111' : '#f2c230'; g.fillRect(i * 32, 0, 32, 64); } const tx = new THREE.CanvasTexture(cv); tx.colorSpace = THREE.SRGBColorSpace; return tx; })();
+    const bump = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 10, 16, 1, false, 0, Math.PI), new THREE.MeshStandardMaterial({ map: bt, roughness: 0.7 })); bump.rotation.z = Math.PI / 2; bump.scale.set(0.35, 1, 1); bump.position.y = -0.02; Wd.carSet.add(bump);
+    const tHit = w(8, 'Aaaai'), jump = t => { const d = t - tHit; return d < 0 ? 0 : 0.38 * Math.exp(-d * 2.2) * Math.abs(Math.sin(d * 7)); };
+    const shake = (t, t0, a = 0.06) => { const d = t - t0; return d < 0 ? 0 : a * Math.exp(-d * 5) * Math.abs(Math.sin(d * 30)); };
+    const drv = (t, o = {}) => { X.drive(t, Object.assign({ belly: 0.95, clock: null }, o)); bump.visible = false; };
+    const face = (o = {}) => (t, u) => { drv(t, o); const h = X.youCar.headWorld(); const sh = o.shake ? o.shake * Math.sin(t * 60) : 0; const k = ease(clamp(u / (o.dur || 2))); stage.aim([h.x - 0.28 + sh, h.y + 0.03, lerp(o.d0 || 0.95, o.d1 || 0.82, k)], [h.x, h.y - 0.02, h.z], o.fov || 46); if (o.sweat) X.sweat(X.youCar, clamp(u / 1.6), -1); if (o.tears) X.tears(X.youCar, t); };
+    const dash = s => (t, u) => { drv(t); X.dashClock(s); const p = X.dash.getWorldPosition(new THREE.Vector3()); stage.aim([p.x + 0.03, p.y + 0.13, p.z - 0.34], [p.x, p.y, p.z], 40); };
+    const outside = (o = {}) => (t, u) => { drv(t, o); const k = ease(clamp(u / 3)); stage.aim([lerp(-5.0, -4.2, k), 1.3, lerp(5.0, 4.0, k)], [0, 0.9, 0], 44); };
+    // the drive
+    at(0, (t, u) => { drv(t, { speed: 24 }); const k = ease(clamp(u / 2.5)); stage.aim([lerp(-2.6, -1.9, k), 0.45, lerp(-5.0, -4.2, k)], [0, 0.8, 1.5], 50); });
+    at(L0(1), (t, u) => { drv(t, { pose: P.grip }); const h = X.youCar.headWorld(); stage.aim([h.x - 0.25, h.y - 0.3, 0.98], [0.4, 0.95, 0.6], 44); });
+    at(w(1, 'Cara'), face({ pose: P.grip, shake: 0.004 }));
+    at(L0(2), (t, u) => { const b = shake(t, w(2, 'terremoto'), 0.12); drv(t, { pose: P.grip, bump: b }); stage.aim([-0.45, 1.4, 1.05], [0.35, 1.15, -0.1], 58); });
+    at(L0(3), (t, u) => { const n = Math.floor(u / 0.45) % 4, ps = [{ headTilt: 0.3, lean: 0.1 }, { headTilt: -0.3, lean: -0.1 }, { headTilt: 0.15, lean: 0.25 }, { headTilt: -0.2, lean: 0 }][n]; face({ pose: Object.assign({ facing: 0, mood: 'scared', armL: [1.5, -0.9], armR: [-1.5, 0.9] }, ps), shake: 0.01 })(t, u); Wd.carBody.position.y = shake(t, L0(3) + n * 0.45, 0.05); });
+    at(L0(4), face({ pose: { facing: 0, mood: 'scared', headTilt: -0.3, armL: [1.2, -0.6], armR: [-2.7, 0.3] } }));
+    at(L0(5), (t, u) => { X.pizza(t, { eat: 0, belly: 0.9 }); X.her.mesh.visible = false; X.you.mesh.visible = false; const k = ease(clamp(u / 2)); stage.aim([0.2, lerp(1.6, 1.3, k), 0.5], [0, 0.75, 0], 50); });
+    at(w(5, 'pizza'), face({ pose: { facing: 0, mood: 'scared', armL: [1.2, -0.6], armR: [-1.0, 2.2] } }));
+    at(L0(6), outside({ speed: 18 }));
+    at(L0(7), (t, u) => { drv(t, { speed: 12, pose: P.grip }); bump.visible = true; bump.position.z = 1.3 + (tHit - t) * 7; stage.aim([-3.2, 0.55, 5.5], [0, 0.3, 2.2], 44); });
+    at(tHit, (t, u) => { drv(t, { speed: 12, pose: P.shout, bump: jump(t) }); bump.visible = true; bump.position.z = (tHit - t) * 12; const k = ease(clamp(u / 2)); stage.aim([lerp(-3.4, -2.8, k), 0.35, 1.4], [0, 0.9 + 0.5 * jump(t), 0], 40); });
+    at(w(8, 'lombada'), face({ pose: P.shout, shake: 0.015 }));
+    at(L0(9), face({ pose: { facing: 0, headTilt: 0.45, armL: [1.2, -0.6], armR: [-1.2, 0.6] } }));
+    at(w(9, 'detalhe'), face({ pose: { facing: 0, mood: 'scared', headTilt: 0.1, armL: [1.2, -0.6], armR: [-1.2, 0.6] }, d0: 0.9, d1: 0.55, dur: 1 }));
+    // the holy flashback
+    at(L0(10), (t, u) => { X.altar(t); const k = ease(clamp(u / 3.2)); stage.aim([0, lerp(1.6, 1.45, k), lerp(5.5, 2.4, k)], [0, 1.25, 0], 44); });
+    at(L0(11), (t, u) => { X.altar(t); const k = ease(clamp(u / 2.5)); stage.aim([0.25, lerp(1.75, 1.55, k), lerp(0.85, 0.65, k)], [0, 1.27, 0], 40); });
+    at(w(11, 'pedestal'), (t, u) => { X.altar(t); const k = ease(clamp(u / 2)); stage.aim([0.9, lerp(0.4, 0.9, k), 1.6], [0, lerp(0.6, 1.1, k), 0], 46); });
+    at(L0(12), (t, u) => { X.altar(t); const a = 0.3 * u; stage.aim([Math.sin(a) * 3.2, 1.2, Math.cos(a) * 3.2], [0, 1.6, 0], 50); });
+    at(L0(13), (t, u) => { X.altar(t); const a = -0.25 * u; stage.aim([Math.sin(a) * 2.2, 1.5, Math.cos(a) * 2.2], [0, 1.25, 0], 44); });
+    at(L0(14), face({ pose: P.shout, shake: 0.012, tears: true, d0: 0.85, d1: 0.7 }));
+    // ten minutes of torture: the dash clock and a face for every block
+    at(L0(15), dash('00:02'));
+    at(w(15, 'minutos'), (t, u) => { drv(t, { speed: 16 }); const k = ease(clamp(u / 2)); stage.aim([-1.8, lerp(1.4, 2.4, k), lerp(-3.5, -6, k)], [0, 0.8, 2], 46); });
+    const block = (i, f) => { at(L0(16 + i), dash(CLK[1 + i])); at(L0(16 + i) + 0.7, f); };
+    block(0, (t, u) => { const b = 0.5 + 0.5 * Math.sin(u * 3.2); face({ pose: { facing: 0, lean: -0.1 * b, headTilt: -0.25 * b, armL: [1.2, -0.6], armR: [-1.2, 0.6] } })(t, u); });
+    block(1, face({ pose: P.grip, sweat: true }));
+    block(2, face({ pose: { facing: 0, mood: 'scared', armL: [1.5, -0.9], armR: [-1.5, 0.9] }, d0: 0.75, d1: 0.5, dur: 1.2 }));
+    block(3, face({ pose: P.grip, shake: 0.02 }));
+    block(4, face({ pose: { facing: 0, mood: 'scared', headTilt: -0.3, armL: [2.4, 0.5], armR: [-1.2, 0.6] } }));
+    block(5, face({ pose: P.grip, tears: true }));
+    block(6, face({ pose: { facing: 0, mood: 'scared', headTilt: -0.05, armL: [1.5, -0.9], armR: [-1.5, 0.9] }, d0: 0.9, d1: 0.42, dur: 2.4 }));
+    at(L0(23), (t, u) => { drv(t, { speed: 26 }); Wd.stinkAt(t, 0.9, new THREE.Vector3(0, 0.9, 0)); Wd.stink.forEach(sp => sp.scale.multiplyScalar(3.5)); const k = ease(clamp(u / 3)); stage.aim([lerp(3.0, 2.4, k), lerp(2.4, 2.0, k), lerp(6.5, 5.0, k)], [0, 0.8, 0], 46); });
+    at(L0(24), dash('00:12'));
+    at(L0(25), face({ pose: P.grip, shake: 0.006, d0: 0.8, d1: 0.55, dur: 3 }));
+    at(L0(26), (t, u) => { X.gate(t); X.C.parked.visible = false; const k = ease(clamp(u / 3)); stage.aim([lerp(-7, -3.5, k), 1.1, lerp(6, 4.2, k)], [1.8, 1.2, -1], 46); });
+  },
+  overlay: (ctx, t) => { const { w, L0, bang, c } = ctx;
+    const pop = (s, t0, o, dur = 1.3) => { if (t >= t0 && t < t0 + dur) bang(s, (t - t0) * 1.4, o); };
+    pop('TUM!', w(2, 'terremoto'), { y: 560, col: '#ffcc4d', size: 170, shake: 1 });
+    pop('QUADRA 2', L0(4), { y: 520, col: '#ffffff', size: 110, rot: 0.05 }, 1.0);
+    pop('NUNCA MAIS!', w(5, 'pizza'), { y: 560, col: '#ff5a4f', size: 140 });
+    pop('TROCO POR 1 BANHEIRO', w(6, 'troca'), { y: 560, col: '#ffcc4d', size: 90 }, 1.8);
+    pop('TUUUM!!', w(8, 'Aaaai'), { y: 600, col: '#ff5a4f', size: 190, shake: 1 });
+    pop('CASAMENTO ✔', w(13, 'casamento'), { y: 480, col: '#4fe08a', size: 100, rot: -0.04 }, 3.4);
+    pop('ENTREVISTA ✔', w(13, 'entrevista'), { y: 600, col: '#4fe08a', size: 100, rot: 0.03 }, 2.6);
+    pop('CHURRASCO ✔', w(13, 'churrasco'), { y: 720, col: '#4fe08a', size: 100, rot: -0.03 }, 1.8);
+    pop('PERIGO BIOLÓGICO', w(23, 'bomba'), { y: 560, col: '#8fe06a', size: 110, shake: 1 }, 2.2);
+    pop('VENCIDO', w(24, 'vencido'), { y: 560, col: '#ff3b30', size: 190, rot: -0.12 }, 1.6);
+  },
+  end: { q: ['VOCÊ CHEGA', 'A TEMPO?'], a: 'CHEGO SIM', b: 'NÃO VAI DAR', next: '3' },
+  cover: { at: ({ w }) => w(8, 'pessoal') + 0.3, pill: 'MINHA CUECA VIROU HISTÓRIA · PARTE 2', title: ['ESSA LOMBADA', 'FOI PESSOAL!'], color: '#ff5a4f', gauge: 97 },
+});
+</script>
+</body></html>

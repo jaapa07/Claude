@@ -1,0 +1,205 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.1,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lines": [
+  {
+   "text": "Imagine que é sábado, e era pra ser uma noite romântica.",
+   "key": {
+    "romântica": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Pizzaria aconchegante. Luz de vela. Você e a sua namorada.",
+   "key": {
+    "vela": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Na mesa: calabresa, quatro queijos, bacon, frango com catupiry.",
+   "key": {
+    "catupiry": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "E, de sobremesa, pizza de chocolate.",
+   "key": {
+    "chocolate": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Você come uma fatia. Depois outra. Depois para de contar.",
+   "key": {
+    "contar": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Ela te olha. Impressionada. Ou preocupada.",
+   "key": {
+    "preocupada": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Amor... você tá bem?",
+   "key": {
+    "bem": "yellow"
+   },
+   "pause": 0.42,
+   "voice": "pf_dora",
+   "speed": 1.05
+  },
+  {
+   "text": "Tô ótimo. Me passa a de chocolate.",
+   "key": {
+    "chocolate": "yellow"
+   },
+   "pause": 0.42,
+   "voice": "pm_alex",
+   "speed": 1.0
+  },
+  {
+   "text": "No total, umas quarenta e sete fatias.",
+   "key": {
+    "sete": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "O amor tava no ar. E o perigo também.",
+   "key": {
+    "perigo": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Aí, lá no fundo da sua barriga, um borbulho.",
+   "key": {
+    "borbulho": "green"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Baixinho. Educado. Como quem bate na porta.",
+   "key": {
+    "Educado": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Você ignora. Erro número um.",
+   "key": {
+    "Erro": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Vocês vão pra casa dela. Você deita. E apaga.",
+   "key": {
+    "apaga": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "A barriga estufada sobe e desce. Igual uma onda.",
+   "key": {
+    "onda": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "O relógio vira meia-noite.",
+   "key": {
+    "meia-noite": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Você acorda num pulo.",
+   "key": {
+    "pulo": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Dá um beijo nela. E vai embora.",
+   "key": {
+    "beijo": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Mal sabia você que tava se despedindo da sua dignidade.",
+   "key": {
+    "dignidade": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Você entra no carro. Liga o motor.",
+   "key": {
+    "motor": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Rua vazia. Rádio baixinho. Paz.",
+   "key": {
+    "Paz": "green"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Uma quadra depois...",
+   "key": {
+    "quadra": "yellow"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "A sua barriga faz um barulho que nenhum ser humano deveria fazer.",
+   "key": {
+    "barulho": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "O sorriso some do seu rosto.",
+   "key": {
+    "some": "red"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Ué... que isso?",
+   "key": {
+    "isso": "yellow"
+   },
+   "pause": 0.42,
+   "voice": "pm_alex",
+   "speed": 1.0
+  },
+  {
+   "text": "Uma gota de suor escorre pela sua testa. Devagar.",
+   "key": {
+    "suor": "blue"
+   },
+   "pause": 0.32
+  },
+  {
+   "text": "Não, não, não! Agora não, meu parceiro!",
+   "key": {
+    "parceiro": "red"
+   },
+   "pause": 0.42,
+   "voice": "pm_alex",
+   "speed": 1.15
+  }
+ ]
+}
