@@ -10,7 +10,7 @@ Modos:
   live  CANAL             grava a live em segmentos e corta sozinho quando o chat explode
   local VIDEO [--chat J]  usa um vídeo já baixado (e opcionalmente o chat em JSON)
 
-Dependências: ffmpeg, yt-dlp, chat-downloader  (pip install -r requirements.txt)
+Dependências: ffmpeg, yt-dlp, chat-downloader, websocket-client  (pip install -r requirements.txt)
 """
 from __future__ import annotations
 
@@ -128,6 +128,13 @@ def combinar(chat_z: list[float], audio_z: list[float], chat_lag: int,
 
 
 # --------------------------------------------------------------------------- ffmpeg
+def proxy_args(src: str) -> list[str]:
+    """ffmpeg ignora HTTPS_PROXY; repassa explicitamente quando a entrada é de rede."""
+    import os
+    px = os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy")
+    return ["-http_proxy", px] if px and src.startswith("http") else []
+
+
 def cortar(src: str, c: Corte, dst: Path, vertical: bool, headers: str | None = None):
     vf = []
     if vertical:  # 9:16 com fundo desfocado (formato Shorts/Reels/TikTok)
@@ -138,7 +145,7 @@ def cortar(src: str, c: Corte, dst: Path, vertical: bool, headers: str | None = 
     cmd = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y"]
     if headers:
         cmd += ["-headers", headers]
-    cmd += ["-ss", f"{c.inicio:.2f}", "-i", src, "-t", f"{c.fim - c.inicio:.2f}", *vf,
+    cmd += [*proxy_args(src), "-ss", f"{c.inicio:.2f}", "-i", src, "-t", f"{c.fim - c.inicio:.2f}", *vf,
             "-c:v", "libx264", "-preset", "veryfast", "-crf", "21",
             "-c:a", "aac", "-b:a", "160k", "-movflags", "+faststart", str(dst)]
     subprocess.run(cmd, check=True)
@@ -222,75 +229,125 @@ def modo_vod(a):
     salvar_relatorio(out, cortes)
 
 
+def chat_ao_vivo(canal: str, fila: deque, parar: threading.Event):
+    """Lê o chat via WebSocket anônimo (porta 443, passa por proxy HTTP se houver)."""
+    import os
+    import websocket
+    from urllib.parse import urlparse
+    opts = {}
+    px = os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy")
+    if px:
+        u = urlparse(px)
+        opts = dict(http_proxy_host=u.hostname, http_proxy_port=u.port, proxy_type="http")
+        if u.username:
+            opts["http_proxy_auth"] = (u.username, u.password)
+    ca = os.environ.get("SSL_CERT_FILE") or os.environ.get("REQUESTS_CA_BUNDLE")
+    if ca:
+        opts["sslopt"] = {"ca_certs": ca}
+    while not parar.is_set():
+        try:
+            ws = websocket.create_connection("wss://irc-ws.chat.twitch.tv:443", timeout=30, **opts)
+            ws.send("NICK justinfan%d" % (int(time.time()) % 99999))
+            ws.send(f"JOIN #{canal.lower()}")
+            while not parar.is_set():
+                for line in ws.recv().split("\r\n"):
+                    if line.startswith("PING"):
+                        ws.send("PONG :tmi.twitch.tv")
+                    elif " PRIVMSG #" in line:
+                        fila.append((time.time(), line.split(" :", 2)[-1]))
+        except Exception as e:  # reconecta
+            print(f"  chat reconectando ({e.__class__.__name__})", file=sys.stderr)
+            time.sleep(3)
+
+
 def modo_live(a):
-    """Grava em segmentos de 10 s; quando o chat explode, junta os segmentos e corta."""
+    """Grava em segmentos; a cada segundo mede o chat e, se explodir, junta os segmentos e corta."""
+    import csv
     import yt_dlp
-    from chat_downloader import ChatDownloader
     url = f"https://www.twitch.tv/{a.canal}"
     with yt_dlp.YoutubeDL({"quiet": True, "format": a.qualidade}) as y:
         info = y.extract_info(url, download=False)
     out = Path(a.saida); seg_dir = out / "_segmentos"
     seg_dir.mkdir(parents=True, exist_ok=True)
-    SEG = 10
+    seg_csv = seg_dir / "lista.csv"
+    rec = subprocess.Popen(["ffmpeg", "-hide_banner", "-loglevel", "error",
+                            *proxy_args(info["url"]), "-i", info["url"],
+                            "-map", "0:v:0?", "-map", "0:a:0?", "-c", "copy",
+                            "-f", "segment", "-segment_time", "10",
+                            "-segment_list", str(seg_csv), "-segment_list_type", "csv",
+                            str(seg_dir / "s%06d.ts")])
+    parar = threading.Event()
+    fila: deque = deque()
+    threading.Thread(target=chat_ao_vivo, args=(a.canal, fila, parar), daemon=True).start()
+    while not (seg_dir / "s000000.ts").exists():  # relógio do vídeo começa no 1º segmento
+        if rec.poll() is not None:
+            sys.exit("ffmpeg parou – canal offline?")
+        time.sleep(0.2)
     t0 = time.time()
-    rec = subprocess.Popen(["ffmpeg", "-hide_banner", "-loglevel", "error", "-i", info["url"],
-                            "-c", "copy", "-f", "segment", "-segment_time", str(SEG),
-                            "-reset_timestamps", "1", str(seg_dir / "s%06d.ts")])
-    print(f"gravando {a.canal}… Ctrl+C para parar")
+    print(f"gravando {a.canal} ({info.get('format_id')})… Ctrl+C para parar")
 
-    counts: deque[float] = deque(maxlen=a.janela)   # mensagens/s recentes
-    hist: deque[float] = deque(maxlen=600)          # base dos últimos 10 min (somas da janela)
+    def segmentos():
+        if not seg_csv.exists():
+            return []
+        with open(seg_csv) as f:
+            return [(seg_dir / r[0], float(r[1]), float(r[2])) for r in csv.reader(f) if len(r) >= 3]
+
     cortes: list[Corte] = []
-    last_clip = -1e9
-    bucket, bucket_t = 0.0, int(time.time())
+    lock = threading.Lock()
 
     def fazer_corte(pico: float, score: float):
-        c = Corte(max(0, pico - a.pre), pico + a.post, pico, round(score, 2))
-        time.sleep(a.post + SEG + 2)  # espera os segmentos do "depois" serem gravados
-        first, last = int(c.inicio // SEG), int(c.fim // SEG)
-        parts = [seg_dir / f"s{i:06d}.ts" for i in range(first, last + 1)]
-        parts = [p for p in parts if p.exists()]
+        c = Corte(max(0.0, pico - a.pre), pico + a.post, pico, round(score, 2))
+        while time.time() - t0 < c.fim + 12 and rec.poll() is None:  # espera o "depois" gravar
+            time.sleep(1)
+        parts = [s for s in segmentos() if s[2] > c.inicio and s[1] < c.fim]
         if not parts:
             return
         lst = seg_dir / f"lista_{int(pico)}.txt"
-        lst.write_text("".join(f"file '{p.resolve()}'\n" for p in parts))
+        lst.write_text("".join(f"file '{p.resolve()}'\n" for p, _, _ in parts))
         joined = seg_dir / f"j_{int(pico)}.ts"
         subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-f", "concat", "-safe", "0",
                         "-i", str(lst), "-c", "copy", str(joined)], check=True)
-        local = Corte(c.inicio - first * SEG, c.fim - first * SEG, pico, c.score)
-        dst = out / f"corte_{len(cortes) + 1:02d}_{hhmmss(pico)}.mp4"
-        cortar(str(joined), local, dst, a.vertical)
-        c.arquivo = str(dst); cortes.append(c)
-        print(f"✂  corte salvo: {dst.name} (score {c.score})")
+        off = parts[0][1]
+        local = Corte(c.inicio - off, c.fim - off, pico, c.score)
+        with lock:
+            dst = out / f"corte_{len(cortes) + 1:02d}_{hhmmss(pico)}.mp4"
+            cortar(str(joined), local, dst, a.vertical)
+            joined.unlink(missing_ok=True)
+            c.arquivo = str(dst); cortes.append(c)
+        print(f"✂  corte salvo: {dst.name} (score {c.score})", flush=True)
 
+    win: deque[float] = deque(maxlen=a.janela)  # pontos por segundo na janela atual
+    hist: deque[float] = deque(maxlen=600)      # base: últimos 10 min
+    last_clip, threads = -1e9, []
     try:
-        for m in ChatDownloader().get_chat(url):
-            now = int(time.time())
-            text = m.get("message", "")
-            if now == bucket_t:
-                bucket += 1.0 + 1.5 * len(HYPE.findall(text))
-                continue
-            for _ in range(now - bucket_t):  # fecha os segundos que passaram
-                counts.append(bucket); bucket = 0.0
-                s = sum(counts); hist.append(s)
-            bucket_t = now
-            bucket = 1.0 + 1.5 * len(HYPE.findall(text))
-            if len(hist) < 60:
-                continue
-            med = statistics.median(hist)
-            mad = statistics.median(abs(x - med) for x in hist) or 1.0
-            z = (sum(counts) - med) / (1.4826 * mad)
+        nxt = time.time() + 1
+        while a.duracao <= 0 or time.time() - t0 < a.duracao:
+            time.sleep(max(0, nxt - time.time())); nxt += 1
+            pts = 0.0
+            while fila:
+                _, text = fila.popleft()
+                pts += 1.0 + 1.5 * len(HYPE.findall(text))
+            win.append(pts)
+            cur = sum(win) / len(win)
             elapsed = time.time() - t0
-            if z >= a.min_score and elapsed - last_clip > a.gap:
-                last_clip = elapsed
-                pico = elapsed - a.chat_lag
-                print(f"🔥 pico de chat (z={z:.1f}) em {hhmmss(pico)}")
-                threading.Thread(target=fazer_corte, args=(pico, z), daemon=True).start()
+            if len(hist) >= 60:
+                med = statistics.median(hist)
+                mad = statistics.median(abs(x - med) for x in hist) or 0.5
+                z = (cur - med) / (1.4826 * mad)
+                if int(elapsed) % 30 == 0:
+                    print(f"  {hhmmss(elapsed)}  chat {cur:5.1f} pts/s  base {med:5.1f}  z {z:5.1f}", flush=True)
+                if z >= a.min_score and elapsed - last_clip > a.gap:
+                    last_clip = elapsed
+                    pico = elapsed - a.chat_lag - a.janela / 2
+                    print(f"🔥 pico de chat (z={z:.1f}) em {hhmmss(pico)}", flush=True)
+                    th = threading.Thread(target=fazer_corte, args=(pico, z)); th.start(); threads.append(th)
+            hist.append(cur)
     except KeyboardInterrupt:
         pass
     finally:
-        rec.terminate()
-        time.sleep(1)
+        for th in threads:
+            th.join()
+        parar.set(); rec.terminate(); time.sleep(1)
         salvar_relatorio(out, cortes)
         if not a.manter_segmentos:
             shutil.rmtree(seg_dir, ignore_errors=True)
@@ -316,6 +373,7 @@ def main():
     sp = sub.add_parser("vod"); sp.add_argument("url"); comuns(sp)
     sp = sub.add_parser("live"); sp.add_argument("canal"); comuns(sp)
     sp.add_argument("--manter-segmentos", action="store_true")
+    sp.add_argument("--duracao", type=int, default=0, help="para após N segundos (0 = até Ctrl+C)")
     sp = sub.add_parser("local"); sp.add_argument("video"); comuns(sp)
     sp.add_argument("--chat", help="JSON do chat (chat-downloader ou TwitchDownloader)")
     sp.add_argument("--w-chat", type=float, default=1.0)
