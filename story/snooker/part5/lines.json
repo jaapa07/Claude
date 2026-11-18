@@ -1,0 +1,150 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.12,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lines": [
+  {
+   "text": "Imagine que o Jorge sai escoltado, ainda arrastando o chinelo.",
+   "key": {
+    "chinelo": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Pegaram o chupa-cu?",
+   "key": {
+    "chupa-cu": "red"
+   },
+   "pause": 0.4,
+   "voice": "pm_alex",
+   "speed": 1.0,
+   "pitch": 0.86
+  },
+  {
+   "text": "Pegaram. E ele me devia duas formas de pudim.",
+   "key": {
+    "pudim": "yellow"
+   },
+   "pause": 0.4,
+   "voice": "pf_dora",
+   "speed": 1.0,
+   "pitch": 0.9
+  },
+  {
+   "text": "Sua mãe entra na lavanderia, recupera as duas, e a viatura parte.",
+   "key": {
+    "viatura": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Meses depois, os oito assistem ao jornal na tevê do bar.",
+   "key": {
+    "jornal": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Condenado a três anos de prisão. O caso Snooker Bar chega ao fim.",
+   "key": {
+    "prisão": "red"
+   },
+   "pause": 0.4,
+   "voice": "pf_dora",
+   "speed": 1.05
+  },
+  {
+   "text": "Você desliga a tevê. O Eduardo volta pro banco de sempre.",
+   "key": {
+    "sempre": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Outra sexta. Bar cheio. Portinhola fechada com tijolo.",
+   "key": {
+    "tijolo": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "O Eduardo vai encaçapar a bola oito. Onze e quarenta e sete.",
+   "key": {
+    "sete": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "O freezer para. Escuridão total. Oito cadeiras raspam o chão.",
+   "key": {
+    "Escuridão": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Eu quero a minha mãe!",
+   "key": {
+    "mãe": "red"
+   },
+   "pause": 0.4,
+   "voice": "pm_santa",
+   "speed": 1.2,
+   "pitch": 1.25
+  },
+  {
+   "text": "O Didi acende o lampião de primeira.",
+   "key": {
+    "lampião": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Foi mal. Tirei o benjamim errado.",
+   "key": {
+    "benjamim": "yellow"
+   },
+   "pause": 0.4,
+   "voice": "pm_alex",
+   "speed": 1.1,
+   "pitch": 1.15
+  },
+  {
+   "text": "O alívio vira gargalhada. Mas quem gritou pela mãe? Ninguém responde.",
+   "key": {
+    "Ninguém": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Debaixo da mesa de sinuca, encolhido, segurando o taco... tá você.",
+   "key": {
+    "você": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "O seu celular toca. Na tela: mãe.",
+   "key": {
+    "mãe": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Agora não precisa mais, mãe.",
+   "key": {
+    "mais": "yellow"
+   },
+   "pause": 0.4,
+   "voice": "pm_santa",
+   "speed": 0.92
+  },
+  {
+   "text": "E a bola oito, finalmente, cai.",
+   "key": {
+    "cai": "yellow"
+   },
+   "pause": 0.3
+  }
+ ]
+}

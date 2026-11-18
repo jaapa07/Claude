@@ -1,0 +1,155 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.12,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lines": [
+  {
+   "text": "Imagine que você é o Murilo, dono do Snooker Bar.",
+   "key": {
+    "Snooker": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Sexta-feira. Escuro total. Uma bola cai na caçapa.",
+   "key": {
+    "caçapa": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Ô, Murilo! De novo, cara?!",
+   "key": {
+    "novo": "red"
+   },
+   "pause": 0.4,
+   "voice": "pm_alex",
+   "speed": 1.15,
+   "pitch": 1.06
+  },
+  {
+   "text": "A luz volta. Um cliente agarrado no banco.",
+   "key": {
+    "banco": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Como assim, de novo? É a primeira vez que você vem aqui.",
+   "key": {
+    "primeira": "yellow"
+   },
+   "pause": 0.4,
+   "voice": "pm_santa",
+   "speed": 1.05
+  },
+  {
+   "text": "Semana passada foi ele!",
+   "key": {
+    "ele": "red"
+   },
+   "pause": 0.4,
+   "voice": "pm_alex",
+   "speed": 1.15,
+   "pitch": 1.06
+  },
+  {
+   "text": "Uma sexta antes. O amigo vai encaçapar a bola oito.",
+   "key": {
+    "oito": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "O freezer para. O letreiro apaga. Alguém berra.",
+   "key": {
+    "berra": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "A bola oito para na boca da caçapa.",
+   "key": {
+    "parada": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Minha mulher vai achar que eu inventei essa porra.",
+   "key": {
+    "porra": "red"
+   },
+   "pause": 0.4,
+   "voice": "pm_santa",
+   "speed": 1.0,
+   "pitch": 1.1
+  },
+  {
+   "text": "Na terceira sexta, a freguesia chega prevenida.",
+   "key": {
+    "prevenida": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Um traz lanterna de cabeça. Outro cola o banco na parede.",
+   "key": {
+    "lanterna": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Onze e quarenta e sete. Tudo apaga.",
+   "key": {
+    "apaga": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "A lanterna acende. Virada pro rosto do próprio dono.",
+   "key": {
+    "rosto": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "E um grito vem do outro lado do salão.",
+   "key": {
+    "grito": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Na manhã seguinte, um áudio corre o grupo do bairro.",
+   "key": {
+    "áudio": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Da cabeleireira pro padeiro. Do padeiro pra você.",
+   "key": {
+    "você": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Meu filho, é verdade que tem um chupa-cu no teu bar?",
+   "key": {
+    "chupa-cu": "red"
+   },
+   "pause": 0.4,
+   "voice": "pf_dora",
+   "speed": 1.0,
+   "pitch": 0.9
+  },
+  {
+   "text": "Lá fora, um turista tira selfie com o letreiro.",
+   "key": {
+    "selfie": "yellow"
+   },
+   "pause": 0.3
+  }
+ ]
+}

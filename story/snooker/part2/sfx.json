@@ -1,0 +1,117 @@
+{
+ "mixkit": false,
+ "roomtone": false,
+ "bed": [
+  {
+   "at": 0,
+   "level": 0.4
+  },
+  {
+   "at": "pancadas@3",
+   "level": 0.8
+  },
+  {
+   "at": "garçons@6",
+   "level": 0.6
+  },
+  {
+   "at": "portinhola@17",
+   "level": 1.0
+  }
+ ],
+ "music": {
+  "level": -16
+ },
+ "sfx": [
+  {
+   "at": "curiosos@0",
+   "type": "cityhum",
+   "vol": 0.5
+  },
+  {
+   "at": "persiana@2",
+   "type": "whoosh",
+   "vol": 0.6
+  },
+  {
+   "at": "pancadas@3",
+   "type": "knock",
+   "vol": 1.0
+  },
+  {
+   "at": "Jorge@4",
+   "type": "sting",
+   "vol": 0.3
+  },
+  {
+   "at": "desligado@5",
+   "type": "hit",
+   "vol": 0.6
+  },
+  {
+   "at": "comanda@7",
+   "type": "click",
+   "vol": 0.3
+  },
+  {
+   "at": "sapato@8",
+   "type": "tick",
+   "vol": 0.4
+  },
+  {
+   "at": "gravar@9",
+   "type": "click",
+   "vol": 0.5
+  },
+  {
+   "at": "freezer@10",
+   "type": "hum",
+   "vol": 0.3
+  },
+  {
+   "at": "amigos@11",
+   "type": "creak",
+   "vol": 0.5
+  },
+  {
+   "at": "lampião@12",
+   "type": "click",
+   "vol": 0.3
+  },
+  {
+   "at": "trinco@12",
+   "type": "click",
+   "vol": 0.5
+  },
+  {
+   "at": "torresmo@13",
+   "type": "glass",
+   "vol": 0.3
+  },
+  {
+   "at": "escuro@14",
+   "type": "sting",
+   "vol": 0.3
+  },
+  {
+   "at": "tranca@15",
+   "type": "click",
+   "vol": 0.7
+  },
+  {
+   "at": "brinda@16",
+   "type": "glass",
+   "vol": 0.7
+  },
+  {
+   "at": "portinhola@17",
+   "type": "creak",
+   "vol": 0.9
+  },
+  {
+   "at": "rangido@18",
+   "type": "hum",
+   "vol": 0.6
+  }
+ ]
+}

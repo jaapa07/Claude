@@ -1,0 +1,69 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>O Chupa-Cu do Snooker Bar</title>
+<script type="importmap">{"imports": {"three": "../../engine/vendor/three.module.js"}}</script>
+<style>
+@font-face { font-family: 'Oswald'; font-weight: 700; src: url('../../engine/vendor/fonts/oswald-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 700; src: url('../../engine/vendor/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+html, body { margin: 0; background: #000; } canvas { display: block; }
+</style>
+<script src="timing.js"></script>
+</head><body>
+<canvas id="film" width="1080" height="1920"></canvas>
+<script type="module">
+import { run } from '../../bar_part.js';
+import { setup, P } from '../stick.js';
+import { BASE, callPhone } from '../common.js';
+run(Object.assign({}, BASE, {
+  setup,
+  hud: (t, { L0 }) => t < L0(3) ? 'CALÇADA' : t < L0(4) ? 'LAVANDERIA' : 'SNOOKER BAR',
+  clock: ({ L0 }) => [[0, '00:20'], [L0(4), '20:00'], [L0(7), '23:40'], [L0(8), '23:47']],
+  pressure: ({ w, L0 }) => [[0, 50], [L0(4), 20], [L0(7), 30], [L0(8), 60], [w(9, 'Escuridão'), 95], [L0(10), 100], [L0(11), 70], [L0(13), 30], [L0(14), 50], [L0(16), 20], [w(17, 'cai'), 0]],
+  shots: ctx => {
+    const { X, at, w, L0, L1, stage, clamp, lerp, ease, THREE } = ctx; const W = X.W, PT = W.PT;
+    // bricks over the old hatch
+    const bricks = (() => { const cv = document.createElement('canvas'); cv.width = 256; cv.height = 256; const g = cv.getContext('2d'); g.fillStyle = '#c9bfae'; g.fillRect(0, 0, 256, 256); for (let r = 0; r < 8; r++) for (let x = -(r % 2) * 32; x < 256; x += 64) { g.fillStyle = r % 3 ? '#b0503a' : '#a04a34'; g.fillRect(x + 3, r * 32 + 3, 58, 26); } const tx = new THREE.CanvasTexture(cv); tx.colorSpace = THREE.SRGBColorSpace; const m = new THREE.Mesh(new THREE.PlaneGeometry(0.74, 0.8), new THREE.MeshStandardMaterial({ map: tx, roughness: 0.9 })); m.rotation.y = -Math.PI / 2; m.position.set(3.93, 0.43, -3.3); W.bar.add(m); m.visible = false; return m; })();
+    const out = (t, o = {}) => { X.street(t, { police: true }); const k = clamp(o.k ?? 1); X.put(X.s.jorge, lerp(-1.2, 2.2, k), lerp(0.2, 2.6, k), ROBE); X.put(X.s.pol, lerp(-0.6, 2.8, k), lerp(0.3, 2.7, k), P.stand); X.put(X.s.padeiro, -3.0, 1.6, o.pad || P.stand); X.put(X.s.mae, -3.8, 1.2, o.mae || P.stand); X.put(X.s.cabel, -2.2, 2.2, P.stand); [-4.6, 0.4, 1.4].forEach((x, i) => X.put(X.crowd[i], x, 2.4 + 0.3 * i, P.stand)); };
+    const ROBE = { facing: 1, armL: [0.3, -0.3], armR: [-0.3, 0.3], legR: [-0.05, 0.4] };
+    at(0, (t, u) => { out(t, { k: u / 3.5 }); stage.aim([-1.0, 1.8, 7.2], [2.0, 1.0, 2.0], 50); });
+    at(L0(1), (t, u) => { out(t, { k: 0.75 }); X.faceFrom(X.s.padeiro, [0.5, 0, 0.85], 1.0); });
+    at(L0(2), (t, u) => { out(t, { k: 0.8, mae: P.crossed }); X.faceFrom(X.s.mae, [0.5, 0, 0.85], 1.0); });
+    at(L0(3), (t, u) => { X.bar(t, { hatch: 1.5 }); const k = ease(clamp(u / 1.6)); X.put(X.maeIn, 6.0, -3.8, { facing: 0, armL: [1.2, -1.0], armR: [-1.2, 1.0] }); W.pudim.forEach((f, i) => f.position.set(lerp(6.2 + i * 0.22, 5.92 + i * 0.16, k), lerp(0.89, 1.12, k), lerp(-4.4, -3.7, k))); stage.aim([4.6, 1.5, -2.2], [6.0, 1.0, -3.8], 50); });
+    at(w(3, 'viatura'), (t, u) => { X.street(t, { police: true }); W.police.position.x = 3.5 + 3 * u * u; X.put(X.s.mae, -1.5, 1.4, { facing: 0, armL: [1.2, -1.0], armR: [-1.2, 1.0] }); stage.aim([-2.0, 1.4, 6.5], [2.5, 0.8, 3.0], 50); });
+    // months later: the news
+    const eight = (t, pose = {}) => { const sp = { you: [-2.2, 1.0], zuba: [-1.5, 0.3], serjo: [-0.9, 1.4], alex: [-1.0, 2.4], didi: [-2.0, 2.2], rocha: [-0.4, 0.6], reny: [-0.3, 1.9], edu: [-1.6, 3.1] }; for (const k of X.EIGHT) X.put(X[k], ...sp[k], pose[k] || { facing: 0, headTilt: -0.25 }); };
+    at(L0(4), (t, u) => { X.bar(t, { tv: 'news' }); bricks.visible = false; eight(t); const k = ease(clamp(u / 3)); stage.aim([0.8, 1.6, lerp(4.0, 3.4, k)], [-2.4, 1.6, 1.4], 50); });
+    at(L0(5), (t, u) => { X.bar(t, { tv: 'news' }); const k = ease(clamp(u / 3)); stage.aim([-3.0 + 0.2 * k, 2.3, 1.6], [-3.9, 2.36, 1.6], 50); });
+    at(L0(6), (t, u) => { X.bar(t, { tv: u < 0.6 ? 'news' : 'off' }); eight(t, { you: { facing: 0, armR: [-2.6, 0.4], armL: [0.2, -0.2] } }); X.put(X.edu, -2.45, 1.45, P.sit, 0.25); stage.aim([0.4, 1.5, 3.4], [-2.2, 1.1, 1.4], 48); });
+    // another Friday
+    const full = (t, o = {}) => { X.bar(t, Object.assign({ clock: [23, 40] }, o)); bricks.visible = true; X.put(X.edu, PT[0] + 0.35, PT[1] + 1.75, o.edu || P.cue); const sp = { you: [-1.0, 2.2], zuba: [-2.3, -0.9], serjo: [1.8, -0.8], alex: [3.6, 0.6], didi: [-0.4, 2.6], rocha: [2.0, 2.2], reny: [-0.6, -1.2] }; for (const k in sp) X.put(X[k], ...sp[k], (o.pose && o.pose[k]) || P.stand); X.patrons.forEach((p, i) => X.put(p, [-2.4, 1.6, 2.6][i], [0.6, -2.0, 1.2][i], P.talk(t + i))); };
+    at(L0(7), (t, u) => { full(t); stage.aim([2.6, 0.7, -1.6], [3.93, 0.4, -3.3], 44); });
+    at(w(7, 'Bar'), (t, u) => { full(t); X.wide(u); });
+    at(L0(8), (t, u) => { full(t, { clock: [23, 46] }); const [bx, by, bz] = W.ball8Home; stage.aim([bx - 0.5, 1.05, bz + 0.7], [bx, by, bz], 44); });
+    at(w(8, 'Onze'), (t, u) => { full(t, { clock: [23, 47] }); stage.aim([1.15, 2.3, -3.65], [1.2, 2.35, -4.43], 40); });
+    at(L0(9), (t, u) => { full(t, { clock: [23, 47] }); const sh = 0.004 * Math.sin(t * 90); stage.aim([-2.0 + sh, 1.4, -1.6], [-3.4, 1.0, -3.7], 46); });
+    at(w(9, 'Escuridão'), () => X.black());
+    at(L0(11), (t, u) => { full(t, { power: false }); const h = X.didi.headWorld(); X.put(X.didi, -0.4, 2.6, P.lamp); X.lanternAt(h.x + 0.25, h.y + 0.15, h.z, 0.6); X.face(X.didi, 1.1, 0.2); });
+    at(L0(12), (t, u) => { full(t, { power: u > 0.4 }); X.put(X.alex, 3.6, 0.6, { facing: 1, mood: 'scared', armR: [-1.6, 0.2], armL: [0.6, -0.3] }); X.faceFrom(X.alex, [-0.7, 0, 0.7], 1.0); });
+    at(L0(13), (t, u) => { full(t, { pose: { zuba: P.laugh, serjo: P.laugh, alex: P.laugh, didi: P.laugh, rocha: P.laugh, reny: P.laugh } }); ['zuba', 'serjo', 'alex', 'didi', 'rocha', 'reny'].forEach((k, i) => X[k].pose(P.laugh(t + i))); X.edu.pose(P.laugh(t)); X.you.mesh.visible = false; X.wide(u); });
+    at(w(13, 'Mas'), (t, u) => { full(t, { edu: { facing: 0, armL: [0.2, -0.2], armR: [-0.2, 0.2] } }); X.you.mesh.visible = false; const k = ease(clamp(u / 2)); stage.aim([1.8, 1.4, 3.2], [0.4, 1.0, 0.6], lerp(52, 44, k)); });
+    const under = (t, pose) => { full(t, { edu: P.stand }); X.put(X.you, PT[0], PT[1] - 0.3, pose, -1.0); W.cue.visible = true; W.cue.position.set(PT[0] + 0.12, 0.35, PT[1] - 0.2); W.cue.rotation.set(0.2, 0, 0.9); };
+    at(L0(14), (t, u) => { under(t, P.crouch); const k = ease(clamp(u / 3)); stage.aim([PT[0] + lerp(1.6, 0.9, k), 0.32, PT[1] + lerp(0.9, 0.4, k)], [PT[0], 0.32, PT[1] - 0.3], 50); });
+    at(L0(15), (t, u) => { under(t, P.crouch); stage.aim([PT[0] + 0.9, 0.32, PT[1] + 0.4], [PT[0], 0.32, PT[1] - 0.3], 50); });
+    at(L0(16), (t, u) => { under(t, Object.assign({}, P.crouch, { mood: '', armL: [0.4, -2.3], armR: [-1.4, 1.4] })); const h = X.you.headWorld(); stage.aim([h.x + 0.6, h.y + 0.02, h.z + 0.5], [h.x, h.y - 0.02, h.z], 42); });
+    at(L0(17), (t, u) => { full(t, { ball8: ease(clamp(u / 0.9)) }); const [px, pz] = W.pockets[5]; stage.aim([px - 0.28, 1.15, pz - 0.28], [px - 0.03, 0.8, pz - 0.03], 32); });
+  },
+  overlay: (ctx, t) => { const { w, L0, L1, bang, c } = ctx;
+    const pop = (s, t0, o, dur = 1.3) => { if (t >= t0 && t < t0 + dur) bang(s, (t - t0) * 1.4, o); };
+    pop('MESES DEPOIS...', L0(4), { y: 520, col: '#ffcc4d', size: 100, rot: 0 }, 1.8);
+    pop('OUTRA SEXTA...', L0(7), { y: 520, col: '#ffcc4d', size: 100, rot: 0 }, 1.6);
+    pop('RRRRRÁÁÁ!', w(9, 'cadeiras'), { y: 760, col: '#ffffff', size: 130, shake: 1 }, 1.4);
+    pop('EU QUERO A MINHA MÃE!', L0(10), { y: 820, col: '#ff5a4f', size: 90, shake: 1 }, 1.8);
+    pop('KKKKKKKK', L0(13), { y: 520, col: '#4fe08a', size: 140, rot: -0.06 }, 1.6);
+    if (t >= L0(15) && t < L1(15) + 0.2) callPhone(c, t, 'MÃE');
+    pop('TOC.', w(17, 'cai'), { y: 560, col: '#ffffff', size: 150, rot: 0 });
+  },
+  end: { q: ['VOCÊ VOLTAVA', 'NESSE BAR?'], a: 'TODA SEXTA', b: 'NEM AMARRADO', next: 'FIM' },
+  cover: { at: ({ L0 }) => L0(14) + 1.5, pill: 'O CHUPA-CU DO SNOOKER BAR · PARTE 5 · FINAL', title: ['O ÚLTIMO', 'APAGÃO'], color: '#ff5a4f', gauge: 100 },
+}));
+</script>
+</body></html>

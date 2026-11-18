@@ -1,0 +1,112 @@
+{
+ "mixkit": false,
+ "roomtone": false,
+ "bed": [
+  {
+   "at": 0,
+   "level": 0.6
+  },
+  {
+   "at": "lavanderia@4",
+   "level": 0.4
+  },
+  {
+   "at": "cu@13",
+   "level": 0.7
+  },
+  {
+   "at": "batidas@16",
+   "level": 0.9
+  }
+ ],
+ "music": {
+  "level": -16
+ },
+ "sfx": [
+  {
+   "at": "Jorge@0",
+   "type": "hit",
+   "vol": 0.6
+  },
+  {
+   "at": "descolado@1",
+   "type": "creak",
+   "vol": 0.3
+  },
+  {
+   "at": "arrastava@2",
+   "type": "sting",
+   "vol": 0.2
+  },
+  {
+   "at": "tarde@3",
+   "type": "hit",
+   "vol": 0.3
+  },
+  {
+   "at": "lavanderia@4",
+   "type": "creak",
+   "vol": 0.7
+  },
+  {
+   "at": "chave@5",
+   "type": "glass",
+   "vol": 0.5
+  },
+  {
+   "at": "reclamações@6",
+   "type": "click",
+   "vol": 0.3
+  },
+  {
+   "at": "Evidências@7",
+   "type": "click",
+   "vol": 0.3
+  },
+  {
+   "at": "inferno@10",
+   "type": "hit",
+   "vol": 0.4
+  },
+  {
+   "at": "resposta@11",
+   "type": "sting",
+   "vol": 0.4
+  },
+  {
+   "at": "câmera@12",
+   "type": "click",
+   "vol": 0.5
+  },
+  {
+   "at": "cu@13",
+   "type": "hit",
+   "vol": 0.6
+  },
+  {
+   "at": "dono@14",
+   "type": "sting",
+   "vol": 0.4
+  },
+  {
+   "at": "guaraná@15",
+   "type": "hit",
+   "vol": 0.4
+  },
+  {
+   "at": "guaraná@15+0.6",
+   "type": "file:../../meia/vo_extra/laugh_dudu.wav",
+   "vol": 0.6
+  },
+  {
+   "at": "batidas@16",
+   "type": "knock",
+   "vol": 1.0
+  },
+  {
+   "at": "vezes@17",
+   "type": "siren",
+   "vol": 0.3
+  }
+ ]
+}

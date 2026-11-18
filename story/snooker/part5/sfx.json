@@ -1,0 +1,151 @@
+{
+ "mixkit": false,
+ "roomtone": false,
+ "bed": [
+  {
+   "at": 0,
+   "level": 0.6
+  },
+  {
+   "at": "jornal@4",
+   "level": 0.4
+  },
+  {
+   "at": "Escuridão@9",
+   "level": 1.0
+  },
+  {
+   "at": "gargalhada@13",
+   "level": 0.6
+  },
+  {
+   "at": "cai@17",
+   "level": 0.5
+  }
+ ],
+ "music": {
+  "level": -16
+ },
+ "sfx": [
+  {
+   "at": "escoltado@0",
+   "type": "siren",
+   "vol": 0.6
+  },
+  {
+   "at": "pudim@2",
+   "type": "glass",
+   "vol": 0.3
+  },
+  {
+   "at": "viatura@3",
+   "type": "engine",
+   "vol": 0.6
+  },
+  {
+   "at": "viatura@3+0.6",
+   "type": "siren",
+   "vol": 0.5
+  },
+  {
+   "at": "jornal@4",
+   "type": "click",
+   "vol": 0.3
+  },
+  {
+   "at": "prisão@5",
+   "type": "hit",
+   "vol": 0.5
+  },
+  {
+   "at": "sempre@6",
+   "type": "click",
+   "vol": 0.4
+  },
+  {
+   "at": "tijolo@7",
+   "type": "thud",
+   "vol": 0.5
+  },
+  {
+   "at": "oito@8",
+   "type": "ball",
+   "vol": 0.4
+  },
+  {
+   "at": "sete@8",
+   "type": "tick",
+   "vol": 0.5
+  },
+  {
+   "at": "freezer@9",
+   "type": "hum",
+   "vol": 0.4
+  },
+  {
+   "at": "Escuridão@9",
+   "type": "hit",
+   "vol": 0.8
+  },
+  {
+   "at": "cadeiras@9",
+   "type": "creak",
+   "vol": 0.9
+  },
+  {
+   "at": "mãe@10",
+   "type": "sting",
+   "vol": 0.5
+  },
+  {
+   "at": "lampião@11",
+   "type": "click",
+   "vol": 0.6
+  },
+  {
+   "at": "benjamim@12",
+   "type": "click",
+   "vol": 0.5
+  },
+  {
+   "at": "gargalhada@13",
+   "type": "file:../../meia/vo_extra/laugh_dudu.wav",
+   "vol": 0.7
+  },
+  {
+   "at": "gargalhada@13+0.2",
+   "type": "file:../../meia/vo_extra/laugh_leo.wav",
+   "vol": 0.6
+  },
+  {
+   "at": "gargalhada@13+0.4",
+   "type": "file:../../sem_agua/vo_extra/laugh_beto.wav",
+   "vol": 0.6
+  },
+  {
+   "at": "Ninguém@13",
+   "type": "sting",
+   "vol": 0.4
+  },
+  {
+   "at": "você@14",
+   "type": "hit",
+   "vol": 0.5
+  },
+  {
+   "at": "toca@15",
+   "type": "ring",
+   "vol": 0.7
+  },
+  {
+   "at": "mais@16",
+   "type": "sting",
+   "vol": 0.3
+  },
+  {
+   "at": "cai@17",
+   "type": "ball",
+   "vol": 1.0
+  }
+ ]
+}

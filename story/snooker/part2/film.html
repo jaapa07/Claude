@@ -1,0 +1,65 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>O Chupa-Cu do Snooker Bar</title>
+<script type="importmap">{"imports": {"three": "../../engine/vendor/three.module.js"}}</script>
+<style>
+@font-face { font-family: 'Oswald'; font-weight: 700; src: url('../../engine/vendor/fonts/oswald-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 700; src: url('../../engine/vendor/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+html, body { margin: 0; background: #000; } canvas { display: block; }
+</style>
+<script src="timing.js"></script>
+</head><body>
+<canvas id="film" width="1080" height="1920"></canvas>
+<script type="module">
+import { run } from '../../bar_part.js';
+import { setup, P } from '../stick.js';
+import { BASE, mapCard } from '../common.js';
+run(Object.assign({}, BASE, {
+  setup,
+  hud: (t, { L0 }) => t < L0(2) ? 'CALÇADA' : 'SNOOKER BAR',
+  clock: ({ L0 }) => [[0, '17:30'], [L0(6), '18:10'], [L0(11), '21:00'], [L0(15), '22:30']],
+  pressure: ({ w, L0 }) => [[0, 40], [w(3, 'pancadas'), 60], [L0(5), 70], [L0(6), 50], [L0(10), 60], [L0(14), 55], [L0(15), 65], [w(17, 'portinhola'), 90], [L0(18), 95]],
+  shots: ctx => {
+    const { X, at, w, L0, L1, stage, clamp, lerp, ease, THREE } = ctx; const W = X.W;
+    const radio = new THREE.Group(); radio.add(new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.2, 0.12), new THREE.MeshStandardMaterial({ color: '#5a3a24', roughness: 0.6 }))); const dial = new THREE.Mesh(new THREE.CircleGeometry(0.06, 20), new THREE.MeshStandardMaterial({ color: '#1a1a1a' })); dial.position.set(0.08, 0, 0.061); radio.add(dial); const led = new THREE.Mesh(new THREE.CircleGeometry(0.01, 10), new THREE.MeshBasicMaterial({ color: '#3a0a0a' })); led.position.set(-0.1, 0.05, 0.061); radio.add(led); radio.position.set(-2.95, 1.21, -1.3); radio.rotation.y = Math.PI / 2; W.bar.add(radio);
+    const crowdOut = t => { const sp = [[-3.4, 0.8], [-1.6, 1.3], [0.2, 1.0], [1.7, 1.4], [3.0, 0.9]]; X.crowd.forEach((p, i) => X.put(p, ...sp[i], i % 2 ? P.phone : P.talk(t + i))); };
+    at(0, (t, u) => { X.street(t, { day: true }); crowdOut(t); X.put(X.s.rapaz, -2.4, 0.4, P.phone); const k = ease(clamp(u / 3)); stage.aim([lerp(4.5, 3.5, k), 1.6, lerp(7.5, 6.0, k)], [-0.5, 1.2, -0.5], 50); });
+    at(w(0, 'Bar'), (t, u) => { X.bar(t); stage.aim([3.3, 2.2, 3.8], [-0.6, 0.9, -0.6], 50); });
+    at(L0(1), (t, u) => { X.street(t, { day: true }); crowdOut(t); X.put(X.s.rapaz, -2.4, -0.7, { facing: -1, lean: 0.2, armR: [-1.6, 0.1], armL: [0.2, -0.2] }); X.face(X.s.rapaz, 1.2, 0.5); });
+    at(L0(2), (t, u) => { X.bar(t, { blind: ease(clamp(u / 0.8)) }); X.put(X.you, -2.4, 3.9, { facing: 0, armR: [-2.6, 0.2], armL: [0.2, -0.2] }); stage.aim([-1.4, 1.5, 1.6], [-2.4, 1.3, 4.2], 50); });
+    at(L0(3), (t, u) => { X.bar(t, { blind: 1 }); X.put(X.you, 3.2, 0.5, { facing: 1, headTilt: 0.1, armL: [0.2, -0.2], armR: [-0.2, 0.2] }); const sh = 0.01 * Math.sin(t * 50) * (Math.sin(t * 6) > 0.6 ? 1 : 0); stage.aim([1.0 + sh, 1.5, 2.6], [3.6, 1.2, 0.3], 46); });
+    at(L0(4), (t, u) => { X.bar(t, { blind: 1 }); X.put(X.you, 3.2, 0.5, { facing: 1, lean: -0.1, armR: [-2.5, 0.4], armL: [0.6, -0.3] }); X.faceFrom(X.you, [-0.75, 0, 0.66], 1.0); });
+    at(L0(5), (t, u) => { X.bar(t, { blind: 1 }); const k = ease(clamp(u / 1.5)); stage.aim([-2.45, lerp(1.45, 1.35, k), -1.3 + lerp(0.45, 0.3, k)], [-2.95, 1.21, -1.3], 30); });
+    const waiters = (t, o = {}) => { X.put(X.you, -1.0, 1.5, o.you || P.talk(t)); X.put(X.zuba, -2.2, 0.2, o.zuba || P.stand); X.put(X.serjo, -1.4, -0.3, o.serjo || P.stand); X.put(X.alex, -0.4, -0.2, o.alex || P.stand); };
+    at(L0(6), (t, u) => { X.bar(t, { blind: 1 }); waiters(t); const k = ease(clamp(u / 2.5)); stage.aim([lerp(1.6, 1.2, k), 1.6, lerp(3.2, 2.8, k)], [-1.3, 1.0, 0.3], 50); });
+    at(L0(7), (t, u) => { X.bar(t, { blind: 1 }); waiters(t, { zuba: P.write }); X.face(X.zuba, 1.0, 0.2, 0.0); });
+    at(L0(8), (t, u) => { X.bar(t, { blind: 1 }); waiters(t, { serjo: { facing: 0, headTilt: 0.15, armR: [-2.7, -1.4], armL: [0.2, -0.2] } }); X.face(X.serjo, 0.95); });
+    at(L0(9), (t, u) => { X.bar(t, { blind: 1 }); waiters(t, { alex: { facing: 1, armR: [-1.9, 0.3], armL: [1.9, -0.3] } }); const h = X.alex.headWorld(); stage.aim([h.x - 0.9, h.y + 0.05, h.z + 0.9], [h.x + 0.6, h.y - 0.2, h.z - 1.5], 50); });
+    at(L0(10), (t, u) => { X.bar(t, { blind: 1 }); waiters(t, { you: P.talk }); X.face(X.you, 0.9); });
+    // the four friends
+    const friends = (t, o = {}) => { X.put(X.didi, ...X.SPOT.didi, o.didi || P.stand); X.put(X.rocha, ...X.SPOT.rocha, o.rocha || P.stand); X.put(X.reny, ...X.SPOT.reny, o.reny || P.stand); if (o.edu !== false) X.put(X.edu, ...(o.eduAt || X.SPOT.edu), o.edu || P.stand); };
+    at(L0(11), (t, u) => { X.bar(t, { blind: 1 }); W.frontDoor.userData.open(1.2); const k = clamp(u / 2); X.put(X.didi, -2.4, lerp(4.0, 3.0, k), P.stand); X.put(X.rocha, -2.0, lerp(4.6, 3.6, k), P.stand); X.put(X.reny, -2.8, lerp(4.8, 3.8, k), P.stand); stage.aim([0.0, 1.5, 1.0], [-2.4, 1.1, 4.0], 50); });
+    at(L0(12), (t, u) => { X.bar(t, { blind: 1 }); friends(t, { didi: P.lamp, edu: false }); const h = X.didi.headWorld(); X.lanternAt(h.x + 0.28, h.y + 0.1, h.z, 0.6); X.face(X.didi, 1.1, 0.3); });
+    at(w(12, 'Rocha'), (t, u) => { X.bar(t, { blind: 1 }); friends(t, { edu: false, rocha: { facing: 1, armR: [-1.4, 0.2], armL: [0.2, -0.2] } }); X.put(X.rocha, -2.0, 4.1, { facing: -1, armR: [-1.4, 0.2], armL: [0.2, -0.2] }); stage.aim([-0.6, 1.5, 2.6], [-2.3, 1.1, 4.4], 44); });
+    at(w(12, 'Reny'), (t, u) => { X.bar(t, { blind: 1 }); friends(t, { edu: false, reny: P.write }); X.face(X.reny, 1.0, 0.2, 0.0); });
+    at(L0(13), (t, u) => { X.bar(t, { blind: 1 }); W.frontDoor.userData.open(1.2); friends(t, { eduAt: [-2.4, lerp(4.3, 3.2, clamp(u / 1.5))], edu: P.laugh(t) }); stage.aim([-0.2, 1.6, 1.4], [-2.2, 1.1, 3.6], 48); });
+    at(L0(14), (t, u) => { X.bar(t, { blind: 1 }); friends(t, { eduAt: [-2.4, 3.2], edu: P.laugh(t) }); X.face(X.edu, 0.95, 0.1); });
+    at(L0(15), (t, u) => { X.bar(t, { blind: 1 }); X.put(X.you, -2.4, 3.95, { facing: 0, armR: [-1.4, -0.6], armL: [0.2, -0.2] }); stage.aim([-1.7, 1.3, 2.9], [-2.3, 1.0, 4.3], 44); });
+    at(w(15, 'Oito'), (t, u) => { X.bar(t, { blind: 1 }); X.group(t); X.wide(u); });
+    at(L0(16), (t, u) => { X.bar(t, { blind: 1 }); X.group(t); X.wide(u, 46); });
+    at(w(16, 'Todo'), (t, u) => { X.bar(t, { blind: 1 }); X.group(t, X.EIGHT, Object.fromEntries(X.EIGHT.map(k => [k, P.cheers]))); const a = 0.2 * u; stage.aim([Math.sin(a) * 1.5 + 0.2, 1.7, 3.6], [-0.4, 1.2, 0.2], 50); });
+    at(L0(17), (t, u) => { X.bar(t, { blind: 1, hatch: 0.12 * ease(clamp(u / 2)) }); W.lights.forEach(([l]) => l.intensity *= 0.5); stage.aim([2.6, 0.55, -1.6], [3.97, 0.35, -2.95], 40); });
+    at(L0(18), (t, u) => { X.bar(t, { blind: 1, hatch: 0.12 }); const sh = 0.004 * Math.sin(t * 90); stage.aim([-2.0 + sh, 1.4, -1.6], [-3.4, 1.0, -3.7], 46); });
+  },
+  overlay: (ctx, t) => { const { w, L0, L1, bang, clamp, c } = ctx;
+    const pop = (s, t0, o, dur = 1.3) => { if (t >= t0 && t < t0 + dur) bang(s, (t - t0) * 1.4, o); };
+    pop('TUM! TUM! TUM!', w(3, 'pancadas'), { y: 560, col: '#ffcc4d', size: 120, shake: 1 }, 1.6);
+    pop('DESLIGADO', w(5, 'desligado'), { y: 560, col: '#ff5a4f', size: 130, rot: -0.1 });
+    if (t >= w(12, 'mapa') && t < L1(12) + 0.3) mapCard(c, 0, clamp((t - w(12, 'mapa')) * 2));
+    if (t >= L0(16) && t < w(16, 'Todo')) mapCard(c, Math.min(8, Math.floor((t - L0(16)) / ((w(16, 'Todo') - L0(16)) / 9))), 1);
+    pop('NHÉÉÉC...', w(17, 'portinhola'), { y: 560, col: '#ffffff', size: 110, rot: 0.04 }, 1.6);
+  },
+  end: { q: ['QUEM ABRIU', 'A PORTINHOLA?'], a: 'ALGUÉM DE DENTRO', b: 'ALGUÉM DE FORA', next: '3' },
+  cover: { at: ({ L0 }) => L0(17) + 1.2, pill: 'O CHUPA-CU DO SNOOKER BAR · PARTE 2', title: ['A PORTINHOLA', 'ABRIU SOZINHA'], color: '#ff5a4f', gauge: 90 },
+}));
+</script>
+</body></html>

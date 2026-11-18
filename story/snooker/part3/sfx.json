@@ -1,0 +1,117 @@
+{
+ "mixkit": false,
+ "roomtone": false,
+ "bed": [
+  {
+   "at": 0,
+   "level": 0.8
+  },
+  {
+   "at": "Apagão@8",
+   "level": 1.0
+  },
+  {
+   "at": "lampião@13",
+   "level": 0.9
+  },
+  {
+   "at": "voz@17",
+   "level": 0.6
+  }
+ ],
+ "music": {
+  "level": -16
+ },
+ "sfx": [
+  {
+   "at": 0.1,
+   "type": "hum",
+   "vol": 0.3
+  },
+  {
+   "at": "crocância@1",
+   "type": "click",
+   "vol": 0.7
+  },
+  {
+   "at": "mastiga@1",
+   "type": "click",
+   "vol": 0.6
+  },
+  {
+   "at": "quieto@3",
+   "type": "hiss",
+   "vol": 0.4
+  },
+  {
+   "at": "sola@4",
+   "type": "creak",
+   "vol": 0.6
+  },
+  {
+   "at": "Ofendido@7",
+   "type": "sting",
+   "vol": 0.3
+  },
+  {
+   "at": "ronco@8",
+   "type": "hum",
+   "vol": 0.5
+  },
+  {
+   "at": "Apagão@8",
+   "type": "hit",
+   "vol": 0.9
+  },
+  {
+   "at": "raspa@9",
+   "type": "creak",
+   "vol": 0.9
+  },
+  {
+   "at": "ajudar@10",
+   "type": "hit",
+   "vol": 0.7
+  },
+  {
+   "at": "chave@11",
+   "type": "click",
+   "vol": 0.8
+  },
+  {
+   "at": "vulto@12",
+   "type": "whoosh",
+   "vol": 0.9
+  },
+  {
+   "at": "persegue@13",
+   "type": "heartbeat",
+   "vol": 0.6
+  },
+  {
+   "at": "lampião@13",
+   "type": "click",
+   "vol": 0.5
+  },
+  {
+   "at": "prego@14",
+   "type": "sting",
+   "vol": 0.5
+  },
+  {
+   "at": "puxa@15",
+   "type": "whoosh",
+   "vol": 0.7
+  },
+  {
+   "at": "animal@16",
+   "type": "hit",
+   "vol": 0.6
+  },
+  {
+   "at": "voz@17",
+   "type": "sting",
+   "vol": 0.6
+  }
+ ]
+}

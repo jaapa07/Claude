@@ -22,7 +22,7 @@ export async function run(cfg) {
   SH.sort((a, b) => a[0] - b[0]);
   const clock = cfg.clock(ctx), pressure = pressureOf(cfg.pressure(ctx));
   const tEnd = T.voice_end + 0.3;
-  const CHUNKS = chunkCaptions(T); window.CHUNKS = CHUNKS; window.TOTAL = Math.max(70, Math.ceil(T.voice_end + 4.7));
+  const CHUNKS = chunkCaptions(T); window.CHUNKS = CHUNKS; window.TOTAL = Math.max(cfg.minTotal || 70, Math.ceil(T.voice_end + (cfg.tail || 4.7)));
   const COVER = location.hash === '#cover';
   function frame(t) {
     let i = 0; while (i + 1 < SH.length && t >= SH[i + 1][0]) i++;
@@ -33,14 +33,14 @@ export async function run(cfg) {
   window.seek = t => {
     if (COVER) return cover();
     frame(t);
-    const ck = clock.filter(x => t >= x[0]).pop(); hud(c, typeof cfg.hud === 'function' ? cfg.hud(t, ctx) : cfg.hud, ck[1]); gauge(c, pressure(t), t);
+    const ck = clock.filter(x => t >= x[0]).pop(); hud(c, typeof cfg.hud === 'function' ? cfg.hud(t, ctx) : cfg.hud, ck[1]); gauge(c, pressure(t), t, cfg.gaugeLabel);
     if (cfg.overlay) cfg.overlay(ctx, t);
     if (t >= tEnd) endCard(c, tEnd, t, cfg.end.q, cfg.end.a, cfg.end.b, cfg.end.next === 'FIM' ? '' : cfg.end.next);
     else drawCaptions(c, CHUNKS, t);
   };
   function cover() {
     const k = cfg.cover; frame(k.at(ctx)); if (k.after) k.after(ctx);
-    gauge(c, k.gauge ?? 99, 0); pill(c, k.pill, 300); title(c, [[k.title[0], 450, '#ffffff'], [k.title[1], 590, k.color || '#ff5a4f']]);
+    gauge(c, k.gauge ?? 99, 0, cfg.gaugeLabel); pill(c, k.pill, 300); title(c, [[k.title[0], 450, '#ffffff'], [k.title[1], 590, k.color || '#ff5a4f']]);
   }
   await loadFonts();
   window.seek(0);

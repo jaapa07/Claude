@@ -1,0 +1,146 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.12,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lines": [
+  {
+   "text": "Imagine que são onze e quarenta e quatro. Ninguém bebe.",
+   "key": {
+    "bebe": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Só o Eduardo mastiga torresmo. Cada crocância vira uma cabeça.",
+   "key": {
+    "crocância": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Querem que eu chupe o torresmo pra não fazer barulho também?",
+   "key": {
+    "torresmo": "red"
+   },
+   "pause": 0.4,
+   "voice": "pm_alex",
+   "speed": 1.05,
+   "pitch": 0.9
+  },
+  {
+   "text": "Você só aponta o dedo pra ele ficar quieto.",
+   "key": {
+    "quieto": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Onze e quarenta e seis. Um arrastar de sola atrás do balcão.",
+   "key": {
+    "sola": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Sapato de borracha. Pé esquerdo arrastando.",
+   "key": {
+    "arrastando": "yellow"
+   },
+   "pause": 0.4,
+   "voice": "pm_santa",
+   "speed": 1.0,
+   "pitch": 1.08
+  },
+  {
+   "text": "Todo mundo olha pro chão. Zuba de tênis. Alex de bota.",
+   "key": {
+    "bota": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "O Didi ergue os chinelos. Ofendido.",
+   "key": {
+    "Ofendido": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "O freezer para no meio do ronco. Apagão.",
+   "key": {
+    "Apagão": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Uma cadeira raspa o chão.",
+   "key": {
+    "raspa": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Puta que pariu! Logo eu, que vim ajudar?!",
+   "key": {
+    "ajudar": "red"
+   },
+   "pause": 0.4,
+   "voice": "pm_alex",
+   "speed": 1.05,
+   "pitch": 0.9
+  },
+  {
+   "text": "Você gira a chave da porta de serviço. A única saída.",
+   "key": {
+    "saída": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "O letreiro reacende. Um vulto cruza o vermelho e corre pros fundos.",
+   "key": {
+    "vulto": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Você persegue entre os engradados. O lampião acende.",
+   "key": {
+    "lampião": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Metade do sujeito já passou pela portinhola. O avental ficou preso num prego.",
+   "key": {
+    "prego": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Você puxa ele de volta pelo avental.",
+   "key": {
+    "puxa": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Vai arrancar o prego da minha parede, animal!",
+   "key": {
+    "animal": "red"
+   },
+   "pause": 0.4,
+   "voice": "pm_santa",
+   "speed": 1.0,
+   "pitch": 0.84
+  },
+  {
+   "text": "Você conhece essa voz.",
+   "key": {
+    "voz": "yellow"
+   },
+   "pause": 0.3
+  }
+ ]
+}

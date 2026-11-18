@@ -215,6 +215,7 @@ export class Stickman {
         c.fillRect(head[0] - BONES.head + 4, head[1] - BONES.head - 2, (BONES.head - 4) * 2, 26); }
       else if (o.mark.type === 'guy') {                                   // a casual guy: shirt, hair (short or curly), optional cap, glasses, sneakers, ankle socks
         const m = o.mark; stroke([hip, neck], 34, m.color);
+        if (m.keys) { const kx = hip[0] + 30, ky = hip[1] + 10; c.strokeStyle = '#e2bc4a'; c.lineWidth = 6; c.beginPath(); c.arc(kx, ky, 13, 0, 7); c.stroke(); c.fillStyle = '#d8d8d8'; for (const a of [0.3, 0.9, 1.5]) { c.save(); c.translate(kx + Math.cos(a) * 12, ky + Math.sin(a) * 12); c.rotate(a - 1.57); c.fillRect(-3, 0, 6, 26); c.restore(); } }
         if (m.belly) { const bx = (hip[0] + neck[0]) / 2 + (f || 0) * 22 * m.belly, by = (hip[1] + neck[1]) / 2 + 34, r = 30 + 48 * m.belly;   // a pizza belly: the shirt stretched round, skin peeking below
           c.fillStyle = o.outline; c.beginPath(); c.arc(bx, by, r + 11, 0, 7); c.fill(); c.fillStyle = m.color; c.beginPath(); c.arc(bx, by, r, 0, 7); c.fill();
           c.save(); c.beginPath(); c.arc(bx, by, r, 0, 7); c.clip(); c.fillStyle = o.body; c.fillRect(bx - r, by + r * 0.5, 2 * r, r); c.fillStyle = o.outline; c.fillRect(bx - r, by + r * 0.5 - 5, 2 * r, 8); c.beginPath(); c.arc(bx + (f || 0) * 8, by + r * 0.74, 5, 0, 7); c.fill(); c.restore();

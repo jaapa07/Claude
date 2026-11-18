@@ -1,0 +1,151 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.12,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lines": [
+  {
+   "text": "Imagine que é sexta à tarde. Calçada cheia de curiosos. Bar vazio.",
+   "key": {
+    "curiosos": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Que horas começa?",
+   "key": {
+    "começa": "yellow"
+   },
+   "pause": 0.4,
+   "voice": "pm_alex",
+   "speed": 1.1,
+   "pitch": 1.12
+  },
+  {
+   "text": "Você fecha a persiana na cara dele.",
+   "key": {
+    "persiana": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "No silêncio, três pancadas na parede do lado.",
+   "key": {
+    "pancadas": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Já abaixei o som, Jorge!",
+   "key": {
+    "Jorge": "yellow"
+   },
+   "pause": 0.4,
+   "voice": "pm_santa",
+   "speed": 1.05
+  },
+  {
+   "text": "O rádio tá desligado.",
+   "key": {
+    "desligado": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Você reúne os três garçons.",
+   "key": {
+    "garçons": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "O Zuba anota os horários dos apagões numa comanda.",
+   "key": {
+    "comanda": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "O Serjo Pecede reconhece qualquer freguês pelo sapato.",
+   "key": {
+    "sapato": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "O Alex põe o celular pra gravar o corredor.",
+   "key": {
+    "gravar": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Hoje a gente fecha pro público. Antes que minha mãe benza o freezer.",
+   "key": {
+    "freezer": "red"
+   },
+   "pause": 0.4,
+   "voice": "pm_santa",
+   "speed": 1.05
+  },
+  {
+   "text": "Chegam os quatro amigos.",
+   "key": {
+    "amigos": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "O Didi traz um lampião. O Rocha confere o trinco. O Reny desenha um mapa.",
+   "key": {
+    "mapa": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "O Eduardo entra por último, pede um torresmo e ri.",
+   "key": {
+    "torresmo": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Três semanas perdendo pra um cara que só trabalha no escuro?",
+   "key": {
+    "escuro": "red"
+   },
+   "pause": 0.4,
+   "voice": "pm_alex",
+   "speed": 1.05,
+   "pitch": 0.9
+  },
+  {
+   "text": "Você tranca a porta da frente. Oito pessoas no salão.",
+   "key": {
+    "Oito": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "O Reny marca oito círculos no mapa. Todo mundo brinda.",
+   "key": {
+    "brinda": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "E lá no fundo, a velha portinhola dos engradados abre dois dedos.",
+   "key": {
+    "portinhola": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "O ronco do freezer cobre o rangido.",
+   "key": {
+    "rangido": "red"
+   },
+   "pause": 0.3
+  }
+ ]
+}

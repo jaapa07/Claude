@@ -94,10 +94,10 @@ export function extras(Wd) {
 
 // ---------- 2D overlays ----------
 const { W: CW } = S;
-export function gauge(c, v, t) {
+export function gauge(c, v, t, label = 'PRESSÃO') {
   const x = 640, y = 120, wd = 400, ht = 108, hot = v >= 90, sh = hot ? Math.sin(t * 50) * 3 : 0;
   c.save(); c.translate(sh, 0); c.fillStyle = 'rgba(8,9,12,0.62)'; c.beginPath(); c.roundRect(x, y, wd, ht, 18); c.fill();
-  c.font = '700 30px "JetBrains Mono"'; c.textAlign = 'left'; c.textBaseline = 'middle'; c.fillStyle = '#f3eee4'; c.fillText('PRESSÃO', x + 24, y + 30);
+  c.font = '700 30px "JetBrains Mono"'; c.textAlign = 'left'; c.textBaseline = 'middle'; c.fillStyle = '#f3eee4'; c.fillText(label, x + 24, y + 30);
   c.textAlign = 'right'; c.fillStyle = hot ? '#ff5a4f' : '#ffcc4d'; c.font = '700 40px "JetBrains Mono"'; c.fillText(v + '%', x + wd - 22, y + 32);
   c.fillStyle = 'rgba(255,255,255,0.15)'; c.beginPath(); c.roundRect(x + 24, y + 62, wd - 48, 26, 13); c.fill();
   const gr = c.createLinearGradient(x + 24, 0, x + wd - 24, 0); gr.addColorStop(0, '#4fe08a'); gr.addColorStop(0.6, '#ffcc4d'); gr.addColorStop(1, '#ff4b3e');

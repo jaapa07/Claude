@@ -170,6 +170,17 @@ def synth(kind):
         for k in range(9):
             i = int(r.random() * (n - L(0.15))); m = L(0.06 + 0.06 * r.random()); x[i:i + m] += tone(180 + 260 * r.random(), m, 420 + 300 * r.random()) * np.sin(np.linspace(0, np.pi, m))
         return band(x, 80, 1500)
+    if kind == "hum":                                             # a freezer compressor: a low buzz with a rattle
+        n = L(6); t = np.arange(n) / SR; x = np.sin(2 * np.pi * 50 * t) + 0.5 * np.sin(2 * np.pi * 100 * t) + 0.25 * np.sign(np.sin(2 * np.pi * 150 * t))
+        return band(x + 0.3 * noise(n), 40, 600) * (0.8 + 0.2 * np.sin(2 * np.pi * 3 * t)) * np.minimum(1, t / 0.3) * np.minimum(1, (n - np.arange(n)) / L(0.05))
+    if kind == "siren":                                           # a police siren, two tones
+        n = L(3.0); t = np.arange(n) / SR; f = np.where((t * 2) % 1 < 0.5, 700, 950)
+        return 0.6 * np.sin(2 * np.pi * np.cumsum(f) / SR) * np.minimum(1, t / 0.2) * np.minimum(1, (n - np.arange(n)) / L(0.4))
+    if kind == "ring":                                            # a phone ringing
+        n = L(2.0); t = np.arange(n) / SR; gate = ((t * 2.5) % 1 < 0.45).astype(float)
+        return 0.5 * (np.sin(2 * np.pi * 880 * t) + np.sin(2 * np.pi * 1320 * t)) * gate * (1 + 0.5 * np.sign(np.sin(2 * np.pi * 20 * t)))
+    if kind == "ball":                                            # pool balls: a hard click and the rattle into the pocket
+        n = L(0.6); x = 0.9 * band(noise(n), 1500, 7000) * env(n, 0.0003, 0.008); i = L(0.18); x[i:] += 0.5 * band(noise(n - i), 200, 2000) * env(n - i, 0.002, 0.12); return x
     sys.exit(f"unknown sfx type {kind}")
 
 with wave.open(os.path.join(part, "narration.wav")) as w:

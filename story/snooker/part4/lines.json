@@ -1,0 +1,159 @@
+{
+ "voice": "pm_alex",
+ "speed": 1.12,
+ "lang": "pt-br",
+ "align": "estimate",
+ "lines": [
+  {
+   "text": "Imagine que o Didi ergue o lampião. É o Jorge, o vizinho.",
+   "key": {
+    "Jorge": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "De roupão, avental por cima, chinelo descolado.",
+   "key": {
+    "descolado": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Eu falei que arrastava.",
+   "key": {
+    "arrastava": "yellow"
+   },
+   "pause": 0.4,
+   "voice": "pm_santa",
+   "speed": 1.0,
+   "pitch": 1.08
+  },
+  {
+   "text": "Parabéns, Serjo. Um pouco tarde pro meu gosto.",
+   "key": {
+    "tarde": "red"
+   },
+   "pause": 0.4,
+   "voice": "pm_alex",
+   "speed": 1.05,
+   "pitch": 0.9
+  },
+  {
+   "text": "Você abre a portinhola inteira. Do outro lado, a lavanderia do Jorge.",
+   "key": {
+    "lavanderia": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Três sextas circuladas no calendário. Uma cópia da chave da luz.",
+   "key": {
+    "chave": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "E um caderninho de reclamações.",
+   "key": {
+    "reclamações": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Duas e quarenta da manhã. Evidências pela quarta vez. Nenhuma completa.",
+   "key": {
+    "Evidências": "yellow"
+   },
+   "pause": 0.4,
+   "voice": "pm_alex",
+   "speed": 1.05
+  },
+  {
+   "text": "O Jorge passou meses batendo na parede. Aí resolveu espantar a freguesia.",
+   "key": {
+    "freguesia": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Você tinha meu número. Por que não me ligou?",
+   "key": {
+    "ligou": "yellow"
+   },
+   "pause": 0.4,
+   "voice": "pm_santa",
+   "speed": 1.05
+  },
+  {
+   "text": "E dava pra você ouvir o telefone naquele inferno?",
+   "key": {
+    "inferno": "red"
+   },
+   "pause": 0.4,
+   "voice": "pm_santa",
+   "speed": 1.0,
+   "pitch": 0.84
+  },
+  {
+   "text": "Pela primeira vez, você fica sem resposta.",
+   "key": {
+    "resposta": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "O Jorge encara a câmera do Alex.",
+   "key": {
+    "câmera": "yellow"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "O plano se chama: fecha bar e fecha o cu.",
+   "key": {
+    "cu": "red"
+   },
+   "pause": 0.4,
+   "voice": "pm_santa",
+   "speed": 1.0,
+   "pitch": 0.84
+  },
+  {
+   "text": "Cu de bêbado não tem dono.",
+   "key": {
+    "dono": "red"
+   },
+   "pause": 0.4,
+   "voice": "pm_santa",
+   "speed": 1.0,
+   "pitch": 0.84
+  },
+  {
+   "text": "O meu tem, Jorge. E eu tava tomando guaraná.",
+   "key": {
+    "guaraná": "yellow"
+   },
+   "pause": 0.4,
+   "voice": "pm_alex",
+   "speed": 1.05,
+   "pitch": 0.9
+  },
+  {
+   "text": "Duas batidas na porta.",
+   "key": {
+    "batidas": "red"
+   },
+   "pause": 0.3
+  },
+  {
+   "text": "Seu Murilo? Pediram pra confirmar o nome da ocorrência três vezes.",
+   "key": {
+    "vezes": "yellow"
+   },
+   "pause": 0.4,
+   "voice": "pm_santa",
+   "speed": 1.0,
+   "pitch": 0.8
+  }
+ ]
+}

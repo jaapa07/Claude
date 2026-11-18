@@ -1,0 +1,118 @@
+{
+ "mixkit": false,
+ "roomtone": false,
+ "bed": [
+  {
+   "at": 0,
+   "level": 0.5
+  },
+  {
+   "at": "berra@7",
+   "level": 0.9
+  },
+  {
+   "at": "áudio@15",
+   "level": 0.5
+  }
+ ],
+ "music": {
+  "level": -16
+ },
+ "sfx": [
+  {
+   "at": 0.2,
+   "type": "hum",
+   "vol": 0.3
+  },
+  {
+   "at": "caçapa@1",
+   "type": "ball",
+   "vol": 1.0
+  },
+  {
+   "at": "novo@2",
+   "type": "hit",
+   "vol": 0.5
+  },
+  {
+   "at": "volta@3",
+   "type": "click",
+   "vol": 0.4
+  },
+  {
+   "at": "ele@5",
+   "type": "sting",
+   "vol": 0.4
+  },
+  {
+   "at": "oito@6",
+   "type": "ball",
+   "vol": 0.5
+  },
+  {
+   "at": "freezer@7",
+   "type": "hum",
+   "vol": 0.3
+  },
+  {
+   "at": "berra@7",
+   "type": "hit",
+   "vol": 0.8
+  },
+  {
+   "at": "boca@8",
+   "type": "tick",
+   "vol": 0.3
+  },
+  {
+   "at": "porra@9",
+   "type": "sting",
+   "vol": 0.3
+  },
+  {
+   "at": "lanterna@11",
+   "type": "click",
+   "vol": 0.5
+  },
+  {
+   "at": "apaga@12",
+   "type": "hit",
+   "vol": 0.6
+  },
+  {
+   "at": "rosto@13",
+   "type": "sting",
+   "vol": 0.5
+  },
+  {
+   "at": "grito@14",
+   "type": "hit",
+   "vol": 0.9
+  },
+  {
+   "at": "áudio@15",
+   "type": "click",
+   "vol": 0.4
+  },
+  {
+   "at": "padeiro@16",
+   "type": "click",
+   "vol": 0.4
+  },
+  {
+   "at": "você@16",
+   "type": "click",
+   "vol": 0.4
+  },
+  {
+   "at": "chupa-cu@17",
+   "type": "hit",
+   "vol": 0.7
+  },
+  {
+   "at": "selfie@18",
+   "type": "click",
+   "vol": 0.6
+  }
+ ]
+}
