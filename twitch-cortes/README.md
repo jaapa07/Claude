@@ -20,6 +20,9 @@ python cortes.py vod https://www.twitch.tv/videos/<ID> --top 15 --vertical
 # Live em andamento: grava em segmentos e corta sozinho quando o chat explode (Ctrl+C para parar)
 python cortes.py live alanzoka --vertical
 
+# YouTube (live em andamento ou vídeo gravado com replay do chat)
+python cortes.py live "https://www.youtube.com/watch?v=<ID>" --vertical --saida cortes_yt
+
 # Vídeo já baixado (+ chat JSON do chat-downloader ou do TwitchDownloader)
 python cortes.py local live.mp4 --chat chat.json
 ```

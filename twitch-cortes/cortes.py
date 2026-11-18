@@ -220,12 +220,26 @@ def modo_vod(a):
     score = combinar(chat_z, [], a.chat_lag, 1.0, 0.0)
     cortes = escolher_picos(score, a.top, a.gap, a.pre, a.post, a.min_score, dur)
     out = Path(a.saida); out.mkdir(parents=True, exist_ok=True)
-    # Só baixa os trechos escolhidos, direto do HLS – não precisa baixar a live inteira.
-    src = info["url"]
-    hdr = "".join(f"{k}: {v}\r\n" for k, v in (info.get("http_headers") or {}).items())
+    # Só baixa os trechos escolhidos – não precisa baixar a live inteira.
     for n, c in enumerate(cortes, 1):
         print(f"  cortando {n}/{len(cortes)} @ {hhmmss(c.pico)}")
-        cortar(src, c, out / f"corte_{n:02d}_{hhmmss(c.pico)}.mp4", a.vertical, hdr or None)
+        dst = out / f"corte_{n:02d}_{hhmmss(c.pico)}.mp4"
+        if "twitch.tv" in a.url:  # HLS único com áudio+vídeo: ffmpeg lê o trecho direto
+            hdr = "".join(f"{k}: {v}\r\n" for k, v in (info.get("http_headers") or {}).items())
+            cortar(info["url"], c, dst, a.vertical, hdr or None)
+        else:  # YouTube & cia: vídeo e áudio separados → yt-dlp baixa só o trecho
+            tmp = out / f"_trecho_{n:02d}"
+            from yt_dlp.utils import download_range_func
+            opts = {"quiet": True, "format": "bv*[height<=1080]+ba/b[height<=1080]/b",
+                    "download_ranges": download_range_func(None, [(c.inicio, c.fim)]),
+                    "force_keyframes_at_cuts": True, "merge_output_format": "mp4",
+                    "outtmpl": str(tmp) + ".%(ext)s"}
+            with yt_dlp.YoutubeDL(opts) as y:
+                y.download([a.url])
+            f = next(out.glob(tmp.name + ".*"))
+            cortar(str(f), Corte(0, c.fim - c.inicio, c.pico, c.score), dst, a.vertical)
+            f.unlink()
+        c.arquivo = str(dst)
     salvar_relatorio(out, cortes)
 
 
@@ -260,13 +274,31 @@ def chat_ao_vivo(canal: str, fila: deque, parar: threading.Event):
             time.sleep(3)
 
 
+def chat_generico(url: str, fila: deque, parar: threading.Event):
+    """Chat ao vivo de outras plataformas (YouTube etc.) via chat-downloader (HTTPS)."""
+    from chat_downloader import ChatDownloader
+    while not parar.is_set():
+        try:
+            for m in ChatDownloader().get_chat(url):
+                fila.append((time.time(), m.get("message") or ""))
+                if parar.is_set():
+                    return
+        except Exception as e:
+            print(f"  chat reconectando ({e.__class__.__name__})", file=sys.stderr)
+            time.sleep(5)
+
+
 def modo_live(a):
     """Grava em segmentos; a cada segundo mede o chat e, se explodir, junta os segmentos e corta."""
     import csv
     import yt_dlp
-    url = f"https://www.twitch.tv/{a.canal}"
+    url = a.canal if a.canal.startswith("http") else f"https://www.twitch.tv/{a.canal}"
     with yt_dlp.YoutubeDL({"quiet": True, "format": a.qualidade}) as y:
         info = y.extract_info(url, download=False)
+    if not info.get("is_live"):
+        print("não é uma live em andamento → modo VOD (usa o replay do chat)")
+        a.url = url
+        return modo_vod(a)
     out = Path(a.saida); seg_dir = out / "_segmentos"
     seg_dir.mkdir(parents=True, exist_ok=True)
     seg_csv = seg_dir / "lista.csv"
@@ -278,13 +310,17 @@ def modo_live(a):
                             str(seg_dir / "s%06d.ts")])
     parar = threading.Event()
     fila: deque = deque()
-    threading.Thread(target=chat_ao_vivo, args=(a.canal, fila, parar), daemon=True).start()
+    if "twitch.tv" in url:
+        canal = url.rstrip("/").rsplit("/", 1)[-1]
+        threading.Thread(target=chat_ao_vivo, args=(canal, fila, parar), daemon=True).start()
+    else:
+        threading.Thread(target=chat_generico, args=(url, fila, parar), daemon=True).start()
     while not (seg_dir / "s000000.ts").exists():  # relógio do vídeo começa no 1º segmento
         if rec.poll() is not None:
             sys.exit("ffmpeg parou – canal offline?")
         time.sleep(0.2)
     t0 = time.time()
-    print(f"gravando {a.canal} ({info.get('format_id')})… Ctrl+C para parar")
+    print(f"gravando {info.get('uploader') or a.canal} ({info.get('format_id')})… Ctrl+C para parar")
 
     def segmentos():
         if not seg_csv.exists():
@@ -399,7 +435,7 @@ def main():
         sp.add_argument("--qualidade", default="best[height<=1080]/best")
 
     sp = sub.add_parser("vod"); sp.add_argument("url"); comuns(sp)
-    sp = sub.add_parser("live"); sp.add_argument("canal"); comuns(sp)
+    sp = sub.add_parser("live"); sp.add_argument("canal", help="canal da Twitch ou URL (YouTube etc.)"); comuns(sp)
     sp.add_argument("--manter-segmentos", action="store_true")
     sp.add_argument("--legendas", metavar="MODELOS", help="legenda cada corte (pasta dos modelos)")
     sp.add_argument("--duracao", type=int, default=0, help="para após N segundos (0 = até Ctrl+C)")
