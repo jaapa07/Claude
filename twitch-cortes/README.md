@@ -9,7 +9,7 @@ Detecta os melhores momentos de uma live/VOD e gera os cortes em MP4 (16:9 ou 9:
 
 ## Instalação
 ```bash
-pip install -r requirements.txt   # yt-dlp + chat-downloader; precisa de ffmpeg no PATH
+pip install -r requirements.txt   # yt-dlp, chat-downloader (VOD), websocket-client (chat ao vivo); precisa de ffmpeg
 ```
 
 ## Uso
@@ -25,7 +25,9 @@ python cortes.py local live.mp4 --chat chat.json
 ```
 Saída: `cortes/corte_XX_HH-MM-SS.mp4` + `cortes/cortes.json` (início, fim, score).
 
-Ajustes úteis: `--min-score` (sensibilidade, padrão 6), `--gap` (s entre cortes), `--chat-lag`, `--pre/--post`.
+Ajustes úteis: `--min-score` (sensibilidade, padrão 6; numa live movimentada 4 já pega bons picos), `--gap` (s entre cortes), `--chat-lag`, `--pre/--post`, `--duracao` (live: para após N s).
+
+Funciona atrás de proxy HTTP (`HTTPS_PROXY`): o chat ao vivo usa WebSocket na porta 443 e o ffmpeg recebe `-http_proxy`.
 
 Projetos open source em que esta abordagem se inspira: `yt-dlp`, `xenova/chat-downloader`, `lay295/TwitchDownloader` (chat JSON compatível).
 
