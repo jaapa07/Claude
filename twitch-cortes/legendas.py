@@ -14,6 +14,7 @@ Uso:
 from __future__ import annotations
 
 import argparse
+import sys
 import re
 import subprocess
 from pathlib import Path
@@ -29,10 +30,28 @@ def carregar_audio(video: Path) -> np.ndarray:
     return np.frombuffer(raw, dtype=np.float32).copy()
 
 
+SLID = None      # identificador de idioma (Whisper small/base/tiny – turbo/large não suportam)
+LINGUA = "pt"
+
+
 def modelos(d: Path, lingua: str):
+    """Carrega Whisper p/ transcrever (prefere turbo) + identificador de idioma + VAD."""
     import sherpa_onnx
-    w = next(d.glob("sherpa-onnx-whisper-*"))
-    nome = w.name.replace("sherpa-onnx-whisper-", "")
+    global SLID, LINGUA
+    LINGUA = lingua
+    ws = {p.name.replace("sherpa-onnx-whisper-", ""): p for p in d.glob("sherpa-onnx-whisper-*")}
+    nome = next((n for n in ("turbo", "large-v3", "medium", "small", "base", "tiny") if n in ws), next(iter(ws)))
+    w = ws[nome]
+    lid = next((n for n in ("small", "base", "tiny", "medium") if n in ws), None)
+    if lid:
+        wl = ws[lid]
+        SLID = sherpa_onnx.SpokenLanguageIdentification(sherpa_onnx.SpokenLanguageIdentificationConfig(
+            whisper=sherpa_onnx.SpokenLanguageIdentificationWhisperConfig(
+                encoder=str(wl / f"{lid}-encoder.int8.onnx"), decoder=str(wl / f"{lid}-decoder.int8.onnx")),
+            num_threads=4))
+    else:
+        print("aviso: sem whisper small/base/tiny em --modelos → sem filtro de idioma (legenda pode incluir o jogo)",
+              file=sys.stderr)
     rec = sherpa_onnx.OfflineRecognizer.from_whisper(
         encoder=str(w / f"{nome}-encoder.int8.onnx"), decoder=str(w / f"{nome}-decoder.int8.onnx"),
         tokens=str(w / f"{nome}-tokens.txt"), language=lingua, task="transcribe", num_threads=4)
@@ -50,9 +69,8 @@ def db(x: np.ndarray) -> float:
     return 20 * np.log10(float(np.sqrt(np.mean(x ** 2))) + 1e-9) if len(x) else -120.0
 
 
-def transcrever(audio: np.ndarray, rec, vad_cfg, faixa_db: float = 12.0) -> list[tuple[float, float, str]]:
-    """Transcreve só a voz DOMINANTE: trechos muito mais baixos que a fala mais alta
-    do corte (conversa de fundo, jogo baixinho atrás do streamer) são descartados."""
+def transcrever(audio: np.ndarray, rec, vad_cfg, faixa_db: float = 20.0) -> list[tuple[float, float, str]]:
+    """Transcreve SÓ o streamer: fala em outro idioma (jogo) é descartada, não traduzida."""
     import sherpa_onnx
     vad = sherpa_onnx.VoiceActivityDetector(vad_cfg, buffer_size_in_seconds=120)
     win = vad_cfg.silero_vad.window_size
@@ -77,12 +95,23 @@ def transcrever(audio: np.ndarray, rec, vad_cfg, faixa_db: float = 12.0) -> list
         hop = SR // 10
         v = [db(x[i:i + hop]) for i in range(0, max(1, len(x) - hop + 1), hop)] or [db(x)]
         return float(np.percentile(v, 90))
-    niveis = [nivel(x) for _, x in pieces]
+    # SÓ O STREAMER: descarta trechos em outro idioma (diálogo do jogo, em inglês) e ruído.
+    def idioma(x):
+        if SLID is None:
+            return LINGUA
+        st = SLID.create_stream()
+        st.accept_waveform(SR, x)
+        return SLID.compute(st)
+    cand = [(st, x) for st, x in pieces if len(x) >= 0.6 * SR]
+    cand = [(st, x) for st, x in cand if idioma(x) == LINGUA]
+    if not cand:
+        return []
+    niveis = [nivel(x) for _, x in cand]
     ref = max(niveis)
     out = []
-    for (start, samples), nv in zip(pieces, niveis):
+    for (start, samples), nv in zip(cand, niveis):
         if nv < ref - faixa_db:
-            continue  # voz de fundo
+            continue  # quase silêncio / murmúrio de fundo
         st = rec.create_stream()
         st.accept_waveform(SR, samples)
         rec.decode_stream(st)
@@ -93,8 +122,8 @@ def transcrever(audio: np.ndarray, rec, vad_cfg, faixa_db: float = 12.0) -> list
     return out
 
 
-def dividir(x: np.ndarray, start: int, alvo=(3.0, 7.0)):
-    """Quebra trechos longos no ponto mais silencioso entre 3 e 7 s (sincronia melhor)."""
+def dividir(x: np.ndarray, start: int, alvo=(2.0, 5.0)):
+    """Quebra trechos longos no ponto mais silencioso entre 2 e 5 s (sincronia e filtro de idioma melhores)."""
     lo, hi = int(alvo[0] * SR), int(alvo[1] * SR)
     if len(x) <= hi:
         return [(start, x)]

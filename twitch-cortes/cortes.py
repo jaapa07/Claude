@@ -288,6 +288,17 @@ def chat_generico(url: str, fila: deque, parar: threading.Event):
             time.sleep(5)
 
 
+def segmento_ok(segs) -> bool:
+    """Decodifica 2 s do penúltimo segmento; 0 quadros = stream corrompido (ex.: streamer reconectou)."""
+    if len(segs) < 2 or not segs[-2][0].exists():
+        return True
+    r = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-count_frames",
+                        "-read_intervals", "%+2", "-show_entries", "stream=nb_read_frames",
+                        "-of", "csv=p=0", str(segs[-2][0])], capture_output=True, text=True)
+    n = r.stdout.strip().split("\n")[0]
+    return n.isdigit() and int(n) > 0
+
+
 def modo_live(a):
     """Grava em segmentos; a cada segundo mede o chat e, se explodir, junta os segmentos e corta."""
     import csv
@@ -405,6 +416,9 @@ def modo_live(a):
                         f.unlink(missing_ok=True)
             if rec.poll() is not None:
                 print("gravação parou (live caiu ou terminou)", flush=True)
+                break
+            if int(elapsed) % 60 == 30 and not segmento_ok(segmentos()):
+                print("gravação corrompida (vídeo ilegível) – reiniciando", flush=True)
                 break
     except KeyboardInterrupt:
         pass
