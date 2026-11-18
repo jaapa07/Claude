@@ -29,6 +29,12 @@ Ajustes úteis: `--min-score` (sensibilidade, padrão 6; numa live movimentada 4
 
 Funciona atrás de proxy HTTP (`HTTPS_PROXY`): o chat ao vivo usa WebSocket na porta 443 e o ffmpeg recebe `-http_proxy`.
 
+## Vigiar o canal sem parar
+```bash
+./vigiar.sh alanzoka cortes_alanzoka models   # grava, corta (9:16) e legenda cada pico do chat
+```
+Reinicia se a live cair, espera o canal voltar se estiver offline e apaga segmentos com mais de 5 min (disco fica estável). Ajuste com `MIN_SCORE=5 GAP=120 ./vigiar.sh ...`.
+
 ## Legendas estilo TikTok/Reels
 `legendas.py` transcreve offline (Whisper small multilíngue via `sherpa-onnx` + VAD Silero) e queima legendas grandes, 3 palavras por vez, alternando branco/amarelo, logo abaixo da faixa do vídeo no 9:16. Fala em inglês do jogo já sai traduzida para PT.
 ```bash

@@ -146,6 +146,17 @@ def dims(video: Path) -> tuple[int, int]:
     return int(r[0]), int(r[1])
 
 
+def legendar(v: Path, rec, vad_cfg) -> tuple[Path, list]:
+    segs = transcrever(carregar_audio(v), rec, vad_cfg)
+    ass = v.with_suffix(".ass")
+    escrever_ass(segs, ass, *dims(v))
+    dst = v.with_name(v.stem + "_legendado.mp4")
+    subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-i", str(v), "-vf", f"ass={ass}",
+                    "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-c:a", "copy",
+                    "-movflags", "+faststart", str(dst)], check=True)
+    return dst, segs
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("videos", nargs="+")
@@ -154,13 +165,7 @@ def main():
     a = p.parse_args()
     rec, vad_cfg = modelos(Path(a.modelos), a.lingua)
     for v in map(Path, a.videos):
-        segs = transcrever(carregar_audio(v), rec, vad_cfg)
-        ass = v.with_suffix(".ass")
-        escrever_ass(segs, ass, *dims(v))
-        dst = v.with_name(v.stem + "_legendado.mp4")
-        subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-i", str(v), "-vf", f"ass={ass}",
-                        "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-c:a", "copy",
-                        "-movflags", "+faststart", str(dst)], check=True)
+        dst, segs = legendar(v, rec, vad_cfg)
         print(f"{dst.name}: {len(segs)} falas")
         for t0, _, txt in segs:
             print(f"   {t0:5.1f}s  {txt}")

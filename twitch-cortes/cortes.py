@@ -294,12 +294,26 @@ def modo_live(a):
 
     cortes: list[Corte] = []
     lock = threading.Lock()
+    leg = None
+    if a.legendas:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        import legendas
+        leg = (legendas, *legendas.modelos(Path(a.legendas), "pt"))
+    pendentes: list[float] = []  # inícios de cortes ainda não processados (protege segmentos)
 
     def fazer_corte(pico: float, score: float):
         c = Corte(max(0.0, pico - a.pre), pico + a.post, pico, round(score, 2))
+        pendentes.append(c.inicio)
+        try:
+            _fazer_corte(c)
+        finally:
+            pendentes.remove(c.inicio)
+
+    def _fazer_corte(c: Corte):
+        pico = c.pico
         while time.time() - t0 < c.fim + 12 and rec.poll() is None:  # espera o "depois" gravar
             time.sleep(1)
-        parts = [s for s in segmentos() if s[2] > c.inicio and s[1] < c.fim]
+        parts = [s for s in segmentos() if s[2] > c.inicio and s[1] < c.fim and s[0].exists()]
         if not parts:
             return
         lst = seg_dir / f"lista_{int(pico)}.txt"
@@ -313,8 +327,14 @@ def modo_live(a):
             dst = out / f"corte_{len(cortes) + 1:02d}_{hhmmss(pico)}.mp4"
             cortar(str(joined), local, dst, a.vertical)
             joined.unlink(missing_ok=True)
+            if leg:
+                mod, rec_, vcfg = leg
+                dst2, falas = mod.legendar(dst, rec_, vcfg)
+                dst = dst2
             c.arquivo = str(dst); cortes.append(c)
-        print(f"✂  corte salvo: {dst.name} (score {c.score})", flush=True)
+            (out / "cortes.json").write_text(json.dumps([asdict(x) for x in cortes], indent=2,
+                                                        ensure_ascii=False), encoding="utf-8")
+        print(f"✂  corte salvo: {dst} (score {c.score})", flush=True)
 
     win: deque[float] = deque(maxlen=a.janela)  # pontos por segundo na janela atual
     hist: deque[float] = deque(maxlen=600)      # base: últimos 10 min
@@ -342,6 +362,14 @@ def modo_live(a):
                     print(f"🔥 pico de chat (z={z:.1f}) em {hhmmss(pico)}", flush=True)
                     th = threading.Thread(target=fazer_corte, args=(pico, z)); th.start(); threads.append(th)
             hist.append(cur)
+            if int(elapsed) % 60 == 0:  # apaga segmentos com mais de 5 min (exceto de cortes pendentes)
+                limite = min([elapsed - 300] + [p - 30 for p in pendentes])
+                for f, _, fim in segmentos():
+                    if fim < limite:
+                        f.unlink(missing_ok=True)
+            if rec.poll() is not None:
+                print("gravação parou (live caiu ou terminou)", flush=True)
+                break
     except KeyboardInterrupt:
         pass
     finally:
@@ -373,6 +401,7 @@ def main():
     sp = sub.add_parser("vod"); sp.add_argument("url"); comuns(sp)
     sp = sub.add_parser("live"); sp.add_argument("canal"); comuns(sp)
     sp.add_argument("--manter-segmentos", action="store_true")
+    sp.add_argument("--legendas", metavar="MODELOS", help="legenda cada corte (pasta dos modelos)")
     sp.add_argument("--duracao", type=int, default=0, help="para após N segundos (0 = até Ctrl+C)")
     sp = sub.add_parser("local"); sp.add_argument("video"); comuns(sp)
     sp.add_argument("--chat", help="JSON do chat (chat-downloader ou TwitchDownloader)")
