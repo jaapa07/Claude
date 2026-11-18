@@ -26,7 +26,7 @@ python cortes.py live "https://www.youtube.com/watch?v=<ID>" --vertical --saida 
 # Vídeo já baixado (+ chat JSON do chat-downloader ou do TwitchDownloader)
 python cortes.py local live.mp4 --chat chat.json
 ```
-Saída: `cortes/corte_XX_HH-MM-SS.mp4` + `cortes/cortes.json` (início, fim, score).
+Cortes de 60 s por padrão (45 s antes do pico + 15 s depois; ajuste com `--pre/--post` ou `PRE=… POST=… ./vigiar.sh`). Saída: `cortes/corte_XX_HH-MM-SS.mp4` + `cortes/cortes.json` (início, fim, score).
 
 Ajustes úteis: `--min-score` (sensibilidade, padrão 6; numa live movimentada 4 já pega bons picos), `--gap` (s entre cortes), `--chat-lag`, `--pre/--post`, `--duracao` (live: para após N s).
 

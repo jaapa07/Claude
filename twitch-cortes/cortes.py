@@ -449,8 +449,8 @@ def main():
     def comuns(sp):
         sp.add_argument("--saida", default="cortes")
         sp.add_argument("--top", type=int, default=10, help="máx. de cortes")
-        sp.add_argument("--pre", type=int, default=25, help="segundos antes do pico")
-        sp.add_argument("--post", type=int, default=10, help="segundos depois do pico")
+        sp.add_argument("--pre", type=int, default=45, help="segundos antes do pico")
+        sp.add_argument("--post", type=int, default=15, help="segundos depois do pico")
         sp.add_argument("--gap", type=int, default=90, help="distância mínima entre cortes (s)")
         sp.add_argument("--janela", type=int, default=10, help="janela de soma do sinal (s)")
         sp.add_argument("--chat-lag", type=int, default=6, help="atraso de reação do chat (s)")
