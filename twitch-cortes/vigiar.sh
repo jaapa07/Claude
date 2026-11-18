@@ -12,7 +12,11 @@ while true; do
     echo "[$(date +%T)] $CANAL ao vivo – sessão $RUN"
     python3 -u "$DIR/cortes.py" live "$CANAL" --vertical --saida "$RUN" \
       --qualidade "best[height<=720]/best" --min-score "${MIN_SCORE:-4}" --gap "${GAP:-90}" \
-      ${MODELOS:+--legendas "$MODELOS"} ${SO_SRT:+--so-srt}
+      ${MODELOS:+--legendas "$MODELOS"} ${SO_SRT:+--so-srt} ${REENCODE:+--reencode}
+    if [ $? -eq 3 ] && [ -z "${REENCODE:-}" ]; then
+      echo "[$(date +%T)] stream corrompe no modo cópia → passando a reencodar"
+      REENCODE=1
+    fi
     sleep 5
   else
     echo "[$(date +%T)] $CANAL offline, checando de novo em 5 min"

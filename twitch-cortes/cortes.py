@@ -315,7 +315,12 @@ def modo_live(a):
     seg_csv = seg_dir / "lista.csv"
     rec = subprocess.Popen(["ffmpeg", "-hide_banner", "-loglevel", "error",
                             *proxy_args(info["url"]), "-i", info["url"],
-                            "-map", "0:v:0?", "-map", "0:a:0?", "-c", "copy",
+                            "-map", "0:v:0?", "-map", "0:a:0?",
+                            # --reencode: alguns streams só mandam SPS/PPS no início e os segmentos
+                            # copiados ficam ilegíveis; reencodar (ultrafast, 30 fps) resolve.
+                            *(["-c:v", "libx264", "-preset", "ultrafast", "-crf", "23", "-r", "30",
+                               "-force_key_frames", "expr:gte(t,n_forced*2)", "-c:a", "aac", "-b:a", "160k"]
+                              if a.reencode else ["-c", "copy"]),
                             "-f", "segment", "-segment_time", "10",
                             "-segment_list", str(seg_csv), "-segment_list_type", "csv",
                             str(seg_dir / "s%06d.ts")])
@@ -387,6 +392,7 @@ def modo_live(a):
     win: deque[float] = deque(maxlen=a.janela)  # pontos por segundo na janela atual
     hist: deque[float] = deque(maxlen=600)      # base: últimos 10 min
     last_clip, threads = -1e9, []
+    corrompida = False
     try:
         nxt = time.time() + 1
         while a.duracao <= 0 or time.time() - t0 < a.duracao:
@@ -420,6 +426,7 @@ def modo_live(a):
                 break
             if int(elapsed) % 60 == 30 and not segmento_ok(segmentos()):
                 print("gravação corrompida (vídeo ilegível) – reiniciando", flush=True)
+                corrompida = True
                 break
     except KeyboardInterrupt:
         pass
@@ -430,6 +437,8 @@ def modo_live(a):
         salvar_relatorio(out, cortes)
         if not a.manter_segmentos:
             shutil.rmtree(seg_dir, ignore_errors=True)
+    if corrompida:
+        sys.exit(3)  # vigiar.sh entende e passa a usar --reencode
 
 
 # --------------------------------------------------------------------------- CLI
@@ -453,6 +462,7 @@ def main():
     sp = sub.add_parser("live"); sp.add_argument("canal", help="canal da Twitch ou URL (YouTube etc.)"); comuns(sp)
     sp.add_argument("--manter-segmentos", action="store_true")
     sp.add_argument("--legendas", metavar="MODELOS", help="legenda cada corte (pasta dos modelos)")
+    sp.add_argument("--reencode", action="store_true", help="reencoda ao gravar (streams que corrompem no copy)")
     sp.add_argument("--so-srt", action="store_true", help="com --legendas: só gera o .srt, vídeo sem legenda")
     sp.add_argument("--duracao", type=int, default=0, help="para após N segundos (0 = até Ctrl+C)")
     sp = sub.add_parser("local"); sp.add_argument("video"); comuns(sp)
