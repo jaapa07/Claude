@@ -12,7 +12,7 @@ while true; do
     echo "[$(date +%T)] $CANAL ao vivo – sessão $RUN"
     python3 -u "$DIR/cortes.py" live "$CANAL" --vertical --saida "$RUN" \
       --qualidade "best[height<=720]/best" --min-score "${MIN_SCORE:-4}" --gap "${GAP:-90}" \
-      ${MODELOS:+--legendas "$MODELOS"}
+      ${MODELOS:+--legendas "$MODELOS"} ${SO_SRT:+--so-srt}
     sleep 5
   else
     echo "[$(date +%T)] $CANAL offline, checando de novo em 5 min"

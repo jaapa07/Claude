@@ -376,8 +376,9 @@ def modo_live(a):
             joined.unlink(missing_ok=True)
             if leg:
                 mod, rec_, vcfg = leg
-                dst2, falas = mod.legendar(dst, rec_, vcfg)
-                dst = dst2
+                srt_ou_mp4, falas = mod.legendar(dst, rec_, vcfg, queimar=not a.so_srt)
+                if not a.so_srt:
+                    dst = srt_ou_mp4
             c.arquivo = str(dst); cortes.append(c)
             (out / "cortes.json").write_text(json.dumps([asdict(x) for x in cortes], indent=2,
                                                         ensure_ascii=False), encoding="utf-8")
@@ -452,6 +453,7 @@ def main():
     sp = sub.add_parser("live"); sp.add_argument("canal", help="canal da Twitch ou URL (YouTube etc.)"); comuns(sp)
     sp.add_argument("--manter-segmentos", action="store_true")
     sp.add_argument("--legendas", metavar="MODELOS", help="legenda cada corte (pasta dos modelos)")
+    sp.add_argument("--so-srt", action="store_true", help="com --legendas: só gera o .srt, vídeo sem legenda")
     sp.add_argument("--duracao", type=int, default=0, help="para após N segundos (0 = até Ctrl+C)")
     sp = sub.add_parser("local"); sp.add_argument("video"); comuns(sp)
     sp.add_argument("--chat", help="JSON do chat (chat-downloader ou TwitchDownloader)")

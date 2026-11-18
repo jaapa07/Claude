@@ -275,12 +275,15 @@ def dims(video: Path) -> tuple[int, int]:
     return int(r[0]), int(r[1])
 
 
-def legendar(v: Path, rec, vad_cfg) -> tuple[Path, list]:
+def legendar(v: Path, rec, vad_cfg, queimar: bool = True) -> tuple[Path, list]:
+    """Gera .srt/.ass do corte; se queimar=True também o *_legendado.mp4 (senão devolve o .srt)."""
     audio = carregar_audio(v)
     segs = transcrever(audio, rec, vad_cfg)
     ass = v.with_suffix(".ass")
     bl = escrever_ass(segs, ass, *dims(v), audio=audio)
     escrever_srt(bl, v.with_suffix(".srt"))
+    if not queimar:
+        return v.with_suffix(".srt"), segs
     dst = v.with_name(v.stem + "_legendado.mp4")
     subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-i", str(v), "-vf", f"ass={ass}",
                     "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-c:a", "copy",
@@ -293,10 +296,11 @@ def main():
     p.add_argument("videos", nargs="+")
     p.add_argument("--modelos", required=True, help="pasta com vad.onnx e sherpa-onnx-whisper-*/")
     p.add_argument("--lingua", default="pt")
+    p.add_argument("--so-srt", action="store_true", help="só gera .srt/.ass, sem queimar no vídeo")
     a = p.parse_args()
     rec, vad_cfg = modelos(Path(a.modelos), a.lingua)
     for v in map(Path, a.videos):
-        dst, segs = legendar(v, rec, vad_cfg)
+        dst, segs = legendar(v, rec, vad_cfg, queimar=not a.so_srt)
         print(f"{dst.name}: {len(segs)} falas")
         for t0, _, txt in segs:
             print(f"   {t0:5.1f}s  {txt}")
