@@ -350,7 +350,7 @@ def modo_live(a):
             win.append(pts)
             cur = sum(win) / len(win)
             elapsed = time.time() - t0
-            if len(hist) >= 60:
+            if len(hist) >= 180:  # 3 min de aquecimento para medir o ritmo normal do chat
                 med = statistics.median(hist)
                 mad = statistics.median(abs(x - med) for x in hist) or 0.5
                 z = (cur - med) / (1.4826 * mad)
