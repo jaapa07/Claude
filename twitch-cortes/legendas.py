@@ -207,6 +207,36 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             lines.append(f"Dialogue: 0,{ts(a)},{ts(b)},Cap,,0,0,0,,"
                          f"{{\\fscx115\\fscy115\\t(0,90,\\fscx100\\fscy100){cor}}}{txt}")
     path.write_text(head + "\n".join(lines) + "\n", encoding="utf-8")
+    return bl
+
+
+def srt_ts(t: float) -> str:
+    ms = int(round(max(0.0, t) * 1000))
+    return f"{ms // 3600000:02d}:{ms % 3600000 // 60000:02d}:{ms % 60000 // 1000:02d},{ms % 1000:03d}"
+
+
+def escrever_srt(bl, path: Path, max_palavras=8, max_linha=32):
+    """SRT legível: junta os blocos em frases de até ~8 palavras (quebra em pontuação ou pausa),
+    no máximo 2 linhas de ~32 caracteres, com os MESMOS tempos da legenda queimada."""
+    grupos, cur = [], []
+    for a, b, t in bl:
+        if cur and (len(" ".join(x[2] for x in cur).split()) + len(t.split()) > max_palavras
+                    or a - cur[-1][1] > 0.4 or re.search(r"[.!?…]$", cur[-1][2])):
+            grupos.append(cur); cur = []
+        cur.append((a, b, t))
+    if cur:
+        grupos.append(cur)
+    out = []
+    for n, g in enumerate(grupos, 1):
+        txt = " ".join(x[2] for x in g)
+        if len(txt) > max_linha:  # quebra em 2 linhas no espaço mais perto do meio
+            meio = len(txt) // 2
+            esp = [i for i, ch in enumerate(txt) if ch == " "]
+            if esp:
+                k = min(esp, key=lambda i: abs(i - meio))
+                txt = txt[:k] + "\n" + txt[k + 1:]
+        out.append(f"{n}\n{srt_ts(g[0][0])} --> {srt_ts(g[-1][1])}\n{txt}\n")
+    path.write_text("\n".join(out), encoding="utf-8")
 
 
 def dims(video: Path) -> tuple[int, int]:
@@ -220,7 +250,8 @@ def legendar(v: Path, rec, vad_cfg) -> tuple[Path, list]:
     audio = carregar_audio(v)
     segs = transcrever(audio, rec, vad_cfg)
     ass = v.with_suffix(".ass")
-    escrever_ass(segs, ass, *dims(v), audio=audio)
+    bl = escrever_ass(segs, ass, *dims(v), audio=audio)
+    escrever_srt(bl, v.with_suffix(".srt"))
     dst = v.with_name(v.stem + "_legendado.mp4")
     subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-i", str(v), "-vf", f"ass={ass}",
                     "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-c:a", "copy",
