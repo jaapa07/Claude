@@ -3,7 +3,7 @@
 # se a live cair, reinicia; se estiver offline, checa de novo a cada 5 min.
 #   ./vigiar.sh alanzoka ./cortes_alanzoka ./models
 set -u
-CANAL=${1:?canal}; SAIDA=${2:-cortes_$CANAL}; MODELOS=${3:-}
+CANAL=${1:?canal}; SAIDA=${2:-cortes_$CANAL}; MODELOS=${3:-}  # use o modelo whisper-turbo p/ legendas melhores
 DIR=$(cd "$(dirname "$0")" && pwd)
 mkdir -p "$SAIDA"
 while true; do

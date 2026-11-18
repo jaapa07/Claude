@@ -39,12 +39,16 @@ Funciona atrás de proxy HTTP (`HTTPS_PROXY`): o chat ao vivo usa WebSocket na p
 Reinicia se a live cair, espera o canal voltar se estiver offline e apaga segmentos com mais de 5 min (disco fica estável). Ajuste com `MIN_SCORE=5 GAP=120 ./vigiar.sh ...`.
 
 ## Legendas estilo TikTok/Reels
-`legendas.py` transcreve offline (Whisper small multilíngue via `sherpa-onnx` + VAD Silero) e queima legendas grandes, 3 palavras por vez, alternando branco/amarelo, logo abaixo da faixa do vídeo no 9:16. Fala em inglês do jogo já sai traduzida para PT.
+`legendas.py` transcreve offline (Whisper turbo ou small multilíngue via `sherpa-onnx` + VAD Silero) e queima legendas grandes, 3 palavras por vez, alternando branco/amarelo, logo abaixo da faixa do vídeo no 9:16. Fala em inglês do jogo já sai traduzida para PT.
+- **Voz dominante**: legenda só o som mais alto (streamer ou jogo); conversa de fundo >12 dB abaixo é ignorada.
+- **Gritos**: blocos 5 dB acima da fala normal do corte saem maiores, em vermelho, com tremida e "!".
+- **Sincronia**: palavras distribuídas só nos quadros com voz (pausas não atrasam a legenda).
+- No 9:16 a legenda fica ancorada logo abaixo da faixa do vídeo (nunca cobre o jogo).
 ```bash
 pip install sherpa-onnx numpy
 mkdir models && cd models
 curl -LO https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/silero_vad.onnx && mv silero_vad.onnx vad.onnx
-curl -L https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-whisper-small.tar.bz2 | tar xj
+curl -L https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-whisper-turbo.tar.bz2 | tar xj   # melhor; "small" é mais leve
 cd .. && python legendas.py --modelos models cortes/*.mp4   # → *_legendado.mp4
 ```
 
