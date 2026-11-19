@@ -20,6 +20,7 @@ Uso:
     python3 postar.py --dry-run          # combina com qualquer modo: nao publica
     python3 postar.py --listar           # lista a fila com contagem de caracteres
     python3 postar.py --verificar        # confere formato das chaves e testa o login no X
+    python3 postar.py --historico 30     # lista os ultimos N posts da conta, direto do X
 """
 
 from __future__ import annotations
@@ -184,6 +185,59 @@ FORMATOS = {
 }
 
 
+def _get(url: str, creds: dict[str, str], params: dict[str, str] | None = None) -> dict:
+    """GET assinado com OAuth 1.0a; os parametros da query entram na assinatura."""
+    params = params or {}
+    oauth = {
+        "oauth_consumer_key": creds["X_API_KEY"],
+        "oauth_nonce": secrets.token_hex(16),
+        "oauth_signature_method": "HMAC-SHA1",
+        "oauth_timestamp": str(int(time.time())),
+        "oauth_token": creds["X_ACCESS_TOKEN"],
+        "oauth_version": "1.0",
+    }
+    todos = {**oauth, **params}
+    base_params = "&".join(f"{_pct(k)}={_pct(v)}" for k, v in sorted(todos.items()))
+    base = "&".join(["GET", _pct(url), _pct(base_params)])
+    chave = f"{_pct(creds['X_API_SECRET'])}&{_pct(creds['X_ACCESS_SECRET'])}"
+    oauth["oauth_signature"] = base64.b64encode(
+        hmac.new(chave.encode(), base.encode(), hashlib.sha1).digest()
+    ).decode()
+    cab = "OAuth " + ", ".join(f'{_pct(k)}="{_pct(v)}"' for k, v in sorted(oauth.items()))
+    full = url + ("?" + urllib.parse.urlencode(params, quote_via=urllib.parse.quote) if params else "")
+    req = urllib.request.Request(full, method="GET")
+    req.add_header("Authorization", cab)
+    req.add_header("User-Agent", "x-autopost/1.0")
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        detalhe = e.read().decode("utf-8", errors="replace")
+        raise SystemExit(f"Erro HTTP {e.code} ao ler o X: {detalhe}") from None
+
+
+def historico(n: int) -> int:
+    """Mostra os ultimos n posts da conta (sem respostas e reposts), mais recentes primeiro.
+
+    E a fonte de verdade do que ja foi publicado, mesmo quando postados.md
+    nao conseguiu ser atualizado no GitHub.
+    """
+    n = max(5, min(n, 100))
+    creds = carregar_credenciais()
+    eu = _get(ENDPOINT_ME, creds)["data"]
+    dados = _get(
+        f"https://api.x.com/2/users/{eu['id']}/tweets",
+        creds,
+        {"max_results": str(n), "exclude": "replies,retweets", "tweet.fields": "created_at"},
+    )
+    posts = dados.get("data", [])
+    print(f"Ultimos {len(posts)} posts de @{eu['username']} (mais recentes primeiro):\n")
+    for t in posts:
+        texto = t["text"].replace("\n", " ")
+        print(f"- [{t.get('created_at', '')[:16].replace('T', ' ')} UTC] {texto}")
+    return 0
+
+
 def verificar() -> int:
     """Diagnostica as credenciais sem imprimir os valores."""
     problemas = 0
@@ -298,6 +352,7 @@ def main() -> int:
     ap.add_argument("--dry-run", action="store_true", help="nao publica, so mostra")
     ap.add_argument("--listar", action="store_true", help="lista a fila e sai")
     ap.add_argument("--verificar", action="store_true", help="confere as chaves e testa o login no X, sem publicar")
+    ap.add_argument("--historico", type=int, metavar="N", help="lista os ultimos N posts da conta, lidos do X")
     ap.add_argument("--arquivo", type=Path, help="publica o conteudo deste arquivo, ignorando a fila")
     ap.add_argument("--texto", help="publica este texto, ignorando a fila")
     ap.add_argument("--fio", action="store_true", help="com --arquivo ou --texto: publica os blocos separados por --- como um fio")
@@ -305,6 +360,8 @@ def main() -> int:
 
     if args.verificar:
         return verificar()
+    if args.historico:
+        return historico(args.historico)
 
     if args.arquivo and args.texto:
         ap.error("use --arquivo ou --texto, nao os dois")
