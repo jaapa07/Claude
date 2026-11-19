@@ -6,46 +6,75 @@ profissional que trabalha com integracao de sistemas e ETL no dia a dia.
 Este arquivo define sobre o que o agente escreve. Edite a vontade; a tarefa
 agendada le este arquivo antes de gerar cada post.
 
-## Temas: varios nichos de tecnologia, com o que estiver em alta no dia
+## Temas: economia, noticias que bombaram e tecnologia
 
-O perfil fala com todo mundo que vive de tecnologia, nao so com quem faz
-integracao. Integracao e dados continuam sendo a especialidade do Rodrigo,
-mas viram um nicho entre varios (ver "Nichos").
+O perfil agora e mais amplo: economia, as noticias mais comentadas dos
+ultimos 2 dias e tecnologia em geral. IA, ETL e integracao continuam, mas
+em pouca quantidade.
 
 Sao 12 posts por dia:
 
-- **2 de "em alta"**: o que esta bombando hoje no mundo tech, seja qual for
-  o nicho.
-- **2 de novidades de IA.**
-- **1 de vida de dev**: carreira, mercado, salario, trabalho, rotina.
-- **1 dica rapida**, de um nicho diferente a cada dia.
-- **1 de integracao e dados**, a especialidade do perfil.
-- **1 de mundo tech** (madrugada) e **1 de economia do Brasil** (noite).
-- **2 de conexao**, com publicos variados.
-- **1 opiniao impopular**, de qualquer nicho.
-
-Todo post e pensado para gerar resposta, nao so curtida. Os tipos se
-intercalam para a timeline nao ficar repetitiva:
+- **3 de economia:** abertura do dia, economia no bolso e fechamento.
+- **4 de noticias que bombaram:** o assunto mais comentado das ultimas 48
+  horas, no Brasil e no mundo.
+- **1 de vida de dev e carreira.**
+- **1 de IA** (so um por dia).
+- **1 de negocios e empresas.**
+- **1 de conexao.**
+- **1 opiniao impopular**, de qualquer assunto permitido.
+- Integracao e dados: so no fio de sexta, 15h.
 
 | Execucao | Tipo de post                                                            |
 |----------|-------------------------------------------------------------------------|
-| 02h      | **Mundo tech:** o fato mais relevante das ultimas 24 horas (ver "Mundo tech") |
-| 07h      | **Novidade de IA do dia:** o anuncio mais relevante das ultimas 24 horas |
-| 08h      | **Em alta agora:** o assunto tech que esta bombando nesta manha (ver "Em alta") |
-| 09h      | **Vida de dev:** carreira, mercado, salario, entrevista, remoto, lideranca, rotina |
-| 10h      | **Dica rapida:** uma dica pratica de um nicho do rodizio (ver "Nichos") |
-| 14h      | **IA na pratica:** recurso ou ferramenta de IA que da pra usar no trabalho, de qualquer area |
-| 15h      | **Integracao e dados:** ensino provocativo da especialidade do perfil (ver "Rodizio dos formatos de ensino") |
-| 16h      | **Conexao:** chamar um publico de tech para conversar (ver "Posts de conexao") |
-| 17h      | **Em alta da tarde:** outro assunto que bombou hoje, diferente do das 08h (ver "Em alta") |
-| 18h      | **Conexao:** segundo post de conexao, com outro publico e outro formato |
-| 19h      | **Opiniao impopular do dia:** a afirmacao mais forte do dia, de qualquer nicho |
-| 20h      | **Economia do Brasil:** o dado do dia e o efeito em quem trabalha com tech (ver "Economia do Brasil") |
+| 02h      | **Bombou no mundo:** a noticia internacional mais comentada das ultimas 48h (ver "Noticias que bombaram") |
+| 07h      | **Economia, abertura:** o que mexe com o dia (dolar, juros, agenda, Focus, dado que sai hoje) |
+| 08h      | **Em alta agora:** o assunto que esta bombando nesta manha (ver "Em alta") |
+| 09h      | **Vida de dev e carreira:** mercado, salario, demissoes, entrevista, remoto, lideranca |
+| 10h      | **Bombou no Brasil:** a noticia brasileira mais comentada das ultimas 48h |
+| 14h      | **IA:** a novidade de IA mais relevante, so uma por dia (ver "Novidades de IA") |
+| 15h      | **Economia no bolso:** preco, juros, imposto, Pix, credito, salario, consumo |
+| 16h      | **Conexao:** chamar um publico para conversar (ver "Posts de conexao") |
+| 17h      | **Em alta da tarde:** outro assunto que bombou hoje, diferente dos anteriores |
+| 18h      | **Negocios e empresas:** big techs, startups, IPO, demissoes em massa, aquisicoes, resultados |
+| 19h      | **Opiniao impopular do dia:** a afirmacao mais forte do dia, de qualquer assunto permitido |
+| 20h      | **Economia, fechamento:** dolar, Ibovespa, Copom, IPCA, PIB ou o dado do dia (ver "Economia do Brasil") |
+
+Fios semanais, no lugar do post do horario:
+
+- **Terca, 10h:** fio curto sobre a noticia da semana que mais rendeu.
+- **Sexta, 15h:** fio curto de integracao e dados (unico espaco fixo do
+  nicho tecnico).
+
+## Noticias que bombaram (02h, 10h, 08h e 17h)
+
+Quatro posts por dia pegam carona no que todo mundo esta comentando.
+
+1. **Busque o que mais repercutiu nas ultimas 48 horas.** Fontes: mais
+   lidas e manchetes de g1, UOL, Folha, Estadao, CNN Brasil, Valor,
+   InfoMoney, Exame, BBC Brasil, Reuters, Bloomberg, The Verge e
+   TechCrunch; assuntos em alta no X e no Google Trends Brasil.
+2. **Prefira o que gera conversa:** decisao de empresa grande, mudanca que
+   afeta o bolso, golpe ou vazamento que atingiu muita gente, apagao de
+   servico, lancamento que viralizou, recorde, polemica de big tech,
+   descoberta cientifica, curiosidade que todo mundo compartilhou.
+3. **Confirme em duas fontes** antes de afirmar. Rumor so declarado como
+   rumor.
+4. **Comente com opiniao,** curto e informal: "Viram que...?", "Todo mundo
+   falando de X e ninguem lembrou de Y".
+5. Cada horario usa uma noticia diferente; nenhuma noticia volta em outro
+   post nos 14 dias seguintes.
+
+**Fora, sempre:** opiniao sobre politica, partido, governo, eleicao ou
+politico; futebol; religiao; tragedias, mortes e crimes violentos. Se a
+noticia mais quente for desse tipo, pegue a proxima. Noticia que envolve
+governo so entra pelo efeito pratico (ex.: "a taxa do Pix mudou, o que muda
+pra vc"), sem juizo de valor.
 
 ## Nichos
 
-Rode entre eles ao longo da semana. Nenhum nicho deve aparecer em mais de 3
-posts do mesmo dia (contando o historico do X).
+Referencia de assuntos para vida de dev, conexao, opiniao impopular e
+noticias. IA, ETL e integracao juntos nao passam de 2 posts por dia
+(contando o historico do X).
 
 - **Dev e programacao:** linguagens, frameworks, front, back, mobile, code
   review, bugs classicos, boas praticas, open source.
@@ -69,9 +98,9 @@ posts do mesmo dia (contando o historico do X).
 sem repetir o nicho do dia anterior. Formato: "faz isso, nao aquilo" em 1 ou
 2 frases.
 
-## Rodizio dos formatos de ensino (15h)
+## Rodizio dos formatos de ensino (fio de sexta)
 
-O post de integracao e dados alterna entre estes formatos, sem repetir o do
+O fio de integracao e dados alterna entre estes formatos, sem repetir o do
 dia anterior:
 
 - **Conceito com opiniao:** explica um termo e diz o que quase todo mundo
@@ -85,7 +114,7 @@ dia anterior:
 - **Checklist provocador:** "se voce nao faz estes 3, sua integracao e aposta".
 - **Qualidade de dados sem desculpa:** a verdade inconveniente sobre dado ruim.
 
-## Em alta (08h e 17h)
+## Em alta (08h e 17h): como achar
 
 Dois posts por dia comentam o que esta bombando agora. E onde o perfil pega
 carona no assunto do momento para ganhar alcance.
@@ -145,12 +174,12 @@ Limites, sempre:
 - A opiniao precisa ser defensavel tecnicamente. Nada de exagero que vire
   informacao errada.
 - Sem clickbait vazio: a primeira frase promete, o resto do post entrega.
-- Sem politica, religiao, genero, futebol ou temas fora de tecnologia.
+- Sem opiniao politica, religiao, genero, futebol, tragedias e crimes.
 - Sem palavrao e sem tom agressivo. Provocativo e confiante, nao grosso.
 
-## Posts de conexao (16h e 18h)
+## Posts de conexao (16h)
 
-Dois posts por dia servem para trazer gente nova para o perfil e abrir
+Um post por dia serve para trazer gente nova para o perfil e abrir
 conversa com quem trabalha com tecnologia: devs de qualquer stack (front,
 back, mobile), engenheiros de dados e de IA, DevOps e SRE, QA, seguranca,
 designers e PMs de produto digital, gamers e entusiastas de tech, lideres
@@ -192,11 +221,10 @@ Regras dos posts de conexao:
   ("me segue"). O convite e para conversar.
 - Tom confiante e acolhedor; a provocacao aqui e leve.
 
-## Novidades de IA (07h e 14h)
+## Novidades de IA (14h)
 
-Dois posts por dia trazem IA. As 07h, a novidade mais relevante das ultimas
-24 horas. As 14h, IA na pratica: uma ferramenta ou recurso que qualquer
-pessoa de tech (nao so dev) consegue usar no trabalho. O foco e o que ha de novo em IA, com foco nos assistentes
+So um post de IA por dia, as 14h: a novidade mais relevante das ultimas 24
+horas, ou uma ferramenta que qualquer pessoa consegue usar. O foco e o que ha de novo em IA, com foco nos assistentes
 e modelos que a audiencia usa: **Claude (Anthropic), ChatGPT (OpenAI), Grok
 (xAI), Gemini (Google)**, e tambem Llama (Meta), Mistral, DeepSeek, Copilot,
 Cursor e outros quando forem a noticia do dia.
@@ -225,10 +253,19 @@ Tom: provocativo e com opiniao, mas justo. Pode dizer qual ferramenta voce
 prefere para cada tarefa e por que. Nao ataque empresa nem pessoa, nao
 exagere numero e nao transforme opiniao em fato. Nao inclua URL.
 
-## Economia do Brasil (20h)
+## Economia do Brasil (07h, 15h e 20h)
 
-Um post por dia sobre a economia brasileira, no fechamento do dia, sempre
-ligando o dado a quem trabalha com tecnologia, dados e empresas.
+Tres posts por dia sobre economia, para qualquer pessoa, nao so quem e de
+tech:
+
+- **07h, abertura:** o que vai mexer com o dia. Dolar e bolsa de manha,
+  agenda (Copom, IPCA, PIB, payroll nos EUA), boletim Focus nas segundas.
+- **15h, economia no bolso:** o efeito na vida real. Preco de alimento,
+  combustivel, aluguel, juros do cartao, Pix, imposto de renda, salario
+  minimo, FGTS, credito, compras internacionais.
+- **20h, fechamento:** o dado ou o movimento que marcou o dia.
+
+Pode ligar a tech quando fizer sentido, mas nao e obrigatorio.
 
 - **Assuntos:** dolar e Ibovespa no fechamento, Selic e decisoes do Copom,
   IPCA e IPCA-15, PIB, emprego (Caged, PNAD), boletim Focus, credito, juros
@@ -249,9 +286,10 @@ ligando o dado a quem trabalha com tecnologia, dados e empresas.
 - Termine com pergunta ligada ao dado: "Sua empresa ja sentiu isso na conta
   de nuvem?", "Isso muda seus planos de contratacao em 2027?".
 
-## Mundo tech (02h)
+## Mundo tech (referencia)
 
-Um post de madrugada sobre tecnologia, fora dos assistentes de IA:
+Assuntos de tecnologia que podem entrar nos posts de noticias que bombaram
+e de negocios:
 
 - **02h, o fato do dia:** as 02h saem as noticias da tarde e da noite nos
   Estados Unidos e na Europa. Priorize o que aconteceu nas ultimas 12 a 24
