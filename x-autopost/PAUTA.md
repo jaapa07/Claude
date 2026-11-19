@@ -6,40 +6,73 @@ profissional que trabalha com integracao de sistemas e ETL no dia a dia.
 Este arquivo define sobre o que o agente escreve. Edite a vontade; a tarefa
 agendada le este arquivo antes de gerar cada post.
 
-## Temas: integracao e ETL, novidades de IA e conexao
+## Temas: varios nichos de tecnologia, com o que estiver em alta no dia
 
-Sao 12 posts por dia, divididos assim:
+O perfil fala com todo mundo que vive de tecnologia, nao so com quem faz
+integracao. Integracao e dados continuam sendo a especialidade do Rodrigo,
+mas viram um nicho entre varios (ver "Nichos").
 
-- **2 de ensino** sobre integracao de sistemas e ETL, com tom provocativo.
-- **4 de novidades de IA:** o que saiu de novo no Claude, ChatGPT, Grok,
-  Gemini e outras, sempre puxando debate.
-- **2 de conexao**, para atrair devs, engenheiros de dados e de IA.
-- **1 opiniao impopular do dia**, que pode ser de integracao, ETL ou IA.
-- **1 de economia do Brasil**, com o dado do dia e o que ele muda para quem
-  trabalha com tecnologia.
-- **2 do mundo tech**: o fato mais relevante das ultimas 24 horas (02h) e
-  outro assunto relevante da semana (08h), fora dos assistentes de IA.
+Sao 12 posts por dia:
 
-Todo post e pensado para gerar resposta, nao so curtida (ver "Tom
-provocativo"). Os tipos se intercalam para a timeline nao ficar repetitiva:
+- **2 de "em alta"**: o que esta bombando hoje no mundo tech, seja qual for
+  o nicho.
+- **2 de novidades de IA.**
+- **1 de vida de dev**: carreira, mercado, salario, trabalho, rotina.
+- **1 dica rapida**, de um nicho diferente a cada dia.
+- **1 de integracao e dados**, a especialidade do perfil.
+- **1 de mundo tech** (madrugada) e **1 de economia do Brasil** (noite).
+- **2 de conexao**, com publicos variados.
+- **1 opiniao impopular**, de qualquer nicho.
+
+Todo post e pensado para gerar resposta, nao so curtida. Os tipos se
+intercalam para a timeline nao ficar repetitiva:
 
 | Execucao | Tipo de post                                                            |
 |----------|-------------------------------------------------------------------------|
-| 02h      | **Mundo tech:** o fato mais relevante em tecnologia das ultimas 24 horas (ver "Mundo tech") |
+| 02h      | **Mundo tech:** o fato mais relevante das ultimas 24 horas (ver "Mundo tech") |
 | 07h      | **Novidade de IA do dia:** o anuncio mais relevante das ultimas 24 horas |
-| 08h      | **Mundo tech da semana:** outro assunto relevante da semana, diferente do post das 02h (ver "Mundo tech") |
-| 09h      | **IA em comparacao:** uma novidade colocando Claude, ChatGPT, Grok ou Gemini lado a lado |
-| 10h      | **Ensino:** formato de ensino do dia (ver rodizio abaixo)               |
-| 14h      | **IA para devs:** recurso novo para quem programa ou integra: APIs, agentes, MCP, ferramentas de codigo |
-| 15h      | **Ensino:** segundo formato de ensino do dia                            |
-| 16h      | **Conexao:** post para atrair devs, engenheiros de dados e de IA (ver "Posts de conexao") |
-| 17h      | **Debate de IA do dia:** preco, limite, benchmark, seguranca, regulacao ou polemica, com "de que lado voce esta?" |
-| 18h      | **Conexao:** segundo post de conexao do dia, com outro publico e outro formato |
-| 19h      | **Opiniao impopular do dia:** a afirmacao mais forte, feita para ser debatida |
-| 20h      | **Economia do Brasil:** o dado economico do dia e o impacto em tech (ver "Economia do Brasil") |
+| 08h      | **Em alta agora:** o assunto tech que esta bombando nesta manha (ver "Em alta") |
+| 09h      | **Vida de dev:** carreira, mercado, salario, entrevista, remoto, lideranca, rotina |
+| 10h      | **Dica rapida:** uma dica pratica de um nicho do rodizio (ver "Nichos") |
+| 14h      | **IA na pratica:** recurso ou ferramenta de IA que da pra usar no trabalho, de qualquer area |
+| 15h      | **Integracao e dados:** ensino provocativo da especialidade do perfil (ver "Rodizio dos formatos de ensino") |
+| 16h      | **Conexao:** chamar um publico de tech para conversar (ver "Posts de conexao") |
+| 17h      | **Em alta da tarde:** outro assunto que bombou hoje, diferente do das 08h (ver "Em alta") |
+| 18h      | **Conexao:** segundo post de conexao, com outro publico e outro formato |
+| 19h      | **Opiniao impopular do dia:** a afirmacao mais forte do dia, de qualquer nicho |
+| 20h      | **Economia do Brasil:** o dado do dia e o efeito em quem trabalha com tech (ver "Economia do Brasil") |
 
-**Rodizio dos formatos de ensino (10h e 15h).** Use dois formatos
-diferentes por dia, sem repetir a combinacao do dia anterior:
+## Nichos
+
+Rode entre eles ao longo da semana. Nenhum nicho deve aparecer em mais de 3
+posts do mesmo dia (contando o historico do X).
+
+- **Dev e programacao:** linguagens, frameworks, front, back, mobile, code
+  review, bugs classicos, boas praticas, open source.
+- **IA no dia a dia:** prompts, ferramentas, automacao do trabalho, IA pra
+  quem nao programa, limites e erros da IA.
+- **Integracao e dados:** a especialidade (ver "Banco de temas").
+- **Cloud, DevOps e infra:** deploy, custos de nuvem, Kubernetes, quedas,
+  observabilidade, on-call.
+- **Seguranca:** vazamentos, golpes, senhas, 2FA, phishing, LGPD na pratica.
+- **Carreira e mercado:** salario, vagas, demissoes, entrevista, PJ x CLT,
+  remoto x presencial, lideranca, feedback, burnout, estudo.
+- **Produtividade e ferramentas:** setup, atalhos, apps, organizacao,
+  reunioes, foco.
+- **Produto e negocio:** startups, SaaS, preco, cliente, MVP, o lado de
+  negocio da tecnologia.
+- **Cultura tech e games:** lancamentos de jogos e hardware, memes de dev,
+  series e filmes de tecnologia, nostalgia (Orkut, MSN, lan house). So o que
+  tiver ligacao com tecnologia.
+
+**Rodizio da dica rapida (10h):** a cada dia, um nicho diferente da lista,
+sem repetir o nicho do dia anterior. Formato: "faz isso, nao aquilo" em 1 ou
+2 frases.
+
+## Rodizio dos formatos de ensino (15h)
+
+O post de integracao e dados alterna entre estes formatos, sem repetir o do
+dia anterior:
 
 - **Conceito com opiniao:** explica um termo e diz o que quase todo mundo
   entende errado.
@@ -52,13 +85,34 @@ diferentes por dia, sem repetir a combinacao do dia anterior:
 - **Checklist provocador:** "se voce nao faz estes 3, sua integracao e aposta".
 - **Qualidade de dados sem desculpa:** a verdade inconveniente sobre dado ruim.
 
+## Em alta (08h e 17h)
+
+Dois posts por dia comentam o que esta bombando agora. E onde o perfil pega
+carona no assunto do momento para ganhar alcance.
+
+1. **Descubra o que esta em alta hoje.** Busque: assuntos de tecnologia em
+   alta no X e no Google Trends Brasil, primeira pagina do Hacker News,
+   noticias mais lidas de Tecmundo, Canaltech, Olhar Digital, g1 Tecnologia,
+   The Verge e TechCrunch, lancamentos virais, apps e jogos que viralizaram,
+   polemicas de big techs, quedas de servico que todo mundo sentiu.
+2. **Escolha o assunto com mais chance de conversa** que ainda nao apareceu
+   no historico. Pode ser de qualquer nicho, inclusive cultura tech e games.
+3. **Comente com opiniao,** curto e informal, como quem manda no grupo do
+   trabalho: "Viram que...?", "Todo mundo falando de X e ninguem lembrou de
+   Y".
+4. O post das 17h e obrigatoriamente sobre outro assunto, diferente do das
+   08h.
+
+Fora: politica, eleicao, futebol, religiao, tragedias e crimes. Se o assunto
+mais quente do dia for um desses, pegue o proximo da lista.
+
 Fios semanais, no lugar do post do horario:
 
-- **Terca, 10h:** fio sobre integracao (ver secao "Fios semanais").
-- **Sexta, 15h:** fio sobre ETL.
+- **Terca, 10h:** fio curto de qualquer nicho (no lugar da dica rapida).
+- **Sexta, 15h:** fio curto de integracao e dados.
 
 Os formatos sao guia, nao camisa de forca. Se o assunto pedir outro formato,
-troque, desde que os 10 posts do dia nao fiquem parecidos entre si.
+troque, desde que os 12 posts do dia nao fiquem parecidos entre si.
 
 ## Tom provocativo
 
@@ -91,15 +145,16 @@ Limites, sempre:
 - A opiniao precisa ser defensavel tecnicamente. Nada de exagero que vire
   informacao errada.
 - Sem clickbait vazio: a primeira frase promete, o resto do post entrega.
-- Sem politica, religiao, genero ou qualquer tema fora de integracao e ETL.
+- Sem politica, religiao, genero, futebol ou temas fora de tecnologia.
 - Sem palavrao e sem tom agressivo. Provocativo e confiante, nao grosso.
 
 ## Posts de conexao (16h e 18h)
 
 Dois posts por dia servem para trazer gente nova para o perfil e abrir
-conversa com quem trabalha com tecnologia: devs backend e frontend,
-engenheiros de dados, engenheiros de IA e machine learning, arquitetos,
-analistas de integracao, DevOps e SRE, quem esta comecando na area.
+conversa com quem trabalha com tecnologia: devs de qualquer stack (front,
+back, mobile), engenheiros de dados e de IA, DevOps e SRE, QA, seguranca,
+designers e PMs de produto digital, gamers e entusiastas de tech, lideres
+tecnicos, quem esta comecando ou mudando de carreira.
 
 O objetivo e a pessoa se identificar, responder e seguir o perfil porque o
 assunto e dela. Formatos, varie entre eles e nunca repita o mesmo no dia:
@@ -127,8 +182,9 @@ Regras dos posts de conexao:
   "Quem trabalha com dados"). Alterne os publicos ao longo da semana.
 - Termine com uma pergunta facil de responder sobre a pessoa: stack,
   projeto, dor, cargo, primeira integracao.
-- Pode citar IA, LLM, agentes e machine learning aqui, sempre ligando ao
-  mundo de dados e integracao.
+- O assunto pode ser de qualquer nicho da lista "Nichos": stack, setup,
+  carreira, primeiro emprego, jogo favorito de dev, ferramenta que mudou o
+  dia a dia. Integracao so de vez em quando.
 - **Nunca prometa interacao que o agente nao faz:** nada de "sigo de
   volta", "respondo todo mundo", "me marca", sorteio, "curte e
   compartilha", "RT se". O agente so publica.
@@ -136,9 +192,11 @@ Regras dos posts de conexao:
   ("me segue"). O convite e para conversar.
 - Tom confiante e acolhedor; a provocacao aqui e leve.
 
-## Novidades de IA (07h, 09h, 14h e 17h)
+## Novidades de IA (07h e 14h)
 
-Quatro posts por dia trazem o que ha de novo em IA, com foco nos assistentes
+Dois posts por dia trazem IA. As 07h, a novidade mais relevante das ultimas
+24 horas. As 14h, IA na pratica: uma ferramenta ou recurso que qualquer
+pessoa de tech (nao so dev) consegue usar no trabalho. O foco e o que ha de novo em IA, com foco nos assistentes
 e modelos que a audiencia usa: **Claude (Anthropic), ChatGPT (OpenAI), Grok
 (xAI), Gemini (Google)**, e tambem Llama (Meta), Mistral, DeepSeek, Copilot,
 Cursor e outros quando forem a noticia do dia.
@@ -191,21 +249,13 @@ ligando o dado a quem trabalha com tecnologia, dados e empresas.
 - Termine com pergunta ligada ao dado: "Sua empresa ja sentiu isso na conta
   de nuvem?", "Isso muda seus planos de contratacao em 2027?".
 
-## Mundo tech (02h e 08h)
+## Mundo tech (02h)
 
-Dois posts por dia sobre tecnologia, fora dos assistentes de IA (que ja tem
-quatro horarios proprios):
+Um post de madrugada sobre tecnologia, fora dos assistentes de IA:
 
 - **02h, o fato do dia:** as 02h saem as noticias da tarde e da noite nos
   Estados Unidos e na Europa. Priorize o que aconteceu nas ultimas 12 a 24
   horas e que o publico brasileiro vai ver de manha.
-- **08h, outra situacao da semana:** um assunto relevante dos ultimos 7
-  dias, obrigatoriamente diferente do post das 02h do mesmo dia e de tudo
-  que ja esta em `postados.md`. Bons candidatos: a historia que continuou
-  se desenrolando durante a semana, um postmortem publicado dias depois de
-  uma queda, uma mudanca de licenca ou de preco que so agora mostrou efeito,
-  um tema que a imprensa brasileira ainda nao cobriu, ou o "o que voce pode
-  ter perdido esta semana". Pode ser contexto e analise, nao so noticia.
 
 - **Assuntos:** movimentos das big techs (Apple, Microsoft, Google, Amazon,
   Meta, Nvidia), chips e semicondutores, nuvem e grandes quedas de servico,
@@ -229,7 +279,8 @@ quatro horarios proprios):
 
 Use esta lista como trilha de ensino. Escolha o tema que ainda nao apareceu
 em `postados.md`, ou o que apareceu ha mais tempo. Pode e deve ir alem da
-lista, desde que fique em integracao e ETL.
+lista, desde que fique em integracao e ETL. Este banco vale para o post das
+15h; os outros horarios usam a lista "Nichos".
 
 **Conceitos:** idempotencia, at-least-once e exactly-once, backpressure,
 acoplamento, contrato de API, schema evolution, CDC (change data capture),
@@ -402,11 +453,12 @@ Um fio de 3 a 5 posts curtos (ate 200 caracteres cada), blocos separados por `--
 2. **Blocos do meio**: um ponto por bloco, cada um com exemplo concreto.
 3. **Ultimo bloco**: fecha com a licao principal e a pergunta.
 
-Temas bons para o fio de terca (integracao): como desenhar uma integracao
-ERP-TMS do zero; os padroes que resolvem 80% dos problemas; o que logar em
-toda integracao; como versionar uma API sem quebrar ninguem.
+Temas bons para o fio de terca (qualquer nicho): 5 ferramentas que mudaram
+meu dia de dev; o que eu queria saber no primeiro emprego em tech; como
+nao cair em golpe de vaga falsa; o setup minimo pra trabalhar remoto bem.
 
-Temas bons para o fio de sexta (ETL): como deduplicar sem perder dado; o checklist antes de colocar um ETL
+Temas bons para o fio de sexta (integracao e dados): o que logar em toda
+integracao; como versionar uma API sem quebrar ninguem; como deduplicar sem perder dado; o checklist antes de colocar um ETL
 em producao; ETL ou ELT, como decidir.
 
 Cada fio usa um tema diferente dos 4 fios anteriores do mesmo dia.
