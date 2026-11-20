@@ -1,0 +1,335 @@
+import { create } from 'zustand';
+import { CHARACTERS } from '@/data/characters';
+import { CHARACTER_IDS, CUP_IDS, KART_IDS, TRACK_IDS } from '@/data/ids';
+import type { CharacterId, CupId, KartId, TrackId, TrophyTier } from '@/data/ids';
+import { KARTS } from '@/data/karts';
+import { CUPS, CUP_UNLOCK, TRACK_BY_ID } from '@/data/tracks';
+import type { UnlockRule } from '@/data/unlocks';
+import type { RaceResult } from '@/game/core/types';
+import { readKey, removeKey, writeKey } from './storage';
+
+export const SAVE_KEY = 'kl3d.save';
+/** Cópia do conteúdo ilegível, guardada antes de recomeçar do zero. */
+export const SAVE_CORRUPT_KEY = 'kl3d.save.corrupt';
+export const SAVE_VERSION = 1;
+
+export interface TrackRecord {
+  /** Melhor tempo total em corrida (Corrida Rápida / Campeonato). */
+  bestRaceMs: number | null;
+  /** Melhor volta em corrida. */
+  bestLapMs: number | null;
+  /** Melhor tempo total no Contrarrelógio. */
+  timeTrialMs: number | null;
+  /** Melhor volta no Contrarrelógio. */
+  timeTrialLapMs: number | null;
+}
+
+export interface SaveStats {
+  /** Corridas concluídas contra adversários (Corrida Rápida + Campeonato). */
+  races: number;
+  wins: number;
+  podiums: number;
+  /** Miniturbos soltos, por nível (1, 2, 3). */
+  turbos: [number, number, number];
+  itemsUsed: number;
+  /** Tentativas de Contrarrelógio concluídas. */
+  timeTrials: number;
+  championships: number;
+  playTimeMs: number;
+}
+
+export interface SaveUnlocks { characters: CharacterId[]; karts: KartId[]; cups: CupId[] }
+
+export interface SaveData {
+  version: number;
+  unlocked: SaveUnlocks;
+  trophies: Record<CupId, TrophyTier | null>;
+  records: Record<TrackId, TrackRecord>;
+  stats: SaveStats;
+}
+
+export interface UnlockNotice { kind: 'character' | 'kart' | 'cup'; id: string; name: string }
+
+/** Resultado final de uma copa, passado junto com a última corrida. `position` é 1..8. */
+export interface ChampionshipOutcome { cupId: CupId; position: number }
+
+export interface ApplyReport {
+  unlocks: UnlockNotice[];
+  newRecords: { raceTime: boolean; bestLap: boolean };
+  /** Troféu obtido nesta copa (mesmo que não supere o já guardado). */
+  trophy: TrophyTier | null;
+}
+
+export type SaveLoadStatus = 'fresh' | 'loaded' | 'migrated' | 'recovered';
+
+export interface SaveState extends SaveData {
+  /** Como o save foi obtido na última carga ('recovered' = dados corrompidos foram descartados). */
+  loadStatus: SaveLoadStatus;
+  lastReport: ApplyReport | null;
+  /** Registra uma corrida; devolve os novos desbloqueios. */
+  applyRaceResult: (result: RaceResult, championship?: ChampionshipOutcome) => UnlockNotice[];
+  addPlayTime: (ms: number) => void;
+  resetProgress: () => void;
+  /** Relê o localStorage (usado na inicialização e nos testes). */
+  reload: () => void;
+  isCharacterUnlocked: (id: CharacterId) => boolean;
+  isKartUnlocked: (id: KartId) => boolean;
+  isCupUnlocked: (id: CupId) => boolean;
+  isTrackUnlocked: (id: TrackId) => boolean;
+}
+
+const TIER_RANK: Record<TrophyTier, number> = { bronze: 1, silver: 2, gold: 3 };
+
+export function trophyRank(tier: TrophyTier | null | undefined): number {
+  return tier ? TIER_RANK[tier] : 0;
+}
+
+export function trophyForPosition(position: number): TrophyTier | null {
+  return position === 1 ? 'gold' : position === 2 ? 'silver' : position === 3 ? 'bronze' : null;
+}
+
+function emptyRecord(): TrackRecord {
+  return { bestRaceMs: null, bestLapMs: null, timeTrialMs: null, timeTrialLapMs: null };
+}
+
+export function createDefaultSave(): SaveData {
+  const data: SaveData = {
+    version: SAVE_VERSION,
+    unlocked: { characters: [], karts: [], cups: [] },
+    trophies: Object.fromEntries(CUP_IDS.map((c) => [c, null])) as Record<CupId, TrophyTier | null>,
+    records: Object.fromEntries(TRACK_IDS.map((t) => [t, emptyRecord()])) as Record<TrackId, TrackRecord>,
+    stats: { races: 0, wins: 0, podiums: 0, turbos: [0, 0, 0], itemsUsed: 0, timeTrials: 0, championships: 0, playTimeMs: 0 },
+  };
+  data.unlocked = computeUnlocks(data);
+  return data;
+}
+
+export function isRuleMet(rule: UnlockRule, data: Pick<SaveData, 'trophies' | 'records' | 'stats'>): boolean {
+  switch (rule.type) {
+    case 'initial': return true;
+    case 'races': return data.stats.races >= rule.count;
+    case 'wins': return data.stats.wins >= rule.count;
+    case 'trophy': return trophyRank(data.trophies[rule.cup]) >= TIER_RANK[rule.min];
+    case 'timeTrials': return TRACK_IDS.filter((t) => data.records[t].timeTrialMs !== null).length >= rule.count;
+    case 'turbo3': return data.stats.turbos[2] >= rule.count;
+  }
+}
+
+/** Desbloqueios = o que já estava salvo ∪ tudo cujas regras estão satisfeitas (nunca se perde um desbloqueio). */
+export function computeUnlocks(data: SaveData): SaveUnlocks {
+  return {
+    characters: CHARACTERS.filter((c) => data.unlocked.characters.includes(c.id) || isRuleMet(c.unlock, data)).map((c) => c.id),
+    karts: KARTS.filter((k) => data.unlocked.karts.includes(k.id) || isRuleMet(k.unlock, data)).map((k) => k.id),
+    cups: CUPS.filter((c) => data.unlocked.cups.includes(c.id) || isRuleMet(CUP_UNLOCK[c.id], data)).map((c) => c.id),
+  };
+}
+
+// ---------- leitura tolerante ----------
+
+type Raw = Record<string, unknown>;
+
+function isObject(v: unknown): v is Raw {
+  return typeof v === 'object' && v !== null && !Array.isArray(v);
+}
+function count(v: unknown): number {
+  return typeof v === 'number' && Number.isFinite(v) && v >= 0 ? Math.floor(v) : 0;
+}
+function timeOrNull(v: unknown): number | null {
+  return typeof v === 'number' && Number.isFinite(v) && v > 0 ? v : null;
+}
+function idList<T extends string>(v: unknown, valid: readonly T[]): T[] {
+  if (!Array.isArray(v)) return [];
+  return valid.filter((id) => v.includes(id));
+}
+
+/** Migrações encadeadas: a entrada N transforma um save da versão N na versão N+1. */
+const MIGRATIONS: Record<number, (raw: Raw) => Raw> = {
+  // 0 → 1: saves de pré-lançamento não tinham `version` e guardavam os tempos em `bestTimes`.
+  0: (raw) => {
+    const next: Raw = { ...raw, version: 1 };
+    if (!isObject(raw.records) && isObject(raw.bestTimes)) {
+      const records: Raw = {};
+      for (const [track, ms] of Object.entries(raw.bestTimes)) records[track] = { bestRaceMs: ms };
+      next.records = records;
+    }
+    delete next.bestTimes;
+    return next;
+  },
+};
+
+/** Constrói um SaveData válido a partir de qualquer objeto, campo a campo. */
+export function sanitizeSave(raw: Raw): SaveData {
+  const data = createDefaultSave();
+  const stats = isObject(raw.stats) ? raw.stats : {};
+  const turbos = Array.isArray(stats.turbos) ? stats.turbos : [];
+  data.stats = {
+    races: count(stats.races), wins: count(stats.wins), podiums: count(stats.podiums),
+    turbos: [count(turbos[0]), count(turbos[1]), count(turbos[2])],
+    itemsUsed: count(stats.itemsUsed), timeTrials: count(stats.timeTrials),
+    championships: count(stats.championships), playTimeMs: count(stats.playTimeMs),
+  };
+  const trophies = isObject(raw.trophies) ? raw.trophies : {};
+  for (const cup of CUP_IDS) {
+    const t = trophies[cup];
+    data.trophies[cup] = t === 'bronze' || t === 'silver' || t === 'gold' ? t : null;
+  }
+  const records = isObject(raw.records) ? raw.records : {};
+  for (const track of TRACK_IDS) {
+    const r = records[track];
+    if (!isObject(r)) continue;
+    data.records[track] = {
+      bestRaceMs: timeOrNull(r.bestRaceMs), bestLapMs: timeOrNull(r.bestLapMs),
+      timeTrialMs: timeOrNull(r.timeTrialMs), timeTrialLapMs: timeOrNull(r.timeTrialLapMs),
+    };
+  }
+  const unlocked = isObject(raw.unlocked) ? raw.unlocked : {};
+  data.unlocked = {
+    characters: idList(unlocked.characters, CHARACTER_IDS),
+    karts: idList(unlocked.karts, KART_IDS),
+    cups: idList(unlocked.cups, CUP_IDS),
+  };
+  data.unlocked = computeUnlocks(data);
+  return data;
+}
+
+export function parseSave(text: string | null): { data: SaveData; status: SaveLoadStatus } {
+  if (text === null) return { data: createDefaultSave(), status: 'fresh' };
+  let raw: unknown;
+  try {
+    raw = JSON.parse(text);
+  } catch {
+    return { data: createDefaultSave(), status: 'recovered' };
+  }
+  if (!isObject(raw)) return { data: createDefaultSave(), status: 'recovered' };
+  let version = typeof raw.version === 'number' && Number.isInteger(raw.version) && raw.version >= 0 ? raw.version : 0;
+  let current: Raw = raw;
+  let status: SaveLoadStatus = 'loaded';
+  while (version < SAVE_VERSION) {
+    const step = MIGRATIONS[version];
+    if (step) current = step(current);
+    version += 1;
+    status = 'migrated';
+  }
+  // Versão mais nova que a conhecida (downgrade do jogo): aproveita os campos que ainda entendemos.
+  if (version > SAVE_VERSION) status = 'migrated';
+  return { data: sanitizeSave(current), status };
+}
+
+function loadFromStorage(): { data: SaveData; status: SaveLoadStatus } {
+  const text = readKey(SAVE_KEY);
+  const parsed = parseSave(text);
+  if (parsed.status === 'recovered' && text !== null) writeKey(SAVE_CORRUPT_KEY, text);
+  if (parsed.status === 'recovered' || parsed.status === 'migrated') persist(parsed.data);
+  return parsed;
+}
+
+function persist(data: SaveData): void {
+  const { version, unlocked, trophies, records, stats } = data;
+  writeKey(SAVE_KEY, JSON.stringify({ version, unlocked, trophies, records, stats }));
+}
+
+function better(prev: number | null, next: number | null): number | null {
+  if (next === null || !(next > 0)) return prev;
+  return prev === null || next < prev ? next : prev;
+}
+
+function diffUnlocks(before: SaveUnlocks, after: SaveUnlocks): UnlockNotice[] {
+  const out: UnlockNotice[] = [];
+  for (const c of CHARACTERS) if (after.characters.includes(c.id) && !before.characters.includes(c.id)) out.push({ kind: 'character', id: c.id, name: c.name });
+  for (const k of KARTS) if (after.karts.includes(k.id) && !before.karts.includes(k.id)) out.push({ kind: 'kart', id: k.id, name: k.name });
+  for (const c of CUPS) if (after.cups.includes(c.id) && !before.cups.includes(c.id)) out.push({ kind: 'cup', id: c.id, name: c.name });
+  return out;
+}
+
+function snapshot(s: SaveData): SaveData {
+  return {
+    version: SAVE_VERSION,
+    unlocked: { characters: [...s.unlocked.characters], karts: [...s.unlocked.karts], cups: [...s.unlocked.cups] },
+    trophies: { ...s.trophies },
+    records: Object.fromEntries(TRACK_IDS.map((t) => [t, { ...s.records[t] }])) as Record<TrackId, TrackRecord>,
+    stats: { ...s.stats, turbos: [...s.stats.turbos] as [number, number, number] },
+  };
+}
+
+const initial = loadFromStorage();
+
+export const useSaveStore = create<SaveState>()((set, get) => ({
+  ...initial.data,
+  loadStatus: initial.status,
+  lastReport: null,
+
+  applyRaceResult: (result, championship) => {
+    const data = snapshot(get());
+    const before = data.unlocked;
+    const competitive = result.mode === 'quick' || result.mode === 'championship';
+    const finished = result.playerTimeMs !== null;
+    const record = data.records[result.trackId];
+    const newRecords = { raceTime: false, bestLap: false };
+
+    if (competitive) {
+      data.stats.races += 1;
+      if (result.playerPosition === 1) data.stats.wins += 1;
+      if (result.playerPosition >= 1 && result.playerPosition <= 3) data.stats.podiums += 1;
+      if (finished) {
+        const t = better(record.bestRaceMs, result.playerTimeMs);
+        newRecords.raceTime = t !== record.bestRaceMs;
+        record.bestRaceMs = t;
+      }
+      const lap = better(record.bestLapMs, result.playerBestLapMs);
+      newRecords.bestLap = lap !== record.bestLapMs;
+      record.bestLapMs = lap;
+    } else if (result.mode === 'timetrial') {
+      if (finished) {
+        data.stats.timeTrials += 1;
+        const t = better(record.timeTrialMs, result.playerTimeMs);
+        newRecords.raceTime = t !== record.timeTrialMs;
+        record.timeTrialMs = t;
+      }
+      const lap = better(record.timeTrialLapMs, result.playerBestLapMs);
+      newRecords.bestLap = lap !== record.timeTrialLapMs;
+      record.timeTrialLapMs = lap;
+    }
+    // Treino: só conta turbos, itens e tempo jogado.
+    for (let i = 0; i < 3; i++) data.stats.turbos[i] += count(result.stats.turbos[i]);
+    data.stats.itemsUsed += count(result.stats.itemsUsed);
+    data.stats.playTimeMs += count(result.playerTimeMs ?? 0);
+
+    let trophy: TrophyTier | null = null;
+    if (championship) {
+      data.stats.championships += 1;
+      trophy = trophyForPosition(championship.position);
+      if (trophyRank(trophy) > trophyRank(data.trophies[championship.cupId])) data.trophies[championship.cupId] = trophy;
+    }
+
+    data.unlocked = computeUnlocks(data);
+    const unlocks = diffUnlocks(before, data.unlocked);
+    persist(data);
+    set({ ...data, lastReport: { unlocks, newRecords, trophy } });
+    return unlocks;
+  },
+
+  addPlayTime: (ms) => {
+    if (!(ms > 0)) return;
+    const data = snapshot(get());
+    data.stats.playTimeMs += Math.floor(ms);
+    persist(data);
+    set({ stats: data.stats });
+  },
+
+  resetProgress: () => {
+    const data = createDefaultSave();
+    removeKey(SAVE_CORRUPT_KEY);
+    persist(data);
+    set({ ...data, loadStatus: 'fresh', lastReport: null });
+  },
+
+  reload: () => {
+    const loaded = loadFromStorage();
+    set({ ...loaded.data, loadStatus: loaded.status, lastReport: null });
+  },
+
+  isCharacterUnlocked: (id) => get().unlocked.characters.includes(id),
+  isKartUnlocked: (id) => get().unlocked.karts.includes(id),
+  isCupUnlocked: (id) => get().unlocked.cups.includes(id),
+  isTrackUnlocked: (id) => get().unlocked.cups.includes(TRACK_BY_ID[id].cup),
+}));

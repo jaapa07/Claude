@@ -1,0 +1,15 @@
+{
+  "renderer": "SwiftShader (WebGL por software, sem GPU)",
+  "resolution": "1280x720",
+  "quality": "medium",
+  "fps": {
+    "porto-lanternas": 0,
+    "bosque-cristal": 1,
+    "vale-moinhos": 1,
+    "canion-solar": 0,
+    "cidade-neon": 1,
+    "pico-boreal": 2,
+    "jardim-celeste": 1,
+    "fortaleza-tempestade": 0
+  }
+}
