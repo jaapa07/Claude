@@ -739,3 +739,78 @@ func _fill_forge(s: MenuScreen) -> void:
 	items.append(_it("Sair", func(): s.close()))
 	s.setup("Forja — fragmentos: %d" % Game.fragments, items, "Escolha o que melhorar.")
 	s.list_w = 230.0
+
+# =============================================================== CONTRATOS EM GRUPO
+func open_contracts() -> void:
+	world.player.set_busy(true)
+	var s := _push("Quadro de Contratos", [], "")
+	_fill_contracts(s)
+	s.closed.connect(func(): if world.player.state == Player.S.INTERACT and not has_screen(): world.player.set_busy(false))
+
+func _contract_info(cid: String) -> String:
+	var c: Dictionary = Data.contracts[cid]
+	var names: Array = []
+	for a in c["aliados"]:
+		names.append("%s (%s)" % [Data.allies[a]["nome"], Data.allies[a]["titulo"]])
+	var r: Dictionary = c.get("recompensa", {})
+	var its: Array = []
+	for it in r.get("itens", {}):
+		its.append("%s x%d" % [Data.items.get(it, {}).get("nome", it), int(r["itens"][it])])
+	var t := "%s — %s, nível sugerido %d\n\n%s\n\nCom você: %s\n\nRecompensa: %d fragmentos, %d XP%s" % [c["nome"], {"dupla": "DUPLA", "trio": "TRIO", "caca": "CAÇADA"}.get(c["tipo"], ""), int(c["nivel"]),
+		c["texto"], ", ".join(names) if names.size() > 0 else "ninguém (solo)", int(r.get("fragmentos", 0)), int(r.get("xp", 0)), ("\n" + ", ".join(its)) if its.size() > 0 else ""]
+	var why := Game.contract_lock_reason(cid)
+	if Game.contract_state(cid) == "bloqueado" and why != "":
+		t += "\n\n" + why
+	return t
+
+func _fill_contracts(s: MenuScreen) -> void:
+	var items: Array = []
+	items.append(_hdr("Contratos (dupla e trio)"))
+	for cid in Data.contracts:
+		var c: Dictionary = Data.contracts[cid]
+		var stt := Game.contract_state(cid)
+		var tag: String = {"feito": "(feito) ", "ativo": "> ", "bloqueado": "(bloq.) ", "ocupado": "", "disponivel": ""}.get(stt, "")
+		var lab := "%s%s [%s]" % [tag, c["nome"], {"dupla": "Dupla", "trio": "Trio", "caca": "Caçada"}.get(c["tipo"], "")]
+		var idc: String = cid
+		var row := _it(lab, func(): _contract_pick(idc, s), func(): return _contract_info(idc), stt != "bloqueado")
+		row["icon"] = Art.region("icons_grupo", (2 if c["tipo"] != "trio" else 3) * 16, 0, 16, 16) if ResourceLoader.exists("res://assets/sprites/icons_grupo.png") else null
+		if stt == "feito":
+			row["col"] = Color(0.6, 0.9, 0.6)
+		items.append(row)
+	items.append(_hdr("Patrulha (aliados fora de contratos)"))
+	for aid in Data.allies:
+		var al: Dictionary = Data.allies[aid]
+		var ida: String = aid
+		var on: bool = aid in Game.party
+		var ok := Game.can_recruit(aid) or on
+		var r2 := _it("%s %s — %s" % ["[no grupo]" if on else "", al["nome"], al["titulo"]], func():
+			if not (Game.can_recruit(ida) or ida in Game.party):
+				toast("Disponível depois de um contrato com %s." % Data.allies[ida]["nome"])
+				return
+			Game.toggle_party(ida)
+			Audio.play("ui_ok")
+			_fill_contracts(s), al["desc"] + ("\n\nNo grupo: aperte de novo para dispensar." if on else ("\n\nConvocar para acompanhar você." if ok else "\n\nDisponível depois de um contrato juntos.")), ok)
+		r2["icon"] = Art.region("icons_grupo", int(al["icone"]) * 16, 0, 16, 16) if ResourceLoader.exists("res://assets/sprites/icons_grupo.png") else null
+		items.append(r2)
+	_refresh(s, items)
+
+func _contract_pick(idc: String, s: MenuScreen) -> void:
+	match Game.contract_state(idc):
+		"disponivel":
+			_confirm("Aceitar \"%s\"?" % Data.contracts[idc]["nome"], _contract_info(idc), func():
+				if Game.accept_contract(idc):
+					Audio.play("ui_ok")
+					for a in Data.contracts[idc]["aliados"]:
+						toast(Data.allies[a]["falas"]["entra"])
+				_fill_contracts(s))
+		"ativo":
+			_confirm("Desistir do contrato?", "Os aliados voltam para a vila. Você pode aceitar de novo depois.", func():
+				Game.abandon_contract()
+				_fill_contracts(s))
+		"ocupado":
+			toast("Termine o contrato ativo antes.")
+		"feito":
+			toast("Contrato já concluído.")
+		_:
+			toast(Game.contract_lock_reason(idc))
+			Audio.play("puzzle_no")

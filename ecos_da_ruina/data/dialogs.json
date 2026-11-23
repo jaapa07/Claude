@@ -712,5 +712,37 @@
     "Um berço vazio, coberto de pó."
    ]
   }
+ ],
+ "bruna": [
+  {
+   "if": "contrato_saqueadores",
+   "lines": [
+    "Bruna: Os domadores estão na trilha leste do Bosque. Eu vou na frente com o escudo."
+   ]
+  },
+  {
+   "unless": "saqueadores_ok",
+   "lines": [
+    "Bruna: Sou a Bruna, escudeira da vila. Domadores andam roubando selos no Bosque.",
+    "Bruna: Sozinho você não segura dois domadores com feras. Em dupla, sim.",
+    "Bruna: Os contratos ficam no quadro ao lado. Aceite e eu vou junto."
+   ],
+   "contratos": true
+  },
+  {
+   "lines": [
+    "Bruna: Precisa de escudo? Veja o quadro: aceito contratos e também patrulho com você."
+   ],
+   "contratos": true
+  }
+ ],
+ "ravi": [
+  {
+   "lines": [
+    "Ravi: Batedor do Bosque, a seu dispor. De longe, meus discos não erram.",
+    "Ravi: Para os bandos grandes, chame eu e a Bruna: trio é mais seguro."
+   ],
+   "contratos": true
+  }
  ]
 }

@@ -21,7 +21,19 @@ var _spr: AnimatedSprite2D
 func _ready() -> void:
 	add_to_group("projectiles")
 	_spr = AnimatedSprite2D.new()
-	if mode == "tool":
+	if mode == "pedra":
+		if ResourceLoader.exists("res://assets/sprites/pedra_arremesso.png"):
+			_spr.sprite_frames = Art.fx_frames("pedra_arremesso", 16, 16, 1, 1.0, true)
+		else:
+			_spr.sprite_frames = Art.fx_frames("fx_shards", 24, 20, 2, 6.0, true)
+		_spr.offset = Vector2(0, -10)
+	elif mode == "disco":
+		if ResourceLoader.exists("res://assets/sprites/fx_disco.png"):
+			_spr.sprite_frames = Art.fx_frames("fx_disco", 8, 8, 4, 18.0, true)
+		else:
+			_spr.sprite_frames = Art.fx_frames("ferramenta", 12, 12, 2, 14.0, true)
+		_spr.offset = Vector2(0, -2)
+	elif mode == "tool":
 		_spr.sprite_frames = Art.fx_frames("ferramenta", 12, 12, 2, 14.0, true)
 		_spr.offset = Vector2(0, -10)
 	else:
@@ -39,6 +51,9 @@ func _physics_process(delta: float) -> void:
 	if get_tree().paused:
 		return
 	t += delta
+	if mode == "disco" or mode == "pedra":
+		_disco(delta)
+		return
 	if mode == "tool":
 		# Ímã do Ferrunho: desvia ferramentas próximas e as absorve
 		for a in get_tree().get_nodes_in_group("allies"):
@@ -83,3 +98,24 @@ func _physics_process(delta: float) -> void:
 			return
 	if t >= life:
 		queue_free()
+
+## Disco de cobre do Ravi (aliado): acerta o primeiro inimigo, para em paredes.
+func _disco(delta: float) -> void:
+	var step := dir * speed * delta
+	position += step
+	travelled += step.length()
+	if world.tile_solid_at(global_position) or travelled >= max_dist:
+		world.spark(global_position, 3)
+		if mode == "pedra":
+			world.dust(global_position)
+			Audio.play("thud", -6.0)
+		queue_free()
+		return
+	for e in world.enemies():
+		if not e.hittable() or e.kind == "dummy" or (e.kind == "wild" and e.angry_t <= 0.0):
+			continue
+		if e.global_position.distance_to(global_position + Vector2(0, 6)) <= 8.0 + e.radius:
+			e.take_damage(damage, global_position - dir * 6.0, {"src": "heroi" if mode == "pedra" else "aliado", "knock": 90.0 if mode == "pedra" else 50.0})
+			world.fx_at("hit", e.global_position + Vector2(0, -8), 0.18)
+			queue_free()
+			return

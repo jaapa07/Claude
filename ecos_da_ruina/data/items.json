@@ -311,5 +311,45 @@
   "folha": "itens_missao",
   "icone": 3,
   "desc": "\"Cinco guardiões mantinham o Eco em equilíbrio. Quando a Catedral tentou guardá-lo, eles adoeceram. Cada guardião caído devolve à terra um Eco.\""
+ },
+ "botas_vento": {
+  "nome": "Botas do Vento",
+  "tipo": "tecnica",
+  "raridade": 3,
+  "icone": 0,
+  "folha": "icons_chave",
+  "desc": "Segure a esquiva para CORRER. Correndo, você atropela inimigos (dano e empurrão) e atravessa longas trilhas num instante. Gasta vigor."
+ },
+ "frasco_seiva": {
+  "nome": "Frasco de Seiva",
+  "tipo": "tecnica",
+  "raridade": 4,
+  "icone": 1,
+  "folha": "icons_chave",
+  "desc": "Se você cair em combate, a seiva te levanta com metade da vida. Volta a encher ao descansar num santuário."
+ },
+ "semente_vida": {
+  "nome": "Semente de Vida",
+  "tipo": "tecnica",
+  "raridade": 3,
+  "icone": 3,
+  "folha": "icons_chave",
+  "desc": "Cada semente aumenta a vida máxima em 12, para sempre. Há sementes escondidas sob pedras, em segredos e como recompensa de contratos."
+ },
+ "corrente_vinculo": {
+  "nome": "Corrente de Vínculo",
+  "tipo": "tecnica",
+  "raridade": 4,
+  "icone": 4,
+  "folha": "icons_chave",
+  "desc": "O golpe carregado lança uma corrente que PUXA os inimigos à frente até você e os atordoa. Também alcança criaturas para a captura."
+ },
+ "luvas_pedra": {
+  "nome": "Luvas de Pedra",
+  "tipo": "tecnica",
+  "raridade": 3,
+  "icone": 5,
+  "folha": "icons_chave",
+  "desc": "Aperte E diante de uma pedra solta para erguê-la e arremessá-la. Algumas pedras escondem segredos."
  }
 }

@@ -1,0 +1,360 @@
+{
+ "saqueadores": {
+  "nome": "Saqueadores de Selos",
+  "tipo": "dupla",
+  "aliados": [
+   "bruna"
+  ],
+  "nivel": 3,
+  "requer": [
+   "visitou_bosque_lanternas"
+  ],
+  "mapa": "bosque_lanternas",
+  "texto": "Domadores estão roubando selos dos viajantes na trilha leste do Bosque das Lanternas.",
+  "objetivo": "Derrote os Domadores na trilha leste do Bosque (com a Bruna).",
+  "inimigos": [
+   {
+    "kind": "domador",
+    "id": "sq_d1",
+    "x": 37,
+    "y": 11
+   },
+   {
+    "kind": "domadora",
+    "id": "sq_d2",
+    "x": 45,
+    "y": 12
+   },
+   {
+    "kind": "fera",
+    "dono": "sq_d1",
+    "species": "brotisco",
+    "level": 4,
+    "x": 39,
+    "y": 12
+   },
+   {
+    "kind": "fera",
+    "dono": "sq_d2",
+    "species": "cascalito",
+    "level": 4,
+    "x": 43,
+    "y": 11
+   }
+  ],
+  "recompensa": {
+   "fragmentos": 70,
+   "xp": 90,
+   "itens": {
+    "selo_refinado": 2,
+    "essencia_azul": 1
+   }
+  }
+ },
+ "emboscada": {
+  "nome": "Emboscada nas Ruínas",
+  "tipo": "trio",
+  "aliados": [
+   "bruna",
+   "ravi"
+  ],
+  "nivel": 5,
+  "requer": [
+   "saqueadores_ok",
+   "visitou_clareira_raizes"
+  ],
+  "mapa": "clareira_raizes",
+  "texto": "Um bando maior tomou o pátio de ruínas da Clareira. Sozinho é suicídio: leve Bruna e Ravi.",
+  "objetivo": "Libere o pátio de ruínas da Clareira (trio: Bruna e Ravi).",
+  "inimigos": [
+   {
+    "kind": "domador",
+    "id": "em_d1",
+    "x": 17,
+    "y": 26
+   },
+   {
+    "kind": "domadora",
+    "id": "em_d2",
+    "x": 27,
+    "y": 26
+   },
+   {
+    "kind": "domador",
+    "id": "em_d3",
+    "x": 22,
+    "y": 23
+   },
+   {
+    "kind": "fera",
+    "dono": "em_d1",
+    "species": "lumipim",
+    "level": 5,
+    "x": 19,
+    "y": 28
+   },
+   {
+    "kind": "fera",
+    "dono": "em_d2",
+    "species": "brotisco",
+    "level": 5,
+    "x": 25,
+    "y": 28
+   },
+   {
+    "kind": "fera",
+    "dono": "em_d3",
+    "species": "cascalito",
+    "level": 6,
+    "x": 22,
+    "y": 25
+   }
+  ],
+  "recompensa": {
+   "fragmentos": 140,
+   "xp": 180,
+   "itens": {
+    "botas_vento": 1,
+    "essencia_roxa": 1
+   }
+  }
+ },
+ "ninhada": {
+  "nome": "A Ninhada Roubada",
+  "tipo": "dupla",
+  "aliados": [
+   "ravi"
+  ],
+  "nivel": 9,
+  "requer": [
+   "visitou_pedreira_oca"
+  ],
+  "mapa": "pedreira_oca",
+  "texto": "Domadores da escória prenderam filhotes de Faisquito na Pedreira Oca para vender como armas.",
+  "objetivo": "Derrote os Domadores da Pedreira Oca (com o Ravi) e liberte as feras.",
+  "inimigos": [
+   {
+    "kind": "domador",
+    "id": "ni_d1",
+    "x": 36,
+    "y": 15,
+    "nivel": 9
+   },
+   {
+    "kind": "domadora",
+    "id": "ni_d2",
+    "x": 42,
+    "y": 25,
+    "nivel": 9
+   },
+   {
+    "kind": "fera",
+    "dono": "ni_d1",
+    "species": "faisquito",
+    "level": 9,
+    "x": 38,
+    "y": 17
+   },
+   {
+    "kind": "fera",
+    "dono": "ni_d2",
+    "species": "fuligin",
+    "level": 9,
+    "x": 40,
+    "y": 27
+   }
+  ],
+  "recompensa": {
+   "fragmentos": 160,
+   "xp": 260,
+   "itens": {
+    "frasco_seiva": 1,
+    "selo_refinado": 3
+   }
+  }
+ },
+ "vesna": {
+  "nome": "A Caçadora de Ecos",
+  "tipo": "trio",
+  "aliados": [
+   "bruna",
+   "ravi"
+  ],
+  "nivel": 10,
+  "requer": [
+   "emboscada_ok",
+   "visitou_desfiladeiro"
+  ],
+  "mapa": "desfiladeiro",
+  "texto": "Vesna, líder dos Domadores, espera no Desfiladeiro do Eco com suas feras evoluídas.",
+  "objetivo": "Derrote Vesna, a Caçadora de Ecos, no Desfiladeiro (trio).",
+  "inimigos": [
+   {
+    "kind": "vesna",
+    "id": "vs_chefe",
+    "x": 20,
+    "y": 15
+   },
+   {
+    "kind": "domador",
+    "id": "vs_d1",
+    "x": 16,
+    "y": 18,
+    "nivel": 10
+   },
+   {
+    "kind": "domadora",
+    "id": "vs_d2",
+    "x": 24,
+    "y": 18,
+    "nivel": 10
+   },
+   {
+    "kind": "fera",
+    "dono": "vs_chefe",
+    "species": "galhardo",
+    "level": 10,
+    "x": 18,
+    "y": 14
+   },
+   {
+    "kind": "fera",
+    "dono": "vs_chefe",
+    "species": "auripim",
+    "level": 10,
+    "x": 22,
+    "y": 14
+   },
+   {
+    "kind": "fera",
+    "dono": "vs_d1",
+    "species": "cascalito",
+    "level": 9,
+    "x": 15,
+    "y": 16
+   }
+  ],
+  "recompensa": {
+   "fragmentos": 300,
+   "xp": 450,
+   "itens": {
+    "corrente_vinculo": 1,
+    "essencia_laranja": 1
+   }
+  }
+ },
+ "caca_cogumelos": {
+  "nome": "Praga de Cogumelos",
+  "tipo": "caca",
+  "aliados": [],
+  "nivel": 2,
+  "requer": [
+   "visitou_clareira_raizes"
+  ],
+  "alvo": {
+   "kind": "cogumelo",
+   "qtd": 4
+  },
+  "texto": "Os esporos estão sufocando as plantações. Tobi paga bem — e empresta as Luvas de Pedra dele.",
+  "objetivo": "Caçada: derrote 4 Cogumelos.",
+  "recompensa": {
+   "fragmentos": 60,
+   "xp": 70,
+   "itens": {
+    "luvas_pedra": 1,
+    "pocao": 2
+   }
+  }
+ },
+ "caca_lobos": {
+  "nome": "Matilha de Espinhos",
+  "tipo": "caca",
+  "aliados": [],
+  "nivel": 3,
+  "requer": [
+   "visitou_bosque_lanternas"
+  ],
+  "alvo": {
+   "kind": "lobo",
+   "qtd": 4
+  },
+  "texto": "Lobos de Espinhos atacam quem vai ao Bosque. Reduza a matilha.",
+  "objetivo": "Caçada: derrote 4 Lobos de Espinhos.",
+  "recompensa": {
+   "fragmentos": 90,
+   "xp": 100,
+   "itens": {
+    "semente_vida": 1,
+    "essencia_azul": 2
+   }
+  }
+ },
+ "caca_sentinelas": {
+  "nome": "Sentinelas Despertas",
+  "tipo": "caca",
+  "aliados": [],
+  "nivel": 5,
+  "requer": [
+   "visitou_santuario_a"
+  ],
+  "alvo": {
+   "kind": "sentinela",
+   "qtd": 3
+  },
+  "texto": "Sentinelas do Santuário da Seiva voltaram a patrulhar. Desligue três.",
+  "objetivo": "Caçada: derrote 3 Sentinelas.",
+  "recompensa": {
+   "fragmentos": 130,
+   "xp": 160,
+   "itens": {
+    "semente_vida": 1,
+    "essencia_roxa": 1
+   }
+  }
+ },
+ "caca_lesmas": {
+  "nome": "Rastro de Escória",
+  "tipo": "caca",
+  "aliados": [],
+  "nivel": 8,
+  "requer": [
+   "visitou_pedreira_oca"
+  ],
+  "alvo": {
+   "kind": "lesma",
+   "qtd": 4
+  },
+  "texto": "As lesmas de escória estão queimando os trilhos das minas.",
+  "objetivo": "Caçada: derrote 4 Lesmas de Escória.",
+  "recompensa": {
+   "fragmentos": 150,
+   "xp": 220,
+   "itens": {
+    "frasco_seiva": 1
+   }
+  }
+ },
+ "caca_automatos": {
+  "nome": "Autômatos Rebeldes",
+  "tipo": "caca",
+  "aliados": [],
+  "nivel": 10,
+  "requer": [
+   "visitou_fundicao_a"
+  ],
+  "alvo": {
+   "kind": "automato",
+   "qtd": 2
+  },
+  "texto": "Dois autômatos da fundição saíram do controle.",
+  "objetivo": "Caçada: derrote 2 Autômatos.",
+  "recompensa": {
+   "fragmentos": 220,
+   "xp": 320,
+   "itens": {
+    "semente_vida": 1,
+    "essencia_laranja": 1
+   }
+  }
+ }
+}

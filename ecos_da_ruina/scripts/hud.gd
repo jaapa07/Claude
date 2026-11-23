@@ -342,6 +342,9 @@ func _update_hud() -> void:
 		_prompt.position.x = 240.0 - w / 2.0
 		_prompt_lab.size.x = w - 8.0
 	var obj := Game.objective_text()
+	var ct := Game.contract_progress_text()
+	if ct != "":
+		obj = "[Contrato] " + ct
 	_obj_lab.text = ("Objetivo: " + obj) if obj != "" else ""
 	var hint := Game.tutorial_hint()
 	_hint.visible = hint != "" and not dlg_active

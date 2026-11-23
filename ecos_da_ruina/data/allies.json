@@ -1,0 +1,12 @@
+{
+ "bruna": {"nome": "Bruna", "titulo": "Escudeira da Vila", "sprite": "aliada_bruna", "estilo": "escudo", "icone": 0,
+  "hp_base": 95, "hp_nivel": 11, "atk_base": 7, "atk_nivel": 1.3, "vel": 66,
+  "criatura": {"species": "cascalito", "nome": "Pedregulho"},
+  "desc": "Atrai os inimigos com o escudo (Provocar) e segura a linha de frente. Sua criatura, Pedregulho, protege quem está perto.",
+  "falas": {"entra": "Bruna: Escudo em pé. Vamos!", "caida": "Bruna: Me levanta aqui!", "volta": "Bruna: Obrigada. Ainda dá pra lutar!", "fim": "Bruna: Boa dupla! Me chame no quadro quando precisar."}},
+ "ravi": {"nome": "Ravi", "titulo": "Batedor do Bosque", "sprite": "aliado_ravi", "estilo": "arremesso", "icone": 1,
+  "hp_base": 70, "hp_nivel": 8, "atk_base": 6, "atk_nivel": 1.2, "vel": 74,
+  "criatura": {"species": "lumipim", "nome": "Faísca"},
+  "desc": "Mantém distância e arremessa discos de cobre. Sua criatura, Faísca, ilumina e confunde inimigos.",
+  "falas": {"entra": "Ravi: Eu cubro vocês de longe.", "caida": "Ravi: Fui atingido... alguém?", "volta": "Ravi: Valeu! De volta à mira.", "fim": "Ravi: Contrato fechado. Até a próxima!"}}
+}

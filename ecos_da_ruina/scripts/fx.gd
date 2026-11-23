@@ -18,6 +18,9 @@ const SHEETS := {
 	"fire": ["fx_fire", 16, 16, 4, 12.0],
 	"quake": ["fx_quake", 48, 16, 3, 10.0],
 	"steam": ["minas_props", 16, 16, 2, 6.0, 9],
+	"corrente": ["fx_corrente", 16, 16, 3, 16.0],
+	"reviver": ["fx_reviver", 16, 16, 4, 10.0],
+	"vento": ["fx_vento", 16, 16, 3, 14.0],
 }
 
 var mode := "hit"

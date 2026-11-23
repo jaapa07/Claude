@@ -35,6 +35,8 @@ func _ready() -> void:
 	main.ui.instant = true
 	if "--casas" in args:
 		await run_casas()
+	elif "--grupo" in args:
+		await run_grupo()
 	elif "--equip" in args:
 		await run_equip()
 	elif "--powers" in args:
@@ -2497,3 +2499,103 @@ func run_casas() -> void:
 	W.save_now(3)
 	SaveSys.load_game(3)
 	check("Save mantém missões das casas", Game.has_flag("ervas_entregue") and Game.has_flag("brinquedo_entregue") and Game.has_flag("folha1_pega"))
+
+
+# ================================================================ CONTRATOS EM GRUPO (dupla / trio)
+func contract_enemies(cid: String) -> Array:
+	return W.enemies().filter(func(e): return e.alive_flag and e.contrato == cid)
+
+func run_grupo() -> void:
+	SaveSys.delete_slot(4)
+	main.start_new_game(4)
+	await frames(10)
+	await advance_dialogs()
+	Game.hero["level"] = 6
+	Game.hero["hp"] = Game.hero_max_hp()
+	Game.give_item("pocao", 6)
+	Game.set_flag("visitou_bosque_lanternas")
+	check("Quadro de contratos na vila", ent_by_id("quadro_vila") != null)
+	check("Bruna está na vila (NPC com folha própria)", ent_by_id("bruna") != null)
+	await use_ent("quadro_vila", Vector2(0, 16), Vector2.UP)
+	await frames(5)
+	check("Quadro abre a tela de contratos", main.ui.has_screen())
+	check("Contrato em dupla disponível; trio bloqueado", Game.contract_state("saqueadores") == "disponivel" and Game.contract_state("emboscada") == "bloqueado")
+	await shot("grupo_01_quadro")
+	await close_menus()
+	check("Aceitar contrato de dupla", Game.accept_contract("saqueadores"))
+	await frames(10)
+	check("Bruna entra no grupo (aliada + criatura dela) e sai do mapa como NPC", W.allies().size() == 1 and W.party_nodes.size() == 2 and ent_by_id("bruna") == null)
+	var ok := await exit_to("bosque_lanternas", 43 * 16.0, 15 * 16.0 + 8.0)
+	await frames(10)
+	check("Aliada acompanha o herói para outro mapa", ok and W.allies().size() == 1 and W.allies()[0].global_position.distance_to(P.global_position) < 80.0)
+	var es := contract_enemies("saqueadores")
+	var dom := es.filter(func(e): return e.kind in ["domador", "domadora"])
+	var fer := es.filter(func(e): return e.kind == "fera")
+	check("Domadores e feras do contrato aparecem no Bosque", dom.size() == 2 and fer.size() == 2, "%d %d" % [dom.size(), fer.size()])
+	check("Feras de domador não são capturáveis", fer.all(func(f): return not f.capturable))
+	await goto(tpos(33, 12), 30.0, 30.0)
+	await shot("grupo_02_dupla")
+	Game.dmg_stats.erase("aliado")
+	await engage_area(tpos(41, 12), 260.0, 160.0)
+	await secs(1.5)
+	check("Aliada e criatura dela causam dano", float(Game.dmg_stats.get("aliado", 0.0)) > 0.0, str(Game.dmg_stats.get("aliado", 0.0)))
+	check("Contrato de dupla concluído", Game.has_flag("saqueadores_ok"), "vivos=%d" % contract_enemies("saqueadores").size())
+	var freed := W.enemies().filter(func(e): return e.alive_flag and e.kind == "wild" and str(e.uid).begins_with("saqueadores_f"))
+	print("feras libertadas: ", freed.size())
+	await shot("grupo_03_fim")
+	await advance_dialogs()
+	await frames(5)
+	check("Recompensa entregue e aliada volta para a vila", Game.item_count("selo_refinado") >= 2 and Game.party.is_empty() and W.allies().is_empty())
+	if freed.size() > 0 and is_instance_valid(freed[0]):
+		Game.give_item("selo_basico", 4)
+		var cap := await capture_wild(freed[0], 8)
+		check("Fera libertada pode ser capturada", cap)
+	# fera libertada: teste determinístico do mecanismo
+	var d := {"kind": "domador", "id": "t_dom", "x": int(P.global_position.x / 16), "y": int(P.global_position.y / 16) + 6, "contrato": "teste"}
+	var en := Enemy.new(); en.init(W, "domador", d); W.ysort.add_child(en)
+	var fd := {"kind": "fera", "id": "t_fera", "dono": "t_dom", "species": "lumipim", "level": 3, "x": d["x"] + 2, "y": d["y"], "contrato": "teste"}
+	var fe := Enemy.new(); fe.init(W, "fera", fd); W.ysort.add_child(fe)
+	await frames(3)
+	en.take_damage(9999.0, en.global_position, {"src": "heroi"})
+	await frames(3)
+	check("Derrotar o domador liberta a fera (vira selvagem calma e capturável)", fe.alive_flag and fe.kind == "wild" and fe.capturable and fe.angry_t <= 0.0)
+	fe.queue_free()
+	# patrulha: aliada convocada fora de contrato
+	check("Bruna pode ser convocada para patrulha", Game.can_recruit("bruna"))
+	Game.toggle_party("bruna")
+	await frames(5)
+	var br: Node = W.allies()[0] if W.allies().size() > 0 else null
+	check("Bruna acompanha em patrulha", br != null)
+	if br != null:
+		br.hp = 1.0
+		br.take_hit(50.0, br.global_position + Vector2(10, 0), {})
+		check("Aliada cai ao perder a vida", br.st == Ally.St.DOWN)
+		await goto(br.global_position, 10.0, 6.0)
+		release_moves()
+		await secs(1.6)
+		check("Herói reanima a aliada ficando perto", br.st != Ally.St.DOWN and br.hp > 1.0)
+	Game.toggle_party("bruna")
+	await frames(5)
+	# trio
+	Game.set_flag("visitou_clareira_raizes")
+	Game.hero["level"] = 8
+	Game.hero["hp"] = Game.hero_max_hp()
+	check("Contrato em trio libera após a dupla", Game.contract_state("emboscada") == "disponivel")
+	Game.accept_contract("emboscada")
+	await frames(8)
+	check("Trio: Bruna e Ravi no grupo", W.allies().size() == 2)
+	await exit_to("vila_lumen", 8.0, 17 * 16.0 + 8.0)
+	await exit_to("clareira_raizes", 22 * 16.0 + 8.0, 30 * 16.0 + 8.0)
+	await frames(10)
+	check("Bando da emboscada aparece na Clareira", contract_enemies("emboscada").size() == 6)
+	await goto(tpos(22, 20), 30.0, 40.0)
+	await shot("grupo_04_trio")
+	await engage_area(tpos(22, 26), 300.0, 200.0)
+	await secs(1.5)
+	check("Contrato em trio concluído", Game.has_flag("emboscada_ok"), "vivos=%d hp=%d" % [contract_enemies("emboscada").size(), int(Game.hero["hp"])])
+	check("Recompensa do trio: Botas do Vento", Game.item_count("botas_vento") == 1)
+	await advance_dialogs()
+	W.save_now(4)
+	SaveSys.load_game(4)
+	await frames(10)
+	check("Save mantém contratos", Game.has_flag("saqueadores_ok") and Game.has_flag("emboscada_ok") and Game.contract == "")

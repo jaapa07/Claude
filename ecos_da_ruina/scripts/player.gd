@@ -75,6 +75,9 @@ var _vortex: AnimatedSprite2D
 var _slash_done := false
 var _sword: Sprite2D
 var _ghost_t := 0.0
+var running := false          # Botas do Vento
+var _run_fx_t := 0.0
+var _run_hits := {}
 
 func _ready() -> void:
 	collision_layer = 2
@@ -204,8 +207,12 @@ func _state_free(delta: float) -> void:
 		facing = move_input.normalized()
 		aim_dir = facing
 		Game.tutorial_event("move")
-	velocity = move_input.normalized() * SPEED * (0.7 if aiming else 1.0)
+	if running and (not Input.is_action_pressed("dodge") or move_input == Vector2.ZERO or vigor <= 1.0 or aiming):
+		running = false
+	velocity = move_input.normalized() * SPEED * (0.7 if aiming else (1.8 if running else 1.0))
 	move_and_slide()
+	if running:
+		_run_tick(delta)
 	# ordem de prioridade dos comandos
 	if Input.is_action_just_pressed("dodge"):
 		_try_dodge()
@@ -317,6 +324,8 @@ func _start_attack(def: Dictionary, charged: bool) -> void:
 	atk_def = def.duplicate()
 	if charged:
 		atk_def["charged"] = true
+		if Game.item_count("corrente_vinculo") > 0:
+			world.chain_pull(global_position, aim_dir)
 	atk_t = 0.0
 	atk_queued = false
 	_slash_done = false
@@ -373,6 +382,33 @@ func _state_dodge(delta: float) -> void:
 	if dodge_t >= DODGE_DUR:
 		dodge_cd = DODGE_COOLDOWN
 		state = S.FREE
+		# Botas do Vento: continuar segurando a esquiva vira corrida
+		if Game.item_count("botas_vento") > 0 and Input.is_action_pressed("dodge") and move_input != Vector2.ZERO:
+			running = true
+			_run_hits.clear()
+
+func _run_tick(delta: float) -> void:
+	_use_vigor(14.0 * delta)
+	_run_fx_t -= delta
+	if _run_fx_t <= 0.0:
+		_run_fx_t = 0.12
+		if ResourceLoader.exists("res://assets/sprites/fx_vento.png"):
+			world.fx_at("vento", global_position + Vector2(0, -4) - facing * 6.0, 0.25, facing.angle())
+		else:
+			world.dust(global_position)
+	var now := Time.get_ticks_msec()
+	for e in world.enemies():
+		if not e.hittable() or e.kind == "dummy" or (e.kind == "wild" and e.angry_t <= 0.0):
+			continue
+		if e.global_position.distance_to(global_position) <= 12.0 + e.radius:
+			var k: int = e.get_instance_id()
+			if now - int(_run_hits.get(k, -9999)) < 600:
+				continue
+			_run_hits[k] = now
+			e.take_damage(Game.hero_atk() * 0.9, global_position - facing * 4.0, {"src": "heroi", "knock": 140.0, "dir": facing})
+			e.interrupt()
+			world.hitstop(0.04)
+			Audio.play("hit", -4.0)
 
 func is_dodge_invulnerable() -> bool:
 	return state == S.DODGE and dodge_t >= IFRAME_START and dodge_t <= IFRAME_END
@@ -452,6 +488,16 @@ func _apply_damage(d: float) -> void:
 	Game.hero_changed.emit()
 	world.spawn_text(global_position + Vector2(0, -28), str(int(round(d))), Color(1, 0.4, 0.4))
 	if float(Game.hero["hp"]) <= 0.0:
+		if Game.flask_ready():
+			# Frasco de Seiva: levanta o herói com metade da vida
+			Game.use_flask()
+			Game.hero["hp"] = Game.hero_max_hp() * 0.5
+			Game.hero_changed.emit()
+			inv_timer = 1.5
+			Audio.play("heal")
+			world.fx_at("reviver" if ResourceLoader.exists("res://assets/sprites/fx_reviver.png") else "sparkle", global_position + Vector2(0, -12), 0.7, 0.0, 1.8)
+			world.say("O Frasco de Seiva te levantou! (enche de novo no santuário)")
+			return
 		_die()
 
 func _die() -> void:

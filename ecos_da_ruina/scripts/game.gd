@@ -42,6 +42,9 @@ var stats := {"kills": {}, "capturas": 0, "mortes": 0}
 var play_time := 0.0
 var difficulty := "aventura"
 var behavior := "preservar"
+var party: Array = []           # aliados humanos que acompanham o herói (máx. 2)
+var contract := ""              # contrato em grupo ativo
+signal party_changed
 var slot := 1
 
 # ---- estado de execução (não vai para o save)
@@ -148,6 +151,8 @@ func new_game(p_slot: int = 1) -> void:
 	stats = {"kills": {}, "capturas": 0, "mortes": 0}
 	play_time = 0.0
 	behavior = "preservar"
+	party = []
+	contract = ""
 	tmp_flags = {}
 	skill_cd = {}
 	swap_cd = 0.0
@@ -160,7 +165,8 @@ func to_dict() -> Dictionary:
 	return {"version": SAVE_VERSION, "hero": hero, "inventory": inventory, "fragments": fragments, "equipment": equipment, "upgrades": upgrades,
 		"individuals": individuals, "team": team, "sanctuary": sanctuary, "active_idx": active_idx, "flags": flags,
 		"chests": chests, "ecos": ecos, "eco_slots": eco_slots, "bestiary": bestiary, "location": location,
-		"checkpoint": checkpoint, "stats": stats, "play_time": play_time, "difficulty": difficulty, "behavior": behavior, "slot": slot}
+		"checkpoint": checkpoint, "stats": stats, "play_time": play_time, "difficulty": difficulty, "behavior": behavior, "slot": slot,
+		"party": party, "contract": contract}
 
 func validate_save(d: Dictionary) -> String:
 	if int(d.get("version", -1)) != SAVE_VERSION:
@@ -190,6 +196,7 @@ func from_dict(d: Dictionary) -> bool:
 	bestiary = d.get("bestiary", {}); location = d["location"]; checkpoint = d["checkpoint"]
 	stats = d.get("stats", stats); play_time = float(d.get("play_time", 0.0)); difficulty = d.get("difficulty", "aventura")
 	behavior = d.get("behavior", "preservar"); slot = int(d.get("slot", 1))
+	party = Array(d.get("party", [])); contract = str(d.get("contract", ""))
 	tmp_flags = {}; skill_cd = {}; swap_cd = 0.0; save_block = 0
 	in_game = true
 	_normalize_types()
@@ -259,7 +266,7 @@ func hero_level() -> int:
 	return int(hero.get("level", 1))
 
 func hero_max_hp() -> float:
-	var hp = 100.0 + 8.0 * (hero_level() - 1) + 6.0 * hero["talents"].get("resistencia", 0)
+	var hp = 100.0 + 8.0 * (hero_level() - 1) + 6.0 * hero["talents"].get("resistencia", 0) + 12.0 * item_count("semente_vida")
 	var am: String = equipment.get("amuleto", "")
 	if am != "" and Data.items.has(am):
 		hp += float(Data.items[am].get("hp", 0)) + float(forge_bonus("amuleto", "hp")) * upgrade_level(am)
@@ -784,6 +791,7 @@ func has_eco(id: String) -> bool:
 # =============================================================== MISSÕES / DIÁRIO
 func register_kill(kind: String) -> void:
 	stats["kills"][kind] = int(stats["kills"].get(kind, 0)) + 1
+	_hunt_progress(kind)
 	if has_flag("quest_esporos") and int(stats["kills"].get("cogumelo", 0)) >= 3 and not has_flag("esporos_ok"):
 		set_flag("esporos_ok")
 		toast.emit("Missão: 3 Cogumelos derrotados! Fale com Ysa.")
@@ -1016,3 +1024,120 @@ func check_item_steps() -> void:
 			if st.has("item") and not has_flag(st["flag"]) and item_count(st["item"]) >= int(st["alvo"]):
 				set_flag(st["flag"])
 				toast.emit("Missão: %s (%d/%d) — volte para entregar." % [Data.items[st["item"]]["nome"], int(st["alvo"]), int(st["alvo"])])
+
+
+# =============================================================== CONTRATOS EM GRUPO (dupla / trio)
+const PARTY_MAX := 2
+
+func contract_state(cid: String) -> String:
+	## "feito", "ativo", "bloqueado", "ocupado" (outro contrato ativo) ou "disponivel"
+	var c: Dictionary = Data.contracts.get(cid, {})
+	if c.is_empty():
+		return "bloqueado"
+	if has_flag(cid + "_ok"):
+		return "feito"
+	if contract == cid:
+		return "ativo"
+	for f in c.get("requer", []):
+		if not has_flag(f):
+			return "bloqueado"
+	if contract != "":
+		return "ocupado"
+	return "disponivel"
+
+func contract_lock_reason(cid: String) -> String:
+	var c: Dictionary = Data.contracts[cid]
+	for f in c.get("requer", []):
+		if not has_flag(f):
+			if f.ends_with("_ok"):
+				return "Conclua antes: " + Data.contracts.get(f.trim_suffix("_ok"), {}).get("nome", f)
+			if f.begins_with("visitou_"):
+				var m: String = f.trim_prefix("visitou_")
+				return "Visite antes: " + Data.maps.get(m, {}).get("name", m)
+			return "Ainda não disponível"
+	return ""
+
+func accept_contract(cid: String) -> bool:
+	if contract_state(cid) != "disponivel":
+		return false
+	contract = cid
+	party = (Data.contracts[cid]["aliados"] as Array).duplicate()
+	hero["caca_n"] = 0
+	set_flag("contrato_" + cid)
+	party_changed.emit()
+	quest_changed.emit()
+	toast.emit("Contrato aceito: %s (%s)" % [Data.contracts[cid]["nome"], {"dupla": "Dupla", "trio": "Trio", "caca": "Caçada"}.get(Data.contracts[cid]["tipo"], "")])
+	return true
+
+func abandon_contract() -> void:
+	if contract == "":
+		return
+	set_flag("contrato_" + contract, false)
+	contract = ""
+	party = []
+	party_changed.emit()
+	quest_changed.emit()
+
+func complete_contract(cid: String) -> void:
+	if has_flag(cid + "_ok"):
+		return
+	var c: Dictionary = Data.contracts[cid]
+	set_flag(cid + "_ok")
+	set_flag("contrato_" + cid, false)
+	var r: Dictionary = c.get("recompensa", {})
+	fragments += int(r.get("fragmentos", 0))
+	add_hero_xp(int(r.get("xp", 0)))
+	for u in team:
+		if individuals.has(u):
+			add_creature_xp(individuals[u], float(r.get("xp", 0)) * 0.6)
+	for it in r.get("itens", {}):
+		give_item(it, int(r["itens"][it]))
+	stats["contratos"] = int(stats.get("contratos", 0)) + 1
+	contract = ""
+	toast.emit("Contrato concluído: %s! +%d fragmentos" % [c["nome"], int(r.get("fragmentos", 0))])
+	inventory_changed.emit()
+	quest_changed.emit()
+
+## Depois do primeiro contrato, os aliados podem ser convocados para patrulhar junto (fora de contratos).
+func can_recruit(aid: String) -> bool:
+	return contract == "" and (has_flag("saqueadores_ok") if aid == "bruna" else has_flag("emboscada_ok"))
+
+func toggle_party(aid: String) -> void:
+	if aid in party:
+		party.erase(aid)
+	elif party.size() < PARTY_MAX:
+		party.append(aid)
+	party_changed.emit()
+
+
+# =============================================================== ITENS-CHAVE
+func flask_ready() -> bool:
+	return item_count("frasco_seiva") > int(hero.get("frascos_usados", 0))
+
+func use_flask() -> void:
+	hero["frascos_usados"] = int(hero.get("frascos_usados", 0)) + 1
+
+func refill_flasks() -> void:
+	hero["frascos_usados"] = 0
+
+## Caçadas (contratos solo): contam abates do tipo pedido desde que o contrato foi aceito.
+func _hunt_progress(kind: String) -> void:
+	if contract == "" or not Data.contracts.has(contract):
+		return
+	var c: Dictionary = Data.contracts[contract]
+	if c.get("tipo", "") != "caca" or c["alvo"]["kind"] != kind:
+		return
+	hero["caca_n"] = int(hero.get("caca_n", 0)) + 1
+	var n: int = int(hero["caca_n"]); var q: int = int(c["alvo"]["qtd"])
+	if n >= q:
+		complete_contract(contract)
+	else:
+		toast.emit("%s: %d/%d" % [c["nome"], n, q])
+
+func contract_progress_text() -> String:
+	if contract == "" or not Data.contracts.has(contract):
+		return ""
+	var c: Dictionary = Data.contracts[contract]
+	if c.get("tipo", "") == "caca":
+		return "%s (%d/%d)" % [c["objetivo"], int(hero.get("caca_n", 0)), int(c["alvo"]["qtd"])]
+	return c["objetivo"]

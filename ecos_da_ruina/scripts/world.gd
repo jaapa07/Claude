@@ -127,6 +127,7 @@ func _ready() -> void:
 	cl.add_child(darkness)
 	Game.flag_changed.connect(_on_flag_changed)
 	Game.team_changed.connect(_on_team_changed)
+	Game.party_changed.connect(_on_party_changed)
 
 func _make_tileset() -> TileSet:
 	if _tileset:
@@ -342,6 +343,7 @@ func load_map(id: String, spawn: String = "default", pos: Variant = null) -> voi
 	for n in fx_layer.get_children():
 		n.queue_free()
 	companion = null
+	party_nodes = []
 	ent_nodes.clear()
 	boss_nodes.clear()
 	encounter_active.clear()
@@ -380,6 +382,8 @@ func load_map(id: String, spawn: String = "default", pos: Variant = null) -> voi
 	camera.limit_right = W * TILE; camera.limit_bottom = H * TILE
 	_spawn_all(sp)
 	refresh_companion(false)
+	refresh_party()
+	_spawn_contract()
 	Audio.music(map.get("music", ""))
 	Game.location = {"map": id, "spawn": spawn, "pos": [sp.x, sp.y]}
 	if ui:
@@ -416,6 +420,13 @@ func _compute_tiles() -> void:
 					var ch: String = cur_tiles[j][i]
 					if chars.has(ch):
 						cur_tiles[j][i] = chars[ch]
+	# pedras erguidas com as Luvas de Pedra
+	var pref := "rocha_%s_" % map_id
+	for f in Game.flags:
+		if str(f).begins_with(pref):
+			var xy: PackedStringArray = str(f).substr(pref.length()).split("_")
+			if xy.size() == 2:
+				_set_cur(int(xy[0]), int(xy[1]), ".")
 	for d in ent_defs:
 		if d["type"] == "door":
 			var open := door_open(d)
@@ -500,6 +511,8 @@ func _spawn_all(player_pos: Vector2) -> void:
 		_spawn_def(i, player_pos)
 
 func _def_visible(d: Dictionary) -> bool:
+	if d.has("party_id") and d["party_id"] in Game.party:
+		return false
 	if d.has("if_flag") and not Game.has_flag(d["if_flag"]):
 		return false
 	if d.has("unless_flag") and Game.has_flag(d["unless_flag"]):
@@ -619,11 +632,127 @@ func refresh_companion(fx: bool) -> void:
 	if fx:
 		spark(c.global_position + Vector2(0, -8), 8)
 
+# =============================================================== ALIADOS (contratos em dupla / trio)
+var party_nodes: Array = []
+
+func _on_party_changed() -> void:
+	if not map.is_empty() and player != null and Game.in_game:
+		refresh_party()
+		# moradores que entram/saem do grupo aparecem/somem do mapa
+		for i in ent_defs.size():
+			var d: Dictionary = ent_defs[i]
+			if not d.has("party_id"):
+				continue
+			if _def_visible(d):
+				_spawn_def(i)
+			elif ent_nodes.has(i) and is_instance_valid(ent_nodes[i]):
+				ent_nodes[i].queue_free()
+				ent_nodes.erase(i)
+
+func refresh_party() -> void:
+	var want: Array = Game.party.duplicate()
+	var keep: Array = []
+	for a in party_nodes:
+		if is_instance_valid(a) and a is Ally and a.aid in want:
+			keep.append(a)
+		elif is_instance_valid(a):
+			a.queue_free()
+	party_nodes = []
+	for a in keep:
+		party_nodes.append(a)
+		party_nodes.append(a.beast)
+	var i := 0
+	for aid in want:
+		var have := false
+		for a in keep:
+			if a.aid == aid:
+				have = true
+				a.slot = i
+		if not have and Data.allies.has(aid):
+			var al := Ally.new()
+			al.init(self, aid, i)
+			al.position = safe_pos_near(player.global_position + Vector2(-14 if i == 0 else 14, 14))
+			ysort.add_child(al)
+			var cr: Dictionary = Data.allies[aid]["criatura"]
+			var bst := AllyBeast.new()
+			bst.init(self, al, cr["species"], cr["nome"])
+			bst.position = safe_pos_near(al.position + Vector2(0, 12))
+			ysort.add_child(bst)
+			al.beast = bst
+			party_nodes.append(al)
+			party_nodes.append(bst)
+		i += 1
+
+func allies() -> Array:
+	var out: Array = []
+	for a in party_nodes:
+		if is_instance_valid(a) and a is Ally:
+			out.append(a)
+	return out
+
+func _spawn_contract() -> void:
+	var cid: String = Game.contract
+	if cid == "" or not Data.contracts.has(cid):
+		return
+	var c: Dictionary = Data.contracts[cid]
+	if c.get("mapa", "") != map_id:
+		return
+	var boss_node: Node = null
+	for e in c["inimigos"]:
+		var d: Dictionary = (e as Dictionary).duplicate()
+		d["contrato"] = cid
+		if not d.has("id"):
+			d["id"] = "%s_f%d_%d" % [cid, int(d["x"]), int(d["y"])]
+		var en := Enemy.new()
+		en.init(self, d["kind"], d)
+		ysort.add_child(en)
+		if d["kind"] == "vesna":
+			boss_node = en
+	say("Contrato: " + c["objetivo"])
+	if boss_node != null:
+		ui.boss_bar(boss_node)
+		Audio.music("chefao")
+
+## Um domador do contrato caiu: as feras dele ficam livres (e podem ser capturadas); se não sobrou nenhum, o contrato termina.
+func contract_enemy_down(e: Node) -> void:
+	var cid: String = e.contrato
+	for f in enemies():
+		if f.kind == "fera" and f.dono == e.uid and f.alive_flag:
+			f.liberate()
+	if e.kind == "vesna":
+		ui.boss_bar(null)
+		Audio.music(map.get("music", ""))
+	var left := 0
+	for o in enemies():
+		if o != e and o.alive_flag and o.contrato == cid and o.kind != "fera":
+			left += 1
+	if left > 0 or not Data.contracts.has(cid):
+		return
+	Game.complete_contract(cid)
+	Audio.play("puzzle_ok")
+	var lines: Array = ["Contrato concluído: " + Data.contracts[cid]["nome"] + "!"]
+	for a in allies():
+		lines.append(Data.allies[a.aid]["falas"]["fim"])
+		a.heal_full()
+	var r: Dictionary = Data.contracts[cid].get("recompensa", {})
+	var its: Array = []
+	for it in r.get("itens", {}):
+		its.append("%s x%d" % [Data.items.get(it, {}).get("nome", it), int(r["itens"][it])])
+	lines.append("Recompensa: %d fragmentos, %d XP%s." % [int(r.get("fragmentos", 0)), int(r.get("xp", 0)), (", " + ", ".join(its)) if its.size() > 0 else ""])
+	await get_tree().create_timer(0.8).timeout
+	ui.dialog(lines, func():
+		Game.party = []
+		Game.party_changed.emit())
+
 func on_companion_exhausted() -> void:
 	refresh_companion(true)
 
 ## Antes de fechar portas de um encontro, garante que o companheiro esteja dentro da sala (a porta ainda está aberta).
 func gather_companion(room: Rect2) -> void:
+	for a in party_nodes:
+		if is_instance_valid(a) and not room.has_point(a.global_position):
+			a.global_position = safe_pos_near(player.global_position)
+			a.velocity = Vector2.ZERO
 	if companion != null and is_instance_valid(companion) and not room.has_point(companion.global_position):
 		companion.global_position = safe_pos_near(player.global_position)
 		companion.velocity = Vector2.ZERO
@@ -675,6 +804,9 @@ func targets() -> Array:
 		out.append(player)
 	if companion != null and is_instance_valid(companion) and companion.is_alive():
 		out.append(companion)
+	for a in party_nodes:
+		if is_instance_valid(a) and a.is_alive():
+			out.append(a)
 	return out
 
 func in_combat() -> bool:
@@ -760,6 +892,44 @@ func _update_prompt() -> void:
 func try_interact() -> void:
 	if current_prompt_ent != null and is_instance_valid(current_prompt_ent):
 		current_prompt_ent.interact(player)
+	elif Game.item_count("luvas_pedra") > 0:
+		try_lift()
+
+# =============================================================== ITENS-CHAVE
+## Luvas de Pedra: ergue a pedra solta ('o') à frente e a arremessa. A pedra fica removida (salvo por mapa).
+func try_lift() -> bool:
+	var p: Vector2 = player.global_position + player.facing * 14.0
+	var tx := int(floor(p.x / TILE)); var ty := int(floor(p.y / TILE))
+	if tx < 0 or ty < 0 or tx >= W or ty >= H or cur_tiles[ty][tx] != "o":
+		return false
+	Game.set_flag("rocha_%s_%d_%d" % [map_id, tx, ty])
+	Audio.play("thud")
+	var pr: Node2D = spawn_projectile(Vector2(tx * TILE + 8.0, ty * TILE + 4.0), player.facing, Game.hero_atk() * 1.5, player, "pedra")
+	pr.speed = 200.0
+	pr.max_dist = 110.0
+	Game.stats["pedras"] = int(Game.stats.get("pedras", 0)) + 1
+	return true
+
+## Corrente de Vínculo: puxa os inimigos num cone à frente até o herói e os atordoa.
+func chain_pull(from: Vector2, dir: Vector2) -> void:
+	var n := 0
+	for e in enemies():
+		if not e.hittable() or e.boss or e.kind == "dummy":
+			continue
+		var to: Vector2 = e.global_position - from
+		if to.length() > 110.0 or to.length() < 14.0 or to.normalized().dot(dir) < 0.75:
+			continue
+		if Combat.ray_blocked(self, from, e.global_position):
+			continue
+		e.knock_v = -to.normalized() * min(260.0, to.length() * 3.2)
+		e.interrupt()
+		if e.kind == "wild":
+			e.angry_t = max(e.angry_t, 3.0)
+		n += 1
+		fx_at("bolt", from + Vector2(0, -10), 0.18, 0.0, 1.0).to = e.global_position + Vector2(0, -8)
+	if n > 0:
+		Audio.play("lever", -2.0)
+		spawn_text(from + Vector2(0, -34), "Corrente!", Color(1.0, 0.8, 0.45))
 
 func _update_exits() -> void:
 	if transition_busy or arrival_t > 0.0 or player.state == Player.S.DEAD:
@@ -947,7 +1117,9 @@ func start_dialog(did: String, speaker: Node = null) -> void:
 		elif shop:
 			ui.open_shop("ysa")
 		elif v.get("forge", false):
-			ui.open_forge())
+			ui.open_forge()
+		elif v.get("contratos", false):
+			ui.open_contracts())
 
 func open_shrine(shrine: Ent) -> void:
 	var first := not Game.has_flag("shrine_" + shrine.eid)
@@ -963,6 +1135,9 @@ func open_shrine(shrine: Ent) -> void:
 
 func rest_at_shrine() -> void:
 	Game.heal_team()
+	Game.refill_flasks()
+	for a in allies():
+		a.heal_full()
 	player.reset_resources()
 	player.state = Player.S.INTERACT
 	respawn_commons()

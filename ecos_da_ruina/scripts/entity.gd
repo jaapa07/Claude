@@ -48,8 +48,12 @@ func _ready() -> void:
 		"npc":
 			solid = true
 			anim = AnimatedSprite2D.new()
-			anim.sprite_frames = Art.npc_frames(def.get("sprite", "npc_elder"))
-			anim.offset = Vector2(0, -6)
+			if def.get("human", false):
+				anim.sprite_frames = Art.human_frames(def["sprite"])
+				anim.offset = Vector2(0, -14)
+			else:
+				anim.sprite_frames = Art.npc_frames(def.get("sprite", "npc_elder"))
+				anim.offset = Vector2(0, -6)
 			add_child(anim)
 			anim.play("idle_down")
 			_shadow()
@@ -133,7 +137,7 @@ func _ready() -> void:
 			reach = 22.0
 		"pickup":
 			sprite = Sprite2D.new()
-			sprite.texture = Art.region("itens_missao", int(def.get("frame", 0)) * 16, 0, 16, 16)
+			sprite.texture = Art.region(def.get("sheet", "itens_missao"), int(def.get("frame", 0)) * 16, 0, 16, 16)
 			sprite.offset = Vector2(0, -2)
 			add_child(sprite)
 			solid = false
@@ -239,7 +243,7 @@ func prompt() -> String:
 		"crack": return "" if Game.has_flag(def.get("flag", "")) else "Rocha fissurada"
 		"ore": return "" if opened else "Minerar"
 		"anvil": return "Forja"
-		"prop": return "Examinar" if def.has("dialog") else ("Forja" if def.get("forge", false) else "")
+		"prop": return "Contratos" if def.get("contratos", false) else ("Examinar" if def.has("dialog") else ("Forja" if def.get("forge", false) else ""))
 		"pickup": return "Pegar"
 		"spirit_mark": return "Examinar"
 		"rite_reset": return "Reiniciar rito"
@@ -270,7 +274,9 @@ func interact(player: Node) -> void:
 		"ore": _mine()
 		"anvil": world.ui.open_forge()
 		"prop":
-			if def.get("forge", false):
+			if def.get("contratos", false):
+				world.ui.open_contracts()
+			elif def.get("forge", false):
 				world.ui.open_forge()
 			elif def.has("dialog"):
 				world.start_dialog(def["dialog"], self)

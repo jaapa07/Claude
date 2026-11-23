@@ -58,6 +58,9 @@ var dummy_heal_t := 0.0
 var blind_t := 0.0           # dentro da Nuvem de Fuligem: erra metade dos ataques
 var trail_t := 0.0           # lesma de escória: deixa poças quentes
 var _tw: Tween
+var contrato := ""           # contrato em grupo que gerou este inimigo
+var dono := ""               # fera: id do domador dono
+var human := false           # domadores usam folha humana (4 direções)
 
 func init(p_world: Node, p_kind: String, e: Dictionary) -> void:
 	world = p_world
@@ -66,24 +69,29 @@ func init(p_world: Node, p_kind: String, e: Dictionary) -> void:
 	enc_id = str(e.get("enc", ""))
 	home = Vector2(float(e["x"]) * 16.0 + 8.0, float(e["y"]) * 16.0 + 8.0)
 	position = home
-	if kind == "wild":
+	contrato = str(e.get("contrato", ""))
+	dono = str(e.get("dono", ""))
+	if kind == "wild" or kind == "fera":
 		species_id = e["species"]
 		level = int(e.get("level", 1))
 		var s: Dictionary = Data.species[species_id]
-		def = Data.enemies["selvagem"].duplicate()
+		def = Data.enemies["selvagem" if kind == "wild" else "fera"].duplicate()
 		def["sprite"] = s["sprite"]
 		def["frame"] = s["frame"]
 		def["nome"] = s["nome"]
 		affinity = s["afinidade"]
 		max_hp = floor(float(s["hp_base"]) + float(s["hp_cresc"]) * (level - 1))
 		damage = float(s["atk_base"]) + float(s["atk_cresc"]) * (level - 1) * 0.9
-		capturable = true
+		capturable = kind == "wild"
 		small = bool(s.get("pequeno", true))
 		xp_level = level
 		unique = bool(e.get("unique", false))
 		garantida = bool(e.get("garantida", false))
 		radius = 7.0
 		shown_name = "%s Nv.%d" % [s["nome"], level]
+		if kind == "fera":
+			shown_name = "%s do Domador Nv.%d" % [s["nome"], level]
+			max_hp = floor(max_hp * 1.35)
 	else:
 		def = Data.enemies[kind].duplicate()
 		max_hp = float(def["hp"])
@@ -93,6 +101,12 @@ func init(p_world: Node, p_kind: String, e: Dictionary) -> void:
 		guard_front = float(def.get("guarda_frontal", 0.0))
 		xp_level = int(def.get("nivel", {"lobo": 3, "cogumelo": 2, "sentinela": 4, "lenhador": 6, "cervo": 8}.get(kind, 1)))
 		shown_name = def.get("nome", kind)
+		human = bool(def.get("humano", false))
+		if e.has("nivel"):
+			var dl: int = int(e["nivel"]) - xp_level
+			max_hp = floor(max_hp * (1.0 + 0.14 * dl))
+			damage = damage * (1.0 + 0.1 * dl)
+			xp_level = int(e["nivel"])
 	speed = float(def.get("vel", 40))
 	hp = max_hp
 	var a: String = def.get("ataque", "nenhum")
@@ -106,6 +120,7 @@ func _attack_params(a: String) -> Dictionary:
 		"selvagem": return {"wind": 0.45, "dur": 0.14, "rec": 0.9, "cd": 0.8, "start": 18.0, "r": 18.0, "arc": 50.0}
 		"arremesso": return {"wind": 0.65, "dur": 0.15, "rec": 0.8, "cd": 1.5, "start": 120.0, "keep": 60.0}
 		"lesma": return {"wind": 0.75, "dur": 0.18, "rec": 1.0, "cd": 1.0, "start": 24.0, "r": 24.0, "arc": 55.0}
+		"corrente": return {"wind": 0.6, "dur": 0.16, "rec": 0.8, "cd": 1.0, "start": 46.0, "r": 50.0, "arc": 24.0}
 		"martelo": return {"wind": 1.1, "dur": 0.45, "rec": 1.3, "cd": 1.2, "start": 46.0, "len": 80.0, "w": 14.0}
 	return {}
 
@@ -125,10 +140,10 @@ func _ready() -> void:
 	if sp_name != "":
 		fw = int(def["frame"][0]); fh = int(def["frame"][1])
 		sprite = AnimatedSprite2D.new()
-		sprite.sprite_frames = Art.creature_frames(sp_name, fw, fh)
+		sprite.sprite_frames = Art.human_frames(sp_name) if human else Art.creature_frames(sp_name, fw, fh)
 		sprite.offset = Vector2(0, -fh / 2.0 + 2.0)
 		add_child(sprite)
-		sprite.play("idle")
+		_anim("idle")
 		if kind == "dummy":
 			sprite.modulate = Color(1.0, 0.9, 0.7)
 	_build_visuals()
@@ -221,9 +236,20 @@ func _tint() -> Color:
 		return Color(1.0, 0.9, 0.7)
 	return Color.WHITE
 
+const HUMAN_ANIM := {"idle": "idle", "walk": "walk", "windup": "atk0", "attack": "atk2", "hurt": "hurt"}
+
 func _anim(n: String) -> void:
 	if hurt_t > 0.0 and alive_flag:
 		n = "hurt"
+	if human and sprite:
+		var dv: Vector2 = attack_dir if (st == St.WINDUP or st == St.ATTACK) else (velocity if velocity.length() > 4.0 else face)
+		if target != null and is_instance_valid(target) and st != St.WINDUP and st != St.ATTACK and velocity.length() <= 4.0:
+			dv = target.global_position - global_position
+		var an: String = "%s_%s" % [HUMAN_ANIM.get(n, "idle"), Art.dir_name(dv)]
+		sprite.flip_h = false
+		if sprite.animation != an:
+			sprite.play(an)
+		return
 	if sprite and sprite.animation != n:
 		sprite.play(n)
 
@@ -304,7 +330,7 @@ func _face_to(p: Vector2) -> void:
 	var d := p - global_position
 	if abs(d.x) > 1.0:
 		face = Vector2(sign(d.x), 0)
-		if sprite:
+		if sprite and not human:
 			sprite.flip_h = d.x < 0.0
 
 func _chase(delta: float) -> void:
@@ -370,6 +396,9 @@ func _begin_attack() -> void:
 		if target != null and is_instance_valid(target) and a == "investida":
 			attack_dir = (target.global_position - global_position).normalized() if st_t == 0.0 and false else attack_dir
 	_anim("attack")
+	if a == "corrente" and ResourceLoader.exists("res://assets/sprites/fx_corrente.png"):
+		world.fx_at("corrente", global_position + attack_dir * 26.0 + Vector2(0, -10), 0.22, attack_dir.angle(), 1.4)
+		Audio.play("swing", -4.0)
 	if a == "arremesso" and target != null and is_instance_valid(target):
 		var dir := (target.global_position - global_position).normalized()
 		if blind_t > 0.0:
@@ -511,7 +540,7 @@ func take_damage(amount: float, from_pos: Vector2, opts: Dictionary = {}) -> flo
 			Game.tutorial_event("attack_dummy")
 		return dmg
 	# modo Preservar: a criatura parceira não derruba um alvo capturável — deixa a captura para o herói
-	if src == "companion" and capturable and not boss and Game.behavior == "preservar":
+	if (src == "companion" or src == "aliado") and capturable and not boss and Game.behavior == "preservar":
 		dmg = min(dmg, max(0.0, hp - max_hp * 0.08))
 	hp -= dmg
 	hurt_t = 0.16
@@ -560,6 +589,8 @@ func die(src: String) -> void:
 	var d := float(def.get("xp", 0))
 	_give_rewards(src)
 	world.enemy_died(self)
+	if contrato != "" and kind != "fera":
+		world.contract_enemy_down(self)
 	_death_fx()
 
 func _give_rewards(_src: String) -> void:
@@ -621,6 +652,27 @@ func captured_by_hero() -> void:
 
 func is_alive() -> bool:
 	return alive_flag
+
+## Fera de domador libertada: vira criatura selvagem calma e pode ser capturada.
+func liberate() -> void:
+	kind = "wild"
+	contrato = ""
+	dono = ""
+	capturable = true
+	angry_t = 0.0
+	target = null
+	st = St.IDLE
+	home = global_position
+	var s: Dictionary = Data.species[species_id]
+	max_hp = floor(float(s["hp_base"]) + float(s["hp_cresc"]) * (level - 1))
+	hp = min(hp, max_hp)
+	def = Data.enemies["selvagem"].duplicate()
+	def["sprite"] = s["sprite"]; def["frame"] = s["frame"]; def["nome"] = s["nome"]
+	P = _attack_params("selvagem")
+	shown_name = "%s Nv.%d" % [s["nome"], level]
+	add_to_group("wild")
+	world.spawn_text(global_position + Vector2(0, -fh - 4), "Livre!", Color(0.6, 1.0, 0.7))
+	world.spark(global_position + Vector2(0, -8), 6)
 
 # =============================================================== VISUAIS (sprites; nada desenhado por código)
 var _bar: TextureProgressBar

@@ -141,6 +141,11 @@ def vila():
     m.ent(type="npc", id="mae", sprite="npc_corvelo", dialog="mae", x=26, y=18, nome="Dona Corvelo", if_flag="cervo_morto")
     m.ent(type="npc", id="tobi", sprite="npc_smith", dialog="ferreiro", x=30, y=20, nome="Tobi")
     m.ent(type="sign", id="treino", dialog="treino", x=10, y=11)
+    # contratos em grupo: quadro e aliados (somem do mapa quando estão no grupo do herói)
+    m.ent(type="pickup", id="semente_vila", item="semente_vida", sheet="icons_chave", frame=3, flag="semente_vila_pega", x=12, y=8, if_flag="rocha_vila_lumen_12_8", unless_flag="semente_vila_pega")
+    m.ent(type="prop", id="quadro_vila", sheet="quadro_contratos", frame=0, x=29, y=13, solid=True, contratos=True)
+    m.ent(type="npc", id="bruna", sprite="aliada_bruna", human=True, dialog="bruna", x=31, y=13, nome="Bruna", party_id="bruna")
+    m.ent(type="npc", id="ravi", sprite="aliado_ravi", human=True, dialog="ravi", x=28, y=15, nome="Ravi", party_id="ravi", if_flag="saqueadores_ok")
     m.ent(type="sign", id="placa_vila", dialog="placa_vila", x=19, y=18)
     m.ent(type="dummy", id="dummy1", x=11, y=10)
     m.ent(type="dummy", id="dummy2", x=14, y=10)
@@ -250,6 +255,8 @@ def clareira():
     m.rect(21, 36, 4, 2, "p"); m.rect(21, 0, 4, 2, "p")
     m.spawns = {"from_vila": [23, 3], "from_santuario": [23, 35]}
     m.ent(type="sign", id="placa_clareira", dialog="placa_clareira", x=22, y=23)
+    m.ent(type="pickup", id="semente_clareira", item="semente_vida", sheet="icons_chave", frame=3, flag="semente_clareira_pega", x=9, y=3, if_flag="rocha_clareira_raizes_9_3", unless_flag="semente_clareira_pega")
+    m.ent(type="pickup", id="semente_clareira2", item="semente_vida", sheet="icons_chave", frame=3, flag="semente_clareira2_pega", x=35, y=10, if_flag="rocha_clareira_raizes_35_10", unless_flag="semente_clareira2_pega")
     m.ent(type="pickup", id="folha3", item="folha_lanterna", frame=0, flag="folha3_pega", x=38, y=19, unless_flag="folha3_pega")
     m.ent(type="plate", id="c_placa1", group="placas_c", x=15, y=28)
     m.ent(type="plate", id="c_placa2", group="placas_c", x=30, y=28)
@@ -475,6 +482,7 @@ def forja():
                 "from_fundicao": [23, 4], "from_elevador": [40, 21]}
     m.ent(type="shrine", id="forja", x=24, y=15)
     m.ent(type="sign", id="placa_forja", dialog="placa_forja", x=21, y=21)
+    m.ent(type="prop", id="quadro_forja", sheet="quadro_contratos", frame=0, x=30, y=15, solid=True, contratos=True)
     # rotinas: os moradores mudam de lugar conforme o progresso
     m.ent(type="npc", id="doran", sprite="npc_forja2", dialog="doran", x=20, y=16, nome="Doran", unless_flag="ferreiro_morto")
     m.ent(type="npc", id="doran_forja", sprite="npc_forja2", dialog="doran", x=33, y=12, nome="Doran", if_flag="ferreiro_morto")

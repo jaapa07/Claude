@@ -14,6 +14,11 @@ palette bruna from heroi
   W = #a8946a
   p = #4a4238
   P = #2e2820
+  g = #4e9a5e
+  G = #2e6a40
+  u = #d88a48
+  U = #8e5428
+  i = #f4c07a
 end
 palette ravi from heroi
   s = #a86a44

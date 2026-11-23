@@ -11,6 +11,8 @@ var regions := {}
 var quests := {}
 var dialogs := {}
 var forge := {}
+var allies := {}
+var contracts := {}
 var maps := {}
 var errors: Array = []
 
@@ -38,6 +40,8 @@ func load_all() -> void:
 	regions = _read("res://data/regions.json")
 	quests = _read("res://data/quests.json")
 	recipes = _read("res://data/recipes.json")
+	allies = _read("res://data/allies.json")
+	contracts = _read("res://data/contracts.json")
 	dialogs = _read("res://data/dialogs.json")
 	forge = _read("res://data/forge.json")
 	maps.clear()
