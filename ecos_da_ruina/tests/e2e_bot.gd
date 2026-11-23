@@ -2738,7 +2738,9 @@ func run_grupo() -> void:
 	check("Recompensa entregue e aliada volta para a vila", Game.item_count("selo_refinado") >= 2 and Game.party.is_empty() and W.allies().is_empty())
 	if freed.size() > 0 and is_instance_valid(freed[0]):
 		Game.give_item("selo_basico", 4)
+		Game.rng_override = func(): return 0.0
 		var cap := await capture_wild(freed[0], 8)
+		Game.rng_override = Callable()
 		check("Fera libertada pode ser capturada", cap)
 	# fera libertada: teste determinístico do mecanismo
 	var d := {"kind": "domador", "id": "t_dom", "x": int(P.global_position.x / 16), "y": int(P.global_position.y / 16) + 6, "contrato": "teste"}

@@ -251,7 +251,6 @@ func _creature_menu(uuid: String, parent: MenuScreen) -> void:
 		else:
 			Game.set_active(uuid); world.refresh_companion(true); s.close(); _fill_team(parent), "Define esta criatura como a ativa no mapa."))
 	items.append(_it("Apelido…", func(): _rename(ind, func(): s.close(); _fill_team(parent)), "Dá um apelido (até 12 letras)."))
-	items.append(_acc_row(uuid, func(): s.close(); _fill_team(parent)))
 	var ev := Game.evolution_status(ind)
 	items.append(_it("Evoluir" + ("" if ev["possivel"] else " (indisponível)"), func(): _evolve_confirm(ind, func(): s.close(); _fill_team(parent)), ev.get("motivo", "") if not ev["possivel"] else "Confirme a evolução fora de combate.", ev["possivel"] and not world.in_combat()))
 	items.append(_it("Habilidades…", func(): open_habilidades(uuid, func(): s.setup(Game.creature_name(ind), items, creature_info(ind))), "Escolha qual habilidade aprendida a criatura usa no Q (botão estrela no toque)."))
@@ -260,6 +259,7 @@ func _creature_menu(uuid: String, parent: MenuScreen) -> void:
 			world.refresh_companion(true); s.close(); _fill_team(parent)
 		else:
 			toast("Precisa manter ao menos uma criatura na equipe."), "Guarda no armazenamento (não recebe XP).", Game.team.size() > 1))
+	items.append(_acc_row(uuid, func(): s.close(); _fill_team(parent)))
 	items.append(_it("Voltar", func(): s.close()))
 	s.setup(Game.creature_name(ind), items, creature_info(ind))
 	for it in items:
@@ -410,7 +410,6 @@ func _storage_menu(uuid: String, refill: Callable) -> void:
 		else:
 			toast("Equipe cheia (3)."), "", Game.team.size() < 3))
 	items.append(_it("Apelido…", func(): _rename(ind, func(): s.close(); refill.call())))
-	items.append(_acc_row(uuid, func(): s.close(); refill.call()))
 	items.append(_it("Habilidades…", func(): open_habilidades(uuid, func(): s.setup(Game.creature_name(ind), items, creature_info(ind, Game.active_ind()))), "Escolha qual habilidade aprendida a criatura usa no Q."))
 	items.append(_it("Liberar…", func():
 		var why := Game.can_release(uuid)
@@ -419,6 +418,7 @@ func _storage_menu(uuid: String, refill: Callable) -> void:
 		else:
 			_confirm("Liberar %s?" % Game.creature_name(ind), "Esta criatura será liberada para sempre. Isso não pode ser desfeito.", func():
 				Game.release(uuid); s.close(); refill.call()), "Liberta a criatura (pede confirmação)."))
+	items.append(_acc_row(uuid, func(): s.close(); refill.call()))
 	items.append(_it("Voltar", func(): s.close()))
 	s.setup(Game.creature_name(ind), items, creature_info(ind, Game.active_ind()))
 
