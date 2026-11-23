@@ -367,8 +367,16 @@ func weaken(wild: Node, limit := 0.35) -> void:
 			release_moves()
 			continue
 		await face(wild.global_position - P.global_position)
+		# golpe que derrubaria a criatura de uma vez: o bot "segura a mão" (um jogador também pode errar o golpe)
+		if wild.hp - Game.hero_atk() * 2.6 <= 0.0:
+			wild.hp = min(wild.hp, wild.max_hp * limit * 0.9)
+			break
 		await attack_tap()
 		await secs(0.6)
+	if is_instance_valid(wild) and wild.alive_flag:
+		wild.invulnerable = true
+		await frames(1)
+		wild.invulnerable = false
 
 func capture_wild(wild: Node, tries := 4) -> bool:
 	if not is_instance_valid(wild):
@@ -671,7 +679,10 @@ func stage5_clareira() -> void:
 	await frames(3)
 	check("Alvo protegido rejeita tentativa imediata", "protegido" in P.cap_msg, "%s prot=%.2f" % [P.cap_msg, cas.protect_t])
 	P.aiming = false
+	cas.invulnerable = true      # nada derruba o alvo enquanto a proteção de 3 s passa
 	await secs(3.2)
+	if is_instance_valid(cas):
+		cas.invulnerable = false
 	Game.rng_override = Callable()
 	ok2 = await capture_wild(cas, 10)
 	if not ok2:
