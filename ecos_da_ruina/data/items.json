@@ -78,7 +78,7 @@
  "lingote": {
   "nome": "Lingote de Cobre",
   "tipo": "material",
-  "preco": 0,
+  "preco": 45,
   "icone": 2,
   "folha": "icons_minas",
   "desc": "Cobre refinado da Fundição. Raro: autômatos, chefes e baús."
@@ -99,5 +99,49 @@
   "icone": 3,
   "folha": "icons_minas",
   "desc": "Reduz 12% do dano recebido."
+ },
+ "luvas_termicas": {
+  "nome": "Luvas Térmicas",
+  "tipo": "tecnica",
+  "icone": 5,
+  "desc": "Técnica do Rito da Forja: o piso em brasa e as poças de escória ferem metade."
+ },
+ "amuleto_brasa": {
+  "nome": "Amuleto da Brasa",
+  "tipo": "amuleto",
+  "hp": 20,
+  "calor": 0.5,
+  "icone": 5,
+  "desc": "+20 de vida máxima e o calor fere metade (acumula com as Luvas Térmicas)."
+ },
+ "diario_fundidor": {
+  "nome": "Diário do Fundidor",
+  "tipo": "historia",
+  "icone": 6,
+  "desc": "\"Dia 40. O mestre jura que o fogo da caldeira fala. Hoje alimentou a fornalha com o próprio martelo e não voltou. A forja está mais quente, e nós, com mais medo.\""
+ },
+ "diario_mineiro": {
+  "nome": "Diário de um Mineiro",
+  "tipo": "historia",
+  "icone": 6,
+  "desc": "\"A Tessa pediu que eu voltasse antes do turno da noite. Ouvi marteladas vindas da Fundição, mesmo com ela fechada. Se alguém ler isto: as válvulas azuis ainda funcionam.\""
+ },
+ "diario_tessa": {
+  "nome": "Bilhete da Tessa",
+  "tipo": "historia",
+  "icone": 6,
+  "desc": "\"Escondi o que sobrou do turno atrás da placa do vapor. Se eu não voltar, que alguém observe a parede que chia.\""
+ },
+ "diario_elevador": {
+  "nome": "Manual do Elevador",
+  "tipo": "historia",
+  "icone": 6,
+  "desc": "\"O elevador da praça sobe com o vapor da grande forja. Forja fria, elevador parado.\""
+ },
+ "diario_ilda": {
+  "nome": "Caderno da Ilda",
+  "tipo": "historia",
+  "icone": 6,
+  "desc": "\"Selamos o depósito com rocha antes que o Devorador o encontrasse. Quem tiver fogo bastante para romper a pedra merece o que está lá.\""
  }
 }

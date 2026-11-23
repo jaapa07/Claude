@@ -10,7 +10,8 @@ os.makedirs(OUT, exist_ok=True)
 SOLID = set("T~RhHcxFbDPoCvMLuJZXOAaI")
 PASS_FOR_BFS = set(".,fprySwBgGkeDx" + "mQq=|jz%<I")  # portas/barreiras contam como abriveis
 # entidades opcionais atras de rocha fissurada, passagem secreta ou trilho do Ferrunho
-OPTIONAL_BEHIND = {"forja_bau_rocha", "veio_bau", "veio_placa", "veio_rocha", "trilhos_bau_ilha"}
+OPTIONAL_BEHIND = {"forja_bau_rocha", "veio_bau", "veio_placa", "veio_rocha", "trilhos_bau_ilha", "trilhos_bau_vapor",
+                   "fa_bau_caldeira", "rito_mec1", "rito_mec2", "rito_mec3", "rito_altar2", "rito_placa_av"}
 
 
 class M:
@@ -463,18 +464,25 @@ def forja():
                 "from_fundicao": [23, 4], "from_elevador": [40, 21]}
     m.ent(type="shrine", id="forja", x=24, y=15)
     m.ent(type="sign", id="placa_forja", dialog="placa_forja", x=21, y=21)
-    m.ent(type="npc", id="doran", sprite="npc_forja2", dialog="doran", x=20, y=16, nome="Doran")
+    # rotinas: os moradores mudam de lugar conforme o progresso
+    m.ent(type="npc", id="doran", sprite="npc_forja2", dialog="doran", x=20, y=16, nome="Doran", unless_flag="ferreiro_morto")
+    m.ent(type="npc", id="doran_forja", sprite="npc_forja2", dialog="doran", x=33, y=12, nome="Doran", if_flag="ferreiro_morto")
     m.ent(type="npc", id="ilda", sprite="npc_forja1", dialog="ilda", x=35, y=8, nome="Mestra Ilda")
+    m.ent(type="npc", id="joca", sprite="npc_forja2", dialog="joca", x=28, y=21, nome="Joca", if_flag="ferreiro_morto")
+    m.ent(type="spirit_mark", id="forja_inscricao", x=17, y=13, requires_eco="olhar_velado",
+          msg="Sob a fuligem do chão da praça há letras que somem quando você as encara. Algo oculto... (Olhar Velado — volte depois)")
     m.ent(type="anvil", id="bigorna", x=37, y=8)
     m.ent(type="furnace", id="forja_f1", x=32, y=8, lit_flag="ferreiro_morto")
     m.ent(type="furnace", id="forja_f2", x=40, y=8, lit_flag="ferreiro_morto")
     m.ent(type="npc", id="bento", sprite="npc_elder", dialog="bento", x=8, y=29, nome="Bento")
-    m.ent(type="npc", id="tessa", sprite="npc_ranger", dialog="tessa", x=7, y=8, nome="Tessa")
-    m.ent(type="npc", id="nino", sprite="npc_forja3", dialog="nino", x=15, y=8, nome="Nino")
+    m.ent(type="npc", id="tessa", sprite="npc_ranger", dialog="tessa", x=7, y=8, nome="Tessa", unless_flag="ferramentas_entregue")
+    m.ent(type="npc", id="tessa_mina", sprite="npc_ranger", dialog="tessa", x=4, y=16, nome="Tessa", if_flag="ferramentas_entregue")
+    m.ent(type="npc", id="nino", sprite="npc_forja3", dialog="nino", x=15, y=8, nome="Nino", unless_flag="vigia_morto")
+    m.ent(type="npc", id="nino_praca", sprite="npc_forja3", dialog="nino", x=26, y=19, nome="Nino", if_flag="vigia_morto")
     m.ent(type="npc", id="ruivo", sprite="npc_corvelo", dialog="ruivo", x=38, y=30, nome="Sra. Ruivo", if_flag="ferreiro_morto")
     m.ent(type="sign", id="placa_elevador", dialog="placa_elevador", x=38, y=21)
     m.ent(type="crack", id="forja_rocha", x=43, y=29, flag="forja_rocha")
-    m.ent(type="chest", id="forja_bau_rocha", x=46, y=29, loot={"lingote": 2, "selo_refinado": 2, "fragmentos": 50})
+    m.ent(type="chest", id="forja_bau_rocha", x=46, y=29, loot={"lingote": 2, "selo_refinado": 2, "diario_ilda": 1})
     m.ent(type="door", id="portao_fundicao", tiles=[[22, 2], [23, 2], [24, 2], [25, 2]], open_flags=["atalho_fundicao_aberto"], closed_char="I")
     m.ent(type="exit", x=22, y=35, w=4, h=1, to="minas_entrada", spawn="from_forja")
     m.ent(type="exit", x=0, y=17, w=1, h=3, to="pedreira_oca", spawn="from_forja")
@@ -514,6 +522,11 @@ def pedreira():
     m.cond.append({"if": "pedreira_valv", "area": [16, 14, 14, 3], "chars": {"Q": "q"}})
     m.ent(type="wild", id="p_faisquito1", species="faisquito", level=8, x=37, y=32)
     m.ent(type="wild", id="p_faisquito2", species="faisquito", level=8, x=39, y=34)
+    m.ent(type="furnace", id="p_ninho_forn", group="ninho", x=43, y=31)
+    m.ent(type="brazier", id="p_ninho_brasa", x=35, y=31)
+    m.puzzles["ninho"] = {"type": "furnaces", "flag": "ninho_aceso", "msg": "A fornalha velha acendeu... e fagulhas curiosas saem das frestas: um ninho de Faisquitos!"}
+    m.ent(type="wild", id="p_faisquito_ninho1", species="faisquito", level=9, x=40, y=34, if_flag="ninho_aceso")
+    m.ent(type="wild", id="p_faisquito_ninho2", species="faisquito", level=10, x=43, y=34, if_flag="ninho_aceso")
     m.ent(type="wild", id="p_fuligin1", species="fuligin", level=8, x=8, y=27)
     m.ent(type="wild", id="p_fuligin2", species="fuligin", level=9, x=12, y=29)
     m.ent(type="enemy", kind="mineiro", id="p_min1", x=36, y=15)
@@ -524,7 +537,7 @@ def pedreira():
     m.ent(type="ore", id="p_veio1", x=32, y=11, loot={"minerio_cobre": 2})
     m.ent(type="ore", id="p_veio2", x=45, y=13, loot={"minerio_cobre": 2})
     m.ent(type="ore", id="p_veio3", x=14, y=10, loot={"minerio_cobre": 1, "brasa_viva": 1})
-    m.ent(type="chest", id="pedreira_bau1", x=46, y=4, loot={"minerio_cobre": 2, "selo_refinado": 1, "fragmentos": 30})
+    m.ent(type="chest", id="pedreira_bau1", x=46, y=4, loot={"minerio_cobre": 2, "selo_refinado": 1, "diario_elevador": 1})
     # segredo: a fumaça do Fuligin revela a fresta; a Ruptura Ígnea quebra a rocha do veio
     m.ent(type="sign", id="placa_veio", dialog="placa_veio", x=5, y=25)
     m.ent(type="draft", id="fresta_veio", x=9, y=31, flag="veio_revelado", tiles=[[9, 32], [10, 32], [9, 33], [10, 33]])
@@ -581,18 +594,26 @@ def trilhos():
     m.ent(type="enemy", kind="lesma", id="t_lesma1", x=26, y=29)
     m.ent(type="ore", id="t_veio1", x=16, y=13, loot={"minerio_cobre": 2})
     m.ent(type="chest", id="trilhos_bau1", x=42, y=23, loot={"brasa_viva": 2, "minerio_cobre": 2, "pocao": 1})
+    m.ent(type="draft", id="t_vapor", x=17, y=13, flag="trilhos_vapor", hero=True,
+          msg="O vapor vazava por uma placa de metal solta. Atrás dela, um depósito esquecido!")
+    m.cond.append({"if": "trilhos_vapor", "rects": [[18, 12, 4, 3, "m"]]})
+    m.ent(type="chest", id="trilhos_bau_vapor", x=20, y=13, loot={"diario_tessa": 1, "brasa_viva": 1})
     m.ent(type="rail_marked", id="t_trilho_marcado", x=45, y=20, flag="trilho_ferrunho")
     m.cond.append({"if": "trilho_ferrunho", "rects": [[46, 20, 3, 1, "="]]})
-    m.ent(type="chest", id="trilhos_bau_ilha", x=51, y=19, loot={"lingote": 1, "selo_refinado": 2, "fragmentos": 40})
+    m.ent(type="chest", id="trilhos_bau_ilha", x=51, y=19, loot={"lingote": 1, "selo_refinado": 2, "tonico_criatura": 1})
     return m
 
 
 # ------------------------------------------------------------------ FUNDIÇÃO DO ÚLTIMO FOGO A
 def fundicao_a():
-    m = M("fundicao_a", "Fundição do Último Fogo — Átrio e Forjas Frias", 60, 44, fill="v", music="santuario", region="minas")
+    m = M("fundicao_a", "Fundição do Último Fogo — Grande Caldeira", 60, 44, fill="v", music="santuario", region="minas")
     mroom(m, 24, 32, 12, 8)                         # 1. átrio (seguro)
-    mroom(m, 22, 20, 16, 10)                        # 2. sala das válvulas (introdução)
+    mroom(m, 22, 20, 16, 10)                        # 2. Grande Caldeira (sala central: válvula, lava que baixa)
     m.rect(22, 22, 16, 6, "Q")
+    m.rect(27, 22, 6, 5, "L"); m.rect(29, 23, 2, 3, "z")    # caldeira de lava com ilha (baú visível)
+    mroom(m, 4, 20, 12, 8)                          # ala de escória (ramificação opcional)
+    mroom(m, 16, 24, 6, 2, floor="Q")               # passagem quente: resfriada pela válvula da galeria
+    m.set(6, 21, "O"); m.set(13, 26, "O")
     mroom(m, 16, 7, 28, 10)                         # 3. galeria das bigornas (combate)
     mroom(m, 46, 4, 12, 14)                         # 4. câmara das fornalhas (enigma)
     mroom(m, 0, 35, 24, 2); mroom(m, 36, 35, 24, 2)  # corredores das duas rotas
@@ -607,6 +628,15 @@ def fundicao_a():
     m.ent(type="shrine", id="fa_atrio", x=30, y=34)
     # sala das válvulas
     m.ent(type="sign", id="placa_valvulas", dialog="placa_valvulas", x=34, y=28)
+    m.ent(type="chest", id="fa_bau_caldeira", x=29, y=24, loot={"diario_fundidor": 1, "brasa_viva": 2, "lingote": 1})
+    m.cond.append({"if": "fa_fornalhas", "rects": [[27, 22, 6, 5, "z"]]})      # acender as fornalhas baixa a lava da caldeira
+    m.ent(type="valve", id="fa_valvula_oeste", x=17, y=12, flag="fa_valv_oeste")
+    m.cond.append({"if": "fa_valv_oeste", "area": [16, 24, 6, 2], "chars": {"Q": "q"}})
+    m.ent(type="chest", id="fa_bau_escoria", x=9, y=21, loot={"diario_mineiro": 1, "minerio_cobre": 2})
+    m.ent(type="ore", id="fa_veio1", x=7, y=21, loot={"minerio_cobre": 2})
+    m.ent(type="enemy", kind="lesma", id="fa_lesma_ala", x=11, y=25)
+    m.ent(type="spirit_mark", id="fa_inscricao", x=5, y=26, requires_eco="olhar_velado",
+          msg="Riscos no tijolo formam um mapa incompleto; parte dele parece existir só para outros olhos. (Olhar Velado — volte depois)")
     m.ent(type="valve", id="fa_valvula", x=25, y=28, flag="fa_valvula1")
     m.cond.append({"if": "fa_valvula1", "area": [22, 22, 16, 6], "chars": {"Q": "q"}})
     # galeria das bigornas
@@ -651,7 +681,7 @@ def fundicao_b():
     m.rect(16, 28, 6, 6, "%"); m.rect(38, 28, 6, 6, "%")
     for (x, y) in ((15, 25), (44, 25), (15, 38), (44, 38)):
         m.set(x, y, "u")
-    m.spawns = {"from_a": [2, 10], "from_forja": [32, 1], "from_c": [57, 31]}
+    m.spawns = {"from_a": [2, 10], "from_forja": [32, 1], "from_rito": [57, 31]}
     m.ent(type="exit", x=0, y=10, w=1, h=2, to="fundicao_a", spawn="from_b")
     m.ent(type="sign", id="placa_carrinhos", dialog="placa_carrinhos", x=4, y=5)
     m.ent(type="cart", id="fb_carrinho", x=5, y=16, goal=[14, 5])
@@ -677,7 +707,7 @@ def fundicao_b():
     m.ent(type="valve", id="fb_vv_oeste", x=15, y=30, boss=True, vent=[16, 28, 6, 6])
     m.ent(type="valve", id="fb_vv_leste", x=44, y=30, boss=True, vent=[38, 28, 6, 6])
     m.ent(type="door", id="fb_d_vigia_out", tiles=[[46, 31], [46, 32]], open_flags=["vigia_morto"], closed_char="I")
-    m.ent(type="exit", x=59, y=31, w=1, h=2, to="fundicao_c", spawn="from_b")
+    m.ent(type="exit", x=59, y=31, w=1, h=2, to="rito_forja", spawn="from_b")
     return m
 
 
@@ -689,10 +719,10 @@ def fundicao_c():
     mroom(m, 0, 17, 2, 2); mroom(m, 14, 17, 4, 2); mroom(m, 46, 16, 10, 2)
     for (x, y) in ((23, 10), (40, 10), (23, 23), (40, 23)):
         m.set(x, y, "%")
-    m.spawns = {"from_b": [2, 17]}
-    m.ent(type="exit", x=0, y=17, w=1, h=2, to="fundicao_b", spawn="from_c")
+    m.spawns = {"from_rito": [2, 17]}
+    m.ent(type="exit", x=0, y=17, w=1, h=2, to="rito_forja", spawn="from_c")
     m.ent(type="shrine", id="fc_prep", x=7, y=16)
-    m.ent(type="chest", id="fc_bau_prep", x=11, y=15, loot={"pocao": 2, "selo_refinado": 1, "tonico_criatura": 1})
+    m.ent(type="chest", id="fc_bau_prep", x=11, y=15, loot={"pocao": 2, "tonico_criatura": 1})
     m.ent(type="sign", id="placa_ferreiro", dialog="placa_ferreiro", x=4, y=20)
     m.ent(type="door", id="fc_d_in", tiles=[[17, 17], [17, 18]], close_flags=["tmp_ferreiro_ativo"], closed_char="I")
     m.ent(type="boss", boss="ferreiro", id="ferreiro", x=36, y=16, x0=18, y0=6, w=28, h=22, flag_done="ferreiro_morto", flag_active="tmp_ferreiro_ativo",
@@ -706,6 +736,78 @@ def fundicao_c():
     m.ent(type="exit", x=55, y=16, w=1, h=2, to="forja_cobre", spawn="from_fundicao")
     return m
 
+
+
+# ------------------------------------------------------------------ RITO DA FORJA (prova antes do Ferreiro + ala avançada pós-chefão)
+def rito():
+    m = M("rito_forja", "Rito da Forja", 60, 30, fill="v", music="santuario", region="minas")
+    mroom(m, 2, 10, 12, 10)                         # 1. apresentação segura
+    mroom(m, 16, 6, 14, 18)                         # 2. aplicação: calor + chama
+    mroom(m, 33, 6, 16, 18)                         # 3. combinação: válvula temporizada + três fornalhas
+    mroom(m, 52, 10, 6, 10)                         # 4. conclusão (altar)
+    mroom(m, 50, 2, 9, 5)                           # 5. rito avançado (opcional, pós-chefão)
+    mroom(m, 0, 14, 2, 2); mroom(m, 14, 14, 2, 2); mroom(m, 30, 14, 3, 2); mroom(m, 49, 14, 3, 2); mroom(m, 58, 14, 2, 2)
+    m.rect(6, 12, 4, 2, "Q")                        # faixa de demonstração (fora do caminho)
+    m.rect(21, 6, 3, 18, "Q")                       # faixa quente da sala 2
+    m.rect(37, 6, 2, 18, "Q"); m.rect(43, 6, 2, 18, "Q")    # duas faixas da sala 3
+    m.rect(54, 7, 2, 3, "X")                        # rocha fissurada: ala avançada
+    m.rect(52, 3, 2, 3, "L"); m.rect(56, 3, 1, 3, "L")
+    m.spawns = {"from_b": [2, 14], "from_c": [57, 14]}
+    m.ent(type="exit", x=0, y=14, w=1, h=2, to="fundicao_b", spawn="from_rito")
+    m.ent(type="exit", x=59, y=14, w=1, h=2, to="fundicao_c", spawn="from_rito")
+    # 1. apresentação
+    m.ent(type="sign", id="rito_placa1", dialog="rito_placa1", x=4, y=11)
+    m.ent(type="valve", id="rito_v1", x=5, y=17, flag="rito_v1")
+    m.cond.append({"if": "rito_v1", "area": [6, 12, 4, 2], "chars": {"Q": "q"}})
+    m.ent(type="brazier", id="rito_b1", x=10, y=17)
+    m.ent(type="furnace", id="rito_f1", group="rito1", x=12, y=17)
+    m.puzzles["rito1"] = {"type": "furnaces", "flag": "rito_f1_ok", "msg": "A primeira chama do rito acendeu."}
+    m.ent(type="door", id="rito_d1", tiles=[[14, 14], [14, 15]], open_flags=["rito_v1", "rito_f1_ok"], closed_char="I")
+    # 2. aplicação
+    m.ent(type="sign", id="rito_placa2", dialog="rito_placa2", x=17, y=17)
+    m.ent(type="rite_reset", id="rito_reset2", x=17, y=12)
+    m.ent(type="valve", id="rito_v2", x=18, y=7, flag="rito_v2")
+    m.cond.append({"if": "rito_v2", "area": [21, 6, 3, 18], "chars": {"Q": "q"}})
+    m.ent(type="brazier", id="rito_b2", x=18, y=21)
+    m.ent(type="furnace", id="rito_f2a", group="rito2", x=27, y=8, dura=30.0)
+    m.ent(type="furnace", id="rito_f2b", group="rito2", x=27, y=21, dura=30.0)
+    m.puzzles["rito2"] = {"type": "furnaces", "flag": "rito_f2_ok", "dica_apos": 3, "msg": "As duas fornalhas ardem: a porta do rito cede.",
+                          "dica": "Dica: resfrie a faixa com a válvula, pegue a chama e acenda uma fornalha por vez; cada uma fica acesa 30 s."}
+    m.ent(type="door", id="rito_d2", tiles=[[30, 14], [30, 15]], open_flags=["rito_f2_ok"], closed_char="I")
+    # 3. combinação e sincronização
+    m.ent(type="sign", id="rito_placa3", dialog="rito_placa3", x=34, y=17)
+    m.ent(type="rite_reset", id="rito_reset3", x=34, y=12)
+    m.ent(type="valve", id="rito_v3", x=35, y=8, flag="tmp_rito_v3", dura=16.0, group="rito3")
+    m.cond.append({"if": "tmp_rito_v3", "area": [37, 6, 8, 18], "chars": {"Q": "q"}})
+    m.ent(type="brazier", id="rito_b3", x=35, y=21)
+    m.ent(type="brazier", id="rito_b3b", x=41, y=21)
+    m.ent(type="furnace", id="rito_f3a", group="rito3", x=40, y=8, dura=34.0)
+    m.ent(type="furnace", id="rito_f3b", group="rito3", x=47, y=8, dura=34.0)
+    m.ent(type="furnace", id="rito_f3c", group="rito3", x=47, y=21, dura=34.0)
+    m.puzzles["rito3"] = {"type": "furnaces", "flag": "rito_f3_ok", "dica_apos": 3, "msg": "Três fornalhas em uníssono! O altar desperta.",
+                          "dica": "Dica: gire a válvula logo antes de atravessar; o braseiro entre as faixas encurta o caminho. Acenda as três em até 34 s."}
+    m.ent(type="door", id="rito_d3", tiles=[[49, 14], [49, 15]], open_flags=["rito_f3_ok"], closed_char="I")
+    # 4. conclusão
+    m.ent(type="altar", id="rito_altar", x=55, y=12, flag="rito_ok", requires="rito_f3_ok", bond="missao:rito_forja",
+          loot={"luvas_termicas": 1}, lines=["As três chamas sobem pelos dutos e o altar devolve o calor em silêncio.",
+          "Uma voz antiga, de ferreiros que já se foram: \"Quem domina o fogo e o frio pode encarar o Devorador.\"",
+          "Você recebeu as LUVAS TÉRMICAS: o piso em brasa fere metade."])
+    m.ent(type="furnace", id="rito_f4a", x=53, y=18, lit_flag="rito_ok")
+    m.ent(type="furnace", id="rito_f4b", x=56, y=18, lit_flag="rito_ok")
+    m.ent(type="door", id="rito_d4", tiles=[[58, 14], [58, 15]], open_flags=["rito_ok"], closed_char="I")
+    # 5. rito avançado (Ruptura Ígnea; opcional, depois do Ferreiro)
+    m.ent(type="crack", id="rito_rocha", x=55, y=11, flag="rito_rocha")
+    m.cond.append({"if": "rito_rocha", "rects": [[54, 7, 2, 3, "z"]]})
+    m.ent(type="sign", id="rito_placa_av", dialog="rito_placa_av", x=55, y=6)
+    m.ent(type="furnace", id="rito_mec1", group="rito_av", x=51, y=3, so_ruptura=True, dura=15.0)
+    m.ent(type="furnace", id="rito_mec2", group="rito_av", x=51, y=5, so_ruptura=True, dura=15.0)
+    m.ent(type="furnace", id="rito_mec3", group="rito_av", x=58, y=4, so_ruptura=True, dura=15.0)
+    m.puzzles["rito_av"] = {"type": "furnaces", "flag": "rito_av_mec", "dica_apos": 3, "msg": "Os mecanismos térmicos ardem juntos!",
+                            "dica": "Dica: uma só Ruptura pode acender os dois mecanismos do oeste; depois corra ao terceiro antes de 15 s."}
+    m.ent(type="altar", id="rito_altar2", x=57, y=6, flag="rito_avancado_ok", requires="rito_av_mec",
+          msg_falta="O altar avançado espera os três mecanismos térmicos acesos ao mesmo tempo.",
+          loot={"amuleto_brasa": 1}, lines=["O altar avançado ruge. Você domina o fogo que quebra a pedra.", "Você recebeu o AMULETO DA BRASA."])
+    return m
 
 # ------------------------------------------------------------------ verificacao
 def bfs_check(m):
@@ -728,7 +830,7 @@ def bfs_check(m):
             continue
         p = (e["x"], e["y"])
         ch = m.g[p[1]][p[0]]
-        if ch in SOLID:
+        if ch in SOLID and e.get("id") not in OPTIONAL_BEHIND:
             msgs.append(f"  ! {m.id}: {t}/{e.get('id', e.get('kind', ''))} sobre tile solido '{ch}' em {p}")
         elif p not in seen and e.get("id") not in ("cipo_bosque_bau",) and t not in ("bond_stone",):
             if e.get("id") in ("bosque_bau_cipo", "bosque_bau1", "pedra_vinculo") or e.get("id") in OPTIONAL_BEHIND:
@@ -739,7 +841,7 @@ def bfs_check(m):
 
 def main():
     maps = [vila(), bosque(), clareira(), santuario_a(), santuario_b(), santuario_c(), desfiladeiro(), minas_entrada(),
-            forja(), pedreira(), trilhos(), fundicao_a(), fundicao_b(), fundicao_c()]
+            forja(), pedreira(), trilhos(), fundicao_a(), fundicao_b(), rito(), fundicao_c()]
     bad = []
     for m in maps:
         for row in m.g:
@@ -755,7 +857,7 @@ def main():
             g = [r[:] for r in m.g]
             for e in m.ents:
                 if "x" in e and e["type"] not in ("exit", "door", "encounter"):
-                    c = {"wild": "W", "enemy": "E", "chest": "C", "npc": "N", "shrine": "@", "lever": "L", "flower": "*", "plate": "_", "crate": "#", "sign": "?", "miniboss": "M", "boss": "B", "dummy": "d", "vine": "V", "bridge_spot": "&", "bond_stone": "$", "valve": "V", "furnace": "F", "brazier": "f", "cart": "c", "rail_lever": "/", "ore": "o", "crack": "x", "draft": "~", "rail_marked": "&", "anvil": "n"}.get(e["type"], "!")
+                    c = {"wild": "W", "enemy": "E", "chest": "C", "npc": "N", "shrine": "@", "lever": "L", "flower": "*", "plate": "_", "crate": "#", "sign": "?", "miniboss": "M", "boss": "B", "dummy": "d", "vine": "V", "bridge_spot": "&", "bond_stone": "$", "valve": "V", "furnace": "F", "brazier": "f", "cart": "c", "rail_lever": "/", "ore": "o", "crack": "x", "draft": "~", "rail_marked": "&", "anvil": "n", "altar": "A", "rite_reset": "r", "spirit_mark": "s"}.get(e["type"], "!")
                     if 0 <= e["y"] < m.h and 0 <= e["x"] < m.w:
                         g[e["y"]][e["x"]] = c
             print("==", m.id, m.w, m.h)

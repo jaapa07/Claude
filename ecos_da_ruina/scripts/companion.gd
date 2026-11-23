@@ -20,6 +20,9 @@ var regen_t := 0.0
 var face_left := false
 var radius := 6.0
 var flash := 0.0
+var magnet_t := 0.0          # Ímã do Ferrunho
+var magnet_radius := 96.0
+var _magnet_fx: AnimatedSprite2D
 
 func init(p_world: Node, p_ind: Dictionary) -> void:
 	world = p_world
@@ -71,6 +74,10 @@ func _physics_process(delta: float) -> void:
 		_dash(delta)
 		return
 	_passive(delta)
+	if magnet_t > 0.0:
+		magnet_t -= delta
+		if _magnet_fx:
+			_magnet_fx.visible = magnet_t > 0.0
 	target = _pick_target()
 	var hero_pos: Vector2 = world.player.global_position
 	var to_hero := hero_pos - global_position
@@ -227,6 +234,12 @@ func take_hit(dmg: float, from: Vector2, opts: Dictionary = {}) -> bool:
 		dmg *= 0.9
 	elif species_id() == "rocantor":
 		dmg *= 0.85
+	dmg *= 1.0 - float(species.get("reducao_dano", 0.0))
+	if randf() < float(species.get("esquiva", 0.0)):
+		# Fuligin/Cinzavéu: some na fumaça
+		inv_t = 0.3
+		world.spawn_text(global_position + Vector2(0, -fh), "Esquivou", Color(0.8, 0.8, 0.9))
+		return false
 	if dash_t > 0.0:
 		dmg *= 0.3
 	inv_t = 0.5
@@ -238,6 +251,40 @@ func take_hit(dmg: float, from: Vector2, opts: Dictionary = {}) -> bool:
 	if not is_alive():
 		world.on_companion_exhausted()
 	return true
+
+## Calor do piso: espécies de brasa são imunes (passiva).
+func heat_immune() -> bool:
+	return bool(species.get("imune_calor", false))
+
+func env_damage(d: float) -> void:
+	if not is_alive() or heat_immune():
+		return
+	flash = 0.12
+	world.spawn_text(global_position + Vector2(0, -fh), str(int(round(d))), Color(1, 0.6, 0.3))
+	Game.damage_creature(ind, d * Game.heat_mult())
+	if not is_alive():
+		world.on_companion_exhausted()
+
+## Ação ambiental: a criatura vai até perto do alvo, faz a animação e um traço visível liga os dois.
+func env_action_fx(target_pos: Vector2) -> void:
+	var to := target_pos - global_position
+	if to.length() > 30.0:
+		global_position = global_position + to.normalized() * min(24.0, to.length() - 20.0)
+	_face(to)
+	anim_lock = 0.4
+	sprite.play("attack")
+	var col := Color(1.0, 0.6, 0.25)
+	match species.get("acao_id", ""):
+		"trilho": col = Color(0.6, 0.8, 1.0)
+		"fumaca": col = Color(0.5, 0.45, 0.6)
+	world.bolt(global_position + Vector2(0, -8), target_pos + Vector2(0, -6), col, func():
+		world.fx_at("fire" if species.get("acao_id", "") == "fogo" else "sparkle", target_pos + Vector2(0, -8), 0.5))
+
+func absorb_projectile(_p: Node) -> void:
+	world.spawn_text(global_position + Vector2(0, -fh), "Absorveu", Color(0.7, 0.85, 1.0))
+	Audio.play("guard", -4.0)
+	if not ind.get("exausta", false):
+		ind["hp"] = min(Game.creature_hp_max(ind), float(ind["hp"]) + 2.0)
 
 # =============================================================== HABILIDADE COMANDADA (Q)
 func command_skill(dir: Vector2) -> bool:
@@ -277,6 +324,50 @@ func command_skill(dir: Vector2) -> bool:
 				if e.hittable() and e.global_position.distance_to(global_position) <= rad2 + e.radius and e.kind != "dummy":
 					e.interrupt()
 					e.take_damage(dmg * 0.5, global_position, {"src": "companion", "uuid": uuid(), "aff": aff, "knock": 20.0})
+			anim_lock = 0.3
+			sprite.play("windup")
+		"cone_fogo":
+			var cdir := dir if dir != Vector2.ZERO else Vector2.RIGHT
+			if target != null and is_instance_valid(target):
+				cdir = (target.global_position - global_position).normalized()
+			var rr: float = float(sk["alcance"]) * (1.25 if is_evolved() else 1.0)
+			var arc: float = float(sk["arco"])
+			for k in 3:
+				world.fx_at("fire", global_position + cdir * (10.0 + 13.0 * k) + Vector2(0, -6), 0.45, 0.0, 0.8 + 0.25 * k)
+			for e in world.enemies():
+				if e.hittable() and e.kind != "dummy" and Combat.in_arc(global_position, cdir, rr, arc, e.global_position, e.radius):
+					e.take_damage(dmg, global_position, {"src": "companion", "uuid": uuid(), "aff": aff, "knock": 40.0})
+			world.fire_area(global_position, cdir, rr + 10.0, arc + 10.0, "companion")
+			_face(cdir)
+			anim_lock = 0.35
+			sprite.play("attack")
+		"ima":
+			magnet_t = float(sk["duracao"]) * mult
+			magnet_radius = float(sk["raio"]) * (1.2 if is_evolved() else 1.0)
+			if _magnet_fx == null:
+				_magnet_fx = AnimatedSprite2D.new()
+				_magnet_fx.sprite_frames = Art.fx_frames("fx_pulse", 48, 48, 3, 6.0, true)
+				_magnet_fx.modulate = Color(0.55, 0.75, 1.0, 0.45)
+				_magnet_fx.position = Vector2(0, -6)
+				_magnet_fx.play("a")
+				add_child(_magnet_fx)
+			_magnet_fx.visible = true
+			for e in world.enemies():
+				if e.hittable() and e.kind != "dummy" and e.global_position.distance_to(global_position) <= magnet_radius:
+					if e.small:
+						e.knock_v = (global_position - e.global_position).normalized() * 140.0
+					e.take_damage(dmg * 0.4, global_position, {"src": "companion", "uuid": uuid(), "aff": aff, "knock": 0.0})
+			anim_lock = 0.3
+			sprite.play("windup")
+		"nuvem":
+			var center: Vector2 = world.player.global_position + dir * float(sk["alcance"])
+			if target != null and is_instance_valid(target):
+				center = target.global_position
+			var rad3: float = float(sk["raio"]) * (1.25 if is_evolved() else 1.0)
+			world.smoke_cloud(center, rad3, float(sk["duracao"]) * mult)
+			for e in world.enemies():
+				if e.hittable() and e.kind != "dummy" and e.global_position.distance_to(center) <= rad3 + e.radius:
+					e.take_damage(dmg * 0.3, center, {"src": "companion", "uuid": uuid(), "aff": aff, "knock": 0.0})
 			anim_lock = 0.3
 			sprite.play("windup")
 		"avanco":

@@ -57,6 +57,16 @@
     "minerio_cobre",
     "brasa_viva"
    ]
+  },
+  "joca": {
+   "nome": "Banca do Joca",
+   "itens": [
+    "lingote",
+    "brasa_viva",
+    "minerio_cobre",
+    "selo_refinado",
+    "pocao"
+   ]
   }
  }
 }

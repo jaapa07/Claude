@@ -55,6 +55,8 @@ var P: Dictionary = {}          # parâmetros de ataque do tipo
 var shown_name := ""
 var hurt_t := 0.0
 var dummy_heal_t := 0.0
+var blind_t := 0.0           # dentro da Nuvem de Fuligem: erra metade dos ataques
+var trail_t := 0.0           # lesma de escória: deixa poças quentes
 var _tw: Tween
 
 func init(p_world: Node, p_kind: String, e: Dictionary) -> void:
@@ -89,7 +91,7 @@ func init(p_world: Node, p_kind: String, e: Dictionary) -> void:
 		radius = float(def.get("raio", 9))
 		small = bool(def.get("pequeno", false))
 		guard_front = float(def.get("guarda_frontal", 0.0))
-		xp_level = int({"lobo": 3, "cogumelo": 2, "sentinela": 4, "lenhador": 6, "cervo": 8}.get(kind, 1))
+		xp_level = int(def.get("nivel", {"lobo": 3, "cogumelo": 2, "sentinela": 4, "lenhador": 6, "cervo": 8}.get(kind, 1)))
 		shown_name = def.get("nome", kind)
 	speed = float(def.get("vel", 40))
 	hp = max_hp
@@ -102,6 +104,9 @@ func _attack_params(a: String) -> Dictionary:
 		"esporos": return {"wind": 0.80, "dur": 0.20, "rec": 1.4, "cd": 0.5, "start": 62.0, "aoe": 34.0}
 		"golpe": return {"wind": 0.85, "dur": 0.16, "rec": 0.95, "cd": 0.8, "start": 34.0, "r": 36.0, "arc": 62.0}
 		"selvagem": return {"wind": 0.45, "dur": 0.14, "rec": 0.9, "cd": 0.8, "start": 18.0, "r": 18.0, "arc": 50.0}
+		"arremesso": return {"wind": 0.65, "dur": 0.15, "rec": 0.8, "cd": 1.5, "start": 120.0, "keep": 60.0}
+		"lesma": return {"wind": 0.75, "dur": 0.18, "rec": 1.0, "cd": 1.0, "start": 24.0, "r": 24.0, "arc": 55.0}
+		"martelo": return {"wind": 1.1, "dur": 0.45, "rec": 1.3, "cd": 1.2, "start": 46.0, "len": 80.0, "w": 14.0}
 	return {}
 
 func _ready() -> void:
@@ -159,6 +164,7 @@ func _physics_process(delta: float) -> void:
 	hp_bar_t = max(0.0, hp_bar_t - delta)
 	cd = max(0.0, cd - delta)
 	angry_t = max(0.0, angry_t - delta)
+	blind_t = max(0.0, blind_t - delta)
 	los_t -= delta
 	if sprite:
 		sprite.modulate = _tint()
@@ -176,7 +182,33 @@ func _physics_process(delta: float) -> void:
 		_visuals()
 		return
 	_ai(delta)
+	if def.get("ataque", "") == "lesma" and alive_flag and velocity.length() > 2.0:
+		trail_t -= delta
+		if trail_t <= 0.0:
+			trail_t = 1.3
+			world.add_hazard(global_position, 9.0, 4.0)
 	_visuals()
+
+## Nuvem de fuligem: metade dos ataques erra (sorteio por golpe).
+func _misses() -> bool:
+	if blind_t > 0.0 and randf() < 0.5:
+		world.spawn_text(global_position + Vector2(0, -fh), "Errou!", Color(0.75, 0.7, 0.85))
+		return true
+	return false
+
+func heat_immune() -> bool:
+	if kind == "wild":
+		return bool(Data.sp(species_id).get("imune_calor", false))
+	return bool(def.get("imune_calor", false))
+
+## Calor do piso: inimigos comuns sofrem; criaturas selvagens nunca caem abaixo de 1 de vida por calor.
+func heat_damage(d: float) -> void:
+	if kind == "wild":
+		if hp > 1.0:
+			hp = max(1.0, hp - d)
+			flash = 0.1
+		return
+	take_damage(d, global_position, {"src": "ambiente", "knock": 0.0})
 
 func _tint() -> Color:
 	if flash > 0.0:
@@ -299,6 +331,20 @@ func _chase(delta: float) -> void:
 		_anim("idle")
 		if dist < P["start"] and cd <= 0.0:
 			_start_windup(to.normalized())
+	elif a == "arremesso":
+		# mantém distância e arremessa ferramentas; recua se o herói encosta
+		var los := not Combat.ray_blocked(world, global_position, tp)
+		if dist < P["keep"] * 0.7:
+			_move(-to.normalized(), speed * 0.9, delta)
+			_anim("walk")
+		elif dist > P["start"] * 0.85 or not los:
+			_move(to.normalized(), speed, delta)
+			_anim("walk")
+		else:
+			_move(to.normalized().orthogonal() * flank_side, speed * 0.4, delta)
+			_anim("walk")
+		if dist < P["start"] and cd <= 0.0 and los:
+			_start_windup(to.normalized())
 	else:
 		if dist > P["start"] * 0.8:
 			_move(to.normalized(), speed, delta)
@@ -324,6 +370,20 @@ func _begin_attack() -> void:
 		if target != null and is_instance_valid(target) and a == "investida":
 			attack_dir = (target.global_position - global_position).normalized() if st_t == 0.0 and false else attack_dir
 	_anim("attack")
+	if a == "arremesso" and target != null and is_instance_valid(target):
+		var dir := (target.global_position - global_position).normalized()
+		if blind_t > 0.0:
+			dir = dir.rotated(randf_range(-0.6, 0.6))      # na fumaça a mira falha
+		world.spawn_projectile(global_position + Vector2(0, -2) + dir * 8.0, dir, damage, self, "tool")
+		Audio.play("swing", -6.0)
+	elif a == "martelo":
+		var q = world.spawn_projectile(global_position + attack_dir * 14.0, attack_dir, damage, self, "quake")
+		q.speed = 190.0
+		q.max_dist = P["len"]
+		q.width = P["w"]
+		q.opts = {"guarda_parcial": true, "knock": 120.0}
+		world.shake(2.0, 0.15)
+		Audio.play("thud")
 
 func _attack_tick(delta: float) -> void:
 	var a: String = def.get("ataque", "")
@@ -338,6 +398,10 @@ func _attack_tick(delta: float) -> void:
 		_move(Vector2.ZERO, 0.0, delta)
 		if st_t >= P["dur"]:
 			_end_attack()
+	elif a == "arremesso" or a == "martelo":
+		_move(Vector2.ZERO, 0.0, delta)
+		if st_t >= P["dur"]:
+			_end_attack()
 	else:
 		_move(Vector2.ZERO, 0.0, delta)
 		for t in world.targets():
@@ -345,7 +409,8 @@ func _attack_tick(delta: float) -> void:
 				continue
 			if Combat.in_arc(global_position, attack_dir, P["r"], P["arc"], t.global_position, 5.0) and not Combat.ray_blocked(world, global_position, t.global_position):
 				hit_registry[t.get_instance_id()] = true
-				t.take_hit(dmg, global_position, {"knock": 120.0})
+				if not _misses():
+					t.take_hit(dmg, global_position, {"knock": 120.0})
 		if st_t >= P["dur"]:
 			_end_attack()
 
@@ -355,7 +420,8 @@ func _hit_circle(center: Vector2, r: float, dmg: float, opts: Dictionary) -> voi
 			continue
 		if center.distance_to(t.global_position) <= r + 5.0:
 			hit_registry[t.get_instance_id()] = true
-			t.take_hit(dmg, global_position, opts)
+			if not _misses():
+				t.take_hit(dmg, global_position, opts)
 
 func _end_attack() -> void:
 	st = St.RECOVER
@@ -410,6 +476,8 @@ func _ai_wild(delta: float) -> void:
 	if wander_t <= 0.0:
 		wander_t = randf_range(1.8, 4.0)
 		wander_to = home + Vector2(randf_range(-36, 36), randf_range(-26, 26))
+	if world.is_hot_at(wander_to) and not heat_immune():
+		wander_to = home
 	var d := wander_to - global_position
 	if d.length() > 4.0:
 		_move(d.normalized(), speed * 0.5, delta)
@@ -503,6 +571,11 @@ func _give_rewards(_src: String) -> void:
 		Game.fragments += n
 		Game.inventory_changed.emit()
 		world.spawn_text(global_position + Vector2(0, -fh - 8), "+%d" % n, Color(0.6, 0.95, 1.0))
+	for it in def.get("drops", {}):
+		var dr: Array = def["drops"][it]
+		if randf() < float(dr[0]):
+			Game.give_item(it, int(dr[1]))
+			world.spawn_text(global_position + Vector2(0, -fh - 16), Data.items.get(it, {}).get("nome", it), Color(1.0, 0.8, 0.5))
 	Game.register_kill(kind)
 	if def.get("relevante", false):
 		var ac := Game.active_ind()
@@ -615,6 +688,19 @@ func _draw_telegraph_decal() -> void:
 		_decal.region_rect = Rect2(0, 0, 80, 12)
 		_decal.rotation = attack_dir.angle()
 		_decal.position = attack_dir * 40.0
+		_decal.scale = Vector2.ONE
+	elif a == "martelo":
+		# faixa da onda de choque à frente (fx_warn_tile) + o próprio martelo erguido
+		_set_decal("line")
+		_decal.region_rect = Rect2(0, 0, float(P["len"]), float(P["w"]) * 2.0)
+		_decal.rotation = attack_dir.angle()
+		_decal.position = attack_dir * (float(P["len"]) * 0.5 + 8.0)
+		_decal.scale = Vector2.ONE
+	elif a == "arremesso":
+		_set_decal("line")
+		_decal.region_rect = Rect2(0, 0, 60, 8)
+		_decal.rotation = attack_dir.angle()
+		_decal.position = attack_dir * 34.0
 		_decal.scale = Vector2.ONE
 	elif a == "esporos":
 		_set_decal("circle")

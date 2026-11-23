@@ -987,6 +987,17 @@ func puzzle_changed(group: String) -> void:
 				Audio.play("puzzle_ok")
 				Game.set_flag(pz["flag"])
 				say("As flores-lanterna revelam o caminho!")
+		elif pz["type"] == "furnaces":
+			var allf := true; var nf := 0
+			for e in get_tree().get_nodes_in_group("ents"):
+				if e.kind == "furnace" and e.def.get("group", "") == g:
+					nf += 1
+					if not e.lit:
+						allf = false
+			if allf and nf > 0:
+				Audio.play("puzzle_ok")
+				Game.set_flag(pz["flag"])
+				say(pz.get("msg", "As fornalhas rugem juntas! Algo se abriu."))
 		elif pz["type"] == "plates":
 			var allp := true; var np := 0
 			for e in get_tree().get_nodes_in_group("ents"):
@@ -1388,3 +1399,38 @@ func creature_action(e: Ent, acao: String, ok_msg: String, no_msg: String) -> bo
 	Game.bond_activity(ac["uuid"], "acao:" + e.eid)
 	say(ok_msg % Game.creature_name(ac))
 	return true
+
+# =============================================================== RITO DA FORJA
+func rite_reset(_e: Ent) -> void:
+	if in_combat():
+		say("Não é possível durante o combate.")
+		return
+	reset_room_puzzles()
+	Audio.play("puzzle_no")
+	say("O rito recomeça: fornalhas apagadas e válvulas do rito fechadas. Nada do que você carrega foi perdido.")
+
+func rite_altar(a: Ent) -> void:
+	var flag: String = a.def["flag"]
+	if Game.has_flag(flag):
+		return
+	var req: String = a.def.get("requires", "")
+	if req != "" and not Game.has_flag(req):
+		say(a.def.get("msg_falta", "Os mecanismos do rito ainda não estão acesos."))
+		return
+	Game.set_flag(flag)
+	a.set_frame(true, 24)
+	Audio.play("levelup")
+	shake(1.5, 0.3)
+	for k in 6:
+		fx_at("fire", a.global_position + Vector2.from_angle(TAU * k / 6.0) * 26.0, 0.8)
+	if a.def.has("loot"):
+		Game.give_loot(a.def["loot"])
+	var bond: String = a.def.get("bond", "")
+	if bond != "":
+		var ac := Game.active_ind()
+		if not ac.is_empty() and Game.bond_activity(ac["uuid"], bond):
+			say("%s sentiu o rito com você: vínculo fortalecido!" % Game.creature_name(ac))
+	player.set_busy(true)
+	ui.dialog(a.def.get("lines", ["O rito está completo."]), func():
+		player.set_busy(false)
+		autosave())

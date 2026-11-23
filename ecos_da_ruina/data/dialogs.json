@@ -412,7 +412,8 @@
  "placa_forja": [
   {
    "lines": [
-    "Placa: FORJA DE COBRE — Oeste: Pedreira Oca. Leste: Trilhos Fundidos. Norte: portão da Fundição (trancado por dentro)."
+    "Placa: FORJA DE COBRE — Oeste: Pedreira Oca. Leste: Trilhos Fundidos. Norte: portão da Fundição (trancado por dentro).",
+    "Placa: Ao fundo da Fundição, o Rito da Forja prepara quem vai enfrentar o Devorador."
    ]
   }
  ],
@@ -500,6 +501,46 @@
    "lines": [
     "Inscrição: O FERREIRO DEVORADOR — Seu martelo faz o chão ondular: esquive quando a onda chegar.",
     "Inscrição: Quando a armadura arder, as válvulas de água dos cantos a resfriam. No fim, o chão cede: siga a borda segura."
+   ]
+  }
+ ],
+ "joca": [
+  {
+   "lines": [
+    "Joca: Com as forjas acesas voltei a negociar lingotes! Dá para chegar ao +3 com a Ilda."
+   ],
+   "shop": "joca"
+  }
+ ],
+ "rito_placa1": [
+  {
+   "lines": [
+    "Inscrição: PRIMEIRA LIÇÃO — O piso em brasa fere. Gire a válvula e veja o vapor frio apagá-lo.",
+    "Inscrição: A chama do braseiro passa às suas mãos (E) e acende a fornalha fria ao lado. Cumpra as duas lições e a porta cede.",
+    "Inscrição: A saída para trás está sempre aberta."
+   ]
+  }
+ ],
+ "rito_placa2": [
+  {
+   "lines": [
+    "Inscrição: SEGUNDA LIÇÃO — Resfrie a faixa quente e leve o fogo às duas fornalhas do outro lado.",
+    "Inscrição: Errou? A pedra do recomeço (E) reinicia o rito sem tirar nada de você."
+   ]
+  }
+ ],
+ "rito_placa3": [
+  {
+   "lines": [
+    "Inscrição: TERCEIRA LIÇÃO — A válvula desta sala fecha sozinha em 16 s. Três fornalhas precisam arder juntas.",
+    "Inscrição: Sincronize: vapor, chama e passo. Um braseiro entre as faixas ajuda quem pensa antes de correr."
+   ]
+  }
+ ],
+ "rito_placa_av": [
+  {
+   "lines": [
+    "Inscrição: RITO AVANÇADO — Mecanismos que só despertam com uma explosão de calor. Três, ao mesmo tempo, em 15 s."
    ]
   }
  ]

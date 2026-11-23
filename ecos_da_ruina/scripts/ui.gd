@@ -123,7 +123,7 @@ func open_title(main: Node) -> void:
 	s.can_cancel = false
 	s.title_mode = true
 	s.dim = 0.25
-	s.footer = "Capítulo 1: Floresta dos Esquecidos  •  ↑↓ navegar, E confirmar"
+	s.footer = "Capítulos 1 e 2: Floresta e Minas da Brasa  •  ↑↓ navegar, E confirmar"
 	var items := [
 		_it("Continuar", func(): _slot_menu(main, false, true), "Retoma o último save disponível.", SaveSys.has_any_save()),
 		_it("Novo jogo", func(): _new_game_slots(main), "Começa uma nova aventura em um dos 3 slots."),
@@ -370,13 +370,22 @@ func _fill_inventory(s: MenuScreen) -> void:
 		var idd: String = id
 		if it["tipo"] in ["arma", "protecao", "amuleto"] and Game.item_count(idd) > 0:
 			var eq: bool = Game.equipment.get(it["tipo"], "") == idd
-			items.append(_it("%s%s" % ["● " if eq else "  ", it["nome"]], func(): Game.equip(idd); _fill_inventory(s), it["desc"]))
+			var lv := Game.upgrade_level(idd)
+			items.append(_it("%s%s%s" % ["● " if eq else "  ", it["nome"], (" +%d" % lv) if lv > 0 else ""], func(): Game.equip(idd); _fill_inventory(s), it["desc"]))
 	items.append(_hdr("Itens"))
 	for id2 in Data.items:
 		var it2: Dictionary = Data.items[id2]
 		var id2c: String = id2
 		if it2["tipo"] in ["selo", "consumivel", "consumivel_criatura"] and Game.item_count(id2c) > 0:
 			items.append(_it("%s x%d" % [it2["nome"], Game.item_count(id2c)], func(): _use_item(id2c, s), it2["desc"] + "\nAção: usar", it2["tipo"] != "selo"))
+	var mats: Array = []
+	for id3 in Data.items:
+		var it3: Dictionary = Data.items[id3]
+		if it3["tipo"] in ["material", "tecnica", "historia"] and Game.item_count(id3) > 0:
+			mats.append(_it("%s%s" % [it3["nome"], (" x%d" % Game.item_count(id3)) if it3["tipo"] == "material" else ""], Callable(), it3["desc"]))
+	if not mats.is_empty():
+		items.append(_hdr("Materiais, técnicas e diários"))
+		items.append_array(mats)
 	items.append(_hdr("Ecos"))
 	for e in Game.ecos:
 		items.append(_it(Data.skills[e]["nome"], Callable(), Data.skills[e]["descricao"] + "\nTravessia contextual (E) não gasta energia."))
@@ -470,6 +479,17 @@ func open_map() -> void:
 				"desfiladeiro": note = "" if Game.has_flag("ponte_minas") else "  ⚠ ponte (Raiz Viva)"
 				"bosque_lanternas": note = "" if Game.has_flag("bosque_flores") else "  ⚠ portão de flores"
 				"clareira_raizes": note = "" if Game.has_flag("clareira_placas") else "  ⚠ raízes/placas"
+				"forja_cobre":
+					var n2: Array = []
+					if not Game.has_flag("forja_rocha"): n2.append("⚠ rocha fissurada — Ruptura Ígnea")
+					if not Game.has_flag("ferreiro_morto"): n2.append("⚠ elevador parado")
+					n2.append("⚠ inscrição oculta — Olhar Velado")
+					note = "  " + ", ".join(n2)
+				"pedreira_oca":
+					note = "  ⚠ veio selado — Ruptura Ígnea" if Game.has_flag("veio_revelado") and not Game.has_flag("veio_rocha") else ("" if Game.has_flag("veio_revelado") else "  ⚠ corrente de ar")
+				"trilhos_fundidos": note = "" if Game.has_flag("trilhos_carrinho") else "  ⚠ portão do carrinho"
+				"fundicao_a": note = "  ⚠ inscrição oculta — Olhar Velado"
+				"rito_forja": note = "" if Game.has_flag("rito_rocha") else ("  ⚠ rocha fissurada — Ruptura Ígnea (rito avançado)" if Game.has_flag("rito_ok") else "")
 			items.append(_it("%s %s%s" % ["+" if visited else "·", m["name"] if visited else "???", note], Callable(), "Bloqueios marcados com ⚠ mostram o que ainda impede a passagem."))
 	items.append(_it("Voltar", func(): s.close()))
 	s.setup("Mapa do continente de Auralis", items, "+ visitada   · ainda não visitada   ⚠ bloqueio.")
@@ -504,11 +524,13 @@ func open_shrine_menu() -> void:
 	s.closed.connect(func(): if world.player.state == Player.S.INTERACT and not has_screen(): world.player.set_busy(false))
 
 # =============================================================== LOJA
-func open_shop() -> void:
+func open_shop(shop_id := "ysa") -> void:
 	world.player.set_busy(true)
-	var s := _push("Loja da Ysa", [], "")
+	var shop: Dictionary = Data.forge.get("lojas", {}).get(shop_id, {"nome": "Loja", "itens": []})
+	var title: String = shop["nome"]
+	var s := _push(title, [], "")
 	var items: Array = []
-	for id in ["selo_basico", "selo_refinado", "pocao", "tonico_criatura"]:
+	for id in shop["itens"]:
 		var idd: String = id
 		var it: Dictionary = Data.items[idd]
 		items.append(_it("%s  — %d" % [it["nome"], int(it["preco"])], func():
@@ -518,7 +540,7 @@ func open_shop() -> void:
 			else:
 				Audio.play("pickup"); toast("Comprou %s." % it["nome"]); s.footer = "Fragmentos: %d" % Game.fragments, it["desc"] + "\nPreço: %d fragmentos." % int(it["preco"])))
 	items.append(_it("Sair", func(): s.close()))
-	s.setup("Loja da Ysa", items, "Fragmentos: %d" % Game.fragments)
+	s.setup(title, items, "Fragmentos: %d" % Game.fragments)
 	s.footer = "Fragmentos: %d" % Game.fragments
 	s.closed.connect(func(): world.player.set_busy(false))
 
@@ -572,3 +594,51 @@ func _fill_options(s: MenuScreen) -> void:
 	s.setup("Opções", items, "")
 	s.sel = keep
 	s.list_w = 250.0
+
+# =============================================================== FORJA (melhoria de equipamento)
+## Lista o equipamento usado; a informação mostra antes → depois e o custo. Confirmar pede uma tela de comparação.
+func open_forge() -> void:
+	world.player.set_busy(true)
+	var s := _push("Forja", [], "")
+	_fill_forge(s)
+	s.closed.connect(func(): if world.player.state == Player.S.INTERACT and not has_screen(): world.player.set_busy(false))
+
+func _forge_info(id: String) -> String:
+	if id == "":
+		return "Nada equipado neste espaço."
+	var pv := Game.forge_preview(id)
+	var why := Game.forge_check(id)
+	var t := "%s  +%d\n\nAntes:  %s\nDepois: %s\n\nCusto: %s" % [Data.items[id]["nome"], pv["nivel"], pv["antes"], pv["depois"], pv["custo"]]
+	if why != "":
+		t += "\n\n" + why
+	return t
+
+func _fill_forge(s: MenuScreen) -> void:
+	var items: Array = []
+	items.append(_hdr("Equipamento em uso"))
+	for slot in ["arma", "protecao", "amuleto"]:
+		var id: String = Game.equipment.get(slot, "")
+		var label: String = {"arma": "Arma", "protecao": "Proteção", "amuleto": "Amuleto"}[slot]
+		if id == "":
+			items.append(_it("%s: —" % label, Callable(), "Nada equipado neste espaço.", false))
+			continue
+		var idd := id
+		items.append(_it("%s: %s +%d" % [label, Data.items[id]["nome"], Game.upgrade_level(id)], func():
+			var why := Game.forge_check(idd)
+			if why != "":
+				toast(why)
+				Audio.play("puzzle_no")
+				return
+			var pv := Game.forge_preview(idd)
+			_confirm("Melhorar %s para +%d?" % [Data.items[idd]["nome"], int(pv["nivel"]) + 1],
+				"ANTES:  %s\nDEPOIS: %s\n\nCusto: %s" % [pv["antes"], pv["depois"], pv["custo"]], func():
+					if Game.forge_upgrade(idd):
+						Audio.play("levelup")
+						world.shake(1.0, 0.1)
+					_fill_forge(s)), func(): return _forge_info(idd)))
+	items.append(_hdr("Materiais"))
+	for mat in ["minerio_cobre", "brasa_viva", "lingote"]:
+		items.append(_it("%s x%d" % [Data.items[mat]["nome"], Game.item_count(mat)], Callable(), Data.items[mat]["desc"]))
+	items.append(_it("Sair", func(): s.close()))
+	s.setup("Forja — fragmentos: %d" % Game.fragments, items, "Escolha o que melhorar.")
+	s.list_w = 230.0

@@ -26,6 +26,7 @@ var hero := {}
 var inventory := {}
 var fragments := 0
 var equipment := {"arma": "espada_viajante", "protecao": "", "amuleto": ""}
+var upgrades := {}          # item -> nível de melhoria na forja (+1..+3)
 var individuals := {}
 var team: Array = []
 var sanctuary: Array = []
@@ -132,6 +133,7 @@ func new_game(p_slot: int = 1) -> void:
 	inventory = {"selo_basico": 0, "pocao": 0, "espada_viajante": 1}
 	fragments = 0
 	equipment = {"arma": "espada_viajante", "protecao": "", "amuleto": ""}
+	upgrades = {}
 	individuals = {}
 	team = []
 	sanctuary = []
@@ -155,7 +157,7 @@ func new_game(p_slot: int = 1) -> void:
 	hero_changed.emit(); team_changed.emit(); inventory_changed.emit(); quest_changed.emit()
 
 func to_dict() -> Dictionary:
-	return {"version": SAVE_VERSION, "hero": hero, "inventory": inventory, "fragments": fragments, "equipment": equipment,
+	return {"version": SAVE_VERSION, "hero": hero, "inventory": inventory, "fragments": fragments, "equipment": equipment, "upgrades": upgrades,
 		"individuals": individuals, "team": team, "sanctuary": sanctuary, "active_idx": active_idx, "flags": flags,
 		"chests": chests, "ecos": ecos, "eco_slots": eco_slots, "bestiary": bestiary, "location": location,
 		"checkpoint": checkpoint, "stats": stats, "play_time": play_time, "difficulty": difficulty, "behavior": behavior, "slot": slot}
@@ -182,6 +184,7 @@ func from_dict(d: Dictionary) -> bool:
 		push_error("Save inválido: " + err)
 		return false
 	hero = d["hero"]; inventory = d["inventory"]; fragments = int(d.get("fragments", 0)); equipment = d.get("equipment", equipment)
+	upgrades = d.get("upgrades", {})
 	individuals = d["individuals"]; team = d["team"]; sanctuary = d.get("sanctuary", []); active_idx = int(d.get("active_idx", 0))
 	flags = d["flags"]; chests = d.get("chests", {}); ecos = d.get("ecos", {}); eco_slots = d.get("eco_slots", ["", ""])
 	bestiary = d.get("bestiary", {}); location = d["location"]; checkpoint = d["checkpoint"]
@@ -208,6 +211,8 @@ func _normalize_types() -> void:
 		ind["nivel"] = int(ind["nivel"])
 	for k in chests.keys():
 		chests[k] = true
+	for k in upgrades.keys():
+		upgrades[k] = int(upgrades[k])
 	stats["capturas"] = int(stats.get("capturas", 0))
 	stats["mortes"] = int(stats.get("mortes", 0))
 	for k in stats.get("kills", {}).keys():
@@ -254,22 +259,109 @@ func hero_max_hp() -> float:
 	var hp = 100.0 + 8.0 * (hero_level() - 1) + 6.0 * hero["talents"].get("resistencia", 0)
 	var am: String = equipment.get("amuleto", "")
 	if am != "" and Data.items.has(am):
-		hp += float(Data.items[am].get("hp", 0))
+		hp += float(Data.items[am].get("hp", 0)) + float(forge_bonus("amuleto", "hp")) * upgrade_level(am)
 	return hp
 
 func hero_atk() -> float:
 	var a = 12.0 + 1.4 * (hero_level() - 1) + 2.0 * hero["talents"].get("espada", 0)
 	var w: String = equipment.get("arma", "")
 	if w != "" and Data.items.has(w):
-		a += float(Data.items[w].get("dano", 0))
+		a += float(Data.items[w].get("dano", 0)) + float(forge_bonus("arma", "dano")) * upgrade_level(w)
 	return a
 
 func hero_reduction() -> float:
 	var r = 0.02 * hero["talents"].get("resistencia", 0)
 	var p: String = equipment.get("protecao", "")
 	if p != "" and Data.items.has(p):
-		r += float(Data.items[p].get("reducao", 0))
+		r += float(Data.items[p].get("reducao", 0)) + float(forge_bonus("protecao", "reducao")) * upgrade_level(p)
 	return clamp(r, 0.0, 0.5)
+
+## Perfil da arma equipada: a Lança de Cobre alcança mais à frente com um arco mais estreito.
+func weapon_profile() -> Dictionary:
+	var w: Dictionary = Data.items.get(equipment.get("arma", ""), {})
+	return {"alcance": float(w.get("alcance", 0.0)), "arco": float(w.get("arco", 1.0)), "lanca": w.has("alcance")}
+
+## Multiplicador do dano de calor (piso quente/poças): Luvas Térmicas e Amuleto da Brasa reduzem.
+func heat_mult() -> float:
+	var m := 1.0
+	if item_count("luvas_termicas") > 0:
+		m *= 0.5
+	var am: String = equipment.get("amuleto", "")
+	if am != "" and Data.items.has(am):
+		m *= float(Data.items[am].get("calor", 1.0))
+	return m
+
+# =============================================================== FORJA (melhoria de equipamento)
+func upgrade_level(id: String) -> int:
+	return int(upgrades.get(id, 0))
+
+func forge_bonus(slot: String, stat: String) -> float:
+	return float(Data.forge.get("bonus", {}).get(slot, {}).get(stat, 0.0))
+
+func forge_next(id: String) -> Dictionary:
+	var lv := upgrade_level(id)
+	var niveis: Array = Data.forge.get("niveis", [])
+	if lv >= niveis.size():
+		return {}
+	return niveis[lv]
+
+## Motivo pelo qual não dá para melhorar ("" = pode).
+func forge_check(id: String) -> String:
+	if id == "" or not Data.items.has(id):
+		return "Nada equipado neste espaço."
+	var nx := forge_next(id)
+	if nx.is_empty():
+		return "Já está no nível máximo (+3)."
+	if nx.has("requer_flag") and not has_flag(nx["requer_flag"]):
+		return str(nx.get("requer_texto", "Ainda não é possível."))
+	for mat in nx["custo"]:
+		if item_count(mat) < int(nx["custo"][mat]):
+			return "Faltam materiais: %s." % forge_cost_text(nx["custo"])
+	return ""
+
+func forge_cost_text(cost: Dictionary) -> String:
+	var parts: Array = []
+	for mat in cost:
+		var nm: String = "fragmentos" if mat == "fragmentos" else Data.items.get(mat, {}).get("nome", mat)
+		parts.append("%s %d/%d" % [nm, item_count(mat), int(cost[mat])])
+	return ", ".join(parts)
+
+## Comparação antes/depois (a UI só exibe).
+func forge_preview(id: String) -> Dictionary:
+	var it: Dictionary = Data.items.get(id, {})
+	var slot: String = it.get("tipo", "")
+	var lv := upgrade_level(id)
+	var out := {"slot": slot, "nivel": lv, "antes": "", "depois": ""}
+	match slot:
+		"arma":
+			var base := float(it.get("dano", 0))
+			out["antes"] = "Ataque do herói %.0f (arma +%.0f)" % [hero_atk(), base + forge_bonus("arma", "dano") * lv]
+			out["depois"] = "Ataque do herói %.0f (arma +%.0f)" % [hero_atk() + forge_bonus("arma", "dano") if equipment.get("arma", "") == id else hero_atk(), base + forge_bonus("arma", "dano") * (lv + 1)]
+		"protecao":
+			var r0 := float(it.get("reducao", 0)) + forge_bonus("protecao", "reducao") * lv
+			out["antes"] = "Redução de dano %d%%" % int(round(r0 * 100.0))
+			out["depois"] = "Redução de dano %d%%" % int(round((r0 + forge_bonus("protecao", "reducao")) * 100.0))
+		"amuleto":
+			var h0 := float(it.get("hp", 0)) + forge_bonus("amuleto", "hp") * lv
+			out["antes"] = "Vida máxima +%d" % int(h0)
+			out["depois"] = "Vida máxima +%d" % int(h0 + forge_bonus("amuleto", "hp"))
+	var nx := forge_next(id)
+	out["custo"] = forge_cost_text(nx["custo"]) if not nx.is_empty() else "—"
+	return out
+
+func forge_upgrade(id: String) -> bool:
+	if forge_check(id) != "":
+		return false
+	var nx := forge_next(id)
+	for mat in nx["custo"]:
+		take_item(mat, int(nx["custo"][mat]))
+	upgrades[id] = upgrade_level(id) + 1
+	hero["hp"] = min(float(hero["hp"]) + (forge_bonus("amuleto", "hp") if Data.items[id]["tipo"] == "amuleto" else 0.0), hero_max_hp())
+	set_flag("forjou_equipamento")
+	toast.emit("%s melhorada para +%d!" % [Data.items[id]["nome"], upgrades[id]])
+	inventory_changed.emit()
+	hero_changed.emit()
+	return true
 
 func capture_bonus() -> float:
 	var b = 0.02 * hero["talents"].get("vinculo", 0)
@@ -382,6 +474,8 @@ func register_capture(ind: Dictionary) -> String:
 	mark_captured(ind["species_id"])
 	stats["capturas"] = int(stats["capturas"]) + 1
 	set_flag("primeira_captura")
+	if not has_flag("capturou_" + str(ind["species_id"])):
+		set_flag("capturou_" + str(ind["species_id"]))
 	var trio := 0
 	for sp_id in ["brotisco", "lumipim", "cascalito"]:
 		if bestiary.get(sp_id, {}).get("capturado", false):
@@ -616,6 +710,8 @@ func item_count(id: String) -> int:
 func give_item(id: String, n: int = 1) -> void:
 	if id == "fragmentos":
 		fragments += n
+	elif Data.items.get(id, {}).get("tipo", "") in ["tecnica", "historia"]:
+		inventory[id] = 1
 	elif Data.items.get(id, {}).get("tipo", "") in ["arma", "protecao", "amuleto"]:
 		inventory[id] = 1
 		var slot_name: String = {"arma": "arma", "protecao": "protecao", "amuleto": "amuleto"}[Data.items[id]["tipo"]]
@@ -686,10 +782,16 @@ func register_kill(kind: String) -> void:
 	if has_flag("quest_esporos") and int(stats["kills"].get("cogumelo", 0)) >= 3 and not has_flag("esporos_ok"):
 		set_flag("esporos_ok")
 		toast.emit("Missão: 3 Cogumelos derrotados! Fale com Ysa.")
+	if has_flag("quest_ferramentas") and int(stats["kills"].get("mineiro", 0)) >= 4 and not has_flag("ferramentas_ok"):
+		set_flag("ferramentas_ok")
+		toast.emit("Missão: 4 Mineiros Corrompidos derrotados! Fale com Tessa.")
 
 func quest_active(qid: String) -> bool:
 	if qid == "principal":
 		return true
+	var q: Dictionary = Data.quests.get(qid, {})
+	if q.has("ativa_se"):
+		return has_flag(q["ativa_se"])
 	return has_flag("quest_" + qid)
 
 func quest_step(qid: String) -> int:
@@ -704,9 +806,15 @@ func objective_text() -> String:
 	if q.is_empty():
 		return ""
 	var i := quest_step("principal")
-	if i >= q["etapas"].size():
-		return "Capítulo 1 concluído!"
-	return q["etapas"][i]["texto"]
+	if i < q["etapas"].size():
+		return q["etapas"][i]["texto"]
+	if Data.quests.has("principal2") and quest_active("principal2"):
+		var j := quest_step("principal2")
+		var q2: Dictionary = Data.quests["principal2"]
+		if j < q2["etapas"].size():
+			return q2["etapas"][j]["texto"]
+		return "Capítulo 2 concluído!"
+	return "Capítulo 1 concluído!"
 
 func diary_lines() -> Array:
 	var out: Array = []
