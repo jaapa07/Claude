@@ -33,7 +33,9 @@ func _ready() -> void:
 	Game.rng.seed = sd
 	Game.toast.connect(func(t): if "exausta" in t: exhausted_events += 1)
 	main.ui.instant = true
-	if "--equip" in args:
+	if "--casas" in args:
+		await run_casas()
+	elif "--equip" in args:
 		await run_equip()
 	elif "--powers" in args:
 		await run_powers()
@@ -2406,3 +2408,88 @@ func run_equip() -> void:
 	await frames(4)
 	await shot("montar")
 	await close_menus()
+
+## Interiores das casas e missões da vila
+func enter_house(door: Vector2i, map_id: String) -> bool:
+	await goto(Vector2(door.x * 16 + 8, (door.y + 2) * 16 + 8), 4.0, 60.0)
+	steer(Vector2.UP)
+	var t := 0
+	while W.map_id != map_id and t < 120:
+		await frames(2)
+		t += 1
+	release_moves()
+	await frames(20)
+	return W.map_id == map_id
+
+func leave_house() -> bool:
+	var d: Dictionary = {}
+	for e in W.ent_defs:
+		if e["type"] == "exit":
+			d = e
+	return await exit_to("vila_lumen", float(d["x"]) * 16 + 16, float(d["y"]) * 16 + 8)
+
+func run_casas() -> void:
+	for i in [3]:
+		SaveSys.delete_slot(i)
+	main.start_new_game(3)
+	await frames(10)
+	await advance_dialogs()
+	var ok := await enter_house(Vector2i(8, 7), "casa_maru")
+	check("Porta da casa da Maru leva ao interior", ok, W.map_id)
+	await shot("casa_maru")
+	await talk("lia")
+	check("Lia dá a missão das Folhas-Lanterna", Game.has_flag("quest_ervas"))
+	var props := 0
+	for e in get_tree().get_nodes_in_group("ents"):
+		if e.kind == "prop":
+			props += 1
+	check("Interior mobiliado (móveis desenhados)", props >= 6, str(props))
+	await use_ent("casa_maru_p10_5", Vector2(0, 16), Vector2.UP)
+	await advance_dialogs()
+	check("Estante conta a história dos guardiões (item de história)", Game.item_count("livro_guardioes") == 1)
+	ok = await leave_house()
+	check("Saída da casa volta à vila em frente à porta", ok and W.map_id == "vila_lumen")
+	ok = await enter_house(Vector2i(35, 6), "loja_ysa")
+	check("Loja da Ysa tem interior", ok)
+	await shot("loja_ysa")
+	await leave_house()
+	ok = await enter_house(Vector2i(10, 28), "casa_corvelo")
+	check("Casa dos Corvelo abandonada antes do chefão", ok and W.cur_tiles[3][8] == "6")
+	await shot("casa_corvelo_antes")
+	await leave_house()
+	ok = await enter_house(Vector2i(36, 24), "casa_tobi")
+	check("Oficina do Tobi tem a bigorna da forja", ok)
+	await shot("casa_tobi")
+	await leave_house()
+	# coleta no Bosque e na Clareira
+	ok = await exit_to("bosque_lanternas", 43 * 16.0, 15 * 16.0 + 8.0)
+	await goto(Vector2(23 * 16 + 8, 16 * 16 + 8), 4.0, 60.0)
+	await interact_press(); await frames(5)
+	await goto(Vector2(21 * 16 + 8, 31 * 16 + 8), 4.0, 60.0)
+	await interact_press(); await frames(5)
+	await goto(Vector2(45 * 16 + 8, 11 * 16 + 8), 4.0, 60.0)
+	await interact_press(); await frames(5)
+	check("Folhas e brinquedo coletados no Bosque", Game.item_count("folha_lanterna") == 2 and Game.item_count("brinquedo_madeira") == 1, "%d %d" % [Game.item_count("folha_lanterna"), Game.item_count("brinquedo_madeira")])
+	await exit_to("vila_lumen", 8.0, 17 * 16.0 + 8.0)
+	await exit_to("clareira_raizes", 22 * 16.0 + 8.0, 30 * 16.0 + 8.0)
+	await goto(Vector2(38 * 16 + 8, 19 * 16 + 8), 4.0, 60.0)
+	await interact_press(); await frames(5)
+	check("Missão conclui ao juntar 3 folhas", Game.has_flag("ervas_ok"))
+	await exit_to("vila_lumen", 22 * 16.0 + 8.0, 8.0)
+	await enter_house(Vector2i(8, 7), "casa_maru")
+	await talk("lia")
+	check("Lia recebe as folhas e entrega a recompensa uma única vez", Game.has_flag("ervas_entregue") and Game.item_count("folha_lanterna") == 0 and Game.item_count("pocao") >= 3)
+	var pot := Game.item_count("pocao")
+	await talk("lia")
+	check("Recompensa não duplica ao falar de novo", Game.item_count("pocao") == pot)
+	await leave_house()
+	# casa dos Corvelo depois do chefão
+	Game.set_flag("cervo_morto")
+	await enter_house(Vector2i(10, 28), "casa_corvelo")
+	check("Casa dos Corvelo renovada após o chefão", W.cur_tiles[3][8] == "5" and ent_by_id("corvelo_casa") != null)
+	await shot("casa_corvelo_depois")
+	await talk("corvelo_casa")
+	check("Dona Corvelo recebe o brinquedo e recompensa", Game.has_flag("brinquedo_entregue") and Game.item_count("brinquedo_madeira") == 0)
+	W.save_now(3)
+	SaveSys.load_game(3)
+	check("Save mantém missões das casas", Game.has_flag("ervas_entregue") and Game.has_flag("brinquedo_entregue") and Game.has_flag("folha1_pega"))
