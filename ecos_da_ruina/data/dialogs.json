@@ -28,7 +28,8 @@
    "lines": [
     "Maru: As raízes recuaram... e a família Corvelo voltou para casa. Você libertou a floresta, criança.",
     "Maru: A memória do Cervo mostrou o que eu temia: Ione ficou para trás para salvar os outros. Mas ela abriu caminho ao norte. Ela está viva.",
-    "Maru: O Desfiladeiro do Eco leva às Minas da Brasa. Só a Raiz Viva constrói pontes sobre a ravina — use o Eco que o Cervo te deixou."
+    "Maru: O Desfiladeiro do Eco leva às Minas da Brasa. Só a Raiz Viva constrói pontes sobre a ravina — use o Eco que o Cervo te deixou.",
+    "Maru: E você... está com outro olhar. Lembrou de alguma coisa, não foi? Guarde bem. Lembranças também são um caminho."
    ]
   },
   {
@@ -48,10 +49,12 @@
   },
   {
    "lines": [
-    "Maru: Então você é o aprendiz da Ione. Ela me escreveu que você viria — teimoso, ela disse, e de bom coração.",
+    "Maru: Essa carta... é a letra da Ione! Então você é o aprendiz dela. Ela me escreveu que você viria: teimoso, ela disse, e de bom coração.",
+    "Maru: Não se lembra de nada além dela? Hm. Isso tem cheiro de Eco, criança. As fissuras andam roubando lembranças por aí.",
     "Maru: A expedição dela entrou na Floresta dos Esquecidos há três luas. Desde então as raízes fecham os caminhos e, à noite, ouvimos as vozes dos que sumiram.",
     "Maru: Algo adoeceu o guardião do Santuário da Seiva. Se Ione está viva, o rastro dela começa lá.",
     "Maru: Escute bem: cinco guardiões adoeceram — Floresta, Minas, Pântano, Fortaleza e Catedral. Cada um que você libertar devolve um Eco, e cada Eco abre o caminho seguinte. No fim desse caminho está a Catedral do Vazio... e, aposto, Ione.",
+    "Maru: E dizem que o Eco devolve o que tomou. Talvez, a cada guardião, volte também um pedaço de você.",
     "Maru: Leve estes Selos de Vínculo. No campo de treino, a oeste, você aprende a lutar e a criar seu primeiro vínculo.",
     "Maru: E forme vínculo com as três criaturas da floresta — Brotisco, Lumipim e Cascalito. Elas crescem com você e vão ajudar contra os guardiões."
    ],
@@ -803,6 +806,14 @@
  ],
  "bruna": [
   {
+   "if": "irmao_bruna_ok",
+   "lines": [
+    "Bruna: O Caio está consertando a cerca do cercado com o Tobi. Reclama o dia inteiro... e janta em casa todo dia.",
+    "Bruna: Precisa de escudo? Veja o quadro."
+   ],
+   "contratos": true
+  },
+  {
    "if": "contrato_saqueadores",
    "lines": [
     "Bruna: Os domadores estão na trilha leste do Bosque. Eu vou na frente com o escudo."
@@ -819,6 +830,19 @@
    "contratos": true
   },
   {
+   "if": "saqueadores_ok",
+   "unless": "bruna_contou",
+   "lines": [
+    "Bruna: Posso te contar uma coisa? Meu irmão caçula, o Caio, sumiu quando as raízes fecharam os campos.",
+    "Bruna: Um mineiro da Forja de Cobre jura que o viu com um bando de Domadores nos Trilhos Fundidos.",
+    "Bruna: Está no quadro: \"O Irmão da Bruna\". É pessoal... e eu não peço ajuda fácil."
+   ],
+   "set": [
+    "bruna_contou"
+   ],
+   "contratos": true
+  },
+  {
    "lines": [
     "Bruna: Precisa de escudo? Veja o quadro: aceito contratos e também patrulho com você."
    ],
@@ -826,6 +850,27 @@
   }
  ],
  "ravi": [
+  {
+   "if": "mestre_ravi_ok",
+   "lines": [
+    "Ravi: Ensinei o Pipo a segurar um disco hoje. Errou todos. Igualzinho a mim, na idade dele.",
+    "Ravi: A bússola do Joran está com você. Cuida bem dela."
+   ],
+   "contratos": true
+  },
+  {
+   "if": "emboscada_ok",
+   "unless": "ravi_contou",
+   "lines": [
+    "Ravi: O Joran, meu mestre, partiu com a expedição da sua mestra. Batedor dos bons: me ensinou tudo que eu sei.",
+    "Ravi: Nunca mais mandou notícia. Mas no Porto das Lanternas eu vi uma bolsa de discos igual à dele, nas mãos de Domadores.",
+    "Ravi: Se você for ao Pântano, me leve. Está no quadro: \"O Rastro de Joran\"."
+   ],
+   "set": [
+    "ravi_contou"
+   ],
+   "contratos": true
+  },
   {
    "lines": [
     "Ravi: Batedor do Bosque, a seu dispor. De longe, meus discos não erram.",
@@ -1513,6 +1558,110 @@
    ],
    "set": [
     "quest_lanternas"
+   ]
+  }
+ ],
+ "caio": [
+  {
+   "lines": [
+    "Caio: A Bruna disse que você bate forte e fala pouco. Gostei.",
+    "Caio: Os Domadores falavam de um homem de manto branco que pagava pelas feras. Chamavam de Arauto. Nunca vi o rosto dele: o capuz fica sempre na sombra."
+   ]
+  }
+ ],
+ "arauto_eco": [
+  {
+   "lines": [
+    "Arauto: Ainda não, aprendiz. Ainda não."
+   ]
+  }
+ ],
+ "bilhete_teodoro": [
+  {
+   "lines": [
+    "Uma mochila azul da expedição, encharcada de orvalho. Dentro, um caderno de mapas com um bilhete solto:",
+    "\"Dia 3. A Mestra Ione pôs o garoto para carregar as lanternas. Ele reclamou o caminho todo e não deixou nenhuma apagar. — Teodoro, cartógrafo\""
+   ],
+   "set": [
+    "leu_bilhete_teodoro"
+   ]
+  }
+ ],
+ "bilhete_lista": [
+  {
+   "lines": [
+    "Uma folha presa debaixo de uma pedra, perto das ruínas:",
+    "\"Expedição ao Santuário da Seiva: Ione (guia). Teodoro (mapas). Joran (batedor). Família Corvelo (ervas).\"",
+    "Há mais um nome no fim da lista, riscado tantas vezes que o papel rasgou."
+   ],
+   "set": [
+    "leu_bilhete_lista"
+   ]
+  }
+ ],
+ "bilhete_mineiro": [
+  {
+   "lines": [
+    "Um bilhete pregado numa estaca, com letra de quem escreve pouco:",
+    "\"Marta, se isto chegar até você: estou bem. O calor ruim fecha os túneis, mas o Faisquito do turno me guia de volta toda noite. Guarde o pão de sexta. — Teo\""
+   ],
+   "set": [
+    "leu_bilhete_mineiro"
+   ]
+  }
+ ],
+ "bilhete_carga": [
+  {
+   "lines": [
+    "Uma ordem de carga, lacrada com um olho fechado:",
+    "\"Doze carrinhos de pedra-eco para o sul, pelos pântanos. Entregar ao Arauto, na Estrada Final. Não abrir. Não perguntar. Não lembrar.\""
+   ],
+   "set": [
+    "leu_bilhete_carga"
+   ]
+  }
+ ],
+ "bilhete_joran": [
+  {
+   "lines": [
+    "Um bilhete preso numa estaca, com letra apressada:",
+    "\"Sigo as marcas de giz da Mestra Ione. Ela atravessou o lago sozinha, rumo às montanhas. Se alguém do Bosque ler isto: o Ravi que não venha atrás. — Joran\""
+   ],
+   "set": [
+    "leu_bilhete_joran"
+   ]
+  }
+ ],
+ "bilhete_barqueira": [
+  {
+   "lines": [
+    "Uma carta enrolada, dentro de uma garrafa encalhada na margem:",
+    "\"Meu bem, a água está mentindo. Ontem vi o meu reflexo sorrir enquanto eu chorava. Vou parar de olhar para o lago até a guardiã acordar. — Dora, barqueira\""
+   ],
+   "set": [
+    "leu_bilhete_barqueira"
+   ]
+  }
+ ],
+ "bilhete_soldado": [
+  {
+   "lines": [
+    "Um relatório amassado, nunca entregue:",
+    "\"Capitã Ilse: o comandante está estranho. Passa as noites olhando o próprio rosto no escudo, perguntando o próprio nome. Peço permissão para dobrar a guarda. — Soldado Bertoldo\""
+   ],
+   "set": [
+    "leu_bilhete_soldado"
+   ]
+  }
+ ],
+ "bilhete_jardineira": [
+  {
+   "lines": [
+    "Um bilhete preso numa estaca do canteiro:",
+    "\"Reguem os Ventiscos só de manhã. E se aparecer um homem de manto branco nos jardins, não respondam quando ele perguntar do que vocês se lembram. — Ama, jardineira\""
+   ],
+   "set": [
+    "leu_bilhete_jardineira"
    ]
   }
  ]

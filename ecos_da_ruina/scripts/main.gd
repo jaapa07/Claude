@@ -72,10 +72,12 @@ func start_new_game(slot: int) -> void:
 	begin_world()
 	world.load_map("vila_lumen", "default")
 	world.player.set_busy(true)
+	# o herói tem amnésia: só lembra que é aprendiz da Mestra Ione e carrega a carta dela (docs/HISTORIA.md)
 	ui.dialog(["Auralis, ano da Ruína. O Eco — a energia que dá voz às criaturas e às terras — está adoecendo, e fissuras se abrem entre o mundo e sua memória.",
-		"Três luas atrás, sua mentora, a Mestra Ione, partiu com uma expedição para a Floresta dos Esquecidos. Nenhum deles voltou.",
-		"A última carta dela dizia apenas: \"Se eu não voltar, vá a Lúmen. Procure a Anciã Maru. E traga selos.\"",
-		"Seu objetivo: reunir os Ecos dos cinco guardiões, abrir caminho até a Catedral do Vazio e trazer Ione de volta. (Acompanhe em Menu > Jornada.)",
+		"Você acorda na beira da estrada que leva a Lúmen, com a cabeça pesada e o céu girando. Não lembra de onde veio. Não lembra nem do próprio rosto.",
+		"Só uma coisa ficou: um nome, Mestra Ione. Você é aprendiz dela. Disso você tem certeza, mesmo sem saber por quê.",
+		"No bolso, uma carta com a letra dela: \"Se eu não voltar, vá a Lúmen. Procure a Anciã Maru. E traga selos.\" Pela carta, você sabe que ela partiu com uma expedição e não voltou.",
+		"Seu objetivo: reunir os Ecos dos cinco guardiões, recuperar o que você esqueceu, abrir caminho até a Catedral do Vazio e trazer Ione de volta. (Acompanhe em Menu > Jornada.)",
 		"A Anciã Maru, no centro da vila, espera por você. (Ande com {andar}; fale com {interagir}.)"], func():
 		world.player.set_busy(false))
 

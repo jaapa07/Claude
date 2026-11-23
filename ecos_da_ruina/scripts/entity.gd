@@ -214,7 +214,14 @@ func _ready() -> void:
 			sprite.modulate = Color(0.75, 0.65, 1.0, 0.6)
 			refresh_spirit()
 		"decor":
-			_pprop(str(def.get("frame", "cesto")), Vector2(0, -2))
+			if def.has("sheet"):
+				# bilhetes ambientais e objetos de história (folha 16x16 própria, ex.: bilhetes.png)
+				sprite = Sprite2D.new()
+				sprite.texture = Art.region(str(def["sheet"]), int(def.get("frame", 0)) * 16, 0, 16, 16)
+				sprite.offset = Vector2(0, -2)
+				add_child(sprite)
+			else:
+				_pprop(str(def.get("frame", "cesto")), Vector2(0, -2))
 			solid = def.get("solid", false)
 	if solid:
 		collision_layer = 1

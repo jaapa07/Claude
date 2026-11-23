@@ -21,6 +21,8 @@ var fade_a := 0.0:
 			_fade.color.a = v
 
 var _fade: ColorRect
+var _mem: ColorRect
+var memory_tint := false
 var _root: Control
 var _hp: TextureProgressBar
 var _vig: TextureProgressBar
@@ -127,6 +129,9 @@ func _ready() -> void:
 	_prompt_lab = Fonts.label("", 9); _prompt_lab.position = Vector2(4, 4); _prompt_lab.size = Vector2(92, 10)
 	_prompt_lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; _prompt.add_child(_prompt_lab)
 	_obj_lab = Fonts.label("", 7, Color(1, 0.95, 0.75)); _obj_lab.position = Vector2(6, 252); _obj_lab.size = Vector2(468, 18); _obj_lab.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; _root.add_child(_obj_lab)
+	# tom de lembrança (sépia), abaixo da faixa e do diálogo: o passado aparece por trás do texto
+	_mem = ColorRect.new(); _mem.size = size; _mem.color = Color(0.32, 0.22, 0.1, 0.0); _mem.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_mem)
 	# faixa com nome do mapa
 	_banner = UIKit.panel(Vector2(110, 92), Vector2(260, 26)); _banner.visible = false; add_child(_banner)
 	_banner_lab = Fonts.label("", 11, Color(1, 0.9, 0.55)); _banner_lab.position = Vector2(4, 9); _banner_lab.size = Vector2(252, 10)
@@ -140,6 +145,12 @@ func _ready() -> void:
 	# transição
 	_fade = ColorRect.new(); _fade.size = size; _fade.color = Color(0, 0, 0, 0); _fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_fade)
+
+## Lembranças do herói: a tela ganha um tom sépia por trás do diálogo (scripts/historia.gd).
+func set_memory_tint(on: bool) -> void:
+	memory_tint = on
+	if _mem:
+		_mem.color.a = 0.5 if on else 0.0
 
 func add_toast(t: String) -> void:
 	for x in toasts:

@@ -75,6 +75,7 @@ var boss_nodes := {}
 var active_boss: Node = null
 var encounter_active := {}
 var test_mode := false
+var historia: Historia
 var _tileset: TileSet
 var _hit_token := 0
 var _death_pending := false
@@ -147,6 +148,7 @@ func _ready() -> void:
 	Game.party_changed.connect(_on_party_changed)
 	Weather.attach(self)
 	Fortaleza.attach(self)   # Região 4: chefes, feixes de luz, retorno ao Refúgio
+	historia = Historia.attach(self)   # artefatos, lembranças, cenas e o Arauto (scripts/historia.gd)
 
 func _make_tileset() -> TileSet:
 	if _tileset:
@@ -843,6 +845,12 @@ func _spawn_contract() -> void:
 		if d["kind"] == "vesna":
 			boss_node = en
 	say("Contrato: " + c["objetivo"])
+	# contrato pessoal: a conversa de abertura toca uma vez, ao chegar ao local
+	if boss_node == null and c.has("abertura") and not Game.has_flag("abertura_" + cid):
+		Game.set_flag("abertura_" + cid)
+		if not test_mode:
+			player.set_busy(true)
+			ui.dialog(c["abertura"], func(): player.set_busy(false))
 	if boss_node != null:
 		ui.boss_bar(boss_node)
 		Audio.set_mood("chefe", true, "chefao")
@@ -870,6 +878,7 @@ func contract_enemy_down(e: Node) -> void:
 	Audio.play("puzzle_ok")
 	Audio.stinger("vitoria")
 	var lines: Array = ["Contrato concluído: " + Data.contracts[cid]["nome"] + "!"]
+	lines.append_array(Data.contracts[cid].get("desfecho", []))   # contrato pessoal: desfecho do aliado
 	for a in allies():
 		lines.append(Data.allies[a.aid]["falas"]["fim"])
 		a.heal_full()
@@ -2206,7 +2215,7 @@ func _memory_tick(delta: float) -> void:
 	Audio.mood_for("memoria", 25.0)
 	player.set_busy(true)
 	ui.banner(m["titulo"])
-	ui.dialog(m["linhas"], func():
+	ui.dialog(Historia.with_reaction(m["linhas"], "memoria", f, (m["linhas"] as Array).size() - 1), func():
 		player.set_busy(false)
 		_memory_reward(f))
 

@@ -4427,6 +4427,7 @@ func r4_jardins() -> void:
 	W.companion.global_position = tpos(37, 16) + Vector2(-4, 6)
 	await frames(2)
 	Game.skill_cd.clear()
+	W.companion.target = null   # a rajada mira o alvo da criatura, se houver: aqui ela deve soprar para a direita
 	W.companion.command_skill(Vector2.RIGHT)
 	await frames(10)
 	check("R4: a Rajada do Ventisco gira a hélice da ilha à distância (passarela surge)", Game.has_flag("jardins_ilha") and not W.is_solid_char(r4_tile(40, 18)))
@@ -4917,11 +4918,32 @@ func run_historia() -> void:
 			has_row = true
 	check("Diário lista as memórias para reler a história", has_row)
 	await close_menus()
+	# criatura ativa: reage às memórias e lembranças (linha com o nome da espécie/apelido)
+	var bro: Dictionary = Game.new_individual("brotisco", 5)
+	Game.individuals[bro["uuid"]] = bro
+	Game.team.append(bro["uuid"])
+	Game.team_changed.emit()
+	await frames(5)
 	Game.set_flag("cervo_morto")
 	await secs(2.5)
+	var mem_txt: String = " ".join(main.ui.hud.dlg_lines)
+	check("Criatura ativa reage à memória do guardião (linha com o nome dela)", main.ui.hud.dlg_active and "Cervo" in mem_txt and "Brotisco" in mem_txt, mem_txt.right(160))
 	await advance_dialogs()
 	await frames(5)
 	check("Memória do Cervo revela o rastro de Ione (página 2)", Game.item_count("pagina_ione_2") == 1)
+	# ---- artefato + lembrança (depois da Memória do Guardião)
+	check("Artefato ainda não entregue antes da lembrança", Game.item_count("semente_ambar") == 0)
+	await secs(2.0)
+	var lem: String = " ".join(main.ui.hud.dlg_lines)
+	check("Lembrança toca depois da memória: o primeiro treino com Ione", main.ui.hud.dlg_active and "Ione:" in lem and "Você:" in lem and "sinal" in lem, lem.left(120))
+	check("Lembrança: tela em tom de memória e trilha \"memoria\"", main.ui.hud.memory_tint and Audio._moods.has("memoria"))
+	check("Criatura ativa reage à lembrança (Brotisco e a folhinha)", "Brotisco" in lem and "folhinha" in lem)
+	await shot("historia_lembranca")
+	await advance_dialogs()
+	await frames(10)
+	check("Lembrança entrega o artefato Semente de Âmbar", Game.item_count("semente_ambar") == 1 and Game.has_flag("lembranca_semente_ambar") and not main.ui.hud.memory_tint)
+	check("Artefato é item de história com ícone desenhado (icons_artefatos)", Data.items["semente_ambar"]["tipo"] == "historia" and ResourceLoader.exists("res://assets/sprites/icons_artefatos.png") and Game.item_icon("semente_ambar") != null)
+	check("Artefatos: 1/5", Historia.count() == 1 and Historia.artefatos().size() == 5)
 	W.save_now(5)
 	SaveSys.load_game(5)
 	await frames(5)
@@ -4934,8 +4956,147 @@ func run_historia() -> void:
 	await close_menus()
 	check("Save mantém páginas e memórias", Game.has_flag("mem_cervo_morto") and Game.item_count("pagina_ione_2") == 1)
 	check("Lista de saves mostra a % de conquista", int(SaveSys.slot_info(5).get("conquista", -1)) > 0)
+	await historia_amnesia()
 	W.memory_in_tests = false
 
+## Amnésia, artefatos, cenas (Arauto, chegadas), bilhetes e contratos pessoais (docs/HISTORIA.md)
+func historia_amnesia() -> void:
+	# ---- abertura e Maru (amnésia)
+	var maru: Array = Data.dialogs["anciao"][-1]["lines"]
+	check("Maru reconhece o herói pela carta de Ione", "carta" in " ".join(maru) and "aprendiz" in " ".join(maru))
+	check("Save mantém o artefato e a lembrança", Game.item_count("semente_ambar") == 1 and Game.has_flag("lembranca_semente_ambar"))
+	# ---- dados: cada artefato aponta para um chefe real, item com ícone; a Coroa fica reservada para a Região 5
+	var bosses := {}
+	for f in Data.maps:
+		for e in Data.maps[f]["entities"]:
+			if e.has("flag_done"):
+				bosses[e["flag_done"]] = true
+	var arts_ok := true
+	for a in Historia.artefatos():
+		var it: Dictionary = Data.items.get(str(a["id"]), {})
+		if it.get("tipo", "") != "historia" or it.get("folha", "") != "icons_artefatos" or (a.get("lembranca", {}).get("linhas", []) as Array).is_empty():
+			arts_ok = false
+		if not a.get("placeholder", false) and not bosses.has(str(a["chefe_flag"])):
+			arts_ok = false
+	check("Artefatos: 4 chefes reais + Coroa Partida reservada (rei_morto, placeholder)", arts_ok and Historia.artefato("coroa_partida").get("placeholder", false) and Historia.artefato("coroa_partida")["chefe_flag"] == "rei_morto")
+	# ---- tela de Artefatos (último item da pausa) e seção na Jornada
+	main.ui.open_pause()
+	await frames(3)
+	var last: Dictionary = main.ui._top().items[main.ui._top().items.size() - 1]
+	check("Pausa: \"Artefatos\" é o último item da lista", str(last.get("t", "")).begins_with("Artefatos (1/5)"), str(last.get("t", "")))
+	last["fn"].call()
+	await frames(3)
+	var rows: Array = main.ui._top().items.filter(func(r): return not r.get("hdr", false) and str(r.get("t", "")) != "Voltar")
+	var sem: Array = rows.filter(func(r): return str(r.get("t", "")) == "Semente de Âmbar")
+	check("Tela de Artefatos: 5 espaços, a Semente preenchida com ícone e a lembrança para reler", "Artefatos" in main.ui._top().title and rows.size() == 5 and sem.size() == 1 and sem[0].get("icon") != null and "primeiro treino" in str(sem[0].get("info", "")))
+	await shot("historia_artefatos")
+	await close_menus()
+	main.ui.open_pause()
+	main.ui.open_journey()
+	await frames(3)
+	var jrows: Array = main.ui._top().items.filter(func(r): return str(r.get("t", "")) == "Semente de Âmbar" or str(r.get("t", "")) == "[ ] ???")
+	check("Jornada: seção de lembranças com 5 espaços", jrows.size() == 5)
+	await close_menus()
+	# ---- modo de teste rápido: lembrança pulada, artefato entregue na hora
+	W.memory_in_tests = false
+	Game.set_flag("ferreiro_morto")
+	await frames(5)
+	check("Em teste rápido a lembrança é pulada e o Elo Partido entregue", Game.item_count("elo_partido") == 1 and not main.ui.hud.dlg_active)
+	W.memory_in_tests = true
+	# ---- o Arauto em cena antes do chefe (Pântano)
+	check("Arauto: folha desenhada (arauto.png) e cenas nas regiões 1–4", ResourceLoader.exists("res://assets/sprites/arauto.png") and ["arauto_floresta", "arauto_minas", "arauto_pantano", "arauto_fortaleza"].all(func(c): return Data.story["cenas"].has(c)))
+	var pos_ok := true
+	for cid in Data.story["cenas"]:
+		var c: Dictionary = Data.story["cenas"][cid]
+		var m: Dictionary = Data.maps.get(c["mapa"], {})
+		if m.is_empty():
+			pos_ok = false
+			continue
+		if c.has("arauto"):
+			var ch: String = str(m["tiles"][int(c["arauto"][1])][int(c["arauto"][0])])
+			if W.is_solid_char(ch):
+				pos_ok = false
+	check("Cenas apontam para mapas reais; o Arauto fica em piso livre", pos_ok)
+	W.load_map("templo_c", "from_rito")
+	await frames(10)
+	var ar: Node = W.historia.arauto_node("arauto_pantano")
+	check("Arauto aparece em cena na sala antes da Bruxa", ar != null and ar.def.get("sprite", "") == "arauto")
+	await goto(tpos(11, 18), 6.0, 20.0)
+	release_moves()
+	await secs(1.5)
+	var atxt: String = " ".join(main.ui.hud.dlg_lines)
+	check("Arauto fala, provoca e deixa pistas (criatura reage)", main.ui.hud.dlg_active and "Arauto:" in atxt and "Brotisco" in atxt, atxt.left(120))
+	await shot("historia_arauto")
+	await advance_dialogs()
+	await secs(1.2)
+	check("Arauto some com um efeito e a cena não se repete", W.historia.arauto_node("arauto_pantano") == null and not is_instance_valid(ar) and Game.has_flag("cena_arauto_pantano"))
+	# ---- cena de chegada (ritmo) e bilhete ambiental
+	W.load_map("bosque_lanternas", "from_vila")
+	await secs(2.0)
+	check("Cena curta de chegada/descoberta no Bosque", main.ui.hud.dlg_active and "lanterna" in " ".join(main.ui.hud.dlg_lines))
+	await advance_dialogs()
+	await frames(10)
+	var bils := 0
+	var bil_ok := true
+	for mid in Data.maps:
+		for e in Data.maps[mid]["entities"]:
+			if str(e.get("id", "")).begins_with("bilhete_"):
+				bils += 1
+				if not Data.dialogs.has(str(e.get("dialog", ""))) or W.is_solid_char(str(Data.maps[mid]["tiles"][int(e["y"])][int(e["x"])])):
+					bil_ok = false
+	check("6–10 bilhetes ambientais espalhados (diálogo existe, piso livre)", bils >= 6 and bils <= 10 and bil_ok, str(bils))
+	var bil: Node = ent_by_id("bilhete_teodoro")
+	check("Bilhete tem o comando Examinar", bil != null and bil.prompt() == "Examinar")
+	if bil != null:
+		bil.interact(P)
+		await frames(3)
+		check("Bilhete da expedição encontrado no Bosque", main.ui.hud.dlg_active and "expedição" in " ".join(main.ui.hud.dlg_lines))
+		await advance_dialogs()
+		await frames(5)
+	main.ui.open_pause()
+	main.ui.open_diary()
+	await frames(3)
+	check("Diário guarda os bilhetes lidos", Game.has_flag("leu_bilhete_teodoro") and main.ui._top().items.any(func(r): return str(r.get("t", "")).begins_with("Bilhetes encontrados")))
+	await close_menus()
+	# ---- contratos pessoais (Bruna e Ravi)
+	var cb: Dictionary = Data.contracts.get("irmao_bruna", {})
+	var cr: Dictionary = Data.contracts.get("mestre_ravi", {})
+	check("Contratos pessoais: dupla com a própria Bruna / o próprio Ravi, com abertura e desfecho", cb.get("pessoal", false) and cb["tipo"] == "dupla" and cb["aliados"] == ["bruna"] and cr.get("pessoal", false) and cr["aliados"] == ["ravi"] and cb.has("desfecho") and cr.has("abertura"))
+	Game.set_flag("saqueadores_ok")
+	check("Contrato da Bruna bloqueado até visitar os Trilhos Fundidos", Game.contract_state("irmao_bruna") == "bloqueado")
+	Game.set_flag("visitou_trilhos_fundidos")
+	check("Contrato pessoal da Bruna disponível", Game.contract_state("irmao_bruna") == "disponivel")
+	check("Bruna conta do irmão (variante de diálogo)", str(W.pick_variant("bruna")["lines"][0]).contains("Caio"))
+	Game.set_flag("emboscada_ok")
+	Game.set_flag("visitou_passarela_ecos")
+	check("Contrato pessoal do Ravi disponível", Game.contract_state("mestre_ravi") == "disponivel")
+	Game.hero["level"] = 12
+	Game.hero["hp"] = Game.hero_max_hp()
+	check("Aceitar o contrato pessoal da Bruna", Game.accept_contract("irmao_bruna"))
+	W.load_map("trilhos_fundidos", "from_forja")
+	await frames(10)
+	var ces := contract_enemies("irmao_bruna")
+	check("Bando do Caio aparece nos Trilhos Fundidos (com a Bruna)", ces.size() == 4 and W.allies().size() == 1, "%d %d" % [ces.size(), W.allies().size()])
+	check("Abertura do contrato pessoal registrada", Game.has_flag("abertura_irmao_bruna"))
+	if main.ui.hud.dlg_active:
+		await advance_dialogs()
+	for e in contract_enemies("irmao_bruna"):
+		if is_instance_valid(e) and e.kind in ["domador", "domadora"]:
+			e.take_damage(99999.0, e.global_position, {"src": "heroi"})
+			await frames(3)
+	await secs(1.5)
+	var fim: String = " ".join(main.ui.hud.dlg_lines)
+	check("Desfecho emocional: Bruna e o irmão", Game.has_flag("irmao_bruna_ok") and main.ui.hud.dlg_active and "abraça" in fim, fim.left(100))
+	await advance_dialogs()
+	await frames(5)
+	W.load_map("vila_lumen", "default")
+	await frames(10)
+	check("Caio volta para Lúmen", ent_by_id("caio") != null)
+	# ---- save/load mantém tudo
+	W.save_now(5)
+	SaveSys.load_game(5)
+	await frames(5)
+	check("Save mantém artefatos, cenas, bilhetes e contrato pessoal", Game.item_count("elo_partido") == 1 and Game.has_flag("cena_arauto_pantano") and Game.has_flag("leu_bilhete_teodoro") and Game.has_flag("irmao_bruna_ok") and Historia.count() == 2)
 
 # ================================================================ FLORESTA COMPLETA (Rito da Seiva, segredo, anel, rito avançado, Grota)
 ## Uso: godot --headless --fixed-fps 60 --path . -- --e2e --floresta

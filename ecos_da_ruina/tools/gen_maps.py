@@ -172,6 +172,7 @@ def vila():
     m.cond.append({"if": "cervo_morto", "rects": [[20, 0, 4, 12, "p"]],
                    "chars": {".": "g", ",": "g", "f": "G"}})
     m.cond.append({"if": "atalho_vila_aberto", "rects": [[0, 22, 2, 3, "p"]]})
+    m.ent(type="npc", id="caio", sprite="npc_forja2", dialog="caio", x=33, y=13, nome="Caio", if_flag="irmao_bruna_ok")   # irmão da Bruna (contrato pessoal)
     return m
 
 
@@ -247,6 +248,8 @@ def bosque():
         m.set(x, y, "f")
     m.ent(type="anel_flores", id="b_anel", x=7, y=30, flag="bosque_anel")
     m.ent(type="wild", id="b_lumipim_anel", species="lumipim", level=8, x=7, y=29, if_flag="bosque_anel", unique=True)
+    # bilhete ambiental (docs/HISTORIA.md)
+    m.ent(type="decor", id="bilhete_teodoro", sheet="bilhetes", frame=1, dialog="bilhete_teodoro", x=33, y=19)
     return m
 
 
@@ -305,6 +308,8 @@ def clareira():
     m.ent(type="sign", id="placa_grota_raizes", dialog="placa_grota_raizes", x=42, y=17)
     m.cond.append({"if": "cervo_morto", "rects": [[44, 18, 2, 3, "p"]]})
     m.ent(type="exit", x=47, y=18, w=1, h=3, to="grota_seiva", spawn="from_clareira", if_flag="cervo_morto")
+    # bilhete ambiental (docs/HISTORIA.md)
+    m.ent(type="decor", id="bilhete_lista", sheet="bilhetes", frame=0, dialog="bilhete_lista", x=35, y=25)
     return m
 
 
@@ -737,6 +742,8 @@ def pedreira():
     m.ent(type="crack", id="veio_rocha", x=9, y=36, flag="veio_rocha")
     m.cond.append({"if": "veio_rocha", "rects": [[9, 37, 2, 1, "m"]]})
     m.ent(type="chest", id="veio_bau", x=9, y=39, loot={"placa_cobre": 1, "lingote": 2, "selo_refinado": 2}, set_flag="veio_tesouro")
+    # bilhete ambiental (docs/HISTORIA.md)
+    m.ent(type="decor", id="bilhete_mineiro", sheet="bilhetes", frame=2, dialog="bilhete_mineiro", x=31, y=21)
     return m
 
 
@@ -792,6 +799,8 @@ def trilhos():
     m.ent(type="rail_marked", id="t_trilho_marcado", x=45, y=20, flag="trilho_ferrunho")
     m.cond.append({"if": "trilho_ferrunho", "rects": [[46, 20, 3, 1, "="]]})
     m.ent(type="chest", id="trilhos_bau_ilha", x=51, y=19, loot={"lingote": 1, "selo_refinado": 2, "tonico_criatura": 1})
+    # bilhete ambiental (docs/HISTORIA.md)
+    m.ent(type="decor", id="bilhete_carga", sheet="bilhetes", frame=0, dialog="bilhete_carga", x=8, y=13)
     return m
 
 
@@ -1152,6 +1161,8 @@ def passarela():
     m.ent(type="enemy", kind="planta", id="pa_planta1", x=18, y=26)
     m.ent(type="enemy", kind="planta", id="pa_planta2", x=33, y=5)
     m.ent(type="enemy", kind="sapo", id="pa_sapo4", x=9, y=21)
+    # bilhete ambiental (docs/HISTORIA.md)
+    m.ent(type="decor", id="bilhete_joran", sheet="bilhetes", frame=2, dialog="bilhete_joran", x=4, y=4)
     return m
 
 
@@ -1222,6 +1233,8 @@ def lago():
     m.ent(type="enemy", kind="espectro", id="la_esp3", x=45, y=24)
     m.ent(type="enemy", kind="sapo", id="la_sapo1", x=37, y=2)
     m.ent(type="enemy", kind="planta", id="la_planta1", x=28, y=22)
+    # bilhete ambiental (docs/HISTORIA.md)
+    m.ent(type="decor", id="bilhete_barqueira", sheet="bilhetes", frame=0, dialog="bilhete_barqueira", x=16, y=2)
     return m
 
 
