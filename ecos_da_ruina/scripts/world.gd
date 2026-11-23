@@ -693,6 +693,10 @@ func _spawn_def(i: int, player_pos: Vector2 = Vector2(-9999, -9999)) -> void:
 				var fe := FortEnt.new()
 				fe.init(self, d)
 				node = fe
+			elif Floresta.ENT_KINDS.has(t):  # extras da Floresta (scripts/floresta_ent.gd)
+				var fl := FlorestaEnt.new()
+				fl.init(self, d)
+				node = fl
 	if node != null:
 		ysort.add_child(node)
 		ent_nodes[i] = node
@@ -1221,6 +1225,7 @@ func light_pulse(center: Vector2, rad: float) -> void:
 	for e in get_tree().get_nodes_in_group("ents"):
 		if e.kind == "flower" and not e.lit and e.global_position.distance_to(center) <= rad + 8.0:
 			e.light(false)
+	Floresta.on_light(self, center, rad)
 
 func _update_darkness(delta: float) -> void:
 	if not dark_on:
@@ -1592,7 +1597,7 @@ func _update_heat(delta: float) -> void:
 	if transition_busy or frozen or arrival_t > 0.0:
 		return
 	if player.state != Player.S.DEAD and player.state != Player.S.INTERACT and is_hot_at(player.global_position):
-		player.env_damage(HEAT_DMG_HERO * Game.heat_mult(), "Quente!")
+		player.env_damage(HEAT_DMG_HERO * Game.heat_mult() * _water_companion_mult(), "Quente!")
 		if not heat_warned:
 			heat_warned = true
 			say("Piso em brasa! Gire uma válvula azul (E) para resfriá-lo ou atravesse depressa.")
@@ -1605,6 +1610,13 @@ func _update_heat(delta: float) -> void:
 			continue
 		if is_hot_at(e.global_position):
 			e.heat_damage(HEAT_DMG_CREATURE)
+
+## Goturim/Marulume por perto molham o piso: o calor fere o herói pela metade (alternativa na revisita das Minas).
+func _water_companion_mult() -> float:
+	if companion != null and is_instance_valid(companion) and companion.is_alive() and companion.species_id() in ["goturim", "marulume"] \
+			and companion.global_position.distance_to(player.global_position) <= 64.0:
+		return 0.5
+	return 1.0
 
 func add_hazard(pos: Vector2, rad: float, life: float) -> Node2D:
 	var h: Node2D = preload("res://scripts/hazard.gd").new()
@@ -1817,6 +1829,7 @@ func rite_reset(_e: Ent) -> void:
 		say("Não é possível durante o combate.")
 		return
 	reset_room_puzzles()
+	Floresta.note_reset(self)
 	Audio.play("puzzle_no")
 	say("O rito recomeça: fornalhas apagadas e válvulas do rito fechadas. Nada do que você carrega foi perdido.")
 
@@ -1833,8 +1846,11 @@ func rite_altar(a: Ent) -> void:
 		a.sprite.region_rect = Rect2(16, 0, 16, 16)      # rite_altar_on
 	Audio.play("levelup")
 	shake(1.5, 0.3)
-	for k in 6:
-		fx_at("fire", a.global_position + Vector2.from_angle(TAU * k / 6.0) * 26.0, 0.8)
+	if a.def.get("fx", "fire") == "roots":
+		fx_roots(a.global_position, 26.0)
+	else:
+		for k in 6:
+			fx_at("fire", a.global_position + Vector2.from_angle(TAU * k / 6.0) * 26.0, 0.8)
 	if a.def.has("loot"):
 		Game.give_loot(a.def["loot"])
 	var bond: String = a.def.get("bond", "")

@@ -216,6 +216,86 @@
    ]
   }
  ],
+ "placa_rito_seiva": [
+  {
+   "if": "rito_seiva_ok",
+   "lines": [
+    "Inscrição: RITO DA SEIVA — concluído. A seiva corre pelos canais que você abriu.",
+    "Inscrição: Quem carregar a Raiz Viva do guardião pode voltar ao altar: há uma prova mais funda acima dele."
+   ]
+  },
+  {
+   "lines": [
+    "Inscrição: RITO DA SEIVA — Os guardiões antigos deixaram esta prova a quem quisesse entender a floresta.",
+    "Inscrição: Canais, pesos e passarelas que boiam na seiva. Antes do Cervo, aprenda a guiá-la.",
+    "Inscrição: A saída para trás está sempre aberta."
+   ]
+  }
+ ],
+ "rs_placa1": [
+  {
+   "lines": [
+    "Inscrição: PRIMEIRA LIÇÃO — O canal está seco. Puxe a alavanca ({interagir}) e veja a seiva subir pelo sulco.",
+    "Inscrição: Onde há seiva, a madeira boia. Atravesse pela passarela."
+   ]
+  }
+ ],
+ "rs_placa2": [
+  {
+   "lines": [
+    "Inscrição: SEGUNDA LIÇÃO — Cada placa ergue um trecho da passarela. Peso de pedra ou de criatura serve.",
+    "Inscrição: A segunda placa espera na ilha: leve o peso até ela pela passarela que você ergueu.",
+    "Inscrição: Uma criatura pesada (Cascalito) segura uma placa; um Brotisco estende cipós da ilha. Se travar, toque a pedra de reinício."
+   ]
+  }
+ ],
+ "rs_dica2": [
+  {
+   "lines": [
+    "Pedra da dica: \"Empurre a caixa de cima para o norte até a placa: o primeiro trecho da passarela sobe.\"",
+    "Pedra da dica: \"Depois fique a oeste da outra caixa e empurre-a para leste, pela passarela, até a placa da ilha.\"",
+    "Pedra da dica: \"Sem caixas? Um Cascalito segura qualquer placa, e um Brotisco estende cipós da ilha até a outra margem.\""
+   ]
+  }
+ ],
+ "rs_placa3": [
+  {
+   "lines": [
+    "Inscrição: TERCEIRA LIÇÃO — As três alavancas descem a seiva em cascata até o canal do meio.",
+    "Inscrição: Com o canal cheio, a passarela boia; com o peso do outro lado, o último canal se fecha."
+   ]
+  }
+ ],
+ "rs_placa_av": [
+  {
+   "lines": [
+    "Inscrição: RITO AVANÇADO — A seiva corre, mas não sustenta ninguém. Só raízes vivas a atravessam.",
+    "Inscrição: Faça a seiva correr e só então erga a raiz sobre o canal. Dois canais, um depois do outro."
+   ]
+  }
+ ],
+ "placa_grota_raizes": [
+  {
+   "if": "cervo_morto",
+   "lines": [
+    "Placa: GROTA DAS RAÍZES ANTIGAS — as raízes recuaram. A trilha a leste está aberta."
+   ]
+  },
+  {
+   "lines": [
+    "Placa: As raízes antigas fecham a trilha a leste desde que a expedição passou.",
+    "Placa: Dizem que só recuam quando o guardião da floresta descansar."
+   ]
+  }
+ ],
+ "placa_grota": [
+  {
+   "lines": [
+    "Placa (riscada a faca): GROTA DAS RAÍZES ANTIGAS. A expedição acampou aqui no dia 7.",
+    "Placa: Cuidado com os lobos. E com os troncos que soam ocos — às vezes guardam coisas."
+   ]
+  }
+ ],
  "placa_pesos": [
   {
    "lines": [

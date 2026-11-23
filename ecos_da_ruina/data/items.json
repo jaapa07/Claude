@@ -63,6 +63,38 @@
   "desc": "+3% de chance de captura.",
   "raridade": 0
  },
+ "golpe_enraizado": {
+  "nome": "Golpe Enraizado",
+  "tipo": "tecnica",
+  "raridade": 2,
+  "icone": 0,
+  "folha": "icons_floresta",
+  "desc": "Técnica do Rito da Seiva: o golpe carregado (segure o ataque) faz brotar raízes que prendem inimigos pequenos por alguns segundos. Também racha pedras ocas."
+ },
+ "diario_expedicao_1": {
+  "nome": "Diário da Expedição I",
+  "tipo": "historia",
+  "icone": 1,
+  "folha": "icons_floresta",
+  "desc": "\"Dia 5. Teodoro escrevendo, cartógrafo da expedição. A Mestra Ione nos fez parar no corredor do Santuário só para ouvir o musgo. 'A seiva conta quem passou', disse. Ela riscou raízes na pedra para o aprendiz que, jura, vai vir atrás. Deixo este caderno aqui, onde a pedra é oca, caso eu não volte para buscá-lo.\""
+ },
+ "diario_expedicao_2": {
+  "nome": "Diário da Expedição II",
+  "tipo": "historia",
+  "icone": 2,
+  "folha": "icons_floresta",
+  "desc": "\"Dia 7. As raízes fecharam a grota atrás de nós. Ione segurou o tronco velho com as duas mãos e mandou os Corvelo correrem; eu corri também. Ouvi o diapasão dela soar ao norte, longe. Se o Cervo um dia descansar, as raízes vão recuar e alguém vai achar isto. Aprendiz: ela pediu para dizer que está orgulhosa.\" — Teodoro"
+ },
+ "amuleto_seiva_viva": {
+  "nome": "Amuleto de Seiva Viva",
+  "tipo": "amuleto",
+  "hp": 18,
+  "vigor": 1.6,
+  "raridade": 2,
+  "icone": 3,
+  "folha": "icons_floresta",
+  "desc": "+18 de vida máxima e o vigor se recupera 60% mais rápido. Recompensa do Rito da Seiva avançado."
+ },
  "minerio_cobre": {
   "nome": "Minério de Cobre",
   "tipo": "material",

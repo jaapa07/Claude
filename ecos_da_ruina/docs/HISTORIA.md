@@ -13,12 +13,16 @@ O protagonista é o aprendiz da **Mestra Ione**, vinculadora de capa azul. Ione 
 a Floresta e desapareceu. A carta dela manda o aprendiz a Lúmen. A campanha é, ao mesmo tempo, **resgate** (seguir o
 rastro de Ione) e **revelação** (descobrir o que é o Rei dos Ecos).
 
-O rastro de Ione é contado por três meios:
+O rastro de Ione é contado por quatro meios:
 1. **Memórias dos Guardiões** (`data/story.json`): quando um guardião/minichefe cai, uma visão do passado
    aparece (trilha "memória") e entrega uma página do diário.
 2. **Diário de Ione** (itens `pagina_ione_N`, tipo história), relidos no menu *Diário → Memórias e Diário de Ione*.
 3. **Falas dos moradores** que a viram passar (Maru, Dona Corvelo, Pipo, Ilda, Doran, Ilse) e marcas físicas
    (o sinal de mão do treino no Cervo e no selo da Catedral).
+4. **Diários da Expedição** (`diario_expedicao_1` na câmara secreta do Santuário, `diario_expedicao_2` na Grota das Raízes Antigas):
+   Teodoro, cartógrafo da expedição, escreve sobre Ione — o sinal da mão riscado na pedra, o tronco que ela segurou para os
+   Corvelo fugirem e o recado ao aprendiz. O anel de flores do Bosque guarda outra pista: a fita azul da capa de Ione presa
+   à pata de um Lumipim velho.
 
 ## Arco por capítulo
 | Capítulo | Guardião | Revelação | Página |

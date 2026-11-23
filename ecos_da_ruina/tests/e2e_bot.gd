@@ -45,6 +45,8 @@ func _ready() -> void:
 		await run_clima()
 	elif "--regiao4" in args:
 		await run_regiao4()
+	elif "--floresta" in args:
+		await run_floresta()
 	elif "--habilidades" in args:
 		await run_habilidades()
 	elif "--casas" in args:
@@ -713,8 +715,11 @@ func stage5_clareira() -> void:
 		Game.heal_team()
 		W.refresh_companion(true)
 		await frames(10)
-	await tap("skill", 2)
-	await frames(3)
+	var tries_s := 0
+	while float(Game.skill_cd.get(Game.active_ind().get("uuid", ""), 0.0)) <= 0.0 and tries_s < 20:
+		await tap("skill", 2)
+		await frames(6)
+		tries_s += 1
 	var cd_before: float = float(Game.skill_cd.get(Game.active_ind()["uuid"], 0.0))
 	await tap("swap", 2)
 	await frames(3)
@@ -4927,3 +4932,379 @@ func run_historia() -> void:
 	check("Save mantém páginas e memórias", Game.has_flag("mem_cervo_morto") and Game.item_count("pagina_ione_2") == 1)
 	check("Lista de saves mostra a % de conquista", int(SaveSys.slot_info(5).get("conquista", -1)) > 0)
 	W.memory_in_tests = false
+
+
+# ================================================================ FLORESTA COMPLETA (Rito da Seiva, segredo, anel, rito avançado, Grota)
+## Uso: godot --headless --fixed-fps 60 --path . -- --e2e --floresta
+func fl_setup(slot: int) -> void:
+	SaveSys.delete_slot(slot)
+	main.start_new_game(slot)
+	await frames(10)
+	await advance_dialogs()
+	Game.hero["level"] = 6
+	Game.hero["xp"] = 0
+	for f in ["falou_maru", "tutorial_ok", "primeira_captura", "tut_move", "tut_attack", "tut_dodge", "tut_guard", "tut_command", "tut_rest",
+			"lenhador_morto", "viu_santuario_seiva", "salao_flores", "enc_galeria_ok", "canais_ok", "pesos_ok"]:
+		Game.set_flag(f)
+	Game.give_item("pocao", 6)
+	Game.give_item("selo_refinado", 6)
+	Game.team = []
+	for pair in [["brotisco", 6], ["lumipim", 6], ["cascalito", 6]]:
+		var ind := r4_ind(pair[0], pair[1])
+		Game.team.append(ind["uuid"])
+	Game.active_idx = 0
+	Game.hero["hp"] = Game.hero_max_hp()
+	Game.team_changed.emit(); Game.hero_changed.emit(); Game.inventory_changed.emit()
+	Game.god_mode = true
+
+func charged_attack(dir: Vector2) -> void:
+	await face(dir)
+	P.vigor = P.VIGOR_MAX
+	Input.action_press("attack")
+	await frames(48)
+	Input.action_release("attack")
+	await frames(40)
+
+func fl_dialog_has(sub: String) -> bool:
+	return main.ui.hud.dlg_active and sub in " ".join(main.ui.hud.dlg_lines)
+
+func run_floresta() -> void:
+	await fl_setup(4)
+	await fl_antes_do_cervo()
+	await fl_segredo()
+	await fl_anel()
+	await fl_rito()
+	await fl_golpe()
+	await fl_pos_cervo()
+	await fl_rito_avancado()
+	await fl_minas_goturim()
+	await fl_save_load()
+
+func fl_antes_do_cervo() -> void:
+	W.load_map("clareira_raizes", "from_vila")
+	await frames(10)
+	var ex_vis := false
+	for d in W.ent_defs:
+		if d["type"] == "exit" and d["to"] == "grota_seiva" and W._def_visible(d):
+			ex_vis = true
+	check("FL: raízes antigas fecham a Grota antes do Cervo (sem saída)", W.cur_tiles[19][44] == "x" and W.is_solid_char("x") and not ex_vis)
+	check("FL: mapas novos cadastrados na Floresta (rito e grota)", "rito_seiva" in Data.regions["floresta"]["mapas"] and "grota_seiva" in Data.regions["floresta"]["mapas"] and Data.errors.is_empty(), str(Data.errors))
+
+# ---- 2. segredo por observação: parede musgosa no Santuário
+func fl_segredo() -> void:
+	W.load_map("santuario_a", "from_bosque")
+	await frames(10)
+	check("FL: parede musgosa fechada e baú escondido atrás dela", W.is_solid_char(W.cur_tiles[30][8]) and W.is_solid_char(W.cur_tiles[29][8]) and not Game.chests.has("a_bau_expedicao"))
+	await set_active_species(["brotisco"])
+	await use_ent("a_inscricao", Vector2(0, -14), Vector2.DOWN)
+	await frames(5)
+	check("FL: inscrição de raízes ilegível sem luz (pede o Lumipim)", not Game.has_flag("lit_a_inscricao") and toast_seen("Lumipim"))
+	var lu := uuid_of(["lumipim"])
+	await set_active_species(["lumipim"])
+	var b0 := Game.bond_count(Game.individuals[lu])
+	await use_ent("a_inscricao", Vector2(0, -14), Vector2.DOWN)
+	await frames(5)
+	check("FL: o Lumipim ilumina a inscrição e ela aponta a parede (marca aparece)", Game.has_flag("lit_a_inscricao") and fl_dialog_has("musgo") and Game.has_flag("marcou_a_parede_musgo") and ent_by_id("a_parede_musgo").mark.visible)
+	await advance_dialogs()
+	check("FL: iluminar a inscrição conta vínculo para o Lumipim", Game.bond_count(Game.individuals[lu]) == b0 + 1)
+	await shot("fl_01_inscricao")
+	await use_ent("a_parede_musgo", Vector2(0, 16), Vector2.UP)
+	check("FL: observar a parede dá a pista do golpe carregado", toast_seen("pedra soa oca"))
+	await goto(tpos(10, 32), 4.0, 10.0)
+	await secs(3.0)
+	await shot("fl_01b_parede")
+	await goto(tpos(8, 31), 3.0, 10.0)
+	await attack_tap()
+	await frames(30)
+	check("FL: golpe comum não rompe a parede", not Game.has_flag("santuario_parede"))
+	await charged_attack(Vector2.UP)
+	check("FL: golpe carregado rompe a parede rachada", Game.has_flag("santuario_parede") and not W.is_solid_char(W.cur_tiles[30][8]) and not W.is_solid_char(W.cur_tiles[29][8]))
+	var sr := Game.item_count("selo_refinado")
+	await use_ent("a_bau_expedicao", Vector2(0, 14), Vector2.UP)
+	check("FL: câmara secreta: Diário da Expedição I + Selo Refinado", Game.item_count("diario_expedicao_1") == 1 and Game.item_count("selo_refinado") == sr + 1)
+	check("FL: diário da expedição fala da Mestra Ione", "Ione" in str(Data.items["diario_expedicao_1"]["desc"]) and Data.items["diario_expedicao_1"]["tipo"] == "historia")
+	await shot("fl_02_camara")
+	W.load_map("santuario_a", "from_bosque")
+	await frames(10)
+	check("FL: parede segue aberta e o baú não reabre ao voltar", not W.is_solid_char(W.cur_tiles[30][8]) and ent_by_id("a_bau_expedicao").opened)
+
+# ---- 3. descoberta de criatura: anel de flores do Bosque
+func fl_anel() -> void:
+	W.load_map("bosque_lanternas", "from_vila")
+	await frames(10)
+	await set_active_species(["brotisco"])
+	check("FL: Lumipim mais velho escondido antes da observação", ent_by_id("b_lumipim_anel") == null)
+	await use_ent("b_anel", Vector2(0, 14), Vector2.UP)
+	await frames(5)
+	check("FL: sem neblina nem Lumipim, o anel só dá a pista", not Game.has_flag("bosque_anel") and toast_seen("neblina"))
+	Game.weather_lock = "neblina"
+	await use_ent("b_anel", Vector2(0, 14), Vector2.UP)
+	await frames(5)
+	check("FL: na neblina os Lumipins giram e revelam a história (fita de Ione)", Game.has_flag("bosque_anel") and fl_dialog_has("Ione"))
+	await advance_dialogs()
+	await secs(0.6)
+	await shot("fl_03_anel")
+	Game.weather_lock = "sol"
+	var w: Node = ent_by_id("b_lumipim_anel")
+	var lv_max := 0
+	for d in W.ent_defs:
+		if d["type"] == "wild" and d["species"] == "lumipim" and d.get("id", "") != "b_lumipim_anel":
+			lv_max = max(lv_max, int(d["level"]))
+	check("FL: Lumipim de nível maior aparece e é capturável", w != null and w.capturable and int(w.level) > lv_max, "%s" % [w.level if w else "-"])
+	var n0 := Game.individuals.size()
+	if w != null:
+		await weaken(w, 0.3)
+		await capture_wild(w, 10)
+	var got := false
+	for u in Game.individuals:
+		if Game.individuals[u]["species_id"] == "lumipim" and int(Game.individuals[u]["nivel"]) >= 8:
+			got = true
+	check("FL: Lumipim do anel capturado", Game.individuals.size() > n0 and got)
+	# alternativa: o próprio Lumipim chama os da mata (sem depender do clima)
+	Game.set_flag("bosque_anel", false)
+	W.load_map("bosque_lanternas", "from_vila")
+	await frames(10)
+	var lu := uuid_of(["lumipim"])
+	for u in Game.team:
+		if Game.individuals[u]["species_id"] == "lumipim":
+			lu = u
+	Game.set_active(lu)
+	W.refresh_companion(true)
+	await frames(5)
+	await use_ent("b_anel", Vector2(0, 14), Vector2.UP)
+	await frames(5)
+	await advance_dialogs()
+	check("FL: com um Lumipim na equipe o anel também se revela (e conta vínculo)", Game.has_flag("bosque_anel") and "acao:b_anel" in Game.individuals[lu]["vinculo"])
+	check("FL: Lumipim do anel é único (não reaparece depois de capturado)", ent_by_id("b_lumipim_anel") == null)
+
+# ---- 1. Rito da Seiva (antes do Cervo)
+func fl_rito() -> void:
+	W.load_map("santuario_b", "from_a")
+	await frames(10)
+	var ok := await exit_to("rito_seiva", 8.0, 9 * 16.0 + 8.0)
+	check("FL: Câmara dos Pesos leva ao Rito da Seiva (antes do Cervo)", ok and W.map_id == "rito_seiva")
+	await shot("fl_04_rito1")
+	# 1. apresentação: um canal
+	check("FL: rito 1: canal seco (sem passagem)", W.cur_tiles[18][9] == "c")
+	await pull_lever("rs_l1")
+	check("FL: rito 1: a alavanca faz a seiva subir e uma passarela boiar", Game.has_flag("rs1_ok") and W.cur_tiles[18][9] == "B" and W.cur_tiles[21][7] == "S")
+	# 2. aplicação: pesos e plataformas conectadas; dica e reinício
+	ok = await goto(tpos(17, 22), 4.0, 30.0)
+	check("FL: rito 2: fosso sem passarela no início", ok and W.cur_tiles[18][20] == "c" and W.cur_tiles[18][24] == "c")
+	await use_ent("rs_dica2", Vector2(0, -14), Vector2.DOWN)
+	check("FL: rito 2: pedra da dica fica quieta antes de 3 tentativas", toast_seen("quieta") and not main.ui.hud.dlg_active)
+	var inv0 := Game.inventory.duplicate()
+	var fr0 := Game.fragments
+	var cx: Vector2 = ent_by_id("rs_caixa1").global_position
+	await push_crate(ent_by_id("rs_caixa1"), Vector2.RIGHT, 1)
+	check("FL: rito 2: caixa empurrada para fora do lugar", ent_by_id("rs_caixa1").global_position.distance_to(cx) > 8.0)
+	for i in 3:
+		await use_ent("rs_reset2", Vector2(0, -14), Vector2.DOWN)
+		await frames(10)
+	check("FL: rito 2: pedra de reinício devolve a caixa sem tirar itens", ent_by_id("rs_caixa1") != null and ent_by_id("rs_caixa1").global_position.distance_to(cx) < 2.0 and Game.inventory == inv0 and Game.fragments == fr0)
+	await use_ent("rs_dica2", Vector2(0, -14), Vector2.DOWN)
+	await frames(5)
+	check("FL: rito 2: dica opcional depois de 3 tentativas", fl_dialog_has("Empurre"))
+	await advance_dialogs()
+	await push_crate(ent_by_id("rs_caixa1"), Vector2.UP, 3)
+	check("FL: rito 2: peso na placa ergue o 1º trecho da passarela", Game.has_flag("rs2a_ok") and W.cur_tiles[18][20] == "B")
+	var br := uuid_of(["brotisco"])
+	await set_active_species(["brotisco"])
+	await use_ent("rs_cipo", Vector2(0, 14), Vector2.UP)
+	check("FL: rito 2: Brotisco estende cipós da ilha (alternativa)", Game.has_flag("rs_cipo") and W.cur_tiles[18][24] == "B" and "acao:rs_cipo" in Game.individuals[br]["vinculo"])
+	await push_crate(ent_by_id("rs_caixa2"), Vector2.RIGHT, 4)
+	check("FL: rito 2: a segunda caixa atravessa a passarela até a placa da ilha", Game.has_flag("rs2b_ok"))
+	await shot("fl_05_rito2")
+	var safe_exit := false
+	for d in W.ent_defs:
+		if d["type"] == "exit" and d["to"] == "santuario_b" and W._def_visible(d):
+			safe_exit = true
+	check("FL: saída segura do rito sempre aberta", safe_exit and not W.is_solid_char(W.cur_tiles[18][0]))
+	# 3. combinação: canais em cascata + peso + plataformas
+	ok = await goto(tpos(34, 19), 4.0, 30.0)
+	check("FL: rito 3: chegou à sala da combinação", ok and W.cur_tiles[18][38] == "c" and W.cur_tiles[18][44] == "c")
+	await pull_lever("rs_l3c")
+	await pull_lever("rs_l3b")
+	await pull_lever("rs_l3c")
+	check("FL: rito 3: dica das alavancas após 3 erros", toast_seen("cascata") and not Game.has_flag("rs3_canal"))
+	await use_ent("rs_reset3", Vector2(0, -14), Vector2.DOWN)
+	await frames(10)
+	var lv_sum := 0
+	for v in W.lever_states["rs3"]:
+		lv_sum += int(v)
+	check("FL: rito 3: reinício volta as alavancas ao começo", lv_sum == 0 and int(W.lever_counts["rs3"]) == 0, str(W.lever_states["rs3"]))
+	await pull_lever("rs_l3a")
+	await pull_lever("rs_l3b")
+	check("FL: rito 3: alavancas em cascata enchem o canal (passarela + sulco de seiva)", Game.has_flag("rs3_canal") and W.cur_tiles[18][38] == "B" and W.cur_tiles[12][36] == "S")
+	await push_crate(ent_by_id("rs_caixa3"), Vector2.RIGHT, 6)
+	check("FL: rito 3: a caixa atravessa o canal e pesa a placa: último canal fecha", Game.has_flag("rs3_ok") and W.cur_tiles[18][44] == "B")
+	await shot("fl_06_rito3")
+	# 4. conclusão
+	var ca := uuid_of(["cascalito"])
+	await set_active_species(["cascalito"])
+	var b1 := Game.bond_count(Game.individuals[ca])
+	await use_ent("rs_altar", Vector2(0, 14), Vector2.UP)
+	await frames(5)
+	check("FL: altar fala com a voz antiga do guardião", fl_dialog_has("GOLPE ENRAIZADO"))
+	await advance_dialogs()
+	check("FL: conclusão: técnica Golpe Enraizado + vínculo da criatura ativa", Game.has_flag("rito_seiva_ok") and Game.item_count("golpe_enraizado") == 1 and Game.bond_count(Game.individuals[ca]) == b1 + 1)
+	check("FL: Golpe Enraizado é uma técnica (menu de técnicas e diários)", Data.items["golpe_enraizado"]["tipo"] == "tecnica")
+	W.rite_altar(ent_by_id("rs_altar"))
+	await advance_dialogs()
+	check("FL: repetir o altar não dá técnica nem vínculo de novo", Game.item_count("golpe_enraizado") == 1 and Game.bond_count(Game.individuals[ca]) == b1 + 1)
+	await shot("fl_07_altar")
+	# ala avançada visível, mas pede a Raiz Viva
+	await use_ent("rs_av_raiz1", Vector2(0, 14), Vector2.UP)
+	check("FL: canal acima do altar pede a Raiz Viva (obstáculo visto antes da solução)", not Game.has_flag("rs_av1") and W.cur_tiles[8][54] == "c" and toast_seen("Raiz Viva"))
+
+# ---- técnica: Golpe Enraizado em combate
+func fl_spawn(kind: String, pos: Vector2) -> Node:
+	var e := Enemy.new()
+	e.init(W, kind, {"id": "teste_" + kind, "x": int(pos.x / 16), "y": int(pos.y / 16)})
+	W.ysort.add_child(e)
+	e.global_position = pos
+	e.set_physics_process(false)
+	e.max_hp = 999.0
+	e.hp = 999.0
+	return e
+
+func fl_golpe() -> void:
+	var c := tpos(55, 20)
+	await goto(c, 4.0, 20.0)
+	var cog := fl_spawn("cogumelo", c + Vector2(-8, -22))
+	var wolf := fl_spawn("lobo", c + Vector2(8, -22))
+	await frames(3)
+	await charged_attack(Vector2.UP)
+	check("FL: Golpe Enraizado: golpe carregado prende o inimigo pequeno com raízes", cog.rooted_t > 0.0, str(cog.rooted_t))
+	check("FL: Golpe Enraizado não prende inimigos grandes (lobo)", wolf.rooted_t <= 0.0)
+	await shot("fl_08_golpe")
+	cog.rooted_t = 0.0
+	Game.inventory.erase("golpe_enraizado")
+	await secs(0.8)
+	await charged_attack(Vector2.UP)
+	check("FL: sem a técnica o golpe carregado não prende", cog.rooted_t <= 0.0)
+	Game.give_item("golpe_enraizado", 1)
+	cog.queue_free()
+	wolf.queue_free()
+	await frames(3)
+
+# ---- 5. área nova pós-Cervo: Grota das Raízes Antigas
+func fl_pos_cervo() -> void:
+	Game.set_flag("cervo_morto")
+	Game.set_flag("voltou_vila")
+	Game.grant_eco("raiz_viva")
+	W.load_map("clareira_raizes", "from_vila")
+	await frames(10)
+	check("FL: depois do Cervo as raízes antigas recuam", not W.is_solid_char(W.cur_tiles[19][44]))
+	var ok := await exit_to("grota_seiva", 47 * 16.0 + 8.0, 19 * 16.0 + 8.0)
+	check("FL: trilha leste leva à Grota das Raízes Antigas (área nova)", ok and W.map_id == "grota_seiva" and Weather.outdoors)
+	await shot("fl_09_grota")
+	var wilds := 0
+	for e in get_tree().get_nodes_in_group("wild"):
+		wilds += 1
+	check("FL: Grota tem criaturas para capturar e inimigos", wilds >= 3 and hostile().size() >= 4, "%d %d" % [wilds, hostile().size()])
+	for e in hostile():
+		e.queue_free()
+	await frames(3)
+	check("FL: toca escondida antes de examinar o tronco", ent_by_id("g_tronco").solid and ent_by_id("semente_grota") != null)
+	await use_ent("g_tronco", Vector2(16, 0), Vector2.LEFT)
+	check("FL: examinar o tronco oco abre a passagem (segredo por observação)", Game.has_flag("grota_tronco") and not ent_by_id("g_tronco").solid)
+	var sem := Game.item_count("semente_vida")
+	await use_ent("semente_grota", Vector2(16, 0), Vector2.LEFT)
+	check("FL: Semente de Vida na toca escondida", Game.item_count("semente_vida") == sem + 1 and Game.has_flag("semente_grota_pega"))
+	await use_ent("grota_bau", Vector2(0, 16), Vector2.UP)
+	check("FL: baú da Grota: Diário da Expedição II (Ione) e recursos", Game.chests.has("grota_bau") and Game.item_count("diario_expedicao_2") == 1 and "Ione" in str(Data.items["diario_expedicao_2"]["desc"]))
+	await shot("fl_10_grota_bau")
+
+# ---- 4. Rito da Seiva avançado (Raiz Viva em sequência com os canais)
+func fl_rito_avancado() -> void:
+	W.load_map("rito_seiva", "from_b")
+	await frames(10)
+	check("FL: passarelas do rito continuam erguidas ao voltar", W.cur_tiles[18][9] == "B" and W.cur_tiles[18][20] == "B" and W.cur_tiles[18][44] == "B")
+	await use_ent("rs_av_raiz1", Vector2(0, 14), Vector2.UP)
+	check("FL: rito avançado: a Raiz Viva ergue a ponte sobre o canal", Game.has_flag("rs_av1") and W.cur_tiles[8][54] == "B")
+	await use_ent("rs_av_raiz2", Vector2(0, 14), Vector2.UP)
+	check("FL: rito avançado: raiz não cresce no canal seco (ordem importa)", not Game.has_flag("rs_av2") and toast_seen("seca"))
+	await use_ent("rs_av_l1", Vector2(0, 14), Vector2.UP)
+	check("FL: rito avançado: alavanca faz a seiva correr no 1º canal", Game.has_flag("rs_av_s1") and W.cur_tiles[2][53] == "S")
+	await use_ent("rs_av_raiz2", Vector2(0, 14), Vector2.UP)
+	check("FL: rito avançado: com seiva, a Raiz Viva atravessa o 1º canal", Game.has_flag("rs_av2") and W.cur_tiles[3][50] == "B")
+	await use_ent("rs_av_l2", Vector2(0, 14), Vector2.UP)
+	await use_ent("rs_av_raiz3", Vector2(0, 14), Vector2.UP)
+	check("FL: rito avançado: 2º canal em sequência", Game.has_flag("rs_av_s2") and Game.has_flag("rs_av3") and W.cur_tiles[3][44] == "B")
+	await shot("fl_11_rito_av")
+	Game.equipment["amuleto"] = ""
+	await use_ent("rs_altar2", Vector2(0, 14), Vector2.UP)
+	await advance_dialogs()
+	check("FL: recompensa do rito avançado: Amuleto de Seiva Viva (raro, com ícone)", Game.has_flag("rito_seiva_av_ok") and Game.item_count("amuleto_seiva_viva") == 1 and Game.rarity_of("amuleto_seiva_viva") >= 2 and Data.items["amuleto_seiva_viva"]["folha"] == "icons_floresta")
+	check("FL: amuleto equipado acelera o vigor", Game.equipment["amuleto"] == "amuleto_seiva_viva" and Game.hero_vigor_mult() > 1.5 and "vigor" in Game.item_details("amuleto_seiva_viva"))
+	# medição real: recuperação de vigor com e sem o amuleto
+	var g1 := await fl_vigor_gain()
+	Game.equipment["amuleto"] = ""
+	var g0 := await fl_vigor_gain()
+	Game.equip("amuleto_seiva_viva")
+	check("FL: vigor se recupera bem mais rápido com o Amuleto de Seiva Viva", g1 > g0 * 1.4, "%.1f vs %.1f" % [g1, g0])
+	W.rite_altar(ent_by_id("rs_altar2"))
+	await advance_dialogs()
+	check("FL: rito avançado não repete a recompensa", Game.item_count("amuleto_seiva_viva") == 1)
+
+func fl_vigor_gain() -> float:
+	release_moves()
+	P.vigor = 10.0
+	P.vigor_idle = 99.0
+	await frames(30)
+	return P.vigor - 10.0
+
+# ---- Minas: Goturim facilita os pisos quentes na revisita
+func fl_minas_goturim() -> void:
+	Game.god_mode = false
+	Game.inventory.erase("luvas_termicas")
+	Game.equipment["amuleto"] = ""
+	W.load_map("rito_forja", "from_b")
+	await frames(10)
+	Game.set_flag("rito_v2", false)
+	var loss0 := await fl_heat_loss()
+	var go := r4_ind("goturim", 18)
+	if Game.team.size() >= Game.TEAM_MAX:
+		Game.sanctuary.append(go["uuid"])
+		Game.move_to_sanctuary(Game.team[0])
+		Game.move_to_team(go["uuid"])
+	else:
+		Game.team.append(go["uuid"])
+	await set_active_species(["goturim"])
+	var loss1 := await fl_heat_loss()
+	check("FL: Minas: Goturim por perto molha o piso em brasa (calor fere metade)", loss0 > 0.0 and abs(loss1 - loss0 * 0.5) < 0.6, "%.1f vs %.1f" % [loss1, loss0])
+	Game.equip("amuleto_seiva_viva")
+	Game.god_mode = true
+
+func fl_heat_loss() -> float:
+	P.global_position = tpos(22, 12)
+	if W.companion != null and is_instance_valid(W.companion):
+		W.companion.global_position = tpos(22, 13)
+	Game.hero["hp"] = Game.hero_max_hp()
+	await frames(2)
+	var hp0 := float(Game.hero["hp"])
+	W.heat_t = 0.0
+	await frames(131)
+	return hp0 - float(Game.hero["hp"])
+
+func fl_save_load() -> void:
+	W.load_map("rito_seiva", "from_b")
+	await frames(10)
+	check("FL: save permitido no rito", W.save_now(4))
+	var inv := Game.inventory.duplicate()
+	var ch := Game.chests.duplicate()
+	main.back_to_title()
+	await frames(5)
+	main.continue_from_slot(4)
+	await frames(30)
+	var fl_ok := true
+	for f in ["rito_seiva_ok", "rito_seiva_av_ok", "santuario_parede", "bosque_anel", "grota_tronco", "rs3_ok", "rs_av3"]:
+		if not Game.has_flag(f):
+			fl_ok = false
+	check("FL: load mantém ritos, segredos, anel e Grota", fl_ok and W.map_id == "rito_seiva")
+	check("FL: load não duplica técnica, diários, amuleto nem baús", Game.inventory == inv and Game.chests == ch and Game.item_count("golpe_enraizado") == 1 and Game.item_count("amuleto_seiva_viva") == 1)
+	W.rite_altar(ent_by_id("rs_altar"))
+	await advance_dialogs()
+	check("FL: altar após carregar não repete a recompensa", Game.item_count("golpe_enraizado") == 1)
+	check("FL: dados sem erros de validação", Data.errors.is_empty(), str(Data.errors))
