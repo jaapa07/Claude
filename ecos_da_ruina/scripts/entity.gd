@@ -159,7 +159,7 @@ func _ready() -> void:
 		"rite_reset":
 			_rite_prop(11, Vector2(0, -2)); solid = true
 		"altar":
-			_rite_prop(1 if Game.has_flag(def.get("flag", "")) else 0, Vector2(0, -4))
+			_rite_prop(1 if Game.has_flag(def.get("flag", "")) else 0, Vector2(0, -4), str(def.get("folha", "rito_props")))
 			solid = true
 		# ---- Região 3
 		"lantern":
@@ -214,7 +214,14 @@ func _ready() -> void:
 			sprite.modulate = Color(0.75, 0.65, 1.0, 0.6)
 			refresh_spirit()
 		"decor":
-			_pprop(str(def.get("frame", "cesto")), Vector2(0, -2))
+			if def.has("sheet"):
+				# bilhetes ambientais e objetos de história (folha 16x16 própria, ex.: bilhetes.png)
+				sprite = Sprite2D.new()
+				sprite.texture = Art.region(str(def["sheet"]), int(def.get("frame", 0)) * 16, 0, 16, 16)
+				sprite.offset = Vector2(0, -2)
+				add_child(sprite)
+			else:
+				_pprop(str(def.get("frame", "cesto")), Vector2(0, -2))
 			solid = def.get("solid", false)
 	if solid:
 		collision_layer = 1
@@ -250,9 +257,9 @@ func _prop(name: String, off: Vector2) -> Sprite2D:
 	return sprite
 
 ## Peças do rito (rito_props.png, ordem: altar_off altar_on sigil_off sigil_on gate_closed gate_open pipe_h pipe_v gauge_cold gauge_mid gauge_hot reset_stone)
-func _rite_prop(idx: int, off: Vector2) -> void:
+func _rite_prop(idx: int, off: Vector2, sheet := "rito_props") -> void:
 	sprite = Sprite2D.new()
-	sprite.texture = Art.sprite_tex("rito_props")
+	sprite.texture = Art.sprite_tex(sheet)
 	sprite.region_enabled = true
 	sprite.region_rect = Rect2(idx * 16, 0, 16, 16)
 	sprite.offset = off

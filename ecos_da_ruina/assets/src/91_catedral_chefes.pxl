@@ -1,5 +1,5 @@
 # Minichefe e guardião final da Catedral do Vazio — desenho autoral pixel a pixel.
-# arauto.png (48x48, 9 colunas): o Arauto Partido — o Arauto da Ordem do Vazio (manto branco, olho fechado bordado) partido ao meio
+# arauto_partido.png (48x48, 9 colunas): o Arauto Partido — o Arauto da Ordem do Vazio (manto branco, olho fechado bordado) partido ao meio
 #   pelo Eco que tentou carregar; a rachadura brilha em vermelho. Voltado para a direita. windup = livro erguido; attack = livro aberto.
 # rei.png (72x72, 9 colunas): o Rei dos Ecos (Ivar) — de frente, simétrico (as linhas descrevem a metade esquerda; "mirror").
 #   Coroa de marfim com gemas, manto azul profundo, núcleo vermelho no peito, correntes de metal-eco penduradas.
@@ -236,7 +236,7 @@ frame ar_hurt over ar_base
 ...............KeepoKoKoKxKopedK................
 end
 
-sheet arauto.png 48 48 9
+sheet arauto_partido.png 48 48 9
 ar_base
 ar_breath
 ar_stepa

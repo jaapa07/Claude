@@ -7,6 +7,7 @@
 - 3 espécies capturáveis (Brotisco, Lumipim, Cascalito) e as 3 evoluções (Galhardo, Auripim, Rocantor), com habilidade comandada, passiva e ação ambiental.
 - Lenhador Oco (minichefe) e Cervo de Ossos (3 fases: investida anunciada com pilares, faixas de raízes e escuridão).
 - Raiz Viva: pontes contextuais e raízes em combate. Vila transformada após o chefão e passagem às Minas aberta.
+- Rito da Seiva (antes do Cervo; técnica Golpe Enraizado) e Rito da Seiva avançado (Raiz Viva; Amuleto de Seiva Viva), segredo da parede musgosa (Diário da Expedição I), anel de flores do Bosque (Lumipim Nv. 8) e a Grota das Raízes Antigas pós-Cervo (Diário da Expedição II). Teste: `-- --e2e --floresta`.
 - Sistemas: combo de 3 golpes, ataque carregado, defesa, esquiva com janela de invulnerabilidade, captura, equipe de 3, santuário com 90 vagas, evolução por nível e vínculo, inventário, equipamentos, talentos, bestiário, diário, mapa, 3 slots de save com autosave, backup e escrita atômica, opções (volume, remapeamento, acessibilidade e dificuldade).
 
 ## Pronto e jogável — Região 2 (Capítulo 2: Minas da Brasa)

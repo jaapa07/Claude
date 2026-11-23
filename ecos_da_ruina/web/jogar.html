@@ -61,7 +61,7 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
 <div class="wrap">
   <header>
     <h1>ECOS DA RUÍNA</h1>
-    <p class="sub">Capítulos 1 e 2 — Floresta dos Esquecidos e Minas da Brasa. Versão para navegador e iPhone.</p>
+    <p class="sub">Floresta, Minas, Pântano e Fortaleza — rumo à Catedral do Vazio. Versão para navegador e iPhone.</p>
   </header>
 
   <div class="screen">
@@ -69,7 +69,7 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
     <div class="overlay" id="start">
       <div class="t">Pronto para jogar</div>
       <button id="play" type="button">Jogar</button>
-      <div class="msg">O jogo tem cerca de 42 MB e carrega uma vez.</div>
+      <div class="msg">O jogo tem cerca de 43 MB e carrega uma vez.</div>
     </div>
     <div class="overlay" id="loading" hidden>
       <div class="t">Carregando…</div>
@@ -115,8 +115,9 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
 <script>
 // O motor (WebAssembly) é publicado em 3 partes; aqui elas são baixadas e remontadas antes de iniciar.
 (function () {
-  const PARTS = ["w/motor0.wasm", "w/motor1.wasm", "w/motor2.wasm"];
-  const TOTAL = 35376909 + 4185488;
+  const VERSAO = "202611232234";   // muda a cada publicação: o celular baixa a versão nova em vez de usar o cache
+  const PARTS = ["w/motor0.wasm", "w/motor1.wasm", "w/motor2.wasm"].map(function (u) { return u + "?v=" + VERSAO; });
+  const TOTAL = 35376909 + 4734496;
   let loaded = 0;
   const fill = document.getElementById("fill");
   const status = document.getElementById("status");
@@ -124,7 +125,7 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
   const origFetch = window.fetch.bind(window);
 
   async function readAll(url, label) {
-    const r = await origFetch(url);
+    const r = await origFetch(url, { cache: "no-store" });
     if (!r.ok) throw new Error("falha ao baixar " + url + " (" + r.status + ")");
     const reader = r.body.getReader();
     const chunks = [];
@@ -146,7 +147,7 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
       return new Response(new Blob(blobs, { type: "application/wasm" }), { headers: { "Content-Type": "application/wasm" } });
     }
     if (url && url.split("?")[0].endsWith("index.pck")) {
-      const b = await readAll("w/dados.wasm", "Baixando os dados do jogo");
+      const b = await readAll("w/dados.wasm?v=" + VERSAO, "Baixando os dados do jogo");
       return new Response(b, { headers: { "Content-Type": "application/octet-stream" } });
     }
     return origFetch(input, init);
@@ -160,13 +161,13 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
     document.getElementById("start").hidden = true;
     document.getElementById("loading").hidden = false;
     const s = document.createElement("script");
-    s.src = "index.js";
+    s.src = "index.js?v=" + VERSAO;
     s.onerror = () => fail("index.js não carregou");
     s.onload = function () {
       try {
         const engine = new Engine({
           args: [], canvasResizePolicy: 0, executable: "index", experimentalVK: false,
-          fileSizes: { "index.pck": 4185488, "index.wasm": 35376909 },
+          fileSizes: { "index.pck": 4734496, "index.wasm": 35376909 },
           focusCanvas: true, gdextensionLibs: [], ensureCrossOriginIsolationHeaders: false
         });
         engine.startGame({

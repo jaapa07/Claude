@@ -175,6 +175,8 @@ def jardins():
     m.ent(type="helice", id="jardins_helice_ilha", x=40, y=16, flag="jardins_ilha", msg="A rajada gira a hélice da ilha: uma passarela de pedra se ergue do abismo!")
     m.ent(type="chest", id="jardins_bau_ilha", x=47, y=17, loot={"pena_lumen": 1, "selo_refinado": 2, "essencia_roxa": 1})
     m.ent(type="chest", id="jardins_bau1", x=15, y=23, loot={"pocao": 2, "fragmentos": 80})
+    # bilhete ambiental (docs/HISTORIA.md)
+    m.ent(type="decor", id="bilhete_jardineira", sheet="bilhetes", frame=2, dialog="bilhete_jardineira", x=30, y=5)
     return m
 
 
@@ -236,6 +238,8 @@ def muralha():
     m.ent(type="fissura", id="muralha_fissura", x=39, y=30, to=[43, 30])
     m.ent(type="fissura", id="muralha_fissura_volta", x=42, y=31, to=[39, 31])
     m.ent(type="chest", id="muralha_bau_umbral", x=45, y=29, loot={"essencia_laranja": 1, "brasa_solar": 1, "semente_vida": 1})
+    # bilhete ambiental (docs/HISTORIA.md)
+    m.ent(type="decor", id="bilhete_soldado", sheet="bilhetes", frame=0, dialog="bilhete_soldado", x=9, y=18)
     return m
 
 

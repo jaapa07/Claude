@@ -205,7 +205,7 @@ func _build() -> void:
 	_logo = Fonts.label("ECOS DA RUÍNA", 24, Color(1.0, 0.88, 0.5)); _logo.size = Vector2(480, 36)
 	_logo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; _logo.position = Vector2(0, 30); _logo.visible = false
 	_logo.add_theme_constant_override("outline_size", 6); add_child(_logo)
-	_sub = Fonts.label("Capítulo 1 — Floresta dos Esquecidos", 11, Color(0.8, 0.85, 1.0)); _sub.size = Vector2(480, 14)
+	_sub = Fonts.label("Os cinco guardiões de Auralis", 11, Color(0.8, 0.85, 1.0)); _sub.size = Vector2(480, 14)
 	_sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; _sub.position = Vector2(0, 70); _sub.visible = false; add_child(_sub)
 
 func _refresh() -> void:
@@ -216,6 +216,8 @@ func _refresh() -> void:
 	_dim.color = Color(0.05, 0.04, 0.1, dim)
 	_key_panel.visible = key_capture != ""
 	_foot_lab.text = footer
+	if TouchControls.active and footer.begins_with("↑↓ navegar"):
+		_foot_lab.text = "Toque no item ou nas setas  •  OK confirma  •  Voltar volta"
 	if title_mode:
 		_logo.visible = true; _sub.visible = true
 		_title_lab.visible = false; _info_panel.visible = false; _count_lab.visible = false

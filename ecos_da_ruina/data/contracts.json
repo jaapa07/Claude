@@ -516,6 +516,141 @@
    }
   }
  },
+ "irmao_bruna": {
+  "nome": "O Irmão da Bruna",
+  "tipo": "dupla",
+  "pessoal": true,
+  "aliados": [
+   "bruna"
+  ],
+  "nivel": 9,
+  "requer": [
+   "saqueadores_ok",
+   "visitou_trilhos_fundidos"
+  ],
+  "mapa": "trilhos_fundidos",
+  "texto": "Contrato pessoal. O irmão caçula da Bruna, Caio, fugiu para as minas quando as raízes fecharam os campos. Agora anda com um bando de Domadores na ala sudoeste dos Trilhos Fundidos.",
+  "objetivo": "Encontre o bando do Caio na ala sudoeste dos Trilhos Fundidos (com a Bruna).",
+  "abertura": [
+   "Bruna: Ali. O de cachecol vermelho é o Caio. Ele tinha onze anos quando as raízes fecharam os campos.",
+   "Bruna: Achou que, se ganhasse moedas, a mãe parava de chorar. Não machuca ele, tá? Só as feras soltam... e o chicote cai."
+  ],
+  "desfecho": [
+   "Caio larga o chicote. As feras do bando fogem pelos trilhos, livres.",
+   "Caio: Eu só queria mandar dinheiro para casa, Bruna. Eles diziam que a Catedral pagava bem por cada criatura.",
+   "Bruna: A casa não precisa de dinheiro. Precisa de você. A mãe põe o seu prato na mesa todo dia, sabia?",
+   "Bruna abaixa o escudo pela primeira vez desde que você a conheceu, e abraça o irmão.",
+   "Bruna: Eu luto para que ninguém mais precise escolher entre a família e as correntes. Obrigada por me lembrar disso."
+  ],
+  "inimigos": [
+   {
+    "kind": "domador",
+    "id": "ir_caio",
+    "x": 9,
+    "y": 30,
+    "nivel": 9
+   },
+   {
+    "kind": "domadora",
+    "id": "ir_d2",
+    "x": 13,
+    "y": 33,
+    "nivel": 9
+   },
+   {
+    "kind": "fera",
+    "dono": "ir_caio",
+    "species": "faisquito",
+    "level": 9,
+    "x": 7,
+    "y": 32
+   },
+   {
+    "kind": "fera",
+    "dono": "ir_d2",
+    "species": "fuligin",
+    "level": 9,
+    "x": 11,
+    "y": 31
+   }
+  ],
+  "recompensa": {
+   "fragmentos": 180,
+   "xp": 280,
+   "itens": {
+    "selo_refinado": 3,
+    "pocao": 3
+   }
+  }
+ },
+ "mestre_ravi": {
+  "nome": "O Rastro de Joran",
+  "tipo": "dupla",
+  "pessoal": true,
+  "aliados": [
+   "ravi"
+  ],
+  "nivel": 15,
+  "requer": [
+   "emboscada_ok",
+   "visitou_passarela_ecos"
+  ],
+  "mapa": "passarela_ecos",
+  "texto": "Contrato pessoal. Ravi reconheceu, à venda no Porto, a bolsa de discos do seu mestre, Joran — batedor da expedição de Ione. Os vendedores acampam na ilha leste da Passarela dos Ecos.",
+  "objetivo": "Recupere as coisas de Joran na ilha leste da Passarela dos Ecos (com o Ravi).",
+  "abertura": [
+   "Ravi: Aquela bolsa de couro... é do Joran. Foi ele que me ensinou a arremessar, lá no Bosque.",
+   "Ravi: Ele partiu com a expedição da sua mestra e nunca mais mandou notícia. Eu preciso saber o que aconteceu."
+  ],
+  "desfecho": [
+   "Entre as coisas dos Domadores, Ravi acha a bússola de Joran e um bilhete dobrado em quatro.",
+   "Ravi: Ele escreveu: \"Se isto chegar até você, Ravi, é porque eu segui sem bússola. A Mestra Ione foi para as montanhas e eu vou atrás. Pare de me procurar e comece a ensinar.\"",
+   "Ravi fica um tempo em silêncio, girando a bússola na mão. A agulha aponta para o norte, para a Fortaleza.",
+   "Ravi: Ele está vivo. Ainda está andando. Quando isso acabar, vou ensinar o Pipo a arremessar. O Joran ia gostar.",
+   "Ravi: Fica com a bússola. Você vai mais longe do que eu. E obrigado por vir: não precisava, e veio."
+  ],
+  "inimigos": [
+   {
+    "kind": "domador",
+    "id": "jr_d1",
+    "x": 48,
+    "y": 21,
+    "nivel": 15
+   },
+   {
+    "kind": "domadora",
+    "id": "jr_d2",
+    "x": 51,
+    "y": 27,
+    "nivel": 15
+   },
+   {
+    "kind": "fera",
+    "dono": "jr_d1",
+    "species": "goturim",
+    "level": 15,
+    "x": 46,
+    "y": 23
+   },
+   {
+    "kind": "fera",
+    "dono": "jr_d2",
+    "species": "brejugo",
+    "level": 15,
+    "x": 50,
+    "y": 24
+   }
+  ],
+  "recompensa": {
+   "fragmentos": 300,
+   "xp": 450,
+   "itens": {
+    "bussola_joran": 1,
+    "selo_refinado": 3,
+    "essencia_roxa": 1
+   }
+  }
+ },
  "caca_escribas": {
   "nome": "Silêncio no Jardim",
   "tipo": "caca",

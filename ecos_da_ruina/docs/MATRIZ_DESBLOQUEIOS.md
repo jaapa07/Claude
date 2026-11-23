@@ -24,30 +24,32 @@ Cada Rito pré-guardião usa só mecanismos locais; cada Rito avançado (opciona
 | Galeria dos Lobos (portas fecham) | combate | início | companheiro ajuda; Raízes prendem pequenos | saída para os Canais | ✅ |
 | Canais de Seiva | alavancas + inscrição | início | dica após 3 tentativas | Tesouro + atalho | ✅ |
 | Câmara dos Pesos | empurrar caixas | início | Cascalito segura placa | preparação do minichefe | ✅ |
-| **Rito da Seiva** (antes do Cervo) | canais, pesos, plataformas conectadas | início (mecanismos locais) | Brotisco/Cascalito facilitam; dica opcional | técnica **Golpe Enraizado** + 1 vínculo (1ª vez) | 📐 |
+| **Rito da Seiva** (`rito_seiva`, pela Câmara dos Pesos, antes do Cervo) | canais (alavancas), pesos (caixas nas placas), passarelas conectadas | início (mecanismos locais) | Cascalito segura placas; Brotisco estende cipós da ilha; pedra da dica após 3 tentativas; pedra de reinício; saída sempre aberta | técnica **Golpe Enraizado** (golpe carregado prende inimigos pequenos) + 1 vínculo (1ª vez) | ✅ |
 | Fenda do atalho norte (Bosque) — opcional | cipó | Brotisco (capturável no início, habitat garantido) | trilha principal contorna | baú com tônicos | ✅ |
 | Atalho Santuário → Vila | porta de raízes de mão única | após o Tesouro | — | retorno rápido | ✅ |
-| Segredo atual: parede rachada musgosa no Santuário | observação + ataque carregado | início | Lumipim ilumina a inscrição que aponta a parede | **Diário da expedição I** + Selo Refinado | 📐 |
-| Descoberta de criatura: anel de flores incomum no Bosque | observar Lumipins circulando à noite/brilhando | início | — | Lumipim de nível maior + história | 📐 |
+| Segredo atual: parede rachada de musgo pálido no corredor de entrada do Santuário | observação + golpe carregado | início | Lumipim (ação ou Pulso) ilumina a inscrição de raízes que aponta a parede e a marca | **Diário da Expedição I** + Selo Refinado | ✅ |
+| Descoberta de criatura: anel de flores incomum no sudoeste do Bosque | observar o anel com neblina (Lumipins giram e brilham) | início | com um Lumipim na equipe o anel também se revela (sem depender do clima) | Lumipim Nv. 8 (único, capturável) + história (a fita azul de Ione) | ✅ |
 | Raízes ao norte da Vila | — (recuam) | após o Cervo | — | Desfiladeiro | ✅ |
 | Ravina da Clareira de Vínculo (revisita) | **Raiz Viva** | após o Cervo | — (opcional) | Pedra de Vínculo (+1 vínculo para a equipe) + baú | ✅ |
 | Desfiladeiro do Eco | **Raiz Viva** | após o Cervo | — (desbloqueio regional) | entrada das Minas | ✅ |
-| **Rito da Seiva avançado** (opcional) | Raiz Viva em sequência com canais | após o Cervo | — | Amuleto de Seiva Viva (regenera vigor mais rápido) | 📐 |
-| Mudança explorável pós-Cervo | — | após o Cervo | — | vila transformada, família volta, passagem norte, Clareira de Vínculo | ✅ (parcial: falta nova área explorável dentro da floresta) |
+| **Rito da Seiva avançado** (opcional, acima do altar) | Raiz Viva em sequência com dois canais (a raiz só cresce depois que a alavanca enche o canal) | após o Cervo | — | **Amuleto de Seiva Viva** (épico; +18 de vida, vigor 60% mais rápido) | ✅ |
+| Mudança explorável pós-Cervo | — | após o Cervo | — | vila transformada, família volta, passagem norte, Clareira de Vínculo | ✅ |
+| **Grota das Raízes Antigas** (`grota_seiva`, a leste da Clareira) | — (as raízes antigas recuam) | após o Cervo | — | área nova: criaturas Nv. 6–7, lobos/cogumelos/sentinela, baú com **Diário da Expedição II** | ✅ |
+| Segredo da Grota: tronco oco | observação (examinar a casca solta) | após o Cervo | — | toca escondida com Semente de Vida | ✅ |
 
 ## 2. Minas da Brasa
 | Obstáculo | Habilidade necessária | Quando | Alternativa | Recompensa | Status |
 |---|---|---|---|---|---|
 | Ravina do Desfiladeiro (entrada) | Raiz Viva | após o Cervo | — | Forja de Cobre | ✅ |
-| Pisos quentes | válvulas de resfriamento locais | chegada | Luvas Térmicas reduzem dano; Goturim (região 3) facilita na revisita | rotas internas | 🔶 |
-| Fornalhas apagadas | tochas/brasas locais | chegada | Faisquito acende à distância | portas da Fundição | 🔶 |
-| Trilhos e carrinhos | alavancas de desvio | chegada | Ferrunho move trilho marcado | atalhos internos | 🔶 |
-| **Rito da Forja** (antes do Ferreiro) | calor, resfriamento, sincronização | chegada | dica opcional; Faisquito acelera | técnica + 1 vínculo (1ª vez) | 🔶 |
-| Rochas fissuradas (opcionais antes do Ferreiro) | **Ruptura Ígnea** | após o Ferreiro | — | segredos e baús | 🔶 |
-| Elevador Forja ↔ Pedreira (atalho) | ativar no fundo da pedreira | durante a região | — | retorno rápido | 🔶 |
-| Segredo atual | observação (vapor/fumaça vazando) | chegada | Fuligin revela corrente de ar | história/equipamento | 🔶 |
-| Segredo de revisita | **Olhar Velado** | após a Bruxa (região 3) | — | inscrição oculta | 🔶 (marcado) |
-| **Rito da Forja avançado** (opcional) | Ruptura Ígnea | após o Ferreiro | — | recompensa secundária | 🔶 |
+| Pisos quentes | válvulas de resfriamento locais | chegada | Luvas Térmicas (Rito da Forja) reduzem o dano à metade; na revisita, Goturim/Marulume perto do herói molham o piso (calor fere metade) | rotas internas | ✅ |
+| Fornalhas apagadas | chama do braseiro levada pelo herói | chegada | Faisquito acende de perto, sem braseiro | portas da Fundição, ninho da Pedreira, lava da Grande Caldeira | ✅ |
+| Trilhos e carrinhos | alavancas de desvio + batente | chegada | Ferrunho arrasta o trilho marcado (ilha opcional) | portão dos Trilhos, tesouro da Fundição | ✅ |
+| **Rito da Forja** (antes do Ferreiro) | calor, resfriamento, sincronização | chegada | dica opcional; pedra de reinício; Faisquito acelera | técnica **Luvas Térmicas** + 1 vínculo (1ª vez) | ✅ |
+| Rochas fissuradas (opcionais antes do Ferreiro) | **Ruptura Ígnea** | após o Ferreiro | — | depósito da Forja (Caderno da Ilda), veio esquecido (Couraça de Placas de Cobre), Passagem Sul ao Pântano | ✅ |
+| Elevador Forja ↔ Pedreira (atalho) | vapor da grande forja (o Manual do Elevador, no nicho da Pedreira, explica) | após o Ferreiro (forja reacesa) | — | retorno rápido nos dois sentidos | ✅ |
+| Segredo atual | observação (vapor vazando nos Trilhos) | chegada | Fuligin revela a corrente de ar da Pedreira | Bilhete da Tessa, veio esquecido | ✅ |
+| Segredo de revisita | **Olhar Velado** | após a Bruxa (região 3) | — | inscrição oculta da praça da Forja (lingotes e Semente de Vida); a Fundição tem outra | ✅ |
+| **Rito da Forja avançado** (opcional) | Ruptura Ígnea em mecanismos térmicos | após o Ferreiro | — | Amuleto da Brasa | ✅ |
 
 ## 3. Pântano dos Sussurros
 | Obstáculo | Habilidade necessária | Quando | Alternativa | Recompensa | Status |
@@ -109,3 +111,4 @@ Cada Rito pré-guardião usa só mecanismos locais; cada Rito avançado (opciona
 - Campanha sem raras: o percurso do teste usa só Brotisco/Lumipim/Cascalito (nenhuma rara); no Pântano, o Nimbelo (raro) só acelera — portões não dependem de Goturim/Brejugo/Nimbelo nem do Olhar Velado (teste de unidade "R3: portões obrigatórios...").
 - Caminho com exaustas: trecho obrigatório concluído com a criatura ativa exausta (Galeria dos Lobos).
 - Recompensas únicas: baús, chefões e Ecos não duplicam após salvar/carregar.
+- Floresta completa (`-- --e2e --floresta`): Rito da Seiva (três lições, dica, reinício, saída segura, técnica e vínculo únicos), Golpe Enraizado em combate, segredo da parede musgosa, anel de flores (neblina e Lumipim), Grota pós-Cervo, rito avançado com Raiz Viva, Amuleto de Seiva Viva (vigor medido), Goturim nos pisos quentes e save/load sem duplicação. As Minas são cobertas pelos estágios `r2_*` do e2e completo.

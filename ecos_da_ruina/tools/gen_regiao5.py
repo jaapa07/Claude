@@ -94,7 +94,7 @@ def acampamento():
     m.ent(type="npc", id="ravi_aurora", sprite="aliado_ravi", human=True, dialog="ravi", x=15, y=14, nome="Ravi", party_id="ravi", if_flag="saqueadores_ok")
     m.ent(type="npc", id="ione_aurora", sprite="npc_ione", dialog="ione", x=39, y=22, nome="Mestra Ione", if_flag="rei_morto")
     # o Arauto da Ordem do Vazio (manto branco, olho fechado) e o Eco de Ione, sempre um passo à frente
-    m.ent(type="npc", id="arauto_aurora", sprite="npc_arauto", dialog="arauto_aurora", x=24, y=5, nome="Arauto da Ordem", unless_flag="arauto_partiu")
+    m.ent(type="npc", id="arauto_aurora", sprite="arauto", dialog="arauto_aurora", x=24, y=5, nome="Arauto da Ordem", unless_flag="arauto_partiu")
     m.ent(type="eco_ione", id="eco_ione_1", dialog="eco_ione_1", x=27, y=4, unless_flag="eco_ione_1_visto")
     m.ent(type="adorno", id="aurora_estandarte1", frame="estandarte", x=18, y=10)
     m.ent(type="adorno", id="aurora_estandarte2", frame="estandarte", x=30, y=17)
@@ -247,7 +247,7 @@ def catedral_a():
     m.puzzles["atalho_catedral"] = {"type": "levers", "toggles": [[0]], "start": [0], "goal": [1], "flag": "catedral_atalho", "dica_apos": 9, "dica": ""}
     m.ent(type="shrine", id="catedral_nave", x=30, y=36)
     m.ent(type="sign", id="placa_catedral_nave", dialog="placa_catedral_nave", x=26, y=35)
-    m.ent(type="npc", id="arauto_nave", sprite="npc_arauto", dialog="arauto_nave", x=30, y=31, nome="Arauto da Ordem", unless_flag="arauto_nave_partiu")
+    m.ent(type="npc", id="arauto_nave", sprite="arauto", dialog="arauto_nave", x=30, y=31, nome="Arauto da Ordem", unless_flag="arauto_nave_partiu")
     m.ent(type="eco_ione", id="eco_ione_2", dialog="eco_ione_2", x=30, y=24, unless_flag="eco_ione_2_visto")
     m.ent(type="spirit_mark", id="ca_inscricao", dialog="inscricao_catedral", x=33, y=35)
     m.ent(type="adorno", id="ca_vitral1", frame="vitral", x=25, y=34, solid=False)

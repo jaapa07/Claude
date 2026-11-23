@@ -75,6 +75,7 @@ var boss_nodes := {}
 var active_boss: Node = null
 var encounter_active := {}
 var test_mode := false
+var historia: Historia
 var _tileset: TileSet
 var _hit_token := 0
 var _death_pending := false
@@ -148,6 +149,7 @@ func _ready() -> void:
 	Weather.attach(self)
 	Fortaleza.attach(self)   # Região 4: chefes, feixes de luz, retorno ao Refúgio
 	Catedral.attach(self)    # Região 5: chefes, resgate de Ione, epílogo
+	historia = Historia.attach(self)   # artefatos, lembranças, cenas e o Arauto (scripts/historia.gd)
 
 func _make_tileset() -> TileSet:
 	if _tileset:
@@ -702,6 +704,10 @@ func _spawn_def(i: int, player_pos: Vector2 = Vector2(-9999, -9999)) -> void:
 				var ce := CatEnt.new()
 				ce.init(self, d)
 				node = ce
+			elif Floresta.ENT_KINDS.has(t):  # extras da Floresta (scripts/floresta_ent.gd)
+				var fl := FlorestaEnt.new()
+				fl.init(self, d)
+				node = fl
 	if node != null:
 		ysort.add_child(node)
 		ent_nodes[i] = node
@@ -848,6 +854,12 @@ func _spawn_contract() -> void:
 		if d["kind"] == "vesna":
 			boss_node = en
 	say("Contrato: " + c["objetivo"])
+	# contrato pessoal: a conversa de abertura toca uma vez, ao chegar ao local
+	if boss_node == null and c.has("abertura") and not Game.has_flag("abertura_" + cid):
+		Game.set_flag("abertura_" + cid)
+		if not test_mode:
+			player.set_busy(true)
+			ui.dialog(c["abertura"], func(): player.set_busy(false))
 	if boss_node != null:
 		ui.boss_bar(boss_node)
 		Audio.set_mood("chefe", true, "chefao")
@@ -875,6 +887,7 @@ func contract_enemy_down(e: Node) -> void:
 	Audio.play("puzzle_ok")
 	Audio.stinger("vitoria")
 	var lines: Array = ["Contrato concluído: " + Data.contracts[cid]["nome"] + "!"]
+	lines.append_array(Data.contracts[cid].get("desfecho", []))   # contrato pessoal: desfecho do aliado
 	for a in allies():
 		lines.append(Data.allies[a.aid]["falas"]["fim"])
 		a.heal_full()
@@ -1034,6 +1047,27 @@ func _update_prompt() -> void:
 	if best != null:
 		current_prompt = best.prompt()
 		current_prompt_ent = best
+
+## Toque direto num objeto/NPC: o herói vai até ele e interage (tela de toque).
+func tap_world(screen_pos: Vector2) -> bool:
+	if player == null or player.state != Player.S.FREE or get_tree().paused or transition_busy:
+		return false
+	var wp: Vector2 = get_canvas_transform().affine_inverse() * screen_pos
+	var best: Node = null
+	var bd := 22.0
+	for e in get_tree().get_nodes_in_group("ents"):
+		if e.prompt() == "":
+			continue
+		var d: float = min(wp.distance_to(e.global_position), wp.distance_to(e.global_position + Vector2(0, -10)))
+		if e.kind in ["shrine", "npc", "chest", "sign", "prop", "pickup"]:
+			d -= 8.0     # objetos principais ganham do que está colado neles (marcas, inscrições)
+		if d < bd:
+			bd = d
+			best = e
+	if best == null:
+		return false
+	player.go_interact(best)
+	return true
 
 func try_interact() -> void:
 	if current_prompt_ent != null and is_instance_valid(current_prompt_ent):
@@ -1210,6 +1244,7 @@ func light_pulse(center: Vector2, rad: float) -> void:
 	for e in get_tree().get_nodes_in_group("ents"):
 		if e.kind == "flower" and not e.lit and e.global_position.distance_to(center) <= rad + 8.0:
 			e.light(false)
+	Floresta.on_light(self, center, rad)
 
 func _update_darkness(delta: float) -> void:
 	if not dark_on:
@@ -1281,6 +1316,20 @@ func open_shrine(shrine: Ent) -> void:
 		Audio.play("puzzle_ok")
 	player.set_busy(true)
 	ui.open_shrine_menu()
+
+## Reação visível ao descanso: a tela escurece e clareia, brilhos de cura no herói e na criatura.
+func rest_feedback() -> void:
+	if not test_mode:
+		player.set_busy(true)
+		await ui.fade(0.85, 0.35)
+		await get_tree().create_timer(0.25).timeout
+		await ui.fade(0.0, 0.45)
+		player.set_busy(false)
+	fx_at("sparkle", player.global_position + Vector2(0, -22), 1.0, 0.0, 1.6)
+	spawn_text(player.global_position + Vector2(0, -32), "Vida cheia!", Color(0.6, 1.0, 0.7))
+	if companion != null and is_instance_valid(companion):
+		fx_at("sparkle", companion.global_position + Vector2(0, -14), 1.0, 0.0, 1.2)
+	ui.banner("Descansou — equipe recuperada")
 
 func rest_at_shrine() -> void:
 	Game.heal_team()
@@ -1581,7 +1630,7 @@ func _update_heat(delta: float) -> void:
 	if transition_busy or frozen or arrival_t > 0.0:
 		return
 	if player.state != Player.S.DEAD and player.state != Player.S.INTERACT and is_hot_at(player.global_position):
-		player.env_damage(HEAT_DMG_HERO * Game.heat_mult(), "Quente!")
+		player.env_damage(HEAT_DMG_HERO * Game.heat_mult() * _water_companion_mult(), "Quente!")
 		if not heat_warned:
 			heat_warned = true
 			say("Piso em brasa! Gire uma válvula azul (E) para resfriá-lo ou atravesse depressa.")
@@ -1594,6 +1643,13 @@ func _update_heat(delta: float) -> void:
 			continue
 		if is_hot_at(e.global_position):
 			e.heat_damage(HEAT_DMG_CREATURE)
+
+## Goturim/Marulume por perto molham o piso: o calor fere o herói pela metade (alternativa na revisita das Minas).
+func _water_companion_mult() -> float:
+	if companion != null and is_instance_valid(companion) and companion.is_alive() and companion.species_id() in ["goturim", "marulume"] \
+			and companion.global_position.distance_to(player.global_position) <= 64.0:
+		return 0.5
+	return 1.0
 
 func add_hazard(pos: Vector2, rad: float, life: float) -> Node2D:
 	var h: Node2D = preload("res://scripts/hazard.gd").new()
@@ -1807,6 +1863,7 @@ func rite_reset(_e: Ent) -> void:
 		say("Não é possível durante o combate.")
 		return
 	reset_room_puzzles()
+	Floresta.note_reset(self)
 	Audio.play("puzzle_no")
 	say("O rito recomeça: fornalhas apagadas e válvulas do rito fechadas. Nada do que você carrega foi perdido.")
 
@@ -1823,8 +1880,11 @@ func rite_altar(a: Ent) -> void:
 		a.sprite.region_rect = Rect2(16, 0, 16, 16)      # rite_altar_on
 	Audio.play("levelup")
 	shake(1.5, 0.3)
-	for k in 6:
-		fx_at("fire", a.global_position + Vector2.from_angle(TAU * k / 6.0) * 26.0, 0.8)
+	if a.def.get("fx", "fire") == "roots":
+		fx_roots(a.global_position, 26.0)
+	else:
+		for k in 6:
+			fx_at("fire", a.global_position + Vector2.from_angle(TAU * k / 6.0) * 26.0, 0.8)
 	if a.def.has("loot"):
 		Game.give_loot(a.def["loot"])
 	var bond: String = a.def.get("bond", "")
@@ -2167,7 +2227,7 @@ func _memory_tick(delta: float) -> void:
 	Audio.mood_for("memoria", 25.0)
 	player.set_busy(true)
 	ui.banner(m["titulo"])
-	ui.dialog(m["linhas"], func():
+	ui.dialog(Historia.with_reaction(m["linhas"], "memoria", f, (m["linhas"] as Array).size() - 1), func():
 		player.set_busy(false)
 		_memory_reward(f))
 

@@ -33,12 +33,13 @@ const LEGEND := [
 var _legend: Control
 var _legend_layer: CanvasLayer
 var _nav: Node2D
+const NAV_SCALE := 1.3
 ## Navegação de menus pelo toque (título, saves, pausa, diálogos): [coluna em touch_nav.png, ação, centro]
 const NAV := [
-	[0, "ui_up", Vector2(452, 168)],
-	[1, "ui_down", Vector2(452, 236)],
-	[2, "ui_accept", Vector2(416, 236)],
-	[3, "ui_cancel", Vector2(416, 168)],
+	[0, "ui_up", Vector2(26, 184)],
+	[1, "ui_down", Vector2(26, 228)],
+	[2, "ui_accept", Vector2(454, 228)],
+	[3, "ui_cancel", Vector2(454, 184)],
 ]
 
 # [ícone (coluna em touch_buttons.png), ação, centro (x, y) na tela 480x270, escala]
@@ -87,13 +88,18 @@ func _ready() -> void:
 		_root.add_child(t)
 		_buttons.append(t)
 	_nav = Node2D.new()
-	add_child(_nav)
+	var nav_layer := CanvasLayer.new()
+	nav_layer.layer = 90          # acima de todos os menus e diálogos
+	nav_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	add_child(nav_layer)
+	nav_layer.add_child(_nav)
 	for nb in NAV:
 		var t2 := TouchScreenButton.new()
 		t2.texture_normal = Art.region("touch_nav", int(nb[0]) * 28, 0, 28, 28)
 		t2.action = nb[1]
-		t2.position = nb[2] - Vector2(14, 14)
-		t2.modulate = Color(1, 1, 1, 0.85)
+		t2.scale = Vector2(NAV_SCALE, NAV_SCALE)
+		t2.position = nb[2] - Vector2(14, 14) * NAV_SCALE
+		t2.modulate = Color(1, 1, 1, 0.9)
 		var sh2 := CircleShape2D.new()
 		sh2.radius = 15.0
 		t2.shape = sh2
@@ -201,7 +207,7 @@ func _input(event: InputEvent) -> void:
 	# o clique emulado de um toque nas setas não pode também clicar no menu/diálogo por trás
 	if _nav != null and _nav.visible and event is InputEventMouseButton:
 		for nb in NAV:
-			if event.position.distance_to(nb[2]) <= 17.0:
+			if event.position.distance_to(nb[2]) <= 15.0 * NAV_SCALE + 2.0:
 				get_viewport().set_input_as_handled()
 				return
 	if enabled and _root.visible and event is InputEventMouseButton:
@@ -210,6 +216,7 @@ func _input(event: InputEvent) -> void:
 	if not _root.visible:
 		return
 	if event is InputEventScreenTouch:
+		_tap_check(event)
 		var in_zone: bool = event.position.x < 240.0 and event.position.y > 70.0
 		if event.pressed and in_zone:
 			# assume o analógico mesmo que um toque anterior tenha se perdido (iOS cancela toques sem avisar)
@@ -245,6 +252,25 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 
 var _alive := {}
+var _press := {}      # índice -> [posição, tempo] para reconhecer toques rápidos (tocar num objeto)
+
+func _is_tap_on_button(pos: Vector2) -> bool:
+	for b in LAYOUT:
+		if pos.distance_to(b[2]) <= 16.0 * float(b[3]):
+			return true
+	return false
+
+func _tap_check(event: InputEventScreenTouch) -> void:
+	if event.pressed:
+		_press[event.index] = [event.position, Time.get_ticks_msec()]
+		return
+	if not _press.has(event.index):
+		return
+	var pr: Array = _press[event.index]
+	_press.erase(event.index)
+	if event.position.distance_to(pr[0]) < 10.0 and Time.get_ticks_msec() - int(pr[1]) < 300 and not _is_tap_on_button(event.position):
+		if main != null and main.world != null:
+			main.world.tap_world(event.position)
 var _last_drag_ms := 0
 
 func _touching(idx: int) -> bool:

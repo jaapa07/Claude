@@ -106,7 +106,7 @@ ENEMIES = {
     "fragmento": {"nome": "Fragmento Errante", "hp": 120, "dano": 20, "vel": 58, "xp": 40, "frag": [10, 18], "sprite": "fragmento", "frame": [20, 20],
                   "ataque": "fragmento", "raio": 8, "percepcao": 130, "relevante": True, "pequeno": True, "capturavel": False, "nivel": 25,
                   "drops": {"fragmento_prisma": [0.3, 1]}},
-    "arauto": {"nome": "Arauto Partido", "hp": 980, "dano": 22, "vel": 54, "xp": 0, "frag": [0, 0], "sprite": "arauto", "frame": [48, 48],
+    "arauto": {"nome": "Arauto Partido", "hp": 980, "dano": 22, "vel": 54, "xp": 0, "frag": [0, 0], "sprite": "arauto_partido", "frame": [48, 48],
                "ataque": "arauto", "raio": 14, "percepcao": 600, "nivel": 27},
     "rei": {"nome": "Rei dos Ecos", "hp": 4000, "dano": 26, "vel": 50, "xp": 0, "frag": [0, 0], "sprite": "rei", "frame": [72, 72],
             "ataque": "rei", "raio": 18, "percepcao": 800, "nivel": 30},
@@ -141,8 +141,8 @@ ITEMS = {
                      "desc": "Reduz 22% do dano recebido. Tecido marfim do acampamento, costurado por quem desistiu da Ordem."},
     "pagina_ione_7": {"nome": "Diário de Ione — Página da Catedral", "tipo": "historia", "icone": 6,
                       "desc": "\"O Arauto me deixou passar, partido ao meio pelo Eco que tentou carregar. Ivar está no trono. Ele me olha e não me reconhece — e eu fui aprendiz dele, antes de você ser o meu. Se eu não voltar, aprendiz: o nome dele é Ivar. Diga a ele.\""},
-    "artefato_rei": {"nome": "Pena do Arquivista (artefato)", "tipo": "historia", "icone": 6, "folha": "icons_catedral", "artefato": True,
-                     "desc": "O quinto artefato: a pena de marfim de Ivar, ainda morna. Com ela, as cinco lembranças se juntam — e você lembra de tudo: a expedição, a fenda, e a mão de Ione selando sua memória para que a corrente não a levasse."},
+    "lembranca_ivar": {"nome": "Pena de Ivar", "tipo": "historia", "icone": 6, "folha": "icons_catedral",
+                       "desc": "Uma pena de arquivista, de marfim, ainda morna. Ivar guardou o Eco para que nada se perdesse. No fim, a única coisa que ele precisava guardar era o próprio nome."},
 }
 
 QUESTS = {
@@ -190,14 +190,27 @@ STORY_MEM = {
         "Memória do Eco: anos depois, uma vinculadora de capa azul atravessou o andar das âncoras. O Arauto ergueu o livro... e abaixou. Deixou-a passar.",
         "Memória do Eco: \"Ele se chamava Ivar\", disse Ione ao Arauto. \"Lembra? Você lia os nomes dos guardiões para ele à noite.\" O Arauto chorou páginas.",
         "Das páginas que caem, uma não é dele: tem a letra da sua mestra."]},
-    "rei_morto": {"titulo": "Memória de Ivar", "item": "artefato_rei", "lembranca": 5, "linhas": [
+    "rei_morto": {"titulo": "Memória de Ivar", "item": "lembranca_ivar", "linhas": [
         "Memória do Eco: Ivar era o primeiro Arquivista de Auralis. Escrevia o nome de cada criatura, de cada rio, de cada canção — para que nada se perdesse.",
         "Memória do Eco: quando o Eco começou a se espalhar demais, ele o recolheu inteiro para dentro da Catedral. E depois, para dentro de si.",
         "Memória do Eco: guardou tanto que não sobrou lugar para ele mesmo. Esqueceu o rosto, a casa, o nome. Virou o Rei dos Ecos.",
         "Memória do Eco: as correntes nunca foram por poder. Cada guardião acorrentado era uma memória emprestada — Ivar procurando, entre milhões de vozes, a própria.",
         "Memória do Eco: e foi você quem a devolveu. Uma palavra só: Ivar.",
-        "No lugar do trono, uma pena de arquivista, de marfim, ainda morna: o quinto artefato."]},
+        "No lugar do trono, uma pena de arquivista, de marfim, ainda morna. Ao lado dela, metade de uma coroa: o último artefato."]},
 }
+
+# quinto artefato (sistema de artefatos de scripts/historia.gd): a lembrança que faltava
+COROA_LEMBRANCA = {"titulo": "Lembrança: a fenda", "linhas": [
+    "Dia 4 da expedição. O Santuário da Seiva treme; as raízes se retorcem e uma corrente de metal escuro serpenteia pelo chão, procurando.",
+    "Ione: Teodoro, leve os Corvelo! Joran, as lanternas! Aprendiz — fique atrás de mim.",
+    "Você: Eu quero ajudar! Eu consigo!",
+    "A corrente se ergue na sua direção. Ela não quer o seu corpo: quer as suas lembranças. Você sente o nome da sua mãe começar a escorregar.",
+    "Ione se ajoelha na sua frente e faz o sinal: palma aberta, dois dedos dobrados. \"Estou aqui.\" A mão dela brilha azul na sua testa.",
+    "Ione: Vou esconder tudo o que você é, para a corrente não achar. Vai doer esquecer. Mas você vai lembrar de novo, um pedaço de cada vez. Eu prometo.",
+    "A fenda se abre ao norte. Ela segura a corrente com as duas mãos e te empurra para a luz.",
+    "Você acorda na grama, perto de Lúmen, sem saber o próprio nome — só com uma carta no bolso e o sinal da mão gravado na memória do corpo.",
+    "Agora você lembra. Ela não te deixou para trás. Ela te escondeu do mundo para poder te devolver a ele.",
+]}
 
 RESGATE = [
     "Os quatro elos se partem. O cristal racha de cima a baixo — e uma mulher de capa azul cai de joelhos no chão de runas.",
@@ -485,6 +498,11 @@ def main():
     st["resgate_ione"] = RESGATE
     st["nome_ivar"] = NOME_IVAR
     st["epilogo"] = EPILOGO
+    for a in st.get("artefatos", []):
+        if a.get("id") == "coroa_partida":
+            a.pop("placeholder", None)
+            a.pop("_doc", None)
+            a["lembranca"] = COROA_LEMBRANCA
     save("story.json", st, False)
     rg = load("regions.json")
     rg["catedral"]["mapas"] = ["acampamento_aurora", "escadaria_fragmentos", "jardim_invertido", "catedral_a", "catedral_b", "rito_convergencia",

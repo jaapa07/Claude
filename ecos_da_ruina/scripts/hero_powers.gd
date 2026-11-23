@@ -80,9 +80,11 @@ func _physics_process(delta: float) -> void:
 		Audio.play("dodge", -2.0)
 	# Lâmina de Eco: ao iniciar um golpe carregado
 	if st == Player.S.ATTACK and player.atk_def.get("charged", false):
-		if not _charged_seen and has("lamina") and player.atk_t >= float(player.atk_def["wind"]):
+		if not _charged_seen and player.atk_t >= float(player.atk_def["wind"]):
 			_charged_seen = true
-			_spawn_wave()
+			if has("lamina"):
+				_spawn_wave()
+			_charged_extras()
 	else:
 		_charged_seen = false
 	# Fúria do Vínculo: defesa + habilidade da criatura
@@ -129,6 +131,12 @@ func consume_counter() -> void:
 	if counter_t > 0.0:
 		counter_t = 0.0
 		player.world.spawn_text(player.global_position + Vector2(0, -30), "Contra-ataque!", Color(1.0, 0.75, 0.3))
+
+## Golpe carregado: rompe paredes de pedra oca (Floresta) e, com o Golpe Enraizado, prende inimigos pequenos.
+func _charged_extras() -> void:
+	Floresta.charged_strike(player.world, player.global_position, player.aim_dir)
+	if Game.item_count("golpe_enraizado") > 0:
+		Floresta.root_strike(player.world, player.global_position, player.aim_dir, float(player.atk_def["r"]) + 10.0, float(player.atk_def["arc"]) + 15.0)
 
 func _spawn_wave() -> void:
 	var w := EchoWave.new()

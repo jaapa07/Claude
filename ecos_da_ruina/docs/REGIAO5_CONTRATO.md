@@ -35,16 +35,16 @@ Masmorra: 11 salas + Rito; atalhos: Nave ↔ Acampamento (alavanca na Nave), ele
 A fissura `λ` da Região 4 também é usada (Passo Umbral).
 
 ## Arte (`assets/src/87_catedral_tiles.pxl` … `91_catedral_chefes.pxl`, compilada com `python3 tools/pixc.py`)
-Prefixos de quadro: `c5_ c5p_ c5f_ c5s_ c5i_ c5q_ c5c_ io_ cr_ pm_ gv_ mn_ vl_ av_ es_ sp_ fg_ ar_ rk_`; paletas `cat catobj ccria cinim cboss mestra_ione mestra_ione_cristal aurora_* ordem_arauto`.
+Prefixos de quadro: `c5_ c5p_ c5f_ c5s_ c5i_ c5q_ c5c_ io_ cr_ pm_ gv_ mn_ vl_ av_ ces_ csp_ cfg_ ar_ rk_`; paletas `cat catobj ccria cinim cboss mestra_ione mestra_ione_cristal aurora_*`.
 | PNG | Conteúdo |
 |---|---|
 | `tiles_catedral.png` | 36 tiles 16x16 (ordem = `Catedral.NAMES`; vazio e selo animados) |
 | `cat_props.png` | 16x16: `CatEnt.CPROPS` (prisma, seta, emissor, cristais, âncoras, elos, raiz, rachadura, marcas, anel, selo da Harmonia, estandarte, lanterna, vitral, fita, flores, pena "nome", feixe) |
 | `cristil/gravito/velunio.png` (20x20) e `prismal/monolito/astraveu.png` (28x28) | criaturas, 9 colunas |
 | `escriba.png` `sentinela_prisma.png` (24x32), `fragmento.png` (20x20) | inimigos, 9 colunas |
-| `arauto.png` (48x48), `rei.png` (72x72, simétrico), `rei_foco.png` (24x32) | chefes e focos |
+| `arauto_partido.png` (48x48), `rei.png` (72x72, simétrico), `rei_foco.png` (24x32) | chefes e focos (`arauto.png` é o Arauto NPC comum) |
 | `cristal_ione.png` (32x48 x2), `fx_selo_vazio.png` (32x32 x3), `icons_catedral.png`, `quadro_aurora.png`, `clima_catedral.png`, `clima_aurora_fitas.png`, `clima_aurora_brilho.png` | objetos, efeitos, ícones e clima |
-| `npc_aurora1-3.png`, `npc_arauto.png`, `npc_ione.png` | moradores (paletas do herói; Ione e o Arauto com capa/capuz desenhados por cima) |
+| `npc_aurora1-3.png`, `npc_ione.png` | moradores (paletas do herói; Ione com capa e coque desenhados por cima) |
 
 ## Código (arquivos novos) e ganchos de uma linha
 - `scripts/catedral.gd` (`Catedral`): tileset, caracteres, `attach`, chegada ao Acampamento e cena do Arauto, ecos sobre mecanismos (`on_eco`), resgate de Ione, nome de Ivar (linha da equipe), epílogo (`epilogue`), créditos, Harmonia, bestiário, clima aurora, habilidade `perfura`.
@@ -59,10 +59,10 @@ inimigos/chefes (`escriba sentinela_prisma fragmento arauto rei foco_rei`), iten
 Música (`python3 tools/gen_audio.py --trilhas catedral aurora chefe_catedral rei`): `music_catedral`, `music_aurora`, `music_chefe_catedral`, `music_rei`.
 
 ## História (para o merge com o sistema de artefatos)
-- **Amnésia do herói / artefatos:** o quinto artefato é o item `artefato_rei` (tipo `historia`, `"artefato": true`), entregue pela memória `rei_morto`; ao recebê-lo o jogo grava as flags `artefato_rei` e `lembranca_5` (`Catedral._on_flag`, quando `mem_rei_morto` é marcado). Se `data/story.json → "artefatos"` existir no merge, acrescente lá `{"id": "rei", "item": "artefato_rei", "flag": "artefato_rei", "lembranca": 5, "chefe": "rei_morto"}` no formato dos outros quatro.
+- **Amnésia do herói / artefatos:** o quinto artefato é a **Coroa Partida** do sistema de artefatos (`story.json → artefatos`, `scripts/historia.gd`): `tools/dados_regiao5.py` remove o `placeholder` e escreve a lembrança final (a fenda no Santuário, Ione selando as memórias do aprendiz, o despertar perto de Lúmen). Ela toca sozinha depois da Memória de Ivar (`rei_morto`, item `lembranca_ivar`); `Catedral.epilogue` espera `Historia.has_artefato("coroa_partida")` antes de começar.
 - **Revelação final** (`story.json → epilogo.abertura`): com os cinco artefatos o herói lembra — fazia parte da expedição; Ione selou suas memórias para protegê-lo da corrente da Ordem quando a fenda se abriu; ele acordou perto de Lúmen. O paralelo com Ivar sustenta o clímax (`nome_ivar`: "Eu sei como é acordar sem saber quem se é").
 - **Eco de Ione:** figura azul translúcida (`eco_ione`, `npc_ione` com modulação) em quatro pontos (Acampamento, Nave, tesouro, preparação), cada um com falas curtas e o herói respondendo.
-- **Arauto da Ordem do Vazio:** mensageiro de manto branco com olho fechado (`npc_arauto`); cena no Acampamento (`arauto_aurora`) e na Nave (`arauto_nave`); é o mesmo que vira o **Arauto Partido** (minichefe). Mantido o nome "Arauto" para as aparições nas Regiões 1–4.
+- **Arauto da Ordem do Vazio:** mensageiro de manto branco com olho fechado (folha comum `arauto.png`, a mesma das Regiões 1–4); cena no Acampamento (`arauto_aurora`) e na Nave (`arauto_nave`); é o mesmo que vira o **Arauto Partido** (minichefe). Mantido o nome "Arauto" para as aparições nas Regiões 1–4.
 - **Clímax:** o Rei hesita a 6%; a entidade `nome` (pena dourada) abre o diálogo; a linha `{EQUIPE}` cita as criaturas da equipe e os vínculos (flag `climax_equipe`); Ione e o herói dizem "Ivar"; o Rei se desfaz em paz.
 - **Epílogo:** cinco paradas (Vila Lúmen, Forja de Cobre, Porto, Refúgio, Acampamento) com moradores/decoração novos injetados em tempo de execução (`epilogo.mudancas`, sem editar os mapas das outras regiões), falas finais de Bruna, Ravi e Vesna, créditos (tela própria) e a Harmonia dos Ecos.
 

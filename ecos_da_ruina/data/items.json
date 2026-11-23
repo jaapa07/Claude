@@ -63,6 +63,38 @@
   "desc": "+3% de chance de captura.",
   "raridade": 0
  },
+ "golpe_enraizado": {
+  "nome": "Golpe Enraizado",
+  "tipo": "tecnica",
+  "raridade": 2,
+  "icone": 0,
+  "folha": "icons_floresta",
+  "desc": "Técnica do Rito da Seiva: o golpe carregado (segure o ataque) faz brotar raízes que prendem inimigos pequenos por alguns segundos. Também racha pedras ocas."
+ },
+ "diario_expedicao_1": {
+  "nome": "Diário da Expedição I",
+  "tipo": "historia",
+  "icone": 1,
+  "folha": "icons_floresta",
+  "desc": "\"Dia 5. Teodoro escrevendo, cartógrafo da expedição. A Mestra Ione nos fez parar no corredor do Santuário só para ouvir o musgo. 'A seiva conta quem passou', disse. Ela riscou raízes na pedra para o aprendiz que, jura, vai vir atrás. Deixo este caderno aqui, onde a pedra é oca, caso eu não volte para buscá-lo.\""
+ },
+ "diario_expedicao_2": {
+  "nome": "Diário da Expedição II",
+  "tipo": "historia",
+  "icone": 2,
+  "folha": "icons_floresta",
+  "desc": "\"Dia 7. As raízes fecharam a grota atrás de nós. Ione segurou o tronco velho com as duas mãos e mandou os Corvelo correrem; eu corri também. Ouvi o diapasão dela soar ao norte, longe. Se o Cervo um dia descansar, as raízes vão recuar e alguém vai achar isto. Aprendiz: ela pediu para dizer que está orgulhosa.\" — Teodoro"
+ },
+ "amuleto_seiva_viva": {
+  "nome": "Amuleto de Seiva Viva",
+  "tipo": "amuleto",
+  "hp": 18,
+  "vigor": 1.6,
+  "raridade": 2,
+  "icone": 3,
+  "folha": "icons_floresta",
+  "desc": "+18 de vida máxima e o vigor se recupera 60% mais rápido. Recompensa do Rito da Seiva avançado."
+ },
  "minerio_cobre": {
   "nome": "Minério de Cobre",
   "tipo": "material",
@@ -612,6 +644,52 @@
   "icone": 6,
   "desc": "\"A Bruxa guardava os reflexos do pântano: cada lembrança de quem passava pela água. A corrente a afogou nas próprias memórias. Tentei puxá-la para cima e só consegui o Olhar dela emprestado por um instante — o bastante para ver a ponte nas montanhas. Sigo por ela.\""
  },
+ "semente_ambar": {
+  "nome": "Semente de Âmbar",
+  "tipo": "historia",
+  "artefato": true,
+  "folha": "icons_artefatos",
+  "icone": 0,
+  "desc": "Morna como uma mão segurando a sua. Ione a escondeu na galhada do Cervo de Ossos, com uma lembrança dentro."
+ },
+ "elo_partido": {
+  "nome": "Elo Partido",
+  "tipo": "historia",
+  "artefato": true,
+  "folha": "icons_artefatos",
+  "icone": 1,
+  "desc": "A outra metade do elo que Ione quebrou nas Minas. Ela levou uma parte como bússola e deixou esta com o Ferreiro, com uma lembrança dentro."
+ },
+ "lagrima_orvalho": {
+  "nome": "Lágrima de Orvalho",
+  "tipo": "historia",
+  "artefato": true,
+  "folha": "icons_artefatos",
+  "icone": 2,
+  "desc": "Uma gota que não seca nem cai. A guardiã das águas a guardou para você, a pedido de Ione."
+ },
+ "fragmento_elmo": {
+  "nome": "Fragmento de Elmo",
+  "tipo": "historia",
+  "artefato": true,
+  "folha": "icons_artefatos",
+  "icone": 3,
+  "desc": "Um pedaço de elmo de treino, amassado e remendado. Pequeno demais para um soldado; do tamanho certo para um aprendiz."
+ },
+ "coroa_partida": {
+  "nome": "Coroa Partida",
+  "tipo": "historia",
+  "artefato": true,
+  "folha": "icons_artefatos",
+  "icone": 4,
+  "desc": "Metade de uma coroa de arquivista. Guarda a última lembrança — a que falta para tudo fazer sentido."
+ },
+ "bussola_joran": {
+  "nome": "Bússola de Joran",
+  "tipo": "historia",
+  "icone": 6,
+  "desc": "A bússola do batedor Joran, mestre do Ravi. A agulha teima em apontar para o norte, para as montanhas."
+ },
  "eco_perdido": {
   "nome": "Eco Perdido",
   "tipo": "missao",
@@ -669,12 +747,11 @@
   "icone": 6,
   "desc": "\"O Arauto me deixou passar, partido ao meio pelo Eco que tentou carregar. Ivar está no trono. Ele me olha e não me reconhece — e eu fui aprendiz dele, antes de você ser o meu. Se eu não voltar, aprendiz: o nome dele é Ivar. Diga a ele.\""
  },
- "artefato_rei": {
-  "nome": "Pena do Arquivista (artefato)",
+ "lembranca_ivar": {
+  "nome": "Pena de Ivar",
   "tipo": "historia",
   "icone": 6,
   "folha": "icons_catedral",
-  "artefato": true,
-  "desc": "O quinto artefato: a pena de marfim de Ivar, ainda morna. Com ela, as cinco lembranças se juntam — e você lembra de tudo: a expedição, a fenda, e a mão de Ione selando sua memória para que a corrente não a levasse."
+  "desc": "Uma pena de arquivista, de marfim, ainda morna. Ivar guardou o Eco para que nada se perdesse. No fim, a única coisa que ele precisava guardar era o próprio nome."
  }
 }

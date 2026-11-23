@@ -123,7 +123,7 @@ func open_title(main: Node) -> void:
 	s.can_cancel = false
 	s.title_mode = true
 	s.dim = 0.25
-	s.footer = "Capítulos 1 e 2: Floresta e Minas da Brasa  •  ↑↓ navegar, E confirmar"
+	s.footer = "Floresta, Minas, Pântano e Fortaleza  •  ↑↓ navegar, E confirmar"
 	var items := [
 		_it("Continuar", func(): _slot_menu(main, false, true), "Retoma o último save disponível.", SaveSys.has_any_save()),
 		_it("Novo jogo", func(): _new_game_slots(main), "Começa uma nova aventura em um dos 3 slots."),
@@ -195,6 +195,8 @@ func _fill_pause(s: MenuScreen) -> void:
 		_it("Botões do toque", func(): close_all(); TouchControls.instance.show_legend(), "Mostra o que cada botão da tela faz.", TouchControls.active),
 		_it("Jornada (%d%%)" % Game.conquest_pct(), func(): open_journey(), "O grande objetivo e quanto falta para conquistar tudo."),
 		_it("Voltar ao título", func(): _confirm("Voltar ao título?", "O progresso não salvo desde o último autosave será perdido.", func(): get_tree().root.get_node("Main").back_to_title()), "Sai da partida."),
+		# fica no FIM da lista: os testes navegam o menu de pausa por posição
+		_it("Artefatos (%d/%d)" % [Historia.count(), Historia.artefatos().size()], func(): open_artefatos(), "Os artefatos dos guardiões e as lembranças que você recuperou."),
 	]
 	s.setup("Pausa — " + world.map.get("name", ""), items, "Pausa — a simulação está parada.")
 
@@ -682,6 +684,17 @@ func open_diary() -> void:
 		items.append(_it("(nenhuma ainda)", Callable(), "Cada guardião que cai mostra uma memória do passado e o rastro da Mestra Ione, sua mentora desaparecida."))
 	else:
 		items.append_array(mems)
+	# bilhetes ambientais já lidos (diálogos "bilhete_*" marcam a flag "leu_bilhete_*")
+	var bils: Array = []
+	for did in Data.dialogs:
+		if str(did).begins_with("bilhete_") and Game.has_flag("leu_" + str(did)):
+			var bl: Array = Data.dialogs[did][0].get("lines", [])
+			var brow := _it(str(bl[1] if bl.size() > 1 else bl[0]).left(34) + "...", Callable(), "\n\n".join(bl))
+			brow["col"] = Color(0.9, 0.85, 0.7)
+			bils.append(brow)
+	if not bils.is_empty():
+		items.append(_hdr("Bilhetes encontrados (%d)" % bils.size()))
+		items.append_array(bils)
 	items.append(_it("Voltar", func(): s.close(), "\n".join(lines)))
 	s.setup("Diário", items, "\n".join(lines))
 	s.list_w = 250.0
@@ -700,7 +713,8 @@ func open_map() -> void:
 				"vila_lumen": note = "" if Game.has_flag("cervo_morto") else "  ⚠ raízes ao norte"
 				"desfiladeiro": note = "" if Game.has_flag("ponte_minas") else "  ⚠ ponte (Raiz Viva)"
 				"bosque_lanternas": note = "" if Game.has_flag("bosque_flores") else "  ⚠ portão de flores"
-				"clareira_raizes": note = "" if Game.has_flag("clareira_placas") else "  ⚠ raízes/placas"
+				"clareira_raizes": note = ("" if Game.has_flag("clareira_placas") else "  ⚠ raízes/placas") + ("" if Game.has_flag("cervo_morto") else "  ⚠ raízes antigas a leste (Cervo)")
+				"rito_seiva": note = "" if Game.has_flag("rito_seiva_av_ok") else "  ⚠ canal acima do altar (Raiz Viva)"
 				"forja_cobre":
 					var n2: Array = []
 					if not Game.has_flag("forja_rocha"): n2.append("⚠ rocha fissurada — Ruptura Ígnea")
@@ -736,7 +750,7 @@ func open_shrine_menu() -> void:
 	var s := _push("Santuário", [], "")
 	s.can_cancel = true
 	var items := [
-		_it("Descansar (curar tudo)", func(): world.rest_at_shrine(); toast("Descansou. Criaturas e herói recuperados."), "Restaura herói e criaturas (inclusive exaustas). Inimigos comuns reaparecem."),
+		_it("Descansar (curar tudo)", func(): world.rest_at_shrine(); s.close(); world.rest_feedback(), "Restaura herói e criaturas (inclusive exaustas). Inimigos comuns reaparecem."),
 		_it("Salvar jogo", func(): open_save_slots(), "Grava o progresso."),
 		_it("Equipe e criaturas", func(): open_team(), "Troque criaturas com o armazenamento do santuário e evolua as que estiverem prontas."),
 		_it("Armazenamento (%d/%d)" % [Game.sanctuary.size(), Game.SANCTUARY_CAP], func(): open_storage(), "Criaturas guardadas: leve para a equipe (máximo 3), dê apelidos, ordene ou liberte."),
@@ -885,7 +899,7 @@ func _contract_info(cid: String) -> String:
 	var its: Array = []
 	for it in r.get("itens", {}):
 		its.append("%s x%d" % [Data.items.get(it, {}).get("nome", it), int(r["itens"][it])])
-	var t := "%s — %s, nível sugerido %d\n\n%s\n\nCom você: %s\n\nRecompensa: %d fragmentos, %d XP%s" % [c["nome"], {"dupla": "DUPLA", "trio": "TRIO", "caca": "CAÇADA"}.get(c["tipo"], ""), int(c["nivel"]),
+	var t := "%s — %s%s, nível sugerido %d\n\n%s\n\nCom você: %s\n\nRecompensa: %d fragmentos, %d XP%s" % [c["nome"], {"dupla": "DUPLA", "trio": "TRIO", "caca": "CAÇADA"}.get(c["tipo"], ""), " PESSOAL" if c.get("pessoal", false) else "", int(c["nivel"]),
 		c["texto"], ", ".join(names) if names.size() > 0 else "ninguém (solo)", int(r.get("fragmentos", 0)), int(r.get("xp", 0)), ("\n" + ", ".join(its)) if its.size() > 0 else ""]
 	var why := Game.contract_lock_reason(cid)
 	if Game.contract_state(cid) == "bloqueado" and why != "":
@@ -994,6 +1008,39 @@ func _acc_preview(ind: Dictionary, id: String) -> String:
 	ind["acessorio"] = old
 	return "\n\nAntes:  Vida %d  Ataque %.0f\nDepois: Vida %d  Ataque %.0f" % [int(hp0), at0, int(hp1), at1]
 
+# =============================================================== ARTEFATOS (lembranças do herói)
+func _artefato_rows() -> Array:
+	var rows: Array = []
+	for a in Historia.artefatos():
+		var id: String = str(a["id"])
+		var got := Historia.has_artefato(id)
+		var info: String
+		if got:
+			info = Historia.lembranca_text(a)
+		elif a.get("placeholder", false):
+			info = "Um espaço vazio. Esta lembrança está guardada no fim do caminho, com o %s." % str(a.get("chefe", "último guardião"))
+		else:
+			info = "Um espaço vazio. Liberte o guardião (%s) para recuperar esta lembrança." % str(a.get("chefe", "?"))
+		var row := _it(("%s" % a["nome"]) if got else "[ ] ???", Callable(), info)
+		if got and Data.items.has(id):
+			row["icon"] = Game.item_icon(id)
+			row["col"] = Color(1.0, 0.88, 0.6)
+		else:
+			row["col"] = Color(0.6, 0.6, 0.7)
+		rows.append(row)
+	return rows
+
+func open_artefatos() -> void:
+	var s := _push("Artefatos", [], "")
+	var n := Historia.count()
+	var tot := Historia.artefatos().size()
+	var head := "Você só lembrava de uma coisa: é aprendiz da Mestra Ione. Cada guardião libertado devolve um artefato que ela deixou pelo caminho, e com ele uma lembrança.\n\nRecuperadas: %d/%d" % [n, tot]
+	var items: Array = [_hdr("Artefatos e lembranças (%d/%d)" % [n, tot])]
+	items.append_array(_artefato_rows())
+	items.append(_it("Voltar", func(): s.close(), head))
+	s.list_w = 230.0
+	s.setup("Artefatos — %d/%d" % [n, tot], items, head)
+
 # =============================================================== JORNADA
 func open_journey() -> void:
 	var s := _push("Jornada", [], "")
@@ -1011,6 +1058,8 @@ func open_journey() -> void:
 		var row := _it(lab, Callable(), info)
 		row["col"] = Color(0.6, 1.0, 0.6) if done else (Color.WHITE if open_reg else Color(0.6, 0.6, 0.7))
 		items.append(row)
+	items.append(_hdr("Lembranças recuperadas (%d/%d)" % [Historia.count(), Historia.artefatos().size()]))
+	items.append_array(_artefato_rows())
 	items.append(_hdr("Conquistar tudo: %d%%" % Game.conquest_pct()))
 	for p in Game.conquest_parts():
 		var row2 := _it("%s: %d/%d" % [p[0], int(p[1]), int(p[2])], Callable(), goal)

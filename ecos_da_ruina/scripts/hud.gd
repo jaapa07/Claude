@@ -21,6 +21,8 @@ var fade_a := 0.0:
 			_fade.color.a = v
 
 var _fade: ColorRect
+var _mem: ColorRect
+var memory_tint := false
 var _root: Control
 var _hp: TextureProgressBar
 var _vig: TextureProgressBar
@@ -127,6 +129,9 @@ func _ready() -> void:
 	_prompt_lab = Fonts.label("", 9); _prompt_lab.position = Vector2(4, 4); _prompt_lab.size = Vector2(92, 10)
 	_prompt_lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; _prompt.add_child(_prompt_lab)
 	_obj_lab = Fonts.label("", 7, Color(1, 0.95, 0.75)); _obj_lab.position = Vector2(6, 252); _obj_lab.size = Vector2(468, 18); _obj_lab.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; _root.add_child(_obj_lab)
+	# tom de lembrança (sépia), abaixo da faixa e do diálogo: o passado aparece por trás do texto
+	_mem = ColorRect.new(); _mem.size = size; _mem.color = Color(0.32, 0.22, 0.1, 0.0); _mem.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_mem)
 	# faixa com nome do mapa
 	_banner = UIKit.panel(Vector2(110, 92), Vector2(260, 26)); _banner.visible = false; add_child(_banner)
 	_banner_lab = Fonts.label("", 11, Color(1, 0.9, 0.55)); _banner_lab.position = Vector2(4, 9); _banner_lab.size = Vector2(252, 10)
@@ -141,6 +146,12 @@ func _ready() -> void:
 	_fade = ColorRect.new(); _fade.size = size; _fade.color = Color(0, 0, 0, 0); _fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_fade)
 
+## Lembranças do herói: a tela ganha um tom sépia por trás do diálogo (scripts/historia.gd).
+func set_memory_tint(on: bool) -> void:
+	memory_tint = on
+	if _mem:
+		_mem.color.a = 0.5 if on else 0.0
+
 func add_toast(t: String) -> void:
 	for x in toasts:
 		if x["t"] == t:
@@ -153,12 +164,13 @@ func add_toast(t: String) -> void:
 	p.add_child(l)
 	var w: float = l.get_minimum_size().x + 10.0
 	var hgt := 16.0
-	if w > 440.0:
-		# aviso longo: quebra em linhas dentro da tela
+	var maxw: float = _toast_box.size.x
+	if w > maxw:
+		# aviso longo: quebra em linhas dentro da área livre (no toque, sem passar sob os botões)
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		l.custom_minimum_size = Vector2(426, 0)
-		l.size = Vector2(426, 0)
-		w = 436.0
+		l.custom_minimum_size = Vector2(maxw - 14.0, 0)
+		l.size = Vector2(maxw - 14.0, 0)
+		w = maxw - 4.0
 		hgt = l.get_minimum_size().y + 8.0
 	p.custom_minimum_size = Vector2(w, hgt)
 	p.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -262,19 +274,25 @@ func _update_hud() -> void:
 			_cr_icon.position = Vector2(16 - _cr_icon.size.x / 2.0, 20 - _cr_icon.size.y / 2.0)
 			_cr_panel.add_child(_cr_icon)
 			_cr_icon_sp = ac["species_id"]
+		_cr_name.position = Vector2(32, 5); _cr_skill.position = Vector2(32, 23)
+		_cr_hp.visible = true; _cr_cd.visible = true
 		_cr_name.text = "%s %d" % [Game.creature_name(ac).left(9), ac["nivel"]]
 		_cr_hp.value = float(ac["hp"]) / Game.creature_hp_max(ac) * 1000.0
 		var sk: Dictionary = Data.skills[Game.hab_active(ac)]
 		var cd: float = float(Game.skill_cd.get(ac["uuid"], 0.0))
-		_cr_skill.text = "Q pronto" if cd <= 0.0 else "Q %.0fs" % cd
+		var qk: String = "Estrela" if TouchControls.active else "Q"
+		_cr_skill.text = ("%s pronta" % qk if TouchControls.active else "Q pronto") if cd <= 0.0 else "%s %.0fs" % [qk, cd]
 		_cr_cd.value = (1.0 - cd / float(sk["recarga"])) * 1000.0
-		_cr_beh.text = "Modo: " + _beh_name() + "  (C)"
+		_cr_beh.text = "Modo: " + _beh_name() + ("" if TouchControls.active else "  (C)")
 	else:
 		if _cr_icon:
 			_cr_icon.queue_free(); _cr_icon = null; _cr_icon_sp = ""
-		_cr_name.text = "Sem criatura ativa"
+		# sem criatura: texto centralizado dentro do quadro, com a dica do que fazer
+		_cr_name.position = Vector2(8, 9); _cr_skill.position = Vector2(8, 24)
+		_cr_hp.visible = false; _cr_cd.visible = false
+		_cr_name.text = "Nenhuma criatura"
 		_cr_hp.value = 0
-		_cr_skill.text = ""
+		_cr_skill.text = "Capture: Selo" if TouchControls.active else "Capture: tecla F"
 		_cr_cd.value = 0
 		_cr_beh.text = ""
 	var k := 0
@@ -340,7 +358,7 @@ func _update_hud() -> void:
 		_prompt_lab.text = "E  " + world.current_prompt
 		var w: float = _prompt_lab.get_minimum_size().x + 14.0
 		_prompt.size.x = w
-		_prompt.position.x = 240.0 - w / 2.0
+		_prompt.position.x = (170.0 if TouchControls.active else 240.0) - w / 2.0
 		_prompt_lab.size.x = w - 8.0
 	var obj := Game.objective_text()
 	var ct := Game.contract_progress_text()
@@ -361,6 +379,7 @@ func _touch_layout() -> void:
 	_touch_done = true
 	_obj_lab.size.x = 330.0
 	_obj_lab.position.y = 242.0
+	_prompt.position.y = 222.0
 	_hint.position = Vector2(6, 196)
 	_hint.size.x = 336.0
 	_hint_lab.size.x = 324.0

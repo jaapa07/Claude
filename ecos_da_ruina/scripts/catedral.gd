@@ -152,10 +152,6 @@ static func _on_flag(w: Node, n: String, v: bool) -> void:
 		if Game.has_flag("estrela_1") and Game.has_flag("estrela_2") and Game.has_flag("estrela_3"):
 			Game.set_flag("estrelas_ok")
 			Game.toast.emit("Missão: as três estrelas invertidas anotadas! Fale com Mira.")
-	if n == "mem_rei_morto":
-		# quinto artefato e quinta lembrança (formato dos artefatos dos guardiões: flags artefato_<id> / lembranca_<n>)
-		Game.set_flag("artefato_rei")
-		Game.set_flag("lembranca_5")
 	if n.begins_with("elo_") and not Game.has_flag("ione_livre"):
 		if Game.has_flag("elo_raiz") and Game.has_flag("elo_brasa") and Game.has_flag("elo_velado") and Game.has_flag("elo_umbral"):
 			Catedral.rescue_ione(w)
@@ -347,6 +343,11 @@ static func epilogue(w: Node) -> void:
 	# primeiro a memória de Ivar (a visão do passado aparece quando a luta acaba)
 	var waited := 0.0
 	while is_instance_valid(w) and not Game.has_flag("mem_rei_morto") and waited < 30.0:
+		await w.get_tree().create_timer(0.25).timeout
+		waited += 0.25
+	# depois, a última lembrança (artefato "coroa_partida", scripts/historia.gd): a fenda e o selo de Ione
+	waited = 0.0
+	while is_instance_valid(w) and not Historia.has_artefato("coroa_partida") and waited < 40.0:
 		await w.get_tree().create_timer(0.25).timeout
 		waited += 0.25
 	if not is_instance_valid(w):

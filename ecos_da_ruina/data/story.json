@@ -1,5 +1,5 @@
 {
- "_doc": "Fio condutor da campanha. 'memorias': ao marcar a flag (chefe derrotado), uma visão do passado aparece e uma página vai para o Diário. Ver docs/HISTORIA.md.",
+ "_doc": "Fio condutor da campanha (ver docs/HISTORIA.md). 'memorias': ao marcar a flag (chefe derrotado), uma visão do passado aparece e uma página vai para o Diário. 'artefatos': depois da memória do guardião, o herói (que perdeu a memória) recupera uma LEMBRANÇA com Ione e recebe o artefato (item tipo historia). 'cenas': cenas curtas (chegadas, descobertas, o Arauto da Ordem do Vazio). 'reacoes_criatura': linha da criatura ativa nas memórias, lembranças e cenas.",
  "memorias": {
   "lenhador_morto": {
    "titulo": "Memória do Lenhador Oco",
@@ -18,7 +18,7 @@
     "Memória do Eco: o Cervo era o guardião da Floresta. Por séculos, sua galhada guardou a seiva que alimenta todas as raízes.",
     "Memória do Eco: a corrente escura chegou até ele. A seiva parou, as raízes enlouqueceram e engoliram a expedição que entrava no Santuário.",
     "Memória do Eco: uma mulher de capa azul ficou para trás para segurar as raízes enquanto os Corvelo fugiam. Era Ione. Com um diapasão de Eco, ela abriu uma fenda ao norte e desapareceu nela.",
-    "Memória do Eco: antes de sumir, ela gravou a mão na casca do Cervo — o sinal que vocês usavam no treino. Ela sabia que você viria.",
+    "Memória do Eco: antes de sumir, ela gravou a mão na casca do Cervo: palma aberta, dois dedos dobrados. A sua mão repete o gesto sozinha, antes que você entenda por quê.",
     "A galhada se desfaz em luz. No lugar dela, outra página do diário de Ione."
    ]
   },
@@ -86,20 +86,19 @@
   },
   "rei_morto": {
    "titulo": "Memória de Ivar",
-   "item": "artefato_rei",
-   "lembranca": 5,
+   "item": "lembranca_ivar",
    "linhas": [
     "Memória do Eco: Ivar era o primeiro Arquivista de Auralis. Escrevia o nome de cada criatura, de cada rio, de cada canção — para que nada se perdesse.",
     "Memória do Eco: quando o Eco começou a se espalhar demais, ele o recolheu inteiro para dentro da Catedral. E depois, para dentro de si.",
     "Memória do Eco: guardou tanto que não sobrou lugar para ele mesmo. Esqueceu o rosto, a casa, o nome. Virou o Rei dos Ecos.",
     "Memória do Eco: as correntes nunca foram por poder. Cada guardião acorrentado era uma memória emprestada — Ivar procurando, entre milhões de vozes, a própria.",
     "Memória do Eco: e foi você quem a devolveu. Uma palavra só: Ivar.",
-    "No lugar do trono, uma pena de arquivista, de marfim, ainda morna: o quinto artefato."
+    "No lugar do trono, uma pena de arquivista, de marfim, ainda morna. Ao lado dela, metade de uma coroa: o último artefato."
    ]
   }
  },
  "jornada": {
-  "objetivo": "Reúna os Ecos dos cinco guardiões, abra caminho até a Catedral do Vazio, resgate a Mestra Ione e liberte o Rei dos Ecos.",
+  "objetivo": "Reúna os Ecos dos cinco guardiões, recupere as suas lembranças, abra caminho até a Catedral do Vazio, resgate a Mestra Ione e liberte o Rei dos Ecos.",
   "guardioes": [
    {
     "regiao": "floresta",
@@ -132,6 +131,261 @@
     "eco": "Harmonia dos Ecos"
    }
   ]
+ },
+ "artefatos": [
+  {
+   "id": "semente_ambar",
+   "nome": "Semente de Âmbar",
+   "chefe_flag": "cervo_morto",
+   "chefe": "Cervo de Ossos",
+   "desc": "Morna como uma mão segurando a sua. Ione a escondeu na galhada do Cervo de Ossos, com uma lembrança dentro.",
+   "lembranca": {
+    "titulo": "Lembrança: o primeiro treino",
+    "linhas": [
+     "Um quintal de terra batida atrás de uma casa de pedra. Cheiro de chá de casca. Você é mais novo, e o bastão de treino pesa demais.",
+     "Ione: De novo. Não com força: com atenção. A criatura sente quando você está com medo.",
+     "Você: Eu não estou com medo!",
+     "Ione: Eu sei. Por isso a sua mão treme. Olhe: palma aberta, dois dedos dobrados. É o nosso sinal. Quer dizer \"estou aqui\".",
+     "Ela fecha a sua mão em volta de uma semente de âmbar. Ione: Quando esquecer por que luta, segure isto.",
+     "A lembrança se desfaz. Na sua mão, a mesma semente, morna como naquele dia. Pela primeira vez, você lembra do rosto dela."
+    ]
+   }
+  },
+  {
+   "id": "elo_partido",
+   "nome": "Elo Partido",
+   "chefe_flag": "ferreiro_morto",
+   "chefe": "Ferreiro Devorador",
+   "desc": "A outra metade do elo que Ione quebrou nas Minas. Ela levou uma parte como bússola e deixou esta com o Ferreiro, com uma lembrança dentro.",
+   "lembranca": {
+    "titulo": "Lembrança: uma promessa",
+    "linhas": [
+     "Uma forja pequena numa noite de inverno. Ione segura um elo de ferro comum contra a luz do fogo.",
+     "Ione: Sabe a diferença entre um vínculo e uma corrente? A corrente segura quem quer ir embora. O vínculo é escolhido todo dia, pelos dois.",
+     "Você: E se a criatura escolher ir embora?",
+     "Ione: Então você abre a mão. Prometa para mim: nunca vai prender quem não quer ficar.",
+     "Você: Prometo. Mas você também não vai embora sem mim, tá?",
+     "Ela riu e não respondeu. A lembrança apaga com as brasas. Agora você entende o silêncio dela."
+    ]
+   }
+  },
+  {
+   "id": "lagrima_orvalho",
+   "nome": "Lágrima de Orvalho",
+   "chefe_flag": "bruxa_morta",
+   "chefe": "Bruxa Afogada",
+   "desc": "Uma gota que não seca nem cai. A guardiã das águas a guardou para você, a pedido de Ione.",
+   "lembranca": {
+    "titulo": "Lembrança: a briga",
+    "linhas": [
+     "Beira de um lago, fim de tarde. Você está com a mochila arrumada e os punhos fechados.",
+     "Você: Você vai levar o Joran, o Teodoro, até os Corvelo... e eu fico? Eu sou seu aprendiz!",
+     "Ione: É por isso mesmo. Ninguém sabe o que tem naquela floresta.",
+     "Você: Você nunca confia em mim!",
+     "Ela não respondeu. Olhou para a água por muito tempo, e uma lágrima caiu no lago sem fazer barulho.",
+     "Ione: Confio mais do que em qualquer pessoa. É disso que eu tenho medo."
+    ]
+   }
+  },
+  {
+   "id": "fragmento_elmo",
+   "nome": "Fragmento de Elmo",
+   "chefe_flag": "cavaleiro_morto",
+   "chefe": "Cavaleiro Sem Rosto",
+   "desc": "Um pedaço de elmo de treino, amassado e remendado. Pequeno demais para um soldado; do tamanho certo para um aprendiz.",
+   "lembranca": {
+    "titulo": "Lembrança: o dia da partida",
+    "linhas": [
+     "Madrugada. A carroça da expedição espera na estrada; o Teodoro conta as lanternas, o Joran amarra as mochilas. O nome volta antes do rosto: Teodoro, que desenhava mapas até em guardanapo.",
+     "Ione aparece com um elmo velho de treino e o encaixa na sua cabeça. Fica torto.",
+     "Ione: Foi do meu primeiro mestre. Já me salvou de uma porção de galhos baixos.",
+     "Você: Isso quer dizer que...?",
+     "Ione: Quer dizer que você vem. Mas fica perto de mim. Se eu fizer o nosso sinal, você corre e não olha para trás. Promete?",
+     "Você prometeu. A lembrança termina na estrada para a Floresta dos Esquecidos... Então você estava lá?"
+    ]
+   }
+  },
+  {
+   "id": "coroa_partida",
+   "nome": "Coroa Partida",
+   "chefe_flag": "rei_morto",
+   "chefe": "Rei dos Ecos",
+   "desc": "Metade de uma coroa de arquivista. Guarda a última lembrança — a que falta para tudo fazer sentido.",
+   "lembranca": {
+    "titulo": "Lembrança: a fenda",
+    "linhas": [
+     "Dia 4 da expedição. O Santuário da Seiva treme; as raízes se retorcem e uma corrente de metal escuro serpenteia pelo chão, procurando.",
+     "Ione: Teodoro, leve os Corvelo! Joran, as lanternas! Aprendiz — fique atrás de mim.",
+     "Você: Eu quero ajudar! Eu consigo!",
+     "A corrente se ergue na sua direção. Ela não quer o seu corpo: quer as suas lembranças. Você sente o nome da sua mãe começar a escorregar.",
+     "Ione se ajoelha na sua frente e faz o sinal: palma aberta, dois dedos dobrados. \"Estou aqui.\" A mão dela brilha azul na sua testa.",
+     "Ione: Vou esconder tudo o que você é, para a corrente não achar. Vai doer esquecer. Mas você vai lembrar de novo, um pedaço de cada vez. Eu prometo.",
+     "A fenda se abre ao norte. Ela segura a corrente com as duas mãos e te empurra para a luz.",
+     "Você acorda na grama, perto de Lúmen, sem saber o próprio nome — só com uma carta no bolso e o sinal da mão gravado na memória do corpo.",
+     "Agora você lembra. Ela não te deixou para trás. Ela te escondeu do mundo para poder te devolver a ele."
+    ]
+   }
+  }
+ ],
+ "cenas": {
+  "chegada_bosque": {
+   "mapa": "bosque_lanternas",
+   "titulo": "Uma lanterna caída",
+   "reacao": "descoberta",
+   "linhas": [
+    "Na beira da trilha, uma lanterna de expedição caída, apagada há luas.",
+    "A alça tem um nó duplo, de marinheiro. Suas mãos sabem dar esse nó de olhos fechados, e você não faz ideia de onde aprendeu."
+   ]
+  },
+  "arauto_floresta": {
+   "mapa": "santuario_c",
+   "area": [
+    8,
+    14,
+    7,
+    9
+   ],
+   "arauto": [
+    12,
+    20
+   ],
+   "unless": "cervo_morto",
+   "reacao": "arauto",
+   "reacao_pos": 1,
+   "linhas": [
+    "Arauto: Então é você que anda soltando os guardiões. Você não me reconhece, não é? Claro que não.",
+    "Arauto: A Ordem do Vazio não rouba, aprendiz: guarda. O Rei precisa lembrar, e esta floresta tem memória de sobra.",
+    "Arauto: A sua mestra achou que dava para esconder uma lembrança de nós. Veremos quanto tempo dura.",
+    "O manto branco se desfaz em fiapos de luz. Fica só um cheiro de vela apagada."
+   ]
+  },
+  "chegada_forja": {
+   "mapa": "forja_cobre",
+   "titulo": "Forja de Cobre",
+   "unless": "ferreiro_morto",
+   "linhas": [
+    "O ar das minas tem gosto de ferro. Chaminés frias, mineiros de olhos fundos.",
+    "Por um instante, uma voz conhecida diz \"abaixe a cabeça nos túneis\"... e some antes que você vire o rosto."
+   ]
+  },
+  "arauto_minas": {
+   "mapa": "fundicao_c",
+   "area": [
+    8,
+    14,
+    7,
+    9
+   ],
+   "arauto": [
+    12,
+    20
+   ],
+   "unless": "ferreiro_morto",
+   "reacao": "arauto",
+   "reacao_pos": 1,
+   "linhas": [
+    "Arauto: O ferreiro fez correntes lindas. Pena que se arrependeu.",
+    "Arauto: Cada elo leva um pedaço de memória até a Catedral. Mas o seu... o seu nunca chegou. Curioso, não acha?",
+    "Arauto: Você sente quando um guardião cai, não sente? Algo volta para você. Aproveite enquanto dura.",
+    "O Arauto fecha os olhos e some como fumaça de forja. O olho bordado no manto foi a última coisa a desaparecer."
+   ]
+  },
+  "chegada_porto": {
+   "mapa": "porto_lanternas",
+   "titulo": "Porto das Lanternas",
+   "unless": "bruxa_morta",
+   "reacao": "perda",
+   "linhas": [
+    "No cais, uma fileira de barcos sem dono. Os nomes pintados nos cascos estão desbotando, como se o pântano estivesse esquecendo deles.",
+    "Você passa a mão num casco. Também não lembra o próprio nome de família. Talvez o pântano entenda você melhor que ninguém."
+   ]
+  },
+  "arauto_pantano": {
+   "mapa": "templo_c",
+   "area": [
+    8,
+    14,
+    7,
+    9
+   ],
+   "arauto": [
+    12,
+    20
+   ],
+   "unless": "bruxa_morta",
+   "reacao": "arauto",
+   "reacao_pos": 1,
+   "linhas": [
+    "Arauto: A guardiã das águas guardava reflexos. Olhe para a água, aprendiz. Quem está olhando de volta?",
+    "Arauto: Ione mergulhou aqui também. Saiu com um olhar emprestado e uma lágrima a menos.",
+    "Arauto: Na Fortaleza, um capitão sem rosto espera por você. Ele também não lembra quem foi. Vocês têm muito em comum.",
+    "O reflexo do Arauto continua na água um instante depois que ele some."
+   ]
+  },
+  "chegada_refugio": {
+   "mapa": "refugio_muralha",
+   "titulo": "Refúgio da Muralha",
+   "unless": "cavaleiro_morto",
+   "linhas": [
+    "Alguém pendurou retratos dos soldados desaparecidos na muralha do Refúgio. Debaixo de cada um, uma vela acesa.",
+    "Você se pega procurando o próprio rosto entre eles. Não está lá. Mas alguém, em algum lugar, deve ter acendido uma vela por você."
+   ]
+  },
+  "arauto_fortaleza": {
+   "mapa": "torre_c",
+   "area": [
+    8,
+    14,
+    7,
+    9
+   ],
+   "arauto": [
+    12,
+    20
+   ],
+   "unless": "cavaleiro_morto",
+   "reacao": "arauto",
+   "reacao_pos": 1,
+   "linhas": [
+    "Arauto: Último portão antes da Catedral. O Rei está ouvindo, sabia? Ele escuta cada lembrança que volta para você.",
+    "Arauto: Ele também esqueceu o próprio nome. Por isso precisa de tantas vozes.",
+    "Arauto: Suba a Estrada Final com as suas lembranças inteiras. Ele vai querer todas... e o olho vai se abrir.",
+    "O Arauto se curva, quase com respeito, e desaparece num clarão branco."
+   ]
+  }
+ },
+ "reacoes_criatura": {
+  "_doc": "{nome} vira o apelido ou o nome da espécie da criatura ativa. 'especies' sobrepõe por espécie. Sem criatura ativa, nada aparece.",
+  "memoria": [
+   "{nome} fica quietinho ao seu lado, olhando para onde a visão estava.",
+   "{nome} solta um som baixo, como quem também se lembra de alguma coisa."
+  ],
+  "lembranca": [
+   "{nome} encosta a cabeça na sua mão.",
+   "{nome} se aninha contra a sua perna até a lembrança passar.",
+   "{nome} espera, paciente, até você abrir os olhos."
+  ],
+  "arauto": [
+   "{nome} se põe na sua frente, sem tirar os olhos do manto branco.",
+   "{nome} recua um passo e encosta em você, inquieto."
+  ],
+  "descoberta": [
+   "{nome} fareja a lanterna e olha para você, curioso."
+  ],
+  "perda": [
+   "{nome} cheira a madeira dos barcos e fica em silêncio."
+  ],
+  "especies": {
+   "brotisco": {
+    "lembranca": "{nome} deixa cair uma folhinha na sua mão, como quem dá um presente."
+   },
+   "lumipim": {
+    "lembranca": "{nome} acende uma luz morna perto do seu rosto."
+   },
+   "cascalito": {
+    "arauto": "{nome} se enrola numa bola de pedra bem na frente dos seus pés."
+   }
+  }
  },
  "resgate_ione": [
   "Os quatro elos se partem. O cristal racha de cima a baixo — e uma mulher de capa azul cai de joelhos no chão de runas.",
