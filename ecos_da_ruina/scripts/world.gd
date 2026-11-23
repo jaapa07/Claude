@@ -648,6 +648,8 @@ func in_combat() -> bool:
 	return combat_t > 0.0
 
 func mouse_aiming() -> bool:
+	if TouchControls.active:
+		return false
 	return Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) or Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT)
 
 func set_hero_target(e: Node) -> void:

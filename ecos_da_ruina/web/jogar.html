@@ -38,6 +38,26 @@ button:active { transform: translateY(2px); box-shadow: 0 2px 0 #7a5a20; }
 kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-space: nowrap; }
 .note { color: var(--muted); font-size: 12px; margin: 0; }
 @media (prefers-reduced-motion: reduce) { .bar > i { transition: none; } }
+/* toque: canvas não rola nem dá zoom */
+#canvas { touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.touchtips { display: none; }
+.rotate { display: none; }
+@media (pointer: coarse) {
+  .keys { display: none; }
+  .touchtips { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 6px 14px; background: var(--panel); border: 2px solid #3a3058; padding: 12px; font-size: 13px; }
+  .note.desk { display: none; }
+}
+/* celular deitado: o jogo ocupa a tela toda */
+@media (pointer: coarse) and (orientation: landscape) {
+  html, body { overflow: hidden; overscroll-behavior: none; }
+  .wrap { padding-block: 0; gap: 0; max-width: none; height: 100%; align-content: center; justify-items: center; }
+  header, .touchtips, .note { display: none; }
+  .screen { width: auto; height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); max-height: 100dvh; max-width: 100%; border-width: 0; border-radius: 0; box-shadow: none; }
+}
+/* celular em pé: pede para girar */
+@media (pointer: coarse) and (orientation: portrait) {
+  .rotate { display: block; font-family: var(--display); font-size: 11px; color: var(--edge); text-align: center; line-height: 1.6; padding: 10px; border: 2px dashed var(--edge); }
+}
 </style>
 
 <div class="wrap">
@@ -60,6 +80,17 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
     </div>
   </div>
 
+  <p class="rotate">Gire o celular e jogue deitado.</p>
+  <section class="touchtips" aria-label="Controles de toque">
+    <div>Polegar esquerdo: andar</div>
+    <div>Espada: atacar (segure: carregado)</div>
+    <div>Escudo: defender</div>
+    <div>Setas: esquivar</div>
+    <div>E: falar / interagir</div>
+    <div>Selo: mirar, toque de novo para lançar</div>
+    <div>Estrela: habilidade da criatura</div>
+    <div>No alto: trocar, tônico, menu</div>
+  </section>
   <section class="keys" aria-label="Controles">
     <div><kbd>WASD</kbd><span>mover</span></div>
     <div><kbd>J</kbd><span>atacar (segure: carregado)</span></div>
@@ -74,14 +105,15 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
     <div><kbd>1</kbd><span>Eco (após o chefão)</span></div>
     <div><kbd>I / ESC</kbd><span>menu / pausa</span></div>
   </section>
-  <p class="note">Clique na tela do jogo para dar foco ao teclado. O progresso fica salvo neste navegador.</p>
+  <p class="note desk">Clique na tela do jogo para dar foco ao teclado. O progresso fica salvo neste navegador.</p>
+  <p class="note">No iPhone, use o Safari ou o app do Claude com o celular deitado. O progresso fica salvo no próprio aparelho.</p>
 </div>
 
 <script>
 // O motor (WebAssembly) é publicado em 3 partes; aqui elas são baixadas e remontadas antes de iniciar.
 (function () {
   const PARTS = ["w/motor0.wasm", "w/motor1.wasm", "w/motor2.wasm"];
-  const TOTAL = 35376909 + 1470272;
+  const TOTAL = 35376909 + 1466016;
   let loaded = 0;
   const fill = document.getElementById("fill");
   const status = document.getElementById("status");
@@ -131,7 +163,7 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
       try {
         const engine = new Engine({
           args: [], canvasResizePolicy: 0, executable: "index", experimentalVK: false,
-          fileSizes: { "index.pck": 1470272, "index.wasm": 35376909 },
+          fileSizes: { "index.pck": 1466016, "index.wasm": 35376909 },
           focusCanvas: true, gdextensionLibs: [], ensureCrossOriginIsolationHeaders: false
         });
         engine.startGame({

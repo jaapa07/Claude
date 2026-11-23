@@ -24,6 +24,13 @@ func _ready() -> void:
 	W = main.world
 	P = W.player
 	W.test_mode = true
+	# aleatoriedade com semente fixa: o mesmo fluxo a cada execução (sorteios de captura, flanqueio, passeio)
+	var sd := 20261123
+	for a in args:
+		if a.begins_with("--seed="):
+			sd = int(a.substr(7))
+	seed(sd)
+	Game.rng.seed = sd
 	Game.toast.connect(func(t): if "exausta" in t: exhausted_events += 1)
 	main.ui.instant = true
 	if "--demo" in args:
@@ -634,21 +641,33 @@ func stage5_clareira() -> void:
 		"ok2=%s valid=%s seals=%d/%d team=%d msg=%s state=%d hp=%s" % [ok2, is_instance_valid(cas), Game.item_count("selo_basico"), seals, Game.team.size(), P.cap_msg, P.state, str(Game.hero["hp"])])
 	check("Falha não cura nem mata o alvo", is_instance_valid(cas) and cas.hp <= hp_c + 0.01, "hp %s -> %s" % [hp_c, cas.hp if is_instance_valid(cas) else -1.0])
 	check("Falha dá 3 s de proteção contra nova tentativa", cas.protect_t > 0.0 and cas.protect_t <= 3.0, str(cas.protect_t))
-	await goto(cas.global_position + Vector2(18, 0), 14.0, 10.0)
+	if P.global_position.distance_to(cas.global_position) > 120.0:
+		await goto(cas.global_position + Vector2(18, 0), 14.0, 1.2)
+	var wt := 0
+	while P.state != Player.S.FREE and wt < 60:
+		await frames(1)
+		wt += 1
 	await tap("capture", 2)
 	await frames(2)
 	P.cap_target = cas
 	await frames(3)
-	check("Alvo protegido rejeita tentativa imediata", "protegido" in P.cap_msg, P.cap_msg)
+	check("Alvo protegido rejeita tentativa imediata", "protegido" in P.cap_msg, "%s prot=%.2f" % [P.cap_msg, cas.protect_t])
 	P.aiming = false
 	await secs(3.2)
 	Game.rng_override = Callable()
 	ok2 = await capture_wild(cas, 10)
-	check("Captura de Cascalito conclui (equipe agora com 2)", ok2 and Game.team.size() == 2, "ok2=%s valid=%s msg=%s aiming=%s state=%s seals=%d" % [ok2, is_instance_valid(cas), P.cap_msg, P.aiming, P.state, Game.item_count("selo_basico")])
+	if not ok2:
+		# o habitat fixo tem outros Cascalitos (se este caiu durante o teste)
+		ok2 = await capture_species("c_casc2")
+		cas = null
+	check("Captura de Cascalito conclui (equipe agora com 2)", ok2 and Game.team.size() == 2, "ok2=%s valid=%s msg=%s aiming=%s state=%s seals=%d" % [ok2, cas != null and is_instance_valid(cas), P.cap_msg, P.aiming, P.state, Game.item_count("selo_basico")])
 	check("Bestiário: Cascalito capturado", Game.bestiary.get("cascalito", {}).get("capturado", false))
 	# ---- troca de criatura: recarga global de 6 s, sem curar nem reiniciar recarga
 	var cas_id: String = Game.team[1]
 	var br_id: String = Game.team[0]
+	Game.heal_team()      # recuperação (como no santuário) para que nenhuma troca seja forçada por exaustão
+	W.refresh_companion(true)
+	await frames(10)
 	if Game.active_ind().is_empty():
 		Game.heal_team()
 		W.refresh_companion(true)
@@ -666,6 +685,7 @@ func stage5_clareira() -> void:
 	check("Troca não reinicia recarga individual", float(Game.skill_cd.get(br_id, 0.0)) > 0.0 or cd_before > 0.0)
 	await secs(6.2)
 	# ---- enigma de placas: caixa 1 empurrada + Cascalito na placa 2
+	await engage_area(Vector2(22 * 16.0, 26 * 16.0), 150.0, 40.0)
 	var cx1 := ent_by_id("c_caixa1")
 	await goto(cx1.global_position + Vector2(24, 0), 3.0, 30.0)
 	await push_crate(cx1, Vector2.LEFT, 4)
@@ -791,10 +811,19 @@ func stage7_bosque() -> void:
 	var seal_ok := Game.item_count("selo_basico") + Game.item_count("selo_refinado") > 0
 	check("Há selos disponíveis para capturar Lumipim", seal_ok)
 	var got := await capture_wild(lum, 10)
+	if not got:
+		# o habitat tem um segundo Lumipim (garantia de local fixo)
+		var lum2 := ent_by_id("b_lumipim2")
+		if lum2 != null and lum2.alive_flag:
+			await goto(lum2.global_position + Vector2(18, 0), 14.0, 40.0)
+			await weaken(lum2)
+			got = await capture_wild(lum2, 10)
 	check("Lumipim capturado (3 espécies na coleção)", got and Game.bestiary.get("lumipim", {}).get("capturado", false))
 	check("Equipe cheia (3 criaturas)", Game.team.size() == 3)
 	check("Missão Vínculos da Floresta: três criaturas capturadas", Game.has_flag("tres_vinculos"))
 	# cipó do Brotisco: atalho opcional
+	if Game.individuals[Game.team[0]].get("exausta", false):
+		Game.heal_team()          # (recuperação de santuário; o teste segue sem voltar à vila)
 	Game.set_active(Game.team[0])
 	W.refresh_companion(true)
 	await goto(Vector2(24 * 16.0, 10 * 16.0) + Vector2(-6, 0), 4.0, 60.0)
@@ -1546,10 +1575,15 @@ func set_active_species(ids: Array) -> bool:
 ## Tenta os indivíduos do habitat em ordem (o habitat fixo tem mais de um, como garante o documento).
 func capture_species(id: String, limit := 0.3) -> bool:
 	var ids: Array = [id]
+	var sp_id := ""
+	var home := P.global_position
+	for d in W.ent_defs:
+		if d.get("id", "") == id:
+			sp_id = d["species"]
+			home = tpos(int(d["x"]), int(d["y"]))
 	for e in get_tree().get_nodes_in_group("wild"):
 		var w0: Node = e
-		var me := ent_by_id(id)
-		if me != null and w0 != me and w0.species_id == me.species_id and w0.global_position.distance_to(me.global_position) < 200.0:
+		if w0.uid != id and w0.species_id == sp_id and w0.global_position.distance_to(home) < 320.0:
 			ids.append(w0.uid)
 	var n0 := Game.individuals.size()
 	for wid in ids:
@@ -1602,17 +1636,17 @@ func r2_pedreira() -> void:
 	await use_ent("p_veio1", Vector2(0, 14), Vector2.UP)
 	await use_ent("p_veio2", Vector2(0, 14), Vector2.UP)
 	check("R2: veios de minério dão minério de cobre (uma vez)", Game.item_count("minerio_cobre") >= 4 and Game.chests.has("p_veio1"))
-	# Faisquito no bolsão quente (habitat fixo)
-	var sanc0 := Game.sanctuary.size()
-	var okf := await capture_species("p_faisquito1")
-	check("R2: Faisquito capturado no habitat fixo da pedreira", okf and Game.bestiary.get("faisquito", {}).get("capturado", false))
-	check("R2: equipe cheia encaminha a captura ao santuário", Game.sanctuary.size() == sanc0 + 1)
 	# ninho de Faisquitos: só aparece com a fornalha velha acesa (pelo herói, com o braseiro)
 	check("R2: ninho escondido antes de acender a fornalha", ent_by_id("p_faisquito_ninho1") == null)
 	await light_with_torch("p_ninho_brasa", "p_ninho_forn", Vector2(0, -14), Vector2.DOWN, Vector2(0, -14), Vector2.DOWN)
 	await frames(10)
 	check("R2: fornalha acesa pelo herói revela o ninho de Faisquitos", Game.has_flag("ninho_aceso") and ent_by_id("p_faisquito_ninho1") != null)
 	await shot("r2_04_ninho")
+	# Faisquito no bolsão quente (habitat fixo)
+	var sanc0 := Game.sanctuary.size()
+	var okf := await capture_species("p_faisquito1")
+	check("R2: Faisquito capturado no habitat fixo da pedreira", okf and Game.bestiary.get("faisquito", {}).get("capturado", false))
+	check("R2: equipe cheia encaminha a captura ao santuário", Game.sanctuary.size() == sanc0 + 1)
 	# calor: piso quente fere; a válvula resfria
 	await engage_area(tpos(12, 15), 160.0, 60.0)
 	await goto(tpos(31, 15), 4.0, 40.0)

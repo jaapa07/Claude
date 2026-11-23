@@ -592,7 +592,7 @@ def trilhos():
     m.ent(type="enemy", kind="mineiro", id="t_min2", x=14, y=24)
     m.ent(type="enemy", kind="automato", id="t_aut1", x=35, y=23)
     m.ent(type="enemy", kind="lesma", id="t_lesma1", x=26, y=29)
-    m.ent(type="ore", id="t_veio1", x=16, y=13, loot={"minerio_cobre": 2})
+    m.ent(type="ore", id="t_veio1", x=16, y=12, loot={"minerio_cobre": 2})
     m.ent(type="chest", id="trilhos_bau1", x=42, y=23, loot={"brasa_viva": 2, "minerio_cobre": 2, "pocao": 1})
     m.ent(type="draft", id="t_vapor", x=17, y=13, flag="trilhos_vapor", hero=True,
           msg="O vapor vazava por uma placa de metal solta. Atrás dela, um depósito esquecido!")

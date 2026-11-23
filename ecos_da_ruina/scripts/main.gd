@@ -23,6 +23,9 @@ func _ready() -> void:
 	world = World.new()
 	add_child(world)
 	ui.bind(world)
+	var touch := TouchControls.new()
+	touch.main = self
+	add_child(touch)
 	show_title()
 	var args := OS.get_cmdline_user_args()
 	if "--e2e" in args or "--unit" in args:
