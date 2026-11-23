@@ -57,6 +57,10 @@ palette domador from heroi
   W = #241e22
   p = #2e2a30
   P = #1a171c
+  n = #ece2c8
+  N = #a89c7e
+  f = #8a6a48
+  F = #5a4430
 end
 palette domadora from heroi
   s = #d8a888

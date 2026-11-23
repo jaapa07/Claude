@@ -20,6 +20,7 @@ class M:
         self.g = [[fill] * w for _ in range(h)]
         self.music, self.region, self.safe = music, region, safe
         self.spawns, self.ents, self.cond, self.puzzles = {}, [], [], {}
+        self.suspense = []  # zonas de trilha de suspense: [x, y, w, h, flag que desliga]
 
     def set(self, x, y, c):
         if 0 <= x < self.w and 0 <= y < self.h:
@@ -71,7 +72,7 @@ class M:
     def to_json(self):
         return {"id": self.id, "name": self.name, "music": self.music, "region": self.region, "safe": self.safe,
                 "w": self.w, "h": self.h, "tiles": self.ascii(), "spawns": self.spawns, "entities": self.ents,
-                "conditional": self.cond, "puzzles": self.puzzles}
+                "conditional": self.cond, "puzzles": self.puzzles, **({"suspense": self.suspense} if self.suspense else {})}
 
 
 def house(m, x, y, w):
@@ -349,7 +350,7 @@ def santuario_a():
 
 # ------------------------------------------------------------------ SANTUARIO DA SEIVA B
 def santuario_b():
-    m = M("santuario_b", "Santuário da Seiva — Câmaras Profundas", 48, 40, fill="v", music="santuario")
+    m = M("santuario_b", "Santuário da Seiva — Câmaras Profundas", 48, 40, fill="v", music="masmorra")
     m.corr(23, 0, 2, 4)
     m.room(12, 4, 24, 12)                           # camara dos pesos
     m.corr(23, 16, 2, 3)
@@ -377,12 +378,13 @@ def santuario_b():
     m.ent(type="door", id="d_len_in", tiles=[[23, 26], [24, 26]], close_flags=["tmp_lenhador_ativo"], closed_char="D")
     m.ent(type="door", id="d_len_out", tiles=[[38, 32], [38, 33]], open_flags=["lenhador_morto"], closed_char="D")
     m.ent(type="exit", x=47, y=32, w=1, h=2, to="santuario_c", spawn="from_b")
+    m.suspense = [[18, 19, 12, 8, "lenhador_morto"]]   # preparação + corredor da arena do Lenhador
     return m
 
 
 # ------------------------------------------------------------------ SANTUARIO DA SEIVA C (chefao)
 def santuario_c():
-    m = M("santuario_c", "Santuário da Seiva — Sala do Cervo", 52, 36, fill="v", music="santuario")
+    m = M("santuario_c", "Santuário da Seiva — Sala do Cervo", 52, 36, fill="v", music="masmorra")
     m.room(2, 15, 12, 8)                            # preparacao
     m.corr(0, 18, 3, 2)
     m.corr(14, 18, 6, 2)
@@ -398,12 +400,13 @@ def santuario_c():
     m.ent(type="boss", id="cervo", x=38, y=18, x0=20, y0=10, w=24, h=16, flag_done="cervo_morto", flag_active="tmp_cervo_ativo")
     m.ent(type="door", id="d_cervo_out", tiles=[[44, 18], [44, 19]], open_flags=["cervo_morto"], closed_char="D")
     m.ent(type="exit", x=51, y=18, w=1, h=2, to="vila_lumen", spawn="from_santuario")
+    m.suspense = [[0, 15, 20, 8, "cervo_morto"]]       # preparação + corredor até a Sala do Cervo
     return m
 
 
 # ------------------------------------------------------------------ DESFILADEIRO
 def desfiladeiro():
-    m = M("desfiladeiro", "Desfiladeiro do Eco", 40, 24, fill="C", music="floresta")
+    m = M("desfiladeiro", "Desfiladeiro do Eco", 40, 24, fill="C", music="desfiladeiro")
     for j in range(24):
         for i in range(40):
             if j < 8:
@@ -429,7 +432,7 @@ def desfiladeiro():
 
 
 def minas_entrada():
-    m = M("minas_entrada", "Entrada das Minas da Brasa", 30, 20, fill="C", music="floresta", region="minas")
+    m = M("minas_entrada", "Entrada das Minas da Brasa", 30, 20, fill="C", music="minas", region="minas")
     m.rect(8, 4, 14, 14, "k"); m.rect(13, 0, 4, 18, "p"); m.rect(13, 17, 4, 3, "p")
     for (x, y) in ((9, 5), (20, 5), (9, 15), (20, 15)):
         m.set(x, y, "o")
@@ -464,7 +467,7 @@ def fhouse(m, x, y, w):
 
 # ------------------------------------------------------------------ FORJA DE COBRE (núcleo seguro)
 def forja():
-    m = M("forja_cobre", "Forja de Cobre", 48, 36, fill="M", music="vila", region="minas", safe=True)
+    m = M("forja_cobre", "Forja de Cobre", 48, 36, fill="M", music="minas", region="minas", safe=True)
     m.rect(3, 3, 42, 30, "m")
     m.rect(15, 12, 18, 11, "z")                     # praça
     fhouse(m, 5, 4, 6)                              # casa da Tessa
@@ -521,7 +524,7 @@ def forja():
 
 # ------------------------------------------------------------------ PEDREIRA OCA (rota 1)
 def pedreira():
-    m = M("pedreira_oca", "Pedreira Oca", 56, 44, fill="J", music="floresta", region="minas")
+    m = M("pedreira_oca", "Pedreira Oca", 56, 44, fill="J", music="minas", region="minas")
     m.rect(48, 18, 8, 3, "j")                       # entrada leste (da Forja)
     m.rect(30, 10, 18, 20, "j")                     # pedreira central
     m.rect(34, 30, 12, 6, "j")                      # bolsão quente (Faisquito)
@@ -576,7 +579,7 @@ def pedreira():
 
 # ------------------------------------------------------------------ TRILHOS FUNDIDOS (rota 2)
 def trilhos():
-    m = M("trilhos_fundidos", "Trilhos Fundidos", 56, 40, fill="M", music="floresta", region="minas")
+    m = M("trilhos_fundidos", "Trilhos Fundidos", 56, 40, fill="M", music="minas", region="minas")
     m.rect(0, 18, 4, 3, "m")                        # entrada oeste (da Forja)
     m.rect(4, 12, 14, 16, "m")                      # pátio oeste
     m.rect(9, 28, 3, 1, "m"); m.rect(5, 29, 12, 6, "m")     # sucata (Ferrunho)
@@ -631,7 +634,7 @@ def trilhos():
 
 # ------------------------------------------------------------------ FUNDIÇÃO DO ÚLTIMO FOGO A
 def fundicao_a():
-    m = M("fundicao_a", "Fundição do Último Fogo — Grande Caldeira", 60, 44, fill="v", music="santuario", region="minas")
+    m = M("fundicao_a", "Fundição do Último Fogo — Grande Caldeira", 60, 44, fill="v", music="masmorra", region="minas")
     mroom(m, 24, 32, 12, 8)                         # 1. átrio (seguro)
     mroom(m, 22, 20, 16, 10)                        # 2. Grande Caldeira (sala central: válvula, lava que baixa)
     m.rect(22, 22, 16, 6, "Q")
@@ -688,7 +691,7 @@ def fundicao_a():
 
 # ------------------------------------------------------------------ FUNDIÇÃO B
 def fundicao_b():
-    m = M("fundicao_b", "Fundição do Último Fogo — Pátio e Vigia", 60, 46, fill="v", music="santuario", region="minas")
+    m = M("fundicao_b", "Fundição do Último Fogo — Pátio e Vigia", 60, 46, fill="v", music="masmorra", region="minas")
     mroom(m, 2, 3, 26, 17)                          # 5. pátio dos carrinhos (enigma)
     mroom(m, 30, 4, 12, 10)                         # 6. tesouro
     mroom(m, 31, 1, 8, 2)                           # 7. passagem de carga (atalho à Forja)
@@ -733,12 +736,13 @@ def fundicao_b():
     m.ent(type="valve", id="fb_vv_leste", x=44, y=30, boss=True, vent=[38, 28, 6, 6])
     m.ent(type="door", id="fb_d_vigia_out", tiles=[[46, 31], [46, 32]], open_flags=["vigia_morto"], closed_char="I")
     m.ent(type="exit", x=59, y=31, w=1, h=2, to="rito_forja", spawn="from_b")
+    m.suspense = [[35, 14, 2, 10, "vigia_morto"]]      # corredor que desce à arena do Vigia
     return m
 
 
 # ------------------------------------------------------------------ FUNDIÇÃO C (chefão)
 def fundicao_c():
-    m = M("fundicao_c", "Fundição do Último Fogo — Coração da Forja", 56, 36, fill="v", music="santuario", region="minas")
+    m = M("fundicao_c", "Fundição do Último Fogo — Coração da Forja", 56, 36, fill="v", music="masmorra", region="minas")
     mroom(m, 2, 14, 12, 8)                          # 9. preparação
     mroom(m, 18, 6, 28, 22)                         # 10. arena do Ferreiro Devorador
     mroom(m, 0, 17, 2, 2); mroom(m, 14, 17, 4, 2); mroom(m, 46, 16, 10, 2)
@@ -759,13 +763,14 @@ def fundicao_c():
     m.cond.append({"if": "tmp_ferreiro_piso", "rects": [[29, 8, 6, 6, "L"], [29, 20, 6, 6, "L"]]})
     m.ent(type="door", id="fc_d_out", tiles=[[46, 16], [46, 17]], open_flags=["ferreiro_morto"], closed_char="I")
     m.ent(type="exit", x=55, y=16, w=1, h=2, to="forja_cobre", spawn="from_fundicao")
+    m.suspense = [[0, 14, 18, 8, "ferreiro_morto"]]    # preparação + corredor do Coração da Forja
     return m
 
 
 
 # ------------------------------------------------------------------ RITO DA FORJA (prova antes do Ferreiro + ala avançada pós-chefão)
 def rito():
-    m = M("rito_forja", "Rito da Forja", 60, 30, fill="v", music="santuario", region="minas")
+    m = M("rito_forja", "Rito da Forja", 60, 30, fill="v", music="masmorra", region="minas")
     mroom(m, 2, 10, 12, 10)                         # 1. apresentação segura
     mroom(m, 16, 6, 14, 18)                         # 2. aplicação: calor + chama
     mroom(m, 33, 6, 16, 18)                         # 3. combinação: válvula temporizada + três fornalhas

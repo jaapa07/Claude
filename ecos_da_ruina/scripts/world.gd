@@ -384,9 +384,9 @@ func load_map(id: String, spawn: String = "default", pos: Variant = null) -> voi
 	camera.limit_right = W * TILE; camera.limit_bottom = H * TILE
 	_spawn_all(sp)
 	refresh_companion(false)
+	Audio.enter_map(id, map)
 	refresh_party()
 	_spawn_contract()
-	Audio.music(map.get("music", ""))
 	Game.location = {"map": id, "spawn": spawn, "pos": [sp.x, sp.y]}
 	if ui:
 		ui.banner(map.get("name", id))
@@ -715,7 +715,7 @@ func _spawn_contract() -> void:
 	say("Contrato: " + c["objetivo"])
 	if boss_node != null:
 		ui.boss_bar(boss_node)
-		Audio.music("chefao")
+		Audio.set_mood("chefe", true, "chefao")
 
 ## Um domador do contrato caiu: as feras dele ficam livres (e podem ser capturadas); se não sobrou nenhum, o contrato termina.
 func contract_enemy_down(e: Node) -> void:
@@ -725,7 +725,7 @@ func contract_enemy_down(e: Node) -> void:
 			f.liberate()
 	if e.kind == "vesna":
 		ui.boss_bar(null)
-		Audio.music(map.get("music", ""))
+		Audio.set_mood("chefe", false)
 	var left := 0
 	for o in enemies():
 		if o != e and o.alive_flag and o.contrato == cid and o.kind != "fera":
@@ -734,6 +734,7 @@ func contract_enemy_down(e: Node) -> void:
 		return
 	Game.complete_contract(cid)
 	Audio.play("puzzle_ok")
+	Audio.stinger("vitoria")
 	var lines: Array = ["Contrato concluído: " + Data.contracts[cid]["nome"] + "!"]
 	for a in allies():
 		lines.append(Data.allies[a.aid]["falas"]["fim"])
@@ -852,6 +853,7 @@ func _physics_process(delta: float) -> void:
 	_update_encounters()
 	_update_camera(delta)
 	_update_darkness(delta)
+	Audio.world_tick(self, delta)
 	_update_heat(delta)
 	_update_chapter_end()
 	if light_boost_t > 0.0:
@@ -1103,7 +1105,9 @@ func talk_to(npc: Ent) -> void:
 func start_dialog(did: String, speaker: Node = null) -> void:
 	var v := pick_variant(did)
 	player.set_busy(true)
+	Audio.dialog_mood(did, true)
 	ui.dialog(v["lines"], func():
+		Audio.dialog_mood(did, false)
 		for f in v.get("set", []):
 			Game.set_flag(f)
 		for k in v.get("take", {}):
@@ -1316,12 +1320,12 @@ func enemy_died(e: Node) -> void:
 func boss_started(b: Node) -> void:
 	active_boss = b
 	ui.boss_bar(b)
-	Audio.music("chefao")
+	Audio.boss_music(str(b.kind), true)
 
 func boss_finished(b: Node) -> void:
 	active_boss = null
 	ui.boss_bar(null)
-	Audio.music(map.get("music", ""))
+	Audio.boss_music(str(b.kind), false, not b.alive_flag)
 
 # =============================================================== MORTE E RETOMADA
 func on_player_died() -> void:
