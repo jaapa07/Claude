@@ -43,8 +43,8 @@
    }
   ],
   "recompensa": {
-   "fragmentos": 70,
-   "xp": 90,
+   "fragmentos": 50,
+   "xp": 20,
    "itens": {
     "selo_refinado": 2,
     "essencia_azul": 1,
@@ -112,8 +112,8 @@
    }
   ],
   "recompensa": {
-   "fragmentos": 140,
-   "xp": 180,
+   "fragmentos": 90,
+   "xp": 30,
    "itens": {
     "botas_vento": 1,
     "essencia_roxa": 1
@@ -166,8 +166,8 @@
    }
   ],
   "recompensa": {
-   "fragmentos": 160,
-   "xp": 260,
+   "fragmentos": 110,
+   "xp": 40,
    "itens": {
     "frasco_seiva": 1,
     "selo_refinado": 3,
@@ -237,8 +237,8 @@
    }
   ],
   "recompensa": {
-   "fragmentos": 300,
-   "xp": 450,
+   "fragmentos": 200,
+   "xp": 70,
    "itens": {
     "corrente_vinculo": 1,
     "essencia_laranja": 1,
@@ -261,8 +261,8 @@
   "texto": "Os esporos estão sufocando as plantações. Tobi paga bem — e empresta as Luvas de Pedra dele.",
   "objetivo": "Caçada: derrote 4 Cogumelos.",
   "recompensa": {
-   "fragmentos": 60,
-   "xp": 70,
+   "fragmentos": 40,
+   "xp": 15,
    "itens": {
     "luvas_pedra": 1,
     "pocao": 2
@@ -284,8 +284,8 @@
   "texto": "Lobos de Espinhos atacam quem vai ao Bosque. Reduza a matilha.",
   "objetivo": "Caçada: derrote 4 Lobos de Espinhos.",
   "recompensa": {
-   "fragmentos": 90,
-   "xp": 100,
+   "fragmentos": 60,
+   "xp": 20,
    "itens": {
     "semente_vida": 1,
     "essencia_azul": 2
@@ -307,8 +307,8 @@
   "texto": "Sentinelas do Santuário da Seiva voltaram a patrulhar. Desligue três.",
   "objetivo": "Caçada: derrote 3 Sentinelas.",
   "recompensa": {
-   "fragmentos": 130,
-   "xp": 160,
+   "fragmentos": 80,
+   "xp": 25,
    "itens": {
     "semente_vida": 1,
     "essencia_roxa": 1
@@ -330,8 +330,8 @@
   "texto": "As lesmas de escória estão queimando os trilhos das minas.",
   "objetivo": "Caçada: derrote 4 Lesmas de Escória.",
   "recompensa": {
-   "fragmentos": 150,
-   "xp": 220,
+   "fragmentos": 100,
+   "xp": 30,
    "itens": {
     "frasco_seiva": 1
    }
@@ -352,8 +352,8 @@
   "texto": "Dois autômatos da fundição saíram do controle.",
   "objetivo": "Caçada: derrote 2 Autômatos.",
   "recompensa": {
-   "fragmentos": 220,
-   "xp": 320,
+   "fragmentos": 140,
+   "xp": 50,
    "itens": {
     "semente_vida": 1,
     "essencia_laranja": 1
@@ -375,8 +375,8 @@
   "texto": "Lanceiros do Eclipse trancam os corredores da Muralha Partida. A Capitã Ilse paga por cada corredor livre.",
   "objetivo": "Caçada: derrote 3 Lanceiros do Eclipse.",
   "recompensa": {
-   "fragmentos": 280,
-   "xp": 350,
+   "fragmentos": 150,
+   "xp": 80,
    "itens": {
     "semente_vida": 1,
     "lasca_umbral": 2
@@ -430,8 +430,8 @@
    }
   ],
   "recompensa": {
-   "fragmentos": 320,
-   "xp": 400,
+   "fragmentos": 180,
+   "xp": 100,
    "itens": {
     "essencia_laranja": 1,
     "selo_refinado": 3
@@ -453,8 +453,8 @@
   "texto": "Os sapos de lodo da Passarela dos Ecos derrubam quem passa pelas tábuas. A Dalva paga por cada um.",
   "objetivo": "Caçada: derrote 4 Sapos de Lodo.",
   "recompensa": {
-   "fragmentos": 240,
-   "xp": 360,
+   "fragmentos": 150,
+   "xp": 60,
    "itens": {
     "perola_brejo": 2,
     "semente_vida": 1
@@ -507,8 +507,8 @@
    }
   ],
   "recompensa": {
-   "fragmentos": 280,
-   "xp": 420,
+   "fragmentos": 180,
+   "xp": 80,
    "itens": {
     "selo_refinado": 3,
     "perola_brejo": 2,
@@ -575,8 +575,8 @@
    }
   ],
   "recompensa": {
-   "fragmentos": 180,
-   "xp": 280,
+   "fragmentos": 130,
+   "xp": 50,
    "itens": {
     "selo_refinado": 3,
     "pocao": 3
@@ -642,8 +642,8 @@
    }
   ],
   "recompensa": {
-   "fragmentos": 300,
-   "xp": 450,
+   "fragmentos": 200,
+   "xp": 90,
    "itens": {
     "bussola_joran": 1,
     "selo_refinado": 3,
@@ -666,8 +666,8 @@
   "texto": "Os Escribas do Vazio ainda selam o Jardim Invertido para a Ordem. Vesna, agora do lado de cá, paga por cada pena quebrada.",
   "objetivo": "Caçada: derrote 3 Escribas do Vazio.",
   "recompensa": {
-   "fragmentos": 320,
-   "xp": 420,
+   "fragmentos": 180,
+   "xp": 110,
    "itens": {
     "semente_vida": 1,
     "fragmento_prisma": 2
@@ -721,8 +721,8 @@
    }
   ],
   "recompensa": {
-   "fragmentos": 380,
-   "xp": 480,
+   "fragmentos": 200,
+   "xp": 130,
    "itens": {
     "essencia_laranja": 1,
     "selo_refinado": 3

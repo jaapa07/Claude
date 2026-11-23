@@ -416,6 +416,11 @@ func capture_wild(wild: Node, tries := 4) -> bool:
 		if P.cap_msg != "":
 			print("  [dbg cap] alvo recusado: %s (hp %s/%s dist %s)" % [P.cap_msg, wild.hp, wild.max_hp, P.global_position.distance_to(wild.global_position)])
 			P.aiming = false
+			if n < tries and "visão" in P.cap_msg:
+				# algo entre o herói e o alvo (pedra, borda): chega mais perto e tenta de novo
+				await goto(wild.global_position + Vector2(0, 12), 6.0, 3.0)
+				release_moves()
+				continue
 			return false
 		await tap("capture", 2)
 		var guard := 0
@@ -928,7 +933,13 @@ func fight_boss(b: Node, timeout := 240.0) -> String:
 		await combat_step(b)
 		t += float(frame_count - before) / 60.0
 	last_seen = seen
-	return "vitoria" if (not is_instance_valid(b) or not b.alive_flag) else "tempo"
+	return _fim_luta(b, t)
+
+## Fim de uma luta de chefe: registra a duração (comparada com a curva em docs/BALANCO.md).
+func _fim_luta(b: Node, t: float) -> String:
+	var res := "vitoria" if (not is_instance_valid(b) or not b.alive_flag) else "tempo"
+	print("  [info] duração da luta (%s): %s em %.0f s, vida do herói %d/%d, nível %d" % [str(b.kind) if is_instance_valid(b) else W.map_id, res, t, int(Game.hero["hp"]), int(Game.hero_max_hp()), Game.hero_level()])
+	return res
 
 var last_seen := {}
 
@@ -994,7 +1005,7 @@ func stage8_santuario_b() -> void:
 	var res := await fight_boss(lb, 300.0)
 	check("Lenhador Oco derrotado em combate", res == "vitoria", res)
 	check("Lenhador: ataque anunciado e janela vulnerável observados", last_seen.get("vulneravel", false))
-	check("Recompensa do minichefe concedida uma vez", Game.has_flag("lenhador_morto") and Game.fragments >= frag0 + 40)
+	check("Recompensa do minichefe concedida uma vez", Game.has_flag("lenhador_morto") and Game.fragments >= frag0 + int(Data.bosses["lenhador"]["recompensa"]["frag"]))
 	check("Porta de saída abriu e porta de entrada reabriu", not door_closed_at(38, 32) and not door_closed_at(23, 26))
 	await secs(2.5)
 
@@ -1100,7 +1111,7 @@ func fight_cervo(b: Node, timeout := 420.0) -> String:
 			var c: Node = W.companion
 			print("  [dbg cervo] t=%.0f hp=%.0f bst=%d comp=%s tgt=%s exausta=%s pos=%s" % [t, b.hp, b.bst, str(c.ind["species_id"]) if c else "-", str(c.target) if c else "-", str(Game.active_ind().is_empty()), str(c.global_position) if c else "-"])
 	last_seen = seen
-	return "vitoria" if (not is_instance_valid(b) or not b.alive_flag) else "tempo"
+	return _fim_luta(b, t)
 
 func find_boss(kind: String) -> Node:
 	for e in W.enemies():
@@ -1208,7 +1219,7 @@ func stage9_cervo() -> void:
 	check("Fase 3 enfrentada com escuridão", last_seen.get("fase3", false) and last_seen.get("escuro", false))
 	await secs(2.5)
 	check("Recompensa: Eco Raiz Viva concedido uma única vez", Game.has_eco("raiz_viva") and Game.eco_slots[0] == "raiz_viva")
-	check("Flag cervo_morto e fragmentos de recompensa", Game.has_flag("cervo_morto") and Game.fragments >= frag0 + 120)
+	check("Flag cervo_morto e fragmentos de recompensa", Game.has_flag("cervo_morto") and Game.fragments >= frag0 + int(Data.bosses["cervo"]["recompensa"]["frag"]))
 	check("Porta de saída do chefão abre", not door_closed_at(44, 18))
 	check("Escuridão encerrada ao morrer", not W.dark_on)
 	await shot("22_cervo_morto")
@@ -1494,6 +1505,7 @@ func run_unit() -> void:
 	check("Invulnerabilidade pós-dano evita acertos instantâneos", float(Game.hero["hp"]) == after_first)
 	Game.difficulty = "aventura"
 	check("Dificuldade Aventura reduz dano inimigo em 25%", is_equal_approx(Game.enemy_damage_mult(), 0.75) and is_equal_approx(Game.warning_mult(), 1.2))
+	await unit_curva()
 	# ---- dados: validação
 	check("Validação de dados sem erros", Data.errors.is_empty(), str(Data.errors))
 	check("15 espécies-base e 3 evoluções jogáveis cadastradas", Data.species.size() >= 18)
@@ -1537,7 +1549,7 @@ func run_unit() -> void:
 	Game.fragments = 40
 	var atk_f := Game.hero_atk()
 	var ok_f := Game.forge_upgrade("espada_viajante")
-	check("R2: forja consome materiais e melhora a arma (+3 de ataque)", ok_f and Game.item_count("minerio_cobre") == 0 and Game.fragments == 0 and abs(Game.hero_atk() - atk_f - 3.0) < 0.01)
+	check("R2: forja consome materiais e melhora a arma (+%d de ataque)" % int(Game.forge_bonus("arma", "dano")), ok_f and Game.item_count("minerio_cobre") == 0 and Game.fragments == 0 and abs(Game.hero_atk() - atk_f - Game.forge_bonus("arma", "dano")) < 0.01)
 	check("R2: forja recusa sem materiais", Game.forge_check("espada_viajante") != "" and not Game.forge_upgrade("espada_viajante"))
 	Game.inventory["luvas_termicas"] = 1
 	check("R2: Luvas Térmicas reduzem o calor pela metade", is_equal_approx(Game.heat_mult(), 0.5))
@@ -1737,6 +1749,30 @@ func r2_forja_chegada() -> void:
 	check("R2: elevador da praça parado antes do chefão", not W._def_visible({"if_flag": "ferreiro_morto"}))
 	await use_ent("forja_inscricao", Vector2(0, 14), Vector2.UP)
 	check("R2: inscrição oculta marcada para revisita com Olhar Velado", Game.has_flag("viu_oculto_forja_inscricao"))
+	jogador_sensato()
+
+## Como um jogador comum faz ao chegar a um vilarejo: gasta os pontos de talento, veste a melhor proteção e o melhor
+## amuleto que já tem e repõe tônicos na banca com os próprios fragmentos (só sistemas do jogo, nada de graça).
+## A arma não muda (as verificações de arma usam a que está equipada). Ver docs/BALANCO.md.
+func jogador_sensato(tonicos := 8) -> void:
+	var ordem := ["resistencia", "espada"]
+	var i := 0
+	while int(Game.hero["talent_points"]) > 0 and i < 40:
+		Game.spend_talent(ordem[i % 2])
+		i += 1
+	for slot in [["protecao", "reducao"], ["amuleto", "hp"]]:
+		var best: String = Game.equipment.get(slot[0], "")
+		var bv := float(Data.items.get(best, {}).get(slot[1], 0.0)) if best != "" else -1.0
+		for id in Game.inventory:
+			var it: Dictionary = Data.items.get(id, {})
+			if it.get("tipo", "") == slot[0] and Game.item_count(id) > 0 and float(it.get(slot[1], 0.0)) > bv:
+				best = id
+				bv = float(it.get(slot[1], 0.0))
+		if best != "" and best != Game.equipment.get(slot[0], ""):
+			Game.equip(best)
+	while Game.item_count("pocao") < tonicos and Game.buy("pocao") == "":
+		pass
+	print("  [info] jogador sensato: nível %d, ataque %.1f, vida %d, redução %.0f%%, tônicos %d, fragmentos %d" % [Game.hero_level(), Game.hero_atk(), int(Game.hero_max_hp()), Game.hero_reduction() * 100.0, Game.item_count("pocao"), Game.fragments])
 
 # ---------------------------------------------------------------- 14. Pedreira Oca (rota 1)
 func r2_pedreira() -> void:
@@ -1787,6 +1823,7 @@ func r2_pedreira() -> void:
 # ---------------------------------------------------------------- 15. Forja: equipe, missão de vínculo e forja
 func r2_forja_equipe() -> void:
 	await use_ent("forja", Vector2(0, 18), Vector2.UP)
+	jogador_sensato()
 	await ui_press("ui_accept")
 	# no santuário: as criaturas da floresta vão para o armazenamento e as das minas entram na equipe
 	var fa := uuid_of(["faisquito", "brasejante"])
@@ -1815,7 +1852,7 @@ func r2_forja_equipe() -> void:
 	await ui_press("ui_accept")       # Confirmar
 	await frames(3)
 	await close_menus()
-	check("R2: forja melhora a arma para +1 gastando fragmentos e minério", Game.upgrade_level(w) == 1 and abs(Game.hero_atk() - atk0 - 3.0) < 0.01, "%d atk %s->%s" % [Game.upgrade_level(w), atk0, Game.hero_atk()])
+	check("R2: forja melhora a arma para +1 gastando fragmentos e minério", Game.upgrade_level(w) == 1 and abs(Game.hero_atk() - atk0 - Game.forge_bonus("arma", "dano")) < 0.01, "%d atk %s->%s" % [Game.upgrade_level(w), atk0, Game.hero_atk()])
 	check("R2: nível +3 bloqueado até a grande forja acender", "grande forja" in str(Data.forge["niveis"][2]["requer_texto"]))
 	# fumaça do Fuligin revela o veio esquecido (segredo ligado às criaturas)
 	var ok := await exit_to("pedreira_oca", 8.0, 18 * 16.0 + 8.0)
@@ -1981,7 +2018,7 @@ func fight_vigia(b: Node, timeout := 240.0) -> String:
 				else:
 					await frames(3)
 		t += float(frame_count - before) / 60.0
-	return "vitoria" if (not is_instance_valid(b) or not b.alive_flag) else "tempo"
+	return _fim_luta(b, t)
 
 func die_generic(b: Node, label: String) -> void:
 	Game.hero["hp"] = 2.0
@@ -2035,7 +2072,7 @@ func r2_vigia() -> void:
 	check("R2: Vigia de Escória derrotado usando as válvulas", res == "vitoria", res)
 	check("R2: válvula certa trincou a couraça (vulnerável)", last_seen.get("trincado", false))
 	await secs(2.0)
-	check("R2: recompensa do Vigia (fragmentos e lingotes) e porta de saída", Game.has_flag("vigia_morto") and Game.fragments >= frag0 + 60 and not door_closed_at(46, 31))
+	check("R2: recompensa do Vigia (fragmentos e lingotes) e porta de saída", Game.has_flag("vigia_morto") and Game.fragments >= frag0 + int(Data.bosses["vigia"]["recompensa"]["frag"]) and not door_closed_at(46, 31))
 	await shot("r2_15_vigia_morto")
 
 # ---------------------------------------------------------------- 20. Rito da Forja
@@ -2192,7 +2229,7 @@ func fight_ferreiro(b: Node, timeout := 420.0) -> String:
 			last_seen["grande_anunciada"] = true
 		await ferreiro_step(b)
 		t += float(frame_count - before) / 60.0
-	return "vitoria" if (not is_instance_valid(b) or not b.alive_flag) else "tempo"
+	return _fim_luta(b, t)
 
 func r2_ferreiro() -> void:
 	await rest_at("fc_prep")
@@ -2272,7 +2309,7 @@ func r2_ferreiro() -> void:
 	check("R2: ondas de choque esquivadas", last_seen.get("esquivou_onda", false), str(last_seen.keys()))
 	await secs(2.5)
 	check("R2: recompensa: Eco Ruptura Ígnea + flag de região", Game.has_eco("ruptura_ignea") and Game.has_flag("minas_libertas") and Game.eco_slots.has("ruptura_ignea"))
-	check("R2: fragmentos do chefão e porta de saída", Game.fragments >= frag0 + 160 and not door_closed_at(46, 16))
+	check("R2: fragmentos do chefão e porta de saída", Game.fragments >= frag0 + int(Data.bosses["ferreiro"]["recompensa"]["frag"]) and not door_closed_at(46, 16))
 	var n_ecos := Game.ecos.size()
 	Game.grant_eco("ruptura_ignea")
 	check("R2: recompensa idempotente", Game.ecos.size() == n_ecos)
@@ -2480,7 +2517,7 @@ func run_equip() -> void:
 	Game.set_flag("cervo_morto")
 	check("Receita lendária liberada após o Cervo", Game.craft("galhada_ossea"))
 	Game.equip("galhada_ossea")
-	check("Arma lendária aumenta o dano", Game.hero_atk() >= 12.0 + 9.0)
+	check("Arma lendária aumenta o dano", Game.hero_atk() >= 12.0 + float(Data.items["galhada_ossea"]["dano"]))
 	# interface: inventário com cores e detalhes
 	await ui_press("pause")
 	await ui_press("ui_down"); await ui_press("ui_down")
@@ -2894,7 +2931,7 @@ func run_grupo() -> void:
 	check("Frasco de Seiva levanta o herói com metade da vida", P.state != Player.S.DEAD and float(Game.hero["hp"]) >= Game.hero_max_hp() * 0.45 and not Game.flask_ready())
 	var mh := Game.hero_max_hp()
 	Game.give_item("semente_vida", 1)
-	check("Semente de Vida aumenta a vida máxima", Game.hero_max_hp() == mh + 12.0)
+	check("Semente de Vida aumenta a vida máxima", Game.hero_max_hp() == mh + 10.0)
 	await exit_to("vila_lumen", 22 * 16.0 + 8.0, 8.0)
 	Game.give_item("luvas_pedra", 1)
 	await goto(tpos(12, 9), 4.0, 30.0)
@@ -3288,6 +3325,7 @@ func r3_porto() -> void:
 	check("R3: Tito oferece 'A Rede do Tito' (rotina: pesca no píer com tempo seco)", Game.has_flag("quest_rede") and ent_by_id("tito") != null and ent_by_id("tito_abrigo") == null)
 	await rest_at("porto")
 	check("R3: santuário do Porto grava o ponto de retorno", Game.checkpoint.get("shrine", "") == "porto")
+	jogador_sensato()
 	check("R3: quadro de contratos no Porto com caçada e contrato em dupla da região", ent_by_id("quadro_porto") != null and Data.contracts.has("caca_sapos") and Data.contracts["contrabando"]["tipo"] == "dupla")
 	check("R3: contratos da região bloqueados até visitar as rotas", Game.contract_state("caca_sapos") == "bloqueado" and Game.contract_state("contrabando") == "bloqueado")
 	# gancho da Região 4: a ponte espiritual existe mas só o Olhar Velado a revela
@@ -3378,6 +3416,7 @@ func r3_passarela() -> void:
 
 # ---------------------------------------------------------------- 27. Porto: missão das lanternas e contrato
 func r3_porto_volta() -> void:
+	jogador_sensato()
 	var ub := uuid_of(["brejugo", "musgoral"])
 	var b0 := Game.bond_count(Game.individuals[ub]) if ub != "" else 0
 	await talk("iara")
@@ -3581,7 +3620,7 @@ func fight_barqueiro(b: Node, timeout := 300.0) -> String:
 		if int(t / 2.0) != int((t + float(frame_count - before) / 60.0) / 2.0) and "--dbg" in args:
 			print("  [dbg] t=%.0f hp=%.0f/%.0f boss=%.0f bst=%d sombra=%s pos=%s boss=%s pocao=%d" % [t, float(Game.hero["hp"]), Game.hero_max_hp(), b.hp, b.bst, b.has_shadow(), str(tile_of(P.global_position)), str(tile_of(b.global_position)), Game.item_count("pocao")])
 		t += float(frame_count - before) / 60.0
-	return "vitoria" if (not is_instance_valid(b) or not b.alive_flag) else "tempo"
+	return _fim_luta(b, t)
 
 func enter_barqueiro() -> Node:
 	await goto(tpos(20, 19), 6.0, 60.0)
@@ -3619,7 +3658,7 @@ func r3_barqueiro() -> void:
 	check("R3: Barqueiro Sem Sombra derrotado usando as lanternas", res == "vitoria", res)
 	check("R3: a luz prendeu a sombra dele (vulnerável)", last_seen.get("sombra", false))
 	await secs(2.0)
-	check("R3: recompensa do Barqueiro e porta de saída", Game.has_flag("barqueiro_morto") and Game.fragments >= frag0 + 80 and not door_closed_at(46, 30))
+	check("R3: recompensa do Barqueiro e porta de saída", Game.has_flag("barqueiro_morto") and Game.fragments >= frag0 + int(Data.bosses["barqueiro"]["recompensa"]["frag"]) and not door_closed_at(46, 30))
 	check("R3: objetivo segue para a Bruxa", "Bruxa" in Game.objective_text(), Game.objective_text())
 	await shot("r3_13_barqueiro_fim")
 
@@ -3641,11 +3680,13 @@ func r3_rito() -> void:
 	await frames(20)
 	var s2a := ent_by_id("rr_s2a")
 	check("R3: com o Nimbelo por perto as estátuas falsas tremulam", not nb or s2a.sprite.modulate != Color.WHITE)
+	var dica_vista := false    # o aviso dura 3,2 s na tela; a luta com o espectro pode passar disso
 	for id in ["rr_s2a", "rr_s2c", "rr_s2a"]:
 		await use_ent(id, Vector2(0, 16), Vector2.UP)
 		await frames(10)
+		dica_vista = dica_vista or toast_seen("Dica: olhe de que lado")
 		await engage_area(tpos(23, 12), 140.0, 30.0)
-	check("R3: rito 2: estátua falsa vira espectro; dica após 3 erros", toast_seen("Dica: olhe de que lado") and int(Game.stats["kills"].get("espectro", 0)) >= 2)
+	check("R3: rito 2: estátua falsa vira espectro; dica após 3 erros", (dica_vista or toast_seen("Dica: olhe de que lado")) and int(Game.stats["kills"].get("espectro", 0)) >= 2)
 	var inv0 := Game.inventory.duplicate()
 	var fr0 := Game.fragments
 	await use_ent("rr_reset2", Vector2(0, 16), Vector2.UP)
@@ -3765,7 +3806,7 @@ func fight_bruxa(b: Node, timeout := 420.0) -> String:
 		if frame_count == before:
 			await frames(1)
 		t += float(frame_count - before) / 60.0
-	return "vitoria" if (not is_instance_valid(b) or not b.alive_flag) else "tempo"
+	return _fim_luta(b, t)
 
 func r3_bruxa() -> void:
 	await rest_at("tc_prep")
@@ -3863,7 +3904,7 @@ func r3_bruxa() -> void:
 	check("R3: luta passou pelas três fases", last_seen.get("fase2", false) and last_seen.get("fase3", false) and last_seen.get("agua_subiu", false), str(last_seen.keys()))
 	await secs(2.5)
 	check("R3: recompensa: Eco Olhar Velado + água clara (flag de região)", Game.has_eco("olhar_velado") and Game.has_flag("pantano_livre") and Game.eco_slots.has("olhar_velado"))
-	check("R3: fragmentos do chefão e porta de saída", Game.fragments >= frag0 + 200 and not door_closed_at(46, 16))
+	check("R3: fragmentos do chefão e porta de saída", Game.fragments >= frag0 + int(Data.bosses["bruxa"]["recompensa"]["frag"]) and not door_closed_at(46, 16))
 	var n_ecos := Game.ecos.size()
 	Game.grant_eco("olhar_velado")
 	check("R3: recompensa idempotente", Game.ecos.size() == n_ecos)
@@ -4553,6 +4594,7 @@ func r4_gemeos() -> void:
 		else:
 			await frames(5)
 		t += float(frame_count - before) / 60.0
+	print("  [info] duração da luta (gemeos): %.0f s, vida do herói %d/%d, nível %d" % [t, int(Game.hero["hp"]), int(Game.hero_max_hp()), Game.hero_level()])
 	await secs(1.0)
 	check("R4: Gêmeos de Ferro derrotados (ataques sempre alternados)", Game.has_flag("gemeos_morto") and both_tele == 0, "t=%.0f hp=%d alternancia=%d" % [t, int(Game.hero["hp"]), both_tele])
 	check("R4: portas da arena reabrem e a saída leste abre", not W.is_solid_char(r4_tile(27, 15)) and not W.is_solid_char(r4_tile(42, 7)))
@@ -4722,6 +4764,7 @@ func r4_cavaleiro() -> void:
 					bl.fire_balestra()
 		await r4_cav_step(b)
 		t += float(frame_count - before) / 60.0
+	print("  [info] duração da luta (cavaleiro): %.0f s, vida do herói %d/%d, nível %d, mortes %d" % [t, int(Game.hero["hp"]), int(Game.hero_max_hp()), Game.hero_level(), int(Game.stats["mortes"]) - deaths0])
 	await secs(2.0)
 	check("R4: fase 1 — estocada anunciada seguida de exaustão (janela de ataque)", saw["estocada"] and saw["exausto"])
 	check("R4: fase 2 — alterna postura de muralha e de espelho", saw["muralha"] and saw["espelho"])
@@ -6212,3 +6255,99 @@ func run_regiao5() -> void:
 	await r5_epilogo()
 	await r5_criaturas()
 	await r5_save_load()
+
+## Curva das Regiões 1–5 (docs/BALANCO.md): com o nível e o equipamento esperados no meio de cada região
+## (tests/curva_regioes.json, gerado por tools/balanco.py), cada inimigo comum dos mapas cai em ~3–5 golpes e o herói
+## aguenta ~6–10 golpes dele na Aventura (com a tolerância do modelo). Usa as funções reais de Game (ataque, vida,
+## redução, dificuldade) e Enemy.init (escala de vida e dano pelo nível do mapa).
+func unit_curva() -> void:
+	var f := FileAccess.open("res://tests/curva_regioes.json", FileAccess.READ)
+	check("Curva: tests/curva_regioes.json gerado por tools/balanco.py", f != null)
+	if f == null:
+		return
+	var cfg: Dictionary = JSON.parse_string(f.get_as_text())
+	var metas: Dictionary = cfg["metas"]
+	var g_lo: float = float(metas["golpes"][0]) - float(metas["tolerancia_golpes"][0])
+	var g_hi: float = float(metas["golpes"][1]) + float(metas["tolerancia_golpes"][1])
+	var a_lo: float = float(metas["aguenta"][0]) - float(metas["tolerancia_aguenta"][0])
+	var a_hi: float = float(metas["aguenta"][1]) + float(metas["tolerancia_aguenta"][1])
+	var hero0: Dictionary = Game.hero.duplicate(true)
+	var eq0: Dictionary = Game.equipment.duplicate()
+	var up0: Dictionary = Game.upgrades.duplicate()
+	var inv0: Dictionary = Game.inventory.duplicate()
+	var dif0: String = Game.difficulty
+	Game.difficulty = "aventura"
+	var fora_g: Array = []
+	var fora_a: Array = []
+	var dano_max := {}
+	var ordem := ["floresta", "minas", "pantano", "fortaleza", "catedral"]
+	for r in ordem:
+		var c: Dictionary = cfg["regioes"][r]
+		var lv: int = int(c["nivel"])
+		var pts: int = lv / 3
+		Game.hero["level"] = lv
+		Game.hero["talents"] = {"espada": (pts + 1) / 2, "resistencia": pts / 2, "vinculo": 0}
+		Game.inventory = {}
+		Game.upgrades = {}
+		Game.equipment = {"arma": str(c["arma"]), "protecao": str(c["protecao"]), "amuleto": str(c["amuleto"])}
+		for slot in Game.equipment:
+			var id: String = Game.equipment[slot]
+			if id != "":
+				Game.inventory[id] = 1
+				Game.upgrades[id] = int(c["forja"])
+		if int(c["sementes"]) > 0:
+			Game.inventory["semente_vida"] = int(c["sementes"])
+		var atk: float = Game.hero_atk()
+		var hp: float = Game.hero_max_hp()
+		var red: float = Game.hero_reduction()
+		dano_max[r] = 0.0
+		for ck in c["comuns"]:
+			var parts: PackedStringArray = str(ck).split(":")
+			var e = load("res://scripts/enemy.gd").new()
+			e.init(W, parts[0], {"x": 0, "y": 0, "nivel": int(parts[1])})
+			var golpes: float = e.max_hp / atk
+			var aguenta: float = hp / (e.damage * Game.enemy_damage_mult() * (1.0 - red))
+			dano_max[r] = max(float(dano_max[r]), float(e.damage))
+			if golpes < g_lo or golpes > g_hi:
+				fora_g.append("%s %s Nv%s: %.1f" % [r, parts[0], parts[1], golpes])
+			if aguenta < a_lo or aguenta > a_hi:
+				fora_a.append("%s %s Nv%s: %.1f" % [r, parts[0], parts[1], aguenta])
+			e.free()
+	Game.hero = hero0
+	Game.equipment = eq0
+	Game.upgrades = up0
+	Game.inventory = inv0
+	Game.difficulty = dif0
+	Game.hero_changed.emit()
+	check("Curva: comum cai em ~3–5 golpes no nível esperado de cada região", fora_g.is_empty(), str(fora_g))
+	check("Curva: herói aguenta ~6–10 golpes comuns (Aventura) em cada região", fora_a.is_empty(), str(fora_a))
+	check("Curva: o golpe comum mais forte cresce a cada região", float(dano_max["floresta"]) < float(dano_max["minas"]) and float(dano_max["minas"]) < float(dano_max["pantano"]) and float(dano_max["pantano"]) < float(dano_max["fortaleza"]) and float(dano_max["fortaleza"]) <= float(dano_max["catedral"]), str(dano_max))
+	var g_hp: Array = []
+	for b in ["cervo", "ferreiro", "bruxa", "cavaleiro", "rei"]:
+		g_hp.append(float(Data.bosses[b]["hp"]))
+	check("Curva: vida dos guardiões cresce a cada região", g_hp[0] < g_hp[1] and g_hp[1] < g_hp[2] and g_hp[2] < g_hp[3] and g_hp[3] < g_hp[4], str(g_hp))
+	var m_hp: Array = []
+	for b in ["lenhador", "vigia", "barqueiro", "gemeos", "arauto"]:
+		m_hp.append(float(Data.bosses[b]["hp"]))
+	check("Curva: minichefe sempre mais fraco que o guardião da mesma região", m_hp[0] < g_hp[0] and m_hp[1] < g_hp[1] and m_hp[2] < g_hp[2] and m_hp[3] < g_hp[3] and m_hp[4] < g_hp[4], str(m_hp))
+	# dificuldades: História < Aventura < Desafio no dano; avisos mais longos nos modos mais fáceis
+	var dm := {}
+	var wm := {}
+	for d in Game.DIFFICULTY_ORDER:
+		Game.difficulty = d
+		dm[d] = Game.enemy_damage_mult()
+		wm[d] = Game.warning_mult()
+	check("Dificuldade: História < Aventura < Desafio no dano inimigo", float(dm["historia"]) < float(dm["aventura"]) and float(dm["aventura"]) < float(dm["desafio"]), str(dm))
+	check("Dificuldade: avisos mais longos na História, base no Desafio", float(wm["historia"]) > float(wm["aventura"]) and float(wm["aventura"]) > float(wm["desafio"]), str(wm))
+	Game.difficulty = "aventura"
+	var ciclo: Array = []
+	for i in 3:
+		Game.difficulty = Game.next_difficulty()
+		ciclo.append(Game.difficulty)
+	check("Dificuldade: as opções alternam entre os três modos e voltam à Aventura", ciclo == ["desafio", "historia", "aventura"], str(ciclo))
+	Game.difficulty = "historia"
+	var dd: Dictionary = Game.to_dict().duplicate(true)
+	Game.difficulty = "aventura"
+	var ok_load := Game.from_dict(dd)
+	check("Dificuldade: História é salva e carregada", ok_load and Game.difficulty == "historia" and Game.difficulty_name() == "História")
+	Game.difficulty = dif0

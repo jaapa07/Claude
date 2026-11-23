@@ -21,10 +21,10 @@
  },
  "lobo": {
   "nome": "Lobo de Espinhos",
-  "hp": 38,
-  "dano": 9,
+  "hp": 54,
+  "dano": 20,
   "vel": 72,
-  "xp": 14,
+  "xp": 16,
   "frag": [
    3,
    7
@@ -43,10 +43,10 @@
  },
  "cogumelo": {
   "nome": "Cogumelo Esporífero",
-  "hp": 26,
-  "dano": 7,
+  "hp": 52,
+  "dano": 18,
   "vel": 0,
-  "xp": 10,
+  "xp": 12,
   "frag": [
    2,
    5
@@ -65,10 +65,10 @@
  },
  "sentinela": {
   "nome": "Sentinela de Madeira",
-  "hp": 78,
-  "dano": 14,
+  "hp": 88,
+  "dano": 25,
   "vel": 36,
-  "xp": 26,
+  "xp": 30,
   "frag": [
    6,
    12
@@ -88,8 +88,8 @@
  },
  "lenhador": {
   "nome": "Lenhador Oco",
-  "hp": 190,
-  "dano": 24,
+  "hp": 700,
+  "dano": 43,
   "vel": 42,
   "xp": 90,
   "frag": [
@@ -128,8 +128,8 @@
  },
  "cervo": {
   "nome": "Cervo de Ossos",
-  "hp": 640,
-  "dano": 24,
+  "hp": 1700,
+  "dano": 53,
   "vel": 70,
   "xp": 0,
   "frag": [
@@ -151,8 +151,8 @@
  },
  "mineiro": {
   "nome": "Mineiro Corrompido",
-  "hp": 58,
-  "dano": 11,
+  "hp": 110,
+  "dano": 37,
   "vel": 44,
   "xp": 26,
   "frag": [
@@ -180,8 +180,8 @@
  },
  "lesma": {
   "nome": "Lesma de Escória",
-  "hp": 70,
-  "dano": 9,
+  "hp": 120,
+  "dano": 36,
   "vel": 16,
   "xp": 22,
   "frag": [
@@ -210,8 +210,8 @@
  },
  "automato": {
   "nome": "Autômato de Martelo",
-  "hp": 130,
-  "dano": 20,
+  "hp": 150,
+  "dano": 48,
   "vel": 30,
   "xp": 42,
   "frag": [
@@ -244,8 +244,8 @@
  },
  "vigia": {
   "nome": "Vigia de Escória",
-  "hp": 420,
-  "dano": 18,
+  "hp": 1200,
+  "dano": 54,
   "vel": 34,
   "xp": 0,
   "frag": [
@@ -269,8 +269,8 @@
  },
  "ferreiro": {
   "nome": "Ferreiro Devorador",
-  "hp": 900,
-  "dano": 18,
+  "hp": 2400,
+  "dano": 36,
   "vel": 44,
   "xp": 0,
   "frag": [
@@ -294,10 +294,10 @@
  },
  "domador": {
   "nome": "Domador",
-  "hp": 64,
-  "dano": 10,
+  "hp": 76,
+  "dano": 20,
   "vel": 50,
-  "xp": 30,
+  "xp": 15,
   "frag": [
    6,
    12
@@ -324,10 +324,10 @@
  },
  "domadora": {
   "nome": "Domadora",
-  "hp": 54,
-  "dano": 9,
+  "hp": 66,
+  "dano": 18,
   "vel": 62,
-  "xp": 30,
+  "xp": 15,
   "frag": [
    6,
    12
@@ -354,10 +354,10 @@
  },
  "vesna": {
   "nome": "Vesna, a Caçadora de Ecos",
-  "hp": 320,
-  "dano": 15,
+  "hp": 520,
+  "dano": 32,
   "vel": 58,
-  "xp": 160,
+  "xp": 60,
   "frag": [
    40,
    60
@@ -402,8 +402,8 @@
  },
  "lanceiro": {
   "nome": "Lanceiro do Eclipse",
-  "hp": 170,
-  "dano": 24,
+  "hp": 270,
+  "dano": 120,
   "vel": 40,
   "xp": 40,
   "frag": [
@@ -432,8 +432,8 @@
  },
  "arqueiro": {
   "nome": "Arqueiro do Eclipse",
-  "hp": 110,
-  "dano": 18,
+  "hp": 220,
+  "dano": 95,
   "vel": 56,
   "xp": 36,
   "frag": [
@@ -461,8 +461,8 @@
  },
  "armadura": {
   "nome": "Armadura Vigilante",
-  "hp": 260,
-  "dano": 22,
+  "hp": 320,
+  "dano": 115,
   "vel": 30,
   "xp": 55,
   "frag": [
@@ -490,8 +490,8 @@
  },
  "gemeos": {
   "nome": "Gêmeos de Ferro",
-  "hp": 520,
-  "dano": 22,
+  "hp": 1150,
+  "dano": 110,
   "vel": 46,
   "xp": 0,
   "frag": [
@@ -514,8 +514,8 @@
  },
  "cavaleiro": {
   "nome": "Cavaleiro Sem Rosto",
-  "hp": 1500,
-  "dano": 30,
+  "hp": 3200,
+  "dano": 144,
   "vel": 46,
   "xp": 0,
   "frag": [
@@ -538,8 +538,8 @@
  },
  "sapo": {
   "nome": "Sapo de Lodo",
-  "hp": 96,
-  "dano": 16,
+  "hp": 180,
+  "dano": 62,
   "vel": 42,
   "xp": 40,
   "frag": [
@@ -567,8 +567,8 @@
  },
  "espectro": {
   "nome": "Espectro Refletido",
-  "hp": 78,
-  "dano": 15,
+  "hp": 130,
+  "dano": 58,
   "vel": 54,
   "xp": 44,
   "frag": [
@@ -591,8 +591,8 @@
  },
  "planta": {
   "nome": "Planta Sementeira",
-  "hp": 72,
-  "dano": 12,
+  "hp": 165,
+  "dano": 57,
   "vel": 0,
   "xp": 36,
   "frag": [
@@ -620,8 +620,8 @@
  },
  "barqueiro": {
   "nome": "Barqueiro Sem Sombra",
-  "hp": 560,
-  "dano": 20,
+  "hp": 1100,
+  "dano": 36,
   "vel": 64,
   "xp": 0,
   "frag": [
@@ -644,8 +644,8 @@
  },
  "bruxa": {
   "nome": "Bruxa Afogada",
-  "hp": 1100,
-  "dano": 14,
+  "hp": 2800,
+  "dano": 49,
   "vel": 46,
   "xp": 0,
   "frag": [
@@ -669,7 +669,7 @@
  "copia": {
   "nome": "Reflexo da Bruxa",
   "hp": 1,
-  "dano": 8,
+  "dano": 28,
   "vel": 40,
   "xp": 0,
   "frag": [
@@ -691,8 +691,8 @@
  },
  "escriba": {
   "nome": "Escriba do Vazio",
-  "hp": 150,
-  "dano": 22,
+  "hp": 250,
+  "dano": 100,
   "vel": 46,
   "xp": 46,
   "frag": [
@@ -720,8 +720,8 @@
  },
  "sentinela_prisma": {
   "nome": "Sentinela Prismática",
-  "hp": 230,
-  "dano": 26,
+  "hp": 320,
+  "dano": 128,
   "vel": 22,
   "xp": 52,
   "frag": [
@@ -750,8 +750,8 @@
  },
  "fragmento": {
   "nome": "Fragmento Errante",
-  "hp": 120,
-  "dano": 20,
+  "hp": 210,
+  "dano": 92,
   "vel": 58,
   "xp": 40,
   "frag": [
@@ -779,8 +779,8 @@
  },
  "arauto": {
   "nome": "Arauto Partido",
-  "hp": 980,
-  "dano": 22,
+  "hp": 2200,
+  "dano": 88,
   "vel": 54,
   "xp": 0,
   "frag": [
@@ -799,8 +799,8 @@
  },
  "rei": {
   "nome": "Rei dos Ecos",
-  "hp": 4000,
-  "dano": 26,
+  "hp": 5000,
+  "dano": 104,
   "vel": 50,
   "xp": 0,
   "frag": [
