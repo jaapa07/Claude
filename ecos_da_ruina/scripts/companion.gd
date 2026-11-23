@@ -175,7 +175,8 @@ func _fight(delta: float) -> bool:
 func _basic_attack() -> void:
 	var basic: Dictionary = species["basic"]
 	atk_cd = float(basic["recarga"])
-	var dmg: float = Game.creature_atk(ind) * stat_mult()
+	# 0,6: calibrado no teste para o companheiro responder por ~25–35% do dano da dupla
+	var dmg: float = Game.creature_atk(ind) * stat_mult() * 0.6
 	var aff: String = species["afinidade"]
 	var tgt := target
 	anim_lock = 0.2

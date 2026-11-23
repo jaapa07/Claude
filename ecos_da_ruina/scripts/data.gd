@@ -52,7 +52,7 @@ func validate() -> Array:
 		if s.get("status", "") == "jogavel" and s.get("evolucao") != null and not species.has(s["evolucao"]["para"]):
 			errors.append("Espécie %s: evolução inexistente '%s'" % [sid, s["evolucao"]["para"]])
 		if s.get("status", "") == "jogavel":
-			if not FileAccess.file_exists("res://assets/sprites/%s.png" % s.get("sprite", "")):
+			if not ResourceLoader.exists("res://assets/sprites/%s.png" % s.get("sprite", "")):
 				errors.append("Espécie %s: sprite ausente" % sid)
 	for mid in maps:
 		var m = maps[mid]

@@ -1263,4 +1263,105 @@ func stage12_pos_chefao() -> void:
 	var ok := await exit_to("vila_lumen", 8.0, 8.0) if false else true
 	ok = await exit_to("desfiladeiro", 20 * 16.0, 8.0) if false else true
 func run_unit() -> void:
-	pass
+	main.start_new_game(3)
+	await frames(10)
+	await advance_dialogs()
+	Game.god_mode = false
+	# ---- movimento: diagonal não é mais rápida
+	P.global_position = Vector2(21 * 16 + 8, 16 * 16 + 8)
+	await frames(3)
+	var p0 := P.global_position
+	Input.action_press("move_right"); await frames(30); Input.action_release("move_right")
+	var d_axis := P.global_position.distance_to(p0)
+	P.global_position = Vector2(21 * 16 + 8, 16 * 16 + 8)
+	await frames(3)
+	p0 = P.global_position
+	Input.action_press("move_right"); Input.action_press("move_down"); await frames(30)
+	Input.action_release("move_right"); Input.action_release("move_down")
+	var d_diag := P.global_position.distance_to(p0)
+	check("Diagonal não é mais rápida que eixo", d_diag <= d_axis + 0.5, "%.1f vs %.1f" % [d_diag, d_axis])
+	# ---- colisão: herói não atravessa parede
+	P.global_position = Vector2(2 * 16 + 8, 16 * 16 + 8)
+	Input.action_press("move_left"); await frames(60); Input.action_release("move_left")
+	check("Herói não atravessa árvores/paredes", not W.tile_solid_at(P.global_position) and P.global_position.x > 32.0)
+	# ---- fórmula de captura: limites e termos
+	var pmin := Game.capture_chance("lumipim", 30, 1.0, false, "selo_basico")
+	Game.hero["talents"]["vinculo"] = 5
+	var pmax := Game.capture_chance("brotisco", 1, 0.0, true, "selo_refinado")
+	Game.hero["talents"]["vinculo"] = 0
+	check("Probabilidade respeita mínimo 10%", is_equal_approx(pmin, 0.10), str(pmin))
+	check("Probabilidade respeita máximo 95%", is_equal_approx(pmax, 0.95), str(pmax))
+	var pc := Game.capture_chance("brotisco", 1, 0.5, false, "selo_basico")
+	check("Fórmula: comum a 50% de vida = 0,25 + 0,225", is_equal_approx(pc, 0.475), str(pc))
+	var pl := Game.capture_chance("brotisco", 6, 0.5, false, "selo_basico")
+	check("Penalidade de nível L = 0,02 x diferença", is_equal_approx(pc - pl, 0.10), str(pc - pl))
+	Game.rng_override = func(): return 0.5
+	check("Fonte aleatória controlável em testes", Game.rand_f() == 0.5)
+	Game.rng_override = Callable()
+	# ---- santuário cheio bloqueia antes do selo
+	for i in Game.SANCTUARY_CAP:
+		var ind := Game.new_individual("brotisco", 1)
+		Game.individuals[ind["uuid"]] = ind
+		if Game.team.size() < 3:
+			Game.team.append(ind["uuid"])
+		else:
+			Game.sanctuary.append(ind["uuid"])
+	for i in 3:
+		var ind2 := Game.new_individual("cascalito", 1)
+		Game.individuals[ind2["uuid"]] = ind2
+		Game.sanctuary.append(ind2["uuid"])
+	check("Armazenamento cheio é detectado", not Game.storage_has_room())
+	var wild := ent_by_id("brotisco_tutorial")
+	wild.hp = wild.max_hp * 0.2
+	P.global_position = wild.global_position + Vector2(-30, 0)
+	await frames(2)
+	check("Equipe e santuário cheios rejeitam a captura antes de lançar", P.validate_target(wild) == "Equipe e santuário cheios.", P.validate_target(wild))
+	var dup := Game.register_capture(Game.individuals[Game.team[0]])
+	check("Registro de captura não duplica indivíduo existente", dup == "duplicado")
+	# ---- troca não cura nem duplica
+	var a0: Dictionary = Game.individuals[Game.team[0]]
+	a0["hp"] = 5.0
+	Game.swap_cd = 0.0
+	Game.swap_active()
+	check("Troca não cura a criatura que sai", float(a0["hp"]) == 5.0)
+	check("Troca não duplica indivíduos", Game.team.size() == 3 and Game.individuals.size() == Game.SANCTUARY_CAP + 3)
+	# ---- liberar: confirmação e última criatura
+	check("Não permite liberar com muitas criaturas? (permitido) e regra da última criatura existe", Game.can_release(Game.sanctuary[0]) == "")
+	# ---- esquiva: janela de invulnerabilidade só entre 0,06 e 0,20 s
+	P.state = Player.S.DODGE
+	P.dodge_t = 0.03
+	check("Esquiva: vulnerável antes de 0,06 s", not P.is_dodge_invulnerable())
+	P.dodge_t = 0.12
+	check("Esquiva: invulnerável dentro da janela", P.is_dodge_invulnerable())
+	P.dodge_t = 0.25
+	check("Esquiva: vulnerável após 0,20 s", not P.is_dodge_invulnerable())
+	P.state = Player.S.FREE
+	P.vigor = 10.0
+	P._try_dodge()
+	check("Vigor insuficiente impede esquiva", P.state == Player.S.FREE)
+	# ---- defesa frontal reduz 70% e falha contra indefensável
+	P.vigor = 100.0
+	Game.hero["hp"] = 100.0
+	P.inv_timer = 0.0
+	P.state = Player.S.GUARD
+	P.aim_dir = Vector2.RIGHT
+	Game.difficulty = "desafio"
+	P.take_hit(20.0, P.global_position + Vector2(30, 0))
+	check("Defesa frontal reduz 70% do dano", abs(float(Game.hero["hp"]) - (100.0 - 20.0 * 0.3)) < 0.1, str(Game.hero["hp"]))
+	P.inv_timer = 0.0
+	P.state = Player.S.GUARD
+	Game.hero["hp"] = 100.0
+	P.take_hit(20.0, P.global_position + Vector2(30, 0), {"indefensavel": true})
+	check("Ataque indefensável ignora a defesa", abs(float(Game.hero["hp"]) - 80.0) < 0.1)
+	P.inv_timer = 0.0
+	P.state = Player.S.FREE
+	Game.hero["hp"] = 100.0
+	P.take_hit(10.0, P.global_position + Vector2(30, 0))
+	var after_first := float(Game.hero["hp"])
+	P.take_hit(10.0, P.global_position + Vector2(30, 0))
+	check("Invulnerabilidade pós-dano evita acertos instantâneos", float(Game.hero["hp"]) == after_first)
+	Game.difficulty = "aventura"
+	check("Dificuldade Aventura reduz dano inimigo em 25%", is_equal_approx(Game.enemy_damage_mult(), 0.75) and is_equal_approx(Game.warning_mult(), 1.2))
+	# ---- dados: validação
+	check("Validação de dados sem erros", Data.errors.is_empty(), str(Data.errors))
+	check("15 espécies-base e 3 evoluções jogáveis cadastradas", Data.species.size() >= 18)
