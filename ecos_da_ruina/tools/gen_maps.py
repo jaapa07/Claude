@@ -203,6 +203,9 @@ def bosque():
     m.ent(type="wild", id="b_brotisco3", species="brotisco", level=3, x=8, y=19)
     m.ent(type="wild", id="b_lumipim1", species="lumipim", level=3, x=22, y=30)
     m.ent(type="wild", id="b_lumipim2", species="lumipim", level=3, x=24, y=29)
+    # criaturas que só aparecem com certo clima (data/weather.json)
+    m.ent(type="wild", id="b_brotisco_chuva", species="brotisco", level=4, x=6, y=20, clima="chuva")
+    m.ent(type="wild", id="b_lumipim_neblina", species="lumipim", level=4, x=25, y=30, clima="neblina")
     m.ent(type="enemy", kind="lobo", id="b_lobo1", x=20, y=24)
     m.ent(type="enemy", kind="lobo", id="b_lobo2", x=30, y=18)
     m.ent(type="enemy", kind="lobo", id="b_lobo3", x=42, y=12)
@@ -268,6 +271,7 @@ def clareira():
     m.ent(type="wild", id="c_casc2", species="cascalito", level=3, x=38, y=20)
     m.ent(type="wild", id="c_casc3", species="cascalito", level=4, x=10, y=30)
     m.ent(type="wild", id="c_brotisco1", species="brotisco", level=2, x=24, y=11)
+    m.ent(type="wild", id="c_brotisco_chuva", species="brotisco", level=4, x=27, y=8, clima="chuva")
     m.ent(type="enemy", kind="sentinela", id="c_sent1", x=20, y=10)
     m.ent(type="enemy", kind="sentinela", id="c_sent2", x=28, y=12)
     m.ent(type="enemy", kind="lobo", id="c_lobo1", x=37, y=21)
@@ -418,6 +422,7 @@ def desfiladeiro():
     m.ent(type="exit", x=16, y=23, w=8, h=1, to="vila_lumen", spawn="from_desfiladeiro")
     m.ent(type="exit", x=16, y=0, w=8, h=1, to="minas_entrada", spawn="from_desfiladeiro")
     m.ent(type="sign", id="placa_ravina", dialog="placa_ravina", x=18, y=14)
+    m.ent(type="wild", id="d_cascalito_neve", species="cascalito", level=5, x=11, y=16, clima=["neve", "frio"])
     m.ent(type="bridge_spot", id="ponte_minas", x=19, y=13, tiles=[[19, 8], [20, 8], [19, 9], [20, 9], [19, 10], [20, 10], [19, 11], [20, 11], [21, 8], [21, 9], [21, 10], [21, 11]], flag="ponte_minas", requires_eco="raiz_viva")
     m.cond.append({"if": "ponte_minas", "rects": [[19, 8, 3, 4, "B"]]})
     return m
@@ -435,6 +440,7 @@ def minas_entrada():
     m.ent(type="exit", x=13, y=19, w=4, h=1, to="desfiladeiro", spawn="from_minas")
     m.ent(type="exit", x=13, y=0, w=4, h=1, to="forja_cobre", spawn="from_entrada")
     m.ent(type="sign", id="placa_minas", dialog="placa_minas", x=15, y=8)
+    m.ent(type="wild", id="m_faisquito_calor", species="faisquito", level=8, x=19, y=11, clima="calor")
     m.ent(type="chapter_end", id="fim_cap1", x=13, y=4, w=4, h=2)
     return m
 

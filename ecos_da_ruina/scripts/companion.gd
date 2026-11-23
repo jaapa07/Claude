@@ -144,7 +144,7 @@ func _follow(delta: float, to_hero: Vector2) -> bool:
 	if to_hero.length() > 150.0 and not world.in_combat():
 		pass
 	if to_goal.length() > want_dist:
-		var spd := (92.0 if to_hero.length() < 70.0 else 120.0) * (1.0 + Game.acc_stat(ind, "vel"))
+		var spd := (92.0 if to_hero.length() < 70.0 else 120.0) * (1.0 + Game.acc_stat(ind, "vel")) * Game.weather_speed_mult(species["afinidade"])
 		velocity = to_goal.normalized() * spd
 		move_and_slide()
 		_face(velocity)
@@ -165,12 +165,12 @@ func _fight(delta: float) -> bool:
 	_face(to)
 	var moved := false
 	if dist > want:
-		velocity = to.normalized() * 100.0
+		velocity = to.normalized() * 100.0 * Game.weather_speed_mult(species["afinidade"])
 		move_and_slide()
 		_anim("walk")
 		moved = true
 	elif ranged and dist < want * 0.55:
-		velocity = -to.normalized() * 80.0
+		velocity = -to.normalized() * 80.0 * Game.weather_speed_mult(species["afinidade"])
 		move_and_slide()
 		_anim("walk")
 		moved = true

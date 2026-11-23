@@ -128,6 +128,7 @@ func _ready() -> void:
 	Game.flag_changed.connect(_on_flag_changed)
 	Game.team_changed.connect(_on_team_changed)
 	Game.party_changed.connect(_on_party_changed)
+	Weather.attach(self)
 
 func _make_tileset() -> TileSet:
 	if _tileset:
@@ -370,6 +371,7 @@ func load_map(id: String, spawn: String = "default", pos: Variant = null) -> voi
 	_compute_tiles()
 	_rebuild_tilemap(true)
 	_rebuild_collision()
+	Weather.enter_map(id)
 	var sp: Vector2
 	if pos != null and pos is Vector2:
 		sp = pos
@@ -516,6 +518,8 @@ func _def_visible(d: Dictionary) -> bool:
 	if d.has("if_flag") and not Game.has_flag(d["if_flag"]):
 		return false
 	if d.has("unless_flag") and Game.has_flag(d["unless_flag"]):
+		return false
+	if d.has("clima") and not Weather.allows(d["clima"]):
 		return false
 	return true
 
@@ -1140,6 +1144,7 @@ func rest_at_shrine() -> void:
 		a.heal_full()
 	player.reset_resources()
 	player.state = Player.S.INTERACT
+	Weather.on_rest()
 	respawn_commons()
 	refresh_companion(true)
 	Game.tutorial_event("rest")

@@ -190,7 +190,7 @@ func _tick_timers(delta: float) -> void:
 func _regen(delta: float) -> void:
 	vigor_idle += delta
 	if vigor_idle >= VIGOR_DELAY and state != S.GUARD:
-		vigor = min(VIGOR_MAX, vigor + VIGOR_REGEN * delta)
+		vigor = min(VIGOR_MAX, vigor + VIGOR_REGEN * Game.weather_vigor_mult() * delta)
 	if not world.in_combat():
 		energy = min(ENERGY_MAX, energy + 4.0 * delta)
 	else:

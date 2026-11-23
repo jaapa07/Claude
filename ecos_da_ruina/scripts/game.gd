@@ -58,6 +58,8 @@ var rng_override: Callable = Callable()   # testes: func() -> float
 var god_mode := false
 var last_death := {}
 var dmg_stats := {}
+var weather_lock := ""      # testes: força um clima ("sol") em vez do sorteio (ver scripts/weather.gd)
+var weather_neutral := false  # testes: clima sem efeitos de jogo (o e2e completo continua determinístico)
 
 # ---- preferências (arquivo separado)
 var prefs := {"master": 0.8, "musica": 0.6, "efeitos": 0.8, "texto": 1.0, "reduz_tremor": false, "reduz_flash": false,
@@ -158,6 +160,7 @@ func new_game(p_slot: int = 1) -> void:
 	swap_cd = 0.0
 	save_block = 0
 	hab_escudo_t = 0.0; hab_novas = []
+	Weather.reset()
 	hero["hp"] = hero_max_hp()
 	in_game = true
 	hero_changed.emit(); team_changed.emit(); inventory_changed.emit(); quest_changed.emit()
@@ -167,7 +170,8 @@ func to_dict() -> Dictionary:
 		"individuals": individuals, "team": team, "sanctuary": sanctuary, "active_idx": active_idx, "flags": flags,
 		"chests": chests, "ecos": ecos, "eco_slots": eco_slots, "bestiary": bestiary, "location": location,
 		"checkpoint": checkpoint, "stats": stats, "play_time": play_time, "difficulty": difficulty, "behavior": behavior, "slot": slot,
-		"party": party, "contract": contract}
+		"party": party, "contract": contract,
+		"clima": Weather.to_dict()}
 
 func validate_save(d: Dictionary) -> String:
 	if int(d.get("version", -1)) != SAVE_VERSION:
@@ -200,6 +204,7 @@ func from_dict(d: Dictionary) -> bool:
 	party = Array(d.get("party", [])); contract = str(d.get("contract", ""))
 	tmp_flags = {}; skill_cd = {}; swap_cd = 0.0; save_block = 0
 	hab_escudo_t = 0.0; hab_novas = []
+	Weather.from_dict(d.get("clima", {}))
 	in_game = true
 	_normalize_types()
 	hero["hp"] = min(float(hero.get("hp", 1.0)), hero_max_hp())
@@ -303,6 +308,19 @@ func heat_mult() -> float:
 	if am != "" and Data.items.has(am):
 		m *= float(Data.items[am].get("calor", 1.0))
 	return m
+
+# =============================================================== CLIMA (regras em scripts/weather.gd)
+## Dano causado por quem tem a afinidade `aff` sob o clima atual.
+func weather_mult(aff: String) -> float:
+	return Weather.dmg_mult(aff)
+
+## Velocidade de criaturas com a afinidade `aff` (neve/frio deixam mais lentas).
+func weather_speed_mult(aff: String) -> float:
+	return Weather.speed_mult(aff)
+
+## Recuperação de vigor do herói (onda de calor cansa).
+func weather_vigor_mult() -> float:
+	return Weather.vigor_mult()
 
 # =============================================================== FORJA (melhoria de equipamento)
 func upgrade_level(id: String) -> int:
