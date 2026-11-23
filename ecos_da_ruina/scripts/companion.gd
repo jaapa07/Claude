@@ -23,6 +23,8 @@ var flash := 0.0
 var magnet_t := 0.0          # Ímã do Ferrunho
 var magnet_radius := 96.0
 var _magnet_fx: AnimatedSprite2D
+var dash_sk: Dictionary = {}   # habilidade do avanço em curso (Avanço Rochoso, Passo Sombrio, investidas em cadeia...)
+var dash_hops := 0
 
 func init(p_world: Node, p_ind: Dictionary) -> void:
 	world = p_world
@@ -70,6 +72,7 @@ func _physics_process(delta: float) -> void:
 	var cds: Dictionary = Game.skill_cd
 	for k in cds.keys():
 		cds[k] = max(0.0, float(cds[k]) - delta)
+	Game.hab_tick(delta)
 	if dash_t > 0.0:
 		_dash(delta)
 		return
@@ -242,6 +245,7 @@ func take_hit(dmg: float, from: Vector2, opts: Dictionary = {}) -> bool:
 		return false
 	if dash_t > 0.0:
 		dmg *= 0.3
+	dmg *= Game.hab_shield_mult()   # Escudo de Casca / Halo / Muralha
 	inv_t = 0.5
 	flash = 0.15
 	velocity = (global_position - from).normalized() * float(opts.get("knock", 60.0)) * 0.5
@@ -287,10 +291,14 @@ func absorb_projectile(_p: Node) -> void:
 		ind["hp"] = min(Game.creature_hp_max(ind), float(ind["hp"]) + 2.0)
 
 # =============================================================== HABILIDADE COMANDADA (Q)
+## Executa a habilidade ativa escolhida pelo jogador (Game.hab_active). O tipo de execução vem de "exec" em skills.json;
+## números, raio, recarga e efeitos visuais vêm da própria habilidade.
 func command_skill(dir: Vector2) -> bool:
 	if not is_alive():
 		return false
-	var sid: String = species["skill"]
+	var sid: String = Game.hab_active(ind)
+	if not Data.skills.has(sid):
+		return false
 	var sk: Dictionary = Data.skills[sid]
 	var cd: float = float(Game.skill_cd.get(uuid(), 0.0))
 	if cd > 0.0:
@@ -298,12 +306,13 @@ func command_skill(dir: Vector2) -> bool:
 		return false
 	Game.skill_cd[uuid()] = float(sk["recarga"]) * Game.creature_cd_mult(ind)
 	var mult := stat_mult()
-	var dmg: float = (float(sk["dano"]) + Game.creature_atk(ind) * 0.6) * mult
+	var dmg: float = (float(sk.get("dano", 0)) + Game.creature_atk(ind) * 0.6) * mult
 	var aff: String = species["afinidade"]
 	Audio.play(sk.get("som", "skill"))
 	Game.tutorial_event("command")
-	match sid:
-		"raizes":
+	var ex := str(sk.get("exec", sid))
+	match ex:
+		"prender":
 			var center: Vector2 = world.player.global_position + dir * 56.0
 			if target != null and is_instance_valid(target):
 				center = target.global_position
@@ -318,26 +327,37 @@ func command_skill(dir: Vector2) -> bool:
 			sprite.play("windup")
 		"pulso":
 			var rad2: float = float(sk["raio"]) * (1.25 if is_evolved() else 1.0)
-			world.fx_pulse(global_position, rad2)
-			world.light_pulse(global_position, rad2)
+			_fx_area(str(sk.get("fx", "pulse")), global_position, rad2)
+			if bool(sk.get("luz", false)):
+				world.light_pulse(global_position, rad2)
+			if bool(sk.get("acende", false)):
+				world.fire_area(global_position, Vector2.RIGHT, rad2 + 10.0, 360.0, "companion")
+			var stun: float = float(sk.get("atordoa", 0.0))
 			for e in world.enemies():
 				if e.hittable() and e.global_position.distance_to(global_position) <= rad2 + e.radius and e.kind != "dummy":
 					e.interrupt()
-					e.take_damage(dmg * 0.5, global_position, {"src": "companion", "uuid": uuid(), "aff": aff, "knock": 20.0})
+					if stun > 0.0:
+						e.root(stun * mult)
+					e.take_damage(dmg * 0.5, global_position, {"src": "companion", "uuid": uuid(), "aff": aff, "knock": float(sk.get("knock", 20.0))})
 			anim_lock = 0.3
 			sprite.play("windup")
-		"cone_fogo":
+		"cone":
 			var cdir := dir if dir != Vector2.ZERO else Vector2.RIGHT
 			if target != null and is_instance_valid(target):
 				cdir = (target.global_position - global_position).normalized()
 			var rr: float = float(sk["alcance"]) * (1.25 if is_evolved() else 1.0)
 			var arc: float = float(sk["arco"])
-			for k in 3:
-				world.fx_at("fire", global_position + cdir * (10.0 + 13.0 * k) + Vector2(0, -6), 0.45, 0.0, 0.8 + 0.25 * k)
+			var cfx := str(sk.get("fx", "fire"))
+			if cfx == "slash":
+				world.fx_at("slash", global_position + cdir * 18.0 + Vector2(0, -6), 0.25, cdir.angle(), 1.3)
+			else:
+				for k in 3:
+					world.fx_at(cfx, global_position + cdir * (10.0 + rr * 0.28 * k) + Vector2(0, -6), 0.45, 0.0, 0.8 + 0.25 * k)
 			for e in world.enemies():
 				if e.hittable() and e.kind != "dummy" and Combat.in_arc(global_position, cdir, rr, arc, e.global_position, e.radius):
-					e.take_damage(dmg, global_position, {"src": "companion", "uuid": uuid(), "aff": aff, "knock": 40.0})
-			world.fire_area(global_position, cdir, rr + 10.0, arc + 10.0, "companion")
+					e.take_damage(dmg, global_position, {"src": "companion", "uuid": uuid(), "aff": aff, "knock": float(sk.get("knock", 40.0))})
+			if bool(sk.get("acende", false)):
+				world.fire_area(global_position, cdir, rr + 10.0, arc + 10.0, "companion")
 			_face(cdir)
 			anim_lock = 0.35
 			sprite.play("attack")
@@ -351,6 +371,7 @@ func command_skill(dir: Vector2) -> bool:
 				_magnet_fx.position = Vector2(0, -6)
 				_magnet_fx.play("a")
 				add_child(_magnet_fx)
+			_magnet_fx.scale = Vector2.ONE * (magnet_radius / 96.0)
 			_magnet_fx.visible = true
 			for e in world.enemies():
 				if e.hittable() and e.kind != "dummy" and e.global_position.distance_to(global_position) <= magnet_radius:
@@ -370,26 +391,150 @@ func command_skill(dir: Vector2) -> bool:
 					e.take_damage(dmg * 0.3, center, {"src": "companion", "uuid": uuid(), "aff": aff, "knock": 0.0})
 			anim_lock = 0.3
 			sprite.play("windup")
-		"avanco":
+		"avanco", "avanco_cadeia":
 			dash_dir = dir if dir != Vector2.ZERO else Vector2.RIGHT
+			dash_sk = sk
+			dash_hops = int(sk.get("saltos", 0)) if ex == "avanco_cadeia" else 0
+			if dash_hops > 0:
+				var first := _nearest_enemy(global_position, float(sk["alcance"]) * 1.6, {})
+				if first != null:
+					dash_dir = (first.global_position - global_position).normalized()
 			dash_t = 0.25
 			dash_hit.clear()
 			sprite.play("attack")
+		"cadeia":
+			_chain_bolt(sk, dmg, aff)
+		"cura":
+			_heal_area(sid, sk, dmg, aff)
+		"escudo":
+			var dur: float = float(sk.get("duracao", 5.0)) * (1.2 if is_evolved() else 1.0)
+			Game.hab_shield(dur, float(sk.get("reducao", 0.3)))
+			var hp_pos: Vector2 = world.player.global_position
+			world.fx_at(str(sk.get("fx", "parry")), hp_pos + Vector2(0, -12), 0.5, 0.0, 1.5)
+			world.fx_at(str(sk.get("fx", "parry")), global_position + Vector2(0, -8), 0.5, 0.0, 1.2)
+			world.spawn_text(hp_pos + Vector2(0, -30), "Escudo -%d%%" % int(round(float(sk.get("reducao", 0.3)) * 100.0)), Color(0.7, 0.85, 1.0))
+			if bool(sk.get("luz", false)):
+				world.light_pulse(global_position, 56.0)
+			anim_lock = 0.3
+			sprite.play("windup")
 	return true
+
+## Efeito de área com sprites existentes (sem _draw).
+func _fx_area(kind: String, center: Vector2, rad: float) -> void:
+	match kind:
+		"pulse":
+			world.fx_pulse(center, rad)
+		"burst":
+			world.fx_at("burst", center + Vector2(0, -6), 0.35, 0.0, rad / 32.0)
+			world.fx_pulse(center, rad)
+		"quake":
+			world.fx_at("quake", center, 0.4, 0.0, rad / 24.0)
+			world.shake(1.5, 0.15)
+		_:
+			world.fx_at(kind, center + Vector2(0, -6), 0.4, 0.0, 1.2)
+			for k in 6:
+				world.fx_at(kind, center + Vector2.from_angle(TAU * k / 6.0) * rad * 0.6 + Vector2(0, -6), 0.45, 0.0, 1.1)
+
+func _nearest_enemy(from: Vector2, max_d: float, skip: Dictionary) -> Node:
+	var best: Node = null
+	var bd := max_d
+	for e in world.enemies():
+		if not e.hittable() or e.kind == "dummy" or skip.has(e.get_instance_id()):
+			continue
+		var d: float = from.distance_to(e.global_position)
+		if d <= bd:
+			bd = d
+			best = e
+	return best
+
+## Raio/fagulha/sombra que salta entre inimigos próximos (dano imediato; o traço é só visual).
+func _chain_bolt(sk: Dictionary, dmg: float, aff: String) -> void:
+	var first: Node = target if (target != null and is_instance_valid(target) and target.hittable() and target.kind != "dummy") else null
+	if first == null:
+		first = _nearest_enemy(global_position, float(sk.get("alcance", 100)), {})
+	anim_lock = 0.3
+	sprite.play("windup")
+	if first == null:
+		world.fx_at(str(sk.get("fx", "sparkle")), global_position + Vector2(0, -10), 0.4)
+		return
+	var hit := {}
+	var from := global_position + Vector2(0, -8)
+	var cur: Node = first
+	var n := int(sk.get("saltos", 3))
+	var col := Color(1.0, 0.95, 0.5)
+	match aff:
+		"brasa": col = Color(1.0, 0.55, 0.25)
+		"sombra": col = Color(0.6, 0.5, 0.8)
+	while cur != null and hit.size() < n:
+		hit[cur.get_instance_id()] = true
+		var to: Vector2 = cur.global_position + Vector2(0, -6)
+		var fxk := str(sk.get("fx", "sparkle"))
+		world.bolt(from, to, col, func(): world.fx_at(fxk, to, 0.35))
+		cur.take_damage(dmg, from, {"src": "companion", "uuid": uuid(), "aff": aff, "knock": 25.0})
+		if float(sk.get("cega", 0.0)) > 0.0 and is_instance_valid(cur) and "blind_t" in cur:
+			cur.blind_t = max(float(cur.blind_t), float(sk["cega"]))
+		from = to
+		cur = _nearest_enemy(to, float(sk.get("raio", 60)), hit)
+	if bool(sk.get("luz", false)):
+		world.light_pulse(global_position, 40.0)
+	_face(first.global_position - global_position)
+
+## Cura em área: o herói e a própria criatura; "Bosque Vivo" também prende os pequenos ao redor.
+func _heal_area(sid: String, sk: Dictionary, dmg: float, aff: String) -> void:
+	var hero: Node2D = world.player
+	var heal: float = Game.hab_heal(ind, sid)
+	var center: Vector2 = hero.global_position
+	if global_position.distance_to(center) > float(sk.get("raio", 48)):
+		global_position = global_position.move_toward(center, 24.0)
+	hero.heal(heal)
+	world.spawn_text(center + Vector2(0, -30), "+%d" % int(round(heal)), Color(0.5, 1.0, 0.5))
+	ind["hp"] = min(Game.creature_hp_max(ind), float(ind["hp"]) + heal * 0.6)
+	var fxk := str(sk.get("fx", "bond"))
+	if fxk == "roots":
+		world.fx_roots(center, float(sk.get("raio", 48)))
+	else:
+		world.fx_at(fxk, center + Vector2(0, -12), 0.6, 0.0, 1.4)
+	world.fx_at("bond", global_position + Vector2(0, -8), 0.5)
+	Audio.play("heal", -4.0)
+	if bool(sk.get("luz", false)):
+		world.light_pulse(global_position, float(sk.get("raio", 48)))
+	if float(sk.get("dano", 0)) > 0.0:
+		var rad: float = float(sk.get("raio", 48))
+		for e in world.enemies():
+			if e.hittable() and e.kind != "dummy" and e.global_position.distance_to(center) <= rad + e.radius:
+				e.root(float(sk.get("duracao", 2.0)) * stat_mult())
+				e.take_damage(dmg * 0.4, center, {"src": "companion", "uuid": uuid(), "aff": aff, "knock": 0.0})
+	anim_lock = 0.3
+	sprite.play("windup")
 
 func _dash(delta: float) -> void:
 	dash_t -= delta
-	velocity = dash_dir * (float(Data.skills["avanco"]["alcance"]) / 0.25)
+	var sk: Dictionary = dash_sk if not dash_sk.is_empty() else Data.skills["avanco"]
+	velocity = dash_dir * (float(sk["alcance"]) / 0.25)
 	move_and_slide()
 	_face(dash_dir)
-	var sk: Dictionary = Data.skills["avanco"]
 	var dmg: float = (float(sk["dano"]) + Game.creature_atk(ind) * 0.6) * stat_mult()
+	var hit_now: Node = null
 	for e in world.enemies():
 		if dash_hit.has(e.get_instance_id()) or not e.hittable():
 			continue
 		if e.global_position.distance_to(global_position) <= float(sk["raio"]) + e.radius:
 			dash_hit[e.get_instance_id()] = true
+			hit_now = e
 			e.take_damage(dmg, global_position, {"src": "companion", "uuid": uuid(), "aff": species["afinidade"], "knock": 120.0, "ignore_guard": true})
+	if sk.has("fx") and Engine.get_physics_frames() % 4 == 0:
+		world.fx_at(str(sk["fx"]), global_position + Vector2(0, -6), 0.3)
+	# investida em cadeia: ao acertar (ou ao fim do avanço), ricocheteia para o próximo inimigo próximo
+	if dash_hops > 0 and (hit_now != null or dash_t <= 0.0) and not dash_hit.is_empty():
+		var nxt := _nearest_enemy(global_position, float(sk["alcance"]) * 1.4, dash_hit)
+		dash_hops -= 1
+		if nxt != null and dash_hops > 0:
+			dash_dir = (nxt.global_position - global_position).normalized()
+			dash_t = 0.25
+			world.dust(global_position)
+			return
+		dash_hops = 0
 	if dash_t <= 0.0:
 		velocity = Vector2.ZERO
-
+		dash_sk = {}
+		dash_hops = 0

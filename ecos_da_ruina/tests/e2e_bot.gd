@@ -33,7 +33,9 @@ func _ready() -> void:
 	Game.rng.seed = sd
 	Game.toast.connect(func(t): if "exausta" in t: exhausted_events += 1)
 	main.ui.instant = true
-	if "--casas" in args:
+	if "--habilidades" in args:
+		await run_habilidades()
+	elif "--casas" in args:
 		await run_casas()
 	elif "--grupo" in args:
 		await run_grupo()
@@ -1496,6 +1498,24 @@ func run_unit() -> void:
 	await frames(2)
 	check("R2: válvula converte Q->q só dentro da área", q_before == "Q" and W.cur_tiles[15][20] == "q" and W.cur_tiles[33][42] == "Q")
 	Game.set_flag("pedreira_valv", false)
+	# ---- habilidades aprendidas por nível (dados e regras)
+	var execs := ["prender", "pulso", "cone", "ima", "nuvem", "avanco", "avanco_cadeia", "cadeia", "cura", "escudo"]
+	var bad_h: Array = []
+	for sid in Data.species:
+		if Data.species[sid]["status"] != "jogavel":
+			continue
+		var hl: Array = Game.hab_list(sid)
+		if hl.size() < 3 or str(hl[0]["id"]) != str(Data.species[sid]["skill"]) or int(hl[0]["nivel"]) != 1:
+			bad_h.append(sid)
+		for h in hl:
+			if not str(Data.skills[h["id"]].get("exec", "")) in execs:
+				bad_h.append("%s:%s" % [sid, h["id"]])
+	check("Hab: espécies jogáveis têm lista de habilidades (1ª = original) com execução conhecida", bad_h.is_empty(), str(bad_h))
+	var hi := Game.new_individual("faisquito", 9)
+	check("Hab: indivíduo novo aprende o que o nível permite", hi["hab_aprendidas"] == ["cone_fogo", "fagulhas", "estouro_brasa"] and hi["hab_ativa"] == "cone_fogo", str(hi["hab_aprendidas"]))
+	var old_ind := {"uuid": "velho", "species_id": "ferrunho", "nivel": 8, "xp": 0, "hp": 10.0, "exausta": false, "vinculo": []}
+	Game.hab_sync(old_ind, false)
+	check("Hab: migração de indivíduo antigo (ativa = original)", old_ind["hab_ativa"] == "ima" and old_ind["hab_aprendidas"] == ["ima", "placa_ferro"], str(old_ind))
 
 ## Captura quadro a quadro do combo de espada (para conferir a animação)
 func run_demo() -> void:
@@ -2645,3 +2665,237 @@ func run_grupo() -> void:
 	Input.action_release("dodge")
 	release_moves()
 	check("Botas do Vento: segurar a esquiva faz correr", running and P.global_position.x - x0 > 90.0, "%s %.0f" % [running, P.global_position.x - x0])
+# =============================================================== HABILIDADES DAS CRIATURAS (aprender, escolher, usar, salvar)
+## Uso: godot --headless --fixed-fps 60 --path . -- --e2e --habilidades
+var hab_toasts: Array = []
+
+func _hab_add(sp_id: String, lvl: int) -> Dictionary:
+	var ind := Game.new_individual(sp_id, lvl)
+	Game.individuals[ind["uuid"]] = ind
+	Game.team.append(ind["uuid"])
+	Game.team_changed.emit()
+	return ind
+
+func _hab_top_title() -> String:
+	var t: MenuScreen = main.ui._top()
+	return t.title if t != null else ""
+
+func _hab_fire(ind: Dictionary, hid: String) -> bool:
+	Game.hab_set_active(ind["uuid"], hid)
+	Game.set_active(ind["uuid"])
+	W.refresh_companion(false)
+	await frames(3)
+	Game.skill_cd[ind["uuid"]] = 0.0
+	var c: Node = W.companion
+	c.target = null
+	return c.command_skill(Vector2.RIGHT)
+
+func _hab_open_team_creature(uuid: String) -> void:
+	await ui_press("pause")
+	await ui_press("ui_down")
+	await ui_press("ui_accept")      # Equipe e criaturas
+	await frames(3)
+	for i in Game.team.find(uuid):
+		await ui_press("ui_down")
+	await ui_press("ui_accept")      # menu da criatura
+	await frames(3)
+
+func run_habilidades() -> void:
+	SaveSys.delete_slot(3)
+	Game.toast.connect(func(t): hab_toasts.append(t))
+	main.start_new_game(3)
+	await frames(10)
+	await advance_dialogs()
+	Game.god_mode = false
+	# ---- dados
+	var ok_data := true
+	var why: Array = []
+	for sid in ["brotisco", "lumipim", "cascalito", "faisquito", "ferrunho", "fuligin"]:
+		var base: Array = Game.hab_list(sid)
+		var evo: String = Data.species[sid]["evolucao"]["para"]
+		var ev_l: Array = Game.hab_list(evo)
+		var base_ids: Array = base.map(func(h): return h["id"])
+		var ev_ids: Array = ev_l.map(func(h): return h["id"])
+		var herda: bool = base_ids.all(func(h): return ev_ids.has(h))
+		var excl: int = ev_l.size() - base.size()
+		if base.size() < 3 or base.size() > 4 or not herda or excl < 1 or excl > 2 or base_ids[0] != Data.species[sid]["skill"]:
+			ok_data = false
+			why.append(sid)
+	check("Hab: 12 espécies com 3–4 habilidades; evolução herda e libera 1–2 exclusivas", ok_data, str(why))
+	# ---- aprender por nível
+	var bro := _hab_add("brotisco", 1)
+	W.refresh_companion(false)
+	await frames(3)
+	check("Hab: Brotisco Nv.1 conhece só Raízes (ativa)", bro["hab_aprendidas"] == ["raizes"] and Game.hab_active(bro) == "raizes", str(bro["hab_aprendidas"]))
+	hab_toasts.clear()
+	while int(bro["nivel"]) < 4:
+		Game.add_creature_xp(bro, Game.creature_xp_to_next(int(bro["nivel"])))
+	check("Hab: ao subir de nível aprende Sementes (Nv.3) e Chicote (Nv.4)", bro["hab_aprendidas"].has("sementes") and bro["hab_aprendidas"].has("chicote_cipo") and bro["hab_aprendidas"].size() == 3, str(bro["hab_aprendidas"]))
+	var seen: bool = hab_toasts.any(func(t): return "aprendeu Sementes Curativas! Escolha no menu" in t)
+	check("Hab: toast 'X aprendeu Y! Escolha no menu'", seen, str(hab_toasts))
+	check("Hab: aprender não troca a ativa sozinho", Game.hab_active(bro) == "raizes")
+	# ---- escolher no menu (Pausa > Equipe > criatura > Habilidades…)
+	await _hab_open_team_creature(bro["uuid"])
+	for i in 3:
+		await ui_press("ui_down")    # Tornar ativa, Apelido, Evoluir, Habilidades…
+	await ui_press("ui_accept")
+	await frames(3)
+	var top: MenuScreen = main.ui._top()
+	check("Hab: menu da criatura abre a tela Habilidades", top != null and top.title.begins_with("Habilidades"), _hab_top_title())
+	var n_locked := 0
+	if top != null:
+		for it in top.items:
+			if not it.get("hdr", false) and not it.get("en", true) and "(Nv." in str(it["t"]):
+				n_locked += 1
+		await shot("hab_menu")
+		var info: String = top._info_text()
+		check("Hab: tela mostra descrição, recarga e dano", "Recarga" in info and "Dano" in info, info)
+	check("Hab: bloqueadas aparecem em cinza com o nível (exclusivas da evolução)", n_locked == 2, str(n_locked))
+	await ui_press("ui_down")        # Sementes Curativas
+	await ui_press("ui_accept")
+	await frames(3)
+	check("Hab: escolher no menu define a ativa", bro["hab_ativa"] == "sementes" and Game.hab_active(bro) == "sementes", str(bro.get("hab_ativa")))
+	await close_menus()
+	check("Hab: menus fecham", not main.ui.has_screen() and not get_tree().paused)
+	# ---- Q usa a escolhida com recarga própria
+	Game.hero["hp"] = 40.0
+	Game.skill_cd[bro["uuid"]] = 0.0
+	await tap("skill", 2)
+	await frames(2)
+	var cd1: float = float(Game.skill_cd.get(bro["uuid"], 0.0))
+	check("Hab: Q usa Sementes Curativas (cura o herói)", float(Game.hero["hp"]) > 40.0, str(Game.hero["hp"]))
+	check("Hab: recarga própria da escolhida (12 s)", cd1 > 11.5 and cd1 <= 12.0, str(cd1))
+	var hp_b: float = float(Game.hero["hp"])
+	await tap("skill", 2)
+	check("Hab: em recarga, Q não repete", float(Game.hero["hp"]) == hp_b)
+	var wolf := _spawn_wolf(W.companion.global_position + Vector2(24, 0))
+	var w0: float = wolf.hp
+	await _hab_fire(bro, "chicote_cipo")
+	await frames(2)
+	check("Hab: Chicote de Cipó fere à frente com recarga de 5 s", wolf.hp < w0 and abs(float(Game.skill_cd[bro["uuid"]]) - 5.0) < 0.2, "%s -> %s cd %s" % [w0, wolf.hp, Game.skill_cd[bro["uuid"]]])
+	wolf.queue_free()
+	await frames(2)
+	# ---- novas execuções: escudo, cadeia, investida em cadeia
+	var cas := _hab_add("cascalito", 3)
+	await _hab_fire(cas, "casca")
+	check("Hab: Escudo de Casca reduz dano (30%)", is_equal_approx(Game.hab_shield_mult(), 0.7), str(Game.hab_shield_mult()))
+	Game.hero["hp"] = 100.0
+	P.inv_timer = 0.0
+	P.state = Player.S.FREE
+	Game.difficulty = "desafio"
+	P.take_hit(20.0, P.global_position + Vector2(30, 0))
+	check("Hab: herói com escudo recebe menos dano", abs(float(Game.hero["hp"]) - (100.0 - 20.0 * (1.0 - Game.hero_reduction()) * 0.7)) < 0.2, str(Game.hero["hp"]))
+	Game.difficulty = "aventura"
+	await secs(5.5)
+	check("Hab: escudo expira", Game.hab_shield_mult() == 1.0)
+	var lum := _hab_add("lumipim", 3)
+	Game.set_active(lum["uuid"])
+	W.refresh_companion(false)
+	await frames(3)
+	var cp: Vector2 = W.companion.global_position
+	var ws: Array = [_spawn_wolf(cp + Vector2(40, 0)), _spawn_wolf(cp + Vector2(70, 20)), _spawn_wolf(cp + Vector2(100, 0))]
+	var hp_ws: Array = ws.map(func(w): return w.hp)
+	await _hab_fire(lum, "lampejo")
+	await frames(2)
+	var hit_n := 0
+	for i in 3:
+		if ws[i].hp < hp_ws[i]:
+			hit_n += 1
+	check("Hab: Lampejo em Cadeia salta entre 3 inimigos", hit_n == 3, str(hit_n))
+	for w in ws:
+		w.queue_free()
+	await frames(2)
+	Game.move_to_sanctuary(cas["uuid"])
+	var roc := _hab_add("rocantor", 6)
+	Game.set_active(roc["uuid"])
+	W.refresh_companion(false)
+	await frames(3)
+	cp = W.companion.global_position
+	var ws2: Array = [_spawn_wolf(cp + Vector2(30, 0)), _spawn_wolf(cp + Vector2(60, 24))]
+	var hp2: Array = ws2.map(func(w): return w.hp)
+	check("Hab: Rocantor (evoluída) já conhece Avalanche no Nv.6", roc["hab_aprendidas"].has("avalanche") and not roc["hab_aprendidas"].has("muralha"))
+	await _hab_fire(roc, "avalanche")
+	await secs(1.2)
+	var hit2 := 0
+	for i in 2:
+		if is_instance_valid(ws2[i]) and ws2[i].hp < hp2[i]:
+			hit2 += 1
+	check("Hab: Avalanche (investida em cadeia) acerta mais de um inimigo", hit2 == 2, str(hit2))
+	for w in ws2:
+		if is_instance_valid(w):
+			w.queue_free()
+	Game.move_to_sanctuary(roc["uuid"])
+	await frames(3)
+	# ---- evolução: aprende a exclusiva e oferece a escolha
+	Game.set_active(bro["uuid"])
+	W.refresh_companion(false)
+	while int(bro["nivel"]) < 5:
+		Game.add_creature_xp(bro, Game.creature_xp_to_next(int(bro["nivel"])))
+	bro["vinculo"] = ["a", "b", "c"]
+	W.combat_t = 0.0
+	hab_toasts.clear()
+	await _hab_open_team_creature(bro["uuid"])
+	await ui_press("ui_down")
+	await ui_press("ui_down")        # Evoluir
+	await ui_press("ui_accept")
+	await frames(3)
+	await ui_press("ui_accept")      # Confirmar
+	await frames(6)
+	check("Hab: Brotisco evoluiu para Galhardo", bro["species_id"] == "galhardo")
+	check("Hab: evolução avisa a habilidade exclusiva aprendida", hab_toasts.any(func(t): return "aprendeu Raízes Profundas! Escolha no menu" in t), str(hab_toasts))
+	top = main.ui._top()
+	check("Hab: evolução oferece a escolha (abre Habilidades)", top != null and top.title.begins_with("Habilidades"), _hab_top_title())
+	check("Hab: ativa preservada na evolução", Game.hab_active(bro) == "chicote_cipo", Game.hab_active(bro))
+	if top != null:
+		var target_i := -1
+		for i in top.items.size():
+			if "Raízes Profundas" in str(top.items[i]["t"]) and top.items[i].get("en", true):
+				target_i = i
+		if target_i >= 0:
+			top.sel = target_i
+			await ui_press("ui_accept")
+	await shot("hab_evolucao")
+	check("Hab: escolhe a exclusiva na tela da evolução", Game.hab_active(bro) == "raizes_profundas", str(bro["hab_ativa"]))
+	await close_menus()
+	# ---- Q com a exclusiva escolhida
+	Game.skill_cd[bro["uuid"]] = 0.0
+	await tap("skill", 2)
+	await frames(2)
+	check("Hab: Q usa Raízes Profundas (recarga 8 s)", abs(float(Game.skill_cd.get(bro["uuid"], 0.0)) - 8.0) < 0.2, str(Game.skill_cd.get(bro["uuid"])))
+	# ---- Santuário: também acessível pelo armazenamento
+	main.ui.open_storage()
+	await frames(3)
+	await ui_press("ui_down")        # primeira criatura guardada (abaixo de "Ordenar")
+	await ui_press("ui_accept")
+	await frames(3)
+	await ui_press("ui_down")
+	await ui_press("ui_down")        # Levar à equipe, Apelido…, Habilidades…
+	await ui_press("ui_accept")
+	await frames(3)
+	check("Hab: Santuário (armazenamento) também abre Habilidades", _hab_top_title().begins_with("Habilidades"), _hab_top_title())
+	await close_menus()
+	# ---- save/load mantém
+	Game.hab_set_active(lum["uuid"], "lampejo")
+	var ok_s := SaveSys.save_game(3)
+	Game.hab_set_active(bro["uuid"], "raizes")
+	bro["hab_aprendidas"] = ["raizes"]
+	var ok_l := SaveSys.load_game(3)
+	var bro2: Dictionary = Game.individuals.get(bro["uuid"], {})
+	var lum2: Dictionary = Game.individuals.get(lum["uuid"], {})
+	check("Hab: save/load mantém ativa e aprendidas", ok_s and ok_l and bro2.get("hab_ativa", "") == "raizes_profundas" and bro2.get("hab_aprendidas", []).size() == 4 and lum2.get("hab_ativa", "") == "lampejo", "%s %s" % [bro2.get("hab_ativa"), bro2.get("hab_aprendidas")])
+	# ---- migração de save antigo (sem os campos)
+	var d: Dictionary = JSON.parse_string(JSON.stringify(Game.to_dict()))
+	for u in d["individuals"]:
+		d["individuals"][u].erase("hab_ativa")
+		d["individuals"][u].erase("hab_aprendidas")
+	d["individuals"][bro["uuid"]]["species_id"] = "brotisco"
+	d["individuals"][bro["uuid"]]["nivel"] = 4
+	hab_toasts.clear()
+	var ok_m := Game.from_dict(d)
+	var b3: Dictionary = Game.individuals[bro["uuid"]]
+	var c3: Dictionary = Game.individuals[cas["uuid"]]
+	check("Hab: save antigo migra (ativa = original, aprendidas pelo nível)", ok_m and b3["hab_ativa"] == "raizes" and b3["hab_aprendidas"] == ["raizes", "sementes", "chicote_cipo"] and c3["hab_ativa"] == "avanco" and c3["hab_aprendidas"] == ["avanco", "casca"], "%s %s / %s" % [b3.get("hab_ativa"), b3.get("hab_aprendidas"), c3.get("hab_aprendidas")])
+	check("Hab: migração não gera avisos de 'aprendeu'", not hab_toasts.any(func(t): return "aprendeu" in t))
+	var bad: Dictionary = Game.individuals[lum["uuid"]]
+	bad["hab_ativa"] = "eclipse"
+	check("Hab: ativa inválida volta à habilidade original", Game.hab_active(bad) == "pulso")

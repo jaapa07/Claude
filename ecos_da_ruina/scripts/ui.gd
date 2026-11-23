@@ -199,12 +199,13 @@ func _fill_pause(s: MenuScreen) -> void:
 # =============================================================== EQUIPE
 func creature_info(ind: Dictionary, compare: Dictionary = {}) -> String:
 	var sp := Game.sp_of(ind)
-	var sk: Dictionary = Data.skills[sp["skill"]]
+	var sk: Dictionary = Data.skills[Game.hab_active(ind)]
 	var ev := Game.evolution_status(ind)
 	var t := "%s  (%s)\nNível %d   XP %d/%d\nVida %d/%d   Ataque %.0f\nAfinidade: %s   Papel: %s\n\nHabilidade (Q): %s\n  %s\nPassiva: %s\nAção ambiental: %s\n\nVínculo: %d/3 atividades\n" % [
 		Game.creature_name(ind), sp["nome"], ind["nivel"], int(ind["xp"]), Game.creature_xp_to_next(int(ind["nivel"])),
 		int(ind["hp"]), int(Game.creature_hp_max(ind)), Game.creature_atk(ind), sp["afinidade"], sp["papel"],
 		sk["nome"], sk["descricao"], sp["passiva"], sp["acao_ambiental"], Game.bond_count(ind)]
+	t += "Habilidades aprendidas: %d/%d (menu Habilidades)\n" % [ind.get("hab_aprendidas", []).size(), Game.hab_list(ind["species_id"]).size()]
 	if sp.get("evolucao") != null:
 		t += "Evolui para %s no nível %d. %s" % [Data.sp(sp["evolucao"]["para"])["nome"], sp["evolucao"]["nivel"], "PRONTA!" if ev["possivel"] else ev["motivo"]]
 	else:
@@ -253,6 +254,7 @@ func _creature_menu(uuid: String, parent: MenuScreen) -> void:
 	items.append(_acc_row(uuid, func(): s.close(); _fill_team(parent)))
 	var ev := Game.evolution_status(ind)
 	items.append(_it("Evoluir" + ("" if ev["possivel"] else " (indisponível)"), func(): _evolve_confirm(ind, func(): s.close(); _fill_team(parent)), ev.get("motivo", "") if not ev["possivel"] else "Confirme a evolução fora de combate.", ev["possivel"] and not world.in_combat()))
+	items.append(_it("Habilidades…", func(): open_habilidades(uuid, func(): s.setup(Game.creature_name(ind), items, creature_info(ind))), "Escolha qual habilidade aprendida a criatura usa no Q (botão estrela no toque)."))
 	items.append(_it("Enviar ao santuário", func():
 		if Game.move_to_sanctuary(uuid):
 			world.refresh_companion(true); s.close(); _fill_team(parent)
@@ -294,14 +296,88 @@ func _evolve_confirm(ind: Dictionary, done: Callable) -> void:
 	tmp["species_id"] = ev["para"]
 	var msg := "%s evoluirá para %s.\n\nVida máx.: %d → %d\nAtaque: %.0f → %.0f\n\nMantém: identidade, apelido, vínculo, papel e ação ambiental.\nA habilidade ganha potência (×1.4)." % [Game.creature_name(ind), to["nome"], int(cur_hp), int(Game.creature_hp_max(tmp)), cur_atk, Game.creature_atk(tmp)]
 	_confirm("Evoluir criatura?", msg, func():
-		if Game.evolve(ind["uuid"]):
+		var evolved := Game.evolve(ind["uuid"])
+		if evolved:
 			Audio.play("evolve")
 			world.refresh_companion(true)
 			if world.companion != null:
 				world.companion.queue_free()
 				world.companion = null
 				world.refresh_companion(true)
-		done.call())
+		done.call()
+		if evolved and not Game.hab_novas.is_empty():
+			open_habilidades(ind["uuid"], Callable(), Game.hab_novas.duplicate()))
+
+# =============================================================== HABILIDADES DA CRIATURA (escolha da ativa)
+## Lista as aprendidas (escolher define a ativa: Q / botão estrela) e as bloqueadas com o nível necessário (cinza).
+func open_habilidades(uuid: String, done: Callable = Callable(), novas: Array = []) -> MenuScreen:
+	var ind: Dictionary = Game.individuals.get(uuid, {})
+	if ind.is_empty():
+		return null
+	Game.hab_sync(ind, false)
+	var s := _push("Habilidades", [], "")
+	if done.is_valid():
+		s.closed.connect(done)
+	s.setup("Habilidades — %s" % Game.creature_name(ind), [], "")
+	s.list_w = 200.0
+	_hab_fill(s, ind, novas)
+	# começa na habilidade ativa
+	for i in s.items.size():
+		if str(s.items[i]["t"]).begins_with("★"):
+			s.sel = i
+			break
+	s._refresh()
+	return s
+
+func _hab_fill(s: MenuScreen, ind: Dictionary, novas: Array) -> void:
+	if not is_instance_valid(s):
+		return
+	var uuid: String = ind["uuid"]
+	var items: Array = []
+	var ativa := Game.hab_active(ind)
+	var learned: Array = ind.get("hab_aprendidas", [])
+	if not novas.is_empty():
+		var nomes: Array = []
+		for h in novas:
+			nomes.append(Data.skills[h]["nome"])
+		items.append(_hdr("Nova: " + ", ".join(nomes)))
+	items.append(_hdr("Aprendidas (%d)" % learned.size()))
+	for hid in learned:
+		var h: String = hid
+		var lab := "%s%s" % ["★ " if h == ativa else "  ", Data.skills[h]["nome"]]
+		items.append(_it(lab, func():
+			if Game.hab_set_active(uuid, h):
+				Audio.play("ui_ok")
+				toast("%s usará %s no Q." % [Game.creature_name(ind), Data.skills[h]["nome"]])
+			_hab_fill(s, ind, novas), func(): return Game.hab_text(ind, h) + ("\n\n[ATIVA — usada no Q]" if h == Game.hab_active(ind) else "\n\nConfirme para usar no Q.")))
+	var locked: Array = []
+	for e in Game.hab_list(ind["species_id"]):
+		if not learned.has(str(e["id"])):
+			locked.append(e)
+	if not locked.is_empty():
+		items.append(_hdr("Bloqueadas"))
+		for e in locked:
+			var h2: String = str(e["id"])
+			var nv: int = int(e.get("nivel", 1))
+			items.append(_it("  %s  (Nv.%d)" % [Data.skills[h2]["nome"], nv], Callable(), func(): return Game.hab_text(ind, h2) + "\n\nAprende no nível %d." % nv, false))
+	var ev = Game.sp_of(ind).get("evolucao")
+	if ev != null:
+		var exclusive: Array = []
+		for e2 in Game.hab_list(str(ev["para"])):
+			if Game.hab_level(ind["species_id"], str(e2["id"])) == 0:
+				exclusive.append(e2)
+		if not exclusive.is_empty():
+			items.append(_hdr("Após evoluir (%s)" % Data.sp(ev["para"])["nome"]))
+			for e3 in exclusive:
+				var h3: String = str(e3["id"])
+				var nv3: int = int(e3.get("nivel", 1))
+				items.append(_it("  %s  (Nv.%d)" % [Data.skills[h3]["nome"], nv3], Callable(), func(): return Game.hab_text(ind, h3) + "\n\nExclusiva da forma evoluída: aprende no nível %d após evoluir." % nv3, false))
+	items.append(_it("Voltar", func(): s.close()))
+	var keep := s.sel
+	s.set_items(items)
+	s.sel = clampi(keep, 0, items.size() - 1)
+	s._fix_sel(1)
+	s._refresh()
 
 func open_storage() -> void:
 	var s := _push("Santuário", [], "")
@@ -335,6 +411,7 @@ func _storage_menu(uuid: String, refill: Callable) -> void:
 			toast("Equipe cheia (3)."), "", Game.team.size() < 3))
 	items.append(_it("Apelido…", func(): _rename(ind, func(): s.close(); refill.call())))
 	items.append(_acc_row(uuid, func(): s.close(); refill.call()))
+	items.append(_it("Habilidades…", func(): open_habilidades(uuid, func(): s.setup(Game.creature_name(ind), items, creature_info(ind, Game.active_ind()))), "Escolha qual habilidade aprendida a criatura usa no Q."))
 	items.append(_it("Liberar…", func():
 		var why := Game.can_release(uuid)
 		if why != "":
