@@ -160,7 +160,11 @@ func goto(target: Vector2, tol := 4.0, timeout := 40.0, extra_block := {}) -> bo
 	var path: Array = []
 	var pi := 0
 	var replan := 0.0
+	var start_map := W.map_id
 	while t < timeout:
+		if W.map_id != start_map or W.transition_busy:
+			release_moves()
+			return true
 		if P.state == Player.S.DEAD:
 			release_moves()
 			return false
@@ -486,6 +490,7 @@ func run_e2e() -> void:
 	if stage_limit <= 21: return
 	await r2_pos_ferreiro()
 	if stage_limit <= 22: return
+	await r2_rito_avancado()
 	await r2_save_load()
 
 # =============================================================== ESTÁGIOS
@@ -1402,6 +1407,58 @@ func run_unit() -> void:
 	# ---- dados: validação
 	check("Validação de dados sem erros", Data.errors.is_empty(), str(Data.errors))
 	check("15 espécies-base e 3 evoluções jogáveis cadastradas", Data.species.size() >= 18)
+	# ---- Região 2: garantias de design verificadas nos dados
+	var r2_sp := ["faisquito", "ferrunho", "fuligin"]
+	var ok_sp := true
+	for sid in r2_sp:
+		var sp: Dictionary = Data.species[sid]
+		if sp["status"] != "jogavel" or sp["raridade"] == "rara" or int(sp["evolucao"]["nivel"]) > 11 or Data.species[sp["evolucao"]["para"]]["status"] != "jogavel":
+			ok_sp = false
+	check("R2: espécies das minas jogáveis, não raras, evolução até o nível 11", ok_sp)
+	# nenhum portão obrigatório depende de criatura, de Eco ou de flag que só se obtém depois dele
+	var creature_flags := {}
+	var eco_flags := {}
+	for mid in Data.regions["minas"]["mapas"]:
+		for e in Data.maps[mid]["entities"]:
+			if e["type"] in ["rail_marked", "draft", "vine"] and not e.get("hero", false):
+				creature_flags[e["flag"]] = mid
+			if e["type"] == "crack":
+				eco_flags[e["flag"]] = mid
+	var bad := []
+	for mid in Data.regions["minas"]["mapas"]:
+		for e in Data.maps[mid]["entities"]:
+			if e["type"] == "door":
+				for f in e.get("open_flags", []):
+					if creature_flags.has(f) or eco_flags.has(f) or f == "ferreiro_morto" and mid != "fundicao_c":
+						bad.append("%s:%s" % [mid, e["id"]])
+			if e["type"] == "exit" and e.get("if_flag", "") in creature_flags:
+				bad.append("%s:saida" % mid)
+	check("R2: portões obrigatórios não dependem de criatura nem de Ruptura Ígnea (sem dependência circular)", bad.is_empty(), str(bad))
+	var agua := []
+	for mid in Data.regions["minas"]["mapas"]:
+		for e in Data.maps[mid]["entities"]:
+			if e["type"] == "valve" and not e.has("flag") and not e.get("boss", false):
+				agua.append(e["id"])
+			if e.get("species", "") in ["goturim", "marulume"] or e["type"] == "vine":
+				agua.append(str(e.get("id", e["type"])))
+	check("R2: resfriamento só por válvulas locais (nenhuma criatura de água nas minas)", agua.is_empty(), str(agua))
+	# forja: custo e efeito
+	Game.inventory["minerio_cobre"] = 3
+	Game.fragments = 40
+	var atk_f := Game.hero_atk()
+	var ok_f := Game.forge_upgrade("espada_viajante")
+	check("R2: forja consome materiais e melhora a arma (+3 de ataque)", ok_f and Game.item_count("minerio_cobre") == 0 and Game.fragments == 0 and abs(Game.hero_atk() - atk_f - 3.0) < 0.01)
+	check("R2: forja recusa sem materiais", Game.forge_check("espada_viajante") != "" and not Game.forge_upgrade("espada_viajante"))
+	Game.inventory["luvas_termicas"] = 1
+	check("R2: Luvas Térmicas reduzem o calor pela metade", is_equal_approx(Game.heat_mult(), 0.5))
+	# condicional por área (válvula resfria só a ala)
+	W.load_map("pedreira_oca", "from_forja")
+	await frames(3)
+	var q_before: String = W.cur_tiles[15][20]
+	Game.set_flag("pedreira_valv")
+	await frames(2)
+	check("R2: válvula converte Q->q só dentro da área", q_before == "Q" and W.cur_tiles[15][20] == "q" and W.cur_tiles[33][42] == "Q")
+	Game.set_flag("pedreira_valv", false)
 
 ## Captura quadro a quadro do combo de espada (para conferir a animação)
 func run_demo() -> void:
@@ -1486,15 +1543,26 @@ func set_active_species(ids: Array) -> bool:
 	await frames(5)
 	return Game.active_ind().get("uuid", "") == u
 
+## Tenta os indivíduos do habitat em ordem (o habitat fixo tem mais de um, como garante o documento).
 func capture_species(id: String, limit := 0.3) -> bool:
-	var w := ent_by_id(id)
-	if w == null:
-		return false
-	await goto(w.global_position + Vector2(18, 0), 14.0, 40.0)
-	await weaken(w, limit)
-	if not is_instance_valid(w) or not w.alive_flag:
-		return false
-	return await capture_wild(w, 10)
+	var ids: Array = [id]
+	for e in get_tree().get_nodes_in_group("wild"):
+		var w0: Node = e
+		var me := ent_by_id(id)
+		if me != null and w0 != me and w0.species_id == me.species_id and w0.global_position.distance_to(me.global_position) < 200.0:
+			ids.append(w0.uid)
+	var n0 := Game.individuals.size()
+	for wid in ids:
+		var w := ent_by_id(wid)
+		if w == null or not w.alive_flag:
+			continue
+		await goto(w.global_position + Vector2(18, 0), 14.0, 40.0)
+		await weaken(w, limit)
+		if not is_instance_valid(w) or not w.alive_flag:
+			continue
+		if await capture_wild(w, 10):
+			return true
+	return Game.individuals.size() > n0
 
 # ---------------------------------------------------------------- 13. chegada à Forja de Cobre
 func r2_forja_chegada() -> void:
@@ -2020,14 +2088,17 @@ func r2_ferreiro() -> void:
 	check("R2: fase 3 aos 30%: parte do piso vira lava, borda e faixa do meio preservadas", b.phase == 3 and W.tile_char_at(tpos(31, 10)) == "L" and W.tile_char_at(tpos(31, 16)) == "z" and W.tile_char_at(tpos(19, 10)) == "z")
 	var saw_big := false
 	var t3 := 0.0
-	while t3 < 20.0 and not saw_big:
+	while t3 < 20.0 and not saw_big and is_instance_valid(b) and P.state != Player.S.DEAD:
 		if b.bst == b.B.TELE_BIG:
 			saw_big = true
 		await ferreiro_step(b)
 		t3 += 0.1
 	check("R2: fase 3: grande martelada anunciada (1,2 s)", saw_big)
 	await shot("r2_20_ferreiro_f3")
-	await die_generic(b, "fase 3 do Ferreiro")
+	if is_instance_valid(b) and P.state != Player.S.DEAD:
+		await die_generic(b, "fase 3 do Ferreiro")
+	else:
+		await secs(4.5)
 	check("R2: derrota fase 3: piso restaurado e reinício limpo", W.tile_char_at(tpos(31, 10)) == "z" and not Game.has_flag("tmp_ferreiro_piso") and not Game.has_flag("ferreiro_morto"))
 	# ---- luta real
 	Game.heal_team()
@@ -2078,7 +2149,7 @@ func r2_pos_ferreiro() -> void:
 	check("R2: forja +3 liberada pela grande forja", not ("grande forja" in Game.forge_check("lanca_cobre")))
 	# elevador: atalho Forja <-> Pedreira
 	ok = await exit_to("pedreira_oca", 40 * 16.0 + 8.0, 22 * 16.0 + 8.0)
-	check("R2: elevador da Forja desce à Pedreira (atalho)", ok and W.map_id == "pedreira_oca" and tile_of(P.global_position).distance_to(Vector2i(45, 6)) < 3.0)
+	check("R2: elevador da Forja desce à Pedreira (atalho)", ok and W.map_id == "pedreira_oca" and tile_of(P.global_position).distance_to(Vector2i(45, 6)) < 3.0, "%s %s" % [W.map_id, str(tile_of(P.global_position))])
 	# revisita: o veio esquecido
 	await goto(tpos(46, 16), 8.0, 60.0)
 	await use_ent("veio_rocha", Vector2(0, -14), Vector2.DOWN)
@@ -2087,6 +2158,43 @@ func r2_pos_ferreiro() -> void:
 	check("R2: tesouro do veio (Couraça de Placas de Cobre) e missão secreta", Game.item_count("placa_cobre") == 1 and Game.has_flag("veio_tesouro"))
 	ok = await exit_to("forja_cobre", 45 * 16.0, 4 * 16.0 + 8.0)
 	check("R2: elevador sobe de volta à Forja", ok and W.map_id == "forja_cobre")
+
+# ---------------------------------------------------------------- rito avançado (opcional, testa a Ruptura Ígnea)
+func r2_rito_avancado() -> void:
+	var ok := await exit_to("fundicao_b", 23 * 16.0 + 8.0, 8.0)
+	ok = ok and await exit_to("rito_forja", 59 * 16.0 + 8.0, 31 * 16.0 + 8.0)
+	check("R2: rito revisitado pela passagem de carga", ok and W.map_id == "rito_forja")
+	await use_ent("rito_rocha", Vector2(0, 16), Vector2.UP)
+	check("R2: Ruptura Ígnea abre a ala do rito avançado", Game.has_flag("rito_rocha") and not W.is_solid_char(W.tile_char_at(tpos(54, 8))))
+	await use_ent("rito_mec1", Vector2(48, 16), Vector2.UP)
+	check("R2: mecanismo térmico não acende com chama comum", not ent_by_id("rito_mec1").lit)
+	var slot := Game.eco_slots.find("ruptura_ignea")
+	var key := "eco%d" % (slot + 1)
+	P.energy = Player.ENERGY_MAX
+	await goto(tpos(54, 4), 3.0, 20.0)
+	await face(Vector2.LEFT)
+	await tap(key, 2)
+	await frames(10)
+	check("R2: uma Ruptura acende os dois mecanismos do oeste", ent_by_id("rito_mec1").lit and ent_by_id("rito_mec2").lit)
+	await goto(tpos(57, 4), 3.0, 20.0)
+	var w := 0
+	while P.eco_cd[slot] > 0.0 and w < 900:
+		await frames(5)
+		w += 5
+	await face(Vector2.RIGHT)
+	await tap(key, 2)
+	await frames(10)
+	check("R2: rito avançado: três mecanismos sincronizados com a Ruptura Ígnea", Game.has_flag("rito_av_mec"))
+	await use_ent("rito_altar2", Vector2(-16, 0), Vector2.RIGHT)
+	await advance_dialogs()
+	check("R2: recompensa única do rito avançado (Amuleto da Brasa)", Game.has_flag("rito_avancado_ok") and Game.item_count("amuleto_brasa") == 1,
+		"pos=%s prompt=%s mec=%s" % [str(tile_of(P.global_position)), W.current_prompt, Game.has_flag("rito_av_mec")])
+	W.rite_altar(ent_by_id("rito_altar2"))
+	check("R2: rito avançado não repete a recompensa", Game.item_count("amuleto_brasa") == 1)
+	await shot("r2_23_rito_avancado")
+	ok = await exit_to("fundicao_b", 8.0, 14 * 16.0 + 8.0)
+	ok = ok and await exit_to("forja_cobre", 28 * 16.0 + 8.0, 1 * 16.0 + 8.0)
+	check("R2: volta à Forja pelo atalho", ok and W.map_id == "forja_cobre")
 
 # ---------------------------------------------------------------- 23. salvar e carregar
 func r2_snapshot() -> Dictionary:
@@ -2110,8 +2218,11 @@ func r2_save_load() -> void:
 	check("R2: load mantém melhorias da forja, inventário e equipamento", after["up"] == snap["up"] and after["inv"] == snap["inv"] and after["equip"] == snap["equip"])
 	check("R2: load mantém atalhos, segredos, mudanças e chefões", after["r2flags"] == snap["r2flags"] and after["r2flags"].size() >= 12, str(after["r2flags"]))
 	check("R2: load mantém Eco e baús únicos", Game.has_eco("ruptura_ignea") and after["chests"] == snap["chests"])
+	check("R2: portão da Fundição continua aberto após carregar", not door_closed_at(23, 2), "%s %s %s" % [W.map_id, W.cur_tiles[2][23], Game.has_flag("atalho_fundicao_aberto")])
+	check("R2: elevador segue ativo após carregar", W.map_id == "forja_cobre" and W.tile_char_at(tpos(40, 22)) == "%")
 	var chests_n := Game.chests.size()
-	await use_ent("forja_bau_rocha", Vector2(0, 14), Vector2.UP)
-	check("R2: baú único não reaparece após carregar", Game.chests.size() == chests_n and Game.item_count("diario_ilda") == 1)
-	check("R2: portão da Fundição continua aberto após carregar", not door_closed_at(23, 2))
+	var bau := ent_by_id("forja_bau_rocha")
+	bau.interact(P)
+	await frames(5)
+	check("R2: baú único não reaparece após carregar", bau.opened and Game.chests.size() == chests_n and Game.item_count("diario_ilda") == 1)
 	check("R2: dados sem erros de validação", Data.errors.is_empty(), str(Data.errors))

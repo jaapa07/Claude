@@ -798,13 +798,13 @@ def rito():
     # 5. rito avançado (Ruptura Ígnea; opcional, depois do Ferreiro)
     m.ent(type="crack", id="rito_rocha", x=55, y=11, flag="rito_rocha")
     m.cond.append({"if": "rito_rocha", "rects": [[54, 7, 2, 3, "z"]]})
-    m.ent(type="sign", id="rito_placa_av", dialog="rito_placa_av", x=55, y=6)
+    m.ent(type="sign", id="rito_placa_av", dialog="rito_placa_av", x=50, y=6)
     m.ent(type="furnace", id="rito_mec1", group="rito_av", x=51, y=3, so_ruptura=True, dura=15.0)
     m.ent(type="furnace", id="rito_mec2", group="rito_av", x=51, y=5, so_ruptura=True, dura=15.0)
     m.ent(type="furnace", id="rito_mec3", group="rito_av", x=58, y=4, so_ruptura=True, dura=15.0)
     m.puzzles["rito_av"] = {"type": "furnaces", "flag": "rito_av_mec", "dica_apos": 3, "msg": "Os mecanismos térmicos ardem juntos!",
                             "dica": "Dica: uma só Ruptura pode acender os dois mecanismos do oeste; depois corra ao terceiro antes de 15 s."}
-    m.ent(type="altar", id="rito_altar2", x=57, y=6, flag="rito_avancado_ok", requires="rito_av_mec",
+    m.ent(type="altar", id="rito_altar2", x=58, y=6, flag="rito_avancado_ok", requires="rito_av_mec",
           msg_falta="O altar avançado espera os três mecanismos térmicos acesos ao mesmo tempo.",
           loot={"amuleto_brasa": 1}, lines=["O altar avançado ruge. Você domina o fogo que quebra a pedra.", "Você recebeu o AMULETO DA BRASA."])
     return m

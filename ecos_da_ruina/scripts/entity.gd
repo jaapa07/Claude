@@ -127,11 +127,9 @@ func _ready() -> void:
 			_spr("fx_sparkle", Vector2(0, -6), true, 16, false)
 			sprite.modulate = Color(0.8, 0.85, 1.0, 0.25)
 		"rite_reset":
-			_spr("sign", Vector2(0, -2)); solid = true
-			sprite.modulate = Color(1.0, 0.7, 0.45)
+			_rite_prop(11, Vector2(0, -2)); solid = true
 		"altar":
-			_spr("shrine", Vector2(0, -8), true, 24, Game.has_flag(def.get("flag", "")))
-			sprite.modulate = Color(1.0, 0.75, 0.55)
+			_rite_prop(1 if Game.has_flag(def.get("flag", "")) else 0, Vector2(0, -4))
 			solid = true
 	if solid:
 		collision_layer = 1
@@ -165,6 +163,15 @@ func _prop(name: String, off: Vector2) -> Sprite2D:
 	sprite.offset = off
 	add_child(sprite)
 	return sprite
+
+## Peças do rito (rito_props.png, ordem: altar_off altar_on sigil_off sigil_on gate_closed gate_open pipe_h pipe_v gauge_cold gauge_mid gauge_hot reset_stone)
+func _rite_prop(idx: int, off: Vector2) -> void:
+	sprite = Sprite2D.new()
+	sprite.texture = Art.sprite_tex("rito_props")
+	sprite.region_enabled = true
+	sprite.region_rect = Rect2(idx * 16, 0, 16, 16)
+	sprite.offset = off
+	add_child(sprite)
 
 func _set_prop(name: String) -> void:
 	if sprite:

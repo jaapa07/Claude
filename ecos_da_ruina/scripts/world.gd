@@ -1418,7 +1418,8 @@ func rite_altar(a: Ent) -> void:
 		say(a.def.get("msg_falta", "Os mecanismos do rito ainda não estão acesos."))
 		return
 	Game.set_flag(flag)
-	a.set_frame(true, 24)
+	if a.sprite:
+		a.sprite.region_rect = Rect2(16, 0, 16, 16)      # rite_altar_on
 	Audio.play("levelup")
 	shake(1.5, 0.3)
 	for k in 6:

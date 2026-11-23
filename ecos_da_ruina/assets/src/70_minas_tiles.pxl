@@ -168,41 +168,41 @@ end
 
 # ------------------------------------------------ lava (2 quadros: crostas derivam, bolhas mudam)
 frame lava0
-RRrroooooyoooorR
-RrrooooooyyooorR
-rroooyooooyoooor
-rooooyyoooooorrR
-oooooyoooooorRRn
-ooooooooorrRRnnR
-rooooooorRRnnnRr
-rrooooorRnnnRRro
-RrroooorrRRRrroo
-nRRrrooooorrrooo
-nnRRrooooooooooo
-RnnRroooyyoooooo
-RRRrroooywyooorr
-rrrroooooyoooorR
-oooooooooooooorR
-ooyoooooooooorRR
+ooooooyooooorRRr
+rooooyyyooooorRn
+Rroooooyoooooorr
+nRrooooooooooooo
+Rroooooorrrooooo
+rooooorRRnRrooyo
+oooooorRnnnRroyy
+ooyooorRRnRRrooy
+oyyyoooorrrroooo
+ooyooooooooooooo
+oooooooooorrrooo
+ooorroooorRnRroo
+oorRRrooorRRRroo
+ooorrooooorrrooo
+oooooooyoooooooo
+ooooooyyyooooorr
 end
 
 frame lava1
-rRRrroooooyooooo
-rRrrooooooooyooo
-orroooooyyooooor
-oroooooywyooorrR
-ooooooooyyoorRRR
-ooooooooooorRnnR
-oroooooooorRnnnR
-orrooooorrRRnnRr
-oRrroooorRRRRrro
-RnRRrooooorrrooo
-RnnRroooooooooyo
-rRnRroooooooooyy
-rRRrroooooooooyo
-orrroooyooooooor
-ooooooyyyoooooor
-oooyoooyoooooorR
+rooooooyooooooor
+nRroooyyyoooorRR
+RRrooooyoooooorR
+rroooooooooooorr
+oooooRrooooooooo
+ooooorRroooooyoo
+oooooorrooooyyyo
+oooooooorrRRrooo
+ooooooorRnnnRroo
+oooyoooorRnRRroo
+ooyyyooooorrrooo
+oooyoooooooooooo
+oorRrooooooooooo
+orRnRrooooooyooo
+oorRroooooooyyoo
+ooorooooooooooro
 end
 
 # ------------------------------------------------ piso quente (frestas brilham) e resfriado (aço/azul)
@@ -405,19 +405,19 @@ frame metal_open
 nnnnnnnnnnnnnnnn
 nKKKKKKKKKKKKKKn
 nKMMMMMMMMMMMMKn
-nKMlaaaaaaaaalKn
+nKMaaaaaaaaaalKn
 nKMlKammmlmmmlKn
-nKMcKammmlmmMlKn
+nKccKammmlmmMlKn
 nKMlKammmlmmmlKn
-nKMlKammMlmmmlKn
-nKMcKallllxlllKn
+nKMxKammMlmmmlKn
+nKMlKallllxlllKn
 nKMlKammmlmmmlKn
+nKccKammmlmMmlKn
 nKMlKammmlmmmlKn
-nKMcKammmlmMmlKn
+nKMxKamMmlmmmlKn
 nKMlKammmlmmmlKn
-nKMlKamMmlmmmlKn
-nKMcKammmlmmmlKn
-nKMKKammmlmmmlKn
+nKllKammmlmmmlKn
+nKKKKammmlmmmKKn
 end
 
 # ------------------------------------------------ rocha fissurada, minério, carvão

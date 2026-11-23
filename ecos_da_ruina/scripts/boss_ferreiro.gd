@@ -20,6 +20,7 @@ var quench_t := 0.0
 var quenches := 0
 var wave_cd := 1.5
 var swipes := 0
+var big_cd := 6.0
 var phase_done := {2: false, 3: false}
 var wave_dirs: Array = []
 var big_r := 84.0
@@ -59,6 +60,8 @@ func _ai(delta: float) -> void:
 		return
 	bt -= delta
 	wave_cd -= delta
+	if phase == 3:
+		big_cd -= delta
 	if quench_t > 0.0:
 		quench_t -= delta
 		if quench_t <= 0.0 and phase >= 2 and alive_flag:
@@ -83,8 +86,9 @@ func _ai(delta: float) -> void:
 			else:
 				_move(Vector2.ZERO, 0.0, delta)
 				_anim("idle")
-			if phase == 3 and swipes >= 2:
+			if phase == 3 and (swipes >= 2 or big_cd <= 0.0):
 				swipes = 0
+				big_cd = 7.0
 				bst = B.TELE_BIG
 				bt = float(bdef["aviso_grande"]) * Game.warning_mult()
 				Audio.play("telegraph")
