@@ -2741,7 +2741,8 @@ func run_grupo() -> void:
 	if freed.size() > 0 and is_instance_valid(freed[0]):
 		Game.give_item("selo_basico", 4)
 		Game.rng_override = func(): return 0.0
-		var cap := await capture_wild(freed[0], 8)
+		await weaken(freed[0])
+		var cap := is_instance_valid(freed[0]) and await capture_wild(freed[0], 8)
 		Game.rng_override = Callable()
 		check("Fera libertada pode ser capturada", cap)
 	# fera libertada: teste determinístico do mecanismo
