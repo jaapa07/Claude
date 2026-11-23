@@ -180,12 +180,12 @@ func open_pause() -> void:
 func _fill_pause(s: MenuScreen) -> void:
 	var items := [
 		_it("Continuar", func(): s.close(), "Volta ao jogo.\n\n" + Weather.describe()),
-		_it("Jornada (%d%%)" % Game.conquest_pct(), func(): open_journey(), "O grande objetivo e quanto falta para conquistar tudo."),
 		_it("Equipe e criaturas", func(): open_team(), "Veja, ordene e evolua suas criaturas."),
 		_it("Inventário e herói", func(): open_inventory(), "Itens, equipamentos, talentos."),
 		_it("Bestiário", func(): open_bestiary(), "Criaturas vistas e capturadas."),
 		_it("Diário", func(): open_diary(), "Missões ativas."),
 		_it("Mapa", func(): open_map(), "Áreas visitadas e bloqueios."),
+		_it("Jornada (%d%%)" % Game.conquest_pct(), func(): open_journey(), "O grande objetivo e quanto falta para conquistar tudo."),
 		_it("Salvar jogo", func(): open_save_slots(), "Grava o progresso em um slot."),
 		_it("Reiniciar enigmas da sala", func():
 			if world.in_combat():
