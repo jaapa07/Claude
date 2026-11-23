@@ -883,7 +883,7 @@ def porto():
     m.rect(38, 16, 10, 3, "+")                      # leste: Lago dos Reflexos
     m.rect(22, 28, 4, 8, "+")                       # sul: Canal Submerso (atalho do templo)
     m.rect(17, 26, 2, 5, "+"); m.rect(29, 26, 2, 5, "+")    # píeres
-    palafita(m, 11, 9, 6)                           # casa da Ione (farol)
+    palafita(m, 11, 9, 6)                           # casa da Iara (farol)
     palafita(m, 31, 9, 6)                           # casa do Arão
     palafita(m, 11, 23, 5)                          # casa da Dalva
     palafita(m, 32, 23, 5)                          # casa do Tito
@@ -901,7 +901,7 @@ def porto():
     # moradores (rotinas: mudam de lugar com o progresso e com o tempo)
     m.ent(type="npc", id="arao", sprite="npc_porto1", dialog="arao", x=21, y=15, nome="Arão", unless_flag="bruxa_morta")
     m.ent(type="npc", id="arao_cais", sprite="npc_porto1", dialog="arao", x=24, y=26, nome="Arão", if_flag="bruxa_morta")
-    m.ent(type="npc", id="ione", sprite="npc_porto2", dialog="ione", x=14, y=13, nome="Ione")
+    m.ent(type="npc", id="iara", sprite="npc_porto2", dialog="iara", x=14, y=13, nome="Iara")
     m.ent(type="npc", id="tito", sprite="npc_porto3", dialog="tito", x=6, y=18, nome="Tito", clima=["sol", "neblina"], unless_flag="bruxa_morta")
     m.ent(type="npc", id="tito_abrigo", sprite="npc_porto3", dialog="tito", x=34, y=27, nome="Tito", clima="chuva", unless_flag="bruxa_morta")
     m.ent(type="npc", id="tito_pier", sprite="npc_porto3", dialog="tito", x=30, y=27, nome="Tito", if_flag="bruxa_morta")
@@ -966,10 +966,10 @@ def passarela():
     m.ent(type="exit", x=22, y=39, w=4, h=1, to="porto_lanternas", spawn="from_passarela")
     m.ent(type="exit", x=26, y=0, w=4, h=1, to="templo_a", spawn="from_passarela")
     m.ent(type="sign", id="placa_passarela", dialog="placa_passarela", x=21, y=28)
-    m.ent(type="lantern", id="guia1", group="guias", x=19, y=25, msg="Uma lanterna-guia acesa. (Ione pediu três)")
+    m.ent(type="lantern", id="guia1", group="guias", x=19, y=25, msg="Uma lanterna-guia acesa. (Iara pediu três)")
     m.ent(type="lantern", id="guia2", group="guias", x=31, y=16, msg="Mais uma lanterna-guia acesa.")
     m.ent(type="lantern", id="guia3", group="guias", x=24, y=5, msg="Uma lanterna-guia acesa.")
-    m.puzzles["guias"] = {"type": "lanterns", "flag": "lanternas_ok", "msg": "As três lanternas-guia brilham: a passarela inteira se acende! Volte à Ione."}
+    m.puzzles["guias"] = {"type": "lanterns", "flag": "lanternas_ok", "msg": "As três lanternas-guia brilham: a passarela inteira se acende! Volte à Iara."}
     # lodo instável do caminho principal: estacas locais
     m.ent(type="sign", id="placa_estacas", dialog="placa_estacas", x=30, y=14)
     m.ent(type="stakes", id="estacas_norte", x=29, y=15, flag="passarela_estacas")

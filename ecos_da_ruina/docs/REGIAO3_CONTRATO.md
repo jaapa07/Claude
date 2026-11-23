@@ -83,14 +83,14 @@ Hazards novos: `poca` (poça amaldiçoada da Bruxa, fere o herói) e `lodo` (cam
 Nenhuma captura é exigida: comportas, estacas, espelhos e reflexos (observação) resolvem tudo; rodas e lodo marcado são opcionais; o lodo do templo tem estacas e marca de Brejugo para a mesma flag.
 
 ## Mundo vivo, missões e contratos
-- Moradores (`npc_porto1..4`): Arão (mestre do porto; vai ao cais depois da Bruxa), Ione (faroleira), Tito (pescador: no píer com sol/neblina, sob o telhado com chuva; no píer novo depois da Bruxa), Nina, Dalva (loja `dalva`), Cora (barqueira, volta à travessia depois da Bruxa).
-- Missões: principal `principal3` (Sussurros do Pântano); secundárias `lanternas` (Ione → Amuleto da Maré + vínculo da equipe) e `rede` (Tito); segredo `reflexo`.
+- Moradores (`npc_porto1..4`): Arão (mestre do porto; vai ao cais depois da Bruxa), Iara (faroleira), Tito (pescador: no píer com sol/neblina, sob o telhado com chuva; no píer novo depois da Bruxa), Nina, Dalva (loja `dalva`), Cora (barqueira, volta à travessia depois da Bruxa).
+- Missões: principal `principal3` (Sussurros do Pântano); secundárias `lanternas` (Iara → Amuleto da Maré + vínculo da equipe) e `rede` (Tito); segredo `reflexo`.
 - Contratos: caçada `caca_sapos` (4 Sapos de Lodo) e dupla `contrabando` (com Ravi, domadores e feras Goturim/Brejugo no Lago).
 - Clima: zona `pantano` (chuva 4, neblina 4, sol 2) no Porto, Passarela e Lago; Goturim extra com chuva e Brejugo extra com neblina.
 - Música: todos os mapas usam `"music": "pantano"` (sem o arquivo, a trilha anterior continua).
 
 ## Recompensas
-Remo Ancestral (tesouro do templo), Manto de Juncos (segredo do reflexo), Amuleto da Maré (Ione), Lente de Orvalho (Rito dos Reflexos), Amuleto do Reflexo (rito avançado, Olhar Velado), Sementes de Vida (rodas, Brejugo, revisita), diários (Faroleira, Templo, Barqueiro), Pérolas do Brejo e Juncos Trançados (materiais/venda).
+Remo Ancestral (tesouro do templo), Manto de Juncos (segredo do reflexo), Amuleto da Maré (Iara), Lente de Orvalho (Rito dos Reflexos), Amuleto do Reflexo (rito avançado, Olhar Velado), Sementes de Vida (rodas, Brejugo, revisita), diários (Faroleira, Templo, Barqueiro), Pérolas do Brejo e Juncos Trançados (materiais/venda).
 
 ## Depois da Bruxa (mudança regional)
 Água clara em todos os mapas do pântano; cena de retorno no Porto; Cora e o barco novo retomam a travessia; Arão vai ao cais; margem nova no Lago (enseada sul com baú e inscrição); ponte espiritual do nordeste do Porto → `fim_cap3` → `ponte_espiritual` (Região 4, spawn `from_pantano`; volta pela saída oeste da ponte para o spawn `from_muralha`). Revisitas com o Olhar Velado: inscrições da Forja (`inscricao_forja`), da Fundição (`inscricao_fundicao`), da Vila Lúmen (`inscricao_vila`) e o rito avançado.

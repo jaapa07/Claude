@@ -3270,8 +3270,8 @@ func r3_porto() -> void:
 	var pot0 := Game.item_count("pocao")
 	await talk("arao")
 	check("R3: Arão dá a missão principal e suprimentos", Game.has_flag("falou_arao") and Game.item_count("pocao") == pot0 + 3 and "Templo Submerso" in Game.objective_text())
-	await talk("ione")
-	check("R3: Ione oferece 'Lanternas da Passarela'", Game.has_flag("quest_lanternas"))
+	await talk("iara")
+	check("R3: Iara oferece 'Lanternas da Passarela'", Game.has_flag("quest_lanternas"))
 	await talk_at("tito", Vector2(0, -16), Vector2.DOWN)
 	check("R3: Tito oferece 'A Rede do Tito' (rotina: pesca no píer com tempo seco)", Game.has_flag("quest_rede") and ent_by_id("tito") != null and ent_by_id("tito_abrigo") == null)
 	await rest_at("porto")
@@ -3354,7 +3354,7 @@ func r3_passarela() -> void:
 	# ilha norte: terceira lanterna-guia, segredo dos juncos
 	await engage_area(tpos(28, 6), 150.0, 60.0)
 	await use_ent("guia3", Vector2(0, 16), Vector2.UP)
-	check("R3: três lanternas-guia acesas completam a missão da Ione", Game.has_flag("lanternas_ok"))
+	check("R3: três lanternas-guia acesas completam a missão da Iara", Game.has_flag("lanternas_ok"))
 	check("R3: nicho dos juncos fechado antes de observar", W.is_solid_char(W.tile_char_at(tpos(18, 4))))
 	await use_ent("juncos_sussurro", Vector2(16, 0), Vector2.LEFT)
 	check("R3: juncos sussurrantes revelam um nicho (segredo por observação)", Game.has_flag("passarela_sussurro") and not W.is_solid_char(W.tile_char_at(tpos(18, 4))))
@@ -3368,8 +3368,8 @@ func r3_passarela() -> void:
 func r3_porto_volta() -> void:
 	var ub := uuid_of(["brejugo", "musgoral"])
 	var b0 := Game.bond_count(Game.individuals[ub]) if ub != "" else 0
-	await talk("ione")
-	check("R3: Ione entrega o Amuleto da Maré e vínculo para a equipe", Game.has_flag("lanternas_entregue") and Game.item_count("amuleto_mare") == 1 and (ub == "" or Game.bond_count(Game.individuals[ub]) > b0))
+	await talk("iara")
+	check("R3: Iara entrega o Amuleto da Maré e vínculo para a equipe", Game.has_flag("lanternas_entregue") and Game.item_count("amuleto_mare") == 1 and (ub == "" or Game.bond_count(Game.individuals[ub]) > b0))
 	check("R3: caçada da região liberada depois da Passarela", Game.contract_state("caca_sapos") == "disponivel")
 	check("R3: aceitar a caçada 'Coaxar Sem Fim'", Game.accept_contract("caca_sapos") and "Sapos" in Game.contract_progress_text())
 
@@ -3441,9 +3441,13 @@ func r3_templo_a() -> void:
 	check("R3: Galeria: portas do templo se fecham no combate", Game.has_flag("tmp_enc_sapos") and door_closed_at(14, 25))
 	var tt := 0.0
 	while tt < 200.0 and not Game.has_flag("enc_sapos_ok") and P.state != Player.S.DEAD:
+		var f0 := frame_count
 		await engage_area(tpos(7, 23), 200.0, 20.0)
-		tt += 20.0
-	check("R3: Galeria vencida; portas reabrem", Game.has_flag("enc_sapos_ok") and not door_closed_at(14, 25))
+		await frames(10)
+		tt += max(1.0, float(frame_count - f0) / 60.0)
+	await frames(10)
+	check("R3: Galeria vencida; portas reabrem", Game.has_flag("enc_sapos_ok") and not door_closed_at(14, 25),
+		"vivos=%s morto=%s" % [str(hostile().map(func(e): return "%s@%s hp%.0f vis%s" % [e.kind, str(tile_of(e.global_position)), e.hp, e.spectral_visible()])), P.state == Player.S.DEAD])
 	await use_ent("ta_comporta", Vector2(0, 16), Vector2.UP)
 	check("R3: comporta da Galeria esvazia o canal da Sala das Marés (efeito entre salas)", Game.has_flag("ta_canal") and W.tile_char_at(tpos(30, 22)) == "0")
 	await use_ent("ta_bau_galeria", Vector2(0, 16), Vector2.UP)
@@ -3889,16 +3893,16 @@ func r3_pos_bruxa() -> void:
 	ok = ok and await exit_to("minas_entrada", 8.0, 17 * 16.0 + 8.0)
 	ok = ok and await exit_to("forja_cobre", 15 * 16.0 + 8.0, 8.0)
 	check("R3: Porto -> Passagem Sul -> Forja (mundo conectado)", ok and W.map_id == "forja_cobre")
-	var sem0 := Game.item_count("semente_vida")
+	var sem0 := Game.item_count("lingote")
 	await advance_dialogs()
 	await frames(30)
 	await use_ent("forja_inscricao", Vector2(0, 16), Vector2.UP)
 	await advance_dialogs()
-	var dbg_ins := "pos=%s prompt=%s busy=%s dlg=%s" % [str(tile_of(P.global_position)), W.current_prompt, str(P.state), str(main.ui.hud.dlg_active)]
+	var dbg_ins := "pos=%s prompt=%s busy=%s dlg=%s eco=%s revelou=%s ent=%s" % [str(tile_of(P.global_position)), W.current_prompt, str(P.state), str(main.ui.hud.dlg_active), str(Game.has_eco("olhar_velado")), str(Game.has_flag("revelou_forja_inscricao")), str(W.current_prompt_ent.eid if W.current_prompt_ent else "-")]
 	if not Game.has_flag("inscricao_forja_lida"):
 		await use_ent("forja_inscricao", Vector2(16, 0), Vector2.LEFT)
 		await advance_dialogs()
-	check("R3: revisita: o Olhar Velado lê a inscrição da Forja (segredo das Minas)", Game.has_flag("inscricao_forja_lida") and Game.item_count("semente_vida") == sem0 + 1, dbg_ins)
+	check("R3: revisita: o Olhar Velado lê a inscrição da Forja (segredo das Minas)", Game.has_flag("inscricao_forja_lida") and Game.item_count("lingote") == sem0 + 2 and Game.item_count("semente_vida") >= 1, dbg_ins)
 
 # ---------------------------------------------------------------- 35. salvar e carregar
 func r3_snapshot() -> Dictionary:

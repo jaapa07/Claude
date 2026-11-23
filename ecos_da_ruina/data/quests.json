@@ -300,11 +300,11 @@
   "tipo": "secundaria",
   "etapas": [
    {
-    "texto": "Reacenda as 3 lanternas-guia da Passarela dos Ecos para a faroleira Ione.",
+    "texto": "Reacenda as 3 lanternas-guia da Passarela dos Ecos para a faroleira Iara.",
     "flag": "lanternas_ok"
    },
    {
-    "texto": "Volte à Ione, no Porto das Lanternas.",
+    "texto": "Volte à Iara, no Porto das Lanternas.",
     "flag": "lanternas_entregue"
    }
   ]

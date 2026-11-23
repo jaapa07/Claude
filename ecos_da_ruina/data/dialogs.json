@@ -1094,7 +1094,8 @@
    "if": "falou_arao",
    "lines": [
     "Arão: O Templo Submerso fica ao norte. A Passarela dos Ecos é o caminho dos barqueiros; o Lago dos Reflexos tem comportas antigas.",
-    "Arão: Lodo que borbulha engole quem pisa: crave estacas antes. Espectros só aparecem quando atacam... ou quando a luz certa os mostra."
+    "Arão: Lodo que borbulha engole quem pisa: crave estacas antes. Espectros só aparecem quando atacam... ou quando a luz certa os mostra.",
+    "Arão: Uma vinculadora de capa azul atravessou o lago antes da Bruxa despertar. Disse que voltaria pela ponte das montanhas. Nunca mais a vimos."
    ]
   },
   {
@@ -1111,45 +1112,6 @@
     "pocao": 3,
     "selo_refinado": 2
    }
-  }
- ],
- "ione": [
-  {
-   "if": "lanternas_entregue",
-   "lines": [
-    "Ione: As lanternas da passarela seguem acesas. Os barqueiros cantam quando passam por elas."
-   ]
-  },
-  {
-   "if": "lanternas_ok",
-   "lines": [
-    "Ione: Eu vi daqui! As três lanternas-guia brilhando de novo...",
-    "Ione: Tome o Amuleto da Maré que era do meu pai. E isto: as lanternas acesas despertaram sua equipe também. (vínculo +1 para a equipe)"
-   ],
-   "set": [
-    "lanternas_entregue",
-    "quest_lanternas"
-   ],
-   "give": {
-    "amuleto_mare": 1,
-    "fragmentos": 80
-   },
-   "bond": "missao:lanternas_ione"
-  },
-  {
-   "if": "quest_lanternas",
-   "lines": [
-    "Ione: Três lanternas-guia na Passarela dos Ecos: uma na ilha do meio, uma na plataforma das estacas e uma na ilha norte. Aperte E para acendê-las."
-   ]
-  },
-  {
-   "lines": [
-    "Ione: Sou a faroleira do Porto. As lanternas-guia da passarela apagaram e os barqueiros se perdem na neblina.",
-    "Ione: Se acender as três de novo, eu te recompenso. Elas ficam na Passarela dos Ecos, ao norte."
-   ],
-   "set": [
-    "quest_lanternas"
-   ]
   }
  ],
  "tito": [
@@ -1202,7 +1164,8 @@
   {
    "lines": [
     "Nina: Sabia que no lago tem um anel de lanternas velhas? Minha avó dizia que, se acender todas, aparece uma nuvenzinha com um olho de lua.",
-    "Nina: Os Goturins vivem na água rasa e os Brejugos dormem no lodo da ilha oeste da passarela. Eles são fofos e ajudam muito!"
+    "Nina: Os Goturins vivem na água rasa e os Brejugos dormem no lodo da ilha oeste da passarela. Eles são fofos e ajudam muito!",
+    "Nina: A moça da capa azul me ensinou a contar as lanternas. Ela falava sozinha com os reflexos, igual você!"
    ]
   }
  ],
@@ -1420,6 +1383,46 @@
     "selo_ancestral": 1,
     "semente_vida": 1
    }
+  }
+ ],
+ "iara": [
+  {
+   "if": "lanternas_entregue",
+   "lines": [
+    "Iara: As lanternas da passarela seguem acesas. Os barqueiros cantam quando passam por elas."
+   ]
+  },
+  {
+   "if": "lanternas_ok",
+   "lines": [
+    "Iara: Eu vi daqui! As três lanternas-guia brilhando de novo...",
+    "Iara: Tome o Amuleto da Maré que era do meu pai. E isto: as lanternas acesas despertaram sua equipe também. (vínculo +1 para a equipe)"
+   ],
+   "set": [
+    "lanternas_entregue",
+    "quest_lanternas"
+   ],
+   "give": {
+    "amuleto_mare": 1,
+    "fragmentos": 80
+   },
+   "bond": "missao:lanternas_iara"
+  },
+  {
+   "if": "quest_lanternas",
+   "lines": [
+    "Iara: Três lanternas-guia na Passarela dos Ecos: uma na ilha do meio, uma na plataforma das estacas e uma na ilha norte. Aperte E para acendê-las."
+   ]
+  },
+  {
+   "lines": [
+    "Iara: Sou a faroleira do Porto. As lanternas-guia da passarela apagaram e os barqueiros se perdem na neblina.",
+    "Iara: Se acender as três de novo, eu te recompenso. Elas ficam na Passarela dos Ecos, ao norte.",
+    "Iara: Antes de tudo escurecer, uma vinculadora de capa azul passou por aqui com a expedição. Acendeu estas lanternas com um sopro de luz e seguiu para o templo."
+   ],
+   "set": [
+    "quest_lanternas"
+   ]
   }
  ]
 }
