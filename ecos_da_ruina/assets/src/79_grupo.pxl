@@ -76,6 +76,9 @@ palette domadora from heroi
   W = #241e22
   p = #2e2a30
   P = #1a171c
+  z = #9a62b8
+  q = #6a3a86
+  Q = #3e2052
 end
 palette vesna from heroi
   h = #1a1418
