@@ -1,0 +1,54 @@
+# Objetos e efeitos das missões em grupo — desenho autoral pixel a pixel.
+# quadro_contratos.png (32x32), fx_disco.png (8x8 x4), icons_grupo.png (16x16 x6),
+# fx_reviver.png (16x16 x4), fx_corrente.png (16x16 x3).
+
+palette gobj from tile
+  a = #f4ecd4
+  A = #c8b890
+  x = #d03848
+  X = #7a1828
+  z = #ff8a8a
+  u = #d88a48
+  U = #8e5428
+  I = #ffe0a8
+end
+pal gobj
+
+# ---- quadro de contratos: telhadinho, tábuas, três avisos pregados e um contrato com selo vermelho
+frame quadro_contratos
+................................
+................................
+..KKKKKKKKKKKKKKKKKKKKKKKKKKKK..
+.KppppppppppppppppppppppppppppK.
+.KooooooooooooooooooooooooooOOK.
+..KKKKKKKKKKKKKKKKKKKKKKKKKKKK..
+....KpoK................KpoK....
+..KKKKKKKKKKKKKKKKKKKKKKKKKKKK..
+..KppKKKsKKKppppppppppKKsKKKpK..
+..KpoKaaaaaaKKKKKsKKKoKaaaaKOK..
+..KpoKaSSSSaKKaaaaaaKoKaSSaKOK..
+..KpOKaaaaaaKKaSSSSSKOKaaaaKOK..
+..KpNKaSSSaSKKaaaaaaKNKaSaSKOK..
+..KpoKaaaaaaKKaSSaSSKoKaaaAKOK..
+..KpoKaSSSSAKKaaaaaaKoKKKKKKOK..
+..KpOKaaaaAAKKaSSSaaKOKKKsKOOK..
+..KpNKAAAAAKNKaaaKKKKNKaaaaKOK..
+..KpooKKKKKooKaaKxzxKoKaSSAKOK..
+..KpoooooooooKAAKxxXKoKAaaAKOK..
+..KpOOOOOOOOOKKKKXXXKOOKKKKOOK..
+..KpNNNNNNNNNNNNNKxKNNNNNNNNOK..
+..KOOOOOOOOOOOOOOKXKOOOOOOOOOK..
+..KKKKKKKKKKKKKKKKKKKKKKKKKKKK..
+....KpoK................KpoK....
+....KpoK................KpoK....
+....KpoK................KpoK....
+....KpoK................KpoK....
+....KpOK................KpOK....
+....KoOK................KoOK....
+....KoOK................KoOK....
+...jKKKKj..............jKKKKj...
+....jjjj................jjjj....
+end
+sheet quadro_contratos.png 32 32 1
+quadro_contratos
+end
