@@ -118,13 +118,13 @@ func _pick_target() -> Node:
 		var want := false
 		match b:
 			"acompanhar", "preservar":
-				want = (e.target != null and e.st != Enemy.St.IDLE and d < 150.0) or (e.capturable and e.angry_t > 0.0 and d < 150.0)
+				want = (e.target != null and e.st != Enemy.St.IDLE and d < 150.0) or (e.capturable and e.angry_t > 0.0 and d < 150.0) or (e.boss and e.get("activated") == true and d < 260.0)
 				if b == "preservar" and e == mode_manual and d < 180.0:
 					want = true
 			"atacar":
-				want = (e == mode_manual and d < 220.0) or (e.target != null and e.st != Enemy.St.IDLE and d < 120.0)
+				want = (e == mode_manual and d < 220.0) or (e.target != null and e.st != Enemy.St.IDLE and d < 120.0) or (e.boss and e.get("activated") == true and d < 260.0)
 			"proteger":
-				want = d < 70.0 and (e.target != null or e.angry_t > 0.0)
+				want = d < 70.0 and (e.target != null or e.angry_t > 0.0 or (e.boss and e.get("activated") == true))
 		if want and d < bd:
 			bd = d
 			best = e

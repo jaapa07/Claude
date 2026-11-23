@@ -441,6 +441,7 @@ func take_damage(amount: float, from_pos: Vector2, opts: Dictionary = {}) -> flo
 			Game.tutorial_event("attack_dummy")
 		return dmg
 	hp -= dmg
+	Game.dmg_stats[src] = float(Game.dmg_stats.get(src, 0.0)) + min(dmg, hp + dmg)
 	flash = 0.12
 	hp_bar_t = 3.0
 	world.spawn_text(global_position + Vector2(0, -fh), str(int(round(dmg))), Color(1, 0.95, 0.6))

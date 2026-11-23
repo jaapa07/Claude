@@ -1,8 +1,152 @@
 {
- "dummy": {"nome":"Boneco de Treino","hp":999999,"dano":0,"vel":0,"xp":0,"frag":[0,0],"sprite":"","frame":[24,32],"ataque":"nenhum","raio":8,"relevante":false,"pequeno":false},
- "lobo": {"nome":"Lobo de Espinhos","hp":38,"dano":9,"vel":72,"xp":14,"frag":[3,7],"sprite":"lobo_espinhos","frame":[30,20],"ataque":"investida","raio":9,"percepcao":110,"relevante":true,"pequeno":false,"capturavel":false},
- "cogumelo": {"nome":"Cogumelo Esporífero","hp":26,"dano":7,"vel":0,"xp":10,"frag":[2,5],"sprite":"cogumelo","frame":[24,22],"ataque":"esporos","raio":8,"percepcao":70,"relevante":true,"pequeno":true,"capturavel":false},
- "sentinela": {"nome":"Sentinela de Madeira","hp":78,"dano":14,"vel":36,"xp":26,"frag":[6,12],"sprite":"sentinela","frame":[32,34],"ataque":"golpe","raio":10,"percepcao":100,"relevante":true,"pequeno":false,"capturavel":false,"guarda_frontal":0.2},
- "lenhador": {"nome":"Lenhador Oco","hp":190,"dano":24,"vel":42,"xp":90,"frag":[40,40],"sprite":"lenhador","frame":[44,44],"ataque":"lenhador","raio":14,"percepcao":200,"relevante":true,"pequeno":false,"capturavel":false,"miniboss":true},
- "selvagem": {"nome":"Criatura Selvagem","hp":0,"dano":5,"vel":46,"xp":8,"frag":[1,3],"ataque":"selvagem","raio":7,"percepcao":80,"relevante":false,"pequeno":true,"capturavel":true}
+ "dummy": {
+  "nome": "Boneco de Treino",
+  "hp": 999999,
+  "dano": 0,
+  "vel": 0,
+  "xp": 0,
+  "frag": [
+   0,
+   0
+  ],
+  "sprite": "",
+  "frame": [
+   24,
+   32
+  ],
+  "ataque": "nenhum",
+  "raio": 8,
+  "relevante": false,
+  "pequeno": false
+ },
+ "lobo": {
+  "nome": "Lobo de Espinhos",
+  "hp": 38,
+  "dano": 9,
+  "vel": 72,
+  "xp": 14,
+  "frag": [
+   3,
+   7
+  ],
+  "sprite": "lobo_espinhos",
+  "frame": [
+   30,
+   20
+  ],
+  "ataque": "investida",
+  "raio": 9,
+  "percepcao": 110,
+  "relevante": true,
+  "pequeno": false,
+  "capturavel": false
+ },
+ "cogumelo": {
+  "nome": "Cogumelo Esporífero",
+  "hp": 26,
+  "dano": 7,
+  "vel": 0,
+  "xp": 10,
+  "frag": [
+   2,
+   5
+  ],
+  "sprite": "cogumelo",
+  "frame": [
+   24,
+   22
+  ],
+  "ataque": "esporos",
+  "raio": 8,
+  "percepcao": 70,
+  "relevante": true,
+  "pequeno": true,
+  "capturavel": false
+ },
+ "sentinela": {
+  "nome": "Sentinela de Madeira",
+  "hp": 78,
+  "dano": 14,
+  "vel": 36,
+  "xp": 26,
+  "frag": [
+   6,
+   12
+  ],
+  "sprite": "sentinela",
+  "frame": [
+   32,
+   34
+  ],
+  "ataque": "golpe",
+  "raio": 10,
+  "percepcao": 100,
+  "relevante": true,
+  "pequeno": false,
+  "capturavel": false,
+  "guarda_frontal": 0.2
+ },
+ "lenhador": {
+  "nome": "Lenhador Oco",
+  "hp": 190,
+  "dano": 24,
+  "vel": 42,
+  "xp": 90,
+  "frag": [
+   40,
+   40
+  ],
+  "sprite": "lenhador",
+  "frame": [
+   44,
+   44
+  ],
+  "ataque": "lenhador",
+  "raio": 14,
+  "percepcao": 200,
+  "relevante": true,
+  "pequeno": false,
+  "capturavel": false,
+  "miniboss": true
+ },
+ "selvagem": {
+  "nome": "Criatura Selvagem",
+  "hp": 0,
+  "dano": 5,
+  "vel": 46,
+  "xp": 8,
+  "frag": [
+   1,
+   3
+  ],
+  "ataque": "selvagem",
+  "raio": 7,
+  "percepcao": 80,
+  "relevante": false,
+  "pequeno": true,
+  "capturavel": true
+ },
+ "cervo": {
+  "nome": "Cervo de Ossos",
+  "hp": 640,
+  "dano": 24,
+  "vel": 70,
+  "xp": 0,
+  "frag": [
+   0,
+   0
+  ],
+  "sprite": "cervo",
+  "frame": [
+   68,
+   56
+  ],
+  "ataque": "cervo",
+  "raio": 16,
+  "percepcao": 600,
+  "relevante": true,
+  "pequeno": false,
+  "capturavel": false,
+  "miniboss": false
+ }
 }

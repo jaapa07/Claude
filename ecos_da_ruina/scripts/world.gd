@@ -380,6 +380,13 @@ func refresh_companion(fx: bool) -> void:
 func on_companion_exhausted() -> void:
 	refresh_companion(true)
 
+## Antes de fechar portas de um encontro, garante que o companheiro esteja dentro da sala (a porta ainda está aberta).
+func gather_companion(room: Rect2) -> void:
+	if companion != null and is_instance_valid(companion) and not room.has_point(companion.global_position):
+		companion.global_position = safe_pos_near(player.global_position)
+		companion.velocity = Vector2.ZERO
+		spark(companion.global_position + Vector2(0, -8), 6)
+
 func companion_command() -> void:
 	if companion == null or not is_instance_valid(companion):
 		say("Nenhuma criatura ativa.")
@@ -815,6 +822,7 @@ func _update_encounters() -> void:
 					alive += 1
 			if not Game.has_flag(d["flag_active"]):
 				if r.has_point(player.global_position) and alive > 0 and arrival_t <= 0.0:
+					gather_companion(r.grow(8.0))
 					Game.set_flag(d["flag_active"])
 					Audio.play("door")
 					say("As portas se fecharam!")

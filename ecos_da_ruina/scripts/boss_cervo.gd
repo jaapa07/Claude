@@ -21,8 +21,11 @@ var phase_done := {2: false, 3: false}
 
 const LANE_W := 40.0
 
+var def_arena: Array = []
+
 func init(p_world: Node, p_kind: String, e: Dictionary) -> void:
 	super.init(p_world, p_kind, e)
+	def_arena = [int(e["x0"]), int(e["y0"]), int(e["w"]), int(e["h"])]
 	boss = true
 	bdef = Data.bosses["cervo"]
 	max_hp = float(bdef["hp"]); hp = max_hp
@@ -37,6 +40,7 @@ func activate() -> void:
 	activated = true
 	bst = B.INTRO
 	bt = 2.0
+	world.gather_companion(Rect2(float(def_arena[0]) * 16.0, float(def_arena[1]) * 16.0, float(def_arena[2]) * 16.0, float(def_arena[3]) * 16.0))
 	Game.set_flag("tmp_cervo_ativo")
 	Audio.play("boss_roar")
 	world.shake(3.0, 0.8)
@@ -208,6 +212,8 @@ func take_damage(amount: float, from_pos: Vector2, opts: Dictionary = {}) -> flo
 		return 0.0
 	amount *= (2.0 if exposed else 0.7)
 	var got := super.take_damage(amount, from_pos, opts)
+	if OS.get_environment("ECOS_DEBUG") == "1":
+		print("   [dbg dano cervo] %.1f src=%s hp=%.0f bst=%d exposed=%s" % [got, str(opts.get("src")), hp, bst, exposed])
 	_check_phase()
 	return got
 

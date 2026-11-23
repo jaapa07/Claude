@@ -53,6 +53,7 @@ var rng := RandomNumberGenerator.new()
 var rng_override: Callable = Callable()   # testes: func() -> float
 var god_mode := false
 var last_death := {}
+var dmg_stats := {}
 
 # ---- preferências (arquivo separado)
 var prefs := {"master": 0.8, "musica": 0.6, "efeitos": 0.8, "texto": 1.0, "reduz_tremor": false, "reduz_flash": false,
@@ -188,9 +189,32 @@ func from_dict(d: Dictionary) -> bool:
 	behavior = d.get("behavior", "preservar"); slot = int(d.get("slot", 1))
 	tmp_flags = {}; skill_cd = {}; swap_cd = 0.0; save_block = 0
 	in_game = true
+	_normalize_types()
 	hero["hp"] = min(float(hero.get("hp", 1.0)), hero_max_hp())
 	hero_changed.emit(); team_changed.emit(); inventory_changed.emit(); quest_changed.emit(); eco_changed.emit()
 	return true
+
+## O JSON devolve números como float; restaura inteiros onde o jogo espera inteiros.
+func _normalize_types() -> void:
+	for k in inventory.keys():
+		inventory[k] = int(inventory[k])
+	fragments = int(fragments)
+	for k in ["level", "xp", "talent_points"]:
+		hero[k] = int(hero.get(k, 0))
+	for k in hero["talents"].keys():
+		hero["talents"][k] = int(hero["talents"][k])
+	for u in individuals:
+		var ind: Dictionary = individuals[u]
+		ind["nivel"] = int(ind["nivel"])
+	for k in chests.keys():
+		chests[k] = true
+	stats["capturas"] = int(stats.get("capturas", 0))
+	stats["mortes"] = int(stats.get("mortes", 0))
+	for k in stats.get("kills", {}).keys():
+		stats["kills"][k] = int(stats["kills"][k])
+	active_idx = int(active_idx)
+	for b in bestiary.keys():
+		pass
 
 func can_save() -> bool:
 	return in_game and save_block <= 0

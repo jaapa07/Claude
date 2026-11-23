@@ -8,8 +8,11 @@ var swings := 0
 var bdef: Dictionary = {}
 var dormant_sprite_col := Color(0.8, 0.8, 0.9)
 
+var def_arena: Array = []
+
 func init(p_world: Node, p_kind: String, e: Dictionary) -> void:
 	super.init(p_world, p_kind, e)
+	def_arena = [int(e["x0"]), int(e["y0"]), int(e["w"]), int(e["h"])]
 	boss = true
 	bdef = Data.bosses["lenhador"]
 	max_hp = float(bdef["hp"]); hp = max_hp
@@ -23,6 +26,7 @@ func activate() -> void:
 	activated = true
 	invulnerable = false
 	intro_t = 1.4
+	world.gather_companion(Rect2(float(def_arena[0]) * 16.0, float(def_arena[1]) * 16.0, float(def_arena[2]) * 16.0, float(def_arena[3]) * 16.0))
 	Game.set_flag("tmp_lenhador_ativo")
 	Audio.play("boss_roar")
 	world.shake(2.0, 0.5)
