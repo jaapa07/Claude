@@ -1,0 +1,729 @@
+# Tileset autoral 16x16 — Região 3: Pântano dos Sussurros (Porto das Lanternas, Passarela dos Ecos,
+# Lago dos Reflexos, Templo Submerso). Desenho manual pixel a pixel. Luz de cima/esquerda. Contorno #1b1626.
+# Paleta da região: azul petróleo, verde frio e lilás. Ordem do contrato (docs/REGIAO3_CONTRATO.md).
+
+palette ptile
+  K = #1b1626
+  a = #14222a
+  d = #1e3a44
+  D = #2a5560
+  e = #3e7a80
+  E = #7ab8b8
+  f = #c8ecea
+  t = #4a8a88
+  T = #6aa8a0
+  u = #35605a
+  l = #4a4838
+  L = #5e5a44
+  m = #36342a
+  M = #74705a
+  g = #3e6a58
+  G = #5a8a70
+  h = #8ab098
+  j = #2c4a40
+  r = #d0c8a0
+  R = #9a9470
+  Q = #6a6a48
+  w = #7a6248
+  W = #5a4634
+  x = #9a7e5c
+  X = #3a2c22
+  s = #5a6a7a
+  S = #7a8a98
+  p = #3a4656
+  P = #9aa8b4
+  i = #2a3240
+  v = #8a78b0
+  V = #b8a0d8
+  y = #6a5888
+  o = #ffd88a
+  O = #f0a850
+  c = #e8f4f8
+  C = #a0e0f0
+  b = #2e2a3a
+  n = #6a7a5a
+  N = #8a9a6a
+  q = #4a5a3e
+  k = #5a8ab0
+  z = #9ad0e8
+end
+pal ptile
+
+# ------------------------------------------------ lodo (chão do pântano)
+frame lodo0
+llllllllllllllll
+llLlllllllllmlll
+lLMLlllllllmmlll
+llLllllllllllllL
+lllllllmllllllll
+llllllmmmlllllll
+lllllllmlllLllll
+llllllllllLMLlll
+lmllllllllllllll
+lmmlllllllllllml
+lllllllLllllllll
+llllllLMlllmllll
+lllllllllllmmlll
+lllmlllllllllllL
+llmmllllLlllllll
+llllllllllllllll
+end
+
+frame lodo1
+llllllllllllllll
+lllllllLLlllllll
+llllllllllllllll
+llmllllllllllMll
+llmmllllllllllll
+lllllllllmllllll
+lllllLlllmmlllll
+llllLMLlllllllll
+llllllllllllllll
+lllllllllllllmll
+lllllmlllllllmml
+lllllmmlllllllll
+lLllllllllLlllll
+lMLlllllllllllll
+lllllllmllllllll
+llllllllllllllll
+end
+
+# ------------------------------------------------ capim do brejo (verde frio)
+frame capim0
+gggggggggggggggg
+ggGgggggggggjggg
+gGhGgggggggjgggg
+ggGggggggggggggg
+gggggggjgggggGgg
+ggggggjgggggGhGg
+gggggggggggggGgg
+gjgggggggggggggg
+jggggGgggggggggg
+gggggGhggggggjgg
+ggggggGggggggggg
+gggggggggggjgggg
+ggggjggggggggggg
+gggjgggggGgggggg
+ggggggggGhGggggg
+gggggggggggggggg
+end
+
+frame capim1
+gggggggggggggggg
+gggggggggggggggg
+gggjgggggGgggggg
+ggjggggggGhggggg
+gggggggggggggggg
+ggggggggggggjggg
+gGgggggggggjgggg
+gGhgggggggggggGg
+ggGgggjggggggGhg
+gggggjgggggggggg
+gggggggggGgggggg
+gggggggggGhggggg
+ggjggggggggggggg
+gjgggggggggggjgg
+gggggGgggggggjgg
+gggggggggggggggg
+end
+
+# ------------------------------------------------ juncos (sólido): moita alta de taboa sobre o lodo
+frame juncos
+llllKlllllKlllll
+lllKWKlllKWKlKll
+lllKWKlKlKWKKWKl
+lllKXKKWKKXKKWKl
+llKgRgKWKgRgKXKl
+llKgRgKXKgRggRgK
+lKgjRjgRgjRjgRjK
+lKgjRjgRgjRjjRgK
+KgjgRgjRjgRgjRjK
+KgGgRgGRgGRgGRgK
+KjgGRGgRGgRjGRjK
+KgjgQjgQjgQjgQjK
+KjjjjjjjjjjjjjjK
+lKmmmmmmmmmmmmKl
+llKKmmmmmmmmKKll
+llllKKKKKKKKllll
+end
+
+# ------------------------------------------------ água funda (azul petróleo), 2 quadros
+frame agua_funda0
+dddddddddddddddd
+ddddddDDdddddddd
+dddddDeeDddddddd
+dddddddddddddddd
+ddddddddddddDDdd
+dDDddddddddDeeDd
+DeeDdddddddddddd
+dddddddddddddddd
+ddddddddDDdddddd
+dddddddDeeDddddd
+dddddddddddddddd
+ddddDDdddddddDDd
+dddDeeDddddddeeD
+dddddddddddddddd
+ddddddddddDDdddd
+dddddddddddddddd
+end
+
+frame agua_funda1
+dddddddddddddddd
+dddddddddDDddddd
+ddddddddDeeDdddd
+dddddddddddddddd
+dDDddddddddddddd
+DeeDddddddDDdddd
+dddddddddDeeDddd
+dddddddddddddddd
+dddddDDddddddddd
+ddddDeeDddddddDD
+dddddddddddddDee
+dddddddddddddddd
+dddddddDDddddddd
+ddDDddDeeDdddddd
+dDeeDddddddddddd
+dddddddddddddddd
+end
+
+# ------------------------------------------------ água rasa (passável): leito de lodo visível
+frame agua_rasa
+tttttttttttttttt
+ttTTtttttttttttt
+tttttttttttuuttt
+ttttttttttuuuttt
+tttttttttttutttt
+tttuttttttttttTt
+ttuuutttttttttTT
+tttuttttTTtttttt
+tttttttttttttttt
+ttttttttttttuttt
+tTTttttttttuuutt
+ttttttttttttuttt
+ttttuuttttttttTt
+tttuuuuttttttttt
+ttttttttttTTtttt
+tttttttttttttttt
+end
+
+# ------------------------------------------------ passarelas de madeira (tábuas sobre estacas)
+frame passarela_h
+XxxxxXxxxxxXxxxx
+XwwwwXwwwxwXwwww
+XwwxwXwwwwwXwxww
+XwwwwXwwwwwXwwww
+XWWWWXWWWWWXWWWW
+XxxxxXxxxxxXxxxx
+XwwwwXwwwwwXwwwx
+XwxwwXwwwwwXwwww
+XwwwwXwwwxwXwwww
+XWWWWXWWWWWXWWWW
+XxxxxXxxxxxXxxxx
+XwwwwXwxwwwXwwww
+XwwwwXwwwwwXwwxw
+XWWWWXWWWWWXWWWW
+XXXXXXXXXXXXXXXX
+XWXXXXXXXXXWXXXX
+end
+
+frame passarela_v
+XxxxXxxxXxxxXxxx
+XwwwXwwwXwwwXwww
+XwwwXwxwXwwwXwww
+XwwWXwwWXwwWXwwW
+XwwWXwwWXwxWXwwW
+XxwWXwwWXwwWXwwW
+XwwWXwwWXwwWXwxW
+XwwWXwwWXwwWXwwW
+XwwWXxwWXwwWXwwW
+XwwWXwwWXwwWXwwW
+XwwWXwwWXwwWXwwW
+XwxWXwwWXwwWXwwW
+XwwWXwwWXwxWXwwW
+XwwWXwwWXwwWXwwW
+XWWWXWWWXWWWXWWW
+XXXXXXXXXXXXXXXX
+end
+
+# ------------------------------------------------ lodo instável (sólido: borbulha e engole) / lodo firme (estacas cravadas)
+frame lodo_instavel
+mmmmmmmmmmmmmmmm
+mmlmmmmmmmmmmmmm
+mlMlmmmmmmKKmmmm
+mmlmmmmmmKMLKmmm
+mmmmmmmmmKLLKmmm
+mmmmKKmmmmKKmmmm
+mmmKMLKmmmmmmlmm
+mmmKLLKmmmmmlMlm
+mmmmKKmmmmmmmlmm
+mmmmmmmmmmmmmmmm
+mlmmmmmmmKKmmmmm
+lMlmmmmmKMLKmmmm
+mlmmmmmmKLLKmmmm
+mmmmmmmmmKKmmmmm
+mmmmmlmmmmmmmmmm
+mmmmmmmmmmmmmmmm
+end
+
+frame lodo_firme
+llllWlllllllWlll
+lLlWxWlllllWxWll
+lllWwWllLllWwWll
+lllWwWlllllWwWll
+llllXllllllllXll
+llllllllmlllllll
+lllllllmmlllllll
+llllllllllllllLl
+llllWlllllllWlll
+llmWxWlllllWxWll
+lllWwWllllLWwWll
+lllWwWlllllWwWll
+llllXllllllllXll
+lLlllllllllllllm
+llllllllmlllllll
+llllllllllllllll
+end
+
+# ------------------------------------------------ Templo Submerso: parede (face com cracas e musgo) + topo
+frame templo_parede_frente
+PSPPPSPPPPSPPPSP
+SssssssSSssssssS
+sssssssssssssssp
+ssSsssvssssssssp
+ssssspsssssSsssp
+pppppppppppppppp
+SSsssSPPSsssSSss
+sssssvsssssssssp
+sssssssssssssssp
+sGsssssssssgssss
+ggsssssssssgGsss
+pppppppppppppppp
+PSssSsPPSssSssSP
+sggsssssggsssssp
+gGgggssgGgggsggg
+KKKKKKKKKKKKKKKK
+end
+
+frame templo_parede_topo
+iiiiiiiiiiiiiiii
+ipppippppppippii
+iiiiiiiiiiiiiiii
+ppippppippppippp
+iiiiiiiiiiiiiiii
+ipppippppppippii
+iiiiiiiiiiiiiiii
+ppippppippppippp
+iiiiiiiiiiiiiiii
+ipppippppppippii
+iiiiiiiiiiiiiiii
+ppippppippppippp
+iiiiiiiiiiiiiiii
+ipppippppppippii
+iiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiii
+end
+
+frame templo_piso
+sssssssspsssssss
+sSSSSSSspsSSSSSs
+sSsssssspsSsssss
+sSsssssspsSsssss
+sSsssssspsSssvss
+sSssssssps.sssss
+sssssssspsssssss
+pppppppppppppppp
+ssssspsssssssssp
+sSSSSpsSSSSSSSsp
+sSsssps.Sssssssp
+sSsssps.Ssssssss
+sSssspsSssssssss
+sssssps.sssssssp
+sssssps.ssssssss
+pppppppppppppppp
+end
+
+frame templo_alagado
+tTttttttpttttttt
+tSSSSSStptSSTTSt
+tSttttttptStttTt
+tSttTTttptStttTt
+tSttttttptSttttt
+tStttttTptSttttt
+ttttttttpttttttt
+pppppppppppppppp
+tttttpTtttttttTt
+tSSSSptSSSSSSStp
+tSttTptStttttttp
+tSttTptStttTTttt
+tStttptSttttttTt
+tttttpttttTttttp
+tttttpttttttttTt
+pppppppppppppppp
+end
+
+# ------------------------------------------------ margens (sobrepostas à água funda onde há terra ao lado)
+frame margem_n
+KgGggGgggGgggGgK
+jgjggjgggjggjjgj
+DjDjjDjjjDjjDjDj
+eDDeDDDeeDDDeDDD
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+end
+
+frame margem_s
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+dddddddddddddddd
+eEEeEEeeEEEeEEEe
+ffeffeffeffffeff
+end
+
+frame margem_w
+Kjeee...........
+gjDe............
+GjDe............
+gjDee...........
+gjDe............
+gjeE............
+GjDe............
+gjDe............
+gjDee...........
+gjDe............
+GjDe............
+gjDE............
+gjDe............
+gjDee...........
+GjDe............
+gjDe............
+end
+
+frame margem_e
+...........eeejK
+............eDjg
+............eDjG
+...........eeDjg
+............eDjg
+............Eejg
+............eDjG
+............eDjg
+...........eeDjg
+............eDjg
+............eDjG
+............EDjg
+............eDjg
+...........eeDjg
+............eDjG
+............eDjg
+end
+
+# ------------------------------------------------ ponte espiritual (Olhar Velado): tábuas de luz lilás sobre a água
+frame ponte_espiritual
+dDVVVVddVVVVddDd
+dVcCCVddVCCcVddd
+dVCvvVddVvvCVddd
+ddVVVddddVVVdddd
+dddddddddddddddd
+dDVVVVddVVVVddDd
+dVcCCVddVCCcVddd
+dVCvvVddVvvCVddd
+ddVVVddddVVVdddd
+dddddddddddddddd
+dDVVVVddVVVVddDd
+dVcCCVddVCCcVddd
+dVCvvVddVvvCVddd
+ddVVVddddVVVdddd
+dddddDDddddddddd
+dddddddddddddddd
+end
+
+# ------------------------------------------------ palafitas do Porto (telhado de palha, parede de tábuas)
+frame telhado_l
+.........KKKKKKK
+.......KKNNNNNNN
+.....KKNNnNNNnNN
+....KNNnnNNnnNNn
+...KNnNnnnnnnnnn
+..KNnnnnnqnnnnqn
+..KnnnqnnnnnqnnN
+.KNnnnnnnnnnnnnn
+.KnqnnnnqnnnnnNn
+KNnnnnnnnnnnnnnn
+KnnnnqnnnnnqnnnN
+KnqnnnnnnnnnnnNn
+KqqqqqqqqqqqqqqQ
+KKqqQqqqqQqqqqqq
+.KKKKKKKKKKKKKKK
+................
+end
+
+frame telhado_m
+KKKKKKKKKKKKKKKK
+NNNNNNNNNNNNNNNN
+NNnNNNNnNNNNnNNN
+NnnNNnnnNNNnnNNn
+nnnnnnnnnnnnnnnn
+nnqnnnnnqnnnnnqn
+qnnnnqnnnnnqnnnn
+nnnnnnnnnnnnnnnn
+nnnqnnnnnnqnnnnn
+nnnnnnnqnnnnnnnn
+nqnnnnnnnnnnnqnn
+nnnnnnqnnnnnnnnn
+qqqqqqqqqqqqqqqq
+QqqqqQqqqqQqqqqQ
+KKKKKKKKKKKKKKKK
+................
+end
+
+frame telhado_r
+KKKKKKK.........
+NNNNNNNKK.......
+NNnNNNnNNKK.....
+nNNnnNNnnNNK....
+nnnnnnnnnnNnK...
+qnnnnqnnnnnnNK..
+NnnqnnnnnqnnnK..
+nnnnnnnnnnnnnNK.
+nNnnnnnqnnnnqnK.
+nnnnnnnnnnnnnnNK
+NnnnqnnnnnqnnnnK
+nNnnnnnnnnnnqnnK
+QqqqqqqqqqqqqqqK
+qqqqqqQqqqqQqqKK
+KKKKKKKKKKKKKKK.
+................
+end
+
+frame palafita_parede
+XwwwXwwwwXwwwwXw
+XwxwXwwwwXwxwwXw
+XwwwXwwxwXwwwwXw
+XwwwXwwwwXwwwwXw
+XwwwXwwwwXwwwwXx
+XwwWXwwwwXwwwWXw
+XwwWXwxwwXwwwWXw
+XwwWXwwwWXwwwWXw
+XwwWXwwwWXwxwWXw
+XWWWXWWWWXWWWWXW
+KKKKKKKKKKKKKKKK
+.XW..........WX.
+.XW..........WX.
+.XW..........WX.
+dXWddddddddddWXd
+dXXddddddddddXXd
+end
+
+frame palafita_janela
+XwwwXwwwwXwwwwXw
+XwxwKKKKKKKKwwXw
+XwwwKbbbKbbbKwXw
+XwwwKbooKoobKwXw
+XwwwKboOKOobKwXx
+XwwWKbbbKbbbKWXw
+XwwWKKKKKKKKKWXw
+XwwWXWWWWWWWWWXw
+XwwWXwwwWXwxwWXw
+XWWWXWWWWXWWWWXW
+KKKKKKKKKKKKKKKK
+.XW..........WX.
+.XW..........WX.
+.XW..........WX.
+dXWddddddddddWXd
+dXXddddddddddXXd
+end
+
+frame palafita_porta
+XwwwXKKKKKKXwwXw
+XwxwKbbbbbbKwwXw
+XwwwKbWWWWbKwwXw
+XwwwKbWwwWbKwwXw
+XwwwKbWwwWbKwwXx
+XwwWKbWwwWbKwWXw
+XwwWKbWwwOoKwWXw
+XwwWKbWwwWbKwWXw
+XwwWKbWwwWbKwWXw
+XWWWKbWWWWbKWWXW
+KKKKKxxxxxxKKKKK
+.XW.KxwwwwxK.WX.
+.XW.KwwxwwwK.WX.
+.XW.KwwwwxwK.WX.
+dXWdKxwwwwwKdWXd
+dXXdKKKKKKKKdXXd
+end
+
+# ------------------------------------------------ poste de lanterna (sólido; aceso sempre no Porto)
+frame poste_lanterna
+......KKKK......
+.....KbbbbK.....
+....KbOooObK....
+....KboffobK....
+....KbOooObK....
+.....KKbbKK.....
+......KWXK......
+......KwXK......
+......KwXK......
+......KwXK......
+......KwXK......
+......KwXK......
+.....KKwXKK.....
+....KWwwxXWK....
+lll.KXXXXXXK.lll
+llllllKKKKllllll
+end
+
+# ------------------------------------------------ porta do templo (fechada; aberta vira piso do templo)
+frame porta_templo
+KKKKKKKKKKKKKKKK
+KppppppppppppppK
+KpSSSSSSSSSSSSpK
+KpSyyyyySyyyyypK
+KpSyvvvySyvvvypK
+KpSyvVvySyvVvypK
+KpSyvvvySyvvvypK
+KpSyyyyySyyyyypK
+KpSSSSSSSSSSSSpK
+KpSyyyyySyyyyypK
+KpSyvvvySyvvvypK
+KpSyvvvySyvvvypK
+KpSyyyyySyyyyypK
+KpSSSSSSSSSSSSpK
+KppppppppppppppK
+KKKKKKKKKKKKKKKK
+end
+
+# ------------------------------------------------ água clara (depois da Bruxa), 2 quadros
+frame agua_clara0
+eeeeeeeeeeeeeeee
+eeeeeeEEeeeeeeee
+eeeeeEffEeeeeeee
+eeeeeeeeeeeeeeee
+eeeeeeeeeeeeEEee
+eEEeeeeeeeeEffEe
+EffEeeeeeeeeeeee
+eeeeeeeeeeeeeeee
+eeeeeeeeEEeeeeee
+eeeeeeeEffEeeeee
+eeeeeeeeeeeeeeee
+eeeeEEeeeeeeeEEe
+eeeEffEeeeeeeffE
+eeeeeeeeeeeeeeee
+eeeeeeeeeeEEeeee
+eeeeeeeeeeeeeeee
+end
+
+frame agua_clara1
+eeeeeeeeeeeeeeee
+eeeeeeeeeEEeeeee
+eeeeeeeeEffEeeee
+eeeeeeeeeeeeeeee
+eEEeeeeeeeeeeeee
+EffEeeeeeeEEeeee
+eeeeeeeeeEffEeee
+eeeeeeeeeeeeeeee
+eeeeeEEeeeeeeeee
+eeeeEffEeeeeeeEE
+eeeeeeeeeeeeeEff
+eeeeeeeeeeeeeeee
+eeeeeeeEEeeeeeee
+eeEEeeEffEeeeeee
+eEffEeeeeeeeeeee
+eeeeeeeeeeeeeeee
+end
+
+# ------------------------------------------------ pilar submerso (sólido): coluna quebrada saindo da água
+frame pilar_submerso
+dddd.KKKKKK.dddd
+ddd.KPPPSSpK.ddd
+ddd.KPSSSspK.ddd
+ddd.KSSyssKK.ddd
+ddd.KSsvsspK.ddd
+ddd.KSssssspK.dd
+ddd.KSsssspK.ddd
+ddd.KPSsssspKddd
+ddd.KSSsssspKddd
+ddd.KSsgssspKddd
+ddd.KSgGgsspKddd
+dddDKgGggggpKDdd
+ddDeKggjgjgjKeDd
+dDeeKKKKKKKKKeeD
+dddeeDDDDDDDDedd
+dddddddddddddddd
+end
+
+# ------------------------------------------------ degraus do templo (passável)
+frame degraus
+pppppppppppppppp
+PSSSSSSSSSSSSSSP
+ssssssssssssssss
+pppppppppppppppp
+iiiiiiiiiiiiiiii
+PSSSSSSSSSSSSSSP
+ssssssssssssssss
+pppppppppppppppp
+iiiiiiiiiiiiiiii
+PSSSSSSSSSSSSSSP
+ssssssssssssssss
+pppppppppppppppp
+iiiiiiiiiiiiiiii
+PSSSSSSSSSSSSSSP
+ssssssssssssssss
+pppppppppppppppp
+end
+
+sheet tiles_pantano.png 16 16 16
+lodo0
+lodo1
+capim0
+capim1
+juncos
+agua_funda0
+agua_funda1
+agua_rasa
+passarela_h
+passarela_v
+lodo_instavel
+lodo_firme
+templo_parede_frente
+templo_parede_topo
+templo_piso
+templo_alagado
+margem_n
+margem_s
+margem_w
+margem_e
+ponte_espiritual
+telhado_l
+telhado_m
+telhado_r
+palafita_parede
+palafita_janela
+palafita_porta
+poste_lanterna
+porta_templo
+agua_clara0
+agua_clara1
+pilar_submerso
+degraus
+end

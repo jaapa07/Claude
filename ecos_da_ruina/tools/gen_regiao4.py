@@ -59,6 +59,7 @@ def ponte():
     m.ent(type="enemy", kind="arqueiro", id="pe_arq1", x=33, y=8, nivel=19)
     m.ent(type="chest", id="ponte_bau", x=36, y=15, loot={"pocao": 2, "selo_refinado": 2})
     m.ent(type="exit", x=39, y=11, w=1, h=3, to="refugio_muralha", spawn="from_ponte")
+    m.ent(type="exit", x=0, y=11, w=1, h=3, to="porto_lanternas", spawn="from_muralha")   # volta ao Pântano (Região 3)
     return m
 
 

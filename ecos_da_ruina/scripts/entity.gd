@@ -28,6 +28,18 @@ var fire: AnimatedSprite2D
 var roll_dir := Vector2i.ZERO
 var roll_to := Vector2.ZERO
 var steam: AnimatedSprite2D
+# Região 3
+var mirror_state := "a"     # espelho: "a" (/) ou "b" (\)
+var lamp_t := 0.0           # lanterna temporária (arena do Barqueiro)
+var boss_cd := 0.0          # recarga da lanterna da arena
+var refl: Sprite2D          # reflexo da estátua na água
+var glow: AnimatedSprite2D  # brilho (lanterna acesa, marca revelada)
+var revealed := false       # inscrição espiritual revelada pelo Olhar Velado
+
+## Objetos do pântano (pantano_props.png, ordem do contrato docs/REGIAO3_CONTRATO.md)
+const PPROPS := {"lanterna_off": 0, "lanterna_on": 1, "roda0": 2, "roda1": 3, "comporta_fechada": 4, "comporta_aberta": 5,
+	"estacas": 6, "marca_lodo": 7, "espelho_a": 8, "espelho_b": 9, "receptor_off": 10, "receptor_on": 11, "feixe_h": 12,
+	"feixe_v": 13, "estatua": 14, "emissor": 15, "bolhas0": 16, "bolhas1": 17, "barco": 18, "sussurro": 19, "cesto": 20}
 
 const PROPS := {"valve_closed": 0, "valve_open": 1, "furnace_off": 2, "furnace_on": 3, "cart": 4, "lever_rail_a": 5, "lever_rail_b": 6,
 	"ore_chunk": 7, "anvil": 8, "steam0": 9, "steam1": 10, "debris": 11}
@@ -149,6 +161,61 @@ func _ready() -> void:
 		"altar":
 			_rite_prop(1 if Game.has_flag(def.get("flag", "")) else 0, Vector2(0, -4))
 			solid = true
+		# ---- Região 3
+		"lantern":
+			_pprop("lanterna_off", Vector2(0, -6)); solid = true
+			lit = Game.has_flag("lit_" + eid) or (def.has("group") and Game.has_flag(world.puzzle_flag(def["group"]))) or Game.has_flag(def.get("lit_flag", "_never_"))
+			_glow(Vector2(0, -16))
+			set_lit(lit)
+		"sluice":
+			_pprop("comporta_fechada", Vector2(0, -4)); solid = true
+			refresh_sluice()
+		"wheel":
+			_pprop("roda0", Vector2(0, -4)); solid = true
+			refresh_wheel()
+		"stakes":
+			_pprop("estacas", Vector2(0, -2)); solid = true
+			refresh_stakes()
+		"mud_mark":
+			_pprop("marca_lodo", Vector2.ZERO)
+			refresh_mark()
+		"mirror":
+			_pprop("espelho_a", Vector2(0, -4)); solid = true
+			mirror_state = str(def.get("start", "a"))
+			if def.has("group") and Game.has_flag(world.puzzle_flag(def["group"])) and def.has("goal"):
+				mirror_state = str(def["goal"])
+			refresh_mirror()
+		"beam_source":
+			_pprop("emissor", Vector2(0, -6)); solid = true
+		"beam_target":
+			_pprop("receptor_off", Vector2(0, -4)); solid = true
+			_glow(Vector2(0, -12))
+			set_lit(def.has("group") and Game.has_flag(world.puzzle_flag(def["group"])))
+		"statue":
+			_pprop("estatua", Vector2(0, -8)); solid = true
+			refl = Sprite2D.new()
+			refl.texture = sprite.texture
+			refl.region_enabled = true
+			refl.region_rect = sprite.region_rect
+			refl.flip_v = true
+			# reflexo verdadeiro: o mesmo lado da lanterna; falso: espelhado do lado errado
+			refl.flip_h = not def.get("verdadeira", false) and not def.get("demo_verdadeira", false)
+			refl.position = Vector2(0, 14)
+			refl.modulate = Color(0.55, 0.8, 0.95, 0.45)
+			refl.show_behind_parent = true
+			add_child(refl)
+			refresh_statue()
+		"ripple":
+			_pprop("sussurro", Vector2(0, 0))
+			sprite.modulate = Color(1, 1, 1, 0.7)
+			refresh_ripple()
+		"spirit_bridge":
+			_spr("bridge_mark", Vector2.ZERO)
+			sprite.modulate = Color(0.75, 0.65, 1.0, 0.6)
+			refresh_spirit()
+		"decor":
+			_pprop(str(def.get("frame", "cesto")), Vector2(0, -2))
+			solid = def.get("solid", false)
 	if solid:
 		collision_layer = 1
 		var cs := CollisionShape2D.new()
@@ -246,6 +313,20 @@ func prompt() -> String:
 		"prop": return "Contratos" if def.get("contratos", false) else ("Examinar" if def.has("dialog") else ("Forja" if def.get("forge", false) else ""))
 		"pickup": return "Pegar"
 		"spirit_mark": return "Examinar"
+		"lantern":
+			if def.get("boss", false):
+				return "" if lit else ("Lanterna (%.0f s)" % boss_cd if boss_cd > 0.0 else "Acender lanterna")
+			return "" if lit else "Acender lanterna"
+		"sluice": return "Comporta"
+		"wheel": return "" if Game.has_flag(def.get("flag", "")) else "Roda d'água"
+		"stakes": return "" if Game.has_flag(def.get("flag", "")) else "Cravar estacas"
+		"mud_mark": return "" if Game.has_flag(def.get("flag", "")) else "Lodo marcado"
+		"mirror": return "Girar espelho"
+		"beam_source", "beam_target": return ""
+		"statue": return "Tocar a estátua"
+		"ripple": return "" if Game.has_flag(def.get("flag", "")) else str(def.get("prompt", "Examinar"))
+		"spirit_bridge": return "" if Game.has_flag(def.get("flag", "")) else "Brilho sobre a água"
+		"decor": return "Examinar" if def.has("dialog") else ""
 		"rite_reset": return "Reiniciar rito"
 		"altar": return "" if Game.has_flag(def.get("flag", "")) else "Altar do Rito"
 	return ""
@@ -284,6 +365,18 @@ func interact(player: Node) -> void:
 		"spirit_mark": _spirit()
 		"rite_reset": world.rite_reset(self)
 		"altar": world.rite_altar(self)
+		"lantern": world.lantern_use(self)
+		"sluice": world.sluice_use(self)
+		"wheel": world.wheel_use(self)
+		"stakes": world.stakes_use(self)
+		"mud_mark": world.mud_mark_use(self)
+		"mirror": world.mirror_turn(self)
+		"statue": world.statue_touch(self)
+		"ripple": world.ripple_use(self)
+		"spirit_bridge": world.spirit_bridge_use(self)
+		"decor":
+			if def.has("dialog"):
+				world.start_dialog(def["dialog"], self)
 
 func _open_chest() -> void:
 	if opened:
@@ -431,10 +524,21 @@ func _mine() -> void:
 func _spirit() -> void:
 	var eco: String = def.get("requires_eco", "olhar_velado")
 	if Game.has_eco(eco):
-		world.start_dialog(def.get("dialog", "placa_veio"), self)
+		reveal_mark()
+		world.start_dialog(def.get("dialog", "inscricao_generica"), self)
 		return
 	world.say(def.get("msg", "Há algo oculto aqui: um brilho fraco que olhos comuns não decifram. (Olhar Velado — volte depois)"))
 	Game.set_flag("viu_oculto_" + eid)
+
+## Olhar Velado: a inscrição oculta acende (fica legível).
+func reveal_mark() -> void:
+	if kind != "spirit_mark" or revealed:
+		return
+	revealed = true
+	Game.set_flag("revelou_" + eid)
+	if sprite:
+		sprite.modulate = Color(0.9, 0.85, 1.0, 1.0)
+	world.spawn_text(global_position + Vector2(0, -22), "Inscrição revelada", Color(0.85, 0.75, 1.0))
 
 func light(by_hero: bool) -> void:
 	if lit:
@@ -575,6 +679,7 @@ func _process(delta: float) -> void:
 					anim.play(n)
 	if kind == "shrine":
 		set_frame(Game.has_flag("shrine_" + eid), 24)
+	_process_r3(delta)
 
 
 
@@ -588,3 +693,107 @@ func _pickup() -> void:
 	Audio.play("pickup")
 	world.say("Pegou: %s" % Data.items[def["item"]]["nome"])
 	queue_free()
+
+# =============================================================== REGIÃO 3 (pântano)
+func _pprop(name: String, off: Vector2) -> Sprite2D:
+	sprite = Sprite2D.new()
+	sprite.texture = Art.sprite_tex("pantano_props")
+	sprite.region_enabled = true
+	sprite.region_rect = Rect2(int(PPROPS.get(name, 20)) * 16, 0, 16, 16)
+	sprite.offset = off
+	add_child(sprite)
+	return sprite
+
+func _set_pprop(name: String) -> void:
+	if sprite:
+		sprite.region_rect = Rect2(int(PPROPS.get(name, 20)) * 16, 0, 16, 16)
+
+func _glow(off: Vector2) -> void:
+	glow = AnimatedSprite2D.new()
+	glow.sprite_frames = Art.fx_frames("fx_sparkle", 16, 12, 2, 6.0, true)
+	glow.position = off
+	glow.modulate = Color(1.0, 0.9, 0.6, 0.8)
+	glow.play("a")
+	glow.visible = false
+	add_child(glow)
+
+## Lanterna/receptor: acende ou apaga (guias e anel guardam a flag "lit_<id>").
+func set_lit(on: bool) -> void:
+	lit = on
+	if kind == "lantern":
+		_set_pprop("lanterna_on" if on else "lanterna_off")
+		if on and def.get("persist", true) and not def.get("boss", false):
+			Game.set_flag("lit_" + eid)
+	elif kind == "beam_target":
+		_set_pprop("receptor_on" if on else "receptor_off")
+	if glow:
+		glow.visible = on
+
+## Lanterna da arena: acesa por alguns segundos.
+func light_temp(sec: float) -> void:
+	set_lit(true)
+	lamp_t = sec
+	Audio.play("skill", -4.0)
+	world.spark(global_position + Vector2(0, -14), 6)
+
+func refresh_sluice() -> void:
+	_set_pprop("comporta_aberta" if Game.has_flag(def.get("flag", "")) else "comporta_fechada")
+
+func refresh_wheel() -> void:
+	_set_pprop("roda0")
+
+func refresh_stakes() -> void:
+	if sprite:
+		sprite.modulate = Color(0.6, 0.6, 0.6, 0.55) if Game.has_flag(def.get("flag", "")) else Color.WHITE
+
+func refresh_mark() -> void:
+	if sprite:
+		sprite.visible = not Game.has_flag(def.get("flag", ""))
+
+func refresh_mirror() -> void:
+	_set_pprop("espelho_a" if mirror_state == "a" else "espelho_b")
+
+func refresh_ripple() -> void:
+	if sprite:
+		sprite.visible = not Game.has_flag(def.get("flag", ""))
+
+func refresh_spirit() -> void:
+	if sprite:
+		sprite.visible = not Game.has_flag(def.get("flag", ""))
+
+## O reflexo só aparece com água aos pés da estátua (o nível da água importa no Rito dos Reflexos).
+func reflection_visible() -> bool:
+	return world.is_watery(global_position + Vector2(0, 16))
+
+func refresh_statue() -> void:
+	if refl:
+		refl.visible = reflection_visible()
+
+func _process_r3(delta: float) -> void:
+	match kind:
+		"lantern":
+			if boss_cd > 0.0:
+				boss_cd -= delta
+			if lamp_t > 0.0:
+				lamp_t -= delta
+				if lamp_t <= 0.0:
+					set_lit(false)
+		"wheel":
+			if Game.has_flag(def.get("flag", "")) and sprite:
+				_set_pprop("roda0" if int(glow_t * 4.0) % 2 == 0 else "roda1")
+		"statue":
+			refresh_statue()
+			# Nimbelo por perto: as estátuas de reflexo falso tremulam (observar também basta)
+			if sprite:
+				var col := Color.WHITE
+				var ac := Game.active_ind()
+				if not def.get("verdadeira", false) and not def.get("demo", false) and not ac.is_empty() and Game.sp_of(ac).get("acao_id", "") == "reflexo" \
+						and world.companion != null and is_instance_valid(world.companion) and world.companion.global_position.distance_to(global_position) < 90.0:
+					col = Color(0.8, 0.7, 1.0, 0.55 + 0.35 * sin(glow_t * 10.0))
+				sprite.modulate = col
+		"ripple":
+			if sprite and sprite.visible:
+				sprite.scale = Vector2.ONE * (0.85 + 0.15 * sin(glow_t * 3.0))
+		"spirit_mark":
+			if revealed and sprite:
+				sprite.modulate = Color(0.9, 0.85, 1.0, 0.75 + 0.25 * sin(glow_t * 4.0))

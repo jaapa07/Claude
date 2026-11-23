@@ -42,6 +42,17 @@
     "Das brasas que esfriam, uma página do diário e um elo de corrente partido."
    ]
   },
+  "bruxa_morta": {
+   "titulo": "Memória da Bruxa Afogada",
+   "item": "pagina_ione_5",
+   "linhas": [
+    "Memória do Eco: a Bruxa não era bruxa. Era a guardiã das águas, e guardava os reflexos do pântano — as lembranças de cada barqueiro, de cada criança que se olhava no lago.",
+    "Memória do Eco: os mantos brancos da Ordem do Vazio prenderam uma corrente de metal-eco ao altar do templo. A água escureceu, e ela se afogou nas próprias memórias.",
+    "Memória do Eco: uma vinculadora de capa azul mergulhou atrás dela. Não conseguiu trazê-la de volta, mas a guardiã lhe emprestou o Olhar Velado por um instante.",
+    "Memória do Eco: com ele, Ione viu a ponte de luz nas montanhas e seguiu por ela, rumo à Fortaleza do Eclipse.",
+    "Na água clara do altar boia uma página encharcada, com a letra da sua mestra."
+   ]
+  },
   "vesna_ok": {
    "titulo": "Carta encontrada com Vesna",
    "item": "carta_arquivista",

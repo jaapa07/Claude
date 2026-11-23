@@ -1,7 +1,7 @@
 # Relatório de testes
 
-Resumo: região 4 (`--e2e --regiao4`) 136/136 · e2e 321/321 (sementes padrão, 7 e 3) · unit 30/30 · poderes 12/12 · equipamentos 12/12 · casas 15/15 · celular (Playwright, iPhone 13 deitado) sem erros
-## E2E (Capítulos 1 e 2)
+Resumo: e2e Capítulos 1+2+3 (`--e2e`) 464/464 · região 4 (`--e2e --regiao4`) 136/136 · história 14/14 · unit 38/38 · grupo 34/34 · clima 38/38 · habilidades 31/31 · casas 15/15 (Região 3: estágios `r3_*`, 143 verificações; veja `docs/REGIAO3_CONTRATO.md`) · anteriores: unit 30/30 · poderes 12/12 · equipamentos 12/12 · casas 15/15 · celular (Playwright, iPhone 13 deitado) sem erros
+## E2E (Capítulos 1 e 2 — a lista abaixo é a da versão anterior; os estágios do Capítulo 3 estão em `tests/e2e_bot.gd`, funções `r3_*`)
 [PASS] Título abre ao iniciar o jogo
 [PASS] Novo jogo inicia na Vila Lúmen
 [PASS] Dados do jogo sem erros de validação

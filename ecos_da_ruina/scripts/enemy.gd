@@ -61,6 +61,10 @@ var _tw: Tween
 var contrato := ""           # contrato em grupo que gerou este inimigo
 var dono := ""               # fera: id do domador dono
 var human := false           # domadores usam folha humana (4 direções)
+var revealed_t := 0.0        # espectro: visível/vulnerável (Olhar Velado, Nimbelo, Lente de Orvalho ou ao atacar)
+var slow_t := 0.0            # campo de lodo do Brejugo: anda a 50%
+var jump_from := Vector2.ZERO
+var jump_to := Vector2.ZERO
 
 func init(p_world: Node, p_kind: String, e: Dictionary) -> void:
 	world = p_world
@@ -122,6 +126,9 @@ func _attack_params(a: String) -> Dictionary:
 		"lesma": return {"wind": 0.75, "dur": 0.18, "rec": 1.0, "cd": 1.0, "start": 24.0, "r": 24.0, "arc": 55.0}
 		"corrente": return {"wind": 0.6, "dur": 0.16, "rec": 0.8, "cd": 1.0, "start": 46.0, "r": 50.0, "arc": 24.0}
 		"martelo": return {"wind": 1.1, "dur": 0.45, "rec": 1.3, "cd": 1.2, "start": 46.0, "len": 80.0, "w": 14.0}
+		"salto": return {"wind": 0.85, "dur": 0.5, "rec": 0.9, "cd": 1.7, "start": 96.0, "aoe": 22.0, "max": 90.0}
+		"espectro": return {"wind": 0.7, "dur": 0.16, "rec": 1.1, "cd": 1.0, "start": 34.0, "r": 34.0, "arc": 60.0}
+		"sementes": return {"wind": 0.9, "dur": 0.15, "rec": 1.0, "cd": 1.6, "start": 140.0, "fan": 0.32}
 	return {}
 
 func _ready() -> void:
@@ -154,7 +161,18 @@ func _ready() -> void:
 	flank_side = 1.0 if randf() < 0.5 else -1.0
 
 func hittable() -> bool:
-	return alive_flag and not dying and not invulnerable
+	return alive_flag and not dying and not invulnerable and spectral_visible()
+
+## Espectros refletidos só podem ser feridos quando visíveis: ao atacar, revelados (Olhar Velado / Nimbelo)
+## ou perto do herói com a Lente de Orvalho.
+func spectral_visible() -> bool:
+	if not def.get("espiritual", false):
+		return true
+	if revealed_t > 0.0 or st in [St.WINDUP, St.ATTACK, St.RECOVER, St.STAGGER]:
+		return true
+	if Game.item_count("lente_orvalho") > 0 and world != null and world.player != null and world.player.global_position.distance_to(global_position) < 56.0:
+		return true
+	return false
 
 func is_controlled() -> bool:
 	return rooted_t > 0.0 or st == St.STAGGER
@@ -180,6 +198,8 @@ func _physics_process(delta: float) -> void:
 	cd = max(0.0, cd - delta)
 	angry_t = max(0.0, angry_t - delta)
 	blind_t = max(0.0, blind_t - delta)
+	revealed_t = max(0.0, revealed_t - delta)
+	slow_t = max(0.0, slow_t - delta)
 	los_t -= delta
 	if sprite:
 		sprite.modulate = _tint()
@@ -226,6 +246,10 @@ func heat_damage(d: float) -> void:
 	take_damage(d, global_position, {"src": "ambiente", "knock": 0.0})
 
 func _tint() -> Color:
+	if def.get("espiritual", false) and alive_flag:
+		if flash > 0.0:
+			return Color(2.0, 1.8, 2.0, 0.9)
+		return Color(0.85, 0.9, 1.1, 0.95) if spectral_visible() else Color(0.7, 0.8, 1.0, 0.22)
 	if flash > 0.0:
 		return Color(2.0, 1.6, 1.6)
 	if contained:
@@ -254,7 +278,7 @@ func _anim(n: String) -> void:
 		sprite.play(n)
 
 func _move(dir: Vector2, spd: float, delta: float) -> void:
-	velocity = dir * spd * Weather.enemy_speed_mult(self) + knock_v
+	velocity = dir * spd * Weather.enemy_speed_mult(self) * (0.5 if slow_t > 0.0 else 1.0) + knock_v
 	knock_v = knock_v.move_toward(Vector2.ZERO, 520.0 * delta)
 	move_and_slide()
 
@@ -357,6 +381,29 @@ func _chase(delta: float) -> void:
 		_anim("idle")
 		if dist < P["start"] and cd <= 0.0:
 			_start_windup(to.normalized())
+	elif a == "sementes":
+		# planta enraizada: só mira e dispara um leque de sementes quando tem linha de visão
+		_move(Vector2.ZERO, 0.0, delta)
+		_anim("idle")
+		if dist < P["start"] and cd <= 0.0 and not Combat.ray_blocked(world, global_position, tp):
+			_start_windup(to.normalized())
+	elif a == "salto":
+		# sapo de lodo: aproxima-se aos pulinhos e anuncia o salto com um círculo no ponto de queda
+		if dist > P["start"] * 0.75:
+			_move(to.normalized(), speed, delta)
+			_anim("walk")
+		else:
+			_move(Vector2.ZERO, 0.0, delta)
+			_anim("idle")
+		if dist < P["start"] and cd <= 0.0:
+			_start_windup(to.normalized())
+			jump_from = global_position
+			var land := tp
+			if land.distance_to(global_position) > float(P["max"]):
+				land = global_position + to.normalized() * float(P["max"])
+			if world.tile_solid_at(land):
+				land = tp
+			jump_to = land
 	elif a == "arremesso":
 		# mantém distância e arremessa ferramentas; recua se o herói encosta
 		var los := not Combat.ray_blocked(world, global_position, tp)
@@ -399,6 +446,16 @@ func _begin_attack() -> void:
 	if a == "corrente" and ResourceLoader.exists("res://assets/sprites/fx_corrente.png"):
 		world.fx_at("corrente", global_position + attack_dir * 26.0 + Vector2(0, -10), 0.22, attack_dir.angle(), 1.4)
 		Audio.play("swing", -4.0)
+	if a == "sementes":
+		for k in [-1, 0, 1]:
+			var sd: Vector2 = attack_dir.rotated(float(P["fan"]) * k)
+			if blind_t > 0.0:
+				sd = sd.rotated(randf_range(-0.5, 0.5))
+			var pr = world.spawn_projectile(global_position + Vector2(0, -6) + sd * 8.0, sd, damage * Weather.enemy_attack_mult(self), self, "semente")
+			pr.speed = 125.0
+		Audio.play("swing", -8.0)
+	elif a == "salto":
+		Audio.play("dodge", -6.0)
 	if a == "arremesso" and target != null and is_instance_valid(target):
 		var dir := (target.global_position - global_position).normalized()
 		if blind_t > 0.0:
@@ -427,9 +484,26 @@ func _attack_tick(delta: float) -> void:
 		_move(Vector2.ZERO, 0.0, delta)
 		if st_t >= P["dur"]:
 			_end_attack()
-	elif a == "arremesso" or a == "martelo":
+	elif a == "arremesso" or a == "martelo" or a == "sementes":
 		_move(Vector2.ZERO, 0.0, delta)
 		if st_t >= P["dur"]:
+			_end_attack()
+	elif a == "salto":
+		# salto em arco até o ponto anunciado; ao cair, onda de lodo em volta
+		var f: float = clamp(st_t / float(P["dur"]), 0.0, 1.0)
+		global_position = jump_from.lerp(jump_to, f)
+		velocity = Vector2.ZERO
+		if sprite:
+			sprite.offset.y = -fh / 2.0 + 2.0 - sin(f * PI) * 18.0
+		if st_t >= P["dur"]:
+			if sprite:
+				sprite.offset.y = -fh / 2.0 + 2.0
+			if world.tile_solid_at(global_position):
+				global_position = world.safe_pos_near(global_position)
+			_hit_circle(global_position, P["aoe"], dmg, {"knock": 100.0})
+			world.dust(global_position)
+			world.fx_at("splash", global_position, 0.4, 0.0, 1.3)
+			world.shake(1.0, 0.1)
 			_end_attack()
 	else:
 		_move(Vector2.ZERO, 0.0, delta)
@@ -568,6 +642,8 @@ func interrupt() -> void:
 		st = St.STAGGER
 		st_t = 0.0
 		cd = 0.6
+		if sprite and def.get("ataque", "") == "salto":
+			sprite.offset.y = -fh / 2.0 + 2.0
 
 func root(sec: float) -> bool:
 	if boss or not small or not alive_flag:
@@ -771,6 +847,17 @@ func _draw_telegraph_decal() -> void:
 		_decal.rotation = 0.0
 		_decal.position = Vector2.ZERO
 		_decal.scale = Vector2.ONE * (float(P["aoe"]) / 34.0)
+	elif a == "salto":
+		_set_decal("circle")
+		_decal.rotation = 0.0
+		_decal.position = jump_to - global_position
+		_decal.scale = Vector2.ONE * (float(P["aoe"]) * 2.0 / 72.0 + 0.15)
+	elif a == "sementes":
+		_set_decal("line")
+		_decal.region_rect = Rect2(0, 0, 70, 8)
+		_decal.rotation = attack_dir.angle()
+		_decal.position = attack_dir * 40.0
+		_decal.scale = Vector2.ONE
 	else:
 		_set_decal("rect")
 		var r: float = P["r"]

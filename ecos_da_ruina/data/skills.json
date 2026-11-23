@@ -440,14 +440,14 @@
  },
  "redemoinho": {
   "nome": "Redemoinho",
-  "descricao": "Redemoinho ao redor: interrompe ataques e afasta todos.",
+  "descricao": "Redemoinho em volta que interrompe e empurra todos os inimigos próximos.",
   "exec": "pulso",
-  "recarga": 8.0,
-  "raio": 52,
-  "dano": 10,
-  "fx": "vento",
-  "som": "dodge",
-  "knock": 110
+  "recarga": 9.0,
+  "raio": 70,
+  "dano": 13,
+  "fx": "onda",
+  "knock": 120,
+  "som": "dodge"
  },
  "penas_cortantes": {
   "nome": "Penas Cortantes",
@@ -551,5 +551,130 @@
   "recarga": 1.5,
   "custo": 0,
   "som": "dodge"
+ },
+ "onda": {
+  "nome": "Onda",
+  "descricao": "Onda d'água à frente: empurra longe os inimigos leves e interrompe ataques.",
+  "exec": "onda",
+  "recarga": 7.0,
+  "alcance": 52,
+  "arco": 55,
+  "dano": 9,
+  "empurra": 230,
+  "knock": 50,
+  "som": "dodge"
+ },
+ "garoa": {
+  "nome": "Garoa",
+  "descricao": "Chuva fina que cura o herói e a própria criatura.",
+  "exec": "cura",
+  "recarga": 12.0,
+  "raio": 52,
+  "dano": 0,
+  "cura": 18,
+  "fx": "splash",
+  "som": "heal"
+ },
+ "bolha": {
+  "nome": "Bolha d'Água",
+  "descricao": "Bolha protetora: herói e criatura recebem 30% menos dano por 5 s.",
+  "exec": "escudo",
+  "recarga": 15.0,
+  "dano": 0,
+  "duracao": 5.0,
+  "reducao": 0.3,
+  "fx": "splash",
+  "som": "guard"
+ },
+ "mare": {
+  "nome": "Maré",
+  "descricao": "Onda larga e forte: arrasta inimigos leves para longe e fere mais.",
+  "exec": "onda",
+  "recarga": 8.0,
+  "alcance": 72,
+  "arco": 75,
+  "dano": 16,
+  "empurra": 300,
+  "knock": 80,
+  "som": "dodge"
+ },
+ "lodo_pegajoso": {
+  "nome": "Lodo Pegajoso",
+  "descricao": "Espalha um campo de lodo por 4 s: inimigos dentro andam na metade da velocidade.",
+  "exec": "lodo",
+  "recarga": 8.0,
+  "alcance": 56,
+  "raio": 34,
+  "dano": 6,
+  "duracao": 4.0,
+  "som": "roots"
+ },
+ "cuspe_lodo": {
+  "nome": "Cuspe de Lodo",
+  "descricao": "Cospe lodo em leque à frente.",
+  "exec": "cone",
+  "recarga": 6.0,
+  "alcance": 48,
+  "arco": 45,
+  "dano": 11,
+  "fx": "bolhas",
+  "som": "dodge",
+  "knock": 40
+ },
+ "pantano_vivo": {
+  "nome": "Pântano Vivo",
+  "descricao": "Campo de lodo largo e duradouro (6 s) que também fere ao surgir.",
+  "exec": "lodo",
+  "recarga": 10.0,
+  "alcance": 64,
+  "raio": 52,
+  "dano": 14,
+  "duracao": 6.0,
+  "som": "roots"
+ },
+ "musgo_protetor": {
+  "nome": "Musgo Protetor",
+  "descricao": "Musgo grosso cobre o herói e a criatura: 35% menos dano por 6 s.",
+  "exec": "escudo",
+  "recarga": 17.0,
+  "dano": 0,
+  "duracao": 6.0,
+  "reducao": 0.35,
+  "fx": "roots",
+  "som": "guard"
+ },
+ "clarao": {
+  "nome": "Clarão de Orvalho",
+  "descricao": "Pulso de luz que interrompe ataques e revela espectros (6 s).",
+  "exec": "pulso",
+  "recarga": 8.0,
+  "raio": 60,
+  "dano": 7,
+  "fx": "pulse",
+  "luz": true,
+  "revela": 6.0,
+  "som": "skill"
+ },
+ "aurora": {
+  "nome": "Aurora",
+  "descricao": "Grande pulso de luz: atordoa por 1,5 s, revela espectros (10 s) e fere mais.",
+  "exec": "pulso",
+  "recarga": 10.0,
+  "raio": 90,
+  "dano": 13,
+  "fx": "burst",
+  "luz": true,
+  "revela": 10.0,
+  "atordoa": 1.5,
+  "som": "skill"
+ },
+ "olhar_velado": {
+  "nome": "Olhar Velado",
+  "descricao": "Revela plataformas, inscrições e inimigos espirituais ao redor (espectros revelados podem ser feridos). Abre pontes espirituais.",
+  "recarga": 8.0,
+  "custo": 16,
+  "raio": 120,
+  "duracao": 8.0,
+  "som": "skill"
  }
 }

@@ -2,7 +2,7 @@
 
 RPG 2D de ação e captura de criaturas, em pixel art, feito em **Godot 4.3 (GDScript)** a partir de `ECOS_DA_RUINA_RPG_MASTER.md`.
 
-**Estado: Capítulos 1 (Floresta dos Esquecidos) e 2 (Minas da Brasa) jogáveis do início ao fim; Região 4 (Fortaleza do Eclipse) jogável a partir da ponte espiritual** (a ligação com a Região 3 está descrita em `docs/REGIAO4_CONTRATO.md`). Pântano e Catedral ainda em desenvolvimento (veja `docs/KNOWN_ISSUES.md`).
+**Estado: Capítulos 1 (Floresta dos Esquecidos), 2 (Minas da Brasa) e 3 (Pântano dos Sussurros) jogáveis do início ao fim; Região 4 (Fortaleza do Eclipse) jogável a partir da ponte espiritual do Porto das Lanternas.** A Catedral ainda está em desenvolvimento (veja `docs/KNOWN_ISSUES.md`). Contratos por região: `docs/REGIAO2_CONTRATO.md`, `docs/REGIAO3_CONTRATO.md`, `docs/REGIAO4_CONTRATO.md`.
 
 ## Como jogar (executável)
 

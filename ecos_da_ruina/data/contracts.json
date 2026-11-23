@@ -437,5 +437,83 @@
     "selo_refinado": 3
    }
   }
+ },
+ "caca_sapos": {
+  "nome": "Coaxar Sem Fim",
+  "tipo": "caca",
+  "aliados": [],
+  "nivel": 13,
+  "requer": [
+   "visitou_passarela_ecos"
+  ],
+  "alvo": {
+   "kind": "sapo",
+   "qtd": 4
+  },
+  "texto": "Os sapos de lodo da Passarela dos Ecos derrubam quem passa pelas tábuas. A Dalva paga por cada um.",
+  "objetivo": "Caçada: derrote 4 Sapos de Lodo.",
+  "recompensa": {
+   "fragmentos": 240,
+   "xp": 360,
+   "itens": {
+    "perola_brejo": 2,
+    "semente_vida": 1
+   }
+  }
+ },
+ "contrabando": {
+  "nome": "Contrabando no Lago",
+  "tipo": "dupla",
+  "aliados": [
+   "ravi"
+  ],
+  "nivel": 14,
+  "requer": [
+   "visitou_lago_reflexos"
+  ],
+  "mapa": "lago_reflexos",
+  "texto": "Domadores estão prendendo Goturins e Brejugos na margem oeste do Lago dos Reflexos para vender no Porto.",
+  "objetivo": "Derrote os Domadores da margem do Lago (com o Ravi) e liberte as feras.",
+  "inimigos": [
+   {
+    "kind": "domador",
+    "id": "cb_d1",
+    "x": 5,
+    "y": 21,
+    "nivel": 14
+   },
+   {
+    "kind": "domadora",
+    "id": "cb_d2",
+    "x": 8,
+    "y": 23,
+    "nivel": 14
+   },
+   {
+    "kind": "fera",
+    "dono": "cb_d1",
+    "species": "goturim",
+    "level": 14,
+    "x": 4,
+    "y": 23
+   },
+   {
+    "kind": "fera",
+    "dono": "cb_d2",
+    "species": "brejugo",
+    "level": 14,
+    "x": 7,
+    "y": 24
+   }
+  ],
+  "recompensa": {
+   "fragmentos": 280,
+   "xp": 420,
+   "itens": {
+    "selo_refinado": 3,
+    "perola_brejo": 2,
+    "essencia_roxa": 1
+   }
+  }
  }
 }

@@ -545,6 +545,8 @@ func use_eco(slot: int) -> void:
 		world.eco_raiz_viva(global_position + aim_dir * 14.0)
 	elif id == "ruptura_ignea":
 		world.eco_ruptura(global_position + aim_dir * 22.0, aim_dir)
+	elif id == "olhar_velado":
+		world.eco_olhar(global_position)
 	elif id == "passo_umbral":
 		FortEnt.eco_passo_umbral(world)    # Região 4
 

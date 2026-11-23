@@ -4,7 +4,7 @@ class_name World
 
 const TILE := 16
 const TILE_ORDER := ".,fpT~rRhHwcxFbSDPoCgGvkeBy"
-const SOLID := "T~RhHcxFbDPoCvMLuJZXOAaI56"
+const SOLID := "T~RhHcxFbDPoCvMLuJZXOAaI56nWUY^&*!i"
 const TILESET_PATH := "res://assets/sprites/tiles2.png"
 ## Região 2 (Minas da Brasa): segunda fonte do TileSet (source id 1), ordem do contrato docs/REGIAO2_CONTRATO.md
 const TILESET_MINAS_PATH := "res://assets/sprites/tiles_minas.png"
@@ -18,6 +18,16 @@ const HEAT_TICK := 0.7
 const HEAT_DMG_HERO := 5.0
 const HEAT_DMG_CREATURE := 4.0
 const TILESET_INT_PATH := "res://assets/sprites/tiles_interior.png"
+## Região 3 (Pântano dos Sussurros): quarta fonte do TileSet (source id 3), ordem do contrato docs/REGIAO3_CONTRATO.md
+const TILESET_PANTANO_PATH := "res://assets/sprites/tiles_pantano.png"
+const PANTANO_NAMES := ["lodo0", "lodo1", "capim0", "capim1", "juncos", "agua_funda0", "agua_funda1", "agua_rasa", "passarela_h", "passarela_v",
+	"lodo_instavel", "lodo_firme", "templo_parede_frente", "templo_parede_topo", "templo_piso", "templo_alagado", "margem_n", "margem_s",
+	"margem_w", "margem_e", "ponte_espiritual", "telhado_l", "telhado_m", "telhado_r", "palafita_parede", "palafita_janela", "palafita_porta",
+	"poste_lanterna", "porta_templo", "agua_clara0", "agua_clara1", "pilar_submerso", "degraus"]
+## terra firme do pântano (margens desenhadas na água funda vizinha)
+const SWAMP_LAND := "lsn8U^&*"
+## onde um reflexo aparece (água rasa, funda ou piso alagado)
+const WATERY := "Wt0"
 const INT_NAMES := ["wood_floor0", "wood_floor1", "wood_floor_dark", "stone_floor", "rug_center", "rug_edge_n", "rug_edge_s", "rug_edge_w", "rug_edge_e",
 	"iwall_top", "iwall_front", "iwall_window", "iwall_shelf", "iwall_painting", "door_mat", "iwall_front_dark"]
 const TILE_NAMES := ["grass0", "grass1", "grass2", "grassd0", "flowers0", "lush0", "bloom0", "path0", "path1", "pedge_n", "pedge_s", "pedge_w", "pedge_e",
@@ -73,8 +83,12 @@ var rail_switch := {}        # id da alavanca de desvio -> "a" | "b"
 var heat_t := 0.0
 var heat_warned := false
 var furnace_fails := {}
+var beam_layer: Node2D
+var statue_fails := {}
+var mirror_turns := {}
 var boss_scripts := {"lenhador": "res://scripts/boss_lenhador.gd", "cervo": "res://scripts/boss_cervo.gd",
-	"vigia": "res://scripts/boss_vigia.gd", "ferreiro": "res://scripts/boss_ferreiro.gd"}
+	"vigia": "res://scripts/boss_vigia.gd", "ferreiro": "res://scripts/boss_ferreiro.gd",
+	"barqueiro": "res://scripts/boss_barqueiro.gd", "bruxa": "res://scripts/boss_bruxa.gd"}
 
 signal map_loaded(id: String)
 
@@ -89,6 +103,9 @@ func _ready() -> void:
 	detail2 = TileMapLayer.new()
 	detail2.tile_set = tilemap.tile_set
 	add_child(detail2)
+	beam_layer = Node2D.new()
+	beam_layer.z_index = 1
+	add_child(beam_layer)
 	col_body = StaticBody2D.new()
 	col_body.collision_layer = 1
 	col_body.collision_mask = 0
@@ -170,6 +187,20 @@ func _make_tileset() -> TileSet:
 		for i in INT_NAMES.size():
 			src3.create_tile(Vector2i(i % 16, i / 16))
 		ts.add_source(src3, 2)
+	if ResourceLoader.exists(TILESET_PANTANO_PATH):
+		var src4 := TileSetAtlasSource.new()
+		src4.texture = Art.tex(TILESET_PANTANO_PATH)
+		src4.texture_region_size = Vector2i(TILE, TILE)
+		for i in PANTANO_NAMES.size():
+			if PANTANO_NAMES[i] in ["agua_funda1", "agua_clara1"]:
+				continue
+			var c4 := Vector2i(i % 16, i / 16)
+			src4.create_tile(c4)
+			if PANTANO_NAMES[i] in ["agua_funda0", "agua_clara0"]:
+				src4.set_tile_animation_frames_count(c4, 2)
+				src4.set_tile_animation_frame_duration(c4, 0, 0.9)
+				src4.set_tile_animation_frame_duration(c4, 1, 0.9)
+		ts.add_source(src4, 3)
 	Fortaleza.add_source(ts)   # Região 4 (fonte 4 do TileSet)
 	_tileset = ts
 	return ts
@@ -181,6 +212,8 @@ func _tc(name: String) -> Vector2i:
 		i = MINAS_NAMES.find(name)
 	if i < 0:
 		i = INT_NAMES.find(name)
+	if i < 0:
+		i = PANTANO_NAMES.find(name)
 	return Vector2i(i % 16, i / 16)
 
 ## Fonte do atlas: 0 = floresta (tiles2.png), 1 = minas (tiles_minas.png)
@@ -188,6 +221,8 @@ func _src(name: String) -> int:
 	if Fortaleza.is_name(name): return Fortaleza.SOURCE_ID
 	if INT_NAMES.has(name):
 		return 2
+	if PANTANO_NAMES.has(name):
+		return 3
 	return 1 if MINAS_NAMES.has(name) else 0
 
 func _ch(x: int, y: int) -> String:
@@ -318,8 +353,64 @@ func _cell_tiles(x: int, y: int) -> Array:
 				out[0] = "chimney"
 			else:
 				out[0] = "forge_door" if x == mid2 else ("forge_window" if (x - a2) % 2 == 1 else "forge_wall")
+		# ---- Região 3 (Pântano dos Sussurros)
+		"l": out[0] = "lodo1" if hv % 4 == 0 else "lodo0"
+		"s": out[0] = "capim1" if hv % 3 == 0 else "capim0"
+		"n": out[0] = "juncos"
+		"W":
+			out[0] = "agua_clara0" if _water_clear() else "agua_funda0"
+			var e3: Array = []
+			if SWAMP_LAND.contains(_ch(x, y - 1)): e3.append("margem_n")
+			if SWAMP_LAND.contains(_ch(x, y + 1)): e3.append("margem_s")
+			if SWAMP_LAND.contains(_ch(x - 1, y)): e3.append("margem_w")
+			if SWAMP_LAND.contains(_ch(x + 1, y)): e3.append("margem_e")
+			if e3.size() > 0: out[1] = e3[0]
+			if e3.size() > 1: out[2] = e3[1]
+		"t": out[0] = "agua_rasa"
+		"+":
+			out[0] = "passarela_v" if _run_len(x, y, Vector2i(0, 1), "+") > _run_len(x, y, Vector2i(1, 0), "+") else "passarela_h"
+		"U": out[0] = "lodo_instavel"
+		"8": out[0] = "lodo_firme"
+		"Y": out[0] = "templo_parede_topo" if _ch(x, y + 1) in ["Y", "#", "v"] else "templo_parede_frente"
+		"9": out[0] = "templo_piso"
+		"0": out[0] = "templo_alagado"
+		"E": out[0] = "ponte_espiritual"
+		"^":
+			var l3 := _ch(x - 1, y) == "^"
+			var r3 := _ch(x + 1, y) == "^"
+			out[0] = "telhado_m" if (l3 and r3) else ("telhado_l" if r3 else "telhado_r")
+		"&":
+			var a3 := x
+			while _ch(a3 - 1, y) == "&": a3 -= 1
+			var b3 := x
+			while _ch(b3 + 1, y) == "&": b3 += 1
+			var mid3 := (a3 + b3) / 2
+			out[0] = "palafita_porta" if x == mid3 else ("palafita_janela" if (x - a3) % 2 == 1 else "palafita_parede")
+		"*":
+			out[0] = "capim0"
+			out[1] = "poste_lanterna"
+		"!": out[0] = "porta_templo"
+		"i":
+			out[0] = "agua_clara0" if _water_clear() else "agua_funda0"
+			out[1] = "pilar_submerso"
+		";": out[0] = "degraus"
 	if Fortaleza.CHARS.contains(c): out = Fortaleza.cell_tiles(self, x, y, c, hv)   # Região 4
 	return out
+
+## Comprimento da sequência do mesmo caractere passando por (x, y) na direção d (orienta as tábuas da passarela).
+func _run_len(x: int, y: int, d: Vector2i, c: String) -> int:
+	var n := 1
+	var k := 1
+	while _ch(x + d.x * k, y + d.y * k) == c and k < 12:
+		n += 1; k += 1
+	k = 1
+	while _ch(x - d.x * k, y - d.y * k) == c and k < 12:
+		n += 1; k += 1
+	return n
+
+## Depois da Bruxa Afogada a água do pântano clareia.
+func _water_clear() -> bool:
+	return str(map.get("region", "")) == "pantano" and Game.has_flag("pantano_livre")
 
 func _paint_cell(i: int, j: int) -> void:
 	var t := _cell_tiles(i, j)
@@ -348,6 +439,10 @@ func load_map(id: String, spawn: String = "default", pos: Variant = null) -> voi
 			n.queue_free()
 	for n in fx_layer.get_children():
 		n.queue_free()
+	for n in beam_layer.get_children():
+		n.queue_free()
+	statue_fails.clear()
+	mirror_turns.clear()
 	companion = null
 	party_nodes = []
 	ent_nodes.clear()
@@ -404,6 +499,10 @@ func load_map(id: String, spawn: String = "default", pos: Variant = null) -> voi
 		_vila_return_scene()
 	if Game.in_game and map_id == "forja_cobre" and Game.has_flag("ferreiro_morto") and not Game.has_flag("voltou_forja"):
 		_forja_return_scene()
+	if Game.in_game and map_id == "porto_lanternas" and Game.has_flag("bruxa_morta") and not Game.has_flag("voltou_porto"):
+		_porto_return_scene()
+	if not beam_sources().is_empty():
+		call_deferred("recompute_beams")
 
 func _compute_tiles() -> void:
 	cur_tiles = []
@@ -448,6 +547,7 @@ func _door_open_char(d: Dictionary) -> String:
 	match str(d["closed_char"]):
 		"D": return "e"
 		"I": return "z"
+		"!": return "9"
 	return "p"
 
 func door_open(d: Dictionary) -> bool:
@@ -516,6 +616,11 @@ func tile_char_at(p: Vector2) -> String:
 func tile_solid_at(p: Vector2) -> bool:
 	return is_solid_char(tile_char_at(p))
 
+## Projéteis do pântano (sementes, orbes) voam sobre água, lodo e juncos; param em paredes.
+func blocks_projectile(p: Vector2) -> bool:
+	var c := tile_char_at(p)
+	return is_solid_char(c) and not c in ["W", "i", "U", "n"]
+
 # =============================================================== ENTIDADES
 func _spawn_all(player_pos: Vector2) -> void:
 	for i in ent_defs.size():
@@ -544,7 +649,8 @@ func _spawn_def(i: int, player_pos: Vector2 = Vector2(-9999, -9999)) -> void:
 	var node: Node = null
 	match t:
 		"npc", "sign", "chest", "shrine", "flower", "lever", "plate", "crate", "vine", "bridge_spot", "bond_stone", \
-				"valve", "furnace", "brazier", "cart", "rail_lever", "rail_marked", "draft", "crack", "ore", "anvil", "spirit_mark", "rite_reset", "altar", "prop", "pickup":
+				"valve", "furnace", "brazier", "cart", "rail_lever", "rail_marked", "draft", "crack", "ore", "anvil", "spirit_mark", "rite_reset", "altar", "prop", "pickup", \
+				"lantern", "sluice", "wheel", "stakes", "mud_mark", "mirror", "beam_source", "beam_target", "statue", "ripple", "spirit_bridge", "decor":
 			var e := Ent.new()
 			e.init(self, d)
 			node = e
@@ -1246,6 +1352,23 @@ func puzzle_changed(group: String) -> void:
 				Audio.play("puzzle_ok")
 				Game.set_flag(pz["flag"])
 				say(pz.get("msg", "As fornalhas rugem juntas! Algo se abriu."))
+		elif pz["type"] == "lanterns":
+			var alll := true; var nl := 0
+			for e in get_tree().get_nodes_in_group("ents"):
+				if e.kind == "lantern" and e.def.get("group", "") == g:
+					nl += 1
+					if not e.lit:
+						alll = false
+			if alll and nl > 0:
+				Audio.play("puzzle_ok")
+				Game.set_flag(pz["flag"])
+				say(pz.get("msg", "As lanternas acesas respondem umas às outras!"))
+		elif pz["type"] == "beam":
+			var bl := beam_lit_count(g)
+			if int(bl[1]) > 0 and int(bl[0]) == int(bl[1]):
+				Audio.play("puzzle_ok")
+				Game.set_flag(pz["flag"])
+				say(pz.get("msg", "O feixe acende o cristal! Algo se abriu."))
 		elif pz["type"] == "plates":
 			var allp := true; var np := 0
 			for e in get_tree().get_nodes_in_group("ents"):
@@ -1392,6 +1515,20 @@ func _vila_return_scene() -> void:
 
 func _update_chapter_end() -> void:
 	for d in ent_defs:
+		if d["type"] == "chapter_end" and d.has("lines"):
+			if Game.has_flag(str(d["flag"])) or not _def_visible(d):
+				continue
+			var r0 := Rect2(float(d["x"]) * TILE, float(d["y"]) * TILE, float(d["w"]) * TILE, float(d["h"]) * TILE)
+			if r0.has_point(player.global_position) and player.state == Player.S.FREE:
+				Game.set_flag(str(d["flag"]))
+				var mins0 := int(Game.play_time / 60.0)
+				var ls: Array = (d["lines"] as Array).duplicate()
+				ls.insert(1, "Herói nível %d • %d capturas • %d mortes • %d min de jogo." % [Game.hero_level(), int(Game.stats["capturas"]), int(Game.stats["mortes"]), mins0])
+				player.set_busy(true)
+				ui.dialog(ls, func():
+					player.set_busy(false)
+					autosave())
+			continue
 		if d["type"] == "chapter_end" and not Game.has_flag("fim_cap1"):
 			var r := Rect2(float(d["x"]) * TILE, float(d["y"]) * TILE, float(d["w"]) * TILE, float(d["h"]) * TILE)
 			if r.has_point(player.global_position) and player.state == Player.S.FREE:
@@ -1440,6 +1577,8 @@ func _update_heat(delta: float) -> void:
 			say("Piso em brasa! Gire uma válvula azul (E) para resfriá-lo ou atravesse depressa.")
 	if companion != null and is_instance_valid(companion) and companion.is_alive() and is_hot_at(companion.global_position):
 		companion.env_damage(HEAT_DMG_CREATURE)
+	if player.state != Player.S.DEAD and player.state != Player.S.INTERACT and is_puddle_at(player.global_position):
+		player.env_damage(5.0, "Poça!")
 	for e in enemies():
 		if e.kind == "dummy" or e.boss or e.heat_immune() or not e.hittable():
 			continue
@@ -1686,6 +1825,306 @@ func rite_altar(a: Ent) -> void:
 	ui.dialog(a.def.get("lines", ["O rito está completo."]), func():
 		player.set_busy(false)
 		autosave())
+
+func _porto_return_scene() -> void:
+	Game.set_flag("voltou_porto")
+	await get_tree().create_timer(0.8).timeout
+	player.set_busy(true)
+	ui.dialog(["A água do pântano clareou: dá para ver o fundo de pedra e os peixes voltando às margens.",
+		"Os barqueiros retomaram a travessia, as lanternas do Porto ficaram acesas de dia e o lago recuou, abrindo margens novas.",
+		"Com o Olhar Velado você enxerga plataformas, inscrições e espectros que antes eram só sussurros. Ao nordeste do Porto, uma ponte espiritual espera."], func():
+		player.set_busy(false)
+		autosave())
+
+# =============================================================== REGIÃO 3 — PÂNTANO DOS SUSSURROS
+## Lanterna: acesa pelo herói (E). Guias e anel ficam acesas para sempre (flag por lanterna); as da arena do Barqueiro são temporárias.
+func lantern_use(l: Ent) -> void:
+	if l.def.get("boss", false):
+		if active_boss != null and is_instance_valid(active_boss) and active_boss.has_method("on_lantern"):
+			active_boss.on_lantern(l)
+		else:
+			say("O pavio está encharcado: só acende quando a arena desperta.")
+		return
+	if l.lit:
+		return
+	l.set_lit(true)
+	Audio.play("skill", -6.0)
+	spark(l.global_position + Vector2(0, -12), 6)
+	var g: String = l.def.get("group", "")
+	if g != "":
+		puzzle_changed(g)
+	if g == "" or not Game.has_flag(puzzle_flag(g)):
+		say(l.def.get("msg", "A lanterna acendeu."))
+
+## Comporta: muda o nível da água de uma ou mais áreas (condicionais do mapa ligadas à flag).
+func sluice_use(c: Ent) -> void:
+	var flag: String = c.def["flag"]
+	Game.set_flag(flag, not Game.has_flag(flag))
+	Audio.play("lever")
+	Audio.play("bridge", -8.0)
+	c.refresh_sluice()
+	for cd in map.get("conditional", []):
+		var area: Array = cd.get("area", [])
+		if area.size() == 4 and (cd.get("if", "") == flag or cd.get("unless", "") == flag):
+			for k in 5:
+				fx_at("splash", Vector2((float(area[0]) + randf() * float(area[2])) * TILE, (float(area[1]) + randf() * float(area[3])) * TILE), 0.5)
+	_relocate_from_solid()
+	say(c.def.get("msg_on", "A comporta range: a água muda de lugar.") if Game.has_flag(flag) else c.def.get("msg_off", "A comporta volta: a água retorna ao leito de antes."))
+
+## Se a água subiu sob alguém, leva-o ao piso seguro mais próximo (nunca prende o herói).
+func _relocate_from_solid() -> void:
+	for t in targets():
+		if tile_solid_at(t.global_position):
+			t.global_position = safe_pos_near(t.global_position)
+
+## Roda d'água: só um Goturim (ou Marulume) a gira.
+func wheel_use(w: Ent) -> void:
+	var flag: String = w.def["flag"]
+	if Game.has_flag(flag):
+		say("A roda gira sozinha agora, empurrando a água.")
+		return
+	if creature_action(w, "roda", "%s girou a roda d'água! A água do canal escoa.",
+			"A roda d'água está emperrada no lodo. Uma criatura de água conseguiria girá-la. (Goturim — caminho opcional)"):
+		Audio.play("bridge")
+		Game.set_flag(flag)
+		w.refresh_wheel()
+		_relocate_from_solid()
+
+## Estacas: mecanismo local — o herói crava as estacas e o lodo instável firma.
+func stakes_use(s0: Ent) -> void:
+	var flag: String = s0.def["flag"]
+	if Game.has_flag(flag):
+		return
+	Audio.play("thud")
+	shake(1.0, 0.15)
+	Game.set_flag(flag)
+	s0.refresh_stakes()
+	say(s0.def.get("msg", "Você crava as estacas no lodo instável: agora dá para pisar."))
+
+## Marca de lodo: um Brejugo firma o lodo com o próprio corpo.
+func mud_mark_use(m0: Ent) -> void:
+	var flag: String = m0.def["flag"]
+	if Game.has_flag(flag):
+		return
+	if creature_action(m0, "lodo", "%s se espalhou pelo lodo e o firmou! Um caminho se abriu.",
+			"Lodo marcado por folhas: um Brejugo saberia firmá-lo." + (" (atalho opcional)" if m0.def.get("opcional", true) else " Há estacas por perto.")):
+		Audio.play("roots")
+		Game.set_flag(flag)
+		m0.refresh_mark()
+
+## Sussurro (segredo por observação): anéis na água ou juncos que murmuram.
+func ripple_use(r0: Ent) -> void:
+	var flag: String = r0.def["flag"]
+	if Game.has_flag(flag):
+		return
+	Audio.play("dodge")
+	fx_at("splash", r0.global_position, 0.5)
+	Game.set_flag(flag)
+	r0.refresh_ripple()
+	say(r0.def.get("msg", "Você afasta a água onde os anéis nasciam... algo escondido!"))
+
+## Ponte espiritual: só o Olhar Velado a revela.
+func spirit_bridge_use(b: Ent) -> void:
+	var flag: String = b.def["flag"]
+	if Game.has_flag(flag):
+		return
+	if not Game.has_eco("olhar_velado"):
+		Game.set_flag("viu_oculto_" + b.eid)
+		say(b.def.get("msg", "Tábuas de luz tremulam sobre a água e somem quando você as encara. (Olhar Velado — volte depois)"))
+		return
+	_open_spirit_bridge(b)
+
+func _open_spirit_bridge(b: Ent) -> void:
+	var flag: String = b.def["flag"]
+	if Game.has_flag(flag):
+		return
+	Game.set_flag(flag)
+	Audio.play("bridge")
+	fx_pulse(b.global_position, 40.0)
+	b.refresh_spirit()
+	say(b.def.get("msg_ok", "O Olhar Velado revela uma ponte espiritual!"))
+
+## Eco Olhar Velado: revela inimigos espirituais, plataformas e inscrições ao redor.
+func eco_olhar(center: Vector2) -> void:
+	var sk: Dictionary = Data.skills["olhar_velado"]
+	var rad := float(sk["raio"])
+	var f := Fx.new()
+	f.mode = "pulse"; f.life = 0.5; f.radius = rad
+	f.position = center
+	f.modulate = Color(0.8, 0.7, 1.0)
+	fx_layer.add_child(f)
+	Audio.play("skill")
+	reveal_spirits(center, rad, float(sk["duracao"]))
+	for e in get_tree().get_nodes_in_group("ents"):
+		if e.global_position.distance_to(center) > rad + 16.0:
+			continue
+		if e.kind == "spirit_bridge":
+			_open_spirit_bridge(e)
+		elif e.kind == "spirit_mark":
+			e.reveal_mark()
+
+## Espectros dentro do raio ficam visíveis (e vulneráveis) por `dur` segundos.
+func reveal_spirits(center: Vector2, rad: float, dur: float) -> int:
+	var n := 0
+	for e in enemies():
+		if e.def.get("espiritual", false) and e.alive_flag and e.global_position.distance_to(center) <= rad:
+			if e.revealed_t <= 0.0 and dur >= 1.0:
+				spawn_text(e.global_position + Vector2(0, -30), "Revelado!", Color(0.85, 0.75, 1.0))
+			e.revealed_t = max(e.revealed_t, dur)
+			n += 1
+	return n
+
+# ---------------------------------------------------------------- espelhos e feixe de luz
+func beam_sources() -> Array:
+	var out: Array = []
+	for d in ent_defs:
+		if d["type"] == "beam_source":
+			out.append(d)
+	return out
+
+## Espelho "a" (/): (dx,dy) -> (-dy,-dx); espelho "b" (\): (dx,dy) -> (dy,dx).
+func mirror_turn(m: Ent) -> void:
+	var g: String = m.def.get("group", "")
+	var pz: Dictionary = map.get("puzzles", {}).get(g, {})
+	if Game.has_flag(pz.get("flag", "_")):
+		say("O feixe já alcança o cristal.")
+		return
+	m.mirror_state = "b" if m.mirror_state == "a" else "a"
+	m.refresh_mirror()
+	Audio.play("lever", -4.0)
+	mirror_turns[g] = int(mirror_turns.get(g, 0)) + 1
+	recompute_beams()
+	if not Game.has_flag(pz.get("flag", "_")) and int(mirror_turns[g]) >= int(pz.get("dica_apos", 99)) and int(mirror_turns[g]) % 3 == 0:
+		say(pz.get("dica", ""))
+
+func recompute_beams() -> void:
+	if beam_layer == null:
+		return
+	for n in beam_layer.get_children():
+		n.queue_free()
+	var mirrors := {}
+	var tgts := {}
+	for e in get_tree().get_nodes_in_group("ents"):
+		if e.is_queued_for_deletion():
+			continue
+		var c := Vector2i(int(floor(e.global_position.x / TILE)), int(floor(e.global_position.y / TILE)))
+		if e.kind == "mirror":
+			mirrors[c] = e
+		elif e.kind == "beam_target":
+			tgts[c] = e
+	var hit := {}
+	for d in beam_sources():
+		var cell := Vector2i(int(d["x"]), int(d["y"]))
+		var dv: Array = d.get("dir", [1, 0])
+		var dir := Vector2i(int(dv[0]), int(dv[1]))
+		for k in 90:
+			cell += dir
+			if cell.x < 0 or cell.y < 0 or cell.x >= W or cell.y >= H:
+				break
+			if tgts.has(cell):
+				hit[tgts[cell]] = true
+				break
+			if mirrors.has(cell):
+				var m: Ent = mirrors[cell]
+				_beam_piece(cell, dir)
+				dir = Vector2i(-dir.y, -dir.x) if m.mirror_state == "a" else Vector2i(dir.y, dir.x)
+				_beam_piece(cell, dir)
+				continue
+			if is_solid_char(cur_tiles[cell.y][cell.x]):
+				break
+			_beam_piece(cell, dir)
+	for t in tgts.values():
+		t.set_lit(hit.has(t))
+		if hit.has(t) and t.def.has("group"):
+			puzzle_changed(t.def["group"])
+
+func _beam_piece(cell: Vector2i, dir: Vector2i) -> void:
+	var sp := Sprite2D.new()
+	sp.texture = Art.sprite_tex("pantano_props")
+	sp.region_enabled = true
+	sp.region_rect = Rect2((13 if dir.x == 0 else 12) * 16, 0, 16, 16)
+	sp.position = Vector2(cell.x * TILE + 8.0, cell.y * TILE + 8.0 - 6.0)
+	sp.modulate = Color(1, 1, 1, 0.85)
+	beam_layer.add_child(sp)
+
+## Alvo do feixe aceso (o enigma "beam" verifica isso).
+func beam_lit_count(g: String) -> Array:
+	var n := 0; var lit := 0
+	for e in get_tree().get_nodes_in_group("ents"):
+		if e.kind == "beam_target" and e.def.get("group", "") == g:
+			n += 1
+			if e.lit:
+				lit += 1
+	return [lit, n]
+
+# ---------------------------------------------------------------- estátuas e reflexos (Rito dos Reflexos)
+func is_watery(p: Vector2) -> bool:
+	return WATERY.contains(tile_char_at(p))
+
+func statue_touch(st: Ent) -> void:
+	var g: String = st.def.get("group", "")
+	var pz: Dictionary = map.get("puzzles", {}).get(g, {})
+	if not st.reflection_visible():
+		say(st.def.get("msg_seca", "Sem água aos pés da estátua não há reflexo para comparar."))
+		return
+	if st.def.get("demo", false):
+		Game.set_flag(st.def["flag"])
+		say(st.def.get("msg", ""))
+		Audio.play("lever", -6.0)
+		return
+	if not pz.is_empty() and Game.has_flag(pz["flag"]):
+		return
+	if st.def.get("verdadeira", false):
+		Audio.play("puzzle_ok")
+		if not pz.is_empty():
+			Game.set_flag(pz["flag"])
+		fx_pulse(st.global_position, 36.0)
+		say(pz.get("msg", "A estátua verdadeira brilha: o reflexo dela não mente."))
+		return
+	# reflexo falso: a ilusão se desfaz num espectro
+	statue_fails[g] = int(statue_fails.get(g, 0)) + 1
+	Audio.play("puzzle_no")
+	fx_at("splash", st.global_position + Vector2(0, 10), 0.5)
+	say(st.def.get("msg_falsa", "O reflexo mentia! A ilusão se desfaz num espectro."))
+	if st.def.get("espectro", true):
+		var e := Enemy.new()
+		e.init(self, "espectro", {"id": "%s_eco%d" % [st.eid, int(statue_fails[g])], "x": int(st.def["x"]), "y": int(st.def["y"]) + 2})
+		ysort.add_child(e)
+		e.global_position = safe_pos_near(st.global_position + Vector2(0, 26))
+		e.revealed_t = 6.0
+	if int(statue_fails[g]) >= int(pz.get("dica_apos", 3)) and pz.get("dica", "") != "":
+		say(pz["dica"])
+
+# ---------------------------------------------------------------- poças da Bruxa
+## Poças amaldiçoadas (hazard mode "poca") ferem quem pisa; não são calor (as Luvas Térmicas não ajudam).
+func is_puddle_at(p: Vector2) -> bool:
+	for h in get_tree().get_nodes_in_group("hazards"):
+		if h.mode == "poca" and h.global_position.distance_to(p) <= h.radius:
+			return true
+	return false
+
+func add_puddle(pos: Vector2, rad: float, life: float) -> Node2D:
+	var h: Node2D = preload("res://scripts/hazard.gd").new()
+	h.world = self
+	h.mode = "poca"
+	h.hot = false
+	h.radius = rad
+	h.life = life
+	h.position = pos
+	ysort.add_child(h)
+	return h
+
+## Campo de lodo do Brejugo: inimigos dentro ficam lentos.
+func mud_field(pos: Vector2, rad: float, life: float) -> Node2D:
+	var h: Node2D = preload("res://scripts/hazard.gd").new()
+	h.world = self
+	h.mode = "lodo"
+	h.hot = false
+	h.radius = rad
+	h.life = life
+	h.position = pos
+	ysort.add_child(h)
+	return h
 
 
 # =============================================================== MEMÓRIAS DOS GUARDIÕES (fio da história)

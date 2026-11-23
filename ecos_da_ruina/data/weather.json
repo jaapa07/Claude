@@ -28,6 +28,7 @@
   "floresta": {"nome": "Floresta", "pesos": {"sol": 5, "chuva": 3, "neblina": 2}},
   "desfiladeiro": {"nome": "Desfiladeiro", "pesos": {"sol": 4, "frio": 3, "neve": 3}},
   "minas": {"nome": "Minas (externo)", "pesos": {"calor": 5, "sol": 3}},
+  "pantano": {"nome": "Pântano", "pesos": {"chuva": 4, "neblina": 4, "sol": 2}},
   "fortaleza": {"nome": "Fortaleza (montanhas)", "pesos": {"ventania": 4, "frio": 3, "sol": 3}}
  },
  "mapas": {
@@ -38,11 +39,14 @@
   "minas_entrada": "minas",
   "forja_cobre": "minas",
   "pedreira_oca": "minas",
+  "porto_lanternas": "pantano",
+  "passarela_ecos": "pantano",
+  "lago_reflexos": "pantano",
   "ponte_espiritual": "fortaleza",
   "refugio_muralha": "fortaleza",
   "jardins_suspensos": "fortaleza",
   "muralha_partida": "fortaleza",
   "estrada_final": "fortaleza"
  },
- "afinidade_inimigos": {"cogumelo": "flora", "lesma": "brasa", "sentinela": "pedra", "automato": "pedra", "lanceiro": "sombra", "arqueiro": "vento", "armadura": "pedra"}
+ "afinidade_inimigos": {"cogumelo": "flora", "lesma": "brasa", "sentinela": "pedra", "automato": "pedra", "lanceiro": "sombra", "arqueiro": "vento", "armadura": "pedra", "sapo": "agua", "planta": "flora", "espectro": "sombra"}
 }

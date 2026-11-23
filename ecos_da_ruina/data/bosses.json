@@ -129,5 +129,52 @@
   "dano_corte": 26,
   "exausto_duelo_s": 1.6,
   "mult_costas": 1.6
+ },
+ "barqueiro": {
+  "nome": "Barqueiro Sem Sombra",
+  "hp": 560,
+  "fases": [
+   1.0
+  ],
+  "recompensa": {
+   "xp": 220,
+   "frag": 80,
+   "itens": {
+    "perola_brejo": 2,
+    "junco_trancado": 2
+   }
+  },
+  "flag_morte": "barqueiro_morto",
+  "dano_remo": 20,
+  "dano_onda": 14,
+  "sem_sombra": 0.2,
+  "com_sombra": 1.6,
+  "lanterna_s": 9.0,
+  "lanterna_recarga": 5.0,
+  "atordoa_s": 1.4
+ },
+ "bruxa": {
+  "nome": "Bruxa Afogada",
+  "hp": 1100,
+  "fases": [
+   1.0,
+   0.6,
+   0.25
+  ],
+  "recompensa": {
+   "eco": "olhar_velado",
+   "xp": 520,
+   "frag": 200
+  },
+  "flag_morte": "bruxa_morta",
+  "flag_regiao": "pantano_livre",
+  "dano_orbe": 13,
+  "dano_poca": 9,
+  "dano_queda": 8,
+  "copia_mult": 0.5,
+  "embaralha_dano": 0.1,
+  "embaralha_s": 14.0,
+  "aviso_plataforma": 2.2,
+  "troca_plataforma": 10.0
  }
 }

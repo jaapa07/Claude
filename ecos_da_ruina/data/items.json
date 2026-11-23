@@ -482,6 +482,94 @@
   "folha": "icons_fortaleza",
   "desc": "Técnica do Rito do Eclipse: tecido de sombra que reduz 18% do dano recebido."
  },
+ "junco_trancado": {
+  "nome": "Junco Trançado",
+  "tipo": "material",
+  "preco": 18,
+  "icone": 0,
+  "folha": "icons_pantano",
+  "desc": "Fibra forte das plantas do brejo. Os barqueiros fazem cordas e cestos com ele."
+ },
+ "perola_brejo": {
+  "nome": "Pérola do Brejo",
+  "tipo": "material",
+  "preco": 40,
+  "icone": 1,
+  "folha": "icons_pantano",
+  "desc": "Pérola turva que os sapos de lodo engolem. Vale bem no Porto."
+ },
+ "lente_orvalho": {
+  "nome": "Lente de Orvalho",
+  "tipo": "tecnica",
+  "icone": 2,
+  "folha": "icons_pantano",
+  "raridade": 2,
+  "desc": "Técnica do Rito dos Reflexos: espectros refletidos ficam visíveis (e vulneráveis) quando chegam perto de você."
+ },
+ "remo_barqueiro": {
+  "nome": "Remo Ancestral",
+  "tipo": "arma",
+  "dano": 6,
+  "alcance": 10,
+  "arco": 1.1,
+  "icone": 3,
+  "folha": "icons_pantano",
+  "raridade": 2,
+  "desc": "Remo de madeira-pedra dos antigos barqueiros. +6 de dano, alcance +10 e arco um pouco maior."
+ },
+ "manto_juncos": {
+  "nome": "Manto de Juncos",
+  "tipo": "protecao",
+  "reducao": 0.16,
+  "icone": 4,
+  "folha": "icons_pantano",
+  "raridade": 2,
+  "desc": "Juncos trançados e encerados. Reduz 16% do dano recebido."
+ },
+ "amuleto_mare": {
+  "nome": "Amuleto da Maré",
+  "tipo": "amuleto",
+  "hp": 28,
+  "icone": 5,
+  "folha": "icons_pantano",
+  "raridade": 2,
+  "desc": "+28 de vida máxima. A pedra azul pulsa como maré."
+ },
+ "rede_pesca": {
+  "nome": "Rede do Tito",
+  "tipo": "missao",
+  "icone": 6,
+  "folha": "icons_pantano",
+  "desc": "Rede de pesca remendada com junco. O Tito perdeu no Lago dos Reflexos."
+ },
+ "amuleto_reflexo": {
+  "nome": "Amuleto do Reflexo",
+  "tipo": "amuleto",
+  "hp": 30,
+  "selo_chance": 0.04,
+  "icone": 7,
+  "folha": "icons_pantano",
+  "raridade": 3,
+  "desc": "+30 de vida máxima e +4% de chance de captura. Mostra quem você é, não quem parece."
+ },
+ "diario_faroleira": {
+  "nome": "Diário da Faroleira",
+  "tipo": "historia",
+  "icone": 6,
+  "desc": "\"As lanternas da passarela apagaram uma a uma. Ouço sussurros na água, chamando nomes que não são os nossos. Quem acendê-las de novo devolve o caminho aos barqueiros.\""
+ },
+ "diario_templo": {
+  "nome": "Tábua do Templo",
+  "tipo": "historia",
+  "icone": 6,
+  "desc": "\"Guardiã das águas, ela via em cada reflexo a verdade de quem passava. Quando a Catedral tomou o Eco, a água escureceu e ela afundou com o templo.\""
+ },
+ "diario_barqueiro": {
+  "nome": "Carta de um Barqueiro",
+  "tipo": "historia",
+  "icone": 6,
+  "desc": "\"Meu irmão perdeu a sombra na travessia. Ainda rema, mas a luz atravessa ele. Se o vir, acenda uma lanterna perto: é o único jeito de ele ser visto.\""
+ },
  "pagina_ione_1": {
   "nome": "Diário de Ione — Página 1",
   "tipo": "historia",
@@ -517,5 +605,11 @@
   "tipo": "historia",
   "icone": 6,
   "desc": "Lacrada com o olho fechado da Ordem do Vazio: \"Vesna — cada fera vinculada carrega uma voz. Traga-as à Estrada Final. O Rei precisa de vozes para lembrar o próprio nome. — O Arquivista\""
+ },
+ "pagina_ione_5": {
+  "nome": "Diário de Ione — Página 5",
+  "tipo": "historia",
+  "icone": 6,
+  "desc": "\"A Bruxa guardava os reflexos do pântano: cada lembrança de quem passava pela água. A corrente a afogou nas próprias memórias. Tentei puxá-la para cima e só consegui o Olhar dela emprestado por um instante — o bastante para ver a ponte nas montanhas. Sigo por ela.\""
  }
 }

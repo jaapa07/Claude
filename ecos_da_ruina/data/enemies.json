@@ -535,5 +535,158 @@
   "capturavel": false,
   "miniboss": false,
   "nivel": 24
+ },
+ "sapo": {
+  "nome": "Sapo de Lodo",
+  "hp": 96,
+  "dano": 16,
+  "vel": 42,
+  "xp": 40,
+  "frag": [
+   8,
+   14
+  ],
+  "sprite": "sapo_lodo",
+  "frame": [
+   24,
+   24
+  ],
+  "ataque": "salto",
+  "raio": 9,
+  "percepcao": 120,
+  "relevante": true,
+  "pequeno": true,
+  "capturavel": false,
+  "nivel": 13,
+  "drops": {
+   "perola_brejo": [
+    0.3,
+    1
+   ]
+  }
+ },
+ "espectro": {
+  "nome": "Espectro Refletido",
+  "hp": 78,
+  "dano": 15,
+  "vel": 54,
+  "xp": 44,
+  "frag": [
+   8,
+   15
+  ],
+  "sprite": "espectro",
+  "frame": [
+   24,
+   28
+  ],
+  "ataque": "espectro",
+  "raio": 8,
+  "percepcao": 130,
+  "relevante": true,
+  "pequeno": false,
+  "capturavel": false,
+  "nivel": 14,
+  "espiritual": true
+ },
+ "planta": {
+  "nome": "Planta Sementeira",
+  "hp": 72,
+  "dano": 12,
+  "vel": 0,
+  "xp": 36,
+  "frag": [
+   6,
+   12
+  ],
+  "sprite": "planta_semente",
+  "frame": [
+   24,
+   24
+  ],
+  "ataque": "sementes",
+  "raio": 9,
+  "percepcao": 150,
+  "relevante": true,
+  "pequeno": true,
+  "capturavel": false,
+  "nivel": 13,
+  "drops": {
+   "junco_trancado": [
+    0.5,
+    1
+   ]
+  }
+ },
+ "barqueiro": {
+  "nome": "Barqueiro Sem Sombra",
+  "hp": 560,
+  "dano": 20,
+  "vel": 64,
+  "xp": 0,
+  "frag": [
+   0,
+   0
+  ],
+  "sprite": "barqueiro",
+  "frame": [
+   48,
+   48
+  ],
+  "ataque": "barqueiro",
+  "raio": 14,
+  "percepcao": 400,
+  "relevante": true,
+  "pequeno": false,
+  "capturavel": false,
+  "miniboss": true,
+  "nivel": 15
+ },
+ "bruxa": {
+  "nome": "Bruxa Afogada",
+  "hp": 1100,
+  "dano": 14,
+  "vel": 46,
+  "xp": 0,
+  "frag": [
+   0,
+   0
+  ],
+  "sprite": "bruxa",
+  "frame": [
+   72,
+   72
+  ],
+  "ataque": "bruxa",
+  "raio": 16,
+  "percepcao": 600,
+  "relevante": true,
+  "pequeno": false,
+  "capturavel": false,
+  "miniboss": false,
+  "nivel": 17
+ },
+ "copia": {
+  "nome": "Reflexo da Bruxa",
+  "hp": 1,
+  "dano": 8,
+  "vel": 40,
+  "xp": 0,
+  "frag": [
+   0,
+   0
+  ],
+  "sprite": "bruxa",
+  "frame": [
+   72,
+   72
+  ],
+  "ataque": "nenhum",
+  "raio": 16,
+  "percepcao": 600,
+  "relevante": false,
+  "pequeno": false,
+  "capturavel": false,
+  "nivel": 17
  }
 }

@@ -1,5 +1,6 @@
 extends Node2D
 ## Perigo temporário no chão: poça de escória quente (fere quem pisa) ou nuvem de fuligem (inimigos dentro erram ataques).
+## Região 3: "poca" (poça amaldiçoada da Bruxa: fere o herói) e "lodo" (campo do Brejugo: inimigos dentro ficam lentos).
 ## Visual com sprites autorais (tile hot_floor + fx_fire, ou fx_dust escurecido); nada desenhado por código.
 
 var world: Node
@@ -12,8 +13,24 @@ var _parts: Array = []
 
 func _ready() -> void:
 	add_to_group("hazards")
-	z_index = -1 if mode == "hot" else 30
-	if mode == "hot":
+	z_index = -1 if mode in ["hot", "poca", "lodo"] else 30
+	if mode == "poca" or mode == "lodo":
+		var s0 := Sprite2D.new()
+		s0.texture = Art.sprite_tex("tiles_pantano")
+		s0.region_enabled = true
+		s0.region_rect = Rect2((7 if mode == "poca" else 10) * 16, 0, 16, 16)    # agua_rasa / lodo_instavel
+		s0.scale = Vector2.ONE * (radius * 2.0 / 16.0)
+		s0.modulate = Color(0.75, 0.6, 1.0, 0.8) if mode == "poca" else Color(1, 1, 1, 0.85)
+		add_child(s0)
+		_parts.append(s0)
+		for k in 2:
+			var b := AnimatedSprite2D.new()
+			b.sprite_frames = Art.fx_frames_at("pantano_props", 16, 16, 16, 2, 4.0, true)
+			b.position = Vector2(-radius * 0.35 + radius * 0.7 * k, -4.0 * k)
+			b.play("a")
+			add_child(b)
+			_parts.append(b)
+	elif mode == "hot":
 		var s := Sprite2D.new()
 		s.texture = Art.sprite_tex("tiles_minas")
 		s.region_enabled = true
@@ -44,6 +61,10 @@ func _process(delta: float) -> void:
 	if get_tree().paused:
 		return
 	t += delta
+	if mode == "lodo":
+		for e in world.enemies():
+			if e.global_position.distance_to(global_position) <= radius + e.radius:
+				e.slow_t = max(e.slow_t, 0.4)
 	if mode == "smoke":
 		rotation += delta * 0.4
 		for e in world.enemies():
