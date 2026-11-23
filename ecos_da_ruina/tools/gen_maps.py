@@ -14,7 +14,10 @@ OPTIONAL_BEHIND = {"forja_bau_rocha", "veio_bau", "veio_placa", "veio_rocha", "t
                    "fa_bau_caldeira", "rito_mec1", "rito_mec2", "rito_mec3", "rito_altar2", "rito_placa_av",
                    # Região 3: atrás de roda d'água (Goturim), segredo, margem nova ou ponte espiritual
                    "passarela_bau_roda", "passarela_bau_sussurro", "lago_bau_reflexo", "lago_bau_roda", "lago_bau_margem",
-                   "lago_inscricao", "rr_altar2", "rr_ponte2"}
+                   "lago_inscricao", "rr_altar2", "rr_ponte2",
+                   # Floresta: segredo do Santuário, ala avançada do Rito da Seiva (Raiz Viva) e toca da Grota
+                   "a_bau_expedicao", "a_parede_musgo", "rs_av_raiz1", "rs_av_raiz2", "rs_av_raiz3", "rs_av_l1", "rs_av_l2",
+                   "rs_altar2", "rs_placa_av", "semente_grota"}
 
 
 class M:
@@ -236,6 +239,14 @@ def bosque():
     m.cond.append({"if": "cervo_morto", "chars": {".": "g", ",": "g", "f": "G"}})
     m.cond.append({"if": "clareira_vinculo_ponte", "rects": [[40, 26, 3, 2, "B"]]})
     m.cond.append({"if": "cipo_bosque", "rects": [[25, 9, 2, 3, "B"]]})
+    # descoberta de criatura: anel de flores incomum (sudoeste). Na neblina, ou com um Lumipim na equipe,
+    # os Lumipins giram sobre ele e um Lumipim mais velho aparece.
+    clearing(m, 7, 30, 4, 2); m.rect(10, 29, 4, 1, ".")
+    m.rect(6, 29, 3, 3, ".")
+    for (x, y) in ((6, 28), (7, 28), (8, 28), (5, 29), (9, 29), (5, 30), (9, 30), (5, 31), (9, 31), (6, 32), (7, 32), (8, 32)):
+        m.set(x, y, "f")
+    m.ent(type="anel_flores", id="b_anel", x=7, y=30, flag="bosque_anel")
+    m.ent(type="wild", id="b_lumipim_anel", species="lumipim", level=8, x=7, y=29, if_flag="bosque_anel", unique=True)
     return m
 
 
@@ -288,6 +299,12 @@ def clareira():
     m.ent(type="exit", x=21, y=0, w=4, h=1, to="vila_lumen", spawn="from_clareira")
     m.ent(type="exit", x=21, y=36, w=4, h=2, to="santuario_a", spawn="from_clareira")
     m.cond.append({"if": "cervo_morto", "chars": {".": "g", ",": "g", "f": "G"}})
+    # trilha leste: raízes antigas fecham a Grota até o Cervo descansar
+    m.rect(41, 18, 7, 3, "p"); m.rect(44, 18, 2, 3, "x")
+    m.spawns["from_grota"] = [43, 19]
+    m.ent(type="sign", id="placa_grota_raizes", dialog="placa_grota_raizes", x=42, y=17)
+    m.cond.append({"if": "cervo_morto", "rects": [[44, 18, 2, 3, "p"]]})
+    m.ent(type="exit", x=47, y=18, w=1, h=3, to="grota_seiva", spawn="from_clareira", if_flag="cervo_morto")
     return m
 
 
@@ -351,6 +368,15 @@ def santuario_a():
     m.ent(type="sign", id="placa_atalho", dialog="placa_atalho", x=56, y=24)
     m.ent(type="exit", x=63, y=22, w=1, h=2, to="vila_lumen", spawn="from_atalho", set_flag="atalho_vila_aberto")
     m.ent(type="exit", x=51, y=39, w=2, h=1, to="santuario_b", spawn="from_a")
+    # segredo por observação: musgo pálido numa parede rachada do corredor de entrada; a inscrição de raízes
+    # (legível com a luz do Lumipim) aponta para ela; o golpe carregado a rompe.
+    m.room(5, 25, 7, 4)
+    for (x, y) in ((6, 25), (10, 27), (7, 28)):
+        m.set(x, y, "y")
+    m.ent(type="inscricao_seiva", id="a_inscricao", x=14, y=32, parede="a_parede_musgo")
+    m.ent(type="parede_musgo", id="a_parede_musgo", x=8, y=30, flag="santuario_parede")
+    m.cond.append({"if": "santuario_parede", "rects": [[8, 29, 1, 2, "r"]]})
+    m.ent(type="chest", id="a_bau_expedicao", x=8, y=26, loot={"diario_expedicao_1": 1, "selo_refinado": 1})
     return m
 
 
@@ -369,7 +395,10 @@ def santuario_b():
     for (x, y) in ((12, 29), (35, 29), (12, 36), (35, 36)):
         m.set(x, y, "P")
     m.rect(14, 8, 1, 1, "y")
-    m.spawns = {"from_a": [23, 2], "from_c": [45, 32]}
+    m.corr(0, 9, 12, 2)                             # corredor oeste: Rito da Seiva (prova antes do Cervo)
+    m.spawns = {"from_a": [23, 2], "from_c": [45, 32], "from_rito": [2, 9]}
+    m.ent(type="sign", id="placa_rito_seiva", dialog="placa_rito_seiva", x=7, y=10)
+    m.ent(type="exit", x=0, y=9, w=1, h=2, to="rito_seiva", spawn="from_b")
     m.ent(type="exit", x=23, y=0, w=2, h=1, to="santuario_a", spawn="from_b")
     m.ent(type="sign", id="placa_pesos", dialog="placa_pesos", x=24, y=6)
     m.ent(type="plate", id="b_placa1", group="pesos", x=16, y=12)
@@ -458,6 +487,127 @@ def minas_entrada():
     m.ent(type="sign", id="placa_minas", dialog="placa_minas", x=15, y=8)
     m.ent(type="wild", id="m_faisquito_calor", species="faisquito", level=8, x=19, y=11, clima="calor")
     m.ent(type="chapter_end", id="fim_cap1", x=13, y=4, w=4, h=2)
+    return m
+
+
+# ------------------------------------------------------------------ RITO DA SEIVA (prova antes do Cervo + ala avançada pós-Cervo)
+def rito_seiva():
+    m = M("rito_seiva", "Rito da Seiva", 60, 32, fill="v", music="santuario")
+    m.room(2, 13, 11, 12)                           # 1. apresentação segura: um canal
+    m.room(16, 9, 14, 20)                           # 2. aplicação: pesos e plataformas conectadas
+    m.room(33, 9, 16, 20)                           # 3. combinação: canais + peso + plataformas
+    m.room(52, 10, 6, 14)                           # 4. conclusão (altar)
+    m.room(38, 2, 20, 4)                            # 5. rito avançado (Raiz Viva em sequência com os canais)
+    m.corr(0, 18, 2, 2); m.corr(13, 18, 3, 2); m.corr(30, 18, 3, 2); m.corr(49, 18, 3, 2)
+    m.rect(9, 13, 2, 12, "c")                       # canal seco da sala 1
+    m.rect(20, 9, 6, 20, "c"); m.rect(22, 16, 2, 6, "r")    # fosso da sala 2 com a ilha
+    m.rect(38, 9, 2, 20, "c"); m.rect(44, 9, 2, 20, "c")    # canais A e B da sala 3
+    m.rect(54, 6, 2, 4, "c")                        # canal seco entre o altar e a ala avançada
+    m.rect(50, 2, 2, 4, "c"); m.rect(44, 2, 2, 4, "c")      # canais da ala avançada
+    m.rect(7, 21, 2, 1, "y"); m.rect(36, 12, 2, 1, "y")      # sulcos secos que ligam alavancas aos canais (a seiva os enche)
+    for (x, y) in ((4, 15), (11, 23), (17, 26), (28, 11), (47, 26), (34, 27), (56, 22)):
+        m.set(x, y, "y")
+    for (x, y) in ((3, 14), (3, 23), (27, 10), (27, 27), (53, 11), (56, 11)):
+        m.set(x, y, "P")
+    m.spawns = {"from_b": [2, 18]}
+    m.bfs_flags = ["rs1_ok", "rs2a_ok", "rs2b_ok", "rs3_canal", "rs3_ok"]
+    m.ent(type="exit", x=0, y=18, w=1, h=2, to="santuario_b", spawn="from_rito")
+    # 1. apresentação: a alavanca faz a seiva subir e uma plataforma boiar no canal
+    m.ent(type="sign", id="rs_placa1", dialog="rs_placa1", x=5, y=14)
+    m.ent(type="lever", id="rs_l1", group="rs1", idx=0, x=6, y=21)
+    m.puzzles["rs1"] = {"type": "levers", "toggles": [[0]], "start": [0], "goal": [1], "flag": "rs1_ok", "dica_apos": 9, "dica": ""}
+    m.cond.append({"if": "rs1_ok", "rects": [[9, 18, 2, 2, "B"], [7, 21, 2, 1, "S"]]})
+    m.ent(type="deco_seiva", id="rs_bacia1", x=11, y=14, cheia="rs1_ok")
+    # 2. aplicação: cada placa ergue um trecho da passarela (a segunda fica na ilha)
+    m.ent(type="sign", id="rs_placa2", dialog="rs_placa2", x=17, y=24)
+    m.ent(type="rite_reset", id="rs_reset2", x=17, y=27)
+    m.ent(type="dica_rito", id="rs_dica2", x=19, y=27, dica="rs_dica2")
+    m.ent(type="plate", id="rs_placa_a", group="rs2a", x=18, y=12)
+    m.ent(type="crate", id="rs_caixa1", x=18, y=15)
+    m.ent(type="crate", id="rs_caixa2", x=19, y=19)
+    m.ent(type="plate", id="rs_placa_b", group="rs2b", x=23, y=19)
+    m.ent(type="vine", id="rs_cipo", x=23, y=17, species="brotisco", flag="rs_cipo")
+    m.puzzles["rs2a"] = {"type": "plates", "flag": "rs2a_ok"}
+    m.puzzles["rs2b"] = {"type": "plates", "flag": "rs2b_ok"}
+    m.cond.append({"if": "rs2a_ok", "rects": [[20, 18, 2, 2, "B"]]})
+    m.cond.append({"if": "rs2b_ok", "rects": [[24, 18, 2, 2, "B"]]})
+    m.cond.append({"if": "rs_cipo", "rects": [[24, 18, 2, 2, "B"]]})
+    # 3. combinação: alavancas em cascata enchem o canal A; a caixa atravessa e pesa a placa que ergue o B
+    m.ent(type="sign", id="rs_placa3", dialog="rs_placa3", x=34, y=26)
+    m.ent(type="rite_reset", id="rs_reset3", x=36, y=27)
+    m.ent(type="lever", id="rs_l3a", group="rs3", idx=0, x=35, y=11)
+    m.ent(type="lever", id="rs_l3b", group="rs3", idx=1, x=35, y=14)
+    m.ent(type="lever", id="rs_l3c", group="rs3", idx=2, x=35, y=23)
+    m.puzzles["rs3"] = {"type": "levers", "toggles": [[0, 1], [1, 2], [2]], "start": [0, 0, 0], "goal": [1, 0, 1], "flag": "rs3_canal", "dica_apos": 3,
+                        "dica": "Dica: a seiva desce em cascata. Puxe a alavanca de cima e depois a do meio; a de baixo desfaz o que a do meio fez."}
+    m.cond.append({"if": "rs3_canal", "rects": [[38, 18, 2, 2, "B"], [36, 12, 2, 1, "S"]]})
+    m.ent(type="deco_seiva", id="rs_bacia3", x=37, y=10, cheia="rs3_canal")
+    m.ent(type="deco_seiva", id="rs_bacia3b", x=43, y=27, cheia="rs3_ok")
+    m.ent(type="crate", id="rs_caixa3", x=36, y=19)
+    m.ent(type="plate", id="rs_placa_c", group="rs3b", x=42, y=19)
+    m.puzzles["rs3b"] = {"type": "plates", "flag": "rs3_ok"}
+    m.cond.append({"if": "rs3_ok", "rects": [[44, 18, 2, 2, "B"]]})
+    # 4. conclusão
+    m.ent(type="altar", id="rs_altar", x=55, y=16, flag="rito_seiva_ok", requires="rs3_ok", bond="missao:rito_seiva", fx="roots", folha="altar_seiva",
+          msg_falta="O altar espera a seiva correr por todos os canais do rito.",
+          loot={"golpe_enraizado": 1}, lines=["A seiva sobe pelos canais e o altar se cobre de brotos.",
+          "Uma voz antiga, grave como madeira velha: \"Quem guia a seiva sem quebrá-la aprende a prender sem ferir.\"",
+          "Você aprendeu o GOLPE ENRAIZADO: o golpe carregado (segure {atacar}) prende inimigos pequenos com raízes."])
+    # 5. rito avançado (opcional, depois do Cervo): Raiz Viva em sequência com os canais
+    m.ent(type="raiz_seiva", id="rs_av_raiz1", x=55, y=10, flag="rs_av1")
+    m.cond.append({"if": "rs_av1", "rects": [[54, 6, 2, 4, "B"]]})
+    m.ent(type="sign", id="rs_placa_av", dialog="rs_placa_av", x=57, y=5)
+    m.ent(type="lever", id="rs_av_l1", group="rs_av1", idx=0, x=57, y=2)
+    m.puzzles["rs_av1"] = {"type": "levers", "toggles": [[0]], "start": [0], "goal": [1], "flag": "rs_av_s1", "dica_apos": 9, "dica": ""}
+    m.cond.append({"if": "rs_av_s1", "rects": [[52, 2, 4, 1, "S"]]})
+    m.ent(type="raiz_seiva", id="rs_av_raiz2", x=52, y=4, flag="rs_av2", requires="rs_av_s1")
+    m.cond.append({"if": "rs_av2", "rects": [[50, 3, 2, 2, "B"]]})
+    m.ent(type="lever", id="rs_av_l2", group="rs_av2", idx=0, x=48, y=2)
+    m.puzzles["rs_av2"] = {"type": "levers", "toggles": [[0]], "start": [0], "goal": [1], "flag": "rs_av_s2", "dica_apos": 9, "dica": ""}
+    m.cond.append({"if": "rs_av_s2", "rects": [[46, 2, 2, 1, "S"]]})
+    m.ent(type="raiz_seiva", id="rs_av_raiz3", x=46, y=4, flag="rs_av3", requires="rs_av_s2")
+    m.cond.append({"if": "rs_av3", "rects": [[44, 3, 2, 2, "B"]]})
+    m.ent(type="altar", id="rs_altar2", x=40, y=3, flag="rito_seiva_av_ok", requires="rs_av3", fx="roots", folha="altar_seiva",
+          msg_falta="O altar avançado espera raízes vivas sobre os dois canais.",
+          loot={"amuleto_seiva_viva": 1}, lines=["As raízes bebem a seiva dos dois canais e se fecham sobre o altar como uma mão.",
+          "\"A raiz que você trouxe do Cervo agora sabe o caminho da seiva.\"",
+          "Você recebeu o AMULETO DE SEIVA VIVA: o vigor se recupera bem mais rápido."])
+    return m
+
+
+# ------------------------------------------------------------------ GROTA DAS RAÍZES ANTIGAS (aberta depois do Cervo)
+def grota():
+    m = M("grota_seiva", "Grota das Raízes Antigas", 46, 32, music="floresta")
+    rnd = random.Random(47)
+    m.scatter(rnd, [("T", .24), (",", .12), ("f", .05), ("b", .03), ("o", .02)])
+    m.border(2)
+    carve_path(m, [(2, 15), (11, 15), (17, 10), (27, 10), (33, 16), (39, 20)], 3)
+    carve_path(m, [(17, 10), (17, 22), (25, 24)], 3)
+    carve_path(m, [(17, 21), (13, 21)], 3)
+    clearing(m, 27, 9, 5, 3); clearing(m, 24, 24, 5, 3); clearing(m, 38, 20, 4, 4); clearing(m, 31, 27, 3, 2)
+    m.rect(0, 14, 2, 3, "p")
+    # raízes antigas (sólidas) em volta da clareira leste, onde o velho tronco guardava a seiva
+    for (x, y) in ((34, 17), (35, 16), (41, 17), (42, 18), (34, 23), (35, 24), (41, 23), (42, 22)):
+        m.set(x, y, "x")
+    # toca escondida (segredo): fechada por árvores; o tronco oco é a única passagem
+    m.rect(5, 18, 8, 7, "T"); m.rect(6, 19, 5, 5, "."); m.rect(11, 21, 2, 1, ".")
+    for (x, y) in ((7, 20), (9, 22), (8, 19)):
+        m.set(x, y, "f")
+    m.spawns = {"from_clareira": [3, 15]}
+    m.ent(type="exit", x=0, y=14, w=1, h=3, to="clareira_raizes", spawn="from_grota")
+    m.ent(type="sign", id="placa_grota", dialog="placa_grota", x=4, y=13)
+    m.ent(type="wild", id="g_brotisco", species="brotisco", level=6, x=12, y=16)
+    m.ent(type="wild", id="g_cascalito", species="cascalito", level=6, x=28, y=8)
+    m.ent(type="wild", id="g_lumipim", species="lumipim", level=6, x=23, y=25)
+    m.ent(type="wild", id="g_lumipim_neblina", species="lumipim", level=7, x=26, y=23, clima="neblina")
+    m.ent(type="enemy", kind="lobo", id="g_lobo1", x=30, y=12)
+    m.ent(type="enemy", kind="lobo", id="g_lobo2", x=37, y=22)
+    m.ent(type="enemy", kind="cogumelo", id="g_cog1", x=21, y=10)
+    m.ent(type="enemy", kind="cogumelo", id="g_cog2", x=31, y=27)
+    m.ent(type="enemy", kind="sentinela", id="g_sent1", x=25, y=23)
+    m.ent(type="chest", id="grota_bau", x=38, y=19, loot={"diario_expedicao_2": 1, "selo_refinado": 2, "tonico_criatura": 1, "fragmentos": 50})
+    m.ent(type="tronco_oco", id="g_tronco", x=11, y=21, flag="grota_tronco")
+    m.ent(type="pickup", id="semente_grota", item="semente_vida", sheet="icons_chave", frame=3, flag="semente_grota_pega", x=7, y=21, unless_flag="semente_grota_pega")
     return m
 
 
@@ -1308,7 +1458,7 @@ def bfs_check(m):
 
 
 def main():
-    maps = [vila(), bosque(), clareira(), santuario_a(), santuario_b(), santuario_c(), desfiladeiro(), minas_entrada(),
+    maps = [vila(), bosque(), clareira(), santuario_a(), santuario_b(), rito_seiva(), santuario_c(), grota(), desfiladeiro(), minas_entrada(),
             forja(), pedreira(), trilhos(), fundicao_a(), fundicao_b(), rito(), fundicao_c(),
             porto(), passarela(), lago(), templo_a(), templo_b(), rito_reflexos(), templo_c()]
     bad = []

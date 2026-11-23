@@ -700,7 +700,8 @@ func open_map() -> void:
 				"vila_lumen": note = "" if Game.has_flag("cervo_morto") else "  ⚠ raízes ao norte"
 				"desfiladeiro": note = "" if Game.has_flag("ponte_minas") else "  ⚠ ponte (Raiz Viva)"
 				"bosque_lanternas": note = "" if Game.has_flag("bosque_flores") else "  ⚠ portão de flores"
-				"clareira_raizes": note = "" if Game.has_flag("clareira_placas") else "  ⚠ raízes/placas"
+				"clareira_raizes": note = ("" if Game.has_flag("clareira_placas") else "  ⚠ raízes/placas") + ("" if Game.has_flag("cervo_morto") else "  ⚠ raízes antigas a leste (Cervo)")
+				"rito_seiva": note = "" if Game.has_flag("rito_seiva_av_ok") else "  ⚠ canal acima do altar (Raiz Viva)"
 				"forja_cobre":
 					var n2: Array = []
 					if not Game.has_flag("forja_rocha"): n2.append("⚠ rocha fissurada — Ruptura Ígnea")

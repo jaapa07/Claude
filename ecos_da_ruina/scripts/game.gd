@@ -322,6 +322,13 @@ func weather_speed_mult(aff: String) -> float:
 func weather_vigor_mult() -> float:
 	return Weather.vigor_mult()
 
+## Recuperação de vigor pelo amuleto equipado (Amuleto de Seiva Viva).
+func hero_vigor_mult() -> float:
+	var am: String = equipment.get("amuleto", "")
+	if am != "" and Data.items.has(am):
+		return float(Data.items[am].get("vigor", 1.0))
+	return 1.0
+
 # =============================================================== FORJA (melhoria de equipamento)
 func upgrade_level(id: String) -> int:
 	return int(upgrades.get(id, 0))
@@ -1189,6 +1196,7 @@ func item_details(id: String) -> String:
 		"amuleto":
 			t += "\n\nVida extra: +%d" % (int(it.get("hp", 0)) + int(forge_bonus("amuleto", "hp")) * upgrade_level(id))
 			if it.has("selo_chance"): t += "\nCaptura: +%d%%" % int(float(it["selo_chance"]) * 100.0)
+			if it.has("vigor"): t += "\nRecuperação de vigor: +%d%%" % int(round((float(it["vigor"]) - 1.0) * 100.0))
 	if is_equipment(id):
 		var y := dismantle_yield(id)
 		var parts: Array = []

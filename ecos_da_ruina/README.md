@@ -37,6 +37,16 @@ tests/e2e_bot.gd                 teste ponta a ponta e testes de sistema (rodam 
 docs/                            CONTROLS, BUILD, ASSET_LICENSES, KNOWN_ISSUES, TEST_REPORT
 ```
 
+## Floresta completa (Capítulo 1)
+
+Além do caminho principal (Vila Lúmen → Bosque/Clareira → Santuário da Seiva → Lenhador → Cervo), a Floresta tem:
+- **Rito da Seiva** (`rito_seiva`, pela Câmara dos Pesos do Santuário, antes do Cervo): canal com alavanca → pesos que erguem trechos de passarela até uma ilha → alavancas em cascata + caixa atravessando o canal. Pedra de reinício, pedra da dica (fala após 3 tentativas), saída sempre aberta; Cascalito segura placas e Brotisco estende cipós como alternativas. Recompensa: técnica **Golpe Enraizado** (o golpe carregado prende inimigos pequenos com raízes) + 1 vínculo para a criatura ativa.
+- **Rito da Seiva avançado** (mesmo mapa, depois do Cervo): Raiz Viva em sequência com dois canais de seiva → **Amuleto de Seiva Viva** (vigor 60% mais rápido).
+- **Segredo por observação**: parede de musgo pálido no corredor de entrada do Santuário; a inscrição de raízes (legível com a luz do Lumipim) aponta para ela e o golpe carregado a rompe → **Diário da Expedição I** + Selo Refinado.
+- **Descoberta de criatura**: anel de flores no sudoeste do Bosque; com neblina, ou com um Lumipim na equipe, os Lumipins giram sobre ele e revelam um Lumipim mais velho (Nv. 8, capturável) e a fita azul de Ione.
+- **Grota das Raízes Antigas** (`grota_seiva`, a leste da Clareira; as raízes recuam depois do Cervo): criaturas e inimigos, tronco oco que esconde uma toca (Semente de Vida) e baú com o **Diário da Expedição II**.
+Código: `scripts/floresta.gd` e `scripts/floresta_ent.gd`; arte: `assets/src/88_floresta_extra.pxl`. Teste: `-- --e2e --floresta`.
+
 ## Clima
 
 Mapas externos têm clima (`data/weather.json`, regras em `scripts/weather.gd`, visual em `scripts/weather_fx.gd`, sprites em `assets/src/80_clima.pxl`): Floresta (sol/chuva/neblina), Desfiladeiro (sol/frio/neve) e Minas externas (calor/sol). Interiores, casas e masmorras não têm clima. O tempo é sorteado ao entrar na zona e ao descansar no santuário, muda sozinho a cada 4–6 min de jogo e vai para o save. Efeitos (±15% de dano por afinidade, lentidão no frio, vigor mais lento no calor, percepção menor na neblina) aparecem no menu de pausa e no bestiário; algumas criaturas só surgem com certo clima. Teste: `-- --e2e --clima` (os demais modos travam o clima em "sol" sem efeitos).
