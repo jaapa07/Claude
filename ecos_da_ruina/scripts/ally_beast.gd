@@ -48,6 +48,7 @@ func _ready() -> void:
 	sprite.sprite_frames = Art.creature_frames(species["sprite"], fw, fh)
 	sprite.offset = Vector2(0, -fh / 2.0 + 2.0)
 	add_child(sprite)
+	Juice.attach(self, sprite, fw, fh)
 	sprite.play("idle")
 	add_to_group("allies")
 	add_to_group("party")
@@ -85,7 +86,7 @@ func _physics_process(delta: float) -> void:
 			_shape.set_deferred("disabled", false)
 			global_position = world.safe_pos_near(owner_ally.global_position)
 		return
-	sprite.modulate = Color(2.0, 1.6, 1.6) if flash > 0.0 else Color.WHITE
+	sprite.modulate = Color.WHITE     # clarão de dano: shader do Juice
 	if global_position.distance_to(owner_ally.global_position) > 220.0:
 		global_position = world.safe_pos_near(owner_ally.global_position)
 	var ot = owner_ally.target if (owner_ally.is_alive() and is_instance_valid(owner_ally.target)) else null

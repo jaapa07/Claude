@@ -68,6 +68,7 @@ func _ready() -> void:
 	sprite.sprite_frames = Art.human_frames(def["sprite"])
 	sprite.offset = Vector2(0, -14)
 	add_child(sprite)
+	Juice.attach(self, sprite, 24, 32).breathe = false
 	_bar = Art.bar(4, 20)
 	_bar.position = Vector2(-10, -36)
 	add_child(_bar)
@@ -138,7 +139,7 @@ func _physics_process(delta: float) -> void:
 	atk_cd = max(0.0, atk_cd - delta)
 	taunt_cd = max(0.0, taunt_cd - delta)
 	guard_t = max(0.0, guard_t - delta)
-	sprite.modulate = Color(2.0, 1.6, 1.6) if flash > 0.0 else Color.WHITE
+	sprite.modulate = Color.WHITE     # clarão de dano: shader do Juice
 	_bar.value = clamp(hp / max_hp, 0.0, 1.0) * 1000.0
 	_bar.visible = st == St.DOWN or hp < max_hp or world.in_combat()
 	_name.visible = st == St.DOWN

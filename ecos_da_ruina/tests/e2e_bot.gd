@@ -14,7 +14,8 @@ var stage_limit := 99
 var frame_count := 0
 var seen_errors := 0
 var exhausted_events := 0
-var all_toasts: Array = []     # histórico de avisos do jogo (a fila visível do HUD guarda só 4)
+var all_toasts: Array = []
+var shot_dir := "/tmp/shots"     # histórico de avisos do jogo (a fila visível do HUD guarda só 4)
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -63,6 +64,8 @@ func _ready() -> void:
 		await run_powers()
 	elif "--demo" in args:
 		await run_demo()
+	elif "--anim" in args:
+		await run_anim()
 	elif "--r3" in args:
 		await run_r3_dev()
 	elif mode == "unit":
@@ -98,8 +101,8 @@ func shot(name: String) -> void:
 	await RenderingServer.frame_post_draw
 	var img := get_viewport().get_texture().get_image()
 	if img:
-		DirAccess.make_dir_recursive_absolute("/tmp/shots")
-		img.save_png("/tmp/shots/%s.png" % name)
+		DirAccess.make_dir_recursive_absolute(shot_dir)
+		img.save_png("%s/%s.png" % [shot_dir, name])
 
 # =============================================================== PRIMITIVAS
 func frames(n: int) -> void:
@@ -6212,3 +6215,127 @@ func run_regiao5() -> void:
 	await r5_epilogo()
 	await r5_criaturas()
 	await r5_save_load()
+
+
+# =============================================================== VITRINE DE ANIMAÇÃO (--anim [--anim=parte])
+## Recorte de tela em volta de um nó (posição na tela pela transformação do canvas).
+func shot_at(name: String, n: Node2D, w := 96, h := 72, dy := -12) -> void:
+	if DisplayServer.get_name() == "headless":
+		return
+	await RenderingServer.frame_post_draw
+	var img := get_viewport().get_texture().get_image()
+	if img == null:
+		return
+	var sp: Vector2 = n.global_position - W.camera.get_screen_center_position() + Vector2(240, 135)
+	var sc := float(img.get_width()) / 480.0
+	if name.ends_with("_00"):
+		print("ANIM shot ", name, " sp=", sp, " img=", img.get_size(), " cam=", W.camera.get_screen_center_position(), " n=", n.global_position)
+	var r := Rect2i(int((sp.x - w / 2.0) * sc), int((sp.y + dy - h / 2.0) * sc), int(w * sc), int(h * sc))
+	r = r.intersection(Rect2i(0, 0, img.get_width(), img.get_height()))
+	DirAccess.make_dir_recursive_absolute(shot_dir)
+	img.get_region(r).save_png("%s/%s.png" % [shot_dir, name])
+
+## Não verifica nada: só captura sequências de quadros em /tmp/anim_shots para conferir a animação.
+func run_anim() -> void:
+	shot_dir = "/tmp/anim_shots"
+	var part := "all"
+	for a in args:
+		if a.begins_with("--anim="):
+			part = a.substr(7)
+	await r5_setup(6)
+	main.ui.instant = false
+	if part != "amb":
+		main.ui.hud.visible = false
+	Game.god_mode = false
+	if part in ["all", "amb"]:
+		for m in ["vila_lumen", "bosque_lanternas", "pedreira_oca", "lago_reflexos", "passarela_ecos", "muralha_partida", "jardim_invertido", "catedral_a"]:
+			W.load_map(m)
+			await advance_dialogs()
+			for e in W.enemies():
+				e.set_physics_process(false)
+			await frames(90)
+			for k in 3:
+				await shot("amb_%s_%d" % [m, k])
+				await frames(10)
+	if part in ["all", "hero"]:
+		W.load_map("desfiladeiro")
+		await frames(30)
+		await advance_dialogs()
+		P.global_position = Vector2(10 * 16, 9 * 16)
+		await frames(10)
+		print("ANIM hero state=", P.state, " pos=", P.global_position)
+		for d in [Vector2.RIGHT, Vector2.DOWN, Vector2.UP]:
+			if d == Vector2.DOWN:
+				P.global_position = Vector2(20 * 16 + 8, 3 * 16)
+			if d == Vector2.UP:
+				P.global_position = Vector2(20 * 16 + 8, 18 * 16)
+			steer(d)
+			for k in 16:
+				await frames(3)
+				await shot_at("walk_%s_%02d" % [Art.dir_name(d), k], P)
+			release_moves()
+			await frames(4)
+			for k in 10:
+				await frames(4)
+				await shot_at("stop_%s_%02d" % [Art.dir_name(d), k], P)
+		P.global_position = Vector2(12 * 16, 9 * 16 + 8)
+		await frames(20)
+		await face(Vector2.RIGHT)
+		for k in 3:
+			Input.action_press("attack"); await frames(1); Input.action_release("attack")
+			for f in 12:
+				await frames(2)
+				await shot_at("atk%d_%02d" % [k, f], P)
+		await frames(30)
+		steer(Vector2.RIGHT)
+		await frames(3)
+		Input.action_press("dodge"); await frames(1); Input.action_release("dodge")
+		for f in 14:
+			await frames(2)
+			await shot_at("roll_%02d" % f, P)
+		release_moves()
+		await frames(30)
+		P.take_hit(1.0, P.global_position + Vector2(12, 0), {"knock": 90.0})
+		for f in 14:
+			await frames(2)
+			await shot_at("hurt_%02d" % f, P)
+		await frames(30)
+		Input.action_press("guard")
+		for f in 8:
+			await frames(3)
+			await shot_at("guard_%02d" % f, P)
+		Input.action_release("guard")
+		await frames(30)
+		for f in 24:
+			await frames(4)
+			await shot_at("idle_%02d" % f, P)
+	if part in ["all", "enemy"]:
+		W.load_map("bosque_lanternas")
+		await frames(30)
+		await advance_dialogs()
+		var best: Node = null
+		for e in W.enemies():
+			if e.kind != "wild" and (best == null or e.global_position.distance_to(P.global_position) < best.global_position.distance_to(P.global_position)):
+				best = e
+		if best != null:
+			P.global_position = W.safe_pos_near(best.global_position + Vector2(-40, 0))
+			await frames(5)
+			for f in 60:
+				await frames(3)
+				await shot_at("en_%02d" % f, best, 120, 80)
+			best.take_damage(5.0, P.global_position, {"src": "heroi", "knock": 60.0})
+			for f in 10:
+				await frames(2)
+				await shot_at("enhit_%02d" % f, best, 120, 80)
+			best.take_damage(99999.0, P.global_position, {"src": "heroi", "knock": 60.0})
+			for f in 20:
+				await frames(3)
+				await shot_at("endie_%02d" % f, best, 120, 80)
+	if part in ["all", "trans"]:
+		W.load_map("vila_lumen")
+		await frames(30)
+		W.travel("bosque_lanternas", "default")
+		for f in 24:
+			await frames(2)
+			await shot("trans_%02d" % f)
+		await frames(60)

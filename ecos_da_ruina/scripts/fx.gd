@@ -24,6 +24,10 @@ const SHEETS := {
 	"splash": ["fx_splash", 16, 16, 4, 14.0],
 	"onda": ["fx_onda", 24, 24, 3, 12.0],
 	"bolhas": ["pantano_props", 16, 16, 2, 6.0, 16],
+	"impacto": ["fx_impacto", 24, 24, 5, 22.0],
+	"passo": ["fx_passo", 10, 6, 3, 10.0],
+	"ondinha": ["fx_ondinha", 16, 8, 4, 9.0],
+	"selo_anel": ["fx_selo_anel", 24, 24, 3, 9.0],
 }
 
 var mode := "hit"

@@ -81,6 +81,9 @@ var _auto_t := 0.0
 var _auto_best := 1e9
 var _run_fx_t := 0.0
 var _run_hits := {}
+var juice: Juice
+var _step_frame := -1
+var _step_side := 1.0
 
 func _ready() -> void:
 	collision_layer = 2
@@ -116,6 +119,9 @@ func _ready() -> void:
 	_sword.visible = false
 	add_child(_sword)
 	sprite.play("idle_down")
+	juice = Juice.attach(self, sprite, 24, 32)
+	juice.breathe = false          # o herói já respira nos quadros desenhados (idle0-3)
+	juice.flash_prop = "_flash"
 	_carry_fx = AnimatedSprite2D.new()
 	_carry_fx.sprite_frames = Art.fx_frames("fx_fire", 16, 16, 4, 10.0, true)
 	_carry_fx.position = Vector2(6, -26)
@@ -474,6 +480,7 @@ func take_hit(dmg: float, from: Vector2, opts: Dictionary = {}) -> bool:
 	_interrupt_capture("O vínculo foi interrompido!")
 	aiming = false
 	_flash = 0.2
+	world.impact(global_position + Vector2(0, -14) + to_src * 5.0, "", -to_src, false, Color(1.0, 0.55, 0.5))
 	Audio.play("hurt")
 	world.hitstop(0.06)
 	world.shake(3.0, 0.15)
@@ -533,6 +540,7 @@ func use_potion() -> void:
 	if Game.take_item("pocao", 1):
 		heal(float(Data.items["pocao"]["cura"]))
 		Audio.play("heal")
+		world.heal_fx(self)
 		world.spawn_text(global_position + Vector2(0, -28), "+%d" % int(Data.items["pocao"]["cura"]), Color(0.5, 1, 0.5))
 	else:
 		world.say("Sem tônicos.")
@@ -754,9 +762,26 @@ func _update_anim() -> void:
 	var name := an + d
 	if sprite.animation != name:
 		sprite.play(name)
-	sprite.modulate = Color(1.6, 1.3, 1.3) if (_flash > 0.0 or (inv_timer > 0.0 and int(inv_timer * 20.0) % 2 == 0 and state != S.GUARD)) else Color.WHITE
+	# clarão de dano pelo shader (Juice); invulnerável pisca na transparência
+	sprite.modulate = Color(1, 1, 1, 0.5) if (_flash <= 0.0 and inv_timer > 0.0 and int(inv_timer * 20.0) % 2 == 0 and state != S.GUARD) else Color.WHITE
 	if state == S.DODGE:
 		sprite.modulate.a = 0.55 if is_dodge_invulnerable() else 0.85
+	_footsteps()
+
+## Poeira (ou ondinha na água) quando o pé toca o chão: quadros 0 e 3 da caminhada (walk0-5).
+func _footsteps() -> void:
+	if state != S.FREE or move_input == Vector2.ZERO or running or not sprite.animation.begins_with("walk"):
+		_step_frame = -1
+		return
+	var fr := sprite.frame
+	if fr == _step_frame:
+		return
+	_step_frame = fr
+	if fr != 0 and fr != 3:
+		return
+	_step_side = -_step_side
+	var side := Vector2(-facing.y, facing.x) * 3.0 * _step_side
+	world.step_fx(global_position + side + Vector2(0, 1), facing)
 
 ## Arco do golpe (graus, relativos à mira): [início, fim, escala]
 const SWING := [[-110.0, 60.0, 1.0], [110.0, -60.0, 1.0], [-150.0, 150.0, 1.15], [-180.0, 180.0, 1.25]]

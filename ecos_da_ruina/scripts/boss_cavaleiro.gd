@@ -455,7 +455,7 @@ func _visuals() -> void:
 
 func _tint_pose() -> Color:
 	if flash > 0.0:
-		return Color(2.0, 1.6, 1.6)
+		return Color.WHITE if juice != null else Color(2.0, 1.6, 1.6)
 	if phase == 2 and posture == "muralha":
 		return Color(0.8, 0.95, 1.25)
 	if phase == 2 and posture == "espelho":

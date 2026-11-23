@@ -8,6 +8,7 @@ var species: Dictionary
 var sprite: AnimatedSprite2D
 var fw := 20
 var fh := 20
+var juice: Juice
 var target: Node = null
 var atk_cd := 0.0
 var inv_t := 0.0
@@ -45,6 +46,7 @@ func _ready() -> void:
 	sprite.sprite_frames = Art.creature_frames(species["sprite"], fw, fh)
 	sprite.offset = Vector2(0, -fh / 2.0 + 2.0)
 	add_child(sprite)
+	juice = Juice.attach(self, sprite, fw, fh)
 	sprite.play("idle")
 	add_to_group("allies")
 
@@ -68,7 +70,8 @@ func _physics_process(delta: float) -> void:
 	atk_cd = max(0.0, atk_cd - delta)
 	anim_lock = max(0.0, anim_lock - delta)
 	flash = max(0.0, flash - delta)
-	sprite.modulate = Color(1.8, 1.4, 1.4) if (flash > 0.0 or (inv_t > 0.0 and int(inv_t * 20.0) % 2 == 0)) else Color.WHITE
+	# clarão de dano pelo shader do Juice; invulnerável pisca na transparência
+	sprite.modulate = Color(1, 1, 1, 0.55) if (flash <= 0.0 and inv_t > 0.0 and int(inv_t * 20.0) % 2 == 0) else Color.WHITE
 	var cds: Dictionary = Game.skill_cd
 	for k in cds.keys():
 		cds[k] = max(0.0, float(cds[k]) - delta)

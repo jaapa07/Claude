@@ -65,6 +65,7 @@ var revealed_t := 0.0        # espectro: visível/vulnerável (Olhar Velado, Nim
 var slow_t := 0.0            # campo de lodo do Brejugo: anda a 50%
 var jump_from := Vector2.ZERO
 var jump_to := Vector2.ZERO
+var juice: Juice             # animação procedural do corpo (scripts/juice.gd)
 
 func init(p_world: Node, p_kind: String, e: Dictionary) -> void:
 	world = p_world
@@ -150,6 +151,8 @@ func _ready() -> void:
 		sprite.sprite_frames = Art.human_frames(sp_name) if human else Art.creature_frames(sp_name, fw, fh)
 		sprite.offset = Vector2(0, -fh / 2.0 + 2.0)
 		add_child(sprite)
+		juice = Juice.attach(self, sprite, fw, fh)
+		juice.glow_windup = true
 		_anim("idle")
 		if kind == "dummy":
 			sprite.modulate = Color(1.0, 0.9, 0.7)
@@ -248,9 +251,9 @@ func heat_damage(d: float) -> void:
 func _tint() -> Color:
 	if def.get("espiritual", false) and alive_flag:
 		if flash > 0.0:
-			return Color(2.0, 1.8, 2.0, 0.9)
+			return Color(1.0, 1.0, 1.0, 0.9) if juice != null else Color(2.0, 1.8, 2.0, 0.9)
 		return Color(0.85, 0.9, 1.1, 0.95) if spectral_visible() else Color(0.7, 0.8, 1.0, 0.22)
-	if flash > 0.0:
+	if flash > 0.0 and juice == null:
 		return Color(2.0, 1.6, 1.6)
 	if contained:
 		return Color(0.7, 1.0, 1.2)
@@ -622,7 +625,7 @@ func take_damage(amount: float, from_pos: Vector2, opts: Dictionary = {}) -> flo
 	flash = 0.12
 	hp_bar_t = 3.0
 	world.spawn_text(global_position + Vector2(0, -fh), str(int(round(dmg))), Color(1, 0.95, 0.6))
-	world.spark(global_position + Vector2(0, -fh * 0.4))
+	world.impact(global_position + Vector2(0, -fh * 0.4), str(opts.get("aff", "")), -to_att, dmg >= max_hp * 0.25)
 	if src == "heroi" and kind == "wild":
 		angry_t = 10.0
 	if src == "companion" and opts.has("uuid"):
@@ -706,6 +709,13 @@ func _death_fx() -> void:
 	if sprite == null:
 		queue_free()
 		return
+	if juice != null:
+		# clarão branco, desintegração em pontilhado e fragmentos de Eco (scripts/juice.gd)
+		juice.disintegrate(world, 0.5, boss)
+		_tw = create_tween()
+		_tw.tween_interval(0.5)
+		_tw.tween_callback(queue_free)
+		return
 	_tw = create_tween()
 	_tw.tween_property(sprite, "modulate:a", 0.0, 0.5)
 	_tw.parallel().tween_property(sprite, "scale", Vector2(1.2, 0.2), 0.5)
@@ -719,6 +729,10 @@ func captured_by_hero() -> void:
 		Game.set_flag("captured_" + uid)
 	world.enemy_died(self)
 	if sprite:
+		if juice != null:
+			juice.enabled = false
+			juice.flash_for(0.35, 0.8)
+		world.fx_at("selo_anel", global_position + Vector2(0, -fh * 0.4), 0.33)
 		var tw := create_tween()
 		tw.tween_property(sprite, "scale", Vector2(0.1, 0.1), 0.35)
 		tw.parallel().tween_property(sprite, "modulate:a", 0.0, 0.35)

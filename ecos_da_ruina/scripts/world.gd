@@ -92,6 +92,7 @@ var boss_scripts := {"lenhador": "res://scripts/boss_lenhador.gd", "cervo": "res
 	"barqueiro": "res://scripts/boss_barqueiro.gd", "bruxa": "res://scripts/boss_bruxa.gd"}
 
 signal map_loaded(id: String)
+var ambient: Node2D          # partículas de ambiente por região (scripts/ambient.gd)
 
 # =============================================================== CONSTRUÇÃO
 func _ready() -> void:
@@ -146,6 +147,10 @@ func _ready() -> void:
 	Game.flag_changed.connect(_on_flag_changed)
 	Game.team_changed.connect(_on_team_changed)
 	Game.party_changed.connect(_on_party_changed)
+	Game.level_up.connect(_on_level_up_fx)
+	ambient = Ambient.new()
+	ambient.world = self
+	add_child(ambient)
 	Weather.attach(self)
 	Fortaleza.attach(self)   # Região 4: chefes, feixes de luz, retorno ao Refúgio
 	Catedral.attach(self)    # Região 5: chefes, resgate de Ione, epílogo
@@ -168,6 +173,7 @@ func _make_tileset() -> TileSet:
 			src.set_tile_animation_frames_count(c, 2)
 			src.set_tile_animation_frame_duration(c, 0, 0.7)
 			src.set_tile_animation_frame_duration(c, 1, 0.7)
+	_sway_tiles(src, ["flowers0", "bloom0"])
 	ts.add_source(src, 0)
 	if ResourceLoader.exists(TILESET_MINAS_PATH):
 		var src2 := TileSetAtlasSource.new()
@@ -208,6 +214,23 @@ func _make_tileset() -> TileSet:
 	Catedral.add_source(ts)    # Região 5 (fonte 5 do TileSet)
 	_tileset = ts
 	return ts
+
+## Flores que balançam ao vento: quadros desenhados à mão nas linhas 4, 8 e 12 da mesma coluna de tiles2.png
+## (base, direita, base, esquerda). Cada célula começa num instante sorteado para o campo não balançar em uníssono.
+func _sway_tiles(src: TileSetAtlasSource, names: Array) -> void:
+	if src.texture == null or src.texture.get_height() < TILE * 13:
+		return
+	for n in names:
+		var i := TILE_NAMES.find(n)
+		if i < 0:
+			continue
+		var c := Vector2i(i % 16, i / 16)
+		src.set_tile_animation_columns(c, 1)
+		src.set_tile_animation_separation(c, Vector2i(0, TILE * 3))
+		src.set_tile_animation_frames_count(c, 4)
+		for k in 4:
+			src.set_tile_animation_frame_duration(c, k, 0.55 if k % 2 == 0 else 0.4)
+		src.set_tile_animation_mode(c, TileSetAtlasSource.TILE_ANIMATION_MODE_RANDOM_START_TIMES)
 
 func _tc(name: String) -> Vector2i:
 	if Fortaleza.is_name(name): return Fortaleza.coords(name)
@@ -502,6 +525,8 @@ func load_map(id: String, spawn: String = "default", pos: Variant = null) -> voi
 	if Game.in_game:
 		Game.set_flag("visitou_" + id)
 	map_loaded.emit(id)
+	if ambient != null:
+		ambient.rebuild(id)
 	if Game.in_game and map_id == "vila_lumen" and Game.has_flag("cervo_morto") and not Game.has_flag("voltou_vila"):
 		_vila_return_scene()
 	if Game.in_game and map_id == "forja_cobre" and Game.has_flag("ferreiro_morto") and not Game.has_flag("voltou_forja"):
@@ -1209,6 +1234,113 @@ func dust(pos: Vector2) -> void:
 
 func add_fx(n: Node2D) -> void:
 	fx_layer.add_child(n)
+
+## Partículas decorativas (CPUParticles2D) ficam desligadas nos testes automáticos: elas sorteiam números
+## e mudariam a sequência aleatória com semente fixa que os testes usam. A vitrine de animação liga de volta.
+var show_deco := false
+func deco_ok() -> bool:
+	return show_deco or not test_mode
+
+## Golpe que acerta: estrela de impacto tingida pela afinidade do atacante + lascas na direção do golpe.
+func impact(pos: Vector2, aff: String, dir := Vector2.ZERO, big := false, col := Color(0, 0, 0, 0)) -> void:
+	var c: Color = col if col.a > 0.0 else Juice.color_of(aff)
+	var f := fx_at("impacto", pos, 0.24, 0.0, 1.3 if big else 1.0)
+	f.modulate = Color.WHITE.lerp(c, 0.5)
+	if deco_ok():
+		var d := dir.normalized() if dir.length() > 0.1 else Vector2.UP
+		burst(pos, "fx_lasca", 4, 9 if big else 6, 0.35, d, 55.0, 50.0, 120.0, Vector2(0, 220), c)
+
+## Rajada curta de partículas autorais (folha horizontal de quadros) no mundo.
+func burst(pos: Vector2, sheet: String, frames: int, n: int, life: float, dir: Vector2, spread: float, vmin: float, vmax: float,
+		grav: Vector2, col: Color, ext := Vector2(2, 2)) -> CPUParticles2D:
+	var p := CPUParticles2D.new()
+	p.texture = Art.sprite_tex(sheet)
+	p.amount = n
+	p.lifetime = life
+	p.one_shot = true
+	p.explosiveness = 0.9
+	p.randomness = 0.4
+	p.local_coords = false
+	p.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	p.emission_rect_extents = ext
+	p.direction = dir
+	p.spread = spread
+	p.gravity = grav
+	p.initial_velocity_min = vmin
+	p.initial_velocity_max = vmax
+	var m := CanvasItemMaterial.new()
+	m.particles_animation = true
+	m.particles_anim_h_frames = frames
+	m.particles_anim_v_frames = 1
+	m.particles_anim_loop = false
+	p.material = m
+	p.anim_speed_min = 1.0
+	p.anim_speed_max = 1.0
+	var g := Gradient.new()
+	g.set_color(0, Color(col.r, col.g, col.b, 1.0))
+	g.set_color(1, Color(col.r, col.g, col.b, 0.0))
+	g.add_point(0.7, Color(col.r, col.g, col.b, 0.85))
+	p.color_ramp = g
+	p.position = pos
+	fx_layer.add_child(p)
+	p.emitting = true
+	get_tree().create_timer(life + 0.3, false).timeout.connect(p.queue_free)
+	return p
+
+## Passo do herói: poeira no chão seco (tingida de verde na grama) ou ondinha na água rasa.
+func step_fx(pos: Vector2, _dir: Vector2) -> void:
+	if is_watery(pos) or is_puddle_at(pos):
+		var o := fx_at("ondinha", pos, 0.45)
+		o.modulate = Color(1, 1, 1, 0.75)
+		o.z_index = 0
+		return
+	var c := tile_char_at(pos)
+	var f := fx_at("passo", pos, 0.3)
+	f.z_index = 0
+	f.modulate = Color(0.75, 1.0, 0.65, 0.6) if GRASSY.contains(c) else Color(1, 1, 1, 0.7)
+
+## Cura: cruzes verdes subindo e um clarão verde no corpo.
+func heal_fx(n: Node2D) -> void:
+	if n == null or not is_instance_valid(n):
+		return
+	var j = n.get("juice")
+	if j != null:
+		j.flash_for(0.18, 0.55, Color(0.55, 1.0, 0.6))
+	if deco_ok():
+		burst(n.global_position + Vector2(0, -12), "fx_cura", 2, 7, 0.9, Vector2.UP, 25.0, 14.0, 30.0, Vector2(0, -12), Color(0.7, 1.0, 0.7), Vector2(9, 6))
+	else:
+		fx_at("sparkle", n.global_position + Vector2(0, -16), 0.5)
+
+## Subida de nível: divisas douradas subindo, pulso e clarão dourado.
+func levelup_fx(n: Node2D) -> void:
+	if n == null or not is_instance_valid(n):
+		return
+	var j = n.get("juice")
+	if j != null:
+		j.flash_for(0.25, 0.6, Color(1.0, 0.92, 0.5))
+		j.kick(Vector2(-0.12, 0.2))
+	fx_at("pulse", n.global_position + Vector2(0, -10), 0.45, 0.0, 0.9).modulate = Color(1.0, 0.9, 0.5, 0.8)
+	if deco_ok():
+		burst(n.global_position + Vector2(0, -6), "fx_nivel", 2, 9, 1.0, Vector2.UP, 10.0, 22.0, 40.0, Vector2(0, -6), Color(1.0, 0.92, 0.55), Vector2(10, 4))
+
+## Evolução: clarão branco longo, dois pulsos de luz e fragmentos de Eco.
+func evolve_fx(n: Node2D) -> void:
+	if n == null or not is_instance_valid(n):
+		return
+	var j = n.get("juice")
+	if j != null:
+		j.flash_for(0.5, 1.0)
+		j.kick(Vector2(-0.2, 0.3))
+	fx_at("pulse", n.global_position + Vector2(0, -10), 0.5, 0.0, 1.2).modulate = Color(0.8, 1.0, 1.0, 0.9)
+	fx_at("burst", n.global_position + Vector2(0, -10), 0.45, 0.0, 0.8).modulate = Color(1.0, 1.0, 0.85, 0.8)
+	if deco_ok():
+		Juice.fragments(self, n.global_position + Vector2(0, -10), 20, Color(1.0, 0.95, 0.7), 8.0, 6.0, 1.1, 60.0)
+
+func _on_level_up_fx(who: String, _lvl: int) -> void:
+	if who == "heroi":
+		levelup_fx(player)
+	elif companion != null and is_instance_valid(companion) and str(companion.ind.get("uuid", "")) == who:
+		levelup_fx(companion)
 
 func bolt(from: Vector2, to: Vector2, col: Color, cb: Callable) -> void:
 	var f := Fx.new()
