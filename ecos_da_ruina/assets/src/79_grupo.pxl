@@ -76,9 +76,9 @@ palette domadora from heroi
   W = #241e22
   p = #2e2a30
   P = #1a171c
-  z = #9a62b8
-  q = #6a3a86
-  Q = #3e2052
+  z = #b672d8
+  q = #8040aa
+  Q = #4a1e68
 end
 palette vesna from heroi
   h = #1a1418
@@ -94,6 +94,12 @@ palette vesna from heroi
   p = #2a1e24
   P = #180f14
   y = #ffd86a
+  n = #f2e8d0
+  N = #a8987a
+  g = #e8c04a
+  q = #a01c30
+  Q = #5e0c1a
+  z = #d23c50
 end
 sheet aliada_bruna.png 24 32 21
 hd_idle0 pal=bruna
