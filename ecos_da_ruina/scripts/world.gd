@@ -380,7 +380,7 @@ func load_map(id: String, spawn: String = "default", pos: Variant = null) -> voi
 	camera.limit_right = W * TILE; camera.limit_bottom = H * TILE
 	_spawn_all(sp)
 	refresh_companion(false)
-	Audio.music(map.get("music", ""))
+	Audio.enter_map(id, map)
 	Game.location = {"map": id, "spawn": spawn, "pos": [sp.x, sp.y]}
 	if ui:
 		ui.banner(map.get("name", id))
@@ -716,6 +716,7 @@ func _physics_process(delta: float) -> void:
 	_update_encounters()
 	_update_camera(delta)
 	_update_darkness(delta)
+	Audio.world_tick(self, delta)
 	_update_heat(delta)
 	_update_chapter_end()
 	if light_boost_t > 0.0:
@@ -929,7 +930,9 @@ func talk_to(npc: Ent) -> void:
 func start_dialog(did: String, speaker: Node = null) -> void:
 	var v := pick_variant(did)
 	player.set_busy(true)
+	Audio.dialog_mood(did, true)
 	ui.dialog(v["lines"], func():
+		Audio.dialog_mood(did, false)
 		for f in v.get("set", []):
 			Game.set_flag(f)
 		for k in v.get("take", {}):
@@ -1136,12 +1139,12 @@ func enemy_died(e: Node) -> void:
 func boss_started(b: Node) -> void:
 	active_boss = b
 	ui.boss_bar(b)
-	Audio.music("chefao")
+	Audio.boss_music(str(b.kind), true)
 
 func boss_finished(b: Node) -> void:
 	active_boss = null
 	ui.boss_bar(null)
-	Audio.music(map.get("music", ""))
+	Audio.boss_music(str(b.kind), false, not b.alive_flag)
 
 # =============================================================== MORTE E RETOMADA
 func on_player_died() -> void:

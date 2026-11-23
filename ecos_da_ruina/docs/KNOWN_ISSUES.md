@@ -26,12 +26,11 @@
 - Suporte a controle, lâminas rápidas, revisão de cenas e diálogos acelerados por opção.
 
 ## Provisório / limitações conhecidas
-- Áudio: composições escritas nota a nota e sintetizadas em chiptune; ainda não são uma trilha produzida.
+- Áudio: composições escritas nota a nota e sintetizadas no próprio projeto (as trilhas dinâmicas usam síntese aditiva com reverb; as cinco originais ainda são chiptune); não é uma trilha gravada com instrumentos reais.
 - Ataques em arco dos inimigos usam um aviso retangular à frente, não um cone exato.
 - Arte autoral feita pixel a pixel em texto: coerente, mas um artista dedicado pode refinar animações (mais quadros de passo e ataque).
 - O bot vence o Cervo com facilidade usando a isca dos pilares; o equilíbrio para jogadores humanos não foi testado.
 - O idioma da interface é só português do Brasil.
-- Região 2: as músicas reutilizam as faixas da floresta/vila/santuário (não há trilha das minas).
 - Região 2: a Lança de Cobre usa o sprite da espada esticado (falta um sprite `fx_lanca.png`); o ícone da lança e dos diários reusa ícones existentes.
 - Região 2: os sprites da Região 2 foram desenhados pelo artista em paralelo; durante o desenvolvimento usei cópias provisórias com o mesmo tamanho de quadro, já substituídas pelos PNGs do contrato.
 - Região 2: no teste automatizado o companheiro evoluído causa mais dano ao Ferreiro do que o herói; o equilíbrio do chefe para jogadores humanos não foi medido.

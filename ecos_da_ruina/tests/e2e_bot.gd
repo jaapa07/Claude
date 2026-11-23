@@ -35,6 +35,8 @@ func _ready() -> void:
 	main.ui.instant = true
 	if "--casas" in args:
 		await run_casas()
+	elif "--musica" in args:
+		await run_musica()
 	elif "--equip" in args:
 		await run_equip()
 	elif "--powers" in args:
@@ -2497,3 +2499,119 @@ func run_casas() -> void:
 	W.save_now(3)
 	SaveSys.load_game(3)
 	check("Save mantém missões das casas", Game.has_flag("ervas_entregue") and Game.has_flag("brinquedo_entregue") and Game.has_flag("folha1_pega"))
+
+## Trilha dinâmica: lugar, interiores, combate, suspense na antessala, chefe, jingles com ducking
+func mus_wait(track: String, timeout := 4.0) -> bool:
+	var t := 0.0
+	while Audio.current_track() != track and t < timeout:
+		await frames(6)
+		t += 0.1
+	return Audio.current_track() == track
+
+func mus_info() -> String:
+	return "trilha=%s lugar=%s jingle=%s duck=%.1f vozes=%d" % [Audio.current_track(), Audio.place(), Audio.stinger_name(), Audio.duck_db(), Audio.voices()]
+
+func run_musica() -> void:
+	SaveSys.delete_slot(3)
+	main.start_new_game(3)
+	await frames(10)
+	await advance_dialogs()
+	Game.god_mode = true
+	check("Vila Lúmen toca a trilha da vila", await mus_wait("vila"), mus_info())
+	var ok := await enter_house(Vector2i(8, 7), "casa_maru")
+	ok = ok and await mus_wait("casa", 1.0)
+	check("Interior da casa troca para a trilha de casa", ok, mus_info())
+	check("Troca por crossfade (dois players soando juntos)", Audio.voices() == 2, mus_info())
+	await secs(2.0)
+	check("Crossfade termina com um só player", Audio.voices() == 1, mus_info())
+	await leave_house()
+	check("Voltar à vila retoma a trilha da vila", await mus_wait("vila"), mus_info())
+	ok = await enter_house(Vector2i(10, 27), "casa_corvelo")
+	check("Casa abandonada dos Corvelo toca a trilha de memória", ok and await mus_wait("memoria"), mus_info())
+	await leave_house()
+	ok = await exit_to("bosque_lanternas", 43 * 16.0, 15 * 16.0 + 8.0)
+	check("Bosque toca a trilha da floresta", ok and await mus_wait("floresta"), mus_info())
+	# combate com um inimigo de verdade
+	var wolf := _spawn_wolf(P.global_position + Vector2(48, 0))
+	wolf.set_physics_process(true)
+	check("Combate liga a trilha de combate", await mus_wait("combate", 8.0), mus_info())
+	if is_instance_valid(wolf) and wolf.alive_flag:
+		wolf.die("heroi")
+	check("Fim do combate retoma a base do lugar", await mus_wait("floresta", 10.0), mus_info())
+	# santuário profundo: masmorra, antessala do Lenhador com suspense, chefe, vitória
+	W.load_map("santuario_b", "from_a")
+	await frames(10)
+	check("Santuário profundo toca a trilha de masmorra", await mus_wait("masmorra"), mus_info())
+	P.global_position = tpos(24, 21)
+	check("Antessala do Lenhador liga o suspense (zona do mapa)", await mus_wait("suspense") and Audio.suspense_reason(W) == "zona", mus_info())
+	P.global_position = tpos(24, 31)
+	var b := find_boss("lenhador")
+	check("Chefe desperto toca a trilha de chefe", b != null and await mus_wait("chefao") and Audio.has_mood("suspense") == false, mus_info())
+	b.die("heroi")
+	await frames(3)
+	check("Vitória: jingle por cima e base de volta por baixo", Audio.stinger_name() == "vitoria" and Audio.current_track() == "masmorra", mus_info())
+	await frames(30)
+	check("Ducking abaixa a base durante o jingle", Audio.duck_db() < -15.0, mus_info())
+	var t := 0.0
+	while Audio.stinger_name() != "" and t < 10.0:
+		await frames(6)
+		t += 0.1
+	await secs(2.0)
+	check("Jingle termina e a base volta ao volume normal", Audio.stinger_name() == "" and Audio.duck_db() > -0.5 and Audio.current_track() == "masmorra", mus_info())
+	P.global_position = tpos(24, 21)
+	await secs(0.5)
+	check("Antessala sem suspense depois do chefe derrotado", not Audio.has_mood("suspense"), mus_info())
+	# vida baixa e escuridão
+	var hp0 := float(Game.hero["hp"])
+	Game.hero["hp"] = Game.hero_max_hp() * 0.15
+	Game.hero_changed.emit()
+	check("Vida baixa liga o suspense", await mus_wait("suspense") and Audio.suspense_reason(W) == "vida_baixa", mus_info())
+	Game.hero["hp"] = hp0
+	Game.hero_changed.emit()
+	check("Vida recuperada volta à base", await mus_wait("masmorra"), mus_info())
+	W.set_darkness(true)
+	check("Escuridão liga o suspense", await mus_wait("suspense") and Audio.suspense_reason(W) == "escuridao", mus_info())
+	W.set_darkness(false)
+	check("Luz de volta retoma a base", await mus_wait("masmorra"), mus_info())
+	# região 2
+	W.load_map("desfiladeiro", "default")
+	check("Desfiladeiro tem trilha própria (vento)", await mus_wait("desfiladeiro"), mus_info())
+	W.load_map("minas_entrada", "default")
+	check("Minas da Brasa tocam a trilha das minas", await mus_wait("minas"), mus_info())
+	W.load_map("fundicao_c", "from_rito")
+	await frames(10)
+	check("Antessala do Ferreiro liga o suspense", await mus_wait("suspense"), mus_info())
+	P.global_position = tpos(24, 17)
+	var fb := find_boss("ferreiro")
+	check("Ferreiro toca a trilha de chefe das minas (diferente do chefão)", fb != null and await mus_wait("chefe_minas"), mus_info())
+	fb.die("heroi")
+	await frames(3)
+	check("Ferreiro derrotado: jingle de vitória e volta à masmorra", Audio.stinger_name() == "vitoria" and Audio.current_track() == "masmorra", mus_info())
+	W.load_map("forja_cobre", "default")
+	await advance_dialogs()
+	check("Forja de Cobre em festa depois do Ferreiro", await mus_wait("vila_festa"), mus_info())
+	# descoberta: baú com diário
+	W.load_map("fundicao_a", "from_pedreira")
+	await frames(10)
+	for e in W.enemies():
+		e.die("heroi")
+	var chest := ent_by_id("fa_bau_escoria")
+	P.global_position = chest.global_position + Vector2(0, 16)
+	await use_ent("fa_bau_escoria", Vector2(0, 16), Vector2.UP)
+	await frames(5)
+	check("Baú com diário toca o jingle de descoberta", Game.chests.has("fa_bau_escoria") and Audio.stinger_name() == "descoberta", mus_info())
+	check("Diário puxa a trilha de memória", await mus_wait("memoria", 2.0), mus_info())
+	await advance_dialogs()
+	# vila depois do Cervo e diálogo de memória
+	Game.set_flag("cervo_morto")
+	W.load_map("vila_lumen", "default")
+	check("Vila transformada toca a versão em festa", await mus_wait("vila_festa"), mus_info())
+	await secs(1.5)
+	await advance_dialogs()
+	W.start_dialog("mae")
+	await frames(5)
+	check("Diálogo da família Corvelo toca a trilha de memória", await mus_wait("memoria"), mus_info())
+	await advance_dialogs()
+	check("Fechar o diálogo retoma a festa", await mus_wait("vila_festa"), mus_info())
+	Audio.music("titulo")
+	check("API antiga Audio.music continua funcionando", Audio.current_track() == "titulo", mus_info())

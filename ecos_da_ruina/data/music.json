@@ -1,0 +1,28 @@
+{
+ "_doc": "Trilha dinâmica (scripts/audio.gd). A base de cada mapa vem do campo \"music\" do mapa; \"variantes\" troca a base conforme flags (primeira que casar vence). \"suspense\" do mapa ([x,y,w,h] ou lista de [x,y,w,h,\"flag que desliga\"]) marca zonas tensas. Prioridade: base < memoria < combate < suspense < chefe; jingles tocam por cima com ducking.",
+ "variantes": {
+  "vila_lumen": [{"if": "cervo_morto", "music": "vila_festa"}],
+  "casa_corvelo": [{"unless": "cervo_morto", "music": "memoria"}],
+  "forja_cobre": [{"if": "ferreiro_morto", "music": "vila_festa"}]
+ },
+ "chefes": {
+  "lenhador": "chefao",
+  "cervo": "chefao",
+  "vigia": "chefe_minas",
+  "ferreiro": "chefe_minas"
+ },
+ "humores": {
+  "memoria": {"prioridade": 1, "musica": "memoria", "fade": 1.5},
+  "combate": {"prioridade": 2, "musica": "combate", "fade": 0.8},
+  "suspense": {"prioridade": 3, "musica": "suspense", "fade": 1.5},
+  "chefe": {"prioridade": 4, "musica": "chefao", "fade": 0.6}
+ },
+ "jingles": {
+  "vitoria": {"duck_db": -22.0},
+  "descoberta": {"duck_db": -10.0}
+ },
+ "combate": {"entrar_apos": 0.8, "sair_apos": 1.0, "ignorar_mapas_seguros": true},
+ "suspense": {"vida_baixa": 0.25, "chefe_dormindo_raio": 200.0},
+ "dialogos_memoria": ["carta_corvelo", "corvelo_casa", "mae"],
+ "memoria_historia_seg": 14.0
+}
