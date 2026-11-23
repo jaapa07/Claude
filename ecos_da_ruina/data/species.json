@@ -190,20 +190,20 @@
   "afinidade": "brasa",
   "raridade": "comum",
   "papel": "Dano",
-  "hp_base": 38,
-  "hp_cresc": 4,
+  "hp_base": 36,
+  "hp_cresc": 4.2,
   "atk_base": 8,
-  "atk_cresc": 1.2,
-  "skill": "raizes",
-  "passiva": "",
+  "atk_cresc": 1.3,
+  "skill": "cone_fogo",
+  "passiva": "Couro de brasa: imune a pisos quentes e poças de escória.",
   "acao_ambiental": "Acende fornalhas e pavios",
   "acao_id": "fogo",
   "evolucao": {
    "para": "brasejante",
-   "nivel": 12
+   "nivel": 10
   },
-  "habitat": "Minas da Brasa",
-  "sprite": "",
+  "habitat": "Pedreira Oca e Trilhos Fundidos (veios quentes)",
+  "sprite": "faisquito",
   "frame": [
    20,
    20
@@ -211,31 +211,63 @@
   "basic": {
    "tipo": "melee",
    "alcance": 18,
-   "recarga": 1.0
+   "recarga": 0.9
   },
   "regiao": 2,
-  "status": "planejada",
-  "descricao": ""
+  "status": "jogavel",
+  "descricao": "Uma fagulha teimosa que nasceu do carvão das minas. Vive perto do calor e esquenta quem gosta.",
+  "pequeno": true,
+  "imune_calor": true
+ },
+ "brasejante": {
+  "nome": "Brasejante",
+  "afinidade": "brasa",
+  "raridade": "comum",
+  "papel": "Dano",
+  "hp_base": 58,
+  "hp_cresc": 6.0,
+  "atk_base": 11,
+  "atk_cresc": 1.5,
+  "skill": "cone_fogo",
+  "passiva": "Couro de brasa: imune a pisos quentes e poças de escória.",
+  "acao_ambiental": "Acende fornalhas e pavios",
+  "acao_id": "fogo",
+  "evolucao": null,
+  "habitat": "Evolução de Faisquito",
+  "sprite": "brasejante",
+  "frame": [
+   28,
+   28
+  ],
+  "basic": {
+   "tipo": "melee",
+   "alcance": 22,
+   "recarga": 0.8
+  },
+  "regiao": 2,
+  "status": "jogavel",
+  "descricao": "A fagulha virou fornalha viva. Seu sopro de brasa alcança mais longe.",
+  "imune_calor": true
  },
  "ferrunho": {
   "nome": "Ferrunho",
   "afinidade": "pedra",
   "raridade": "incomum",
   "papel": "Proteção",
-  "hp_base": 50,
-  "hp_cresc": 5,
+  "hp_base": 52,
+  "hp_cresc": 5.5,
   "atk_base": 6,
-  "atk_cresc": 1,
-  "skill": "avanco",
-  "passiva": "",
+  "atk_cresc": 1.0,
+  "skill": "ima",
+  "passiva": "Casco de ferro: reduz 12% do dano recebido.",
   "acao_ambiental": "Move trilhos metálicos marcados",
   "acao_id": "trilho",
   "evolucao": {
    "para": "ferragor",
-   "nivel": 13
+   "nivel": 11
   },
-  "habitat": "Minas da Brasa",
-  "sprite": "",
+  "habitat": "Trilhos Fundidos (pátio de sucata)",
+  "sprite": "ferrunho",
   "frame": [
    20,
    20
@@ -243,11 +275,43 @@
   "basic": {
    "tipo": "melee",
    "alcance": 18,
+   "recarga": 1.1
+  },
+  "regiao": 2,
+  "status": "jogavel",
+  "descricao": "Pedra com veios de ferro que gruda em tudo o que é metálico. Adora trilhos velhos.",
+  "pequeno": true,
+  "reducao_dano": 0.12
+ },
+ "ferragor": {
+  "nome": "Ferragor",
+  "afinidade": "pedra",
+  "raridade": "incomum",
+  "papel": "Proteção",
+  "hp_base": 90,
+  "hp_cresc": 7.5,
+  "atk_base": 8,
+  "atk_cresc": 1.1,
+  "skill": "ima",
+  "passiva": "Casco de ferro: reduz 15% do dano recebido.",
+  "acao_ambiental": "Move trilhos metálicos marcados",
+  "acao_id": "trilho",
+  "evolucao": null,
+  "habitat": "Evolução de Ferrunho",
+  "sprite": "ferragor",
+  "frame": [
+   28,
+   28
+  ],
+  "basic": {
+   "tipo": "melee",
+   "alcance": 22,
    "recarga": 1.0
   },
   "regiao": 2,
-  "status": "planejada",
-  "descricao": ""
+  "status": "jogavel",
+  "descricao": "Couraça de minério magnetizado. Ferramentas arremessadas mudam de rota para ele.",
+  "reducao_dano": 0.15
  },
  "fuligin": {
   "nome": "Fuligin",
@@ -255,19 +319,19 @@
   "raridade": "incomum",
   "papel": "Evasão",
   "hp_base": 34,
-  "hp_cresc": 4,
+  "hp_cresc": 4.0,
   "atk_base": 7,
-  "atk_cresc": 1,
-  "skill": "pulso",
-  "passiva": "",
+  "atk_cresc": 1.1,
+  "skill": "nuvem",
+  "passiva": "Fumacento: 20% de chance de evitar golpes.",
   "acao_ambiental": "Revela correntes de ar com fumaça",
   "acao_id": "fumaca",
   "evolucao": {
    "para": "cinzaveu",
-   "nivel": 12
+   "nivel": 10
   },
-  "habitat": "Minas da Brasa",
-  "sprite": "",
+  "habitat": "Pedreira Oca (galerias escuras)",
+  "sprite": "fuligin",
   "frame": [
    20,
    20
@@ -275,11 +339,43 @@
   "basic": {
    "tipo": "ranged",
    "alcance": 80,
+   "recarga": 1.1
+  },
+  "regiao": 2,
+  "status": "jogavel",
+  "descricao": "Um tufo de fuligem com olhos. Some na fumaça e mostra por onde o ar escapa.",
+  "pequeno": true,
+  "esquiva": 0.2
+ },
+ "cinzaveu": {
+  "nome": "Cinzavéu",
+  "afinidade": "sombra",
+  "raridade": "incomum",
+  "papel": "Evasão",
+  "hp_base": 55,
+  "hp_cresc": 5.0,
+  "atk_base": 9,
+  "atk_cresc": 1.2,
+  "skill": "nuvem",
+  "passiva": "Fumacento: 25% de chance de evitar golpes.",
+  "acao_ambiental": "Revela correntes de ar com fumaça",
+  "acao_id": "fumaca",
+  "evolucao": null,
+  "habitat": "Evolução de Fuligin",
+  "sprite": "cinzaveu",
+  "frame": [
+   28,
+   28
+  ],
+  "basic": {
+   "tipo": "ranged",
+   "alcance": 90,
    "recarga": 1.0
   },
   "regiao": 2,
-  "status": "planejada",
-  "descricao": ""
+  "status": "jogavel",
+  "descricao": "Véu de cinzas que dança no ar quente. Sua nuvem cega grupos inteiros.",
+  "esquiva": 0.25
  },
  "goturim": {
   "nome": "Goturim",

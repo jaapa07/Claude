@@ -1,10 +1,103 @@
 {
- "selo_basico": {"nome":"Selo de Vínculo","tipo":"selo","preco":15,"bonus":0.0,"icone":0,"desc":"Prende o vínculo com uma criatura enfraquecida."},
- "selo_refinado": {"nome":"Selo Refinado","tipo":"selo","preco":38,"bonus":0.10,"icone":1,"desc":"Selo mais firme: +10% de chance de captura."},
- "pocao": {"nome":"Tônico de Seiva","tipo":"consumivel","preco":25,"cura":45,"icone":2,"desc":"Restaura 45 de vida do herói. Tecla R."},
- "tonico_criatura": {"nome":"Néctar de Vínculo","tipo":"consumivel_criatura","preco":30,"icone":2,"desc":"Revive uma criatura exausta (fora de combate)."},
- "espada_viajante": {"nome":"Espada de Viajante","tipo":"arma","dano":0,"icone":7,"desc":"Espada equilibrada de aprendiz."},
- "couraca_fibra": {"nome":"Couraça de Fibra","tipo":"protecao","reducao":0.08,"icone":5,"desc":"Reduz 8% do dano recebido."},
- "amuleto_seiva": {"nome":"Amuleto de Seiva","tipo":"amuleto","hp":15,"icone":5,"desc":"+15 de vida máxima."},
- "amuleto_vinculo": {"nome":"Amuleto do Vínculo","tipo":"amuleto","hp":0,"selo_chance":0.03,"icone":5,"desc":"+3% de chance de captura."}
+ "selo_basico": {
+  "nome": "Selo de Vínculo",
+  "tipo": "selo",
+  "preco": 15,
+  "bonus": 0.0,
+  "icone": 0,
+  "desc": "Prende o vínculo com uma criatura enfraquecida."
+ },
+ "selo_refinado": {
+  "nome": "Selo Refinado",
+  "tipo": "selo",
+  "preco": 38,
+  "bonus": 0.1,
+  "icone": 1,
+  "desc": "Selo mais firme: +10% de chance de captura."
+ },
+ "pocao": {
+  "nome": "Tônico de Seiva",
+  "tipo": "consumivel",
+  "preco": 25,
+  "cura": 45,
+  "icone": 2,
+  "desc": "Restaura 45 de vida do herói. Tecla R."
+ },
+ "tonico_criatura": {
+  "nome": "Néctar de Vínculo",
+  "tipo": "consumivel_criatura",
+  "preco": 30,
+  "icone": 2,
+  "desc": "Revive uma criatura exausta (fora de combate)."
+ },
+ "espada_viajante": {
+  "nome": "Espada de Viajante",
+  "tipo": "arma",
+  "dano": 0,
+  "icone": 7,
+  "desc": "Espada equilibrada de aprendiz."
+ },
+ "couraca_fibra": {
+  "nome": "Couraça de Fibra",
+  "tipo": "protecao",
+  "reducao": 0.08,
+  "icone": 5,
+  "desc": "Reduz 8% do dano recebido."
+ },
+ "amuleto_seiva": {
+  "nome": "Amuleto de Seiva",
+  "tipo": "amuleto",
+  "hp": 15,
+  "icone": 5,
+  "desc": "+15 de vida máxima."
+ },
+ "amuleto_vinculo": {
+  "nome": "Amuleto do Vínculo",
+  "tipo": "amuleto",
+  "hp": 0,
+  "selo_chance": 0.03,
+  "icone": 5,
+  "desc": "+3% de chance de captura."
+ },
+ "minerio_cobre": {
+  "nome": "Minério de Cobre",
+  "tipo": "material",
+  "preco": 12,
+  "icone": 0,
+  "folha": "icons_minas",
+  "desc": "Minério bruto das Minas da Brasa. Usado na forja."
+ },
+ "brasa_viva": {
+  "nome": "Brasa Viva",
+  "tipo": "material",
+  "preco": 20,
+  "icone": 1,
+  "folha": "icons_minas",
+  "desc": "Carvão que nunca apaga. A forja precisa dela para temperar o metal."
+ },
+ "lingote": {
+  "nome": "Lingote de Cobre",
+  "tipo": "material",
+  "preco": 0,
+  "icone": 2,
+  "folha": "icons_minas",
+  "desc": "Cobre refinado da Fundição. Raro: autômatos, chefes e baús."
+ },
+ "lanca_cobre": {
+  "nome": "Lança de Cobre",
+  "tipo": "arma",
+  "dano": 2,
+  "alcance": 14,
+  "arco": 0.6,
+  "icone": 7,
+  "desc": "Alcance frontal maior (+14) e arco de golpe mais estreito. Mantém o combo."
+ },
+ "placa_cobre": {
+  "nome": "Couraça de Placas de Cobre",
+  "tipo": "protecao",
+  "reducao": 0.12,
+  "icone": 3,
+  "folha": "icons_minas",
+  "desc": "Reduz 12% do dano recebido."
+ }
 }

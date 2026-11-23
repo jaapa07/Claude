@@ -1,0 +1,710 @@
+# Tileset autoral 16x16 — Região 2: Minas da Brasa (pedreira antiga, fundição, Forja de Cobre).
+# Desenho manual pixel a pixel. Luz de cima/esquerda. Contorno #1b1626.
+# Ordem do contrato (docs/REGIAO2_CONTRATO.md): 32 tiles, 16 colunas.
+
+palette mtile
+  K = #1b1626
+  a = #1e1824
+  n = #2a2230
+  N = #3a3448
+  f = #4a4256
+  F = #5a5266
+  p = #6a6078
+  P = #82788e
+  h = #9a90a6
+  c = #c0703a
+  C = #8a4a24
+  x = #e8a060
+  X = #5a3018
+  o = #ff9a40
+  y = #ffd060
+  r = #e85030
+  R = #a02820
+  w = #fff4d0
+  W = #5a3a40
+  b = #5aa8e8
+  B = #bfe9ff
+  i = #4a5a78
+  I = #6a80a0
+  j = #34405a
+  m = #7a7a8a
+  M = #a8a8b8
+  l = #50505e
+  t = #8a5a32
+  T = #5a3a20
+  u = #b07a44
+  q = #c8b898
+  Q = #a09074
+  v = #7a6c58
+  V = #54483c
+  d = #8a3a2c
+  D = #4a2420
+  e = #b5503c
+  E = #d8785a
+  g = #3a6a5a
+  G = #5a9a80
+  s = #3a5a8a
+  z = #9a6a48
+  Z = #6a4430
+end
+pal mtile
+
+# ------------------------------------------------ chão de mina
+frame mfloor0
+ffffffffffffffff
+ffFfffffffffNfff
+ffffffffffffffff
+fffffpPfffffffff
+ffffpFFNffffffFf
+fffffNNfffffffff
+fNffffffffffffff
+ffffffffffNfffff
+ffffffffffffffff
+fffFffffffffpPff
+ffffffffffffpFNf
+ffffffNfffffNNff
+fffffNfffFffffff
+ffffffffffffffff
+fFfffffffffffNff
+ffffffffffffffff
+end
+
+frame mfloor1
+ffffffffffffffff
+fffffNffffffffff
+ffffffNfffffFfff
+fffffffNNfffffff
+ffffffffNfffffff
+fFfffffffNffffff
+fffffffffNNfffff
+ffffffffffffffff
+ffffffffffffpPff
+ffcfffffffffpFNf
+fxCfffffffffNNff
+ffffffFfffffffff
+ffffffffffffffff
+fffNffffffffffFf
+ffffffffffNfffff
+ffffffffffffffff
+end
+
+# ------------------------------------------------ parede de mina (face com rochas empilhadas + topo)
+frame mwall_front
+PhPPPPhPPPPPhPPP
+ppppppNNpppppppN
+pFFFFFNNpFFFFFFN
+pFFFpFFNpFFFFFFN
+pFFFFFFNFFFFpFnN
+FFFFFFnNFFFFFFnN
+FFFFFnnNnFFFFnnN
+NnnnnnNNNnnnnnNN
+pppNNppppppppNpp
+FFFNpFFFFFFFFNpF
+FFnNpFFFpFFFnNpF
+FnnNFFFFFFFnnNFF
+nnNNFFFFFFnnnNFn
+NNNNnnnnnnnnNNnn
+nnnnnnnnnnnnnnnn
+KKKKKKKKKKKKKKKK
+end
+
+frame mwall_top
+nnnnnnnnnnnnnnnn
+nNnnnnnnnnNnnnnn
+nnnnNnnnnnnnnnNn
+nnnnnnnnaannnnnn
+nnnnnnnaannnnnnn
+nNnnnnnnnnnnnnnn
+nnnnnnNnnnnnnnnn
+nnaannnnnnnnNnnn
+nnnaannnnnnnnnnn
+nnnnnnnnnNnnnnnn
+nnnNnnnnnnnnnnnn
+nnnnnnnnnnnnaann
+nnnnnnaannnnnaan
+nNnnnnnannnnnnNn
+nnnnnnnnnNnnnnnn
+nnnnnnnnnnnnnnnn
+end
+
+# ------------------------------------------------ trilhos (dormentes a cada 8 px para conectar)
+frame rail_h
+ffffffffffffffff
+fffffffffFffffff
+futtTffffuttTfff
+futtTffffuttTfff
+MMMMMMMMMMMMMMMM
+mmmmmmmmmmmmmmmm
+llllllllllllllll
+NTttTNNNNTttTNNN
+futtTffffuttTfNf
+futtTffffuttTfff
+MMMMMMMMMMMMMMMM
+mmmmmmmmmmmmmmmm
+llllllllllllllll
+NTttTNNNNTttTNNN
+fTTTTffffTTTTfff
+ffffffffffffffff
+end
+
+frame rail_v
+fffMmlNfffMmlNff
+ffuMmluuuuMmluff
+fftMmlttttMmltff
+ffTMmlTTTTMmlTff
+fffMmlNfffMmlNff
+fffMmlNfFfMmlNff
+fffMmlNfffMmlNff
+fFfMmlNfffMmlNff
+fffMmlNfffMmlNff
+ffuMmluuuuMmluff
+fftMmlttttMmltff
+ffTMmlTTTTMmlTff
+fffMmlNfffMmlNff
+fffMmlNfffMmlNfF
+fffMmlNfffMmlNff
+fffMmlNfffMmlNff
+end
+
+# ------------------------------------------------ lava (2 quadros: crostas derivam, bolhas mudam)
+frame lava0
+RRrroooooyoooorR
+RrrooooooyyooorR
+rroooyooooyoooor
+rooooyyoooooorrR
+oooooyoooooorRRn
+ooooooooorrRRnnR
+rooooooorRRnnnRr
+rrooooorRnnnRRro
+RrroooorrRRRrroo
+nRRrrooooorrrooo
+nnRRrooooooooooo
+RnnRroooyyoooooo
+RRRrroooywyooorr
+rrrroooooyoooorR
+oooooooooooooorR
+ooyoooooooooorRR
+end
+
+frame lava1
+rRRrroooooyooooo
+rRrrooooooooyooo
+orroooooyyooooor
+oroooooywyooorrR
+ooooooooyyoorRRR
+ooooooooooorRnnR
+oroooooooorRnnnR
+orrooooorrRRnnRr
+oRrroooorRRRRrro
+RnRRrooooorrrooo
+RnnRroooooooooyo
+rRnRroooooooooyy
+rRRrroooooooooyo
+orrroooyooooooor
+ooooooyyyoooooor
+oooyoooyoooooorR
+end
+
+# ------------------------------------------------ piso quente (frestas brilham) e resfriado (aço/azul)
+frame hot_floor
+fffffffffroWffff
+fFffffffWroWffff
+ffffffffWyoWfffF
+fffffffWroWfffff
+ffffffffWorWffff
+WWWfffffWroWffff
+roRWWWWWroyRWWWW
+yoorrRoryoRorroo
+WWRRWWRorRWWRRWW
+fffffffWroWfffff
+ffFfffffWorWffff
+fffffffffWoRWfff
+ffffffffWroWffff
+fffffffWroWffFff
+fFffffffWyoWffff
+ffffffffWroWffff
+end
+
+frame cool_floor
+iiiiiiiiijIjiiii
+iIiiiiiiijsjiiii
+iiiiiiiiijsjiiiI
+iiiiiiiijsjiiiii
+iiiiiiiiijsjiiii
+jjjiiiiiijsjiiii
+sjsjjjjjjsBsjjjj
+ssBsssjsssjssssj
+jjsjjjjsjsjjjsjj
+iiiiiiijsjiiiiii
+iiIiiiiijsjiiiii
+iiiiiiiiijsjjiii
+iiiiiiiijsjiiiii
+iiiiiiijsjiiIiii
+iIiiiiiijBjiiiii
+iiiiiiiijsjiiiii
+end
+
+# ------------------------------------------------ escora de madeira (parede escorada)
+frame support
+TuuuuuuuuuuuuuuT
+TtuuttttttttttTT
+TtttttTttttttTTT
+TTTTTTTTTTTTTTTT
+KuuTKpppppppKuuT
+KutTKFFFFFFpKutT
+KutTKFFFFFFFKutT
+KutTKFnFFFFFKutT
+KutTKnnFFFFnKutT
+KutTKNnnnnnnKutT
+KutTKFFFFFpFKutT
+KutTKFFFFFFFKutT
+KutTKFFFFnnFKutT
+KutTKnnnnnnnKutT
+KTTTKnnnnnnnKTTT
+KKKKKKKKKKKKKKKK
+end
+
+# ------------------------------------------------ ruínas da pedreira antiga (blocos areia, lascados, marcas de cinzel)
+frame qfloor
+qqqqqqqVVVqqqqvV
+qQQQQQQQVVqQQQvV
+qQQvQvQQvVqQQQvV
+qQQQvQvQvVqQvQvV
+qQQQQQQQvVqQQvvV
+qQQQQQQQvVqQQQvV
+vvvvvvvvvVvvvvvV
+VVVVVVVVVVVVVVVV
+qqqqqvVqqqqqqqvV
+qQQQQvVqQQQQQQvV
+qQvQQvVqQQvQQQvV
+qQQQQvVqQQQvQQvV
+qQQQQvVvQQQQQQvV
+qQQQQvVVvQQQQQvV
+vvvvvvVVVvvvvvvV
+VVVVVVVVVVVVVVVV
+end
+
+frame qwall_front
+qqqqqqqqqqqqqqqq
+QQQQQQQQVqqqqqQQ
+QQvQQQQQVQQQQQQQ
+QQQQvQQQVQQvQQQQ
+QQQQQvQQVQQQvQQQ
+QQQQQQQQVQQQQvQQ
+vvvvvvvvVvvvvvvv
+VVVVVVVVVVVVVVVV
+QQQVqqqqqqqqqVQQ
+QQQVQQQQQQQQQVQQ
+QQvVQQvQQQQQQVQv
+QvQVQQQvQQvQQVQQ
+QQQVQQQQvQQvQVQQ
+vvvVvvvvvvvvvVvv
+VVVVVVVVVVVVVVVV
+KKKKKKKKKKKKKKKK
+end
+
+frame qwall_top
+VVVVVVVVVVVVVVVV
+VvvvvvvvvvvvvvvV
+VvQvvvvvvvvvQvvV
+VvvvvvvQvvvvvvvV
+VvvvvvvvvvvvvvvV
+VvvvvVvvvvvvvvvV
+VvvvvvvvvvvVvvvV
+VvvvvvvvvvvvvvvV
+VvQvvvvvvvvvvvvV
+VvvvvvvvvQvvvvvV
+VvvvvvvvvvvvvvvV
+VvvvvVvvvvvvvQvV
+VvvvvvvvvvvvvvvV
+VvvvQvvvvvvvvvvV
+VvvvvvvvvvvvvvvV
+VVVVVVVVVVVVVVVV
+end
+
+# ------------------------------------------------ tijolos da fundição (fuligem no alto)
+frame brick_front
+EeeeeeeDEeeeeeeD
+eddddddDeddddddD
+DDDDDDDDDDDDDDDD
+eeeDEeeeeeeDEeee
+dddDedddddaDeddd
+DDDDDDDDDDDDDDDD
+EeeeeeeDEeeeeeeD
+edddddaDeddddddD
+DDDDDDDDDDDDDDDD
+eeeDEeeeeeeDEeee
+dddDeddddddDeddd
+DDDDDDDDDDDDDDDD
+EeeeeeeDEeeeeeeD
+eddddddDeddddddD
+DDDDDDDDDDDDDDDD
+KKKKKKKKKKKKKKKK
+end
+
+frame brick_top
+DDDDDDDDDDDDDDDD
+DnnnnnnnnnnnnnnD
+DnNnnnnnnnnnnnnD
+DnnnnnnnnnNnnnnD
+DnnnndnnnnnnnnnD
+DnnnnnnnnnnnnnnD
+DnnnnnnnnnnndnnD
+DnnNnnnnnnnnnnnD
+DnnnnnnnnnnnnnnD
+DnnnnnnnnNnnnnnD
+DnnnnnnnnnnnnnnD
+DnndnnnnnnnnnnnD
+DnnnnnnnnnnnNnnD
+DnnnnnnNnnnnnnnD
+DnnnnnnnnnnnnnnD
+DDDDDDDDDDDDDDDD
+end
+
+# ------------------------------------------------ piso da forja: placas de ferro com rebites de cobre
+frame forge_floor
+xlllllllxlllllll
+lmmmmmmmlmmmmmmm
+lmMmmmmmlmmmmmMm
+lmmmmmmmlmmmmmmm
+lmmmmmmmlmmmmmmm
+lmmmmMmmlmmmmmmm
+lmmmmmmmlmmmMmmm
+lmmmmmmmlmmmmmmm
+xlllllllxlllllll
+lmmmmmmmlmmmmmmm
+lmmmmmmmlmMmmmmm
+lmmMmmmmlmmmmmmm
+lmmmmmmmlmmmmmmm
+lmmmmmmmlmmmmmMm
+lmmmmmMmlmmmmmmm
+lmmmmmmmlmmmmmmm
+end
+
+# ------------------------------------------------ porta de metal (fechada / aberta)
+frame metal_door
+nnnnnnnnnnnnnnnn
+nKKKKKKKKKKKKKKn
+nKMMMMMMMMMMMMKn
+nKMmmmmmlmmmmlKn
+nKccccccCccccCKn
+nKMxmmmmlxmmmlKn
+nKMmmmmmlmmmmlKn
+nKMmmKKKKKKmmlKn
+nKMmmKccyCKmmlKn
+nKMmmKKKKKKmmlKn
+nKMmmmmmlmmmmlKn
+nKMxmmmmlxmmmlKn
+nKccccccCccccCKn
+nKMmmmmmlmmmmlKn
+nKllllllllllllKn
+KKKKKKKKKKKKKKKK
+end
+
+frame metal_open
+nnnnnnnnnnnnnnnn
+nKKKKKKKKKKKKKKn
+nKMMMMMMMMMMMMKn
+nKMlaaaaaaaaalKn
+nKMlKammmlmmmlKn
+nKMcKammmlmmMlKn
+nKMlKammmlmmmlKn
+nKMlKammMlmmmlKn
+nKMcKallllxlllKn
+nKMlKammmlmmmlKn
+nKMlKammmlmmmlKn
+nKMcKammmlmMmlKn
+nKMlKammmlmmmlKn
+nKMlKamMmlmmmlKn
+nKMcKammmlmmmlKn
+nKMKKammmlmmmlKn
+end
+
+# ------------------------------------------------ rocha fissurada, minério, carvão
+frame cracked
+PhPPPPPhPPPPPPPP
+pppppppNoNpppppN
+pFFFFFNyoNFFFFFN
+pFFFFFFNoyNFFFFN
+pFFpFFFNroNFFFnN
+FFFFFFNoyNFFFFnN
+NNNrrrroNNnFFnnN
+nnrooyorrrroNnNN
+pppNNNNNNroyoNpp
+FFFNpFFFFNNorNpF
+FFnNpFFFNoyNnNpF
+FnnNFFFFNroNnNFF
+nnNNFFFFFNoNnNFn
+NNNNnnnnnNrNNNnn
+nnnnnnnnnnnnnnnn
+KKKKKKKKKKKKKKKK
+end
+
+frame ore_rock
+PhPPPPhPPPPPhPPP
+ppppppNNpppppppN
+pFFxcFNNpFFFFFFN
+pFxccCFNpFFxcFFN
+pFFcCXFNFFFccCnN
+FFFFXFnNFFFFCXnN
+FFFFFnnNnFFFFnnN
+NnnnnnNNNnnnnnNN
+pppNNppppppppNpp
+FFFNpFFxcFFFFNpF
+FFnNpFxccCFFnNpF
+FxcNFFcCCXFnnNFF
+ncCNFFFXXFnnnNFn
+NXNNnnnnnnnnNNnn
+nnnnnnnnnnnnnnnn
+KKKKKKKKKKKKKKKK
+end
+
+frame coal
+nnnnnKKKKnnnnnnn
+nnnnKNlNaKKKnnnn
+nnKKNPNlaNlaKnnn
+nKNlNNaaKNPlaKnn
+nKlPNaaKNlNaaaKn
+KNlNaaKNlPNaaaaK
+KNNaaaKNNNaaKKaK
+KaaaaKNlPlNaKNlK
+KNlNKNlNNaaKNPlK
+KlPNKNNaaaaKlNaK
+KNNaKKaaaaKNNaaK
+nKaKNlNKKKNlaaKn
+nnKNlPlNaKNaaaKn
+nnKaNNaaaKKaaKnn
+nnnKKaaaKnnKKnnn
+nnnnnKKKnnnnnnnn
+end
+
+# ------------------------------------------------ grade sobre fosso (brilho no fundo)
+frame grate
+hMMMhMMMhMMMhMMM
+mlllmlllmlllmlll
+mlaamlaamlaamlaa
+mlaWmlRWmlaWmlaR
+hMMMhMMMhMMMhMMM
+mlllmlllmlllmlll
+mlaamlaamlaamlaa
+mlRWmlaWmlaRmlRW
+hMMMhMMMhMMMhMMM
+mlllmlllmlllmlll
+mlaamlaamlaamlaa
+mlaRmlaWmlRWmlaW
+hMMMhMMMhMMMhMMM
+mlllmlllmlllmlll
+mlaamlaamlaamlaa
+mlaWmlRWmlaWmlaR
+end
+
+# ------------------------------------------------ escada de pedra descendo
+frame stairs
+nNpppppppppppNnn
+nNFFFFFFFFFFFNnn
+nNnnnnnnnnnnnNnn
+nNppppppppppppNn
+nNFFFFFFFFFFFFNn
+nNnnnnnnnnnnnnNn
+nnNppppppppppppN
+nnNFFFFFFFFFFFFN
+nnNaaaaaaaaaaaaN
+nnNNppppppppppNN
+nnNNFFFFFFFFFFNN
+nnaNaaaaaaaaaaNa
+naaNNppppppppNNa
+naaNNFFFFFFFFNNa
+aaaaNaaaaaaaaNaa
+aaaaaaaaaaaaaaaa
+end
+
+# ------------------------------------------------ borda norte do chão (sombra da parede acima)
+frame mfloor_edge_n
+nnnnnnnnnnnnnnnn
+NNNnNNNNNNnNNNNN
+NNNNNNNNNNNNNNNN
+fNNfNNNfNNNNfNNf
+ffffffNfffffffff
+ffffffffffffffff
+ffFfffffffffffff
+fffffffffpPfffff
+fffffffffFFNffff
+ffffffffffNNffff
+fNffffffffffffff
+ffffffffffffffFf
+ffffFfffffffffff
+ffffffffffffffff
+fffffffffNffffff
+ffffffffffffffff
+end
+
+# ------------------------------------------------ casas da Forja de Cobre: telhado de cobre com costuras
+frame copper_roof_l
+.........KKKKKKK
+......KKKxxxxxxx
+....KKxxcccxcccc
+...KxcccCccxcCcc
+..KxcccCcccxccCc
+..KccccCcccxcccC
+.KxcccCccccxcccC
+.KcgccCcccgxcccC
+KxcccCccccxccccC
+KccccCcccgxcccCc
+KcccCccccxccccCc
+KcgcCcccccxccccC
+KCCCCCCCCCCCCCCC
+KKKKKKKKKKKKKKKK
+.XXXXXXXXXXXXXXX
+.KKKKKKKKKKKKKKK
+end
+
+frame copper_roof_m
+KKKKKKKKKKKKKKKK
+xxxxxxxxxxxxxxxx
+cccCcccxcccCcccx
+cccCcccxcccCcccx
+cgcCcccxcccCcgcx
+cccCcccxcgcCcccx
+cccCcccxcccCcccx
+cccCcccxcccCcccx
+cccCcccxcccCcccx
+cgcCcccxcccCcccx
+cccCcccxcgcCcccx
+cccCcccxcccCcccx
+CCCCCCCCCCCCCCCC
+KKKKKKKKKKKKKKKK
+XXXXXXXXXXXXXXXX
+KKKKKKKKKKKKKKKK
+end
+
+frame copper_roof_r
+KKKKKKK.........
+xxxxxxxKKK......
+cCcccxcccxKK....
+cCcccxccCccxK...
+cCgccxcccCccxK..
+cCcccxcgccCccK..
+cCcccxccccCccxK.
+cCcccxccccCCccK.
+cCcgcxcccccCccxK
+cCcccxcccccCcccK
+cCcccxccgccCcccK
+cCcccxcccccCcgcK
+CCCCCCCCCCCCCCCK
+KKKKKKKKKKKKKKKK
+XXXXXXXXXXXXXXX.
+KKKKKKKKKKKKKKK.
+end
+
+# ------------------------------------------------ parede, janela e porta das casas da Forja (pedra escura + faixa de cobre)
+frame forge_wall
+FFFFFFNpFFFFFFFN
+FpFFFFNFFFFpFFFN
+NNNNNNNNNNNNNNNN
+FFFNpFFFFFFFNpFF
+FFFNFFFFpFFFNFFF
+NNNNNNNNNNNNNNNN
+FFFFFFNpFFFFFFFN
+FFpFFFNFFFFFpFFN
+NNNNNNNNNNNNNNNN
+FFFNpFFFFFFFNpFF
+FFFNFFFpFFFFNFFF
+NNNNNNNNNNNNNNNN
+xxxxxxxxxxxxxxxx
+ccccCccccccCcccc
+XXXXXXXXXXXXXXXX
+KKKKKKKKKKKKKKKK
+end
+
+frame forge_window
+FFFFFFNpFFFFFFFN
+FpKKKKKKKKKKKKFN
+NNKCCCCCCCCCCKNN
+FFKCyyyoCyooCKFF
+FFKCywyoCyyoCKFF
+NNKCCCCCCCCCCKNN
+FFKCoooRCooRCKFN
+FpKCooRRCoRRCKFN
+NNKCCCCCCCCCCKNN
+FFKxxxxxxxxxxKpF
+FFFKKKKKKKKKKFFF
+NNNNNNNNNNNNNNNN
+xxxxxxxxxxxxxxxx
+ccccCccccccCcccc
+XXXXXXXXXXXXXXXX
+KKKKKKKKKKKKKKKK
+end
+
+frame forge_door
+FFFFKKKKKKKKFFFN
+FpKKxxxxxxxxKKFN
+NKxccccccccccxKN
+FKcTuuTuuTuuTcKF
+FKcTttTttTttTcKF
+NKCccccccccccCKN
+FKcTttTttTttTcKN
+FKcTttTttTytTcKN
+NKcTttTttTyyTcKN
+FKcTttTttTttTcKF
+FKCccccccccccCKF
+NKcTttTttTttTcKN
+xKcTttTttTttTcKx
+cKcTttTttTttTcKc
+XKCCCCCCCCCCCCKX
+KKKKKKKKKKKKKKKK
+end
+
+# ------------------------------------------------ chaminé de tijolo com capuz de cobre (sobre o telhado)
+frame chimney
+KKKKKKKKKKKKKKKK
+xxxKxxxxxxxxKxxx
+cccKxnnnnnnxKccx
+cccKcnRoyRncKccx
+cgcKCCCCCCCCKccx
+cccKKKKKKKKKKccx
+cccCKEeDEeeKcccx
+cccCKddDdedKcccx
+cccCKDDDDDDKcccx
+cgcCKeDEeeDKcccx
+cccCKdDddadKcgcx
+cccCKDDDDDDKcccx
+CCCCKKKKKKKKCCCC
+KKKKKKKKKKKKKKKK
+XXXXXXXXXXXXXXXX
+KKKKKKKKKKKKKKKK
+end
+
+sheet tiles_minas.png 16 16 16
+mfloor0
+mfloor1
+mwall_front
+mwall_top
+rail_h
+rail_v
+lava0
+lava1
+hot_floor
+cool_floor
+support
+qfloor
+qwall_front
+qwall_top
+brick_front
+brick_top
+forge_floor
+metal_door
+metal_open
+cracked
+ore_rock
+coal
+grate
+stairs
+mfloor_edge_n
+copper_roof_l
+copper_roof_m
+copper_roof_r
+forge_wall
+forge_window
+forge_door
+chimney
+end

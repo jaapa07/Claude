@@ -1,6 +1,83 @@
 {
- "raizes": {"nome":"Raízes","descricao":"Prende inimigos pequenos com raízes por 3 s.","recarga":7.0,"alcance":80,"raio":30,"dano":5,"duracao":3.0,"efeito":"prender","som":"roots"},
- "pulso": {"nome":"Pulso de Luz","descricao":"Pulso que revela e interrompe ataques inimigos.","recarga":8.0,"alcance":0,"raio":56,"dano":6,"duracao":0.5,"efeito":"interromper","som":"skill"},
- "avanco": {"nome":"Avanço Rochoso","descricao":"Avanço curto com escudo; bloqueia projéteis e empurra.","recarga":7.0,"alcance":64,"raio":18,"dano":12,"duracao":0.3,"efeito":"empurrar","som":"skill"},
- "raiz_viva": {"nome":"Raiz Viva","descricao":"Prende inimigos pequenos ao redor. Também cria pontes em suportes marcados.","recarga":10.0,"custo":20,"raio":58,"dano":6,"duracao":3.0,"efeito":"prender","som":"roots"}
+ "raizes": {
+  "nome": "Raízes",
+  "descricao": "Prende inimigos pequenos com raízes por 3 s.",
+  "recarga": 7.0,
+  "alcance": 80,
+  "raio": 30,
+  "dano": 5,
+  "duracao": 3.0,
+  "efeito": "prender",
+  "som": "roots"
+ },
+ "pulso": {
+  "nome": "Pulso de Luz",
+  "descricao": "Pulso que revela e interrompe ataques inimigos.",
+  "recarga": 8.0,
+  "alcance": 0,
+  "raio": 56,
+  "dano": 6,
+  "duracao": 0.5,
+  "efeito": "interromper",
+  "som": "skill"
+ },
+ "avanco": {
+  "nome": "Avanço Rochoso",
+  "descricao": "Avanço curto com escudo; bloqueia projéteis e empurra.",
+  "recarga": 7.0,
+  "alcance": 64,
+  "raio": 18,
+  "dano": 12,
+  "duracao": 0.3,
+  "efeito": "empurrar",
+  "som": "skill"
+ },
+ "raiz_viva": {
+  "nome": "Raiz Viva",
+  "descricao": "Prende inimigos pequenos ao redor. Também cria pontes em suportes marcados.",
+  "recarga": 10.0,
+  "custo": 20,
+  "raio": 58,
+  "dano": 6,
+  "duracao": 3.0,
+  "efeito": "prender",
+  "som": "roots"
+ },
+ "cone_fogo": {
+  "nome": "Cone de Brasa",
+  "descricao": "Sopra um cone curto de fogo à frente. Acende fornalhas atingidas.",
+  "recarga": 6.0,
+  "alcance": 46,
+  "arco": 40,
+  "dano": 10,
+  "som": "skill"
+ },
+ "ima": {
+  "nome": "Ímã de Ferro",
+  "descricao": "Por 4 s atrai e absorve ferramentas arremessadas por perto e puxa inimigos pequenos.",
+  "recarga": 9.0,
+  "raio": 96,
+  "dano": 6,
+  "duracao": 4.0,
+  "som": "guard"
+ },
+ "nuvem": {
+  "nome": "Nuvem de Fuligem",
+  "descricao": "Nuvem de fumaça por 5 s: inimigos dentro dela erram metade dos ataques.",
+  "recarga": 10.0,
+  "alcance": 64,
+  "raio": 40,
+  "dano": 4,
+  "duracao": 5.0,
+  "som": "dodge"
+ },
+ "ruptura_ignea": {
+  "nome": "Ruptura Ígnea",
+  "descricao": "Explosão de calor à frente. Quebra rochas fissuradas e acende mecanismos térmicos marcados. Não destrói paredes comuns.",
+  "recarga": 9.0,
+  "custo": 22,
+  "raio": 40,
+  "dano": 14,
+  "som": "thud"
+ }
 }

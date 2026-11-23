@@ -85,5 +85,84 @@
     "flag": "vinculos_entregue"
    }
   ]
+ },
+ "principal2": {
+  "nome": "Brasas da Forja",
+  "tipo": "principal",
+  "ativa_se": "fim_cap1",
+  "etapas": [
+   {
+    "texto": "Atravesse as minas até a Forja de Cobre.",
+    "flag": "visitou_forja_cobre"
+   },
+   {
+    "texto": "Fale com o capataz Doran, na praça da Forja.",
+    "flag": "falou_doran"
+   },
+   {
+    "texto": "Siga pela Pedreira Oca (oeste) ou pelos Trilhos Fundidos (leste) até a Fundição do Último Fogo.",
+    "flag": "visitou_fundicao_a"
+   },
+   {
+    "texto": "Atravesse as salas da Fundição e derrote o Vigia de Escória.",
+    "flag": "vigia_morto"
+   },
+   {
+    "texto": "Derrote o Ferreiro Devorador no coração da Fundição.",
+    "flag": "ferreiro_morto"
+   },
+   {
+    "texto": "Volte à Forja de Cobre e veja o que mudou.",
+    "flag": "voltou_forja"
+   }
+  ]
+ },
+ "ferramentas": {
+  "nome": "Ferramentas Perdidas",
+  "tipo": "secundaria",
+  "etapas": [
+   {
+    "texto": "Derrote 4 Mineiros Corrompidos para a mineira Tessa.",
+    "contador": "mineiro",
+    "alvo": 4,
+    "flag": "ferramentas_ok"
+   },
+   {
+    "texto": "Volte à Tessa, na Forja de Cobre.",
+    "flag": "ferramentas_entregue"
+   }
+  ]
+ },
+ "calor": {
+  "nome": "Calor de Vínculo",
+  "tipo": "secundaria",
+  "etapas": [
+   {
+    "texto": "Capture um Faisquito nas minas.",
+    "contador_especies": [
+     "faisquito"
+    ],
+    "flag": "capturou_faisquito"
+   },
+   {
+    "texto": "Mostre sua equipe ao pequeno Nino, na Forja de Cobre.",
+    "flag": "calor_entregue"
+   }
+  ]
+ },
+ "veio": {
+  "nome": "O Veio Esquecido",
+  "tipo": "segredo",
+  "ativa_se": "veio_revelado",
+  "etapas": [
+   {
+    "texto": "Uma fresta escondida na Pedreira Oca leva a um veio selado por rocha fissurada. Só uma força ígnea a rompe.",
+    "flag": "veio_rocha"
+   },
+   {
+    "texto": "Abra o baú do Veio Esquecido.",
+    "flag": "veio_tesouro"
+   }
+  ]
  }
 }

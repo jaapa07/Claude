@@ -1,0 +1,62 @@
+{
+ "niveis": [
+  {
+   "nivel": 1,
+   "custo": {
+    "fragmentos": 40,
+    "minerio_cobre": 3
+   }
+  },
+  {
+   "nivel": 2,
+   "custo": {
+    "fragmentos": 80,
+    "minerio_cobre": 3,
+    "brasa_viva": 2
+   }
+  },
+  {
+   "nivel": 3,
+   "custo": {
+    "fragmentos": 130,
+    "lingote": 2,
+    "brasa_viva": 2
+   },
+   "requer_flag": "ferreiro_morto",
+   "requer_texto": "O nível +3 exige a grande forja acesa (derrote o Ferreiro Devorador)."
+  }
+ ],
+ "bonus": {
+  "arma": {
+   "dano": 3
+  },
+  "protecao": {
+   "reducao": 0.03
+  },
+  "amuleto": {
+   "hp": 10
+  }
+ },
+ "lojas": {
+  "ysa": {
+   "nome": "Loja da Ysa",
+   "itens": [
+    "selo_basico",
+    "selo_refinado",
+    "pocao",
+    "tonico_criatura"
+   ]
+  },
+  "bento": {
+   "nome": "Armazém do Bento",
+   "itens": [
+    "selo_basico",
+    "selo_refinado",
+    "pocao",
+    "tonico_criatura",
+    "minerio_cobre",
+    "brasa_viva"
+   ]
+  }
+ }
+}

@@ -160,6 +160,14 @@
  ],
  "ferreiro": [
   {
+   "if": "visitou_forja_cobre",
+   "lines": [
+    "Tobi: Você conheceu a Mestra Ilda, da Forja de Cobre? Aprendi com ela a temperar metal.",
+    "Tobi: Traga minério, brasa viva e lingotes que eu também melhoro seu equipamento aqui."
+   ],
+   "forge": true
+  },
+  {
    "lines": [
     "Tobi: As Minas da Brasa ficam ao norte, depois do desfiladeiro. Dizem que a forja de lá ainda aquece sozinha.",
     "Tobi: Quando a ponte estiver pronta, eu aviso o pessoal da Forja de Cobre."
@@ -220,7 +228,7 @@
  "placa_minas": [
   {
    "lines": [
-    "Placa: FORJA DE COBRE — Minas da Brasa. (Capítulo 2: em desenvolvimento nesta versão.)"
+    "Placa: MINAS DA BRASA — Ao norte, a Forja de Cobre. Cuidado com o chão quente: válvulas azuis o resfriam."
    ]
   }
  ],
@@ -235,6 +243,263 @@
   {
    "lines": [
     "Placa: DESFILADEIRO DO ECO — Só as raízes de um guardião vencem a ravina. (Raiz Viva: aperte E no suporte marcado.)"
+   ]
+  }
+ ],
+ "doran": [
+  {
+   "if": "voltou_forja",
+   "lines": [
+    "Doran: As forjas cantam outra vez! Ninguém aqui vai esquecer o que você fez.",
+    "Doran: O elevador da praça leste desce direto à Pedreira Oca. E a rocha fissurada do muro leste... agora você sabe o que fazer com ela."
+   ]
+  },
+  {
+   "if": "ferreiro_morto",
+   "lines": [
+    "Doran: O Devorador caiu! Sinto o calor bom voltando às pedras."
+   ]
+  },
+  {
+   "if": "vigia_morto",
+   "lines": [
+    "Doran: O Vigia de Escória caiu? Então só resta o Ferreiro Devorador, no fundo da Fundição.",
+    "Doran: Descanse no santuário da sala de preparação. Dizem que as válvulas de água da arena esfriam a armadura dele."
+   ]
+  },
+  {
+   "if": "falou_doran",
+   "lines": [
+    "Doran: A Fundição do Último Fogo fica ao norte das duas rotas: a Pedreira Oca, a oeste, e os Trilhos Fundidos, a leste.",
+    "Doran: Piso alaranjado queima. Gire as válvulas azuis para resfriá-lo. Fornalhas frias pedem fogo: braseiros ou um Faisquito."
+   ]
+  },
+  {
+   "lines": [
+    "Doran: Um Vinculador! Desde que o Ferreiro Devorador acordou na Fundição, as forjas apagaram e o calor ruim tomou os túneis.",
+    "Doran: Mineiros viraram sombras de si mesmos, jogando picaretas em quem passa. E os autômatos da Fundição voltaram a marchar.",
+    "Doran: A Fundição fica ao norte. Vá pela Pedreira Oca (oeste) ou pelos Trilhos Fundidos (leste). Tome estes tônicos e selos.",
+    "Doran: A Mestra Ilda, na forja, melhora equipamentos. O Bento vende o que você precisar."
+   ],
+   "set": [
+    "falou_doran"
+   ],
+   "give": {
+    "pocao": 2,
+    "selo_basico": 3
+   }
+  }
+ ],
+ "ilda": [
+  {
+   "if": "ferreiro_morto",
+   "lines": [
+    "Ilda: A grande forja voltou a arder! Agora consigo temperar até o nível +3."
+   ],
+   "forge": true
+  },
+  {
+   "if": "falou_ilda",
+   "lines": [
+    "Ilda: Vamos ver esse equipamento."
+   ],
+   "forge": true
+  },
+  {
+   "lines": [
+    "Ilda: Sou Ilda, mestra-forjadora. A grande forja está fria, mas a bigorna ainda canta.",
+    "Ilda: Traga minério de cobre, brasa viva e lingotes, e pague o carvão em fragmentos: melhoro sua arma, proteção e amuleto até +2.",
+    "Ilda: Quando o Devorador cair e a grande forja acender, chego ao +3."
+   ],
+   "set": [
+    "falou_ilda"
+   ],
+   "forge": true
+  }
+ ],
+ "bento": [
+  {
+   "lines": [
+    "Bento: Selos, tônicos e minério para a forja. O que vai ser?"
+   ],
+   "shop": "bento"
+  }
+ ],
+ "tessa": [
+  {
+   "if": "ferramentas_entregue",
+   "lines": [
+    "Tessa: Com as ferramentas de volta a turma voltou a cavar. Obrigada, Vinculador."
+   ]
+  },
+  {
+   "if": "ferramentas_ok",
+   "lines": [
+    "Tessa: Você trouxe as ferramentas! Os pobres mineiros podem descansar agora.",
+    "Tessa: Tome: dois lingotes que eu guardava, Selos Refinados e uns fragmentos."
+   ],
+   "set": [
+    "ferramentas_entregue"
+   ],
+   "give": {
+    "lingote": 2,
+    "selo_refinado": 2,
+    "fragmentos": 60
+   }
+  },
+  {
+   "if": "quest_ferramentas",
+   "lines": [
+    "Tessa: Os mineiros corrompidos ficam nas rotas e na Fundição. Derrote quatro e recupere as ferramentas."
+   ]
+  },
+  {
+   "lines": [
+    "Tessa: Meus companheiros desceram e voltaram... diferentes. Agora arremessam picaretas em qualquer um.",
+    "Tessa: Defenda-se de frente (K) ou saia da linha do arremesso. Derrote quatro deles e traga as ferramentas de volta."
+   ],
+   "set": [
+    "quest_ferramentas"
+   ]
+  }
+ ],
+ "nino": [
+  {
+   "if": "calor_entregue",
+   "lines": [
+    "Nino: Seu Faisquito me deixou chamuscar o dedo! Foi o melhor dia da minha vida."
+   ]
+  },
+  {
+   "if": "capturou_faisquito",
+   "unless": "calor_entregue",
+   "lines": [
+    "Nino: Um Faisquito de verdade! Posso fazer carinho? ...Ai, quente!",
+    "Nino: Tome estas brasas vivas. Sua equipe ficou toda contente com a festa! (vínculo +1 para a equipe)"
+   ],
+   "set": [
+    "calor_entregue",
+    "quest_calor"
+   ],
+   "give": {
+    "brasa_viva": 2
+   },
+   "bond": "missao:calor_nino"
+  },
+  {
+   "if": "quest_calor",
+   "lines": [
+    "Nino: Já pegou um Faisquito? Eles gostam dos veios quentes da Pedreira e dos Trilhos."
+   ]
+  },
+  {
+   "lines": [
+    "Nino: Você é Vinculador? Eu nunca vi um Faisquito de perto!",
+    "Nino: Se capturar um, traz sua equipe aqui pra eu ver?"
+   ],
+   "set": [
+    "quest_calor"
+   ]
+  }
+ ],
+ "ruivo": [
+  {
+   "lines": [
+    "Sra. Ruivo: Ficamos presos na Fundição desde que o fogo ruim acordou. Voltamos graças a você!"
+   ]
+  }
+ ],
+ "placa_forja": [
+  {
+   "lines": [
+    "Placa: FORJA DE COBRE — Oeste: Pedreira Oca. Leste: Trilhos Fundidos. Norte: portão da Fundição (trancado por dentro)."
+   ]
+  }
+ ],
+ "placa_elevador": [
+  {
+   "if": "ferreiro_morto",
+   "lines": [
+    "Placa: ELEVADOR — Desce à Pedreira Oca. Pise na grade para descer."
+   ]
+  },
+  {
+   "lines": [
+    "Placa: ELEVADOR — Parado. Sem a grande forja acesa não há vapor para movê-lo."
+   ]
+  }
+ ],
+ "placa_pedreira": [
+  {
+   "lines": [
+    "Placa: PEDREIRA OCA — Fundição ao norte. A galeria quente tem uma válvula de resfriamento."
+   ]
+  }
+ ],
+ "placa_veio": [
+  {
+   "lines": [
+    "Inscrição: O ar foge por frestas que só a fumaça revela."
+   ]
+  }
+ ],
+ "placa_veio_rocha": [
+  {
+   "lines": [
+    "Inscrição: Selado pelo último fogo. Só um fogo maior o reabre."
+   ]
+  }
+ ],
+ "placa_trilhos": [
+  {
+   "lines": [
+    "Placa: TRILHOS FUNDIDOS — Empurre o carrinho (E) até o batente. A alavanca de desvio muda o rumo nos cruzamentos.",
+    "Placa: As duas válvulas alternam o resfriamento: quando uma ala esfria, a outra esquenta."
+   ]
+  }
+ ],
+ "placa_valvulas": [
+  {
+   "lines": [
+    "Inscrição: SALA DAS VÁLVULAS — O piso em brasa fere quem pisa. Gire a válvula azul (E) e o vapor frio o apaga."
+   ]
+  }
+ ],
+ "placa_fornalhas": [
+  {
+   "lines": [
+    "Inscrição: Três fornalhas guardam a porta. Acesas juntas, ela cede.",
+    "Inscrição: A chama do braseiro dura pouco nas mãos; cada fornalha esfria se as outras demorarem. Um Faisquito sopra fogo de longe."
+   ]
+  }
+ ],
+ "placa_carrinhos": [
+  {
+   "lines": [
+    "Inscrição: PÁTIO DOS CARRINHOS — Leve o carrinho até o batente norte. A alavanca da ilha quente muda o desvio; resfrie o caminho até ela."
+   ]
+  }
+ ],
+ "placa_atalho_forja": [
+  {
+   "lines": [
+    "Inscrição: Passagem de carga para a Forja de Cobre. A alavanca abre o portão por dentro."
+   ]
+  }
+ ],
+ "placa_vigia": [
+  {
+   "lines": [
+    "Inscrição: O Vigia de Escória não sente golpes através da couraça.",
+    "Inscrição: Atraia-o para o vapor de uma válvula e gire-a: a couraça trinca. Use a outra válvula enquanto a primeira recarrega."
+   ]
+  }
+ ],
+ "placa_ferreiro": [
+  {
+   "lines": [
+    "Inscrição: O FERREIRO DEVORADOR — Seu martelo faz o chão ondular: esquive quando a onda chegar.",
+    "Inscrição: Quando a armadura arder, as válvulas de água dos cantos a resfriam. No fim, o chão cede: siga a borda segura."
    ]
   }
  ]

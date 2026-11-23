@@ -148,5 +148,148 @@
   "pequeno": false,
   "capturavel": false,
   "miniboss": false
+ },
+ "mineiro": {
+  "nome": "Mineiro Corrompido",
+  "hp": 58,
+  "dano": 11,
+  "vel": 44,
+  "xp": 26,
+  "frag": [
+   5,
+   10
+  ],
+  "sprite": "mineiro",
+  "frame": [
+   24,
+   32
+  ],
+  "ataque": "arremesso",
+  "raio": 9,
+  "percepcao": 130,
+  "relevante": true,
+  "pequeno": false,
+  "capturavel": false,
+  "nivel": 8,
+  "drops": {
+   "minerio_cobre": [
+    0.5,
+    1
+   ]
+  }
+ },
+ "lesma": {
+  "nome": "Lesma de Escória",
+  "hp": 70,
+  "dano": 9,
+  "vel": 16,
+  "xp": 22,
+  "frag": [
+   3,
+   8
+  ],
+  "sprite": "lesma_escoria",
+  "frame": [
+   24,
+   16
+  ],
+  "ataque": "lesma",
+  "raio": 8,
+  "percepcao": 90,
+  "relevante": true,
+  "pequeno": true,
+  "capturavel": false,
+  "nivel": 7,
+  "imune_calor": true,
+  "drops": {
+   "brasa_viva": [
+    0.5,
+    1
+   ]
+  }
+ },
+ "automato": {
+  "nome": "Autômato de Martelo",
+  "hp": 130,
+  "dano": 20,
+  "vel": 30,
+  "xp": 42,
+  "frag": [
+   8,
+   14
+  ],
+  "sprite": "automato",
+  "frame": [
+   32,
+   34
+  ],
+  "ataque": "martelo",
+  "raio": 11,
+  "percepcao": 110,
+  "relevante": true,
+  "pequeno": false,
+  "capturavel": false,
+  "nivel": 10,
+  "imune_calor": true,
+  "drops": {
+   "lingote": [
+    0.35,
+    1
+   ],
+   "minerio_cobre": [
+    0.4,
+    1
+   ]
+  }
+ },
+ "vigia": {
+  "nome": "Vigia de Escória",
+  "hp": 420,
+  "dano": 18,
+  "vel": 34,
+  "xp": 0,
+  "frag": [
+   0,
+   0
+  ],
+  "sprite": "vigia",
+  "frame": [
+   48,
+   48
+  ],
+  "ataque": "vigia",
+  "raio": 15,
+  "percepcao": 400,
+  "relevante": true,
+  "pequeno": false,
+  "capturavel": false,
+  "miniboss": true,
+  "nivel": 11,
+  "imune_calor": true
+ },
+ "ferreiro": {
+  "nome": "Ferreiro Devorador",
+  "hp": 900,
+  "dano": 18,
+  "vel": 44,
+  "xp": 0,
+  "frag": [
+   0,
+   0
+  ],
+  "sprite": "ferreiro",
+  "frame": [
+   72,
+   72
+  ],
+  "ataque": "ferreiro",
+  "raio": 18,
+  "percepcao": 600,
+  "relevante": true,
+  "pequeno": false,
+  "capturavel": false,
+  "miniboss": false,
+  "nivel": 12,
+  "imune_calor": true
  }
 }

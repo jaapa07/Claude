@@ -28,5 +28,53 @@
    "frag": 40
   },
   "flag_morte": "lenhador_morto"
+ },
+ "vigia": {
+  "nome": "Vigia de Escória",
+  "hp": 420,
+  "fases": [
+   1.0
+  ],
+  "recompensa": {
+   "xp": 160,
+   "frag": 60,
+   "itens": {
+    "lingote": 2,
+    "brasa_viva": 1
+   }
+  },
+  "flag_morte": "vigia_morto",
+  "dano_golpe": 18,
+  "dano_escoria": 14,
+  "couraca": 0.15,
+  "vulneravel": 1.6,
+  "trinca_s": 6.0,
+  "valvula_recarga": 7.0
+ },
+ "ferreiro": {
+  "nome": "Ferreiro Devorador",
+  "hp": 900,
+  "fases": [
+   1.0,
+   0.65,
+   0.3
+  ],
+  "recompensa": {
+   "eco": "ruptura_ignea",
+   "xp": 400,
+   "frag": 160
+  },
+  "flag_morte": "ferreiro_morto",
+  "flag_regiao": "minas_libertas",
+  "dano_onda": 16,
+  "dano_golpe": 18,
+  "dano_grande": 30,
+  "dano_queda": 8,
+  "armadura_quente": 0.25,
+  "armadura_quente_f3": 0.5,
+  "resfriada": 1.3,
+  "resfriada_s": 8.0,
+  "valvula_recarga": 10.0,
+  "aviso_grande": 1.2
  }
 }

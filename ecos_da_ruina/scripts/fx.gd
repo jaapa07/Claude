@@ -13,6 +13,9 @@ const SHEETS := {
 	"sparkle": ["fx_sparkle", 16, 12, 2, 8.0],
 	"vortex": ["fx_vortex", 32, 32, 2, 10.0],
 	"seal": ["fx_seal", 10, 10, 2, 14.0],
+	"fire": ["fx_fire", 16, 16, 4, 12.0],
+	"quake": ["fx_quake", 48, 16, 3, 10.0],
+	"steam": ["minas_props", 16, 16, 2, 6.0, 9],
 }
 
 var mode := "hit"
@@ -54,12 +57,15 @@ func _ready() -> void:
 		"spark":
 			_anim("hit", false)
 		_:
-			_anim(mode, mode in ["sparkle", "vortex", "seal"])
+			_anim(mode, mode in ["sparkle", "vortex", "seal", "fire", "steam"])
 
 func _anim(kind: String, loop: bool) -> AnimatedSprite2D:
 	var d: Array = SHEETS[kind]
 	var s := AnimatedSprite2D.new()
-	s.sprite_frames = Art.fx_frames(d[0], d[1], d[2], d[3], d[4], loop)
+	if d.size() > 5:
+		s.sprite_frames = Art.fx_frames_at(d[0], d[1], d[2], int(d[5]), d[3], d[4], true)
+	else:
+		s.sprite_frames = Art.fx_frames(d[0], d[1], d[2], d[3], d[4], loop)
 	s.play("a")
 	add_child(s)
 	_spr.append(s)
@@ -77,6 +83,9 @@ func _process(delta: float) -> void:
 		"roots":
 			if f > 0.8:
 				modulate.a = (1.0 - f) / 0.2
+		"steam":
+			position = _start + Vector2(0, -10.0 * f)
+			modulate.a = 1.0 - f * f
 	if t >= life:
 		if on_end.is_valid():
 			on_end.call()

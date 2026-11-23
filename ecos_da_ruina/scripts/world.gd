@@ -4,8 +4,19 @@ class_name World
 
 const TILE := 16
 const TILE_ORDER := ".,fpT~rRhHwcxFbSDPoCgGvkeBy"
-const SOLID := "T~RhHcxFbDPoCv"
+const SOLID := "T~RhHcxFbDPoCvMLuJZXOAaI"
 const TILESET_PATH := "res://assets/sprites/tiles2.png"
+## Região 2 (Minas da Brasa): segunda fonte do TileSet (source id 1), ordem do contrato docs/REGIAO2_CONTRATO.md
+const TILESET_MINAS_PATH := "res://assets/sprites/tiles_minas.png"
+const MINAS_NAMES := ["mfloor0", "mfloor1", "mwall_front", "mwall_top", "rail_h", "rail_v", "lava0", "lava1", "hot_floor", "cool_floor",
+	"support", "qfloor", "qwall_front", "qwall_top", "brick_front", "brick_top", "forge_floor", "metal_door", "metal_open", "cracked",
+	"ore_rock", "coal", "grate", "stairs", "mfloor_edge_n", "copper_roof_l", "copper_roof_m", "copper_roof_r", "forge_wall",
+	"forge_window", "forge_door", "chimney"]
+const MINE_WALLS := "MJZuOXAa"
+const RAILS := "=|"
+const HEAT_TICK := 0.7
+const HEAT_DMG_HERO := 5.0
+const HEAT_DMG_CREATURE := 4.0
 const TILE_NAMES := ["grass0", "grass1", "grass2", "grassd0", "flowers0", "lush0", "bloom0", "path0", "path1", "pedge_n", "pedge_s", "pedge_w", "pedge_e",
 	"water0", "water1", "shore_n", "shore_s", "shore_w", "shore_e", "tree_bot0", "tree_top0", "tree_bot1", "tree_top1", "bush", "rock", "fence", "roots",
 	"rfloor0", "rfloor1", "rmoss", "rwall_front", "rwall_top", "pillar", "pillar_top", "door_closed", "door_open", "sap", "roof_l", "roof_m", "roof_r",
@@ -55,6 +66,12 @@ var _tileset: TileSet
 var _hit_token := 0
 var _death_pending := false
 var ent_defs: Array = []
+var rail_switch := {}        # id da alavanca de desvio -> "a" | "b"
+var heat_t := 0.0
+var heat_warned := false
+var furnace_fails := {}
+var boss_scripts := {"lenhador": "res://scripts/boss_lenhador.gd", "cervo": "res://scripts/boss_cervo.gd",
+	"vigia": "res://scripts/boss_vigia.gd", "ferreiro": "res://scripts/boss_ferreiro.gd"}
 
 signal map_loaded(id: String)
 
@@ -126,12 +143,32 @@ func _make_tileset() -> TileSet:
 			src.set_tile_animation_frame_duration(c, 0, 0.7)
 			src.set_tile_animation_frame_duration(c, 1, 0.7)
 	ts.add_source(src, 0)
+	if ResourceLoader.exists(TILESET_MINAS_PATH):
+		var src2 := TileSetAtlasSource.new()
+		src2.texture = Art.tex(TILESET_MINAS_PATH)
+		src2.texture_region_size = Vector2i(TILE, TILE)
+		for i in MINAS_NAMES.size():
+			if MINAS_NAMES[i] == "lava1":
+				continue
+			var c2 := Vector2i(i % 16, i / 16)
+			src2.create_tile(c2)
+			if MINAS_NAMES[i] == "lava0":
+				src2.set_tile_animation_frames_count(c2, 2)
+				src2.set_tile_animation_frame_duration(c2, 0, 0.55)
+				src2.set_tile_animation_frame_duration(c2, 1, 0.55)
+		ts.add_source(src2, 1)
 	_tileset = ts
 	return ts
 
 func _tc(name: String) -> Vector2i:
 	var i := TILE_NAMES.find(name)
+	if i < 0:
+		i = MINAS_NAMES.find(name)
 	return Vector2i(i % 16, i / 16)
+
+## Fonte do atlas: 0 = floresta (tiles2.png), 1 = minas (tiles_minas.png)
+func _src(name: String) -> int:
+	return 1 if MINAS_NAMES.has(name) else 0
 
 func _ch(x: int, y: int) -> String:
 	if x < 0 or y < 0 or x >= W or y >= H:
@@ -209,18 +246,51 @@ func _cell_tiles(x: int, y: int) -> Array:
 		"C": out[0] = "cliff_top" if _ch(x, y + 1) in ["C", "#"] else "cliff_front"
 		"k": out[0] = "cave"
 		"v": out[0] = "void"
+		# ---- Região 2 (Minas da Brasa)
+		"m":
+			out[0] = "mfloor_edge_n" if MINE_WALLS.contains(_ch(x, y - 1)) else ("mfloor1" if hv % 5 == 0 else "mfloor0")
+		"M": out[0] = "mwall_top" if _ch(x, y + 1) in ["M", "#"] else "mwall_front"
+		"L": out[0] = "lava0"
+		"Q": out[0] = "hot_floor"
+		"q": out[0] = "cool_floor"
+		"=": out[0] = "rail_h"
+		"|": out[0] = "rail_v"
+		"u": out[0] = "support"
+		"j": out[0] = "qfloor"
+		"J": out[0] = "qwall_top" if _ch(x, y + 1) in ["J", "#"] else "qwall_front"
+		"Z": out[0] = "brick_top" if _ch(x, y + 1) in ["Z", "#", "v"] else "brick_front"
+		"z": out[0] = "forge_floor"
+		"X": out[0] = "cracked"
+		"O": out[0] = "ore_rock"
+		"%": out[0] = "grate"
+		"<": out[0] = "stairs"
+		"I": out[0] = "metal_door"
+		"A":
+			var la := _ch(x - 1, y) == "A"
+			var ra := _ch(x + 1, y) == "A"
+			out[0] = "copper_roof_m" if (la and ra) else ("copper_roof_l" if ra else "copper_roof_r")
+		"a":
+			var a2 := x
+			while _ch(a2 - 1, y) == "a": a2 -= 1
+			var b2 := x
+			while _ch(b2 + 1, y) == "a": b2 += 1
+			var mid2 := (a2 + b2) / 2
+			if x == b2 and b2 - a2 >= 8:
+				out[0] = "chimney"
+			else:
+				out[0] = "forge_door" if x == mid2 else ("forge_window" if (x - a2) % 2 == 1 else "forge_wall")
 	return out
 
 func _paint_cell(i: int, j: int) -> void:
 	var t := _cell_tiles(i, j)
 	var p := Vector2i(i, j)
-	tilemap.set_cell(p, 0, _tc(t[0]))
-	if t[1] != "": detail.set_cell(p, 0, _tc(t[1]))
+	tilemap.set_cell(p, _src(t[0]), _tc(t[0]))
+	if t[1] != "": detail.set_cell(p, _src(t[1]), _tc(t[1]))
 	else: detail.erase_cell(p)
-	if t[2] != "": detail2.set_cell(p, 0, _tc(t[2]))
+	if t[2] != "": detail2.set_cell(p, _src(t[2]), _tc(t[2]))
 	else: detail2.erase_cell(p)
 	if t[3] != "" and j > 0:
-		cover.set_cell(Vector2i(i, j - 1), 0, _tc(t[3]))
+		cover.set_cell(Vector2i(i, j - 1), _src(t[3]), _tc(t[3]))
 
 func is_solid_char(c: String) -> bool:
 	return SOLID.contains(c)
@@ -251,6 +321,12 @@ func load_map(id: String, spawn: String = "default", pos: Variant = null) -> voi
 		base_tiles.append(Array(row.split("")))
 	ent_defs = map["entities"]
 	lever_states.clear(); lever_counts.clear()
+	rail_switch.clear()
+	furnace_fails.clear()
+	heat_t = 0.0
+	for d0 in ent_defs:
+		if d0["type"] == "rail_lever":
+			rail_switch[d0["id"]] = str(d0.get("start", "a"))
 	for g in map.get("puzzles", {}):
 		var pz: Dictionary = map["puzzles"][g]
 		if pz["type"] == "levers":
@@ -282,13 +358,17 @@ func load_map(id: String, spawn: String = "default", pos: Variant = null) -> voi
 	map_loaded.emit(id)
 	if Game.in_game and map_id == "vila_lumen" and Game.has_flag("cervo_morto") and not Game.has_flag("voltou_vila"):
 		_vila_return_scene()
+	if Game.in_game and map_id == "forja_cobre" and Game.has_flag("ferreiro_morto") and not Game.has_flag("voltou_forja"):
+		_forja_return_scene()
 
 func _compute_tiles() -> void:
 	cur_tiles = []
 	for row in base_tiles:
 		cur_tiles.append((row as Array).duplicate())
 	for c in map.get("conditional", []):
-		if not Game.has_flag(c["if"]):
+		if c.has("if") and not Game.has_flag(c["if"]):
+			continue
+		if c.has("unless") and Game.has_flag(c["unless"]):
 			continue
 		for r in c.get("rects", []):
 			for j in range(int(r[3])):
@@ -296,8 +376,10 @@ func _compute_tiles() -> void:
 					_set_cur(int(r[0]) + i, int(r[1]) + j, str(r[4]))
 		var chars: Dictionary = c.get("chars", {})
 		if not chars.is_empty():
-			for j in H:
-				for i in W:
+			# "area" [x, y, w, h] limita a troca de caracteres (ex.: válvula resfria Q -> q só naquela ala)
+			var ar: Array = c.get("area", [0, 0, W, H])
+			for j in range(max(0, int(ar[1])), min(H, int(ar[1]) + int(ar[3]))):
+				for i in range(max(0, int(ar[0])), min(W, int(ar[0]) + int(ar[2]))):
 					var ch: String = cur_tiles[j][i]
 					if chars.has(ch):
 						cur_tiles[j][i] = chars[ch]
@@ -308,7 +390,12 @@ func _compute_tiles() -> void:
 				_set_cur(int(t[0]), int(t[1]), _door_open_char(d) if open else str(d["closed_char"]))
 
 func _door_open_char(d: Dictionary) -> String:
-	return "e" if d["closed_char"] == "D" else "p"
+	if d.has("open_char"):
+		return str(d["open_char"])
+	match str(d["closed_char"]):
+		"D": return "e"
+		"I": return "z"
+	return "p"
 
 func door_open(d: Dictionary) -> bool:
 	for f in d.get("open_flags", []):
@@ -397,7 +484,8 @@ func _spawn_def(i: int, player_pos: Vector2 = Vector2(-9999, -9999)) -> void:
 		return
 	var node: Node = null
 	match t:
-		"npc", "sign", "chest", "shrine", "flower", "lever", "plate", "crate", "vine", "bridge_spot", "bond_stone":
+		"npc", "sign", "chest", "shrine", "flower", "lever", "plate", "crate", "vine", "bridge_spot", "bond_stone", \
+				"valve", "furnace", "brazier", "cart", "rail_lever", "rail_marked", "draft", "crack", "ore", "anvil", "spirit_mark", "rite_reset", "altar":
 			var e := Ent.new()
 			e.init(self, d)
 			node = e
@@ -422,15 +510,17 @@ func _spawn_def(i: int, player_pos: Vector2 = Vector2(-9999, -9999)) -> void:
 		"miniboss":
 			if Game.has_flag(d["flag_done"]):
 				return
-			var mb := preload("res://scripts/boss_lenhador.gd").new()
-			mb.init(self, "lenhador", d)
+			var mk: String = d.get("boss", "lenhador")
+			var mb = load(boss_scripts[mk]).new()
+			mb.init(self, mk, d)
 			node = mb
 			boss_nodes[i] = mb
 		"boss":
 			if Game.has_flag(d["flag_done"]):
 				return
-			var bb := preload("res://scripts/boss_cervo.gd").new()
-			bb.init(self, "cervo", d)
+			var bk: String = d.get("boss", "cervo")
+			var bb = load(boss_scripts[bk]).new()
+			bb.init(self, bk, d)
 			node = bb
 			boss_nodes[i] = bb
 	if node != null:
@@ -591,6 +681,7 @@ func _physics_process(delta: float) -> void:
 	_update_encounters()
 	_update_camera(delta)
 	_update_darkness(delta)
+	_update_heat(delta)
 	_update_chapter_end()
 	if light_boost_t > 0.0:
 		light_boost_t -= delta
@@ -806,9 +897,18 @@ func start_dialog(did: String, speaker: Node = null) -> void:
 			Game.set_flag(f)
 		if v.has("give"):
 			Game.give_loot(v["give"])
+		if v.has("bond"):
+			# missão de vínculo: conta uma vez para cada criatura da equipe
+			for u in Game.team:
+				Game.bond_activity(u, str(v["bond"]))
 		player.set_busy(false)
-		if v.get("shop", false):
-			ui.open_shop())
+		var shop = v.get("shop", false)
+		if shop is String:
+			ui.open_shop(shop)
+		elif shop:
+			ui.open_shop("ysa")
+		elif v.get("forge", false):
+			ui.open_forge())
 
 func open_shrine(shrine: Ent) -> void:
 	var first := not Game.has_flag("shrine_" + shrine.eid)
@@ -901,7 +1001,7 @@ func puzzle_changed(group: String) -> void:
 
 func crate_on(pos: Vector2) -> bool:
 	for e in get_tree().get_nodes_in_group("ents"):
-		if e.kind == "crate" and not e.moving and e.global_position.distance_to(pos) < 6.0:
+		if (e.kind == "crate" or e.kind == "cart") and not e.moving and e.global_position.distance_to(pos) < 6.0:
 			return true
 	return false
 
@@ -920,20 +1020,30 @@ func cell_free_for_crate(pos: Vector2, me: Node) -> bool:
 
 func reset_room_puzzles() -> void:
 	## Reinicia caixas e alavancas ainda não resolvidas (evita travar por caixa encurralada).
+	const RESET := ["crate", "lever", "flower", "plate", "cart", "furnace", "rail_lever", "brazier"]
 	for i in ent_defs.size():
 		var d: Dictionary = ent_defs[i]
-		if d["type"] in ["crate", "lever", "flower", "plate"]:
+		if d["type"] in RESET:
 			var n = ent_nodes.get(i)
 			if n != null and is_instance_valid(n):
 				n.queue_free()
 			ent_nodes.erase(i)
+		elif d["type"] == "valve" and (d.has("dura") or str(d.get("flag", "")).begins_with("tmp_")):
+			Game.set_flag(d["flag"], false)      # válvulas temporizadas do rito voltam a fechar
+		elif d["type"] == "rail_lever":
+			pass
+		if d["type"] == "rail_lever":
+			rail_switch[d["id"]] = str(d.get("start", "a"))
 	for g in map.get("puzzles", {}):
 		var pz: Dictionary = map["puzzles"][g]
 		if pz["type"] == "levers":
 			lever_states[g] = (pz["start"] as Array).duplicate()
 			lever_counts[g] = 0
+	furnace_fails.clear()
+	player.carry_fire_t = 0.0
+	await get_tree().process_frame
 	for i in ent_defs.size():
-		if ent_defs[i]["type"] in ["crate", "lever", "flower", "plate"]:
+		if ent_defs[i]["type"] in RESET:
 			_spawn_def(i)
 
 # =============================================================== ENCONTROS
@@ -1030,7 +1140,251 @@ func _update_chapter_end() -> void:
 				player.set_busy(true)
 				ui.dialog(["FIM DO CAPÍTULO 1 — Floresta dos Esquecidos.",
 					"Herói nível %d • %d capturas • %d mortes • %d min de jogo." % [Game.hero_level(), int(Game.stats["capturas"]), int(Game.stats["mortes"]), mins],
-					"Minas da Brasa, Pântano dos Sussurros, Fortaleza do Eclipse e Catedral do Vazio ainda estão em desenvolvimento.",
-					"Você pode voltar e explorar o que restou da floresta."], func():
+					"CAPÍTULO 2 — Minas da Brasa. A boca da mina leva à Forja de Cobre, ao norte.",
+					"(Pântano dos Sussurros, Fortaleza do Eclipse e Catedral do Vazio ainda estão em desenvolvimento.)"], func():
 					player.set_busy(false)
 					autosave())
+
+func _forja_return_scene() -> void:
+	Game.set_flag("voltou_forja")
+	await get_tree().create_timer(0.8).timeout
+	player.set_busy(true)
+	ui.dialog(["O calor bom voltou às pedras: as forjas da Forja de Cobre se acenderam outra vez.",
+		"A família Ruivo, presa na Fundição, está de volta, e o vapor da grande forja moveu o elevador da praça leste.",
+		"Com a Ruptura Ígnea você pode quebrar rochas fissuradas — há uma no muro leste da vila — e o Rito da Forja guarda uma prova avançada."], func():
+		player.set_busy(false)
+		autosave())
+
+# =============================================================== CALOR (Região 2)
+## Piso quente `Q` e poças de escória ferem herói e criaturas a cada HEAT_TICK; `q` (resfriado) não.
+func is_hot_at(p: Vector2) -> bool:
+	if tile_char_at(p) == "Q":
+		return true
+	for h in get_tree().get_nodes_in_group("hazards"):
+		if h.hot and h.global_position.distance_to(p) <= h.radius:
+			return true
+	return false
+
+func _update_heat(delta: float) -> void:
+	heat_t += delta
+	if heat_t < HEAT_TICK:
+		return
+	heat_t = 0.0
+	if transition_busy or frozen or arrival_t > 0.0:
+		return
+	if player.state != Player.S.DEAD and player.state != Player.S.INTERACT and is_hot_at(player.global_position):
+		player.env_damage(HEAT_DMG_HERO * Game.heat_mult(), "Quente!")
+		if not heat_warned:
+			heat_warned = true
+			say("Piso em brasa! Gire uma válvula azul (E) para resfriá-lo ou atravesse depressa.")
+	if companion != null and is_instance_valid(companion) and companion.is_alive() and is_hot_at(companion.global_position):
+		companion.env_damage(HEAT_DMG_CREATURE)
+	for e in enemies():
+		if e.kind == "dummy" or e.boss or e.heat_immune() or not e.hittable():
+			continue
+		if is_hot_at(e.global_position):
+			e.heat_damage(HEAT_DMG_CREATURE)
+
+func add_hazard(pos: Vector2, rad: float, life: float) -> Node2D:
+	var h: Node2D = preload("res://scripts/hazard.gd").new()
+	h.world = self
+	h.radius = rad
+	h.life = life
+	h.position = pos
+	ysort.add_child(h)
+	return h
+
+func smoke_cloud(pos: Vector2, rad: float, life: float) -> Node2D:
+	var h: Node2D = preload("res://scripts/hazard.gd").new()
+	h.world = self
+	h.mode = "smoke"
+	h.hot = false
+	h.radius = rad
+	h.life = life
+	h.position = pos
+	fx_layer.add_child(h)
+	return h
+
+func steam_at(pos: Vector2, life := 1.2) -> void:
+	fx_at("steam", pos, life)
+
+func spawn_projectile(from: Vector2, dir: Vector2, dmg: float, owner: Node, mode := "tool") -> Node2D:
+	var pr: Node2D = preload("res://scripts/projectile.gd").new()
+	pr.world = self
+	pr.mode = mode
+	pr.dir = dir.normalized()
+	pr.damage = dmg
+	pr.owner_ref = owner
+	pr.position = from
+	fx_layer.add_child(pr)
+	return pr
+
+# =============================================================== VÁLVULAS
+func valve_use(v: Ent) -> void:
+	if v.def.get("boss", false):
+		if active_boss != null and is_instance_valid(active_boss) and active_boss.has_method("on_valve"):
+			active_boss.on_valve(v)
+		else:
+			say("A válvula de água está emperrada: só gira quando o mecanismo da arena desperta.")
+		return
+	var flag: String = v.def["flag"]
+	if v.def.has("dura"):
+		# válvula de vapor temporizada (rito): abre por alguns segundos e fecha sozinha
+		if Game.has_flag(flag):
+			say("A válvula já está aberta.")
+			return
+		Game.set_flag(flag)
+		v.timer = float(v.def["dura"])
+	else:
+		Game.set_flag(flag, not Game.has_flag(flag))
+	Audio.play("lever")
+	Audio.play("bridge", -10.0)
+	steam_at(v.global_position + Vector2(0, -10))
+	for c in map.get("conditional", []):
+		var area: Array = c.get("area", [])
+		if area.size() == 4 and (c.get("if", "") == flag or c.get("unless", "") == flag):
+			for k in 4:
+				steam_at(Vector2((float(area[0]) + randf() * float(area[2])) * TILE, (float(area[1]) + randf() * float(area[3])) * TILE), 1.0)
+	say("Vapor frio sibila pelas grades." if Game.has_flag(flag) else "A válvula fecha: o piso volta a esquentar.")
+	if companion != null and is_instance_valid(companion):
+		pass
+
+# =============================================================== FORNALHAS / FOGO
+## Acende uma fornalha: pelo herói com chama do braseiro, por um Faisquito ativo por perto (mais rápido) ou pela Ruptura Ígnea.
+func furnace_try(f: Ent) -> void:
+	if f.lit:
+		return
+	if f.def.get("so_ruptura", false):
+		say("Mecanismo térmico marcado: só uma explosão de calor o desperta (Ruptura Ígnea, tecla do Eco).")
+		_furnace_fail(f)
+		return
+	var ac := Game.active_ind()
+	if not ac.is_empty() and Game.sp_of(ac).get("acao_id", "") == "fogo" and companion != null and is_instance_valid(companion) \
+			and companion.global_position.distance_to(f.global_position) < 140.0:
+		companion.env_action_fx(f.global_position)
+		Game.bond_activity(ac["uuid"], "acao:" + f.eid)
+		f.light_furnace()
+		say("%s soprou brasa na fornalha!" % Game.creature_name(ac))
+		return
+	if player.carry_fire_t > 0.0:
+		player.carry_fire_t = 0.0
+		f.light_furnace()
+		say("A chama pegou na fornalha.")
+		return
+	say("A fornalha está fria. Pegue chama num braseiro (E) e traga até aqui — ou peça a um Faisquito.")
+	_furnace_fail(f)
+
+func _furnace_fail(f: Ent) -> void:
+	var g: String = f.def.get("group", "")
+	if g == "":
+		return
+	furnace_fails[g] = int(furnace_fails.get(g, 0)) + 1
+	var pz: Dictionary = map.get("puzzles", {}).get(g, {})
+	if int(furnace_fails[g]) >= int(pz.get("dica_apos", 3)) and pz.get("dica", "") != "":
+		say(pz["dica"])
+
+func furnace_went_out(f: Ent) -> void:
+	say("Uma fornalha esfriou antes das outras acenderem.")
+	_furnace_fail(f)
+
+func take_fire(b: Ent) -> void:
+	player.carry_fire_t = float(b.def.get("chama", 9.0))
+	Audio.play("skill", -6.0)
+	say("Você pegou uma chama (%.0f s). Leve-a até uma fornalha fria." % player.carry_fire_t)
+
+## Fogo em cone (Faisquito) ou explosão (Ruptura) acende fornalhas atingidas.
+func fire_area(origin: Vector2, dir: Vector2, rad: float, arc: float, src: String) -> int:
+	var n := 0
+	for e in get_tree().get_nodes_in_group("ents"):
+		if e.kind != "furnace" or e.lit:
+			continue
+		if e.def.get("so_ruptura", false) and src != "ruptura":
+			continue
+		if Combat.in_arc(origin, dir, rad, arc, e.global_position, 8.0):
+			e.light_furnace()
+			n += 1
+			if src == "companion":
+				var ac := Game.active_ind()
+				if not ac.is_empty():
+					Game.bond_activity(ac["uuid"], "acao:" + e.eid)
+	return n
+
+# =============================================================== ECO: RUPTURA ÍGNEA
+func eco_ruptura(center: Vector2, dir: Vector2) -> void:
+	var sk: Dictionary = Data.skills["ruptura_ignea"]
+	var rad := float(sk["raio"])
+	for k in 5:
+		fx_at("fire", center + Vector2.from_angle(TAU * k / 5.0) * rad * 0.5, 0.5, 0.0, 1.4)
+	fx_at("hit", center, 0.3, 0.0, 2.2)
+	Audio.play("thud")
+	shake(2.5, 0.25)
+	for e in enemies():
+		if e.hittable() and e.kind != "dummy" and e.global_position.distance_to(center) <= rad + e.radius:
+			e.take_damage(float(sk["dano"]) + Game.hero_atk() * 0.5, center, {"src": "heroi", "knock": 90.0, "aff": "brasa"})
+	for e in get_tree().get_nodes_in_group("ents"):
+		if e.kind == "crack" and e.global_position.distance_to(center) <= rad + 20.0:
+			e.break_rock()
+	fire_area(center - dir * 30.0, dir, rad + 30.0, 70.0, "ruptura")
+
+# =============================================================== CARRINHOS SOBRE TRILHOS
+func is_rail(c: Vector2i) -> bool:
+	return RAILS.contains(_ch(c.x, c.y))
+
+func switch_at(c: Vector2i) -> Dictionary:
+	for d in ent_defs:
+		if d["type"] == "rail_lever" and int(d["at"][0]) == c.x and int(d["at"][1]) == c.y:
+			return d
+	return {}
+
+func rail_lever_toggle(l: Ent) -> void:
+	var id: String = l.def["id"]
+	rail_switch[id] = "b" if rail_switch.get(id, "a") == "a" else "a"
+	Audio.play("lever")
+	l.refresh_rail_lever()
+	var dv: Array = l.def[rail_switch[id]]
+	say("Desvio: o trilho agora segue para %s." % _dir_name(Vector2(float(dv[0]), float(dv[1]))))
+
+func _dir_name(v: Vector2) -> String:
+	if abs(v.x) > abs(v.y):
+		return "o leste" if v.x > 0 else "o oeste"
+	return "o sul" if v.y > 0 else "o norte"
+
+## Próxima direção do carrinho ao chegar à célula `c` vindo na direção `d` (Vector2i.ZERO = parar).
+func cart_next_dir(c: Vector2i, d: Vector2i) -> Vector2i:
+	var sw := switch_at(c)
+	if not sw.is_empty():
+		var dv: Array = sw[rail_switch.get(sw["id"], "a")]
+		var sd := Vector2i(int(dv[0]), int(dv[1]))
+		if sd != -d and is_rail(c + sd):
+			return sd
+	if is_rail(c + d):
+		return d
+	var turns: Array = []
+	for t in [Vector2i(d.y, d.x), Vector2i(-d.y, -d.x)]:
+		if is_rail(c + t):
+			turns.append(t)
+	if turns.size() == 1:
+		return turns[0]
+	return Vector2i.ZERO
+
+func cart_cell_free(p: Vector2, me: Node) -> bool:
+	for e in get_tree().get_nodes_in_group("ents"):
+		if e != me and e.solid and e.global_position.distance_to(p) < 10.0:
+			return false
+	for e in enemies():
+		if e.global_position.distance_to(p) < 10.0:
+			return false
+	if player.global_position.distance_to(p) < 9.0:
+		return false
+	return true
+
+# =============================================================== INTERAÇÕES DE CRIATURA (marcadores)
+func creature_action(e: Ent, acao: String, ok_msg: String, no_msg: String) -> bool:
+	var ac := Game.active_ind()
+	if ac.is_empty() or Game.sp_of(ac).get("acao_id", "") != acao or companion == null or not is_instance_valid(companion):
+		say(no_msg)
+		return false
+	companion.env_action_fx(e.global_position)
+	Game.bond_activity(ac["uuid"], "acao:" + e.eid)
+	say(ok_msg % Game.creature_name(ac))
+	return true
