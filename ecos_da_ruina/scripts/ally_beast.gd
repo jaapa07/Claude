@@ -31,7 +31,7 @@ func init(p_world: Node, p_owner: Node, sp: String, p_nome: String) -> void:
 	species = Data.species[sp]
 	var lv: int = max(1, Game.hero_level() - 1)
 	max_hp = float(species["hp_base"]) + float(species["hp_cresc"]) * (lv - 1)
-	atk = (float(species["atk_base"]) + float(species["atk_cresc"]) * (lv - 1)) * 0.7
+	atk = (float(species["atk_base"]) + float(species["atk_cresc"]) * (lv - 1)) * 0.5   # apoio: metade do ataque da espécie (docs/BALANCO.md)
 	hp = max_hp
 
 func _ready() -> void:
@@ -58,7 +58,7 @@ func is_alive() -> bool:
 func take_hit(dmg: float, from: Vector2, _opts: Dictionary = {}) -> bool:
 	if not is_alive() or inv_t > 0.0:
 		return false
-	hp -= dmg * Game.enemy_damage_mult()
+	hp -= dmg * Game.enemy_damage_mult() * Game.COMPANION_DAMAGE_TAKEN
 	flash = 0.12
 	inv_t = 0.4
 	velocity = (global_position - from).normalized() * 50.0

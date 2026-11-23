@@ -1,6 +1,8 @@
 # Relatório de testes
 
 Resumo: região 5 — Catedral do Vazio (`--e2e --regiao5`) 112/112 · e2e Capítulos 1+2+3 (`--e2e`) 465/465 · floresta completa (`--e2e --floresta`: Rito da Seiva, segredo, anel, Grota, rito avançado, Goturim nas Minas) 67/67 · região 4 (`--e2e --regiao4`) 136/136 · história 50/50 · unit 38/38 · grupo 34/34 · clima 38/38 · habilidades 31/31 · casas 15/15 (Região 3: estágios `r3_*`, 143 verificações; veja `docs/REGIAO3_CONTRATO.md`) · anteriores: unit 30/30 · poderes 12/12 · equipamentos 12/12 · casas 15/15 · celular (Playwright, iPhone 13 deitado) sem erros
+
+Equilíbrio (curva das Regiões 1–5, `docs/BALANCO.md`): e2e 465/465 · região 5 112/112 · região 4 136/136 · unit 48/48 (10 verificações novas de curva e dificuldade) · história 50/50 · floresta 67/67 · grupo 34/34 · habilidades 31/31 · poderes 12/12 · equipamentos 12/12. O bot age como "jogador sensato" ao chegar a um vilarejo (gasta talentos, veste a melhor proteção/amuleto que já tem e compra tônicos com os próprios fragmentos).
 ## E2E (Capítulos 1 e 2 — a lista abaixo é a da versão anterior; os estágios do Capítulo 3 estão em `tests/e2e_bot.gd`, funções `r3_*`)
 [PASS] Título abre ao iniciar o jogo
 [PASS] Novo jogo inicia na Vila Lúmen

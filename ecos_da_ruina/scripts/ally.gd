@@ -89,7 +89,7 @@ func hittable() -> bool:
 func take_hit(dmg: float, from: Vector2, opts: Dictionary = {}) -> bool:
 	if st == St.DOWN or inv_t > 0.0:
 		return false
-	dmg *= Game.enemy_damage_mult()
+	dmg *= Game.enemy_damage_mult() * Game.ALLY_DAMAGE_TAKEN
 	var to_src := (from - global_position).normalized()
 	if guard_t > 0.0 and facing.dot(to_src) > 0.1 and not opts.get("indefensavel", false):
 		dmg *= 0.3
