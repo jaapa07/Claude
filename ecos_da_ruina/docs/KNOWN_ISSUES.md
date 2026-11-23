@@ -19,10 +19,14 @@
 - Chefes: Vigia de Escória (couraça; válvulas de vapor alternadas) e Ferreiro Devorador (ondas; armadura incandescente resfriada pelas válvulas de água; piso central desaba e martelada grande anunciada por 1,2 s). Eco Ruptura Ígnea (rochas fissuradas, mecanismos térmicos, dano em área).
 - Missões: principal "Brasas da Forja", secundárias "Ferramentas Perdidas" e "Calor de Vínculo", segredo "O Veio Esquecido"; 5 diários de história.
 
+## Pronto e jogável — Região 4 (Fortaleza do Eclipse)
+- Ponte Espiritual (transição; a ponte só existe com o Olhar Velado), Refúgio da Muralha (núcleo: Capitã Ilse, Tália, Lume, Odo, quadro de contratos, rotinas que mudam após o guardião), Jardins Suspensos e Muralha Partida (rotas), Torre das Duas Sombras (10 salas em 4 mapas + Rito do Eclipse com ala avançada) e Estrada Final (gancho da Região 5).
+- Criaturas Umbrel/Umbrafel, Ventisco/Vendraco, Brasardo/Solarco; inimigos lanceiro, arqueiro e armadura; Gêmeos de Ferro e Cavaleiro Sem Rosto (3 fases); Eco Passo Umbral. Detalhes: `docs/REGIAO4_CONTRATO.md`.
+
 ## Não implementado
-- **Regiões 3 a 5** (Pântano dos Sussurros, Fortaleza do Eclipse, Catedral do Vazio).
-- 9 das 15 espécies-base e suas evoluções: estão só cadastradas nos dados, como "planejadas", sem sprite nem habitat.
-- Camada espiritual (Entre-Ecos), Olhar Velado (as inscrições ocultas da Forja e da Fundição já esperam por ele), Passo Umbral e Harmonia dos Ecos.
+- **Regiões 3 e 5** (Pântano dos Sussurros e Catedral do Vazio). A Região 4 entra pela `ponte_espiritual`, que ainda precisa de uma saída vinda da Região 3 (ver `docs/REGIAO4_CONTRATO.md`).
+- 6 das 15 espécies-base e suas evoluções (Pântano e Catedral): estão só cadastradas nos dados, como "planejadas", sem sprite nem habitat.
+- Camada espiritual (Entre-Ecos), Olhar Velado (as inscrições ocultas da Forja e da Fundição já esperam por ele) e Harmonia dos Ecos.
 - Suporte a controle, lâminas rápidas, revisão de cenas e diálogos acelerados por opção.
 
 ## Provisório / limitações conhecidas
@@ -35,3 +39,7 @@
 - Região 2: os sprites da Região 2 foram desenhados pelo artista em paralelo; durante o desenvolvimento usei cópias provisórias com o mesmo tamanho de quadro, já substituídas pelos PNGs do contrato.
 - Região 2: no teste automatizado o companheiro evoluído causa mais dano ao Ferreiro do que o herói; o equilíbrio do chefe para jogadores humanos não foi medido.
 - Os testes ponta a ponta usam semente fixa (`--seed=N` muda); com outras sementes o fluxo do Capítulo 1 já era sensível ao acaso (capturas e flanqueio).
+- Região 4: o teste `--regiao4` usa um Olhar Velado provisório (só em `Game.ecos` e na flag `eco_olhar_velado`) até a Região 3 cadastrar a habilidade.
+- Região 4: o clima "Ventania" não tem partículas próprias (só tom de cor e ícone); as regras de dano/percepção funcionam.
+- Região 4: o equilíbrio do Cavaleiro Sem Rosto foi medido só com o bot (herói nv. 19–21 e equipe evoluída).
+- O quadro de contratos da vila usa `quadro_contratos.png`, que não está no repositório (aparece como erro de recurso); o Refúgio usa `quadro_refugio.png` próprio.

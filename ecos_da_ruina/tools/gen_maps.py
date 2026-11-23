@@ -894,4 +894,4 @@ def main():
             print("\n".join("".join(r) for r in g))
 
 
-main()
+if __name__ == "__main__":  main()

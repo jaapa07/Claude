@@ -1,0 +1,803 @@
+# Tileset autoral 16x16 — Região 4: Fortaleza do Eclipse (Refúgio da Muralha, Jardins Suspensos, Muralha Partida, Torre das Duas Sombras).
+# Desenho manual pixel a pixel. Luz de cima/esquerda. Contorno #1b1626.
+# Paleta da região: violeta, dourado e pedra azulada (docs/REGIAO4_CONTRATO.md). Ordem dos 38 tiles = FORT_NAMES em scripts/fortaleza.gd.
+
+palette fort
+  K = #1b1626
+  n = #221a30
+  A = #2b2d48
+  B = #353b5c
+  C = #465178
+  D = #56648e
+  E = #6c7ca8
+  F = #8ea0c8
+  m = #b8c6e6
+  v = #3a2450
+  V = #57367a
+  u = #7a52a0
+  U = #a078c8
+  w = #cdb2f2
+  x = #e6d4ff
+  g = #7a5418
+  G = #b08428
+  y = #e8c050
+  Y = #fff0a0
+  h = #2f5a3c
+  H = #3f7a4c
+  j = #6aa85c
+  J = #a8d070
+  s = #161a34
+  S = #232a52
+  t = #3a4680
+  T = #8090c8
+  q = #e8eefc
+  r = #5a3c26
+  R = #85603a
+  o = #261c36
+  O = #3a2c52
+  l = #fff6d0
+  L = #ffd860
+  p = #c05070
+  P = #e88aa8
+end
+# sombra: o mesmo desenho do piso com as pedras tingidas de violeta escuro
+palette fortsombra from fort
+  E = #4a3a66
+  D = #3a2c52
+  C = #30244a
+  B = #221a36
+end
+pal fort
+
+# ------------------------------------------------ 0-2 piso de pedra azulada (lajes em amarração)
+frame f_floor0
+EEEEEEEBEEEEEEEB
+EDDDDDCBEDDDDDCB
+EDDDDDCBEDDCDDCB
+EDDDDDCBEDDDDDCB
+EDDCDDCBEDDDDDCB
+EDDDDDCBEDDDDDCB
+CCCCCCCBCCCCCCCB
+BBBBBBBBBBBBBBBB
+EEEBEEEEEEEBEEEE
+DDCBEDDDDDCBEDDD
+DDCBEDDDDDCBEDCD
+DDCBEDDDDDCBEDDD
+DCCBEDDCDDCBEDDD
+DDCBEDDDDDCBEDDD
+CCCBCCCCCCCBCCCC
+BBBBBBBBBBBBBBBB
+end
+
+frame f_floor1
+EEEEEEEBEEEEEEEB
+EDDDDDCBEDDDDDCB
+EDDDDDCBEDDDDDCB
+EDDDKDCBEDDDDDCB
+EDDDDKCBEDDDDDCB
+EDDDDKABEDDDUDCB
+CCCCAKCBCCCCCCCB
+BBBBBBBBBBBBBBBB
+EEEBEEEEEEEBEEEE
+DDCBEDDDDDCBEDDD
+DDCBEDDDDDCBEDDD
+DDCBEDDDDDCBEDDD
+DCCBEDDDDDCBEDhD
+DDCBEDDDDDCBEhHD
+CCCBCCCCCCCBCCCC
+BBBBBBBBBBBBBBBB
+end
+
+frame f_floor_edge_n over f_floor0
+AAAAAAAAAAAAAAAA
+BBBBBBBBBBBBBBBB
+CDDDDDCBCDDDDDCB
+end
+
+# ------------------------------------------------ 3-5 muralha: face, topo e ameias
+frame f_wall_front
+FFFFFFFBFFFFFFFB
+EEEEEEDBEEEEEEDB
+EEEEEEDBEEEEEEDB
+BBBBBBBBBBBBBBBB
+FFFBFFFFFFFBFFFF
+EEDBEEEEEEDBEEEE
+EEDBEEEEEEDBEEEE
+BBBBBBBBBBBBBBBB
+FFFFFFFBFFFFFFFB
+DEEEEEDBEEEEEEDB
+DDDDDDDBDDDDDDDB
+BBBBBBBBBBBBBBBB
+DDDBDDDDDDDBDDDD
+CCCBCCCCCCCBCCCC
+AAAAAAAAAAAAAAAA
+KKKKKKKKKKKKKKKK
+end
+
+frame f_wall_top
+BAAAAAAnBAAAAAAn
+AAAAAAAnAAAAAAAn
+AAAnAAAnAAAAAAAn
+AAAAAAAnAAAAnAAn
+AAAAAAAnAAAAAAAn
+AAAAAAAnAAAAAAAn
+AAAAAAAnAAAAAAAn
+nnnnnnnnnnnnnnnn
+AAAnBAAAAAAnBAAA
+AAAnAAAAAAAnAAAA
+AAAnAAAAnAAnAAAA
+AAAnAAAAAAAnAAAA
+AnAnAAAAAAAnAAAA
+AAAnAAAAAAAnAAnA
+AAAnAAAAAAAnAAAA
+nnnnnnnnnnnnnnnn
+end
+
+frame f_crenel
+AAAAAAAAAAAAAAAA
+AAAnAAAAAAAAnAAA
+KKKKKKAAKKKKKKAA
+FFFFFDAAFFFFFDAA
+EEEEEDAAEEEEEDAA
+EEyEEDAAEEyEEDAA
+DDDDDDnnDDDDDDnn
+BBBBBBKKBBBBBBKK
+FFFFFFFFFFFFFFFF
+EEEEEEDBEEEEEEDB
+EEEEEEDBEEEEEEDB
+BBBBBBBBBBBBBBBB
+DDDBDDDDDDDBDDDD
+CCCBCCCCCCCBCCCC
+AAAAAAAAAAAAAAAA
+KKKKKKKKKKKKKKKK
+end
+
+# ------------------------------------------------ 6 piso dourado (salões e arenas)
+frame f_gold_floor
+GGGGGGGGGGGGGGGG
+GCCCCCCCCCCCCCCC
+GCDDDDDDDDDDDDDC
+GCDDDDDDDDDDDDDC
+GCDDDDDDgDDDDDDC
+GCDDDDDgyGDDDDDC
+GCDDDDgyYyGDDDDC
+GCDDDgyYYYyGDDDC
+GCDDDDGyYyGDDDDC
+GCDDDDDGyGDDDDDC
+GCDDDDDDGDDDDDDC
+GCDDDDDDDDDDDDDC
+GCDDDDDDDDDDDDDC
+GCDDDDDDDDDDDDDC
+GCCCCCCCCCCCCCCC
+GBBBBBBBBBBBBBBB
+end
+
+# ------------------------------------------------ 7-10 jardins suspensos
+frame f_garden
+HHHHHHHHHHHHHHHH
+HHHjHHHHHHHHHHHH
+HHjHHHHHHHHjHHHH
+HHHHHhHHHHjHjHHH
+HHHHHHHHHHHHHHHH
+HHHHHHHHHHHHHHhH
+HjHHHHHHjHHHHHHH
+HHHhHHHjHjHHHHHH
+HHHHHHHHHHHHHHHH
+HHHHHHHHHHHHjHHH
+HHHHjHHHHHHjHHHH
+HHHjHjHHHHHHHHHH
+HHHHHHHHhHHHHHHH
+HHHHHHHHHHHHHjHH
+HHhHHHHHHHHHjHjH
+HHHHHHHHHHHHHHHH
+end
+
+frame f_garden_flowers over f_garden
+................
+...U........y...
+..UwU......yYy..
+...U........y...
+...h............
+.........P......
+........PxP.....
+.........P......
+.........h......
+................
+..y.........U...
+.yYy.......UwU..
+..y.........U...
+..h.........h...
+................
+................
+end
+
+frame f_hedge
+.KKKKKKKKKKKKKK.
+KhhHHjHHhhHHjHhK
+KhHjJjHhHHjJjHhK
+KhHHjHHhhHHjHHhK
+KhhHHHhhhhHHHhhK
+KhHHjHHhhHHjHHhK
+KhHjJjHhHHjJjHhK
+KhhHjHHhhHHjHHhK
+KhhhHhhhhhhHhhhK
+KhHHhHHhhHHhHHhK
+KhHjHHhhhhHHjHhK
+KhhHHhhhhhhHHhhK
+KhhhhhhhhhhhhhhK
+KnhhhhhhhhhhhhnK
+.KnnnnnnnnnnnnK.
+..KKKKKKKKKKKK..
+end
+
+frame f_planter
+.KKKKKKKKKKKKKK.
+KhHjHhjJjhHjHhHK
+KHjJjHhjhHjJjHhK
+KhHjHUhhhhHjHhUK
+KhhHUwUhHhhHUwUK
+KhhhhUhhhhhhhUhK
+KKKKKKKKKKKKKKKK
+KFFFFFFFFFFFFFFK
+KEEEyEEEEEEyEEEK
+KEEyGyEEEEyGyEEK
+KDEEyEEEEEEyEEDK
+KDDDDDDDDDDDDDDK
+KCCCCCCCCCCCCCCK
+KBBBBBBBBBBBBBBK
+KAAAAAAAAAAAAAAK
+KKKKKKKKKKKKKKKK
+end
+
+# ------------------------------------------------ 11-12 abismo das montanhas (céu sob as muralhas)
+frame f_abyss
+SSSSSSSSSSSSSSSS
+SSSSSSSSsSSSSSSS
+SSSSSSSSSSSSSSSS
+SSsSSSSSSSSSSSSS
+SSSSSSSSSSSStSSS
+SSSSSSSSSSttTtSS
+SSSSSSSSSSSSSSSS
+SSSSSSsSSSSSSSSS
+SSSSSSSSSSSSSSSS
+SttSSSSSSSSSSSSS
+tTTtSSSSSSSSSsSS
+SSSSSSSSSSSSSSSS
+SSSSSSSSSSSSSSSS
+SSSSSSSSsSSSSSSS
+SSSSSSSSSSSSSSSS
+SSSSSSSSSSSSSSSS
+end
+
+frame f_abyss_lip
+EDDDDDCBEDDDDDCB
+DDDDDDCBDDDDDDCB
+CCCCCCCBCCCCCCCB
+BBBBBBBBBBBBBBBB
+CCCBCCCCCCCBCCCC
+BBBBBBBBBBBBBBBB
+AAAAAAAAAAAAAAAA
+nAnnAAnnAnnAAnnA
+nnsnnnnnnsnnnnnn
+sssssSssssssSsss
+sSSSSSSSSSSSSSSs
+SSSSSSSSSSSSSSSS
+SSSSSSSSSSSSSStS
+SSSSSSSSSSSStTTS
+SSSsSSSSSSSSSSSS
+SSSSSSSSSSSSSSSS
+end
+
+# ------------------------------------------------ 13 ponte espiritual (só aparece a quem tem o Olhar Velado)
+frame f_spirit_bridge
+SUSSSSSSSSSSSSUS
+UwUUUUUUUUUUUUwU
+uVVuVVVuVVVuVVVu
+uvvuvvvuvvvuvvvu
+UwUUUUUUUUUUUUwU
+SuSSSSSSSSSSSSuS
+UwUUUUUUUUUUUUwU
+uVVuVVVuVVVuVVVu
+uvvuvvvuvvvuvvvu
+UwUUUUUUUUUUUUwU
+SuSSSSSSSSSSSSuS
+UwUUUUUUUUUUUUwU
+uVVuVVVuVVVuVVVu
+uvvuvvvuvvvuvvvu
+UwUUUUUUUUUUUUwU
+SUSSSSSSSSSSSSUS
+end
+
+# ------------------------------------------------ 14 fissura (Passo Umbral atravessa; parede comum não)
+frame f_fissure over f_wall_front
+.......K........
+.......vK.......
+......KwV.......
+......VxU.......
+.....KUwK.......
+......KxwK......
+.......UxV......
+.......KwU......
+......KUxK......
+......VwU.......
+.....KUxV.......
+......KwUK......
+.......VxV......
+.......KwUK.....
+........VK......
+end
+
+# ------------------------------------------------ 15-16 grade levadiça
+frame f_gate_closed
+KKKKKKKKKKKKKKKK
+KFKnnFKnnFKnnFKK
+KyKnnEKnnEKnnyKK
+KEKnnEKnnEKnnEKK
+KEKnnEKnnEKnnEKK
+KDKKKDKKKDKKKDKK
+KEFFFEFFFEFFFEKK
+KDKKKDKKKDKKKDKK
+KEKnnEKnnEKnnEKK
+KEKnnEKnnEKnnEKK
+KDKnnDKnnDKnnDKK
+KDKKKDKKKDKKKDKK
+KDFFFDFFFDFFFDKK
+KCKnnCKnnCKnnCKK
+KyKnnCKnnCKnnyKK
+KCKnnCKnnCKnnCKK
+end
+
+frame f_gate_open over f_floor0
+KEKKKEKKKEKKKEKK
+KDKAAKDAAKDAAKDK
+AAAAAAAAAAAAAAAA
+BBBBBBBBBBBBBBBB
+end
+
+# ------------------------------------------------ 17 escada
+frame f_stairs
+KKKKKKKKKKKKKKKK
+FFFFFFFFFFFFFFFF
+EEEEEEEEEEEEEEEE
+DDDDDDDDDDDDDDDD
+BBBBBBBBBBBBBBBB
+FFFFFFFFFFFFFFFF
+EEEEEEEEEEEEEEEE
+DDDDDDDDDDDDDDDD
+BBBBBBBBBBBBBBBB
+FFFFFFFFFFFFFFFF
+EEEEEEEEEEEEEEEE
+DDDDDDDDDDDDDDDD
+BBBBBBBBBBBBBBBB
+FFFFFFFFFFFFFFFF
+EEEEEEEEEEEEEEEE
+CCCCCCCCCCCCCCCC
+end
+
+# ------------------------------------------------ 18 pilar com anel dourado
+frame f_pillar
+...KKKKKKKKKK...
+..KGyyyyyyyyGK..
+..KgGGGGGGGGgK..
+...KFmFEEEDBK...
+...KFmEEEEDBK...
+...KFmEEEEDBK...
+...KFEEEEEDBK...
+...KyYyyyyGgK...
+...KgGGGGGGgK...
+...KFEEEEEDBK...
+...KFEEEEEDBK...
+...KFEEEEDDBK...
+..KKEEEEEEDBKK..
+..KFFFFFFFFFDK..
+.KDDDDDDDDDDDBK.
+.KKKKKKKKKKKKKK.
+end
+
+# ------------------------------------------------ 19-20 luz e sombra no chão
+frame f_light_floor over f_floor0
+mmmmmmm.mmmmmmm.
+mFFFFFE.mFFFFFE.
+mFFlFFE.mFFFFFE.
+mFFFFFE.mFFFFFE.
+mFFFFFE.mFFFlFE.
+mFFFFFE.mFFFFFE.
+EEEEEEE.EEEEEEE.
+DDDDDDDDDDDDDDDD
+mmmDmmmmmmmDmmmm
+FFEDmFFFFFEDmFFF
+FFEDmFFFFFEDmFFF
+FFEDmFFlFFEDmFFF
+FEEDmFFFFFEDmFFF
+FFEDmFFFFFEDmFlF
+EEEDEEEEEEEDEEEE
+DDDDDDDDDDDDDDDD
+end
+
+# ------------------------------------------------ 21-24 plataformas de luz e de sombra sobre o abismo (ativas / fantasmas)
+frame f_light_plat
+KGGGGGGGGGGGGGGK
+GYYYYYYYYYYYYYYG
+GYlllllllllllyYG
+GYlLLLLLLLLLLlyG
+GYlLyyyyyyyyLlyG
+GYlLyYYYYYYyLlyG
+GYlLyYllllYyLlyG
+GYlLyYlLLlYyLlyG
+GYlLyYlLLlYyLlyG
+GYlLyYllllYyLlyG
+GYlLyYYYYYYyLlyG
+GYlLyyyyyyyyLlyG
+GYlLLLLLLLLLLlyG
+GyllllllllllllyG
+GgyyyyyyyyyyyygG
+KggggggggggggggK
+end
+
+frame f_light_ghost over f_abyss
+G.G.G.G.G.G.G.G.
+................
+G..............G
+................
+G.....g..g.....G
+................
+G..............G
+................
+G..............G
+................
+G.....g..g.....G
+................
+G..............G
+................
+................
+.G.G.G.G.G.G.G.G
+end
+
+frame f_shadow_plat
+KVVVVVVVVVVVVVVK
+VuuuuuuuuuuuuuuV
+VuvvvvvvvvvvvvuV
+VuvOOOOOOOOOOvuV
+VuvOooooooooOvuV
+VuvOowooooooOvuV
+VuvOoooxoowoOvuV
+VuvOooooooooOvuV
+VuvOooowooooOvuV
+VuvOoooooxooOvuV
+VuvOowooooooOvuV
+VuvOooooooooOvuV
+VuvOOOOOOOOOOvuV
+VuvvvvvvvvvvvvuV
+VvuuuuuuuuuuuuvV
+KnnnnnnnnnnnnnnK
+end
+
+frame f_shadow_ghost over f_abyss
+V.V.V.V.V.V.V.V.
+................
+V..............V
+................
+V......u.......V
+................
+V..............V
+.........u.....V
+V..............V
+................
+V....u.........V
+................
+V..............V
+................
+................
+.V.V.V.V.V.V.V.V
+end
+
+# ------------------------------------------------ 25-26 névoa cortante (barreira; 2 quadros animados)
+frame f_fog0
+TTmTTTTTTTmTTTTT
+TmqmTTTTTmqmTTwT
+TTmTTwTTTTmTTwxw
+TTTTwxwTTTTTTTwT
+TTTTTwTTTmmTTTTT
+TmmTTTTTmqqmTTTT
+mqqmTTTTTmmTTTwT
+TmmTTTwTTTTTTwxw
+TTTTTwxwTTTTTTwT
+TTwTTTwTTTmTTTTT
+TwxwTTTTTmqmTTTT
+TTwTTTTTTTmTTmTT
+TTTTTmmTTTTTmqmT
+TTTTmqqmTTwTTmTT
+TTTTTmmTTwxwTTTT
+TTTTTTTTTTwTTTTT
+end
+
+frame f_fog1
+TTTTTmTTTTTTTmTT
+TTwTmqmTTTTTmqmT
+TwxwTmTTwTTTTmTT
+TTwTTTTwxwTTTTTT
+TTTTTTTTwTTmmTTT
+TTTmmTTTTTmqqmTT
+TTmqqmTTTTTmmTTw
+TTTmmTTwTTTTTTwx
+TwTTTTwxwTTTTTTw
+wxwTTTTwTTTTmTTT
+TwTTTmTTTTTmqmTT
+TTTTmqmTTTTTmTTT
+TTTTTmTTTmmTTTTw
+TTwTTTTTmqqmTTwx
+TwxwTTTTTmmTTTTw
+TTwTTTTTTTTTTTTT
+end
+
+# ------------------------------------------------ 27-32 casas do Refúgio (telhado de ardósia violeta, paredes de pedra)
+frame f_roof_l
+.......KKKKKKKKK
+.....KKyyyyyyyyy
+....KVGGGGGGGGGG
+...KVuuVuuuVuuuV
+..KVuUuVuUuVuUuV
+..KVVVVVVVVVVVVV
+.KVuuuVuuuVuuuVu
+.KVuUuVuUuVuUuVu
+KVVVVVVVVVVVVVVV
+KVuuVuuuVuuuVuuu
+KVuUVuUuVuUuVuUu
+KVVVVVVVVVVVVVVV
+KVuuuVuuuVuuuVuu
+KVuUuVuUuVuUuVuU
+KvvvvvvvvvvvvvvV
+KKKKKKKKKKKKKKKK
+end
+
+frame f_roof_m
+KKKKKKKKKKKKKKKK
+yyyyyyyyyyyyyyyy
+GGGGGGGGGGGGGGGG
+uuuVuuuVuuuVuuuV
+uUuVuUuVuUuVuUuV
+VVVVVVVVVVVVVVVV
+uVuuuVuuuVuuuVuu
+uVuUuVuUuVuUuVuU
+VVVVVVVVVVVVVVVV
+uuVuuuVuuuVuuuVu
+UuVuUuVuUuVuUuVu
+VVVVVVVVVVVVVVVV
+uuuVuuuVuuuVuuuV
+uUuVuUuVuUuVuUuV
+vvvvvvvvvvvvvvvv
+KKKKKKKKKKKKKKKK
+end
+
+frame f_roof_r
+KKKKKKKKK.......
+yyyyyyyyyKK.....
+GGGGGGGGGGVK....
+uuuVuuuVuuVVK...
+uUuVuUuVuUVVVK..
+VVVVVVVVVVVVVK..
+uVuuuVuuuVuuVVK.
+uVuUuVuUuVuUVVK.
+VVVVVVVVVVVVVVVK
+uuVuuuVuuuVuuVVK
+UuVuUuVuUuVuUVVK
+VVVVVVVVVVVVVVVK
+uuuVuuuVuuuVuVVK
+uUuVuUuVuUuVuVVK
+vvvvvvvvvvvvvvvK
+KKKKKKKKKKKKKKKK
+end
+
+frame f_house_wall
+KKKKKKKKKKKKKKKK
+FFFFFFFBFFFFFFFB
+EEEEEEDBEEEEEEDB
+DDDDDDDBDDDDDDDB
+BBBBBBBBBBBBBBBB
+FFFBFFFFFFFBFFFF
+EEDBEEEEEEDBEEEE
+DDDBDDDDDDDBDDDD
+BBBBBBBBBBBBBBBB
+FFFFFFFBFFFFFFFB
+EEEEEEDBEEEEEEDB
+DDDDDDDBDDDDDDDB
+BBBBBBBBBBBBBBBB
+gGGGGGGGGGGGGGGg
+CCCCCCCCCCCCCCCC
+KKKKKKKKKKKKKKKK
+end
+
+frame f_house_window
+KKKKKKKKKKKKKKKK
+FFFFFFFBFFFFFFFB
+EEEKKKKKKKKKKEDB
+DDKGGGGGGGGGGKDB
+BBKGLLLGGLLLGKBB
+FFKGLYLGGLYLGKFF
+EEKGLLLGGLLLGKEE
+DDKGGGGGGGGGGKDD
+BBKGLLLGGLLLGKBB
+FFKGLLLGGLYLGKFB
+EEKGLLLGGLLLGKDB
+DDKGGGGGGGGGGKDB
+BBBKKKKKKKKKKBBB
+gGGyyyyyyyyyyGGg
+CCCCCCCCCCCCCCCC
+KKKKKKKKKKKKKKKK
+end
+
+frame f_house_door
+KKKKKKKKKKKKKKKK
+FFFFKKKKKKKKFFFB
+EEEKGyyyyyyGKEDB
+DDKGrrrrrrrrGKDB
+BBKGRRRrRRRrGKBB
+FFKyRrRrRrRrGKFF
+EEKGRrRrRrRrGKEE
+DDKGRrRrRryrGKDD
+BBKGRrRrRrYrGKBB
+FFKGRrRrRryrGKFB
+EEKGRrRrRrRrGKDB
+DDKGRrRrRrRrGKDB
+BBKGrrrrrrrrGKBB
+gGKyyyyyyyyyyKGg
+CCKCCCCCCCCCCKCC
+KKKKKKKKKKKKKKKK
+end
+
+# ------------------------------------------------ 33-35 montanhas (ponte espiritual)
+frame f_mountain
+DDDDDDDDDDDDDDDD
+DDDDCDDDDDDDqDDD
+DDDDDDDDDDDqmqDD
+DDqDDDDCDDDDDDDD
+DqmqDDDDDDDDDCDD
+DDDDDDDDDDDDDDDD
+DDDDDDCCDDDDDDDD
+DCDDDDDDDDDDqDDD
+DDDDDDDDDDDqmqDD
+DDDDDDDDDCDDqDDD
+DDDDqDDDDDDDDDDD
+DDDqmqDDDDDDDDDD
+DDDDDDDDDDDDCDDD
+DDDDDDDCDDDDDDDD
+DDCDDDDDDDDDDDqD
+DDDDDDDDDDDDDDDD
+end
+
+frame f_rock_front
+FmFFEEEEFFmFFEEE
+EFEEEDDEEFEEEDDE
+EEEDDDCDEEEDDDCD
+DEEDDCCDDEEDDCCD
+DDEDDCCDDDEDDCCB
+DDDDCCBDDDDDCCBB
+CDDDCCBDCDDDCCBB
+CCDCCBBCCCDCCBBA
+CCCCCBBCCCCCCBAA
+BCCCBBACBCCCBBAA
+BBCBBAABBBCBBAAA
+BBBBAAAABBBBBAAA
+ABBBAAAAABBBAAAn
+AAAAAAAnAAAAAAnn
+nnnnnnnnnnnnnnnn
+KKKKKKKKKKKKKKKK
+end
+
+frame f_rock_top
+BBBBBBBBBBBBBBBB
+BBBBqBBBBBBBBBBB
+BBBmqmBBBBBBBBBB
+BBBBqBBBBBBBBBBB
+BBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBqBB
+BBBBBBBBBBBBmqmB
+BBBBBBBBBBBBBqBB
+BBBBBBBBBBBBBBBB
+BqBBBBBBBBBBBBBB
+mqmBBBBBBBBBBBBB
+BqBBBBBBBBBBBBBB
+BBBBBBBBBqBBBBBB
+BBBBBBBBmqmBBBBB
+BBBBBBBBBqBBBBBB
+BBBBBBBBBBBBBBBB
+end
+
+# ------------------------------------------------ 36 tapete violeta com fios de ouro
+frame f_carpet
+VVVVVVVVVVVVVVVV
+VuVVVVVgVVVVVVuV
+VVVVVVgyGVVVVVVV
+VVVVVgyVyGVVVVVV
+VVVVgyVuVyGVVVVV
+VVVgyVuUuVyGVVVV
+VVVVGyVuVyGVVVVV
+gVVVVGyVyGVVVVVg
+yGVVVVGyGVVVVVgy
+gVVVVVVGVVVVVVVg
+VVVVVVVVVVVVVVVV
+VuVVVVVVVVVVVVuV
+VVVVVVVgVVVVVVVV
+VVVVVVgyGVVVVVVV
+VVVVVVVGVVVVVVVV
+vvvvvvvvvvvvvvvv
+end
+
+# ------------------------------------------------ 37 muralha com estandarte do Eclipse
+frame f_banner over f_wall_front
+....KKKKKKKK....
+....KyyyyyyK....
+....KVVVVVVK....
+....KVuuuuVK....
+....KVuyyuVK....
+....KVyvvyVK....
+....KVyvvyVK....
+....KVuyyuVK....
+....KVuuuuVK....
+....KVVVVVVK....
+....KVVKKVVK....
+....KVK..KVK....
+....KK....KK....
+end
+
+# ------------------------------------------------ 38 piso dourado liso (alterna com o losango)
+frame f_gold_plain
+GGGGGGGGGGGGGGGG
+GCCCCCCCCCCCCCCC
+GCDDDDDDDDDDDDDC
+GCDDDDDDDDDDDDDC
+GCDDDDDDDDDDDDDC
+GCDDDDDDDDDDDDDC
+GCDDDDDDDDDDDDDC
+GCDDDDDDDDDDDDDC
+GCDDDDDDDDDDDDDC
+GCDDDDDDDDDDDDDC
+GCDDDDDDDDDDDDDC
+GCDDDDDDDDDDDDDC
+GCDDDDDDDDDDDDDC
+GCDDDDDDDDDDDDDC
+GCCCCCCCCCCCCCCC
+GBBBBBBBBBBBBBBB
+end
+
+sheet tiles_fortaleza.png 16 16 16
+f_floor0
+f_floor1
+f_floor_edge_n
+f_wall_front
+f_wall_top
+f_crenel
+f_gold_floor
+f_garden
+f_garden_flowers
+f_hedge
+f_planter
+f_abyss
+f_abyss_lip
+f_spirit_bridge
+f_fissure
+f_gate_closed
+f_gate_open
+f_stairs
+f_pillar
+f_light_floor
+f_floor0 pal=fortsombra
+f_light_plat
+f_light_ghost
+f_shadow_plat
+f_shadow_ghost
+f_fog0
+f_fog1
+f_roof_l
+f_roof_m
+f_roof_r
+f_house_wall
+f_house_window
+f_house_door
+f_mountain
+f_rock_front
+f_rock_top
+f_carpet
+f_banner
+f_gold_plain
+end

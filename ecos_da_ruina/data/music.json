@@ -3,13 +3,16 @@
  "variantes": {
   "vila_lumen": [{"if": "cervo_morto", "music": "vila_festa"}],
   "casa_corvelo": [{"unless": "cervo_morto", "music": "memoria"}],
-  "forja_cobre": [{"if": "ferreiro_morto", "music": "vila_festa"}]
+  "forja_cobre": [{"if": "ferreiro_morto", "music": "vila_festa"}],
+  "refugio_muralha": [{"if": "cavaleiro_morto", "music": "vila_festa"}]
  },
  "chefes": {
   "lenhador": "chefao",
   "cervo": "chefao",
   "vigia": "chefe_minas",
-  "ferreiro": "chefe_minas"
+  "ferreiro": "chefe_minas",
+  "gemeos": "chefe_fortaleza",
+  "cavaleiro": "chefe_fortaleza"
  },
  "humores": {
   "memoria": {"prioridade": 1, "musica": "memoria", "fade": 1.5},

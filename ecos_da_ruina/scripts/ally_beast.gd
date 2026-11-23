@@ -88,7 +88,7 @@ func _physics_process(delta: float) -> void:
 	sprite.modulate = Color(2.0, 1.6, 1.6) if flash > 0.0 else Color.WHITE
 	if global_position.distance_to(owner_ally.global_position) > 220.0:
 		global_position = world.safe_pos_near(owner_ally.global_position)
-	var ot = owner_ally.target if owner_ally.is_alive() else null
+	var ot = owner_ally.target if (owner_ally.is_alive() and is_instance_valid(owner_ally.target)) else null
 	if ot != null and (not is_instance_valid(ot) or not ot.hittable()):
 		ot = null
 	target = ot

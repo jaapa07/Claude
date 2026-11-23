@@ -196,5 +196,68 @@
     "flag": "brinquedo_entregue"
    }
   ]
+ },
+ "principal4": {
+  "nome": "A Sombra da Muralha",
+  "tipo": "principal",
+  "ativa_se": "visitou_ponte_espiritual",
+  "etapas": [
+   {
+    "texto": "Atravesse a ponte espiritual até o Refúgio da Muralha.",
+    "flag": "visitou_refugio_muralha"
+   },
+   {
+    "texto": "Fale com a Capitã Ilse, no pátio do Refúgio.",
+    "flag": "falou_ilse"
+   },
+   {
+    "texto": "Siga pelos Jardins Suspensos (sul) ou pela Muralha Partida (leste) até a Torre das Duas Sombras.",
+    "flag": "visitou_torre_a"
+   },
+   {
+    "texto": "Suba a torre e derrote os Gêmeos de Ferro.",
+    "flag": "gemeos_morto"
+   },
+   {
+    "texto": "Complete o Rito do Eclipse e enfrente o Cavaleiro Sem Rosto no topo da torre.",
+    "flag": "cavaleiro_morto"
+   },
+   {
+    "texto": "Volte ao Refúgio da Muralha e veja a guarnição libertada.",
+    "flag": "voltou_refugio"
+   }
+  ]
+ },
+ "penas": {
+  "nome": "Penas ao Vento",
+  "tipo": "secundaria",
+  "etapas": [
+   {
+    "texto": "Junte 3 Plumas de Vento nos Jardins Suspensos para a jardineira Tália.",
+    "item": "pluma_vento",
+    "alvo": 3,
+    "flag": "penas_ok"
+   },
+   {
+    "texto": "Leve as plumas a Tália, no jardim do Refúgio.",
+    "flag": "penas_entregue"
+   }
+  ]
+ },
+ "recado": {
+  "nome": "O Último Recado",
+  "tipo": "secundaria",
+  "etapas": [
+   {
+    "texto": "Lume procura notícias do pai, o Sargento Aurélio, desaparecido na Muralha Partida.",
+    "item": "diario_guarnicao",
+    "alvo": 1,
+    "flag": "recado_achado"
+   },
+   {
+    "texto": "Leve o diário ao pequeno Lume, no Refúgio.",
+    "flag": "recado_entregue"
+   }
+  ]
  }
 }
