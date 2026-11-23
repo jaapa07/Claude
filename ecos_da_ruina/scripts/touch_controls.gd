@@ -35,8 +35,8 @@ var _legend_layer: CanvasLayer
 var _nav: Node2D
 ## Navegação de menus pelo toque (título, saves, pausa, diálogos): [coluna em touch_nav.png, ação, centro]
 const NAV := [
-	[0, "ui_up", Vector2(452, 168)],
-	[1, "ui_down", Vector2(452, 236)],
+	[0, "ui_up", Vector2(24, 196)],
+	[1, "ui_down", Vector2(24, 236)],
 	[2, "ui_accept", Vector2(416, 236)],
 	[3, "ui_cancel", Vector2(416, 168)],
 ]

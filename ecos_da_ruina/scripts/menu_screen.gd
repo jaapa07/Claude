@@ -217,7 +217,7 @@ func _refresh() -> void:
 	_key_panel.visible = key_capture != ""
 	_foot_lab.text = footer
 	if TouchControls.active and footer.begins_with("↑↓ navegar"):
-		_foot_lab.text = "Toque no item ou use as setas  •  OK confirma  •  seta curva volta"
+		_foot_lab.text = "Toque no item ou nas setas  •  OK confirma  •  Voltar volta"
 	if title_mode:
 		_logo.visible = true; _sub.visible = true
 		_title_lab.visible = false; _info_panel.visible = false; _count_lab.visible = false
