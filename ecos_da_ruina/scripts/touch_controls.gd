@@ -138,6 +138,7 @@ func show_legend() -> void:
 	var foot := Fonts.label("Toque para continuar  (Menu > Botões do toque)", 7, Color(0.7, 1.0, 0.75))
 	foot.position = Vector2(14, 230)
 	panel.add_child(foot)
+	_release_all()
 	_root.visible = false
 	_legend_layer = CanvasLayer.new()
 	_legend_layer.layer = 60
@@ -161,9 +162,10 @@ func _process(_delta: float) -> void:
 		show_legend()
 		return
 	var hide: bool = main == null or not Game.in_game or main.ui.has_screen() or main.ui.is_modal()
+	var was: bool = _root.visible
 	_root.visible = enabled and not hide
-	if hide and _stick_idx != -1:
-		_release_stick()
+	if hide and was:
+		_release_all()
 
 func _input(event: InputEvent) -> void:
 	if _legend != null:
@@ -179,24 +181,57 @@ func _input(event: InputEvent) -> void:
 	if not _root.visible:
 		return
 	if event is InputEventScreenTouch:
-		if event.pressed and _stick_idx == -1 and event.position.x < 200.0 and event.position.y > 80.0:
+		var in_zone: bool = event.position.x < 240.0 and event.position.y > 70.0
+		if event.pressed and in_zone:
+			# assume o analógico mesmo que um toque anterior tenha se perdido (iOS cancela toques sem avisar)
+			_release_stick()
 			_stick_idx = event.index
 			_stick_center = event.position
+			_last_drag_ms = Time.get_ticks_msec()
 			_base.position = _stick_center
 			_knob.position = _stick_center
 			_base.visible = true
 			_knob.visible = true
+			_alive[event.index] = true
 			get_viewport().set_input_as_handled()
-		elif not event.pressed and event.index == _stick_idx:
-			_release_stick()
+		elif event.pressed:
+			_alive[event.index] = true
+		elif not event.pressed:
+			_alive.erase(event.index)
+			if event.index == _stick_idx:
+				_release_stick()
+				get_viewport().set_input_as_handled()
+	elif event is InputEventScreenDrag:
+		_alive[event.index] = true
+		if event.index == _stick_idx:
+			_last_drag_ms = Time.get_ticks_msec()
+			var v: Vector2 = event.position - _stick_center
+			if v.length() > RADIUS:
+				# o centro acompanha o dedo: nunca "trava" no limite
+				_stick_center = event.position - v.normalized() * RADIUS
+				_base.position = _stick_center
+				v = v.normalized() * RADIUS
+			_knob.position = _stick_center + v
+			_apply(v / RADIUS)
 			get_viewport().set_input_as_handled()
-	elif event is InputEventScreenDrag and event.index == _stick_idx:
-		var v: Vector2 = event.position - _stick_center
-		if v.length() > RADIUS:
-			v = v.normalized() * RADIUS
-		_knob.position = _stick_center + v
-		_apply(v / RADIUS)
-		get_viewport().set_input_as_handled()
+
+var _alive := {}
+var _last_drag_ms := 0
+
+func _touching(idx: int) -> bool:
+	return _alive.has(idx)
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT or what == NOTIFICATION_WM_WINDOW_FOCUS_OUT:
+		_release_all()
+
+## Solta tudo (perda de foco, menu, legenda): nenhuma ação fica presa.
+func _release_all() -> void:
+	_release_stick()
+	_alive.clear()
+	for b in LAYOUT:
+		if Input.is_action_pressed(b[1]):
+			Input.action_release(b[1])
 
 func _apply(v: Vector2) -> void:
 	for a in ["move_left", "move_right", "move_up", "move_down"]:
