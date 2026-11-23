@@ -13,6 +13,8 @@ const SHEETS := {
 	"sparkle": ["fx_sparkle", 16, 12, 2, 8.0],
 	"vortex": ["fx_vortex", 32, 32, 2, 10.0],
 	"seal": ["fx_seal", 10, 10, 2, 14.0],
+	"parry": ["fx_parry", 16, 16, 3, 14.0],
+	"burst": ["fx_burst", 64, 64, 3, 7.0],
 	"fire": ["fx_fire", 16, 16, 4, 12.0],
 	"quake": ["fx_quake", 48, 16, 3, 10.0],
 	"steam": ["minas_props", 16, 16, 2, 6.0, 9],

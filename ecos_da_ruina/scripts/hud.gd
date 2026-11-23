@@ -151,7 +151,15 @@ func add_toast(t: String) -> void:
 	l.position = Vector2(5, 4)
 	p.add_child(l)
 	var w: float = l.get_minimum_size().x + 10.0
-	p.custom_minimum_size = Vector2(w, 16)
+	var hgt := 16.0
+	if w > 440.0:
+		# aviso longo: quebra em linhas dentro da tela
+		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		l.custom_minimum_size = Vector2(426, 0)
+		l.size = Vector2(426, 0)
+		w = 436.0
+		hgt = l.get_minimum_size().y + 8.0
+	p.custom_minimum_size = Vector2(w, hgt)
 	p.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_toast_box.add_child(p)
 	toasts.append({"t": t, "life": 3.2, "node": p})

@@ -386,6 +386,11 @@ func _fill_inventory(s: MenuScreen) -> void:
 	if not mats.is_empty():
 		items.append(_hdr("Materiais, técnicas e diários"))
 		items.append_array(mats)
+	items.append(_hdr("Técnicas"))
+	for t in HeroPowers.TECHS:
+		var ok: bool = Game.hero_level() >= int(t["nivel"])
+		items.append(_it(("%s" % t["nome"]) if ok else ("Nv.%d — ???" % int(t["nivel"])), Callable(),
+			("%s\n\n%s\n\nComo usar: %s" % [t["nome"], t["desc"], t["como"]]) if ok else "Técnica liberada no nível %d." % int(t["nivel"])))
 	items.append(_hdr("Ecos"))
 	for e in Game.ecos:
 		items.append(_it(Data.skills[e]["nome"], Callable(), Data.skills[e]["descricao"] + "\nTravessia contextual (E) não gasta energia."))

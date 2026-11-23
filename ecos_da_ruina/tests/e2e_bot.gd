@@ -33,7 +33,9 @@ func _ready() -> void:
 	Game.rng.seed = sd
 	Game.toast.connect(func(t): if "exausta" in t: exhausted_events += 1)
 	main.ui.instant = true
-	if "--demo" in args:
+	if "--powers" in args:
+		await run_powers()
+	elif "--demo" in args:
 		await run_demo()
 	elif mode == "unit":
 		await run_unit()
@@ -2260,3 +2262,88 @@ func r2_save_load() -> void:
 	await frames(5)
 	check("R2: baú único não reaparece após carregar", bau.opened and Game.chests.size() == chests_n and Game.item_count("diario_ilda") == 1)
 	check("R2: dados sem erros de validação", Data.errors.is_empty(), str(Data.errors))
+
+## Técnicas especiais do herói (hero_powers.gd), com entradas reais
+func _spawn_wolf(pos: Vector2) -> Node:
+	var e := Enemy.new()
+	e.init(W, "lobo", {"id": "teste_lobo", "x": int(pos.x / 16), "y": int(pos.y / 16)})
+	W.ysort.add_child(e)
+	e.global_position = pos
+	e.set_physics_process(false)
+	return e
+
+func run_powers() -> void:
+	main.start_new_game(3)
+	await frames(10)
+	await advance_dialogs()
+	var pw: Node = P.powers
+	check("Técnicas anexadas ao herói", pw != null)
+	P.global_position = Vector2(22 * 16 + 8, 16 * 16 + 8)
+	await face(Vector2.RIGHT)
+	# bloqueada no nível 1
+	await tap("dodge", 2)
+	await tap("attack", 2)
+	check("Nv.1: Golpe em Investida ainda bloqueado", not P.atk_def.get("tecnica", "") == "investida")
+	await secs(1.0)
+	while Game.hero_level() < 8:
+		Game.add_hero_xp(Game.xp_to_next(Game.hero_level()))
+	check("Nível 8 libera as quatro técnicas", pw.unlocked().size() == 4)
+	# 1) Golpe em Investida
+	P.vigor = 100.0
+	var x0: float = P.global_position.x
+	Input.action_press("move_right"); await frames(2)
+	await tap("dodge", 2)
+	await frames(3)
+	Input.action_release("move_right")
+	await tap("attack", 2)
+	check("Investida: ataque durante a esquiva vira golpe em avanço", P.state == Player.S.ATTACK and P.atk_def.get("tecnica", "") == "investida", str(P.atk_def))
+	await secs(0.6)
+	check("Investida avança o herói", P.global_position.x > x0 + 30.0, "%.0f -> %.0f" % [x0, P.global_position.x])
+	# 2) Lâmina de Eco
+	var wolf := _spawn_wolf(P.global_position + Vector2(90, 0))
+	var hp0: float = wolf.hp
+	P.vigor = 100.0
+	await face(Vector2.RIGHT)
+	Input.action_press("attack"); await frames(45); Input.action_release("attack")
+	await frames(12)
+	await shot("pw_onda")
+	var waves := 0
+	for n in W.fx_layer.get_children():
+		if n is EchoWave:
+			waves += 1
+	check("Lâmina de Eco: golpe carregado solta a onda", waves >= 1)
+	await secs(0.8)
+	check("Onda atinge inimigo à distância", wolf.hp < hp0, "%s -> %s" % [hp0, wolf.hp])
+	# 3) Defesa Perfeita
+	Game.hero["hp"] = 100.0
+	P.inv_timer = 0.0
+	await face(Vector2.RIGHT)
+	Input.action_press("guard"); await frames(3)
+	var hit: bool = P.take_hit(20.0, wolf.global_position, {})
+	await frames(3)
+	await shot("pw_defesa")
+	check("Defesa Perfeita anula o golpe no instante certo", not hit and float(Game.hero["hp"]) == 100.0, str(Game.hero["hp"]))
+	check("Contra-ataque armado (dano dobrado)", pw.damage_mult() == 2.0)
+	await frames(20)
+	P.inv_timer = 0.0
+	P.take_hit(20.0, wolf.global_position, {})
+	check("Defesa comum (fora da janela) só reduz o dano", float(Game.hero["hp"]) < 100.0)
+	Input.action_release("guard")
+	await frames(3)
+	# 4) Fúria do Vínculo
+	Game.hero["hp"] = 100.0
+	P.inv_timer = 0.0
+	wolf.global_position = P.global_position + Vector2(30, 0)
+	P.energy = 60.0
+	var hp1: float = wolf.hp
+	Input.action_press("guard"); await frames(3)
+	await tap("skill", 2)
+	await frames(4)
+	await shot("pw_furia")
+	Input.action_release("guard")
+	await frames(1)
+	check("Fúria do Vínculo gasta energia e fere ao redor", P.energy <= 21.0 and wolf.hp < hp1, "energia %.0f hp %s -> %s" % [P.energy, hp1, wolf.hp])
+	Input.action_press("guard"); await frames(3)
+	await tap("skill", 2)
+	Input.action_release("guard")
+	check("Fúria do Vínculo respeita a recarga", P.energy <= 21.0)

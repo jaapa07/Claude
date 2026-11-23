@@ -23,6 +23,10 @@ func _ready() -> void:
 	world = World.new()
 	add_child(world)
 	ui.bind(world)
+	var pw := HeroPowers.new()
+	pw.player = world.player
+	world.player.add_child(pw)
+	world.player.powers = pw
 	var touch := TouchControls.new()
 	touch.main = self
 	add_child(touch)

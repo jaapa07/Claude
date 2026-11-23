@@ -90,6 +90,7 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
     <div>Selo: mirar, toque de novo para lançar</div>
     <div>Estrela: habilidade da criatura</div>
     <div>No alto: trocar, tônico, menu</div>
+    <div>Técnicas (por nível): veja no menu</div>
   </section>
   <section class="keys" aria-label="Controles">
     <div><kbd>WASD</kbd><span>mover</span></div>
@@ -104,6 +105,10 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
     <div><kbd>R</kbd><span>tônico</span></div>
     <div><kbd>1</kbd><span>Eco (após o chefão)</span></div>
     <div><kbd>I / ESC</kbd><span>menu / pausa</span></div>
+    <div><kbd>Nv 2</kbd><span>esquiva + ataque: investida</span></div>
+    <div><kbd>Nv 4</kbd><span>segure J: onda de Eco</span></div>
+    <div><kbd>Nv 6</kbd><span>K no instante: defesa perfeita</span></div>
+    <div><kbd>Nv 8</kbd><span>K + Q: Fúria do Vínculo</span></div>
   </section>
   <p class="note desk">Clique na tela do jogo para dar foco ao teclado. O progresso fica salvo neste navegador.</p>
   <p class="note">No iPhone, use o Safari ou o app do Claude com o celular deitado. O progresso fica salvo no próprio aparelho.</p>
@@ -113,7 +118,7 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
 // O motor (WebAssembly) é publicado em 3 partes; aqui elas são baixadas e remontadas antes de iniciar.
 (function () {
   const PARTS = ["w/motor0.wasm", "w/motor1.wasm", "w/motor2.wasm"];
-  const TOTAL = 35376909 + 1466016;
+  const TOTAL = 35376909 + 1689488;
   let loaded = 0;
   const fill = document.getElementById("fill");
   const status = document.getElementById("status");
@@ -163,7 +168,7 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
       try {
         const engine = new Engine({
           args: [], canvasResizePolicy: 0, executable: "index", experimentalVK: false,
-          fileSizes: { "index.pck": 1466016, "index.wasm": 35376909 },
+          fileSizes: { "index.pck": 1689488, "index.wasm": 35376909 },
           focusCanvas: true, gdextensionLibs: [], ensureCrossOriginIsolationHeaders: false
         });
         engine.startGame({

@@ -53,6 +53,7 @@ var atk_hold := 0.0
 var atk_pressed_prev := false
 var eco_cd := [0.0, 0.0]
 var energy_gain_window := 0.0
+var powers: Node = null       # técnicas especiais (hero_powers.gd)
 var carry_fire_t := 0.0       # chama de braseiro nas mãos (Região 2)
 var _carry_fx: AnimatedSprite2D
 
@@ -286,7 +287,7 @@ func _state_attack(delta: float) -> void:
 			state = S.FREE
 
 func _attack_hits() -> void:
-	var dmg: float = Game.hero_atk() * float(atk_def["mult"])
+	var dmg: float = Game.hero_atk() * float(atk_def["mult"]) * (powers.damage_mult() if powers != null else 1.0)
 	for e in world.enemies():
 		if atk_hit.has(e.get_instance_id()):
 			continue
@@ -299,6 +300,8 @@ func _attack_hits() -> void:
 		atk_hit[e.get_instance_id()] = true
 		var got: float = e.take_damage(dmg, global_position, {"src": "heroi", "knock": float(atk_def["knock"]), "ataque": "espada", "dir": aim_dir})
 		if got > 0.0:
+			if powers != null:
+				powers.consume_counter()
 			if energy_gain_window < 6.0:
 				energy = min(ENERGY_MAX, energy + 2.0)
 				energy_gain_window += 2.0
@@ -394,6 +397,8 @@ func take_hit(dmg: float, from: Vector2, opts: Dictionary = {}) -> bool:
 	if state == S.DEAD or Game.god_mode:
 		return false
 	if inv_timer > 0.0 or is_dodge_invulnerable():
+		return false
+	if powers != null and powers.try_parry(dmg, from, opts):
 		return false
 	dmg *= Game.enemy_damage_mult() * (1.0 - Game.hero_reduction())
 	var to_src := (from - global_position).normalized()
