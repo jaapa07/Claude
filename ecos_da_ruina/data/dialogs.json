@@ -1,6 +1,22 @@
 {
  "anciao": [
   {
+   "if": "tres_vinculos",
+   "unless": "vinculos_entregue",
+   "lines": [
+    "Maru: Brotisco, Lumipim e Cascalito... a floresta inteira confia em você!",
+    "Maru: Juntos eles ficam mais fortes. Quando estiverem prontos, evolua-os pelo menu da Equipe (I): o Cervo não vai esperar.",
+    "Maru: Leve este Amuleto do Vínculo e dois Selos Refinados."
+   ],
+   "set": [
+    "vinculos_entregue"
+   ],
+   "give": {
+    "amuleto_vinculo": 1,
+    "selo_refinado": 2
+   }
+  },
+  {
    "if": "ponte_minas",
    "lines": [
     "Maru: A ponte de raízes nos devolveu o caminho... Os Ecos nos escolheram bem, Vinculador.",
@@ -33,10 +49,12 @@
    "lines": [
     "Maru: Bem-vindo à Vila Lúmen, jovem Vinculador. Uma expedição sumiu na Floresta dos Esquecidos e raízes fecham os caminhos.",
     "Maru: Os moradores ouvem as vozes dos desaparecidos à noite. Algo guarda o Santuário da Seiva.",
-    "Maru: Leve estes Selos de Vínculo. No campo de treino a oeste você aprende a lutar e a criar seu primeiro vínculo."
+    "Maru: Leve estes Selos de Vínculo. No campo de treino a oeste você aprende a lutar e a criar seu primeiro vínculo.",
+    "Maru: E mais: forme vínculo com as três criaturas da floresta — Brotisco, Lumipim e Cascalito. Elas evoluem e vão ajudar contra os guardiões."
    ],
    "set": [
-    "falou_maru"
+    "falou_maru",
+    "quest_vinculos"
    ],
    "give": {
     "selo_basico": 5,

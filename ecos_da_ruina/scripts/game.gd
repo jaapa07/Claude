@@ -382,6 +382,13 @@ func register_capture(ind: Dictionary) -> String:
 	mark_captured(ind["species_id"])
 	stats["capturas"] = int(stats["capturas"]) + 1
 	set_flag("primeira_captura")
+	var trio := 0
+	for sp_id in ["brotisco", "lumipim", "cascalito"]:
+		if bestiary.get(sp_id, {}).get("capturado", false):
+			trio += 1
+	if trio >= 3 and not has_flag("tres_vinculos"):
+		set_flag("tres_vinculos")
+		toast.emit("Vínculos da Floresta: as três criaturas estão com você! Fale com Maru.")
 	team_changed.emit()
 	creature_captured.emit(ind, dest)
 	return dest
@@ -470,6 +477,7 @@ func add_creature_xp(ind: Dictionary, amount: float) -> void:
 		var frac: float = float(ind["hp"]) / max(1.0, creature_hp_max(ind))
 		toast.emit("%s chegou ao nível %d!" % [creature_name(ind), ind["nivel"]])
 		level_up.emit(ind["uuid"], int(ind["nivel"]))
+		check_evolution_hint(ind)
 		if not ind.get("exausta", false):
 			ind["hp"] = min(creature_hp_max(ind), float(ind["hp"]) + creature_hp_max(ind) * 0.25)
 		else:
@@ -495,8 +503,17 @@ func bond_activity(uuid: String, key: String) -> bool:
 	if ind.is_empty() or key in ind["vinculo"]:
 		return false
 	ind["vinculo"].append(key)
+	check_evolution_hint(ind)
 	team_changed.emit()
 	return true
+
+func check_evolution_hint(ind: Dictionary) -> void:
+	if ind.is_empty() or not in_game:
+		return
+	var key := "evo_aviso_%s_%s" % [ind["uuid"], ind["species_id"]]
+	if evolution_status(ind)["possivel"] and not has_flag(key):
+		set_flag(key)
+		toast.emit("%s pode evoluir! Abra a Equipe (I) fora de combate." % creature_name(ind))
 
 func bond_count(ind: Dictionary) -> int:
 	return ind.get("vinculo", []).size()
@@ -707,6 +724,12 @@ func diary_lines() -> Array:
 			var txt: String = step["texto"]
 			if step.has("contador"):
 				txt += " (%d/%d)" % [mini(int(stats["kills"].get(step["contador"], 0)), int(step["alvo"])), int(step["alvo"])]
+			if step.has("contador_especies"):
+				var c := 0
+				for sp_id in step["contador_especies"]:
+					if bestiary.get(sp_id, {}).get("capturado", false):
+						c += 1
+				txt += " (%d/%d)" % [c, step["contador_especies"].size()]
 			out.append("    " + txt)
 	return out
 

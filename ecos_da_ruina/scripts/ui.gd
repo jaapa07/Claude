@@ -496,7 +496,7 @@ func open_shrine_menu() -> void:
 	var items := [
 		_it("Descansar (curar tudo)", func(): world.rest_at_shrine(); toast("Descansou. Criaturas e herói recuperados."), "Restaura herói e criaturas (inclusive exaustas). Inimigos comuns reaparecem."),
 		_it("Salvar jogo", func(): open_save_slots(), "Grava o progresso."),
-		_it("Equipe e criaturas", func(): open_team(), "Troque criaturas com o armazenamento do santuário."),
+		_it("Equipe e criaturas", func(): open_team(), "Troque criaturas com o armazenamento do santuário e evolua as que estiverem prontas."),
 		_it("Reespecializar talentos (50)", func(): if Game.respec(50): toast("Talentos redistribuídos.") else: toast("Fragmentos insuficientes."), "Redistribui pontos de talento."),
 		_it("Sair", func(): s.close()),
 	]

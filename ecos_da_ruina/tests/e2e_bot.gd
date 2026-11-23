@@ -766,6 +766,7 @@ func stage7_bosque() -> void:
 	var got := await capture_wild(lum, 10)
 	check("Lumipim capturado (3 espécies na coleção)", got and Game.bestiary.get("lumipim", {}).get("capturado", false))
 	check("Equipe cheia (3 criaturas)", Game.team.size() == 3)
+	check("Missão Vínculos da Floresta: três criaturas capturadas", Game.has_flag("tres_vinculos"))
 	# cipó do Brotisco: atalho opcional
 	Game.set_active(Game.team[0])
 	W.refresh_companion(true)
@@ -847,6 +848,8 @@ func stage8_santuario_b() -> void:
 	await ui_press("ui_accept")
 	await close_menus()
 	check("Checkpoint próximo ao minichefe", Game.checkpoint.get("shrine", "") == "santuario_b_prep")
+	var nevo := await evolve_ready_team()
+	check("Ao menos uma criatura evoluiu antes do Lenhador (sem atalhos de XP)", nevo >= 1, str(nevo))
 	# ---- Lenhador Oco: primeiro teste de derrota e reinício limpo
 	var len_def_frags := Game.fragments
 	await goto(Vector2(24 * 16.0 + 8, 29 * 16.0), 6.0, 30.0)
@@ -1189,6 +1192,8 @@ func stage11_vila_transformada() -> void:
 	check("Família retornou à vila (NPC novo)", ent_by_id("mae") != null)
 	await shot("24_vila_transformada")
 	await talk("anciao")
+	check("Maru recompensa os Vínculos da Floresta", Game.has_flag("vinculos_entregue") and Game.item_count("amuleto_vinculo") == 1)
+	await talk("anciao")
 	check("Diálogo da Anciã mudou após o chefão", Game.has_flag("cervo_morto"))
 	# ---- Raiz Viva abre a passagem às Minas da Brasa
 	ok = await exit_to("desfiladeiro", 22 * 16.0, 8.0)
@@ -1213,37 +1218,12 @@ func stage11_vila_transformada() -> void:
 	check("Fim do capítulo 1 sinalizado (demais regiões em desenvolvimento)", Game.has_flag("fim_cap1") and Game.has_flag("ponte_minas"))
 	await shot("27_fim_capitulo")
 
-func stage12_pos_chefao() -> void:
-	# ---- evolução (UI real): Brotisco precisa de nível e 3 atividades de vínculo
-	var bro_u := ""
-	for u in Game.team:
-		if Game.individuals[u]["species_id"] == "brotisco":
-			bro_u = u
-	if bro_u == "":
-		for u in Game.sanctuary:
-			if Game.individuals[u]["species_id"] == "brotisco":
-				bro_u = u
-	var bro: Dictionary = Game.individuals[bro_u]
-	print("  [info] Brotisco nível %d, vínculo %d/3 (%s)" % [bro["nivel"], Game.bond_count(bro), str(bro["vinculo"])])
-	var natural = Game.evolution_status(bro)["possivel"]
-	check("Evolução ainda bloqueada sem requisitos (se não cumpridos)", natural or not Game.evolution_status(bro)["possivel"])
-	if not natural:
-		# completa o que faltar: XP (equipe recebe XP de encontros) e atividades de vínculo registradas
-		print("  [info] requisitos de evolução não atingidos só com o capítulo; completando XP/vínculo (atalho do teste)")
-		var need_xp := 0.0
-		while int(bro["nivel"]) < 8:
-			Game.add_creature_xp(bro, Game.creature_xp_to_next(int(bro["nivel"])) - float(bro["xp"]))
-		Game.bond_activity(bro_u, "teste:a")
-		Game.bond_activity(bro_u, "teste:b")
-	bro["apelido"] = "Broto"
-	var uuid0: String = bro["uuid"]
-	var env_action0: String = Game.sp_of(bro).get("acao_id", "")
-	check("Evolução disponível após nível 8 e 3 atividades de vínculo", Game.evolution_status(bro)["possivel"])
+func evolve_via_ui(uuid: String) -> void:
 	await ui_press("pause")
 	await ui_press("ui_down")
 	await ui_press("ui_accept")      # Equipe e criaturas
 	await frames(3)
-	var idx := Game.team.find(bro_u)
+	var idx := Game.team.find(uuid)
 	for i in idx:
 		await ui_press("ui_down")
 	await ui_press("ui_accept")      # menu da criatura
@@ -1256,16 +1236,46 @@ func stage12_pos_chefao() -> void:
 	await ui_press("ui_accept")      # Confirmar
 	await frames(10)
 	await close_menus()
-	check("Evolução confirmada: Brotisco -> Galhardo", Game.individuals[bro_u]["species_id"] == "galhardo")
-	check("Evolução preserva uuid, apelido e função ambiental", Game.individuals[bro_u]["uuid"] == uuid0 and Game.individuals[bro_u]["apelido"] == "Broto" and Game.sp_of(Game.individuals[bro_u]).get("acao_id", "") == env_action0)
-	check("Bestiário registra a evolução", Game.bestiary.get("galhardo", {}).get("evoluiu", false))
-	check("Evolução não duplica indivíduo", Game.individuals.size() == Game.team.size() + Game.sanctuary.size())
-	var ev_after := Game.evolution_status(Game.individuals[bro_u])
-	check("Forma final não evolui de novo", not ev_after["possivel"])
-	# ---- Bosque: ponte de vínculo, pedra e Eco em combate, santuário de criaturas
-	await close_menus()
-	var ok := await exit_to("vila_lumen", 8.0, 8.0) if false else true
-	ok = await exit_to("desfiladeiro", 20 * 16.0, 8.0) if false else true
+
+## Antes do Lenhador: evolui pela interface toda criatura da equipe que já cumpriu nível e vínculo (sem atalhos)
+func evolve_ready_team() -> int:
+	var n := 0
+	for u in Game.team.duplicate():
+		var ind: Dictionary = Game.individuals[u]
+		print("  [info] %s nível %d, vínculo %d/3" % [ind["species_id"], ind["nivel"], Game.bond_count(ind)])
+		if Game.evolution_status(ind)["possivel"]:
+			if ind["species_id"] == "brotisco":
+				ind["apelido"] = "Broto"
+			var uuid0: String = ind["uuid"]
+			var env0: String = Game.sp_of(ind).get("acao_id", "")
+			var sp0: String = ind["species_id"]
+			await evolve_via_ui(u)
+			var after: Dictionary = Game.individuals[u]
+			check("Evolução de %s pela Equipe (antes dos chefões)" % sp0, after["species_id"] != sp0, after["species_id"])
+			check("Evolução de %s preserva uuid, apelido e ação ambiental" % sp0, after["uuid"] == uuid0 and Game.sp_of(after).get("acao_id", "") == env0)
+			n += 1
+	return n
+
+func stage12_pos_chefao() -> void:
+	var evolved := 0
+	for u in Game.individuals:
+		if Game.individuals[u]["species_id"] in ["galhardo", "auripim", "rocantor"]:
+			evolved += 1
+	check("Criaturas evoluídas participaram dos chefões", evolved >= 1, str(evolved))
+	check("Bestiário registra a evolução", Game.bestiary.get("galhardo", {}).get("evoluiu", false) or Game.bestiary.get("auripim", {}).get("evoluiu", false) or Game.bestiary.get("rocantor", {}).get("evoluiu", false))
+	check("Evolução não duplica indivíduos", Game.individuals.size() == Game.team.size() + Game.sanctuary.size())
+	for u in Game.individuals:
+		var ind: Dictionary = Game.individuals[u]
+		if ind["species_id"] in ["galhardo", "auripim", "rocantor"]:
+			check("Forma final não evolui de novo", not Game.evolution_status(ind)["possivel"])
+			break
+	var gal := ""
+	for u in Game.individuals:
+		if Game.individuals[u]["species_id"] == "galhardo":
+			gal = u
+	if gal != "":
+		check("Apelido mantido após evoluir", Game.individuals[gal]["apelido"] == "Broto")
+
 func run_unit() -> void:
 	main.start_new_game(3)
 	await frames(10)
