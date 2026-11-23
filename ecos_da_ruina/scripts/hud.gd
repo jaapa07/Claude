@@ -153,12 +153,13 @@ func add_toast(t: String) -> void:
 	p.add_child(l)
 	var w: float = l.get_minimum_size().x + 10.0
 	var hgt := 16.0
-	if w > 440.0:
-		# aviso longo: quebra em linhas dentro da tela
+	var maxw: float = _toast_box.size.x
+	if w > maxw:
+		# aviso longo: quebra em linhas dentro da área livre (no toque, sem passar sob os botões)
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		l.custom_minimum_size = Vector2(426, 0)
-		l.size = Vector2(426, 0)
-		w = 436.0
+		l.custom_minimum_size = Vector2(maxw - 14.0, 0)
+		l.size = Vector2(maxw - 14.0, 0)
+		w = maxw - 4.0
 		hgt = l.get_minimum_size().y + 8.0
 	p.custom_minimum_size = Vector2(w, hgt)
 	p.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -340,7 +341,7 @@ func _update_hud() -> void:
 		_prompt_lab.text = "E  " + world.current_prompt
 		var w: float = _prompt_lab.get_minimum_size().x + 14.0
 		_prompt.size.x = w
-		_prompt.position.x = 240.0 - w / 2.0
+		_prompt.position.x = (170.0 if TouchControls.active else 240.0) - w / 2.0
 		_prompt_lab.size.x = w - 8.0
 	var obj := Game.objective_text()
 	var ct := Game.contract_progress_text()
@@ -361,6 +362,7 @@ func _touch_layout() -> void:
 	_touch_done = true
 	_obj_lab.size.x = 330.0
 	_obj_lab.position.y = 242.0
+	_prompt.position.y = 222.0
 	_hint.position = Vector2(6, 196)
 	_hint.size.x = 336.0
 	_hint_lab.size.x = 324.0

@@ -123,7 +123,7 @@ func open_title(main: Node) -> void:
 	s.can_cancel = false
 	s.title_mode = true
 	s.dim = 0.25
-	s.footer = "Capítulos 1 e 2: Floresta e Minas da Brasa  •  ↑↓ navegar, E confirmar"
+	s.footer = "Floresta, Minas, Pântano e Fortaleza  •  ↑↓ navegar, E confirmar"
 	var items := [
 		_it("Continuar", func(): _slot_menu(main, false, true), "Retoma o último save disponível.", SaveSys.has_any_save()),
 		_it("Novo jogo", func(): _new_game_slots(main), "Começa uma nova aventura em um dos 3 slots."),

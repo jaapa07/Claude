@@ -1026,6 +1026,27 @@ func _update_prompt() -> void:
 		current_prompt = best.prompt()
 		current_prompt_ent = best
 
+## Toque direto num objeto/NPC: o herói vai até ele e interage (tela de toque).
+func tap_world(screen_pos: Vector2) -> bool:
+	if player == null or player.state != Player.S.FREE or get_tree().paused or transition_busy:
+		return false
+	var wp: Vector2 = get_canvas_transform().affine_inverse() * screen_pos
+	var best: Node = null
+	var bd := 22.0
+	for e in get_tree().get_nodes_in_group("ents"):
+		if e.prompt() == "":
+			continue
+		var d: float = min(wp.distance_to(e.global_position), wp.distance_to(e.global_position + Vector2(0, -10)))
+		if e.kind in ["shrine", "npc", "chest", "sign", "prop", "pickup"]:
+			d -= 8.0     # objetos principais ganham do que está colado neles (marcas, inscrições)
+		if d < bd:
+			bd = d
+			best = e
+	if best == null:
+		return false
+	player.go_interact(best)
+	return true
+
 func try_interact() -> void:
 	if current_prompt_ent != null and is_instance_valid(current_prompt_ent):
 		current_prompt_ent.interact(player)

@@ -76,6 +76,9 @@ var _slash_done := false
 var _sword: Sprite2D
 var _ghost_t := 0.0
 var running := false          # Botas do Vento
+var auto_ent: Node = null     # toque num objeto: anda até ele e interage
+var _auto_t := 0.0
+var _auto_best := 1e9
 var _run_fx_t := 0.0
 var _run_hits := {}
 
@@ -207,6 +210,9 @@ func _state_free(delta: float) -> void:
 		facing = move_input.normalized()
 		aim_dir = facing
 		Game.tutorial_event("move")
+	if auto_ent != null:
+		if _auto_step(delta):
+			return
 	if running and (not Input.is_action_pressed("dodge") or move_input == Vector2.ZERO or vigor <= 1.0 or aiming):
 		running = false
 	velocity = move_input.normalized() * SPEED * (0.7 if aiming else (1.8 if running else 1.0))
@@ -817,3 +823,36 @@ func _update_capture_fx() -> void:
 		var f := cap_timer / CAPTURE_CHANNEL
 		_vortex.scale = Vector2.ONE * (1.2 - 0.5 * f)
 		_vortex.rotation += 0.15
+
+
+func go_interact(e: Node) -> void:
+	auto_ent = e
+	_auto_t = 0.0
+	_auto_best = 1e9
+
+## Retorna true quando já interagiu (o estado pode ter mudado).
+func _auto_step(delta: float) -> bool:
+	if move_input != Vector2.ZERO or not is_instance_valid(auto_ent) or aiming:
+		auto_ent = null
+		return false
+	var to: Vector2 = auto_ent.global_position - global_position
+	var reach: float = float(auto_ent.reach) + 2.0
+	if to.length() <= reach:
+		facing = to.normalized() if to.length() > 0.1 else facing
+		aim_dir = facing
+		velocity = Vector2.ZERO
+		var e: Node = auto_ent
+		auto_ent = null
+		if e.prompt() != "":
+			e.interact(self)
+		return true
+	_auto_t += delta
+	if to.length() < _auto_best - 2.0:
+		_auto_best = to.length()
+		_auto_t = 0.0
+	if _auto_t > 1.0:
+		auto_ent = null
+		world.say("Não dá para chegar lá direto: aproxime-se andando.")
+		return false
+	move_input = to.normalized()
+	return false
