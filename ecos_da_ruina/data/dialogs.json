@@ -510,14 +510,8 @@
  ],
  "placa_elevador": [
   {
-   "if": "ferreiro_morto",
    "lines": [
-    "Placa: ELEVADOR — Desce à Pedreira Oca. Pise na grade para descer."
-   ]
-  },
-  {
-   "lines": [
-    "Placa: ELEVADOR — Parado. Sem a grande forja acesa não há vapor para movê-lo."
+    "Um elevador de fragmentos, parado. Do outro lado, no tesouro do andar das âncoras, há uma alavanca que o faria subir e descer."
    ]
   }
  ],
@@ -1190,7 +1184,7 @@
   {
    "lines": [
     "O selo externo da Catedral do Vazio pulsa, frio. Riscado na pedra, o sinal de mão do seu treino com Ione.",
-    "Ela passou por aqui. O caminho continua... (Região 5 — Catedral do Vazio — em desenvolvimento.)"
+    "Ela passou por aqui. Mais acima, o Acampamento da Aurora espera do outro lado do selo."
    ],
    "set": [
     "viu_selo_catedral"
@@ -1564,8 +1558,40 @@
  "caio": [
   {
    "lines": [
-    "Caio: A Bruna disse que você bate forte e fala pouco. Gostei.",
-    "Caio: Os Domadores falavam de um homem de manto branco que pagava pelas feras. Chamavam de Arauto. Nunca vi o rosto dele: o capuz fica sempre na sombra."
+    "Caio: As vozes voltaram para casa. À noite eu escuto as criaturas cantando lá embaixo, nas terras. É bom."
+   ],
+   "if": "vozes_entregue"
+  },
+  {
+   "lines": [
+    "Caio: Três Ecos Perdidos! Escute... é o riso de uma criança da Vila Lúmen. E este, um barqueiro do Porto.",
+    "Caio: Eu vou soltá-los no vento da Aurora. Tome este Manto: costurei enquanto esperava."
+   ],
+   "if": "vozes_ok",
+   "set": [
+    "vozes_entregue"
+   ],
+   "take": {
+    "eco_perdido": 3
+   },
+   "give": {
+    "manto_aurora": 1
+   },
+   "bond": "missao:vozes"
+  },
+  {
+   "lines": [
+    "Caio: Os Ecos Perdidos brilham como cacos de cristal. Um na Escadaria, um no Jardim, um na Galeria da Catedral."
+   ],
+   "if": "quest_vozes"
+  },
+  {
+   "lines": [
+    "Caio: Eu era noviço da Ordem. Meu trabalho era guardar vozes em cristais: risos, cantos, nomes... para o Arquivista.",
+    "Caio: Quando fugi, deixei cair três. Ficaram pelo caminho. Você me ajuda a encontrá-las? Quero devolvê-las."
+   ],
+   "set": [
+    "quest_vozes"
    ]
   }
  ],
@@ -1662,6 +1688,486 @@
    ],
    "set": [
     "leu_bilhete_jardineira"
+   ]
+  }
+ ],
+ "placa_selo_externo": [
+  {
+   "lines": [
+    "O SELO EXTERNO DA CATEDRAL: uma parede de luz vermelha, firme como pedra. No meio, uma fissura violeta do tamanho de um passo.",
+    "(Passo Umbral: aperte E diante da fissura ou use a tecla do Eco ao lado dela.)"
+   ]
+  }
+ ],
+ "placa_aurora": [
+  {
+   "lines": [
+    "Placa: \"ACAMPAMENTO DA AURORA. Oeste: Escadaria dos Fragmentos. Leste: Jardim Invertido. Norte: a Catedral (o portão abre por dentro).\""
+   ]
+  }
+ ],
+ "placa_escadaria": [
+  {
+   "lines": [
+    "Placa: \"ESCADARIA DOS FRAGMENTOS. Os degraus flutuam. Onde a escada quebrou, uma âncora a segurava.\""
+   ]
+  }
+ ],
+ "placa_ancora": [
+  {
+   "lines": [
+    "Inscrição: \"A ÂNCORA SEGURA O QUE O VAZIO QUER LEVAR. Dê peso a ela.\"",
+    "Um bloco de pedra e uma placa ao lado da âncora. Empurre o bloco até a placa — ou peça a um Gravito que sustente a âncora."
+   ]
+  }
+ ],
+ "placa_jardim": [
+  {
+   "lines": [
+    "Placa: \"JARDIM INVERTIDO. As flores crescem para o vazio. Cuidado com os escribas: o selo fecha onde você está.\"",
+    "Quando um Escriba ergue a pena, um círculo aparece no chão. Saia do círculo antes que ele feche."
+   ]
+  }
+ ],
+ "placa_prismas": [
+  {
+   "lines": [
+    "Inscrição: \"O OLHO DE CRISTAL VÊ; OS ESPELHOS GUIAM; O CRISTAL DO PORTÃO ESPERA.\"",
+    "Gire os espelhos (E) para levar o feixe até o cristal ao lado do portão. O prisma gira com o canto de um Cristil e leva a luz a outro lugar."
+   ]
+  }
+ ],
+ "placa_catedral_nave": [
+  {
+   "lines": [
+    "Placa: \"NAVE DA CATEDRAL DO VAZIO. Oeste: Escadaria. Leste: Jardim. Norte: Sala dos Prismas.\"",
+    "Uma alavanca ao sul abre o portão do Acampamento por dentro (atalho)."
+   ]
+  }
+ ],
+ "placa_elevador_b": [
+  {
+   "lines": [
+    "A alavanca move o elevador de fragmentos até a Nave da Catedral: um atalho de volta ao começo."
+   ]
+  }
+ ],
+ "placa_sala_prismas": [
+  {
+   "lines": [
+    "Inscrição: \"A LUZ DESCE PELO PRIMEIRO, DOBRA NO SEGUNDO E SEGUE ATÉ O CRISTAL.\"",
+    "O prisma no caminho deixa a luz passar reto. Um Cristil o faria apontar para o alto, onde há outro cristal."
+   ]
+  }
+ ],
+ "placa_raizes": [
+  {
+   "lines": [
+    "Inscrição: \"RAIZ SOBRE O VAZIO, BRASA NO METAL FRIO.\"",
+    "Erga a ponte com a Raiz Viva (E no suporte). Leve a chama do braseiro até o mecanismo frio do outro lado — ou use a Ruptura Ígnea nele."
+   ]
+  }
+ ],
+ "placa_ancoras": [
+  {
+   "lines": [
+    "Inscrição: \"DUAS ÂNCORAS, DUAS METADES.\" Cada âncora segura metade da ponte de fragmentos.",
+    "Ponha um bloco em cada placa — ou deixe um Gravito sustentar as âncoras."
+   ]
+  }
+ ],
+ "placa_coro": [
+  {
+   "lines": [
+    "Inscrição: \"O QUE OS OLHOS NÃO VEEM, O VÉU MOSTRA. O QUE OS PÉS NÃO ALCANÇAM, A SOMBRA ATRAVESSA.\"",
+    "O Olhar Velado firma a marca espiritual num caminho até a ilha; de lá, o portal marcado leva ao outro lado."
+   ]
+  }
+ ],
+ "placa_arauto": [
+  {
+   "lines": [
+    "Uma página arrancada, presa na porta: \"O Arauto anuncia cada combinação pelo nome. Quando ele virar véu, o Olhar Velado rasga o véu.\""
+   ]
+  }
+ ],
+ "placa_coracao": [
+  {
+   "lines": [
+    "Inscrição: \"AQUI DORME O CORAÇÃO DO ECO.\" Ao leste, a Câmara do Eco. Acima dela, o trono."
+   ]
+  }
+ ],
+ "placa_elos": [
+  {
+   "lines": [
+    "Quatro elos prendem o cristal ao chão, cada um com uma marca gravada:",
+    "RAIZ (noroeste) — a Raiz Viva o arranca. BRASA (nordeste) — a Ruptura Ígnea o derrete.",
+    "VÉU (sudoeste) — invisível: o Olhar Velado o mostra. SOMBRA (leste) — atrás da fissura: o Passo Umbral leva até ele."
+   ]
+  }
+ ],
+ "cristal_ione": [
+  {
+   "lines": [
+    "Dentro do cristal, de olhos fechados, a Mestra Ione. A capa azul flutua como se estivesse debaixo d'água.",
+    "Quatro correntes prendem o cristal. Leia a placa ao sul: cada elo cede a um Eco."
+   ]
+  }
+ ],
+ "rc_placa1": [
+  {
+   "lines": [
+    "RITO DA CONVERGÊNCIA — primeira sala: \"RAIZ E BRASA.\"",
+    "Erga a ponte com a Raiz Viva e estilhace o cristal da porta com a Ruptura Ígnea."
+   ]
+  }
+ ],
+ "rc_placa2": [
+  {
+   "lines": [
+    "Segunda sala: \"VÉU E SOMBRA.\" O Olhar Velado firma o caminho; o portal marcado cruza o selo até a alavanca.",
+    "A pedra de reinício recoloca a sala, se precisar."
+   ]
+  }
+ ],
+ "rc_placa3": [
+  {
+   "lines": [
+    "Terceira sala: \"OS QUATRO.\" Raiz até a ilha. Brasa no cristal que esconde a marca. Véu na marca. Sombra na fissura.",
+    "Do outro lado da fissura, a alavanca abre o altar."
+   ]
+  }
+ ],
+ "placa_harmonia": [
+  {
+   "lines": [
+    "SALÃO DA HARMONIA. Três provas: Floresta e Minas; Pântano e Fortaleza; o Vazio.",
+    "Cada sala fecha as portas até a prova acabar. Descanse antes no Acampamento."
+   ]
+  }
+ ],
+ "inscricao_catedral": [
+  {
+   "lines": [
+    "Inscrição revelada: \"Eu, Ivar, Arquivista, guardo aqui o Eco de Auralis para que nada se perca.\"",
+    "Abaixo, em letra mais nova e trêmula: \"...e quem guardará o meu nome?\""
+   ]
+  }
+ ],
+ "arquivo_harmonia": [
+  {
+   "lines": [
+    "O velho arquivo de Ivar: prateleiras de marfim com o nome de cada criatura, rio e canção de Auralis.",
+    "Na última estante, um nome escrito com letra de criança: Ione. E, ao lado, um espaço em branco — para o seu."
+   ],
+   "set": [
+    "arquivo_lido"
+   ]
+  }
+ ],
+ "arauto_aurora": [
+  {
+   "lines": [
+    "Arauto: Ouçam, desertores da Aurora! O Rei dos Ecos guarda tudo para que nada se perca. Devolvam as vozes que roubaram!",
+    "Você: Ninguém aqui roubou nada. São vocês que acorrentam os guardiões.",
+    "Arauto: Criança sem lembranças... falando de correntes. O Rei vai lembrar de você também.",
+    "O Arauto fecha o livro rachado e some pelo portão da Catedral, deixando um rastro de páginas brancas."
+   ],
+   "set": [
+    "arauto_partiu"
+   ]
+  }
+ ],
+ "arauto_nave": [
+  {
+   "lines": [
+    "Arauto: Você atravessou a Nave. O livro já não aguenta tantas vozes... está rachando.",
+    "Arauto: Suba, se quiser. No andar das âncoras eu leio o seu nome — e o apago.",
+    "Ele recua para a escuridão, e a rachadura do manto brilha vermelha."
+   ],
+   "set": [
+    "arauto_nave_partiu"
+   ]
+  }
+ ],
+ "eco_ione_1": [
+  {
+   "lines": [
+    "Uma figura azul e translúcida, de capa, está parada diante do portão da Catedral.",
+    "Eco de Ione: ...você veio. Não pare agora.",
+    "Você: Mestra? Espere!",
+    "A figura se desfaz em luz azul — um passo à sua frente."
+   ],
+   "set": [
+    "eco_ione_1_visto"
+   ]
+  }
+ ],
+ "eco_ione_2": [
+  {
+   "lines": [
+    "Eco de Ione: A luz desce, dobra e segue. Você sabe disso. Eu te ensinei.",
+    "Você: Eu não lembro de você me ensinando... mas meu corpo lembra.",
+    "O Eco sorri e some na direção da Galeria."
+   ],
+   "set": [
+    "eco_ione_2_visto"
+   ]
+  }
+ ],
+ "eco_ione_3": [
+  {
+   "lines": [
+    "Eco de Ione: O Arauto não é mau. Só carregou vozes demais.",
+    "Eco de Ione: Mais acima. Estou presa no coração do Eco."
+   ],
+   "set": [
+    "eco_ione_3_visto"
+   ]
+  }
+ ],
+ "eco_ione_4": [
+  {
+   "lines": [
+    "Eco de Ione: Quatro elos. Quatro Ecos. Você já tem todos.",
+    "Você: Aguenta só mais um pouco, mestra. Eu tô chegando.",
+    "A figura azul encosta a mão no seu ombro — quase quente — e se desfaz."
+   ],
+   "set": [
+    "eco_ione_4_visto"
+   ]
+  }
+ ],
+ "sena": [
+  {
+   "lines": [
+    "Sena: Abri o arquivo de Ivar. Cada noite, lemos um nome em voz alta. Ontem foi o de um Lumipim que viveu há trezentos anos.",
+    "Sena: Se quiser um desafio de verdade, o Salão da Harmonia fica ao norte. E me conte quando tiver registrado todas as criaturas de Auralis."
+   ],
+   "if": "bestiario_entregue"
+  },
+  {
+   "lines": [
+    "Sena: Você conheceu todas! O bestiário está completo. Tome: sementes e prismas guardados no arquivo de Ivar."
+   ],
+   "if": "bestiario_completo",
+   "set": [
+    "bestiario_entregue"
+   ],
+   "give": {
+    "semente_vida": 2,
+    "fragmento_prisma": 5
+   }
+  },
+  {
+   "lines": [
+    "Sena: Vinculador. Ivar lembrou. Eu servi a Ordem por vinte anos e nunca soube o que ele procurava.",
+    "Sena: Agora que a Harmonia canta em você, o bestiário mostra as notas que Ivar escreveu. Registre todas as criaturas — capture uma de cada — e volte aqui."
+   ],
+   "if": "rei_morto",
+   "set": [
+    "quest_bestiario"
+   ]
+  },
+  {
+   "lines": [
+    "Sena: A Mestra Ione está livre? Então vá, rápido: o trono fica logo acima da Câmara do Eco. Lembre do que ela disse."
+   ],
+   "if": "ione_livre"
+  },
+  {
+   "lines": [
+    "Sena: O Arauto caiu! Ele era o mensageiro da Ordem quando eu era noviça. Lia os nomes dos guardiões em voz alta para o Arquivista.",
+    "Sena: Depois dele vem o Rito da Convergência: quatro salas, quatro Ecos. E então a Câmara do Eco."
+   ],
+   "if": "arauto_morto"
+  },
+  {
+   "lines": [
+    "Sena: Duas rotas levam à Catedral: a Escadaria dos Fragmentos, a oeste, e o Jardim Invertido, a leste.",
+    "Sena: Lá dentro, a luz e as âncoras mudam o caminho. Os Ecos que você carrega — raiz, brasa, véu e sombra — abrem o resto.",
+    "Sena: Mira vende o que sobrou do nosso estoque. O quadro de contratos tem trabalho para quem quiser."
+   ],
+   "if": "falou_sena"
+  },
+  {
+   "lines": [
+    "Sena: Mais um que cruza o selo! E com o sinal de mão da Mestra Ione... Você é o aprendiz dela.",
+    "Sena: Sou Sena. Fui arquivista da Ordem do Vazio — até entender o que o Arquivista estava fazendo com os guardiões. Fugi e fundei este acampamento.",
+    "Sena: Ione passou por aqui há três luas. Disse que o Rei dos Ecos é o próprio Arquivista, Ivar, e que ia conversar com ele. Entrou na Catedral e não saiu.",
+    "Sena: Leve isto. E tome cuidado: lá dentro, a Ordem ainda tem escribas, sentinelas e fragmentos que mudam de lugar."
+   ],
+   "set": [
+    "falou_sena"
+   ],
+   "give": {
+    "pocao": 4,
+    "selo_refinado": 3
+   }
+  }
+ ],
+ "mira": [
+  {
+   "lines": [
+    "Mira: As estrelas invertidas estão no meu mapa, agora. Obrigada! Volte sempre que quiser comprar."
+   ],
+   "if": "estrelas_entregue",
+   "shop": "aurora"
+  },
+  {
+   "lines": [
+    "Mira: Três estrelas! Deixa eu desenhar... Escadaria, Jardim, Coro. É um olho aberto! O contrário da insígnia da Ordem.",
+    "Mira: Tome esta Lente Estelar: lapidei com o mesmo desenho."
+   ],
+   "if": "estrelas_ok",
+   "set": [
+    "estrelas_entregue"
+   ],
+   "give": {
+    "lente_estelar": 1
+   },
+   "bond": "missao:estrelas"
+  },
+  {
+   "lines": [
+    "Mira: As estrelas invertidas aparecem onde as coisas flutuam ou crescem para cima: na Escadaria, no Jardim e no Coro da Catedral. Olhe com calma."
+   ],
+   "if": "quest_estrelas",
+   "shop": "aurora"
+  },
+  {
+   "lines": [
+    "Mira: Sou Mira, cartógrafa. Mapeio o que ninguém consegue: o céu daqui é de cabeça para baixo.",
+    "Mira: Se observar três estrelas invertidas pelo caminho, me conta? Tenho um presente para quem completar meu mapa.",
+    "Mira: E vendo selos, tônicos e fragmentos de prisma. Dê uma olhada."
+   ],
+   "set": [
+    "quest_estrelas"
+   ],
+   "shop": "aurora"
+  }
+ ],
+ "vesna_aurora": [
+  {
+   "lines": [
+    "Vesna: As feras são livres agora. As minhas também: vivem comigo, mas porque querem."
+   ],
+   "if": "rei_morto"
+  },
+  {
+   "lines": [
+    "Vesna: De novo você. Calma: larguei as correntes. Agora caço os que ainda trabalham para a Ordem.",
+    "Vesna: Os Escribas do Vazio ainda selam o Jardim. Tem contrato no quadro — eu pago. E Bruna e Ravi estão aqui, se precisar de trio."
+   ],
+   "contratos": true
+  }
+ ],
+ "ione": [
+  {
+   "lines": [
+    "Ione: Descanse um pouco, aprendiz. Eu vou ficar no acampamento um tempo, ajudando a Sena a ler os nomes do arquivo.",
+    "Ione: Quando quiser treinar, o Salão da Harmonia espera. E se passar pela Vila Lúmen, diga à Maru que eu volto para a festa."
+   ]
+  }
+ ],
+ "ione_camara": [
+  {
+   "lines": [
+    "Ione: Estou fraca, mas inteira. Vá: o trono fica logo acima. Eu subo atrás de você.",
+    "Ione: Lembre: quando ele hesitar, devolva o nome. Ivar."
+   ]
+  }
+ ],
+ "ione_arena": [
+  {
+   "lines": [
+    "Ione: Estou aqui. Entre as quedas do chão eu cuido de você. Quando ele parar, diga o nome!"
+   ]
+  }
+ ],
+ "teo_vila": [
+  {
+   "lines": [
+    "Teo: Eu vigiava os portões da Catedral. Agora vigio as flores-lanterna da minha avó. Prefiro mil vezes."
+   ]
+  }
+ ],
+ "anciao_fim": [
+  {
+   "lines": [
+    "Maru: Você voltou! E a carta da Ione está ali, na minha porta, para todo mundo ler.",
+    "Maru: Eu sabia que você ia trazê-la. Tem festa hoje à noite. E amanhã. E depois de amanhã também."
+   ]
+  }
+ ],
+ "pipo_fim": [
+  {
+   "lines": [
+    "Pipo: Os Lumipins aprenderam a dançar em roda! Olha, olha! Quando eu crescer, quero ser vinculador igual a você."
+   ]
+  }
+ ],
+ "doran_fim": [
+  {
+   "lines": [
+    "Doran: Derretemos as correntes da Ordem e fizemos sinos. Escute! Cada badalada é um guardião que voltou para casa."
+   ]
+  }
+ ],
+ "nino_fim": [
+  {
+   "lines": [
+    "Nino: O maior sino tem o seu nome gravado. Fui eu que escrevi. Tá meio torto, mas tá lá."
+   ]
+  }
+ ],
+ "arao_fim": [
+  {
+   "lines": [
+    "Arão: Lanternas novas no cais, uma para cada guardião. E uma extra, maior: para a Mestra Ione voltar sempre."
+   ]
+  }
+ ],
+ "nina_fim": [
+  {
+   "lines": [
+    "Nina: A água reflete as estrelas certas agora! A Mira disse que antes elas estavam de cabeça para baixo."
+   ]
+  }
+ ],
+ "bruna_fim": [
+  {
+   "lines": [
+    "Bruna: Escudo guardado — por enquanto. Se aparecer domador de novo, já sabe onde me achar."
+   ]
+  }
+ ],
+ "ravi_fim": [
+  {
+   "lines": [
+    "Ravi: Estou ensinando o Faísca a acender as lanternas do cais. Ele erra metade, mas se diverte."
+   ]
+  }
+ ],
+ "ilse_fim": [
+  {
+   "lines": [
+    "Ilse: O portão norte não fecha mais. A guarnição escolta quem quiser ir até a Catedral — agora é só um arquivo bonito."
+   ]
+  }
+ ],
+ "talia_fim": [
+  {
+   "lines": [
+    "Tália: Plantei as flores do Jardim Invertido aqui. Aqui elas crescem para cima. Acho que estavam com saudade."
+   ]
+  }
+ ],
+ "vesna_fim": [
+  {
+   "lines": [
+    "Vesna: Vim ver a Ilse. Ela me ofereceu um posto na guarnição. Disse que uma caçadora que larga as correntes merece um teto."
    ]
   }
  ]

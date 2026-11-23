@@ -50,16 +50,12 @@ Relidas no menu de pausa → **Artefatos** (último item) e na **Jornada** (5 es
 | Ferreiro Devorador | Elo Partido (a outra metade do elo-bússola) | Uma promessa: "vínculo não é corrente"; "você também não vai embora sem mim". |
 | Bruxa Afogada | Lágrima de Orvalho | A briga: Ione não queria levá-lo; "confio mais do que em qualquer pessoa. É disso que eu tenho medo." |
 | Cavaleiro Sem Rosto | Fragmento de Elmo | O dia da partida: o elmo de treino, Teodoro e Joran, "se eu fizer o nosso sinal, você corre". Termina em "Então você estava lá?" |
-| Rei dos Ecos | Coroa Partida | **RESERVADA (Região 5)** — `placeholder: true` |
+| Rei dos Ecos | Coroa Partida | A fenda: no Santuário da Seiva a corrente vem buscar as lembranças do aprendiz; Ione faz o sinal ("estou aqui"), sela as memórias dele e o empurra pela fenda; ele acorda perto de Lúmen só com a carta. (Região 5) |
 
-### Para o agente da Região 5
-- Em `story.json → artefatos`, a entrada `coroa_partida` (`chefe_flag: "rei_morto"`) está com `placeholder: true` e linhas
-  provisórias. Escreva a lembrança final (a fenda no Santuário, Ione fazendo o sinal, o selo das memórias, o despertar
-  perto de Lúmen) e **remova `placeholder`**: a cena toca sozinha quando `rei_morto` for marcada.
-- Para tocar a lembrança em outro momento (ex.: no meio da luta final, antes de devolver o nome a Ivar), chame
-  `world.historia.play_lembranca("coroa_partida")` (em teste rápido, entrega o item na hora). `Historia.count()`,
-  `Historia.has_artefato(id)` e a flag `artefatos_completos` servem de condição para falas/finais.
-- Cenas novas da Catedral podem ser só dados em `story.json → cenas` (veja abaixo), inclusive um último Arauto.
+### Região 5 (feito)
+- `coroa_partida` está escrita (sem `placeholder`) por `tools/dados_regiao5.py`; toca sozinha depois da Memória de Ivar
+  (`rei_morto`) e o epílogo da Região 5 espera por ela (`Catedral.epilogue`). Detalhes do final: seção "O final" abaixo e
+  `docs/REGIAO5_CONTRATO.md`.
 
 ## Cenas curtas (`story.json → cenas`)
 `{mapa, linhas, titulo?, area? [x,y,w,h], arauto? [x,y], if?, unless?, reacao?, reacao_pos?, espera?}`. Toca uma vez
@@ -99,7 +95,16 @@ Pedreira, ordem de carga "entregar ao Arauto" nos Trilhos, Joran na Passarela, b
 | Contratos | Vesna, a Caçadora | Os Domadores vendem feras vinculadas à Ordem: "o Rei precisa de vozes". | Carta do Arquivista |
 | 3 Pântano | Bruxa Afogada | A Bruxa guardava os reflexos/lembranças; Ione tentou salvá-la. | 5 |
 | 4 Fortaleza | Cavaleiro Sem Rosto | Era Aldren, capitão da Catedral; deixou Ione passar. O Rei é Ivar, o Arquivista. | 6 (última) |
-| 5 Catedral | Rei dos Ecos | **(futuro)** Ione está presa dentro do Eco; o herói vence devolvendo ao Rei uma memória que é dele (o nome "Ivar"), e não só pela força. Epílogo nas cinco comunidades. | — |
+| 5 Catedral | Arauto Partido (minichefe) | O Arauto da Ordem do Vazio (manto branco, olho fechado) carregou vozes demais e se partiu; deixou Ione passar e lhe contou o nome do Rei. | 7 |
+| 5 Catedral | Rei dos Ecos | Ione está presa dentro do Eco (Câmara do Eco, quatro elos — um para cada Eco). Resgatada, conta que foi aprendiz de Ivar. O herói vence devolvendo ao Rei o nome "Ivar", junto de Ione e das criaturas da equipe; o Rei se desfaz em paz. | 7 (Arauto) • Pena de Ivar + Coroa Partida |
+
+## O final (Região 5 — docs/REGIAO5_CONTRATO.md)
+1. **Acampamento da Aurora:** do outro lado do selo externo (Passo Umbral). O **Arauto da Ordem do Vazio** proclama que o Rei "guarda tudo" e some na Catedral; o herói responde. O **Eco de Ione** — uma figura azul e translúcida — aparece um passo à frente (Acampamento, Nave, tesouro, preparação), com frases curtas.
+2. **Catedral:** o Arauto reaparece na Nave, o livro rachando; no andar das âncoras vira o **Arauto Partido**. Sua memória (página 7) conta que ele deixou Ione passar.
+3. **Câmara do Eco:** Ione está presa num cristal, presa por quatro elos (raiz, brasa, véu, sombra). Livre, ela fala com o aprendiz (calor humano, "chegou na hora, teimoso como sempre") e revela: Ivar foi o mestre dela.
+4. **O Rei dos Ecos:** três fases; a 6% ele hesita. O herói — que também acordou sem memória e a recuperou pelos vínculos — diz o nome **Ivar**, com Ione e as criaturas da equipe (a cena cita as espécies e os vínculos). O Rei lembra e se desfaz em paz. Memória de Ivar (item `lembranca_ivar`) → depois toca a última lembrança, a do artefato **Coroa Partida** (`story.json → artefatos.coroa_partida`, `scripts/historia.gd`); o epílogo espera por ela.
+5. **Revelação final:** com os cinco artefatos, o herói lembra de tudo: fazia parte da expedição; quando a fenda se abriu, Ione selou suas memórias para que a corrente da Ordem não as levasse; ele acordou perto de Lúmen só com a carta dela.
+6. **Epílogo:** as fissuras se fecham e o jogo visita as cinco comunidades (Vila Lúmen, Forja de Cobre, Porto das Lanternas, Refúgio da Muralha, Acampamento da Aurora) com moradores e decorações novas; Bruna, Ravi e Vesna fecham seus arcos com uma linha cada; créditos; **Harmonia dos Ecos** (desafios opcionais e notas do bestiário — nada antes depende dela).
 
 ## Tom
 Aventura acolhedora nas vilas, descoberta nas rotas, tensão nas masmorras. Antagonistas têm motivo

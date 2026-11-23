@@ -24,6 +24,12 @@
     "if": "cavaleiro_morto",
     "music": "vila_festa"
    }
+  ],
+  "acampamento_aurora": [
+   {
+    "if": "rei_morto",
+    "music": "vila_festa"
+   }
   ]
  },
  "chefes": {
@@ -34,7 +40,9 @@
   "gemeos": "chefe_fortaleza",
   "cavaleiro": "chefe_fortaleza",
   "barqueiro": "chefe_pantano",
-  "bruxa": "chefe_pantano"
+  "bruxa": "chefe_pantano",
+  "arauto": "chefe_catedral",
+  "rei": "rei"
  },
  "humores": {
   "memoria": {

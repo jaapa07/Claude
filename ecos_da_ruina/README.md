@@ -2,7 +2,7 @@
 
 RPG 2D de ação e captura de criaturas, em pixel art, feito em **Godot 4.3 (GDScript)** a partir de `ECOS_DA_RUINA_RPG_MASTER.md`.
 
-**Estado: Capítulos 1 (Floresta dos Esquecidos), 2 (Minas da Brasa) e 3 (Pântano dos Sussurros) jogáveis do início ao fim; Região 4 (Fortaleza do Eclipse) jogável a partir da ponte espiritual do Porto das Lanternas.** A Catedral ainda está em desenvolvimento (veja `docs/KNOWN_ISSUES.md`). Contratos por região: `docs/REGIAO2_CONTRATO.md`, `docs/REGIAO3_CONTRATO.md`, `docs/REGIAO4_CONTRATO.md`.
+**Estado: as cinco regiões são jogáveis — Floresta dos Esquecidos, Minas da Brasa, Pântano dos Sussurros, Fortaleza do Eclipse e a Catedral do Vazio (final, com epílogo e créditos).** Contratos por região: `docs/REGIAO2_CONTRATO.md`, `docs/REGIAO3_CONTRATO.md`, `docs/REGIAO4_CONTRATO.md`, `docs/REGIAO5_CONTRATO.md`.
 
 ## Como jogar (executável)
 
@@ -55,3 +55,8 @@ Mapas externos têm clima (`data/weather.json`, regras em `scripts/weather.gd`, 
 
 Níveis 19–24. Entrada pelo mapa `ponte_espiritual` (a ponte só aparece com o Olhar Velado). Núcleo seguro: **Refúgio da Muralha** (Capitã Ilse, Tália, Lume, o mascate Odo, quadro de contratos, santuário, segredos). Rotas: **Jardins Suspensos** (hélices, névoa cortante, Ninho dos Ventos) e **Muralha Partida** (lanceiros de corredor, fresta do Umbrel, mecanismo antigo do Brasardo, balestra e receptor). Masmorra: **Torre das Duas Sombras** (10 salas em 4 mapas: Salão do Eclipse com feixes de luz e espelhos, Galeria dos Lanceiros, Ala da Sombra com plataformas de sol/lua e atalho ao Refúgio, Câmara das Hélices, Sala dos Receptores, **Gêmeos de Ferro**, tesouro, **Rito do Eclipse** e o trono do **Cavaleiro Sem Rosto**). Vitória: a guarnição volta ao Refúgio, abre-se a **Estrada Final** (gancho da Região 5) e o herói ganha o Eco **Passo Umbral** (atravessa só fissuras violeta e portais marcados).
 Criaturas novas jogáveis: Umbrel→Umbrafel, Ventisco→Vendraco, Brasardo→Solarco. Mapas: `python3 tools/gen_regiao4.py`. Teste: `-- --e2e --regiao4`. Contrato de nomes: `docs/REGIAO4_CONTRATO.md`.
+
+## Região 5 — Catedral do Vazio (final)
+
+Níveis 25–30. Acesso pela Estrada Final: o **Passo Umbral** cruza o selo externo até o **Acampamento da Aurora** (Arquivista Sena, Mira, Caio, Vesna, Bruna e Ravi; quadro de contratos, santuário, segredos). Rotas: **Escadaria dos Fragmentos** (âncoras gravitacionais, fragmentos errantes, Gravito) e **Jardim Invertido** (prismas, escribas do vazio, Cristil e o raro Velúnio). Masmorra: **Catedral do Vazio** (11 salas em 3 mapas + Rito da Convergência, dois atalhos): Sala dos Prismas, Galeria dos Escribas, Câmara das Raízes e Brasas, Sala das Âncoras, Coro Velado, **Arauto Partido**, Câmara do Eco (resgate da Mestra Ione) e o trono do **Rei dos Ecos** (Ivar). Vitória: o nome devolvido, o quinto artefato, a revelação final, o epílogo nas cinco comunidades, créditos e a **Harmonia dos Ecos** (Salão da Harmonia e notas do bestiário).
+Criaturas: Cristil→Prismal, Gravito→Monolito, Velúnio→Astravéu. Mapas: `python3 tools/gen_regiao5.py`; dados: `python3 tools/dados_regiao5.py`. Teste: `-- --e2e --regiao5`. Contrato: `docs/REGIAO5_CONTRATO.md`.

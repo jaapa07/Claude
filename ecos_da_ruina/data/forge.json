@@ -91,6 +91,17 @@
     "junco_trancado",
     "perola_brejo"
    ]
+  },
+  "aurora": {
+   "nome": "Barraca da Mira",
+   "itens": [
+    "selo_basico",
+    "selo_refinado",
+    "pocao",
+    "tonico_criatura",
+    "fragmento_prisma",
+    "lasca_umbral"
+   ]
   }
  }
 }

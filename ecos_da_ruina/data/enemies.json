@@ -688,5 +688,155 @@
   "pequeno": false,
   "capturavel": false,
   "nivel": 17
+ },
+ "escriba": {
+  "nome": "Escriba do Vazio",
+  "hp": 150,
+  "dano": 22,
+  "vel": 46,
+  "xp": 46,
+  "frag": [
+   12,
+   20
+  ],
+  "sprite": "escriba",
+  "frame": [
+   24,
+   32
+  ],
+  "ataque": "selo",
+  "raio": 8,
+  "percepcao": 140,
+  "relevante": true,
+  "pequeno": false,
+  "capturavel": false,
+  "nivel": 25,
+  "drops": {
+   "fragmento_prisma": [
+    0.35,
+    1
+   ]
+  }
+ },
+ "sentinela_prisma": {
+  "nome": "Sentinela Prismática",
+  "hp": 230,
+  "dano": 26,
+  "vel": 22,
+  "xp": 52,
+  "frag": [
+   14,
+   22
+  ],
+  "sprite": "sentinela_prisma",
+  "frame": [
+   24,
+   32
+  ],
+  "ataque": "prisma",
+  "raio": 10,
+  "percepcao": 150,
+  "relevante": true,
+  "pequeno": false,
+  "capturavel": false,
+  "nivel": 26,
+  "guarda_frontal": 0.3,
+  "drops": {
+   "fragmento_prisma": [
+    0.5,
+    1
+   ]
+  }
+ },
+ "fragmento": {
+  "nome": "Fragmento Errante",
+  "hp": 120,
+  "dano": 20,
+  "vel": 58,
+  "xp": 40,
+  "frag": [
+   10,
+   18
+  ],
+  "sprite": "fragmento",
+  "frame": [
+   20,
+   20
+  ],
+  "ataque": "fragmento",
+  "raio": 8,
+  "percepcao": 130,
+  "relevante": true,
+  "pequeno": true,
+  "capturavel": false,
+  "nivel": 25,
+  "drops": {
+   "fragmento_prisma": [
+    0.3,
+    1
+   ]
+  }
+ },
+ "arauto": {
+  "nome": "Arauto Partido",
+  "hp": 980,
+  "dano": 22,
+  "vel": 54,
+  "xp": 0,
+  "frag": [
+   0,
+   0
+  ],
+  "sprite": "arauto_partido",
+  "frame": [
+   48,
+   48
+  ],
+  "ataque": "arauto",
+  "raio": 14,
+  "percepcao": 600,
+  "nivel": 27
+ },
+ "rei": {
+  "nome": "Rei dos Ecos",
+  "hp": 4000,
+  "dano": 26,
+  "vel": 50,
+  "xp": 0,
+  "frag": [
+   0,
+   0
+  ],
+  "sprite": "rei",
+  "frame": [
+   72,
+   72
+  ],
+  "ataque": "rei",
+  "raio": 18,
+  "percepcao": 800,
+  "nivel": 30
+ },
+ "foco_rei": {
+  "nome": "Foco do Rei",
+  "hp": 190,
+  "dano": 0,
+  "vel": 0,
+  "xp": 0,
+  "frag": [
+   0,
+   0
+  ],
+  "sprite": "rei_foco",
+  "frame": [
+   24,
+   32
+  ],
+  "ataque": "nenhum",
+  "raio": 10,
+  "percepcao": 0,
+  "pequeno": false,
+  "capturavel": false,
+  "nivel": 30
  }
 }

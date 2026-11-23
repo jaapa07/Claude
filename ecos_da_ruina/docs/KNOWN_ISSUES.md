@@ -24,10 +24,12 @@
 - Ponte Espiritual (transição; a ponte só existe com o Olhar Velado), Refúgio da Muralha (núcleo: Capitã Ilse, Tália, Lume, Odo, quadro de contratos, rotinas que mudam após o guardião), Jardins Suspensos e Muralha Partida (rotas), Torre das Duas Sombras (10 salas em 4 mapas + Rito do Eclipse com ala avançada) e Estrada Final (gancho da Região 5).
 - Criaturas Umbrel/Umbrafel, Ventisco/Vendraco, Brasardo/Solarco; inimigos lanceiro, arqueiro e armadura; Gêmeos de Ferro e Cavaleiro Sem Rosto (3 fases); Eco Passo Umbral. Detalhes: `docs/REGIAO4_CONTRATO.md`.
 
+## Pronto e jogável — Região 5 (Catedral do Vazio, final)
+- Acampamento da Aurora (núcleo), Escadaria dos Fragmentos e Jardim Invertido (rotas), Catedral do Vazio (11 salas + Rito da Convergência), Arauto Partido, resgate de Ione, Rei dos Ecos (3 fases + o nome), epílogo nas cinco comunidades, créditos e Harmonia dos Ecos (Salão da Harmonia). Detalhes: `docs/REGIAO5_CONTRATO.md`.
+- Limitações: o epílogo injeta moradores e decorações em tempo de execução (não estão nos JSON dos mapas das outras regiões); a revanche dos guardiões é feita com provas de inimigos comuns de cada região, não com os chefes originais.
+
 ## Não implementado
-- **Região 5** (Catedral do Vazio). O Pântano (Região 3) liga-se à Região 4 pela ponte espiritual do Porto das Lanternas.
-- As espécies da Catedral ainda estão só cadastradas nos dados, como "planejadas", sem sprite nem habitat.
-- Camada espiritual (Entre-Ecos), Olhar Velado (as inscrições ocultas da Forja e da Fundição já esperam por ele) e Harmonia dos Ecos.
+- Camada espiritual (Entre-Ecos).
 - Suporte a controle, lâminas rápidas, revisão de cenas e diálogos acelerados por opção.
 
 ## Provisório / limitações conhecidas

@@ -31,6 +31,7 @@ func _ready() -> void:
 	_build_heat()
 	_build_sun()
 	_build_fog()
+	Catedral.build_aurora(self)   # Região 5: fitas da aurora no céu invertido
 	for k in groups:
 		weight[k] = 0.0
 		groups[k].modulate.a = 0.0

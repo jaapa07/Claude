@@ -72,6 +72,29 @@
     "Memória do Eco: Ione entrou na Catedral. O portão se fechou atrás dela.",
     "O escudo do Cavaleiro se parte; dentro, a última página do diário, ainda quente."
    ]
+  },
+  "arauto_morto": {
+   "titulo": "Memória do Arauto Partido",
+   "item": "pagina_ione_7",
+   "linhas": [
+    "Memória do Eco: o Arauto da Ordem do Vazio, de manto branco e olho fechado bordado, levava às vilas a palavra do Arquivista: \"guardem tudo, nada se perde\".",
+    "Memória do Eco: um dia tentou carregar o Eco de um guardião inteiro dentro do livro. O livro rachou — e ele com o livro.",
+    "Memória do Eco: anos depois, uma vinculadora de capa azul atravessou o andar das âncoras. O Arauto ergueu o livro... e abaixou. Deixou-a passar.",
+    "Memória do Eco: \"Ele se chamava Ivar\", disse Ione ao Arauto. \"Lembra? Você lia os nomes dos guardiões para ele à noite.\" O Arauto chorou páginas.",
+    "Das páginas que caem, uma não é dele: tem a letra da sua mestra."
+   ]
+  },
+  "rei_morto": {
+   "titulo": "Memória de Ivar",
+   "item": "lembranca_ivar",
+   "linhas": [
+    "Memória do Eco: Ivar era o primeiro Arquivista de Auralis. Escrevia o nome de cada criatura, de cada rio, de cada canção — para que nada se perdesse.",
+    "Memória do Eco: quando o Eco começou a se espalhar demais, ele o recolheu inteiro para dentro da Catedral. E depois, para dentro de si.",
+    "Memória do Eco: guardou tanto que não sobrou lugar para ele mesmo. Esqueceu o rosto, a casa, o nome. Virou o Rei dos Ecos.",
+    "Memória do Eco: as correntes nunca foram por poder. Cada guardião acorrentado era uma memória emprestada — Ivar procurando, entre milhões de vozes, a própria.",
+    "Memória do Eco: e foi você quem a devolveu. Uma palavra só: Ivar.",
+    "No lugar do trono, uma pena de arquivista, de marfim, ainda morna. Ao lado dela, metade de uma coroa: o último artefato."
+   ]
   }
  },
  "jornada": {
@@ -187,13 +210,19 @@
    "nome": "Coroa Partida",
    "chefe_flag": "rei_morto",
    "chefe": "Rei dos Ecos",
-   "placeholder": true,
-   "_doc": "RESERVADO PARA A REGIÃO 5: escreva as linhas (a fenda no Santuário; Ione sela as memórias do aprendiz para escondê-las da corrente da Ordem; ele acorda perto de Lúmen) e remova 'placeholder'. Ver docs/HISTORIA.md.",
    "desc": "Metade de uma coroa de arquivista. Guarda a última lembrança — a que falta para tudo fazer sentido.",
    "lembranca": {
     "titulo": "Lembrança: a fenda",
     "linhas": [
-     "(Região 5) A última lembrança: a fenda no Santuário da Seiva e o que Ione fez para proteger o aprendiz."
+     "Dia 4 da expedição. O Santuário da Seiva treme; as raízes se retorcem e uma corrente de metal escuro serpenteia pelo chão, procurando.",
+     "Ione: Teodoro, leve os Corvelo! Joran, as lanternas! Aprendiz — fique atrás de mim.",
+     "Você: Eu quero ajudar! Eu consigo!",
+     "A corrente se ergue na sua direção. Ela não quer o seu corpo: quer as suas lembranças. Você sente o nome da sua mãe começar a escorregar.",
+     "Ione se ajoelha na sua frente e faz o sinal: palma aberta, dois dedos dobrados. \"Estou aqui.\" A mão dela brilha azul na sua testa.",
+     "Ione: Vou esconder tudo o que você é, para a corrente não achar. Vai doer esquecer. Mas você vai lembrar de novo, um pedaço de cada vez. Eu prometo.",
+     "A fenda se abre ao norte. Ela segura a corrente com as duas mãos e te empurra para a luz.",
+     "Você acorda na grama, perto de Lúmen, sem saber o próprio nome — só com uma carta no bolso e o sinal da mão gravado na memória do corpo.",
+     "Agora você lembra. Ela não te deixou para trás. Ela te escondeu do mundo para poder te devolver a ele."
     ]
    }
   }
@@ -357,5 +386,352 @@
     "arauto": "{nome} se enrola numa bola de pedra bem na frente dos seus pés."
    }
   }
+ },
+ "resgate_ione": [
+  "Os quatro elos se partem. O cristal racha de cima a baixo — e uma mulher de capa azul cai de joelhos no chão de runas.",
+  "Você: Mestra! Eu... cheguei tarde?",
+  "Ione: ...Aprendiz? Não. Chegou na hora. Teimoso como sempre. Eu ouvi seus passos em cada guardião: o Cervo, o Ferreiro, a Bruxa, Aldren...",
+  "Ione segura o seu rosto com as duas mãos, como fazia depois do treino. Por um momento, ninguém diz nada.",
+  "Ione: Eu entrei aqui para conversar com ele. O Eco me engoliu antes. Fiquei presa dentro das lembranças que ele roubou.",
+  "Ione: Escute. O Rei dos Ecos é Ivar, o primeiro Arquivista. Eu fui aprendiz dele, muito antes de você ser o meu.",
+  "Ione: Ele guardou o Eco inteiro dentro de si e esqueceu quem era. Bater nele não basta: a força só o cansa.",
+  "Ione: Quando ele hesitar — e ele vai hesitar —, devolva a ele uma memória que seja dele. O nome dele. Eu fico do seu lado.",
+  "Você: Eu também esqueci quem eu era, mestra. Só sobrou a sua carta.",
+  "Ione: Eu sei. Depois eu te conto tudo, prometo. Agora, ele precisa de você mais do que eu.",
+  "A Mestra Ione se levanta e aponta a escada para o trono. A porta, antes lacrada, está aberta."
+ ],
+ "nome_ivar": [
+  "O Rei dos Ecos flutua, imóvel. As correntes que saem do peito dele afrouxam uma a uma.",
+  "Rei: ...Raiz. Brasa. Água. Sombra. Eu guardei tudo. Tudo! Por que não consigo lembrar quem eu sou?",
+  "Ione: Porque você guardou tudo, menos você. Olhe para mim, mestre. Lembra da aprendiz que derrubava tinta nos seus livros?",
+  "Você dá um passo à frente, como Ione ensinou no treino, com a mão erguida.",
+  "Você: Eu sei como é acordar sem saber quem se é. Foram os vínculos que me trouxeram de volta.",
+  "{EQUIPE}",
+  "Você: O seu nome é Ivar.",
+  "Rei: ...I...var.",
+  "Rei: Ivar. Eu sou Ivar. Eu era o Arquivista. Eu escrevia os nomes... e esqueci o meu.",
+  "Ivar: Ione. Pequena Ione. Você cresceu. E trouxe alguém que sabe devolver as coisas ao lugar.",
+  "Ivar: Devolvam o Eco às terras. Eu não preciso mais guardá-lo. Eu lembrei.",
+  "O Rei dos Ecos sorri. A coroa se desfaz em luz, depois as mãos, depois o rosto — em paz, como neve derretendo."
+ ],
+ "epilogo": {
+  "abertura": [
+   "As correntes de metal-eco se soltam ao mesmo tempo, em todas as terras. Lá fora, uma por uma, as fissuras do céu se fecham.",
+   "No seu bolso, os cinco artefatos dos guardiões brilham juntos. As cinco lembranças se encaixam — e o resto volta de uma vez.",
+   "Você fazia parte da expedição. Quando a fenda se abriu no Santuário, a corrente da Ordem veio buscar a sua memória.",
+   "Ione: Eu selei suas lembranças para que a corrente não as levasse. Você acordou perto de Lúmen só com a minha carta. Me perdoe, aprendiz.",
+   "Você: Não tem o que perdoar. Você me protegeu. E eu achei o caminho de volta — como o Ivar.",
+   "Ione: Acabou, aprendiz. O Eco voltou para onde sempre morou: nas criaturas, nos rios, nas pessoas.",
+   "Ione: Venha. Quero ver com você o que mudou."
+  ],
+  "paradas": [
+   {
+    "mapa": "vila_lumen",
+    "spawn": "from_santuario",
+    "titulo": "Vila Lúmen",
+    "linhas": [
+     "Na Vila Lúmen, as flores-lanterna ficaram acesas de dia. A festa da colheita, cancelada havia três luas, voltou.",
+     "Maru pendurou a carta de Ione na porta da casa, para todos lerem. Pipo ensina os Lumipins a dançar em roda.",
+     "Teo, um noviço da Ordem que fugiu da Catedral, voltou para casa — e os vizinhos lhe deram um prato de sopa."
+    ]
+   },
+   {
+    "mapa": "forja_cobre",
+    "spawn": "default",
+    "pos": [
+     24,
+     17
+    ],
+    "titulo": "Forja de Cobre",
+    "linhas": [
+     "Na Forja de Cobre, os ferreiros derreteram as últimas correntes de metal-eco e fizeram sinos com elas.",
+     "Doran pendurou o maior sino na praça. Quando toca, os Faisquitos acendem as fornalhas sozinhos."
+    ]
+   },
+   {
+    "mapa": "porto_lanternas",
+    "spawn": "default",
+    "pos": [
+     24,
+     17
+    ],
+    "titulo": "Porto das Lanternas",
+    "linhas": [
+     "No Porto das Lanternas, a água refletiu as estrelas certas pela primeira vez em anos.",
+     "Bruna e Ravi ajudam Arão a acender lanternas novas no cais: uma para cada guardião libertado.",
+     "Bruna: Pendurei o escudo na parede. Pela primeira vez, ele fica lá por vontade minha.",
+     "Ravi: E eu aposentei os discos. Agora só jogo pedrinha no lago, com a Faísca."
+    ]
+   },
+   {
+    "mapa": "refugio_muralha",
+    "spawn": "default",
+    "pos": [
+     24,
+     19
+    ],
+    "titulo": "Refúgio da Muralha",
+    "linhas": [
+     "No Refúgio da Muralha, a Capitã Ilse abriu o portão norte para sempre. A guarnição agora escolta viajantes até a Catedral.",
+     "Tália plantou flores marfim do Jardim Invertido no canteiro da praça. Elas crescem para cima, como deve ser.",
+     {
+      "if": "vesna_ok",
+      "t": "Vesna: A Ilse me deu um posto na guarnição. Minhas feras dormem em paz. Acho que eu também."
+     },
+     {
+      "unless": "vesna_ok",
+      "t": "Dizem que Vesna, a caçadora, soltou as últimas feras que guardava e foi embora sem correntes."
+     }
+    ]
+   },
+   {
+    "mapa": "acampamento_aurora",
+    "spawn": "from_epilogo",
+    "titulo": "Acampamento da Aurora",
+    "linhas": [
+     "No Acampamento da Aurora, a fogueira continua acesa — mas agora é festa, não vigília.",
+     "A Arquivista Sena abriu o velho arquivo da Catedral: os nomes que Ivar escreveu serão lidos de novo, em voz alta, um por noite."
+    ]
+   }
+  ],
+  "fecho": [
+   "Ione: Ivar me ensinou a escrever nomes. Eu te ensinei a ouvi-los. Acho que nós dois aprendemos alguma coisa com você.",
+   "Ione: Os cinco Ecos agora cantam juntos em você: é a HARMONIA DOS ECOS. Ela abre o Salão da Harmonia, ao norte do Acampamento, e completa as notas do bestiário.",
+   "Ione: Nada do que você fez depende dela. É só um presente — para quem ainda quer explorar.",
+   "Eco obtido: HARMONIA DOS ECOS (tecla de Eco). Cura um pouco a equipe, revela espíritos e abre os selos da Harmonia."
+  ],
+  "mudancas": {
+   "vila_lumen": {
+    "entidades": [
+     {
+      "type": "adorno",
+      "id": "fim_vila_l1",
+      "frame": "lanterna_festa",
+      "x": 16,
+      "y": 12
+     },
+     {
+      "type": "adorno",
+      "id": "fim_vila_l2",
+      "frame": "lanterna_festa",
+      "x": 27,
+      "y": 12
+     },
+     {
+      "type": "adorno",
+      "id": "fim_vila_f1",
+      "frame": "fita_festa",
+      "x": 20,
+      "y": 16
+     },
+     {
+      "type": "adorno",
+      "id": "fim_vila_f2",
+      "frame": "flores_festa",
+      "x": 24,
+      "y": 19
+     },
+     {
+      "type": "npc",
+      "id": "teo_vila",
+      "sprite": "npc_aurora3",
+      "dialog": "teo_vila",
+      "x": 23,
+      "y": 17,
+      "nome": "Teo"
+     }
+    ],
+    "dialogos": {
+     "anciao": "anciao_fim",
+     "pipo": "pipo_fim"
+    }
+   },
+   "forja_cobre": {
+    "entidades": [
+     {
+      "type": "adorno",
+      "id": "fim_forja_l1",
+      "frame": "lanterna_festa",
+      "x": 19,
+      "y": 13
+     },
+     {
+      "type": "adorno",
+      "id": "fim_forja_l2",
+      "frame": "lanterna_festa",
+      "x": 29,
+      "y": 13
+     },
+     {
+      "type": "adorno",
+      "id": "fim_forja_e1",
+      "frame": "estandarte",
+      "x": 22,
+      "y": 19
+     },
+     {
+      "type": "adorno",
+      "id": "fim_forja_f1",
+      "frame": "fita_festa",
+      "x": 26,
+      "y": 11
+     }
+    ],
+    "dialogos": {
+     "doran_forja": "doran_fim",
+     "nino_praca": "nino_fim"
+    }
+   },
+   "porto_lanternas": {
+    "entidades": [
+     {
+      "type": "adorno",
+      "id": "fim_porto_l1",
+      "frame": "lanterna_festa",
+      "x": 18,
+      "y": 14
+     },
+     {
+      "type": "adorno",
+      "id": "fim_porto_l2",
+      "frame": "lanterna_festa",
+      "x": 29,
+      "y": 14
+     },
+     {
+      "type": "adorno",
+      "id": "fim_porto_f1",
+      "frame": "fita_festa",
+      "x": 23,
+      "y": 20
+     },
+     {
+      "type": "npc",
+      "id": "bruna_porto",
+      "sprite": "aliada_bruna",
+      "human": true,
+      "dialog": "bruna_fim",
+      "x": 25,
+      "y": 18,
+      "nome": "Bruna"
+     },
+     {
+      "type": "npc",
+      "id": "ravi_porto",
+      "sprite": "aliado_ravi",
+      "human": true,
+      "dialog": "ravi_fim",
+      "x": 20,
+      "y": 18,
+      "nome": "Ravi"
+     }
+    ],
+    "dialogos": {
+     "arao_cais": "arao_fim",
+     "nina": "nina_fim"
+    }
+   },
+   "refugio_muralha": {
+    "entidades": [
+     {
+      "type": "adorno",
+      "id": "fim_ref_l1",
+      "frame": "lanterna_festa",
+      "x": 20,
+      "y": 12
+     },
+     {
+      "type": "adorno",
+      "id": "fim_ref_l2",
+      "frame": "lanterna_festa",
+      "x": 30,
+      "y": 12
+     },
+     {
+      "type": "adorno",
+      "id": "fim_ref_e1",
+      "frame": "estandarte",
+      "x": 24,
+      "y": 23
+     },
+     {
+      "type": "adorno",
+      "id": "fim_ref_f1",
+      "frame": "flores_festa",
+      "x": 12,
+      "y": 24
+     },
+     {
+      "type": "npc",
+      "id": "vesna_refugio",
+      "sprite": "vesna",
+      "human": true,
+      "dialog": "vesna_fim",
+      "x": 27,
+      "y": 14,
+      "nome": "Vesna",
+      "if_flag": "vesna_ok"
+     }
+    ],
+    "dialogos": {
+     "ilse_portao": "ilse_fim",
+     "talia": "talia_fim"
+    }
+   }
+  },
+  "creditos": [
+   {
+    "titulo": "Ecos da Ruína",
+    "linhas": [
+     "RPG de ação e captura",
+     "Feito em Godot 4.3"
+    ]
+   },
+   {
+    "titulo": "Arte",
+    "linhas": [
+     "Pixel art autoral",
+     "desenhada à mão em .pxl"
+    ]
+   },
+   {
+    "titulo": "Música e sons",
+    "linhas": [
+     "Sintetizados nota a nota",
+     "(tools/gen_audio.py)"
+    ]
+   },
+   {
+    "titulo": "Elenco",
+    "linhas": [
+     "Mestra Ione",
+     "Ivar, o Arquivista",
+     "Maru e Pipo",
+     "Doran, Ilda e Nino",
+     "Arão, Iara e Cora",
+     "Ilse, Tália e Lume",
+     "Sena, Mira e Caio",
+     "Vesna, Bruna e Ravi",
+     "O Arauto da Ordem"
+    ]
+   },
+   {
+    "titulo": "Os guardiões",
+    "linhas": [
+     "Cervo de Ossos",
+     "Ferreiro Devorador",
+     "Bruxa Afogada",
+     "Cavaleiro (Aldren)",
+     "Rei dos Ecos (Ivar)"
+    ]
+   },
+   {
+    "titulo": "E você",
+    "linhas": [
+     "que ouviu cada eco",
+     "até o fim. Obrigado!"
+    ]
+   }
+  ]
  }
 }

@@ -295,6 +295,7 @@ func env_action_fx(target_pos: Vector2) -> void:
 		"reflexo": col = Color(0.85, 0.75, 1.0)
 		"fresta": col = Color(0.6, 0.45, 0.9)
 		"helice": col = Color(0.75, 0.9, 1.0)
+		"prisma", "ancora", "marca": col = Catedral.action_color(species.get("acao_id", ""))   # Região 5
 		"calor": col = Color(1.0, 0.8, 0.3)
 	world.bolt(global_position + Vector2(0, -8), target_pos + Vector2(0, -6), col, func():
 		world.fx_at({"fogo": "fire", "roda": "splash", "lodo": "bolhas"}.get(species.get("acao_id", ""), "sparkle"), target_pos + Vector2(0, -8), 0.5))
@@ -456,6 +457,8 @@ func command_skill(dir: Vector2) -> bool:
 					e.take_damage(dmg * 0.4, lc, {"src": "companion", "uuid": uuid(), "aff": aff, "knock": 0.0})
 			anim_lock = 0.3
 			sprite.play("windup")
+		"perfura":
+			Catedral.pierce(self, sk, dir, dmg, aff)   # Região 5: projétil que atravessa um inimigo
 		"cadeia":
 			_chain_bolt(sk, dmg, aff)
 		"cura":

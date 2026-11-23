@@ -335,5 +335,125 @@
     "flag": "lago_bau_reflexo_aberto"
    }
   ]
+ },
+ "principal5": {
+  "nome": "O Coração do Vazio",
+  "tipo": "principal",
+  "ativa_se": "visitou_acampamento_aurora",
+  "etapas": [
+   {
+    "texto": "Cruze o selo externo com o Passo Umbral até o Acampamento da Aurora.",
+    "flag": "cruzou_selo_externo"
+   },
+   {
+    "texto": "Fale com a Arquivista Sena, junto à fogueira do Acampamento.",
+    "flag": "falou_sena"
+   },
+   {
+    "texto": "Siga pela Escadaria dos Fragmentos (oeste) ou pelo Jardim Invertido (leste) até a Catedral do Vazio.",
+    "flag": "visitou_catedral_a"
+   },
+   {
+    "texto": "Atravesse a Nave dos Prismas e o andar das âncoras e derrote o Arauto Partido.",
+    "flag": "arauto_morto"
+   },
+   {
+    "texto": "Complete o Rito da Convergência, com os quatro Ecos.",
+    "flag": "rito_convergencia_ok"
+   },
+   {
+    "texto": "Quebre os quatro elos da Câmara do Eco e liberte a Mestra Ione.",
+    "flag": "ione_livre"
+   },
+   {
+    "texto": "Suba ao trono e devolva ao Rei dos Ecos o que é dele.",
+    "flag": "rei_morto"
+   },
+   {
+    "texto": "Veja o que mudou nas cinco comunidades.",
+    "flag": "epilogo_visto"
+   }
+  ]
+ },
+ "vozes": {
+  "nome": "Vozes Perdidas",
+  "tipo": "secundaria",
+  "etapas": [
+   {
+    "texto": "Junte 3 Ecos Perdidos na Escadaria, no Jardim e na Catedral para o noviço Caio.",
+    "item": "eco_perdido",
+    "alvo": 3,
+    "flag": "vozes_ok"
+   },
+   {
+    "texto": "Leve os Ecos Perdidos a Caio, na enfermaria do Acampamento.",
+    "flag": "vozes_entregue"
+   }
+  ]
+ },
+ "estrelas": {
+  "nome": "Estrelas Invertidas",
+  "tipo": "secundaria",
+  "etapas": [
+   {
+    "texto": "Observe as três estrelas invertidas (Escadaria, Jardim e o Coro da Catedral) para a cartógrafa Mira.",
+    "flag": "estrelas_ok"
+   },
+   {
+    "texto": "Conte a Mira o desenho das estrelas.",
+    "flag": "estrelas_entregue"
+   }
+  ]
+ },
+ "provas_harmonia": {
+  "nome": "Provas da Harmonia",
+  "tipo": "secundaria",
+  "ativa_se": "harmonia_aberta",
+  "etapas": [
+   {
+    "texto": "Vença a Prova da Floresta e das Minas no Salão da Harmonia.",
+    "flag": "prova1_ok"
+   },
+   {
+    "texto": "Vença a Prova do Pântano e da Fortaleza.",
+    "flag": "prova2_ok"
+   },
+   {
+    "texto": "Vença a Prova do Vazio e abra o arquivo.",
+    "flag": "prova3_ok"
+   }
+  ]
+ },
+ "bestiario_completo": {
+  "nome": "O Arquivo Vivo",
+  "tipo": "secundaria",
+  "ativa_se": "quest_bestiario",
+  "etapas": [
+   {
+    "texto": "Capture uma criatura de cada espécie de Auralis.",
+    "contador_especies": [
+     "brotisco",
+     "lumipim",
+     "cascalito",
+     "faisquito",
+     "ferrunho",
+     "fuligin",
+     "goturim",
+     "brejugo",
+     "nimbelo",
+     "umbrel",
+     "ventisco",
+     "brasardo",
+     "cristil",
+     "gravito",
+     "velunio"
+    ],
+    "flag": "bestiario_completo"
+   },
+   {
+    "texto": "Mostre o bestiário completo à Arquivista Sena.",
+    "flag": "bestiario_entregue"
+   }
+  ]
  }
 }

@@ -43,6 +43,8 @@ func _ready() -> void:
 		await run_historia()
 	elif "--clima" in args:
 		await run_clima()
+	elif "--regiao5" in args:
+		await run_regiao5()
 	elif "--regiao4" in args:
 		await run_regiao4()
 	elif "--floresta" in args:
@@ -1582,7 +1584,7 @@ func run_unit() -> void:
 	var sk_ok: bool = Data.skills["onda"]["exec"] == "onda" and Data.skills["lodo_pegajoso"]["exec"] == "lodo" and float(Data.skills["clarao"].get("revela", 0)) > 0.0
 	check("R3: habilidades novas (Onda, Lodo Pegajoso, Clarão) com execução própria", sk_ok)
 	# ---- habilidades aprendidas por nível (dados e regras)
-	var execs := ["prender", "pulso", "cone", "ima", "nuvem", "avanco", "avanco_cadeia", "cadeia", "cura", "escudo", "onda", "lodo"]
+	var execs := ["prender", "pulso", "cone", "ima", "nuvem", "avanco", "avanco_cadeia", "cadeia", "cura", "escudo", "onda", "lodo", "perfura"]
 	var bad_h: Array = []
 	for sid in Data.species:
 		if Data.species[sid]["status"] != "jogavel":
@@ -4978,7 +4980,7 @@ func historia_amnesia() -> void:
 			arts_ok = false
 		if not a.get("placeholder", false) and not bosses.has(str(a["chefe_flag"])):
 			arts_ok = false
-	check("Artefatos: 4 chefes reais + Coroa Partida reservada (rei_morto, placeholder)", arts_ok and Historia.artefato("coroa_partida").get("placeholder", false) and Historia.artefato("coroa_partida")["chefe_flag"] == "rei_morto")
+	check("Artefatos: 5 chefes reais, Coroa Partida escrita pela Região 5 (rei_morto)", arts_ok and not Historia.artefato("coroa_partida").get("placeholder", false) and Historia.artefato("coroa_partida")["chefe_flag"] == "rei_morto" and bosses.has("rei_morto"))
 	# ---- tela de Artefatos (último item da pausa) e seção na Jornada
 	main.ui.open_pause()
 	await frames(3)
@@ -5472,3 +5474,741 @@ func fl_save_load() -> void:
 	await advance_dialogs()
 	check("FL: altar após carregar não repete a recompensa", Game.item_count("golpe_enraizado") == 1)
 	check("FL: dados sem erros de validação", Data.errors.is_empty(), str(Data.errors))
+
+
+# ================================================================ REGIÃO 5 — CATEDRAL DO VAZIO (final)
+## Uso: godot --headless --fixed-fps 60 --path . -- --e2e --regiao5   (--r5de=N começa na etapa N; ver r5_jump)
+## Monta o estado do fim do Capítulo 4 (herói nv.26, os quatro Ecos, equipe comum evoluída) e joga a região inteira:
+## selo externo, Acampamento da Aurora, Jardim Invertido, Escadaria dos Fragmentos, Nave, Âncoras e Coro, Arauto Partido,
+## Rito da Convergência, resgate de Ione, Rei dos Ecos (derrota, reinício e vitória pelo nome), epílogo, créditos e Harmonia.
+
+func r5_setup(slot: int) -> void:
+	SaveSys.delete_slot(slot)
+	main.start_new_game(slot)
+	await frames(10)
+	await advance_dialogs()
+	Game.hero["level"] = 26
+	Game.hero["xp"] = 0
+	Game.hero["talents"] = {"espada": 4, "resistencia": 3, "vinculo": 2}
+	var its := {"pocao": 16, "selo_refinado": 16, "selo_basico": 10, "tonico_criatura": 6, "galhada_ossea": 1, "couraca_ossos": 1,
+		"amuleto_brasa": 1, "manto_umbral": 1, "semente_vida": 2}
+	for it in its:
+		Game.give_item(it, int(its[it]))
+	Game.equip("galhada_ossea"); Game.equip("manto_umbral"); Game.equip("amuleto_brasa")
+	Game.fragments = 1500
+	for f in ["falou_maru", "tutorial_ok", "primeira_captura", "lenhador_morto", "cervo_morto", "voltou_vila", "ponte_minas", "fim_cap1",
+			"vigia_morto", "ferreiro_morto", "minas_libertas", "voltou_forja", "saqueadores_ok", "emboscada_ok", "vesna_ok", "rito_ok",
+			"tut_move", "tut_attack", "tut_dodge", "tut_guard", "tut_command", "tut_rest", "eco_olhar_velado", "bruxa_morta", "pantano_livre",
+			"voltou_porto", "fim_cap3", "gemeos_morto", "cavaleiro_morto", "fortaleza_liberta", "voltou_refugio", "viu_selo_catedral",
+			"visitou_refugio_muralha", "falou_ilse", "visitou_ponte_espiritual", "visitou_torre_a", "rito_eclipse_ok"]:
+		Game.set_flag(f)
+	for qid in Data.quests:
+		if str(qid).begins_with("principal") and qid != "principal5":
+			for st in Data.quests[qid]["etapas"]:
+				Game.set_flag(st["flag"])
+	for mf in Data.story["memorias"]:
+		if Game.has_flag(mf):
+			Game.set_flag("mem_" + mf)
+	for e in ["raiz_viva", "ruptura_ignea", "olhar_velado", "passo_umbral"]:
+		Game.grant_eco(e)
+	Game.eco_slots = ["olhar_velado", "passo_umbral"]
+	Game.team = []
+	for pair in [["brasejante", 27], ["rocantor", 26], ["cinzaveu", 26]]:
+		var ind := r4_ind(pair[0], pair[1])
+		Game.team.append(ind["uuid"])
+	Game.active_idx = 0
+	Game.hero["hp"] = Game.hero_max_hp()
+	Game.checkpoint = {"map": "estrada_final", "spawn": "from_refugio", "shrine": ""}
+	Game.team_changed.emit(); Game.hero_changed.emit(); Game.inventory_changed.emit(); Game.eco_changed.emit()
+	W.load_map("estrada_final", "from_refugio")
+	await frames(20)
+
+func r5_tile(tx: int, ty: int) -> String:
+	return W.cur_tiles[ty][tx]
+
+func r5_dialogs() -> void:
+	await frames(10)
+	var n := 0
+	while (main.ui.hud.dlg_active or main.ui.has_screen()) and n < 40:
+		if main.ui.hud.dlg_active:
+			await advance_dialogs(10)
+		elif main.ui.has_screen():
+			await close_menus()
+		await frames(20)
+		n += 1
+
+# ---------------------------------------------------------------- 1. selo externo e Acampamento da Aurora
+func r5_entrada() -> void:
+	check("R5: região Catedral do Vazio marcada como jogável", Data.regions["catedral"]["status"] == "jogavel" and Data.regions["catedral"]["mapas"].size() >= 8)
+	check("R5: dados sem erros de validação", Data.errors.is_empty(), str(Data.errors))
+	check("R5: espécies Cristil, Gravito e Velúnio jogáveis com evolução e arte", Data.species["cristil"]["status"] == "jogavel" and int(Data.species["prismal"]["frame"][0]) == 28
+		and ResourceLoader.exists("res://assets/sprites/velunio.png") and ResourceLoader.exists("res://assets/sprites/astraveu.png"))
+	await goto(tpos(15, 10), 4.0, 30.0)
+	await face(Vector2.UP)
+	await tap("eco2", 2)
+	await frames(6)
+	var ok := await exit_to("acampamento_aurora", 15 * 16.0 + 8.0, 8.0)
+	check("R5: a Estrada Final leva ao selo externo da Catedral", ok and W.map_id == "acampamento_aurora")
+	await secs(1.2)
+	await r5_dialogs()
+	check("R5: tileset da Catedral (fonte 5 do TileSet) em uso", W.tilemap.tile_set.has_source(Catedral.SOURCE_ID) and W.tilemap.get_cell_source_id(Vector2i(24, 30)) == Catedral.SOURCE_ID)
+	check("R5: o Arauto da Ordem do Vazio aparece em cena no Acampamento", Game.has_flag("chegou_aurora") and Game.has_flag("arauto_partiu"))
+	check("R5: o selo externo é intransponível a pé", W.is_solid_char(r5_tile(23, 27)) and P.global_position.y > 27 * 16)
+	await shot("r5_01_selo")
+	await use_ent("aurora_fissura", Vector2(0, 14), Vector2.UP)
+	await frames(5)
+	check("R5: o Passo Umbral cruza o selo externo", P.global_position.y < 27 * 16 and Game.has_flag("cruzou_selo_externo"))
+	check("R5: missão principal 5 aponta para a Arquivista Sena", "Sena" in Game.objective_text(), Game.objective_text())
+	check("R5: Acampamento é seguro, com música e clima próprios", W.map.get("safe", false) and W.map.get("music", "") == "aurora" and Weather.zone_of("acampamento_aurora") == "catedral" and Weather.climates().has("aurora"))
+	await shot("r5_02_acampamento")
+	await talk("sena")
+	check("R5: Arquivista Sena dá a missão e suprimentos", Game.has_flag("falou_sena") and "Escadaria" in Game.objective_text(), Game.objective_text())
+	await talk("mira")
+	await close_menus()
+	check("R5: Mira oferece 'Estrelas Invertidas' e a loja", Game.has_flag("quest_estrelas"))
+	await talk("caio")
+	check("R5: Caio oferece 'Vozes Perdidas'", Game.has_flag("quest_vozes"))
+	check("R5: Vesna, Bruna e Ravi estão no Acampamento", ent_by_id("vesna_aurora") != null and ent_by_id("bruna_aurora") != null and ent_by_id("ravi_aurora") != null)
+	var eco1 := ent_by_id("eco_ione_1")
+	check("R5: o Eco de Ione (figura azul translúcida) espera no portão", eco1 != null and eco1.anim != null and eco1.anim.modulate.a < 0.8)
+	await use_ent("eco_ione_1", Vector2(0, 14), Vector2.UP)
+	await r5_dialogs()
+	await frames(10)
+	check("R5: o Eco de Ione fala e some, um passo à frente", Game.has_flag("eco_ione_1_visto") and ent_by_id("eco_ione_1") == null)
+	await rest_at("aurora")
+	check("R5: santuário do Acampamento grava o ponto de retorno", Game.checkpoint.get("shrine", "") == "aurora")
+	await use_ent("quadro_aurora", Vector2(0, 16), Vector2.UP)
+	await frames(5)
+	check("R5: quadro de contratos do Acampamento abre", main.ui.has_screen())
+	await close_menus()
+	check("R5: caçada e trio da região bloqueados até visitar as rotas", Game.contract_state("caca_escribas") == "bloqueado" and Game.contract_state("ultimas_correntes") == "bloqueado")
+	check("R5: nicho escondido fechado antes de observar", W.is_solid_char(r5_tile(3, 10)))
+	await use_ent("aurora_pedra", Vector2(0, 14), Vector2.UP)
+	await use_ent("aurora_bau_nicho", Vector2(16, 0), Vector2.LEFT)
+	check("R5: segredo por observação abre o nicho (baú)", Game.has_flag("aurora_nicho") and Game.chests.has("aurora_bau_nicho"))
+	check("R5: portão norte da Catedral fechado (abre por dentro)", W.is_solid_char(r5_tile(23, 1)))
+
+# ---------------------------------------------------------------- 2. Jardim Invertido (rota 2)
+var r5_seals := 0
+
+func r5_fight_area(kinds: Array, timeout := 120.0, radius := 9999.0) -> int:
+	var seals := 0
+	var t := 0.0
+	var c0: Vector2 = P.global_position
+	var spent := {}
+	while t < timeout and P.state != Player.S.DEAD:
+		var es := hostile().filter(func(e): return (kinds.is_empty() or e.kind in kinds) and e.global_position.distance_to(c0) < radius and float(spent.get(e.uid, 0.0)) < 25.0)
+		if es.is_empty():
+			break
+		for h in get_tree().get_nodes_in_group("selos"):
+			if not h.fired:
+				seals += 1
+				r5_seals += 1
+				if h.global_position.distance_to(P.global_position) < 30.0:
+					steer(P.global_position - h.global_position)
+					await frames(12)
+					release_moves()
+		es.sort_custom(func(a, b): return a.global_position.distance_to(P.global_position) < b.global_position.distance_to(P.global_position))
+		var tgt: Node = es[0]
+		var before := frame_count
+		if P.global_position.distance_to(tgt.global_position) > 90.0:
+			await goto(tgt.global_position, 60.0, 10.0)
+		if is_instance_valid(tgt) and tgt.alive_flag:
+			await r4_step(tgt)
+		var dt := float(frame_count - before) / 60.0
+		t += dt
+		if is_instance_valid(tgt):
+			spent[tgt.uid] = float(spent.get(tgt.uid, 0.0)) + dt
+	return seals
+
+func r5_jardim() -> void:
+	var ok := await exit_to("jardim_invertido", 47 * 16.0 + 8.0, 15 * 16.0 + 8.0)
+	check("R5: o Acampamento leva ao Jardim Invertido", ok and W.map_id == "jardim_invertido")
+	await shot("r5_03_jardim")
+	var n0 := Game.individuals.size()
+	var cap := await capture_species("j_cristil1", 0.3)
+	check("R5: Cristil capturável no habitat fixo (comum)", cap and Game.individuals.size() > n0)
+	check("R5: aceitar a caçada aos escribas", Game.accept_contract("caca_escribas"))
+	await use_ent("jp_espelho1", Vector2(0, 14), Vector2.UP)
+	await use_ent("jp_espelho2", Vector2(0, 14), Vector2.UP)
+	await frames(10)
+	check("R5: espelhos locais levam o feixe ao cristal e abrem o selo", Game.has_flag("jardim_luz") and not W.is_solid_char(r5_tile(29, 5)))
+	await shot("r5_04_prismas")
+	await r4_use(["cristil"])
+	await use_ent("jp_prisma", Vector2(0, 14), Vector2.UP)
+	await frames(10)
+	check("R5: o Cristil gira o prisma e leva a luz ao cristal do mirante", Game.has_flag("jardim_prisma") and not W.is_solid_char(r5_tile(42, 23)))
+	await use_ent("ca_bau_prisma", Vector2(0, 14), Vector2.UP)
+	check("R5: baú do mirante (alternativa do Cristil)", Game.chests.has("ca_bau_prisma"))
+	await use_ent("jard_estrela", Vector2(0, 14), Vector2.UP)
+	await use_ent("eco_perdido2", Vector2(0, 14), Vector2.UP)
+	await use_ent("jard_marca", Vector2(0, -14), Vector2.DOWN)
+	await frames(5)
+	check("R5: o Olhar Velado materializa a marca num caminho", Game.has_flag("jardim_marca") and not W.is_solid_char(r5_tile(12, 26)))
+	await use_ent("jard_circulo", Vector2(0, 14), Vector2.UP)
+	await frames(10)
+	check("R5: o anel de marcas revela o Velúnio (raro)", Game.has_flag("jardim_circulo") and ent_by_id("jard_velunio") != null)
+	await r4_use(["brasejante"])
+	await r5_fight_area(["escriba", "sentinela_prisma"])
+	check("R5: escribas do Jardim enfrentados (a maioria derrotada)", hostile().filter(func(e): return e.kind == "escriba").size() <= 1, str(hostile().map(func(e): return e.uid)))
+	r4_heal()
+	ok = await exit_to("acampamento_aurora", 8.0, 19 * 16.0 + 8.0)
+	check("R5: volta ao Acampamento pelo Jardim", ok)
+
+# ---------------------------------------------------------------- 3. Escadaria dos Fragmentos (rota 1)
+func r5_escadaria() -> void:
+	var ok := await exit_to("escadaria_fragmentos", 8.0, 15 * 16.0 + 8.0)
+	check("R5: o Acampamento leva à Escadaria dos Fragmentos", ok and W.map_id == "escadaria_fragmentos")
+	await shot("r5_05_escadaria")
+	await r5_fight_area(["fragmento"], 40.0, 220.0)
+	var n0 := Game.individuals.size()
+	var cap := await capture_species("e_gravito1", 0.3)
+	check("R5: Gravito capturável no patamar da âncora", cap and Game.individuals.size() > n0)
+	check("R5: escada quebrada sem a âncora (vazio sólido)", W.is_solid_char(r5_tile(15, 30)))
+	await push_crate(ent_by_id("esc_bloco"), Vector2.RIGHT, 4)
+	await frames(10)
+	check("R5: contrapeso local (bloco na placa) firma a âncora e a escada", Game.has_flag("escadaria_ancora") and not W.is_solid_char(r5_tile(15, 30)))
+	await use_ent("eco_perdido1", Vector2(0, 14), Vector2.UP)
+	await goto(tpos(15, 26), 6.0, 40.0)
+	await r5_fight_area(["fragmento"], 80.0)
+	await use_ent("esc_raiz", Vector2(14, 0), Vector2.LEFT)
+	check("R5: a Raiz Viva ergue a ponte de raiz até a ilhota", Game.has_flag("escadaria_raiz") and not W.is_solid_char(r5_tile(5, 22)))
+	await use_ent("esc_bau_raiz", Vector2(16, 0), Vector2.LEFT)
+	await use_ent("esc_estrela", Vector2(0, 14), Vector2.UP)
+	await goto(tpos(16, 10), 6.0, 40.0)
+	await r5_fight_area(["sentinela_prisma"], 80.0)
+	await use_ent("esc_cristal", Vector2(-14, 0), Vector2.RIGHT)
+	check("R5: a Ruptura Ígnea estilhaça o cristal da alcova", Game.has_flag("escadaria_cristal") and not W.is_solid_char(r5_tile(26, 7)))
+	await use_ent("esc_bau_cristal", Vector2(-16, 0), Vector2.RIGHT)
+	check("R5: Ecos Perdidos 2/3 e estrelas 2/3", Game.item_count("eco_perdido") == 2 and Game.has_flag("estrela_1") and Game.has_flag("estrela_2"))
+	r4_heal()
+	ok = await exit_to("catedral_a", 11 * 16.0 + 8.0, 8.0)
+	check("R5: a Escadaria chega à Catedral do Vazio", ok and W.map_id == "catedral_a")
+
+# ---------------------------------------------------------------- 4. Nave dos Prismas (salas 1–4)
+func r5_nave() -> void:
+	await secs(1.2)
+	await r5_dialogs()
+	check("R5: o Arauto reaparece na Nave (cena)", Game.has_flag("arauto_nave_partiu"))
+	await shot("r5_06_nave")
+	await pull_lever("ca_alavanca_atalho")
+	check("R5: atalho Nave -> Acampamento aberto por dentro", Game.has_flag("catedral_atalho") and not W.is_solid_char(r5_tile(29, 43)))
+	await rest_at("catedral_nave")
+	await use_ent("eco_ione_2", Vector2(0, 14), Vector2.UP)
+	await r5_dialogs()
+	await r5_fight_area(["sentinela_prisma"], 60.0)
+	await use_ent("ca_espelho1", Vector2(0, 14), Vector2.UP)
+	await use_ent("ca_espelho2", Vector2(0, 14), Vector2.UP)
+	await frames(10)
+	check("R5: Sala dos Prismas — os espelhos acendem o cristal e abrem o portão norte", Game.has_flag("catedral_luz") and not W.is_solid_char(r5_tile(29, 15)))
+	await shot("r5_07_sala_prismas")
+	await r4_use(["cristil"])
+	for i in 3:
+		await use_ent("ca_prisma", Vector2(0, 14), Vector2.UP)
+	await frames(10)
+	check("R5: o prisma girado para o alto abre o nicho (Cristil)", Game.has_flag("catedral_nicho"))
+	await use_ent("ca_bau_prisma2", Vector2(-16, 0), Vector2.RIGHT)
+	await r4_use(["brasejante"])
+	r4_heal()
+	await goto(tpos(30, 9), 6.0, 40.0)
+	await frames(20)
+	check("R5: Galeria dos Escribas fecha as portas (encontro)", Game.has_flag("tmp_enc_galeria_c") or Game.has_flag("enc_galeria_c_ok"))
+	await r5_fight_area(["escriba", "fragmento"], 150.0)
+	await secs(1.0)
+	check("R5: encontro da Galeria vencido", Game.has_flag("enc_galeria_c_ok"))
+	check("R5: escribas escrevem selos no chão (círculo que fecha)", r5_seals > 0)
+	check("R5: caçada aos escribas concluída", Game.has_flag("caca_escribas_ok"))
+	await use_ent("eco_perdido3", Vector2(0, -14), Vector2.DOWN)
+	check("R5: três Ecos Perdidos (missão do Caio)", Game.has_flag("vozes_ok"))
+	await use_ent("ca_raiz", Vector2(0, -14), Vector2.DOWN)
+	check("R5: Câmara das Raízes — a Raiz Viva cruza o fosso", Game.has_flag("catedral_raiz") and not W.is_solid_char(r5_tile(8, 14)))
+	await take_fire("ca_braseiro")
+	await use_ent("ca_solar", Vector2(0, -14), Vector2.DOWN)
+	check("R5: a chama do braseiro reaquece o mecanismo (raízes + calor)", Game.has_flag("catedral_calor") and not W.is_solid_char(r5_tile(1, 24)))
+	r4_heal()
+	var ok := await exit_to("catedral_b", 8.0, 24 * 16.0 + 8.0)
+	check("R5: a Câmara das Raízes leva ao andar das âncoras", ok and W.map_id == "catedral_b")
+
+# ---------------------------------------------------------------- 5. Âncoras, Coro Velado e Arauto Partido
+func r5_ancoras() -> void:
+	await shot("r5_08_ancoras")
+	await push_crate(ent_by_id("cb_bloco_a"), Vector2.UP, 2)
+	await frames(8)
+	check("R5: âncora A firmada pelo contrapeso local", Game.has_flag("anc_a"))
+	await r4_use(["gravito"])
+	await use_ent("cb_ancora_b", Vector2(0, 14), Vector2.UP)
+	await frames(8)
+	check("R5: o Gravito sustenta a âncora B (ação ambiental)", Game.has_flag("anc_b") and not W.is_solid_char(r5_tile(43, 27)))
+	await r4_use(["brasejante"])
+	await r5_fight_area(["sentinela_prisma"], 60.0)
+	await use_ent("coro_estrela", Vector2(0, 14), Vector2.UP)
+	check("R5: três estrelas invertidas (missão da Mira)", Game.has_flag("estrelas_ok"))
+	await use_ent("coro_marca", Vector2(14, 0), Vector2.LEFT)
+	check("R5: Coro Velado — o Olhar Velado materializa o caminho até a ilha", Game.has_flag("coro_marca"))
+	await use_ent("coro_portal_a", Vector2(0, 14), Vector2.UP)
+	await frames(6)
+	check("R5: o portal marcado cruza o vazio (Passo Umbral)", P.global_position.x < 17 * 16)
+	await r5_fight_area(["escriba"], 60.0)
+	await use_ent("cb_bau_coro", Vector2(0, -14), Vector2.DOWN)
+
+func r5_arauto_threat(b: Node) -> Vector2:
+	var rel: Vector2 = P.global_position - b.global_position
+	if b.bst == b.B.TELE_ROOTS:
+		for d in b.root_dirs:
+			if rel.dot(d) > -10.0 and rel.dot(d) < 150.0 and abs(rel.dot(d.orthogonal())) < 22.0:
+				var side: Vector2 = d.orthogonal()
+				return side if rel.dot(side) >= 0.0 else -side
+	if b.bst == b.B.TELE_SLASH and rel.length() < 70.0:
+		return rel.normalized()
+	for h in get_tree().get_nodes_in_group("selos"):
+		if not h.fired and h.global_position.distance_to(P.global_position) < 32.0:
+			return (P.global_position - h.global_position).normalized()
+	return Vector2.ZERO
+
+func r5_arauto() -> void:
+	var src := FileAccess.get_file_as_string("res://scripts/boss_arauto.gd")
+	check("R5: o Arauto não lê comandos do jogador", not ("Input." in src) and not ("is_action" in src))
+	r4_heal()
+	await goto(tpos(15, 19), 6.0, 30.0)
+	await goto(tpos(17, 12), 6.0, 20.0)
+	await frames(20)
+	var b := find_boss("arauto")
+	check("R5: o Arauto Partido desperta e fecha a arena", b != null and b.activated and Game.has_flag("tmp_arauto_ativo"))
+	Game.behavior = "atacar"
+	var t := 0.0
+	var veil_seen := false
+	var shot_done := false
+	while t < 360.0 and b != null and is_instance_valid(b) and b.alive_flag and P.state != Player.S.DEAD:
+		var before := frame_count
+		await use_potion_if_needed()
+		if b.bst == b.B.VEIL:
+			veil_seen = true
+			if P.energy >= 16.0:
+				W.eco_olhar(P.global_position)
+				P.energy -= 16.0
+			await frames(6)
+		var away := r5_arauto_threat(b)
+		if away != Vector2.ZERO:
+			steer(away)
+			await frames(8)
+			release_moves()
+		elif b.invulnerable or b.bst == b.B.VEIL:
+			await frames(6)
+		else:
+			var d: float = P.global_position.distance_to(b.global_position)
+			if d > 30.0:
+				steer(b.global_position - P.global_position)
+				await frames(4)
+				release_moves()
+			else:
+				await face(b.global_position - P.global_position)
+				await attack_tap()
+				await frames(6)
+		if b.bst == b.B.TELE_ROOTS and not shot_done:
+			shot_done = true
+			await shot("r5_09_arauto")
+		t += float(frame_count - before) / 60.0
+	release_moves()
+	await secs(2.0)
+	check("R5: o Arauto apresenta as três combinações (raiz+brasa, véu+portal, selos)", (is_instance_valid(b) and b.seen.size() == 3) or (Game.has_flag("arauto_morto") and veil_seen))
+	check("R5: o Olhar Velado rasga o véu do Arauto", veil_seen)
+	check("R5: Arauto Partido derrotado", Game.has_flag("arauto_morto"), "t=%.0f hp=%s" % [t, str(b.hp) if is_instance_valid(b) else "-"])
+	await r5_dialogs()
+	check("R5: memória do Arauto entrega a página de Ione (7)", Game.item_count("pagina_ione_7") == 1)
+	Game.behavior = "preservar"
+	r4_heal()
+	await goto(tpos(40, 9), 6.0, 40.0)
+	await use_ent("cb_bau_tesouro", Vector2(0, 14), Vector2.UP)
+	await use_ent("eco_ione_3", Vector2(0, 14), Vector2.UP)
+	await r5_dialogs()
+	await pull_lever("cb_alavanca_elevador")
+	check("R5: alavanca do tesouro liga o elevador (atalho Nave <-> Âncoras)", Game.has_flag("catedral_elevador"))
+	await rest_at("catedral_tesouro")
+	var ok := await exit_to("rito_convergencia", 55 * 16.0 + 8.0, 8 * 16.0 + 16.0)
+	check("R5: o tesouro leva ao Rito da Convergência", ok and W.map_id == "rito_convergencia")
+
+# ---------------------------------------------------------------- 6. Rito da Convergência
+func r5_rito() -> void:
+	await shot("r5_10_rito")
+	await use_ent("rc_raiz1", Vector2(-14, 0), Vector2.RIGHT)
+	await use_ent("rc_cristal1", Vector2(-14, 0), Vector2.RIGHT)
+	check("R5: rito 1 — raiz e brasa abrem a primeira porta", Game.has_flag("rc_raiz") and Game.has_flag("rc_brasa") and not W.is_solid_char(r5_tile(14, 14)))
+	await use_ent("rc_marca2", Vector2(-14, 0), Vector2.RIGHT)
+	await use_ent("rc_portal_a", Vector2(0, 14), Vector2.UP)
+	await frames(5)
+	await pull_lever("rc_alavanca2")
+	check("R5: rito 2 — visão e portal levam à alavanca", Game.has_flag("rc2_ok"))
+	await use_ent("rc3_raiz", Vector2(-14, 0), Vector2.RIGHT)
+	await use_ent("rc3_cristal", Vector2(0, 14), Vector2.UP)
+	await use_ent("rc3_marca", Vector2(-14, 0), Vector2.RIGHT)
+	await use_ent("rc3_fissura", Vector2(-14, 0), Vector2.RIGHT)
+	await frames(5)
+	await pull_lever("rc_alavanca3")
+	check("R5: rito 3 — os quatro Ecos em sequência", Game.has_flag("rc3_raiz") and Game.has_flag("rc3_brasa") and Game.has_flag("rc3_marca") and Game.has_flag("rc3_ok"))
+	await use_ent("rc_altar", Vector2(0, 14), Vector2.UP)
+	await r5_dialogs()
+	check("R5: Rito da Convergência concede o Amuleto da Convergência", Game.has_flag("rito_convergencia_ok") and Game.item_count("amuleto_convergencia") == 1)
+	Game.equip("amuleto_convergencia")
+	var ok := await exit_to("catedral_c", 63 * 16.0 + 8.0, 14 * 16.0 + 16.0)
+	check("R5: o rito leva ao Coração do Eco", ok and W.map_id == "catedral_c")
+
+# ---------------------------------------------------------------- 7. Câmara do Eco: resgate de Ione
+func r5_resgate() -> void:
+	await rest_at("catedral_coracao")
+	await use_ent("cc_bau_prep", Vector2(0, 14), Vector2.UP)
+	await use_ent("eco_ione_4", Vector2(0, 14), Vector2.UP)
+	await r5_dialogs()
+	check("R5: o Eco de Ione aparece em quatro lugares, sempre à frente", Game.has_flag("eco_ione_2_visto") and Game.has_flag("eco_ione_3_visto") and Game.has_flag("eco_ione_4_visto"))
+	check("R5: porta do trono fechada enquanto Ione está presa", W.is_solid_char(r5_tile(27, 27)))
+	await use_ent("cc_cristal_ione", Vector2(0, 16), Vector2.UP)
+	await r5_dialogs()
+	await shot("r5_11_camara")
+	await use_ent("cc_elo_raiz", Vector2(0, 14), Vector2.UP)
+	await use_ent("cc_elo_brasa", Vector2(0, 14), Vector2.UP)
+	var ev := ent_by_id("cc_elo_velado")
+	check("R5: o elo velado é invisível antes do Olhar Velado", ev != null and ev.prompt() == "")
+	await goto(ev.global_position + Vector2(0, 14), 4.0, 30.0)
+	W.eco_olhar(P.global_position)
+	await frames(5)
+	await use_ent("cc_elo_velado", Vector2(0, 14), Vector2.UP)
+	await use_ent("cc_fissura", Vector2(-14, 0), Vector2.RIGHT)
+	await frames(5)
+	await use_ent("cc_elo_umbral", Vector2(0, 14), Vector2.UP)
+	check("R5: os quatro elos cedem a quatro Ecos", Game.has_flag("elo_raiz") and Game.has_flag("elo_brasa") and Game.has_flag("elo_velado") and Game.has_flag("elo_umbral"))
+	await secs(2.0)
+	var lines: String = " ".join(main.ui.hud.dlg_lines)
+	check("R5: cena do resgate — Ione fala com o herói (e o herói responde)", "Ione" in lines and "Você:" in lines, lines.substr(0, 80))
+	await r5_dialogs()
+	check("R5: Mestra Ione libertada e a porta do trono aberta", Game.has_flag("ione_livre") and not W.is_solid_char(r5_tile(27, 27)))
+	await use_ent("cc_fissura_volta", Vector2(0, 14), Vector2.UP)
+	await frames(5)
+
+# ---------------------------------------------------------------- 8. Rei dos Ecos
+func r5_danger(b: Node, p: Vector2) -> bool:
+	var rel: Vector2 = p - b.global_position
+	if b.bst == b.B.TELE:
+		match b.echo:
+			"cervo":
+				for d in b.root_dirs:
+					if rel.dot(d) > -10.0 and rel.dot(d) < 160.0 and abs(rel.dot(d.orthogonal())) < 22.0:
+						return true
+			"ferreiro":
+				for d in b.quake_dirs:
+					if rel.dot(d) > -10.0 and rel.dot(d) < 180.0 and abs(rel.dot(d.orthogonal())) < 24.0:
+						return true
+			"bruxa":
+				for q in b.puddle_pts:
+					if p.distance_to(q) < 30.0:
+						return true
+				for d in b.orb_dirs:
+					if rel.dot(d) > 0.0 and abs(rel.dot(d.orthogonal())) < 12.0:
+						return true
+			"cavaleiro":
+				if rel.dot(b.attack_dir) > -10.0 and rel.dot(b.attack_dir) < 170.0 and abs(rel.dot(b.attack_dir.orthogonal())) < 26.0:
+					return true
+	if b.bst == b.B.THRUST:
+		if rel.dot(b.attack_dir) > -10.0 and rel.dot(b.attack_dir) < 80.0 and abs(rel.dot(b.attack_dir.orthogonal())) < 26.0:
+			return true
+	if b.bst == b.B.WARN_RUIN:
+		for r in b.ruin_rects(b.ruin_i):
+			if r.grow(10.0).has_point(p):
+				return true
+	for pr in get_tree().get_nodes_in_group("projectiles"):
+		if pr.global_position.distance_to(p) < 26.0:
+			return true
+	for h in get_tree().get_nodes_in_group("hazards"):
+		if h.global_position.distance_to(p) < 22.0:
+			return true
+	for h in get_tree().get_nodes_in_group("selos"):
+		if h.global_position.distance_to(p) < 28.0:
+			return true
+	return W.tile_solid_at(p)
+
+func r5_escape(b: Node) -> bool:
+	if not r5_danger(b, P.global_position):
+		return false
+	var best := Vector2.ZERO
+	var bd := 1e9
+	for k in 16:
+		for r in [32.0, 56.0, 88.0]:
+			var q: Vector2 = P.global_position + Vector2.from_angle(TAU * k / 16.0) * r
+			if r5_danger(b, q) or Combat.ray_blocked(W, P.global_position, q):
+				continue
+			var cost: float = r + q.distance_to(Vector2(29 * 16.0, 13 * 16.0)) * 0.3
+			if cost < bd:
+				bd = cost
+				best = q
+	if best == Vector2.ZERO:
+		best = Vector2(29 * 16.0, 13 * 16.0)
+	steer(best - P.global_position)
+	await frames(6)
+	if b.bst == b.B.THRUST and P.vigor >= 25.0 and P.dodge_cd <= 0.0:
+		await tap("dodge", 2)
+	release_moves()
+	return true
+
+func r5_rei_step(b: Node) -> void:
+	await use_potion_if_needed()
+	if await r5_escape(b):
+		return
+	var goal: Vector2 = b.global_position
+	if b.bst in [b.B.SHIELDED, b.B.RISE]:
+		var tgt: Node = null
+		var bd := 1e9
+		for f in b.focos:
+			if is_instance_valid(f) and f.alive_flag and f.global_position.distance_to(P.global_position) < bd:
+				bd = f.global_position.distance_to(P.global_position)
+				tgt = f
+		if tgt == null:
+			await frames(4)
+			return
+		var back: Vector2 = (tgt.global_position - b.global_position).normalized()
+		goal = tgt.global_position + back * 20.0
+		if P.global_position.distance_to(goal) > 8.0:
+			steer(goal - P.global_position)
+			await frames(4)
+			release_moves()
+			return
+		await face(tgt.global_position - P.global_position)
+		await attack_tap()
+		await frames(6)
+		return
+	if b.invulnerable or b.bst in [b.B.TELE, b.B.WARN_RUIN, b.B.THRUST, b.B.HESITATE]:
+		await frames(4)
+		return
+	var d: float = P.global_position.distance_to(goal)
+	if d > 34.0:
+		steer(goal - P.global_position)
+		await frames(4)
+		release_moves()
+	else:
+		await face(goal - P.global_position)
+		await attack_tap()
+		await frames(6)
+
+func r5_rei() -> void:
+	var src := FileAccess.get_file_as_string("res://scripts/boss_rei.gd")
+	check("R5: o Rei não lê comandos do jogador", not ("Input." in src) and not ("is_action" in src))
+	await secs(1.0)
+	await r5_dialogs()
+	await r4_use(["brasejante"])
+	r4_heal()
+	await goto(tpos(28, 26), 6.0, 30.0)
+	await goto(tpos(29, 19), 6.0, 20.0)
+	await frames(20)
+	var b := find_boss("rei")
+	check("R5: o Rei dos Ecos desperta e fecha a arena", b != null and b.activated and Game.has_flag("tmp_rei_ativo"))
+	await secs(3.2)
+	await shot("r5_12_rei")
+	# derrota e reinício
+	var deaths0 := int(Game.stats["mortes"])
+	await die_generic(b, "arena do Rei dos Ecos")
+	await r5_dialogs()
+	check("R5: derrota no Rei: volta ao santuário do Coração", W.map_id == "catedral_c" and int(Game.stats["mortes"]) == deaths0 + 1)
+	check("R5: reinício limpa a arena e mantém Ione livre", not Game.has_flag("tmp_rei_ativo") and Game.has_flag("ione_livre") and not Game.has_flag("rei_morto"))
+	r4_heal()
+	await goto(tpos(28, 26), 6.0, 40.0)
+	await goto(tpos(29, 19), 6.0, 20.0)
+	await frames(20)
+	b = find_boss("rei")
+	check("R5: o Rei volta inteiro no reinício", b != null and b.activated and b.hp >= b.max_hp - 1.0)
+	Game.behavior = "atacar"
+	var saw := {"focos": false, "exposto": false, "ruina": false, "respiro": false}
+	var t := 0.0
+	var shots := {}
+	while t < 600.0 and b != null and is_instance_valid(b) and b.alive_flag and b.bst != b.B.HESITATE and P.state != Player.S.DEAD:
+		var before := frame_count
+		if b.bst == b.B.SHIELDED: saw["focos"] = true
+		if b.bst == b.B.EXPOSED: saw["exposto"] = true
+		if b.bst == b.B.WARN_RUIN: saw["ruina"] = true
+		if b.bst == b.B.BREATH: saw["respiro"] = true
+		var key := "%d_%d" % [b.phase, b.bst]
+		if not shots.has("dbg" + key):
+			shots["dbg" + key] = true
+			print("[r5] Rei fase=%d bst=%d hp=%.0f t=%.0f" % [b.phase, b.bst, b.hp, t])
+		if not shots.has(key) and b.bst in [b.B.TELE, b.B.SHIELDED, b.B.WARN_RUIN]:
+			shots[key] = true
+			await shot("r5_13_rei_%s" % key)
+		await r5_rei_step(b)
+		t += float(frame_count - before) / 60.0
+	release_moves()
+	check("R5: fase 1 — os quatro ecos dos guardiões, um de cada vez", is_instance_valid(b) and b.echoes_seen.size() == 4)
+	check("R5: fase 2 — dois focos exigem posicionamento (por trás) e expõem o núcleo", saw["focos"] and saw["exposto"])
+	check("R5: fase 3 — arena parcialmente destruída com avisos e respiros", saw["ruina"] and saw["respiro"] and is_instance_valid(b) and b.ruin_i >= 1)
+	check("R5: a luz de Ione cura entre as quedas", is_instance_valid(b) and b.heals >= 1)
+	check("R5: no fim o Rei hesita (a força não basta)", is_instance_valid(b) and b.bst == b.B.HESITATE and b.alive_flag,
+		"t=%.0f fase=%s hp=%s mortes=%d" % [t, str(b.phase) if is_instance_valid(b) else "-", str(b.hp) if is_instance_valid(b) else "-", int(Game.stats["mortes"]) - deaths0])
+	await secs(1.0)
+	await shot("r5_14_hesita")
+	var ne := ent_by_id("rei_nome")
+	if ne != null:
+		await goto(ne.global_position + Vector2(0, 20), 6.0, 20.0)
+		await face(Vector2.UP)
+		await interact_press()
+	await frames(10)
+	var nome_lines: String = " ".join(main.ui.hud.dlg_lines)
+	check("R5: o nome 'Ivar' é devolvido (herói, Ione e a equipe juntos)", "Ivar" in nome_lines and Game.has_flag("climax_equipe"), nome_lines.substr(0, 100))
+	var ind0: Dictionary = Game.individuals[Game.team[0]]
+	check("R5: a cena cita as criaturas da equipe", Game.creature_name(ind0) in nome_lines)
+	Game.behavior = "preservar"
+
+# ---------------------------------------------------------------- 9. epílogo, créditos e pós-jogo
+func r5_epilogo() -> void:
+	var t := 0.0
+	var saw_credits := false
+	var maps := {}
+	while t < 300.0 and not Game.has_flag("epilogo_visto"):
+		maps[W.map_id] = true
+		if main.ui.has_screen():
+			var top = main.ui._top()
+			if top != null and "Créditos" in str(top.title):
+				saw_credits = true
+				await shot("r5_16_creditos")
+			await close_menus()
+		elif main.ui.hud.dlg_active:
+			if not maps.has("_shot_" + W.map_id):
+				maps["_shot_" + W.map_id] = true
+				await shot("r5_15_epilogo_" + W.map_id)
+			await advance_dialogs(30)
+		await frames(10)
+		t += 10.0 / 60.0
+	await r5_dialogs()
+	await frames(20)
+	check("R5: Rei dos Ecos libertado (flag rei_morto)", Game.has_flag("rei_morto") and Game.has_flag("catedral_liberta"))
+	check("R5: Jornada chega a 5/5 guardiões", Game.guardians_done() == 5, str(Game.guardians_done()))
+	check("R5: memória de Ivar e a última lembrança (Coroa Partida: a fenda e o selo de Ione)", Game.item_count("lembranca_ivar") == 1 and Game.has_flag("mem_rei_morto")
+		and Historia.has_artefato("coroa_partida") and not Historia.artefato("coroa_partida").get("placeholder", false) and "Lúmen" in " ".join(Historia.artefato("coroa_partida")["lembranca"]["linhas"]))
+	check("R5: as fissuras se fecham (revelação final dos cinco artefatos)", Game.has_flag("fissuras_fechadas"))
+	var all5 := true
+	for m in ["vila_lumen", "forja_cobre", "porto_lanternas", "refugio_muralha", "acampamento_aurora"]:
+		if not Game.has_flag("epilogo_" + m):
+			all5 = false
+	check("R5: epílogo visita as cinco comunidades", all5)
+	check("R5: créditos finais exibidos", saw_credits)
+	check("R5: epílogo concluído e Harmonia dos Ecos recebida", Game.has_flag("epilogo_visto") and Game.has_eco("harmonia"))
+	check("R5: o herói volta ao Acampamento em festa (Ione e Sena)", W.map_id == "acampamento_aurora" and ent_by_id("ione_aurora") != null and ent_by_id("sena_festa") != null and ent_by_id("aurora_festa1") != null)
+	check("R5: música do Acampamento muda depois do Rei", Audio.place_for_map("acampamento_aurora", W.map) == "vila_festa")
+	check("R5: missão principal 5 concluída", Game.quest_step("principal5") >= Data.quests["principal5"]["etapas"].size(), Game.objective_text())
+	await shot("r5_17_acampamento_festa")
+	# consequências visíveis nas comunidades (moradores e cenário)
+	W.load_map("vila_lumen", "from_santuario")
+	await frames(10)
+	check("R5: Vila Lúmen em festa (Teo voltou, lanternas, fala nova da Maru)", ent_by_id("teo_vila") != null and ent_by_id("fim_vila_l1") != null and ent_by_id("anciao").def["dialog"] == "anciao_fim")
+	await shot("r5_18_vila_festa")
+	W.load_map("porto_lanternas", "default")
+	await frames(10)
+	check("R5: Bruna e Ravi no cais do Porto", ent_by_id("bruna_porto") != null and ent_by_id("ravi_porto") != null)
+	W.load_map("refugio_muralha", "default")
+	await frames(10)
+	check("R5: Vesna no Refúgio (arco fechado)", ent_by_id("vesna_refugio") != null and ent_by_id("talia").def["dialog"] == "talia_fim")
+	# pós-jogo: Harmonia dos Ecos
+	W.load_map("acampamento_aurora", "from_harmonia")
+	await frames(10)
+	check("R5: selo do Salão da Harmonia fechado antes do Eco", W.is_solid_char(r5_tile(38, 1)))
+	Game.eco_slots[0] = "harmonia"
+	Game.eco_changed.emit()
+	await goto(tpos(38, 5), 6.0, 30.0)
+	P.energy = 100.0
+	await tap("eco1", 2)
+	await frames(8)
+	check("R5: a Harmonia dos Ecos abre o Salão da Harmonia (desafios opcionais)", Game.has_flag("harmonia_aberta") and not W.is_solid_char(r5_tile(38, 1)))
+	check("R5: Harmonia expande o bestiário com notas", Catedral.harmonia_note("cristil").length() > 20)
+	await talk("sena_festa")
+	check("R5: Sena oferece 'O Arquivo Vivo' (bestiário completo)", Game.quest_active("bestiario_completo"))
+	var ok := await exit_to("salao_harmonia", 38 * 16.0 + 8.0, 8.0)
+	check("R5: o Salão da Harmonia abre as provas", ok and Game.quest_active("provas_harmonia"))
+	r4_heal()
+	await goto(tpos(19, 34), 8.0, 30.0)
+	await frames(20)
+	await r5_fight_area([], 200.0, 300.0)
+	await secs(1.0)
+	check("R5: Prova da Floresta e das Minas vencida", Game.has_flag("prova1_ok"))
+
+func r5_criaturas() -> void:
+	var u := uuid_of(["cristil"])
+	if u != "":
+		var ind: Dictionary = Game.individuals[u]
+		ind["nivel"] = 26
+		for k in ["vitoria:a", "acao:b", "missao:c"]:
+			Game.bond_activity(u, k)
+		check("R5: Cristil evolui para Prismal (nv. 26 + vínculo)", Game.evolve(u) and Game.individuals[u]["species_id"] == "prismal")
+	var g := uuid_of(["gravito"])
+	if g != "":
+		var ig: Dictionary = Game.individuals[g]
+		ig["nivel"] = 26
+		for k in ["vitoria:a", "acao:b", "missao:c"]:
+			Game.bond_activity(g, k)
+		check("R5: Gravito evolui para Monolito e mantém a ação de âncora", Game.evolve(g) and Data.species["monolito"]["acao_id"] == "ancora")
+	check("R5: Velúnio tem dardo que atravessa (execução própria)", Data.skills["dardo_veu"]["exec"] == "perfura" and Data.species["astraveu"]["acao_id"] == "marca")
+
+func r5_save_load() -> void:
+	var snap := {"chests": Game.chests.size(), "flags": Game.flags.size(), "frag": Game.fragments}
+	W.save_now(5)
+	SaveSys.load_game(5)
+	await frames(10)
+	check("R5: save/load mantém Harmonia, artefato, flags e baús sem duplicar",
+		Game.has_eco("harmonia") and Game.has_flag("rei_morto") and Historia.has_artefato("coroa_partida") and Game.chests.size() == snap["chests"]
+		and Game.flags.size() == snap["flags"] and Game.fragments == snap["frag"])
+
+## Atalho de desenvolvimento: --r5de=N (6 Arauto, 7 rito, 8 resgate, 9 Rei)
+func r5_jump(n: int) -> void:
+	for f in ["chegou_aurora", "arauto_partiu", "cruzou_selo_externo", "visitou_acampamento_aurora", "falou_sena", "quest_estrelas", "quest_vozes",
+			"eco_ione_1_visto", "visitou_jardim_invertido", "jardim_luz", "visitou_escadaria_fragmentos", "escadaria_ancora", "visitou_catedral_a",
+			"arauto_nave_partiu", "catedral_atalho", "eco_ione_2_visto", "catedral_luz", "enc_galeria_c_ok", "catedral_raiz", "catedral_calor",
+			"visitou_catedral_b", "anc_a", "anc_b", "coro_marca"]:
+		Game.set_flag(f)
+	Game.hero["level"] = 28
+	for pair in [["cristil", 26], ["gravito", 26]]:
+		var ind := r4_ind(pair[0], pair[1])
+		Game.sanctuary.append(ind["uuid"])
+	if n >= 7:
+		for f in ["arauto_morto", "eco_ione_3_visto", "catedral_elevador", "mem_arauto_morto"]:
+			Game.set_flag(f)
+	if n >= 8:
+		for f in ["rito_convergencia_ok", "rc_raiz", "rc_brasa", "rc2_ok", "rc3_ok"]:
+			Game.set_flag(f)
+		Game.give_item("amuleto_convergencia", 1); Game.equip("amuleto_convergencia")
+	if n >= 9:
+		for f in ["ione_livre", "eco_ione_4_visto", "elo_raiz", "elo_brasa", "elo_velado", "elo_umbral"]:
+			Game.set_flag(f)
+	r4_heal()
+	match n:
+		6: W.load_map("catedral_b", "from_a")
+		7: W.load_map("rito_convergencia", "from_b")
+		8, 9: W.load_map("catedral_c", "from_rito")
+	await frames(30)
+	await r5_dialogs()
+	if n == 6:
+		await goto(tpos(30, 27), 6.0, 30.0)
+		await use_ent("coro_portal_a", Vector2(0, 14), Vector2.UP)
+	if n >= 8:
+		await rest_at("catedral_coracao")
+
+func run_regiao5() -> void:
+	var de := 0
+	for a in args:
+		if a.begins_with("--r5de="):
+			de = int(a.substr(7))
+	await r5_setup(5)
+	if de > 0:
+		await r5_jump(de)
+		if de <= 6: await r5_arauto()
+		if de <= 7: await r5_rito()
+		if de <= 8: await r5_resgate()
+		await r5_rei()
+		await r5_epilogo()
+		await r5_criaturas()
+		await r5_save_load()
+		return
+	await r5_entrada()
+	await r5_jardim()
+	await r5_escadaria()
+	await r5_nave()
+	await r5_ancoras()
+	await r5_arauto()
+	await r5_rito()
+	await r5_resgate()
+	await r5_rei()
+	await r5_epilogo()
+	await r5_criaturas()
+	await r5_save_load()

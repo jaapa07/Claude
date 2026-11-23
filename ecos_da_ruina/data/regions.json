@@ -95,9 +95,18 @@
    30
   ],
   "nucleo": "acampamento_aurora",
-  "mapas": [],
+  "mapas": [
+   "acampamento_aurora",
+   "escadaria_fragmentos",
+   "jardim_invertido",
+   "catedral_a",
+   "catedral_b",
+   "rito_convergencia",
+   "catedral_c",
+   "salao_harmonia"
+  ],
   "guardiao": "rei_ecos",
   "eco": "harmonia",
-  "status": "não implementada"
+  "status": "jogavel"
  }
 }
