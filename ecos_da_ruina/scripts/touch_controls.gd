@@ -32,6 +32,14 @@ const LEGEND := [
 ]
 var _legend: Control
 var _legend_layer: CanvasLayer
+var _nav: Node2D
+## Navegação de menus pelo toque (título, saves, pausa, diálogos): [coluna em touch_nav.png, ação, centro]
+const NAV := [
+	[0, "ui_up", Vector2(452, 168)],
+	[1, "ui_down", Vector2(452, 236)],
+	[2, "ui_accept", Vector2(416, 236)],
+	[3, "ui_cancel", Vector2(416, 168)],
+]
 
 # [ícone (coluna em touch_buttons.png), ação, centro (x, y) na tela 480x270, escala]
 const LAYOUT := [
@@ -78,6 +86,20 @@ func _ready() -> void:
 		t.shape_centered = true
 		_root.add_child(t)
 		_buttons.append(t)
+	_nav = Node2D.new()
+	add_child(_nav)
+	for nb in NAV:
+		var t2 := TouchScreenButton.new()
+		t2.texture_normal = Art.region("touch_nav", int(nb[0]) * 28, 0, 28, 28)
+		t2.action = nb[1]
+		t2.position = nb[2] - Vector2(14, 14)
+		t2.modulate = Color(1, 1, 1, 0.85)
+		var sh2 := CircleShape2D.new()
+		sh2.radius = 15.0
+		t2.shape = sh2
+		t2.shape_centered = true
+		_nav.add_child(t2)
+	_nav.visible = false
 	if DisplayServer.is_touchscreen_available() or OS.has_feature("web_ios") or OS.has_feature("web_android"):
 		_enable()
 	_root.visible = enabled
@@ -162,6 +184,7 @@ func _process(_delta: float) -> void:
 		show_legend()
 		return
 	var hide: bool = main == null or not Game.in_game or main.ui.has_screen() or main.ui.is_modal()
+	_nav.visible = enabled and _legend == null and main != null and (not Game.in_game or main.ui.has_screen() or main.ui.is_modal())
 	var was: bool = _root.visible
 	_root.visible = enabled and not hide
 	if hide and was:
@@ -175,6 +198,12 @@ func _input(event: InputEvent) -> void:
 		return
 	if event is InputEventScreenTouch and not enabled:
 		_enable()
+	# o clique emulado de um toque nas setas não pode também clicar no menu/diálogo por trás
+	if _nav != null and _nav.visible and event is InputEventMouseButton:
+		for nb in NAV:
+			if event.position.distance_to(nb[2]) <= 17.0:
+				get_viewport().set_input_as_handled()
+				return
 	if enabled and _root.visible and event is InputEventMouseButton:
 		get_viewport().set_input_as_handled()     # clique emulado do toque não mira nem ataca
 		return

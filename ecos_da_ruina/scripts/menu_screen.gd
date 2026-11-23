@@ -53,7 +53,7 @@ func _fix_sel(dir: int) -> void:
 	if items.is_empty():
 		return
 	var n := 0
-	while n < items.size() and items[sel].get("hdr", false):
+	while n < items.size() and (items[sel].get("hdr", false) or (title_mode and not items[sel].get("en", true))):
 		sel = (sel + dir + items.size()) % items.size()
 		n += 1
 
@@ -228,6 +228,7 @@ func _refresh() -> void:
 				var it: Dictionary = items[r]
 				l.text = it["t"]; l.position = Vector2(x + 4, y + r * 16.0); l.size = Vector2(140, 14)
 				l.modulate = Color.WHITE if it.get("en", true) else Color(0.5, 0.5, 0.55)
+		_sel_bar.visible = true; _cursor.visible = true
 		_sel_bar.position = Vector2(x - 4, y + sel * 16.0 - 1); _sel_bar.size = Vector2(148, 15)
 		_cursor.position = Vector2(x - 10, y + sel * 16.0 + 10)
 		_foot_lab.text = _info_text().get_slice("\n", 0)
