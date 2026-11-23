@@ -401,6 +401,7 @@ func take_hit(dmg: float, from: Vector2, opts: Dictionary = {}) -> bool:
 	if powers != null and powers.try_parry(dmg, from, opts):
 		return false
 	dmg *= Game.enemy_damage_mult() * (1.0 - Game.hero_reduction())
+	dmg *= Game.hab_shield_mult()   # escudo de habilidade da criatura (Casca, Halo, Muralha, Placa)
 	var to_src := (from - global_position).normalized()
 	if state == S.GUARD and not opts.get("indefensavel", false) and aim_dir.dot(to_src) > 0.2:
 		var cost := dmg * 0.9

@@ -152,6 +152,7 @@ func new_game(p_slot: int = 1) -> void:
 	skill_cd = {}
 	swap_cd = 0.0
 	save_block = 0
+	hab_escudo_t = 0.0; hab_novas = []
 	hero["hp"] = hero_max_hp()
 	in_game = true
 	hero_changed.emit(); team_changed.emit(); inventory_changed.emit(); quest_changed.emit()
@@ -191,6 +192,7 @@ func from_dict(d: Dictionary) -> bool:
 	stats = d.get("stats", stats); play_time = float(d.get("play_time", 0.0)); difficulty = d.get("difficulty", "aventura")
 	behavior = d.get("behavior", "preservar"); slot = int(d.get("slot", 1))
 	tmp_flags = {}; skill_cd = {}; swap_cd = 0.0; save_block = 0
+	hab_escudo_t = 0.0; hab_novas = []
 	in_game = true
 	_normalize_types()
 	hero["hp"] = min(float(hero.get("hp", 1.0)), hero_max_hp())
@@ -209,6 +211,7 @@ func _normalize_types() -> void:
 	for u in individuals:
 		var ind: Dictionary = individuals[u]
 		ind["nivel"] = int(ind["nivel"])
+		hab_sync(ind, false)   # saves antigos: ativa = habilidade original, aprendidas conforme o nível
 	for k in chests.keys():
 		chests[k] = true
 	for k in upgrades.keys():
@@ -424,6 +427,7 @@ func new_individual(species_id: String, level: int) -> Dictionary:
 	var ind := {"uuid": new_uuid(), "species_id": species_id, "apelido": "", "nivel": level, "xp": 0, "hp": 1.0,
 		"exausta": false, "vinculo": [], "origem": ""}
 	ind["hp"] = creature_hp_max(ind)
+	hab_sync(ind, false)
 	return ind
 
 func sp_of(ind: Dictionary) -> Dictionary:
@@ -574,6 +578,7 @@ func add_creature_xp(ind: Dictionary, amount: float) -> void:
 		var frac: float = float(ind["hp"]) / max(1.0, creature_hp_max(ind))
 		toast.emit("%s chegou ao nível %d!" % [creature_name(ind), ind["nivel"]])
 		level_up.emit(ind["uuid"], int(ind["nivel"]))
+		hab_sync(ind, true)
 		check_evolution_hint(ind)
 		if not ind.get("exausta", false):
 			ind["hp"] = min(creature_hp_max(ind), float(ind["hp"]) + creature_hp_max(ind) * 0.25)
@@ -645,8 +650,124 @@ func evolve(uuid: String) -> bool:
 	b["visto"] = true; b["evoluiu"] = true
 	bestiary[ind["species_id"]] = b
 	toast.emit("%s evoluiu para %s!" % [creature_name(ind), Data.sp(ind["species_id"]).get("nome", "")])
+	hab_novas = hab_sync(ind, true)
 	team_changed.emit()
 	return true
+
+# =============================================================== HABILIDADES DAS CRIATURAS (aprendidas por nível; o jogador escolhe a ativa)
+## Cada espécie lista "habilidades": [{"id", "nivel"}]; a forma evoluída repete as da base e libera exclusivas.
+## Cada indivíduo guarda "hab_aprendidas" (ids) e "hab_ativa" (a usada no Q / botão estrela).
+const HAB_FATOR := {"prender": 0.4, "pulso": 0.5, "ima": 0.4, "nuvem": 0.3}
+var hab_escudo_t := 0.0      # execução: escudo ativo (herói e criatura recebem menos dano)
+var hab_escudo_red := 0.0
+var hab_novas: Array = []    # habilidades liberadas na última evolução (a UI oferece a escolha)
+
+func hab_list(species_id: String) -> Array:
+	var s: Dictionary = Data.sp(species_id)
+	var l = s.get("habilidades", [])
+	if l is Array and not l.is_empty():
+		return l
+	if str(s.get("skill", "")) != "":
+		return [{"id": s["skill"], "nivel": 1}]
+	return []
+
+func hab_default(ind: Dictionary) -> String:
+	return str(sp_of(ind).get("skill", ""))
+
+## Garante os campos e aprende o que o nível permite. Devolve as recém-aprendidas (avisa por toast se announce).
+func hab_sync(ind: Dictionary, announce: bool) -> Array:
+	if ind.is_empty() or not ind.has("species_id"):
+		return []
+	var learned: Array = []
+	var old = ind.get("hab_aprendidas", null)
+	var had_list: bool = old is Array
+	if had_list:
+		for h in old:
+			if Data.skills.has(str(h)) and not learned.has(str(h)):
+				learned.append(str(h))
+	var novas: Array = []
+	for h in hab_list(str(ind["species_id"])):
+		var hid := str(h.get("id", ""))
+		if Data.skills.has(hid) and int(h.get("nivel", 1)) <= int(ind.get("nivel", 1)) and not learned.has(hid):
+			learned.append(hid)
+			if had_list:
+				novas.append(hid)
+	ind["hab_aprendidas"] = learned
+	var act := str(ind.get("hab_ativa", ""))
+	if act == "" or not learned.has(act):
+		var df := hab_default(ind)
+		ind["hab_ativa"] = df if (learned.has(df) or learned.is_empty()) else str(learned[0])
+	if announce and in_game:
+		for hid in novas:
+			toast.emit("%s aprendeu %s! Escolha no menu" % [creature_name(ind), Data.skills[hid]["nome"]])
+	return novas
+
+## Habilidade usada no Q (sempre válida para a espécie atual).
+func hab_active(ind: Dictionary) -> String:
+	var a := str(ind.get("hab_ativa", ""))
+	if a != "" and Data.skills.has(a) and ind.get("hab_aprendidas", []).has(a):
+		return a
+	return hab_default(ind)
+
+func hab_set_active(uuid: String, hid: String) -> bool:
+	var ind: Dictionary = individuals.get(uuid, {})
+	if ind.is_empty():
+		return false
+	hab_sync(ind, false)
+	if not ind["hab_aprendidas"].has(hid):
+		return false
+	ind["hab_ativa"] = hid
+	team_changed.emit()
+	return true
+
+## Nível exigido para a habilidade nesta espécie (0 = não faz parte da lista).
+func hab_level(species_id: String, hid: String) -> int:
+	for h in hab_list(species_id):
+		if str(h.get("id", "")) == hid:
+			return int(h.get("nivel", 1))
+	return 0
+
+func hab_mult(ind: Dictionary) -> float:
+	return 1.4 if str(sp_of(ind).get("habitat", "")).begins_with("Evolução") else 1.0
+
+## Dano por alvo (mesma conta que o companheiro usa ao executar).
+func hab_damage(ind: Dictionary, hid: String) -> float:
+	var sk: Dictionary = Data.skills.get(hid, {})
+	var base: float = (float(sk.get("dano", 0)) + creature_atk(ind) * 0.6) * hab_mult(ind)
+	return base * float(HAB_FATOR.get(str(sk.get("exec", hid)), 1.0))
+
+func hab_heal(ind: Dictionary, hid: String) -> float:
+	var sk: Dictionary = Data.skills.get(hid, {})
+	return (float(sk.get("cura", 0)) + creature_atk(ind) * 0.5) * hab_mult(ind)
+
+## Texto da habilidade para os menus.
+func hab_text(ind: Dictionary, hid: String) -> String:
+	var sk: Dictionary = Data.skills.get(hid, {})
+	var t := "%s\n%s\n\nRecarga: %.0f s" % [sk.get("nome", hid), sk.get("descricao", ""), float(sk.get("recarga", 0))]
+	var ex := str(sk.get("exec", hid))
+	if ex == "cura":
+		t += "\nCura: %d" % int(round(hab_heal(ind, hid)))
+	elif ex == "escudo":
+		t += "\nReduz dano: %d%% por %.0f s" % [int(round(float(sk.get("reducao", 0)) * 100.0)), float(sk.get("duracao", 0))]
+	if float(sk.get("dano", 0)) > 0.0 or not (ex in ["cura", "escudo"]):
+		t += "\nDano: %d por alvo" % int(round(hab_damage(ind, hid)))
+	return t
+
+func hab_shield(dur: float, red: float) -> void:
+	if hab_escudo_t <= 0.0:
+		hab_escudo_red = 0.0
+	hab_escudo_red = max(hab_escudo_red, red)
+	hab_escudo_t = max(hab_escudo_t, dur)
+
+## Multiplicador de dano recebido pelo herói/criatura com escudo ativo.
+func hab_shield_mult() -> float:
+	return 1.0 - hab_escudo_red if hab_escudo_t > 0.0 else 1.0
+
+func hab_tick(delta: float) -> void:
+	if hab_escudo_t > 0.0:
+		hab_escudo_t = max(0.0, hab_escudo_t - delta)
+		if hab_escudo_t <= 0.0:
+			hab_escudo_red = 0.0
 
 # ---- santuário (armazenamento)
 func move_to_team(uuid: String) -> bool:

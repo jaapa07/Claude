@@ -53,6 +53,9 @@ func validate() -> Array:
 		var s = species[sid]
 		if not skills.has(s.get("skill", "")):
 			errors.append("Espécie %s: habilidade inexistente '%s'" % [sid, s.get("skill", "")])
+		for h in s.get("habilidades", []):
+			if not skills.has(str(h.get("id", ""))):
+				errors.append("Espécie %s: habilidade aprendível inexistente '%s'" % [sid, h.get("id", "")])
 		if s.get("status", "") == "jogavel" and s.get("evolucao") != null and not species.has(s["evolucao"]["para"]):
 			errors.append("Espécie %s: evolução inexistente '%s'" % [sid, s["evolucao"]["para"]])
 		if s.get("status", "") == "jogavel":

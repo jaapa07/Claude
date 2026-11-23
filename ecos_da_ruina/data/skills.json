@@ -8,7 +8,8 @@
   "dano": 5,
   "duracao": 3.0,
   "efeito": "prender",
-  "som": "roots"
+  "som": "roots",
+  "exec": "prender"
  },
  "pulso": {
   "nome": "Pulso de Luz",
@@ -19,7 +20,9 @@
   "dano": 6,
   "duracao": 0.5,
   "efeito": "interromper",
-  "som": "skill"
+  "som": "skill",
+  "exec": "pulso",
+  "luz": true
  },
  "avanco": {
   "nome": "Avanço Rochoso",
@@ -30,7 +33,8 @@
   "dano": 12,
   "duracao": 0.3,
   "efeito": "empurrar",
-  "som": "skill"
+  "som": "skill",
+  "exec": "avanco"
  },
  "raiz_viva": {
   "nome": "Raiz Viva",
@@ -50,7 +54,10 @@
   "alcance": 46,
   "arco": 40,
   "dano": 10,
-  "som": "skill"
+  "som": "skill",
+  "exec": "cone",
+  "fx": "fire",
+  "acende": true
  },
  "ima": {
   "nome": "Ímã de Ferro",
@@ -59,7 +66,8 @@
   "raio": 96,
   "dano": 6,
   "duracao": 4.0,
-  "som": "guard"
+  "som": "guard",
+  "exec": "ima"
  },
  "nuvem": {
   "nome": "Nuvem de Fuligem",
@@ -69,7 +77,8 @@
   "raio": 40,
   "dano": 4,
   "duracao": 5.0,
-  "som": "dodge"
+  "som": "dodge",
+  "exec": "nuvem"
  },
  "ruptura_ignea": {
   "nome": "Ruptura Ígnea",
@@ -79,5 +88,282 @@
   "raio": 40,
   "dano": 14,
   "som": "thud"
+ },
+ "sementes": {
+  "nome": "Sementes Curativas",
+  "descricao": "Lança sementes que curam o herói e a própria criatura.",
+  "exec": "cura",
+  "recarga": 12.0,
+  "raio": 48,
+  "dano": 0,
+  "cura": 14,
+  "fx": "bond",
+  "som": "roots"
+ },
+ "chicote_cipo": {
+  "nome": "Chicote de Cipó",
+  "descricao": "Chicotada em leque à frente que empurra os inimigos.",
+  "exec": "cone",
+  "recarga": 5.0,
+  "alcance": 40,
+  "arco": 50,
+  "dano": 9,
+  "fx": "slash",
+  "som": "swing",
+  "knock": 70
+ },
+ "raizes_profundas": {
+  "nome": "Raízes Profundas",
+  "descricao": "Raízes largas que prendem inimigos pequenos por 4,5 s e ferem mais.",
+  "exec": "prender",
+  "recarga": 8.0,
+  "alcance": 80,
+  "raio": 44,
+  "dano": 10,
+  "duracao": 4.5,
+  "som": "roots"
+ },
+ "bosque_vivo": {
+  "nome": "Bosque Vivo",
+  "descricao": "Floresce ao redor: cura muito o herói e a criatura e prende os pequenos por perto.",
+  "exec": "cura",
+  "recarga": 16.0,
+  "raio": 64,
+  "dano": 6,
+  "duracao": 2.0,
+  "cura": 28,
+  "fx": "roots",
+  "som": "roots"
+ },
+ "lampejo": {
+  "nome": "Lampejo em Cadeia",
+  "descricao": "Raio de luz que salta entre até 3 inimigos próximos.",
+  "exec": "cadeia",
+  "recarga": 6.0,
+  "alcance": 110,
+  "raio": 64,
+  "dano": 8,
+  "saltos": 3,
+  "fx": "sparkle",
+  "luz": true,
+  "som": "skill"
+ },
+ "luz_serena": {
+  "nome": "Luz Serena",
+  "descricao": "Brilho morno que cura o herói e a criatura e ilumina ao redor.",
+  "exec": "cura",
+  "recarga": 13.0,
+  "raio": 56,
+  "dano": 0,
+  "cura": 16,
+  "fx": "sparkle",
+  "luz": true,
+  "som": "skill"
+ },
+ "pulso_solar": {
+  "nome": "Pulso Solar",
+  "descricao": "Pulso amplo que interrompe ataques e atordoa os pequenos por 1,5 s.",
+  "exec": "pulso",
+  "recarga": 9.0,
+  "raio": 84,
+  "dano": 12,
+  "fx": "burst",
+  "luz": true,
+  "som": "skill",
+  "atordoa": 1.5
+ },
+ "halo_dourado": {
+  "nome": "Halo Dourado",
+  "descricao": "Halo protetor: o herói e a criatura recebem 35% menos dano por 6 s.",
+  "exec": "escudo",
+  "recarga": 18.0,
+  "dano": 0,
+  "duracao": 6.0,
+  "reducao": 0.35,
+  "fx": "bond",
+  "luz": true,
+  "som": "guard"
+ },
+ "casca": {
+  "nome": "Escudo de Casca",
+  "descricao": "Casca de pedra: o herói e a criatura recebem 30% menos dano por 5 s.",
+  "exec": "escudo",
+  "recarga": 14.0,
+  "dano": 0,
+  "duracao": 5.0,
+  "reducao": 0.3,
+  "fx": "parry",
+  "som": "guard"
+ },
+ "tremor": {
+  "nome": "Tremor",
+  "descricao": "Bate no chão: fere e empurra tudo ao redor e interrompe ataques.",
+  "exec": "pulso",
+  "recarga": 8.0,
+  "raio": 50,
+  "dano": 10,
+  "fx": "quake",
+  "som": "thud",
+  "knock": 90
+ },
+ "avalanche": {
+  "nome": "Avalanche",
+  "descricao": "Investida em cadeia: avança e ricocheteia em até 3 inimigos.",
+  "exec": "avanco_cadeia",
+  "recarga": 10.0,
+  "alcance": 72,
+  "raio": 20,
+  "dano": 16,
+  "saltos": 3,
+  "fx": "dust",
+  "som": "skill"
+ },
+ "muralha": {
+  "nome": "Muralha",
+  "descricao": "Ergue uma muralha viva: o herói e a criatura recebem 50% menos dano por 6 s.",
+  "exec": "escudo",
+  "recarga": 20.0,
+  "dano": 0,
+  "duracao": 6.0,
+  "reducao": 0.5,
+  "fx": "shards",
+  "som": "guard"
+ },
+ "fagulhas": {
+  "nome": "Fagulhas",
+  "descricao": "Fagulha que pula entre até 3 inimigos próximos.",
+  "exec": "cadeia",
+  "recarga": 6.0,
+  "alcance": 100,
+  "raio": 60,
+  "dano": 9,
+  "saltos": 3,
+  "fx": "fire",
+  "som": "skill"
+ },
+ "estouro_brasa": {
+  "nome": "Estouro de Brasa",
+  "descricao": "Explode em brasas ao redor. Acende fornalhas próximas.",
+  "exec": "pulso",
+  "recarga": 8.0,
+  "raio": 46,
+  "dano": 12,
+  "fx": "fire",
+  "acende": true,
+  "som": "thud",
+  "knock": 50
+ },
+ "sopro_inferno": {
+  "nome": "Sopro Infernal",
+  "descricao": "Cone de fogo longo e largo. Acende fornalhas atingidas.",
+  "exec": "cone",
+  "recarga": 7.0,
+  "alcance": 70,
+  "arco": 55,
+  "dano": 18,
+  "fx": "fire",
+  "acende": true,
+  "som": "skill"
+ },
+ "investida_flamejante": {
+  "nome": "Investida Flamejante",
+  "descricao": "Avança envolto em chamas, ferindo quem estiver no caminho.",
+  "exec": "avanco",
+  "recarga": 8.0,
+  "alcance": 84,
+  "raio": 22,
+  "dano": 20,
+  "fx": "fire",
+  "som": "skill"
+ },
+ "placa_ferro": {
+  "nome": "Placa de Ferro",
+  "descricao": "Placas de ferro: o herói e a criatura recebem 25% menos dano por 6 s.",
+  "exec": "escudo",
+  "recarga": 13.0,
+  "dano": 0,
+  "duracao": 6.0,
+  "reducao": 0.25,
+  "fx": "parry",
+  "som": "guard"
+ },
+ "estilhacos": {
+  "nome": "Estilhaços",
+  "descricao": "Dispara lascas de ferro em leque à frente.",
+  "exec": "cone",
+  "recarga": 6.0,
+  "alcance": 56,
+  "arco": 45,
+  "dano": 12,
+  "fx": "shards",
+  "som": "thud"
+ },
+ "campo_magnetico": {
+  "nome": "Campo Magnético",
+  "descricao": "Ímã maior por 6 s: absorve ferramentas e puxa pequenos de mais longe.",
+  "exec": "ima",
+  "recarga": 11.0,
+  "raio": 130,
+  "dano": 9,
+  "duracao": 6.0,
+  "som": "guard"
+ },
+ "marreta_ferro": {
+  "nome": "Marreta de Ferro",
+  "descricao": "Investida em cadeia blindada que ricocheteia em até 2 inimigos.",
+  "exec": "avanco_cadeia",
+  "recarga": 9.0,
+  "alcance": 70,
+  "raio": 20,
+  "dano": 18,
+  "saltos": 2,
+  "fx": "hit",
+  "som": "thud"
+ },
+ "passo_sombrio": {
+  "nome": "Passo Sombrio",
+  "descricao": "Desliza pela sombra à frente, ferindo quem atravessar.",
+  "exec": "avanco",
+  "recarga": 5.0,
+  "alcance": 70,
+  "raio": 16,
+  "dano": 10,
+  "fx": "vortex",
+  "som": "dodge"
+ },
+ "fumaca_densa": {
+  "nome": "Fumaça Densa",
+  "descricao": "Nuvem pequena e rápida que fere mais e faz errar metade dos ataques.",
+  "exec": "nuvem",
+  "recarga": 7.0,
+  "alcance": 56,
+  "raio": 32,
+  "dano": 9,
+  "duracao": 3.5,
+  "som": "dodge"
+ },
+ "veu_cinzas": {
+  "nome": "Véu de Cinzas",
+  "descricao": "Nuvem enorme por 7 s: grupos inteiros erram metade dos ataques.",
+  "exec": "nuvem",
+  "recarga": 11.0,
+  "alcance": 64,
+  "raio": 62,
+  "dano": 6,
+  "duracao": 7.0,
+  "som": "dodge"
+ },
+ "eclipse": {
+  "nome": "Eclipse Breve",
+  "descricao": "Sombra que salta entre até 4 inimigos e os deixa cegos por 3 s.",
+  "exec": "cadeia",
+  "recarga": 9.0,
+  "alcance": 110,
+  "raio": 70,
+  "dano": 11,
+  "saltos": 4,
+  "fx": "vortex",
+  "cega": 3.0,
+  "som": "dodge"
  }
 }
