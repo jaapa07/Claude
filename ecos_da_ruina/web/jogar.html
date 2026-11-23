@@ -69,7 +69,7 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
     <div class="overlay" id="start">
       <div class="t">Pronto para jogar</div>
       <button id="play" type="button">Jogar</button>
-      <div class="msg">O jogo tem cerca de 39 MB e carrega uma vez.</div>
+      <div class="msg">O jogo tem cerca de 42 MB e carrega uma vez.</div>
     </div>
     <div class="overlay" id="loading" hidden>
       <div class="t">Carregando…</div>
@@ -116,7 +116,7 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
 // O motor (WebAssembly) é publicado em 3 partes; aqui elas são baixadas e remontadas antes de iniciar.
 (function () {
   const PARTS = ["w/motor0.wasm", "w/motor1.wasm", "w/motor2.wasm"];
-  const TOTAL = 35376909 + 3563440;
+  const TOTAL = 35376909 + 4184544;
   let loaded = 0;
   const fill = document.getElementById("fill");
   const status = document.getElementById("status");
@@ -166,7 +166,7 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
       try {
         const engine = new Engine({
           args: [], canvasResizePolicy: 0, executable: "index", experimentalVK: false,
-          fileSizes: { "index.pck": 3563440, "index.wasm": 35376909 },
+          fileSizes: { "index.pck": 4184544, "index.wasm": 35376909 },
           focusCanvas: true, gdextensionLibs: [], ensureCrossOriginIsolationHeaders: false
         });
         engine.startGame({

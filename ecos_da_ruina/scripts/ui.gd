@@ -185,7 +185,6 @@ func _fill_pause(s: MenuScreen) -> void:
 		_it("Bestiário", func(): open_bestiary(), "Criaturas vistas e capturadas."),
 		_it("Diário", func(): open_diary(), "Missões ativas."),
 		_it("Mapa", func(): open_map(), "Áreas visitadas e bloqueios."),
-		_it("Jornada (%d%%)" % Game.conquest_pct(), func(): open_journey(), "O grande objetivo e quanto falta para conquistar tudo."),
 		_it("Salvar jogo", func(): open_save_slots(), "Grava o progresso em um slot."),
 		_it("Reiniciar enigmas da sala", func():
 			if world.in_combat():
@@ -194,6 +193,7 @@ func _fill_pause(s: MenuScreen) -> void:
 				world.reset_room_puzzles(); s.close(); toast("Enigmas da sala reiniciados."), "Recoloca caixas e alavancas se algo ficou preso. Enigmas resolvidos continuam resolvidos."),
 		_it("Opções", func(): open_options(), "Volume, acessibilidade, controles."),
 		_it("Botões do toque", func(): close_all(); TouchControls.instance.show_legend(), "Mostra o que cada botão da tela faz.", TouchControls.active),
+		_it("Jornada (%d%%)" % Game.conquest_pct(), func(): open_journey(), "O grande objetivo e quanto falta para conquistar tudo."),
 		_it("Voltar ao título", func(): _confirm("Voltar ao título?", "O progresso não salvo desde o último autosave será perdido.", func(): get_tree().root.get_node("Main").back_to_title()), "Sai da partida."),
 	]
 	s.setup("Pausa — " + world.map.get("name", ""), items, "Pausa — a simulação está parada.")
