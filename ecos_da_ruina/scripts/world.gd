@@ -1635,7 +1635,7 @@ func _update_heat(delta: float) -> void:
 		player.env_damage(HEAT_DMG_HERO * Game.heat_mult() * _water_companion_mult(), "Quente!")
 		if not heat_warned:
 			heat_warned = true
-			say("Piso em brasa! Gire uma válvula azul (E) para resfriá-lo ou atravesse depressa.")
+			say("Piso em brasa! Gire uma válvula azul ({interagir}) para resfriá-lo ou atravesse depressa.")
 	if companion != null and is_instance_valid(companion) and companion.is_alive() and is_hot_at(companion.global_position):
 		companion.env_damage(HEAT_DMG_CREATURE)
 	if player.state != Player.S.DEAD and player.state != Player.S.INTERACT and is_puddle_at(player.global_position):
@@ -1739,7 +1739,7 @@ func furnace_try(f: Ent) -> void:
 		f.light_furnace()
 		say("A chama pegou na fornalha.")
 		return
-	say("A fornalha está fria. Pegue chama num braseiro (E) e traga até aqui — ou peça a um Faisquito.")
+	say("A fornalha está fria. Pegue chama num braseiro ({interagir}) e traga até aqui — ou peça a um Faisquito.")
 	_furnace_fail(f)
 
 func _furnace_fail(f: Ent) -> void:

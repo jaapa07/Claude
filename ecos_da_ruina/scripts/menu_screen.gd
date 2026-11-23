@@ -10,6 +10,8 @@ var sel := 0
 var info_default := ""
 var can_cancel := true
 var list_w := 190.0
+var _lw := 190.0               # largura efetiva da lista (no toque, abre espaço para as setas)
+var _right := 472.0            # borda direita do painel de informação
 var key_capture := ""           # ação aguardando nova tecla
 var on_key: Callable = Callable()
 var scroll := 0
@@ -97,7 +99,7 @@ func _input(event: InputEvent) -> void:
 			var it2: Dictionary = items[i2]
 			# valores ajustáveis (volume etc.): tocar na metade esquerda diminui, na direita aumenta
 			if not it2.has("fn") and (it2.has("l") or it2.has("r")):
-				_side("l" if event.position.x < X0 + list_w * 0.5 else "r")
+				_side("l" if event.position.x < X0 + _lw * 0.5 else "r")
 			else:
 				_activate()
 		elif _built and _info_panel.visible and Rect2(_info_panel.position, _info_panel.size).has_point(event.position):
@@ -110,7 +112,7 @@ func _item_at(p: Vector2) -> int:
 	if title_mode:
 		var r := int((p.y - 120.0) / 16.0)
 		return r if r >= 0 and r < items.size() and p.x > 160.0 and p.x < 320.0 and items[r].get("en", true) else -1
-	if p.x < X0 or p.x > X0 + list_w:
+	if p.x < X0 or p.x > X0 + _lw:
 		return -1
 	var row := int((p.y - (Y0 + 19.0)) / 16.0)
 	if row < 0 or row >= VIS:
@@ -164,11 +166,11 @@ func close() -> void:
 
 func _info_text() -> String:
 	if items.is_empty():
-		return info_default
+		return Game.k(info_default)
 	var inf = items[sel].get("info", info_default)
 	if inf is Callable:
-		return inf.call()
-	return str(inf)
+		return Game.k(str(inf.call()))
+	return Game.k(str(inf))
 
 # =============================================================== MONTAGEM (nós e arte autoral; nada de _draw)
 var _built := false
@@ -261,7 +263,7 @@ func _footer_text() -> String:
 	var adj: bool = (cur.has("l") and cur["l"].is_valid()) or (cur.has("r") and cur["r"].is_valid())
 	if footer.begins_with("↑↓ navegar"):
 		if TouchControls.active:
-			return "Toque no item ou use as setas  •  OK confirma  •  Voltar sai" if not adj else "Toque no valor para mudar  •  Voltar sai"
+			return "Toque no item  •  OK confirma  •  Voltar sai" if not adj else "Toque no valor para mudar  •  Voltar sai"
 		if adj:
 			return "↑↓ navegar  •  ← → ajustar  •  Esc voltar"
 		return footer
@@ -314,9 +316,25 @@ func _refresh() -> void:
 		return
 	_logo.visible = false; _sub.visible = false
 	_title_lab.visible = true
-	var pw := list_w + 12.0
+	# no toque, lista e painel saem de baixo das setas de navegação (coluna à esquerda e/ou à direita)
+	_lw = list_w
+	X0 = 14.0
+	_right = 472.0
+	if TouchControls.active:
+		var side := str(Game.pref("setas_lado"))
+		var left_used := side != "direita"
+		var right_used := side != "esquerda"
+		if left_used:
+			X0 = 54.0
+		if right_used:
+			_right = 432.0
+		if left_used and right_used:
+			_lw = min(list_w, 200.0)
+		else:
+			_lw = min(list_w, 240.0)
+	var pw := _lw + 12.0
 	_list_panel.position = Vector2(X0 - 6, Y0 - 6); _list_panel.size = Vector2(pw, 232)
-	_title_lab.text = title; _title_lab.position = Vector2(X0 + 2, Y0 + 1); _title_lab.size = Vector2(list_w - 4, 14)
+	_title_lab.text = title; _title_lab.position = Vector2(X0 + 2, Y0 + 1); _title_lab.size = Vector2(_lw - 4, 14)
 	for r in VIS:
 		var i := scroll + r
 		var l: Label = _rows[r]
@@ -335,31 +353,31 @@ func _refresh() -> void:
 			ic.modulate = Color.WHITE if it.get("en", true) else Color(0.5, 0.5, 0.5)
 			tx += 13.0
 		l.position = Vector2(tx, Y0 + 22.0 + r * 16.0)
-		l.size = Vector2(X0 + list_w - 4.0 - tx, 14)
+		l.size = Vector2(X0 + _lw - 4.0 - tx, 14)
 		l.add_theme_font_size_override("font_size", 8)
 		if it.get("hdr", false):
 			l.modulate = Color(0.6, 0.72, 1.0)
 			var ht := str(it["t"])
-			l.text = ("— " + ht + " —") if ht.length() * 8 + 40 < list_w else ht
+			l.text = ("— " + ht + " —") if ht.length() * 8 + 40 < _lw else ht
 		else:
 			l.text = it["t"]
 			var base_col: Color = it.get("col", Color.WHITE)
 			l.modulate = base_col if it.get("en", true) else base_col.darkened(0.5)
 	var row := sel - scroll
 	_sel_bar.visible = row >= 0 and row < VIS and not items.is_empty()
-	_sel_bar.position = Vector2(X0 - 2, Y0 + 19.0 + row * 16.0); _sel_bar.size = Vector2(list_w - 2, 15)
+	_sel_bar.position = Vector2(X0 - 2, Y0 + 19.0 + row * 16.0); _sel_bar.size = Vector2(_lw - 2, 15)
 	_cursor.visible = _sel_bar.visible
 	_cursor.position = Vector2(X0 - 9, Y0 + 30.0 + row * 16.0)
 	# rolagem: setas mostram que há mais itens acima/abaixo
 	_up_arrow.visible = scroll > 0
-	_up_arrow.position = Vector2(X0 + list_w - 14, Y0 + 2)
+	_up_arrow.position = Vector2(X0 + _lw - 14, Y0 + 2)
 	_down_arrow.visible = scroll + VIS < items.size()
-	_down_arrow.position = Vector2(X0 + list_w - 14, Y0 + 211)
+	_down_arrow.position = Vector2(X0 + _lw - 14, Y0 + 211)
 	_count_lab.visible = items.size() > VIS
 	_count_lab.text = "%d/%d" % [sel + 1, items.size()]
 	_count_lab.position = Vector2(X0 + 4, Y0 + 211)
 	var ix := X0 + pw + 2.0
-	var iw := 480.0 - ix - 8.0
+	var iw := _right - ix
 	_info_panel.visible = true
 	_info_panel.position = Vector2(ix, Y0 - 6); _info_panel.size = Vector2(iw, 232)
 	var cur: Dictionary = items[sel] if (sel >= 0 and sel < items.size()) else {}
@@ -393,4 +411,4 @@ func _refresh() -> void:
 		_info_glow.position = _info_panel.position; _info_glow.size = _info_panel.size
 		_info_glow.self_modulate = glow_col
 	_foot_lab.text = _footer_text()
-	_foot_lab.position = Vector2(X0, 254); _foot_lab.size = Vector2(452, 12); _foot_lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	_foot_lab.position = Vector2(X0, 254); _foot_lab.size = Vector2(472.0 - X0, 12); _foot_lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT

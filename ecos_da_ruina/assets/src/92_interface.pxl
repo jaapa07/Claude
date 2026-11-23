@@ -19,7 +19,7 @@ palette ui2_dlg from ui2
   H = #a8b8d8
   O = #4a5a80
   m = #2c3458
-  l = #141a30f4
+  l = #141a30
   g = #e8a838
   w = #ffd870
 end

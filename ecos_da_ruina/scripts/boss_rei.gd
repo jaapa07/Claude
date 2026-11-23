@@ -425,7 +425,7 @@ func _hesitate() -> void:
 		if is_instance_valid(f):
 			f.queue_free()
 	Audio.play("boss_roar", -10.0)
-	world.say("O Rei para no ar: \"Quem... sou eu?\" Aproxime-se e diga o nome dele (E).")
+	world.say("O Rei para no ar: \"Quem... sou eu?\" Aproxime-se e diga o nome dele ({interagir}).")
 	var c := CatEnt.new()
 	c.init(world, {"type": "nome", "id": "rei_nome", "x": int(global_position.x / 16.0), "y": int(global_position.y / 16.0) + 2, "rei_node": self})
 	world.ysort.add_child(c)

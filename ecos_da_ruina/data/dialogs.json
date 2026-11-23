@@ -5,7 +5,7 @@
    "unless": "vinculos_entregue",
    "lines": [
     "Maru: Brotisco, Lumipim e Cascalito... a floresta inteira confia em você!",
-    "Maru: Juntos eles ficam mais fortes. Quando estiverem prontos, evolua-os pelo menu da Equipe (I): o Cervo não vai esperar.",
+    "Maru: Juntos eles ficam mais fortes. Quando estiverem prontos, evolua-os pelo menu da Equipe ({menu}): o Cervo não vai esperar.",
     "Maru: Leve este Amuleto do Vínculo e dois Selos Refinados."
    ],
    "set": [
@@ -331,7 +331,7 @@
  "placa_ravina": [
   {
    "lines": [
-    "Placa: DESFILADEIRO DO ECO — Só as raízes de um guardião vencem a ravina. (Raiz Viva: aperte E no suporte marcado.)"
+    "Placa: DESFILADEIRO DO ECO — Só as raízes de um guardião vencem a ravina. (Raiz Viva: use {interagir} no suporte marcado.)"
    ]
   }
  ],
@@ -1695,7 +1695,7 @@
   {
    "lines": [
     "O SELO EXTERNO DA CATEDRAL: uma parede de luz vermelha, firme como pedra. No meio, uma fissura violeta do tamanho de um passo.",
-    "(Passo Umbral: aperte E diante da fissura ou use a tecla do Eco ao lado dela.)"
+    "(Passo Umbral: use {interagir} diante da fissura ou o atalho do Eco ao lado dela.)"
    ]
   }
  ],

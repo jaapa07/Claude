@@ -65,7 +65,7 @@ var _cap_lab: Label
 var _cap_bar: TextureProgressBar
 var _banner: NinePatchRect
 var _banner_lab: Label
-var _banner_y := 34.0
+var _banner_y := 94.0
 var _dlg: NinePatchRect
 var _dlg_tab: NinePatchRect
 var _dlg_name: Label
@@ -251,7 +251,7 @@ func _toast_layout() -> void:
 			break
 		vis.append(x)
 	# empilha de baixo para cima, acima da caixa de dica/diálogo
-	var bottom := 176.0 if (dlg_active or _hint.visible) else 196.0
+	var bottom := (_dlg.position.y - 16.0) if dlg_active else (_hint.position.y - 4.0 if _hint.visible else 196.0)
 	if TouchControls.active:
 		bottom = min(bottom, 188.0)
 	var y := bottom
@@ -398,8 +398,8 @@ func _show_line() -> void:
 	var body: String = sp[1]
 	var big := _dlg_big()
 	var fs := 16 if big else 8
-	var lh := float(fs + 2)
-	var h := 116.0 if big else 82.0
+	var lh := float(fs + 4)
+	var h := 116.0 if big else 88.0
 	var y0 := 270.0 - 4.0 - h
 	_dlg.position = Vector2(DLG_X, y0)
 	_dlg.size = Vector2(DLG_W, h)
@@ -416,9 +416,9 @@ func _show_line() -> void:
 	dlg_pages = paginate(body, cols, rows)
 	dlg_page = 0
 	_dlg_body.add_theme_font_size_override("font_size", fs)
-	_dlg_body.add_theme_constant_override("line_spacing", 2)
+	_dlg_body.add_theme_constant_override("line_spacing", 4)
 	_dlg_body.autowrap_mode = TextServer.AUTOWRAP_OFF
-	_dlg_body.position = Vector2(tx, 12.0)
+	_dlg_body.position = Vector2(tx, 10.0)
 	_dlg_body.size = Vector2(right - tx, h - 18.0)
 	_dlg_tab.visible = dlg_speaker != ""
 	_dlg_name.text = dlg_speaker
@@ -426,8 +426,8 @@ func _show_line() -> void:
 	_dlg_tab.size = Vector2(dlg_speaker.length() * (16 if big else 8) + 18, 26 if big else 18)
 	_dlg_tab.position = Vector2(DLG_X + 8, y0 - _dlg_tab.size.y + 6)
 	_dlg_name.position = Vector2(9, 5)
-	_dlg_more.position = Vector2(right - 6.0, h - 12.0)
-	_dlg_page_lab.position = Vector2(right - 44.0, h - 12.0)
+	_dlg_more.position = Vector2(right - 6.0, h - 14.0)
+	_dlg_page_lab.position = Vector2(right - 44.0, h - 14.0)
 	_set_page()
 
 func _set_page() -> void:
@@ -460,8 +460,9 @@ func _process(delta: float) -> void:
 				_dlg_body.visible_characters = -1
 		var done := _typing_done()
 		_dlg_more.visible = done
-		_dlg_more.position.y = _dlg.size.y - 13.0 + (1.0 if fmod(_time, 0.8) < 0.4 else 0.0)
+		_dlg_more.position.y = _dlg.size.y - 14.0 + (1.0 if fmod(_time, 0.8) < 0.4 else 0.0)
 	_root.visible = world != null and Game.in_game and world.player != null and not hud_hidden
+	_obj_lab.visible = not (ui != null and ui.has_screen())
 	if _root.visible:
 		_update_hud()
 
