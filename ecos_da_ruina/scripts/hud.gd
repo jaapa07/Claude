@@ -19,8 +19,26 @@ var fade_a := 0.0:
 		fade_a = v
 		if _fade:
 			_fade.color.a = v
+			if _fade_mat:
+				_fade_mat.set_shader_parameter("level", v)
 
 var _fade: ColorRect
+var _fade_mat: ShaderMaterial
+## Transição em pontilhado: a matriz 4x4 desenhada à mão (fx_bayer.png) decide quando cada bloco de 2x2 pixels
+## escurece; um leve gradiente diagonal faz a cortina varrer a tela em vez de um corte seco.
+const FADE_SHADER := """
+shader_type canvas_item;
+uniform float level = 0.0;
+uniform sampler2D bayer : filter_nearest, repeat_enable;
+void fragment() {
+	vec2 px = floor(FRAGCOORD.xy / 2.0);
+	float th = texture(bayer, (mod(px, 4.0) + 0.5) / 4.0).r;
+	float diag = (SCREEN_UV.x + SCREEN_UV.y) * 0.5;
+	float l = level * 1.4 - diag * 0.4;
+	float a = l >= 0.999 ? 1.0 : step(th + 0.03, l);
+	COLOR = vec4(0.05, 0.04, 0.08, a);
+}
+"""
 var _mem: ColorRect
 var memory_tint := false
 var _root: Control
@@ -144,6 +162,13 @@ func _ready() -> void:
 	_dlg_more = Fonts.label("E >", 8, Color(1, 0.85, 0.4)); _dlg_more.position = Vector2(428, 74); _dlg.add_child(_dlg_more)
 	# transição
 	_fade = ColorRect.new(); _fade.size = size; _fade.color = Color(0, 0, 0, 0); _fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var fsh := Shader.new()
+	fsh.code = FADE_SHADER
+	_fade_mat = ShaderMaterial.new()
+	_fade_mat.shader = fsh
+	_fade_mat.set_shader_parameter("bayer", Art.sprite_tex("fx_bayer"))
+	_fade_mat.set_shader_parameter("level", fade_a)
+	_fade.material = _fade_mat
 	add_child(_fade)
 
 ## Lembranças do herói: a tela ganha um tom sépia por trás do diálogo (scripts/historia.gd).
@@ -214,6 +239,12 @@ func _process(delta: float) -> void:
 	banner_t = max(0.0, banner_t - delta)
 	_banner.visible = banner_t > 0.0 and Game.in_game
 	_banner.modulate.a = clamp(banner_t / 0.6, 0.0, 1.0)
+	# o letreiro desce com um leve quique ao entrar e sobe ao sair
+	var age := 2.6 - banner_t
+	var e_in: float = clamp(age / 0.35, 0.0, 1.0)
+	var drop: float = -16.0 * pow(1.0 - e_in, 3.0) + 2.0 * sin(e_in * PI) * (1.0 - e_in * 0.5)
+	var rise: float = -8.0 * (1.0 - clamp(banner_t / 0.6, 0.0, 1.0))
+	_banner.position.y = round(92.0 + drop + rise)
 	_dlg.visible = dlg_active
 	if dlg_active:
 		dlg_chars += delta * 55.0

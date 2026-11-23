@@ -1408,6 +1408,8 @@ func pick_variant(did: String) -> Dictionary:
 	return {"lines": ["..."]}
 
 func talk_to(npc: Ent) -> void:
+	if npc.juice != null:
+		npc.juice.kick(Vector2(-0.1, 0.14))   # pequeno sobressalto de atenção ao ser chamado
 	start_dialog(npc.def["dialog"], npc)
 
 func start_dialog(did: String, speaker: Node = null) -> void:

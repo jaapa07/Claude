@@ -101,7 +101,7 @@ func _process(delta: float) -> void:
 	var f := 0.0
 	var hf = host.get(flash_prop) if host != null else null
 	if hf != null and float(hf) > 0.0:
-		f = 1.0 if float(hf) > 0.05 else float(hf) / 0.05
+		f = clamp(float(hf) / 0.1, 0.0, 1.0)
 	if f > 0.0 and _extra_flash <= 0.0:
 		mat.set_shader_parameter("flash_col", Color.WHITE)   # dano sempre em branco
 	f = max(f, _extra_flash)

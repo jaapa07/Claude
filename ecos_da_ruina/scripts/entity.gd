@@ -35,6 +35,7 @@ var boss_cd := 0.0          # recarga da lanterna da arena
 var refl: Sprite2D          # reflexo da estátua na água
 var glow: AnimatedSprite2D  # brilho (lanterna acesa, marca revelada)
 var revealed := false       # inscrição espiritual revelada pelo Olhar Velado
+var juice: Juice            # morador: respiração e reação ao falar (scripts/juice.gd)
 
 ## Objetos do pântano (pantano_props.png, ordem do contrato docs/REGIAO3_CONTRATO.md)
 const PPROPS := {"lanterna_off": 0, "lanterna_on": 1, "roda0": 2, "roda1": 3, "comporta_fechada": 4, "comporta_aberta": 5,
@@ -68,6 +69,8 @@ func _ready() -> void:
 				anim.offset = Vector2(0, -6)
 			add_child(anim)
 			anim.play("idle_down")
+			juice = Juice.attach(self, anim, 24, 32)
+			juice.breathe = not def.get("human", false)   # moradores com folha humana já respiram nos quadros
 			_shadow()
 		"sign":
 			_spr("sign", Vector2(0, -2)); solid = true

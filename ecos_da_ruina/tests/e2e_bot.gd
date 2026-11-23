@@ -6286,6 +6286,7 @@ func run_anim() -> void:
 		if a.begins_with("--anim="):
 			part = a.substr(7)
 	await r5_setup(6)
+	W.show_deco = true
 	main.ui.instant = false
 	if part != "amb":
 		main.ui.hud.visible = false
@@ -6374,13 +6375,41 @@ func run_anim() -> void:
 			for f in 20:
 				await frames(3)
 				await shot_at("endie_%02d" % f, best, 120, 80)
+	if part in ["all", "fx"]:
+		W.load_map("desfiladeiro")
+		await frames(30)
+		await advance_dialogs()
+		P.global_position = Vector2(12 * 16, 9 * 16 + 8)
+		await frames(20)
+		W.levelup_fx(P)
+		for f in 12:
+			await frames(4)
+			await shot_at("lvl_%02d" % f, P)
+		await frames(30)
+		W.heal_fx(P)
+		for f in 10:
+			await frames(4)
+			await shot_at("heal_%02d" % f, P)
+		await frames(30)
+		W.evolve_fx(W.companion if W.companion != null else P)
+		for f in 10:
+			await frames(4)
+			await shot_at("evo_%02d" % f, P, 120, 80)
+		for f in 8:
+			W.impact(P.global_position + Vector2(20 + f * 0, -10), ["", "agua", "brasa", "flora", "luz", "pedra", "sombra", "vento"][f], Vector2.RIGHT, f % 2 == 0)
+			await frames(2)
+			await shot_at("imp_%02d" % f, P)
+			await frames(10)
 	if part in ["all", "trans"]:
+		main.ui.hud.visible = true
 		W.load_map("vila_lumen")
 		await frames(30)
 		W.travel("bosque_lanternas", "default")
 		for f in 24:
 			await frames(2)
 			await shot("trans_%02d" % f)
+			if f == 0:
+				print("ANIM fade ", main.ui.hud.fade_a)
 		await frames(60)
 
 ## Curva das Regiões 1–5 (docs/BALANCO.md): com o nível e o equipamento esperados no meio de cada região

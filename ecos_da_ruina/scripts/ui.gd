@@ -308,6 +308,7 @@ func _evolve_confirm(ind: Dictionary, done: Callable) -> void:
 				world.companion.queue_free()
 				world.companion = null
 				world.refresh_companion(true)
+			world.evolve_fx(world.companion)
 		done.call()
 		if evolved and not Game.hab_novas.is_empty():
 			open_habilidades(ind["uuid"], Callable(), Game.hab_novas.duplicate()))

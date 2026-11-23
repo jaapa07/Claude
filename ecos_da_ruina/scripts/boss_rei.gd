@@ -536,6 +536,8 @@ func _death_fx() -> void:
 	if sprite == null:
 		queue_free()
 		return
+	if juice != null:
+		juice.disintegrate(world, 1.6, true)   # desfaz-se em fragmentos de Eco enquanto sobe
 	_tw = create_tween()
 	_tw.tween_property(sprite, "modulate", Color(1.4, 1.4, 1.6, 0.0), 1.6)
 	_tw.parallel().tween_property(sprite, "offset:y", sprite.offset.y - 20.0, 1.6)
