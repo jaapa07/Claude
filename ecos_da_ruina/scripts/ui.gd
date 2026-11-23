@@ -13,11 +13,7 @@ var instant := false        # testes: sem animações de fade
 func _ready() -> void:
 	layer = 10
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	font = FontFile.new()
-	font.data = FileAccess.get_file_as_bytes("res://assets/fonts/PressStart2P.ttf")
-	font.antialiasing = TextServer.FONT_ANTIALIASING_NONE
-	font.hinting = TextServer.HINTING_NONE
-	font.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_DISABLED
+	font = Fonts.pixel()
 	hud = Hud.new()
 	hud.ui = self
 	hud.font = font

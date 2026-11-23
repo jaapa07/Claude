@@ -26,7 +26,9 @@ func _ready() -> void:
 	W.test_mode = true
 	Game.toast.connect(func(t): if "exausta" in t: exhausted_events += 1)
 	main.ui.instant = true
-	if mode == "unit":
+	if "--demo" in args:
+		await run_demo()
+	elif mode == "unit":
 		await run_unit()
 	else:
 		await run_e2e()
@@ -394,6 +396,8 @@ func run_e2e() -> void:
 	await advance_dialogs()
 	await shot("02_vila_inicio")
 	check("Dados do jogo sem erros de validação", Data.errors.is_empty(), str(Data.errors))
+	var fnt: Font = Fonts.pixel()
+	check("Fonte da interface carregada com acentos (funciona no jogo exportado)", fnt != null and fnt.has_char("Ã".unicode_at(0)) and fnt.has_char("ç".unicode_at(0)) and fnt.get_string_size("Ruína", HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x > 30.0)
 
 	# ---- 2. Falar com Maru e tutorial
 	await talk("anciao")
@@ -1365,3 +1369,31 @@ func run_unit() -> void:
 	# ---- dados: validação
 	check("Validação de dados sem erros", Data.errors.is_empty(), str(Data.errors))
 	check("15 espécies-base e 3 evoluções jogáveis cadastradas", Data.species.size() >= 18)
+
+## Captura quadro a quadro do combo de espada (para conferir a animação)
+func run_demo() -> void:
+	main.start_new_game(3)
+	await frames(10)
+	await advance_dialogs()
+	var br := ent_by_id("brotisco_tutorial")
+	br.set_physics_process(false)
+	P.global_position = br.global_position + Vector2(-22, 0)
+	await face(Vector2.RIGHT)
+	await frames(5)
+	var n := 0
+	for k in 3:
+		Input.action_press("attack"); await frames(1); Input.action_release("attack")
+		for f in 20:
+			await frames(1)
+			if f % 2 == 0:
+				await shot("atk_%02d" % n)
+				n += 1
+	P.global_position = br.global_position + Vector2(0, -24)
+	await face(Vector2.DOWN)
+	await frames(30)
+	Input.action_press("attack"); await frames(1); Input.action_release("attack")
+	for f in 16:
+		await frames(1)
+		if f % 2 == 0:
+			await shot("atkd_%02d" % n)
+			n += 1

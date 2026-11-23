@@ -1,11 +1,10 @@
 class_name Fonts
-## Fonte pixel (Pixelify Sans, OFL) sem suavização.
+## Fonte pixel (Press Start 2P, OFL) sem suavização. Carregada como recurso importado (funciona no jogo exportado).
 static var _f: FontFile
 
 static func pixel() -> FontFile:
 	if _f == null:
-		_f = FontFile.new()
-		_f.data = FileAccess.get_file_as_bytes("res://assets/fonts/PressStart2P.ttf")
+		_f = load("res://assets/fonts/PressStart2P.ttf")
 		_f.antialiasing = TextServer.FONT_ANTIALIASING_NONE
 		_f.hinting = TextServer.HINTING_NONE
 		_f.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_DISABLED

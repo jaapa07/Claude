@@ -70,6 +70,8 @@ var _flash := 0.0
 var _aim_ring: Sprite2D
 var _vortex: AnimatedSprite2D
 var _slash_done := false
+var _sword: Sprite2D
+var _ghost_t := 0.0
 
 func _ready() -> void:
 	collision_layer = 2
@@ -97,6 +99,13 @@ func _ready() -> void:
 	sprite.sprite_frames = Art.human_frames("hero")
 	sprite.offset = Vector2(0, -14)
 	add_child(sprite)
+	# espada: sprite próprio que gira a partir da mão durante o golpe
+	_sword = Sprite2D.new()
+	_sword.texture = Art.sprite_tex("fx_sword")
+	_sword.centered = false
+	_sword.offset = Vector2(-2, -3.5)
+	_sword.visible = false
+	add_child(_sword)
 	sprite.play("idle_down")
 	add_to_group("hero")
 	reset_resources()
@@ -145,6 +154,7 @@ func _physics_process(delta: float) -> void:
 		S.HURT: _state_hurt(delta)
 	_regen(delta)
 	_update_anim()
+	_update_sword(delta)
 	_update_capture_fx()
 
 func _tick_timers(delta: float) -> void:
@@ -241,7 +251,8 @@ func _state_attack(delta: float) -> void:
 			_slash_done = true
 			var snap := snappedf(aim_dir.angle(), PI / 2.0)
 			var sc: float = float(atk_def["r"]) / 26.0
-			world.fx_at("slash", global_position + Vector2(0, -10) + Vector2.from_angle(snap) * 12.0, act + 0.05, snap, sc)
+			var trail = world.fx_at("slash", global_position + Vector2(0, -10) + Vector2.from_angle(snap) * 14.0, act + 0.08, snap, sc)
+			trail.modulate = Color(1, 1, 1, 0.55)
 		_attack_hits()
 	# buffer do próximo golpe durante a recuperação
 	if Input.is_action_just_pressed("attack") and atk_t > wind:
@@ -276,6 +287,8 @@ func _attack_hits() -> void:
 				energy = min(ENERGY_MAX, energy + 2.0)
 				energy_gain_window += 2.0
 			world.set_hero_target(e)
+			var contact: Vector2 = e.global_position.lerp(global_position + Vector2(0, -10), 0.35) + Vector2(0, -6)
+			world.fx_at("hit", contact, 0.2, 0.0, 1.6)
 			world.hitstop(0.055)
 			world.shake(1.5, 0.08)
 			Audio.play("hit")
@@ -288,6 +301,7 @@ func _start_attack(def: Dictionary, charged: bool) -> void:
 	atk_t = 0.0
 	atk_queued = false
 	_slash_done = false
+	atk_def["idx"] = 3 if charged else combo_idx
 	atk_hit.clear()
 	if world.mouse_aiming():
 		var d := (get_global_mouse_position() - global_position)
@@ -644,6 +658,59 @@ func _update_anim() -> void:
 	sprite.modulate = Color(1.6, 1.3, 1.3) if (_flash > 0.0 or (inv_timer > 0.0 and int(inv_timer * 20.0) % 2 == 0 and state != S.GUARD)) else Color.WHITE
 	if state == S.DODGE:
 		sprite.modulate.a = 0.55 if is_dodge_invulnerable() else 0.85
+
+## Arco do golpe (graus, relativos à mira): [início, fim, escala]
+const SWING := [[-110.0, 60.0, 1.0], [110.0, -60.0, 1.0], [-150.0, 150.0, 1.15], [-180.0, 180.0, 1.25]]
+
+func _update_sword(delta: float) -> void:
+	if state != S.ATTACK:
+		_sword.visible = false
+		return
+	var wind: float = atk_def["wind"]
+	var act: float = atk_def["act"]
+	var rec: float = atk_def["rec"]
+	var sw: Array = SWING[int(atk_def.get("idx", 0))]
+	var a0 := deg_to_rad(float(sw[0]))
+	var a1 := deg_to_rad(float(sw[1]))
+	var base := aim_dir.angle()
+	var ang: float
+	var alpha := 1.0
+	if atk_t < wind:
+		# levanta a espada para trás
+		ang = a0 - deg_to_rad(18.0) * (atk_t / wind)
+	elif atk_t < wind + act:
+		var f := (atk_t - wind) / act
+		f = 1.0 - pow(1.0 - f, 2.0)
+		ang = lerp(a0 - deg_to_rad(18.0), a1, f)
+		_ghost_t -= delta
+		if _ghost_t <= 0.0:
+			_ghost_t = 0.016
+			_spawn_ghost()
+	else:
+		var f2: float = (atk_t - wind - act) / max(rec, 0.01)
+		ang = a1
+		alpha = 1.0 if f2 < 0.5 else clamp(1.0 - (f2 - 0.5) * 2.0, 0.0, 1.0)
+	_sword.visible = true
+	_sword.rotation = base + ang
+	_sword.scale = Vector2.ONE * float(sw[2])
+	_sword.modulate.a = alpha
+	# mão: um pouco à frente do corpo; de costas a espada passa por trás
+	_sword.position = Vector2(0, -12) + aim_dir * 3.0
+	_sword.z_index = -1 if Art.dir_name(facing) == "up" else 1
+
+func _spawn_ghost() -> void:
+	var g := Sprite2D.new()
+	g.texture = _sword.texture
+	g.centered = false
+	g.offset = _sword.offset
+	g.global_position = _sword.global_position
+	g.rotation = _sword.rotation
+	g.scale = _sword.scale
+	g.modulate = Color(0.75, 0.95, 1.0, 0.45)
+	world.add_fx(g)
+	var tw := g.create_tween()
+	tw.tween_property(g, "modulate:a", 0.0, 0.12)
+	tw.tween_callback(g.queue_free)
 
 func _update_capture_fx() -> void:
 	var t: Node = cap_target if (cap_target != null and is_instance_valid(cap_target)) else null

@@ -1,0 +1,148 @@
+<meta charset="utf-8">
+<title>Ecos da Ruína</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600&display=swap">
+<style>
+/* Layout: janela de jogo 16:9 no topo, faixa de controles abaixo. Visual único, escuro (tela de jogo). */
+:root {
+  --bg: #120e1c;
+  --panel: #1d1830;
+  --edge: #c9a04a;
+  --fg: #ece8f6;
+  --muted: #a49cc0;
+  --accent: #9be8ff;
+  --leaf: #7ac860;
+  --display: "Press Start 2P", ui-monospace, monospace;
+  --body: "Inter", system-ui, sans-serif;
+  color-scheme: dark;
+}
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); margin: 0; }
+.wrap { max-width: 1100px; margin: 0 auto; padding-block: 16px 24px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 14px; }
+h1 { font-family: var(--display); font-size: clamp(14px, 2.4vw, 20px); color: var(--edge); margin: 0; letter-spacing: 0.04em; text-wrap: balance; }
+.sub { color: var(--muted); font-size: 13px; margin: 4px 0 0; }
+.screen { position: relative; width: 100%; aspect-ratio: 16 / 9; max-width: 100%; background: #000; border: 3px solid var(--edge); border-radius: 4px; overflow: hidden; box-shadow: 0 0 0 3px #000, 0 10px 30px rgba(0,0,0,0.5); }
+#canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; outline: none; }
+.overlay { position: absolute; inset: 0; display: grid; place-content: center; gap: 14px; text-align: center; background: radial-gradient(circle at 50% 40%, #2a2246, #0b0912 75%); padding: 16px; }
+.overlay[hidden] { display: none !important; }
+.overlay .t { font-family: var(--display); font-size: clamp(12px, 2vw, 18px); color: var(--edge); }
+.bar { width: min(360px, 70vw); height: 10px; background: #0b0912; border: 2px solid var(--edge); margin: 0 auto; }
+.bar > i { display: block; height: 100%; width: 0%; background: var(--leaf); transition: width .2s; }
+.msg { font-size: 13px; color: var(--muted); min-height: 1.2em; }
+button { font-family: var(--display); font-size: 12px; color: #120e1c; background: var(--edge); border: 0; padding: 12px 18px; cursor: pointer; box-shadow: 0 4px 0 #7a5a20; }
+button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+button:active { transform: translateY(2px); box-shadow: 0 2px 0 #7a5a20; }
+.keys { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 8px 18px; background: var(--panel); border: 2px solid #3a3058; padding: 14px; font-size: 13px; }
+.keys div { display: flex; gap: 10px; align-items: baseline; min-width: 0; }
+kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-space: nowrap; }
+.note { color: var(--muted); font-size: 12px; margin: 0; }
+@media (prefers-reduced-motion: reduce) { .bar > i { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>ECOS DA RUÍNA</h1>
+    <p class="sub">Capítulo 1 — Floresta dos Esquecidos. Versão de teste para navegador.</p>
+  </header>
+
+  <div class="screen">
+    <canvas id="canvas" width="960" height="540" tabindex="0">Seu navegador precisa de WebGL 2 para rodar o jogo.</canvas>
+    <div class="overlay" id="start">
+      <div class="t">Pronto para jogar</div>
+      <button id="play" type="button">Jogar</button>
+      <div class="msg">O motor tem cerca de 37 MB e carrega uma vez.</div>
+    </div>
+    <div class="overlay" id="loading" hidden>
+      <div class="t">Carregando…</div>
+      <div class="bar"><i id="fill"></i></div>
+      <div class="msg" id="status">Baixando o motor</div>
+    </div>
+  </div>
+
+  <section class="keys" aria-label="Controles">
+    <div><kbd>WASD</kbd><span>mover</span></div>
+    <div><kbd>J</kbd><span>atacar (segure: carregado)</span></div>
+    <div><kbd>K</kbd><span>defender</span></div>
+    <div><kbd>ESPAÇO</kbd><span>esquivar</span></div>
+    <div><kbd>E</kbd><span>falar / interagir</span></div>
+    <div><kbd>F F</kbd><span>mirar e lançar o selo</span></div>
+    <div><kbd>Q</kbd><span>habilidade da criatura</span></div>
+    <div><kbd>TAB</kbd><span>trocar criatura</span></div>
+    <div><kbd>C</kbd><span>comportamento</span></div>
+    <div><kbd>R</kbd><span>tônico</span></div>
+    <div><kbd>1</kbd><span>Eco (após o chefão)</span></div>
+    <div><kbd>I / ESC</kbd><span>menu / pausa</span></div>
+  </section>
+  <p class="note">Clique na tela do jogo para dar foco ao teclado. O progresso fica salvo neste navegador.</p>
+</div>
+
+<script>
+// O motor (WebAssembly) é publicado em 3 partes; aqui elas são baixadas e remontadas antes de iniciar.
+(function () {
+  const PARTS = ["w/motor0.wasm", "w/motor1.wasm", "w/motor2.wasm"];
+  const TOTAL = 35376909 + 1470272;
+  let loaded = 0;
+  const fill = document.getElementById("fill");
+  const status = document.getElementById("status");
+  const prog = (n, label) => { loaded += n; fill.style.width = Math.min(100, (loaded / TOTAL) * 100).toFixed(1) + "%"; if (label) status.textContent = label; };
+  const origFetch = window.fetch.bind(window);
+
+  async function readAll(url, label) {
+    const r = await origFetch(url);
+    if (!r.ok) throw new Error("falha ao baixar " + url + " (" + r.status + ")");
+    const reader = r.body.getReader();
+    const chunks = [];
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+      prog(value.length, label);
+    }
+    return new Blob(chunks);
+  }
+
+  window.fetch = async function (input, init) {
+    const url = typeof input === "string" ? input : input.url;
+    if (url && url.split("?")[0].endsWith("index.wasm")) {
+      const blobs = [];
+      for (let i = 0; i < PARTS.length; i++) blobs.push(await readAll(PARTS[i], "Baixando o motor (" + (i + 1) + "/3)"));
+      status.textContent = "Iniciando";
+      return new Response(new Blob(blobs, { type: "application/wasm" }), { headers: { "Content-Type": "application/wasm" } });
+    }
+    if (url && url.split("?")[0].endsWith("index.pck")) {
+      const b = await readAll("w/dados.wasm", "Baixando os dados do jogo");
+      return new Response(b, { headers: { "Content-Type": "application/octet-stream" } });
+    }
+    return origFetch(input, init);
+  };
+
+  function fail(e) {
+    status.textContent = "Não foi possível iniciar: " + (e && e.message ? e.message : e);
+  }
+
+  document.getElementById("play").addEventListener("click", function () {
+    document.getElementById("start").hidden = true;
+    document.getElementById("loading").hidden = false;
+    const s = document.createElement("script");
+    s.src = "index.js";
+    s.onerror = () => fail("index.js não carregou");
+    s.onload = function () {
+      try {
+        const engine = new Engine({
+          args: [], canvasResizePolicy: 0, executable: "index", experimentalVK: false,
+          fileSizes: { "index.pck": 1470272, "index.wasm": 35376909 },
+          focusCanvas: true, gdextensionLibs: [], ensureCrossOriginIsolationHeaders: false
+        });
+        engine.startGame({
+          onProgress: function (cur, tot) { if (tot > 0 && cur >= tot) status.textContent = "Iniciando"; }
+        }).then(function () {
+          document.getElementById("loading").hidden = true;
+          document.getElementById("canvas").focus();
+        }, fail);
+      } catch (e) { fail(e); }
+    };
+    document.body.appendChild(s);
+  });
+})();
+</script>

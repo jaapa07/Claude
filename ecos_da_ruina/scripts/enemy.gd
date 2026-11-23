@@ -53,6 +53,7 @@ var los_t := 0.0
 var los_ok := false
 var P: Dictionary = {}          # parâmetros de ataque do tipo
 var shown_name := ""
+var hurt_t := 0.0
 var dummy_heal_t := 0.0
 var _tw: Tween
 
@@ -153,6 +154,7 @@ func _physics_process(delta: float) -> void:
 	if not alive_flag or get_tree().paused:
 		return
 	protect_t = max(0.0, protect_t - delta)
+	hurt_t = max(0.0, hurt_t - delta)
 	flash = max(0.0, flash - delta)
 	hp_bar_t = max(0.0, hp_bar_t - delta)
 	cd = max(0.0, cd - delta)
@@ -188,6 +190,8 @@ func _tint() -> Color:
 	return Color.WHITE
 
 func _anim(n: String) -> void:
+	if hurt_t > 0.0 and alive_flag:
+		n = "hurt"
 	if sprite and sprite.animation != n:
 		sprite.play(n)
 
@@ -431,6 +435,7 @@ func take_damage(amount: float, from_pos: Vector2, opts: Dictionary = {}) -> flo
 		Audio.play("guard")
 	if kind == "dummy":
 		dummy_heal_t = 2.0
+		hurt_t = 0.16
 		hp = max(1.0, hp - dmg)
 		flash = 0.12
 		world.spawn_text(global_position + Vector2(0, -fh), str(int(round(dmg))), Color.WHITE)
@@ -438,6 +443,7 @@ func take_damage(amount: float, from_pos: Vector2, opts: Dictionary = {}) -> flo
 			Game.tutorial_event("attack_dummy")
 		return dmg
 	hp -= dmg
+	hurt_t = 0.16
 	Game.dmg_stats[src] = float(Game.dmg_stats.get(src, 0.0)) + min(dmg, hp + dmg)
 	flash = 0.12
 	hp_bar_t = 3.0
