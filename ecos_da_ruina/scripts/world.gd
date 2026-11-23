@@ -1174,6 +1174,8 @@ func _update_camera(delta: float) -> void:
 func shake(amp: float, dur: float) -> void:
 	shake_amp = amp
 	shake_t = dur
+	if amp >= 2.5:
+		Game.vibrate(int(clamp(dur * 150.0, 30.0, 150.0)))
 
 func hitstop(sec: float) -> void:
 	if test_mode or Game.prefs.get("reduz_flash", false):

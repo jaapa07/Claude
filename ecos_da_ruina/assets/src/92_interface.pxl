@@ -1,0 +1,836 @@
+# Interface 2 — molduras, ícones de aviso e retratos de quem fala. Desenho autoral, pixel a pixel.
+# Folhas: ui2_frames.png (molduras 9-slice 24x24, margem 8), ui2_sel.png (barra de seleção 12x12, margem 4),
+#         ui2_icons.png (ícones de aviso 16x16), ui2_more.png (seta "continuar" 8x8), ui2_portraits.png (retratos 32x32).
+
+# ---------------------------------------------------------------- MOLDURAS
+# letras: K contorno, H ouro, O sombra do ouro, m bisel interno, l miolo, g/w/e pedra do canto
+palette ui2
+  K = #120e1c
+  H = #e8b850
+  O = #8a5a28
+  m = #3a3050
+  l = #1e182cf2
+  g = #3aa8d8
+  w = #9ae8ff
+  e = #ffffff
+end
+# diálogo: prata azulada com pedra âmbar
+palette ui2_dlg from ui2
+  H = #a8b8d8
+  O = #4a5a80
+  m = #2c3458
+  l = #141a30f4
+  g = #e8a838
+  w = #ffd870
+end
+# aviso: vermelho com pedra amarela
+palette ui2_warn from ui2
+  H = #e86a50
+  O = #8a2a24
+  m = #4a2028
+  l = #26121af2
+  g = #ffd040
+  w = #fff0a0
+end
+# chefão: carmim escuro e ouro velho
+palette ui2_boss from ui2
+  K = #0a0408
+  H = #c8a040
+  O = #5a1820
+  m = #3a1018
+  l = #1a0a10f2
+  g = #e83040
+  w = #ff9090
+end
+# HUD: lilás discreto, pedra verde
+palette ui2_hud from ui2
+  H = #a89cc8
+  O = #4a4068
+  m = #2e2840
+  l = #1a1626e6
+  g = #7ad080
+  w = #c8ffc8
+end
+# brilho de raridade: só o contorno, em branco (a cor vem do modulate)
+palette ui2_glow from ui2
+  K = #ffffff60
+  H = #ffffff
+  O = #d0d0d0
+  m = #ffffff40
+  l = #00000000
+  g = #ffffff
+  w = #ffffff
+  e = #ffffff
+end
+# aba do nome no diálogo: ouro com miolo vinho
+palette ui2_tab from ui2
+  m = #4a2a40
+  l = #2e1a2cf4
+  g = #ffd870
+  w = #fff6c8
+end
+pal ui2
+
+frame ui2_panel mirror4
+..KKKKKKKKKK
+..KgKHHHHHHH
+.KgwgKOOOOOO
+KgwewgKKKKKK
+.KgwgKmmmmmm
+..KgKmllllll
+KHOKmlllllll
+KHOKmlllllll
+KHOKmlllllll
+KHOKmlllllll
+KHOKmlllllll
+KHOKmlllllll
+end
+sheet ui2_frames.png 24 24 7
+ui2_panel
+ui2_panel pal=ui2_dlg
+ui2_panel pal=ui2_warn
+ui2_panel pal=ui2_boss
+ui2_panel pal=ui2_hud
+ui2_panel pal=ui2_glow
+ui2_panel pal=ui2_tab
+end
+
+# barra de seleção (9-slice 12x12, margem 4)
+palette ui2s
+  H = #e8dcff
+  s = #b8a4ff90
+  f = #6a58c060
+end
+pal ui2s
+frame ui2_selbar mirror4
+..HHHH
+.Hssss
+Hsffff
+Hsffff
+Hsffff
+Hsffff
+end
+sheet ui2_sel.png 12 12 1
+ui2_selbar
+end
+
+# ---------------------------------------------------------------- ÍCONES DE AVISO 16x16
+# ordem: 0 item, 1 missão, 2 captura, 3 nível, 4 aviso, 5 santuário/salvo, 6 eco/memória, 7 informação
+palette ui2i
+  K = #120e1c
+  o = #c8884a
+  O = #7a4a22
+  y = #ffe08a
+  H = #e8a830
+  w = #f2e6c8
+  W = #c4b18c
+  f = #b5503c
+  F = #7a2a1c
+  c = #7ae0ff
+  C = #3a8ac8
+  b = #4a6ad0
+  B = #7a9aff
+  i = #4a8ad8
+  e = #ffffff
+  r = #e04050
+  R = #a02838
+  g = #6ad060
+  G = #3a8a3a
+end
+pal ui2i
+frame ui2_ic_item mirror
+........
+......KK
+.....KyO
+......KK
+....KKoo
+...Kooyo
+..Kooyoo
+.Kooyooo
+.Koooooo
+.KOooooo
+.KOooooo
+.KOOoooo
+..KOOooo
+...KKKKK
+........
+........
+end
+frame ui2_ic_missao mirror
+........
+........
+.KKKKKKK
+KfFKwwww
+KFfKwwww
+.KKKwKKw
+...Kwwww
+...KwKKK
+...Kwwww
+...KwKKw
+.KKKwwww
+KfFKwwww
+KFfKKKKK
+.KKK....
+........
+........
+end
+frame ui2_ic_captura mirror
+........
+.....KKK
+...KKHHH
+..KHyyHH
+.KHyKKKK
+.KyKccww
+KHyKcwwe
+KHKcccce
+KHKcccce
+KHKCccce
+.KHKCCcc
+.KHHKKKK
+..KHHHHH
+...KKOOO
+.....KKK
+........
+end
+frame ui2_ic_nivel mirror
+.......K
+......Ky
+.....Kyy
+....KyyH
+...KyyHH
+..KyyHHH
+.KKKKyHH
+....KyHH
+....KyHH
+....KyHH
+....KyHH
+....KKKK
+........
+........
+........
+........
+end
+frame ui2_ic_aviso mirror
+.......K
+......Ky
+......Ky
+.....KyK
+.....KyK
+....KyyK
+....KyyK
+...KyyyK
+...KyyyK
+..KyyyyK
+..Kyyyyy
+.KyyyyyK
+.Kyyyyyy
+KKKKKKKK
+........
+........
+end
+frame ui2_ic_cristal mirror
+........
+.......K
+......Kc
+.....Kec
+....Kecc
+...KeccC
+..KcccCC
+.KcccCCC
+.KKcccCC
+..KccCCC
+...KcCCC
+....KCCC
+.....KCC
+......KC
+.......K
+........
+end
+frame ui2_ic_eco mirror
+........
+........
+.....KKK
+...KKbbb
+..KbbBBB
+..KbBBee
+.KbBBeee
+.KbBBeee
+.KbBBBee
+.KbbBBBB
+..KbbBBB
+..KKbbbb
+....KKKK
+........
+........
+........
+end
+frame ui2_ic_info mirror
+........
+.....KKK
+...KKiii
+..Kiiiii
+.Kiiiiie
+.Kiiiiii
+Kiiiiiie
+Kiiiiiie
+Kiiiiiie
+Kiiiiiie
+.Kiiiiie
+.Kiiiiii
+..Kiiiii
+...KKiii
+.....KKK
+........
+end
+sheet ui2_icons.png 16 16 8
+ui2_ic_item
+ui2_ic_missao
+ui2_ic_captura
+ui2_ic_nivel
+ui2_ic_aviso
+ui2_ic_cristal
+ui2_ic_eco
+ui2_ic_info
+end
+
+# seta "continuar" do diálogo (8x8)
+frame ui2_more mirror
+KKKK
+KyyH
+.KyH
+.KyH
+..Ky
+...K
+....
+....
+end
+sheet ui2_more.png 8 8 1
+ui2_more
+end
+
+# ---------------------------------------------------------------- RETRATOS 32x32
+# letras: K contorno, s/S pele, i olho, e brilho, n boca, r rubor, h/H/j cabelo, c/C/b roupa, o/O detalhe
+palette pt
+  K = #1b1626
+  s = #f2c39c
+  S = #c98868
+  i = #2a2040
+  e = #ffffff
+  n = #a8484a
+  r = #f0a090
+  h = #5c3620
+  H = #8e5834
+  j = #3a2016
+  c = #2e3f7c
+  C = #1d2754
+  b = #4d66ad
+  o = #d6843e
+  O = #8e4e24
+  w = #ece6f0
+  W = #a8a0b8
+  v = #0a0612
+  g = #c070ff
+  G = #f0d0ff
+end
+palette pt_maru from pt
+  s = #e8b894
+  S = #b88060
+  h = #d8d4dc
+  H = #f4f0f8
+  j = #a8a0b4
+  c = #6a3e7a
+  C = #4a2856
+  b = #8e5aa0
+  o = #e8c04a
+  O = #a8802a
+end
+palette pt_ione from pt
+  s = #f0c8a8
+  h = #2a2a48
+  H = #4a4a78
+  j = #16162a
+  c = #2e4a9a
+  C = #1d2c64
+  b = #5a7ad0
+  o = #9be8ff
+  O = #4aa0c8
+end
+palette pt_ione_eco from pt
+  s = #a8d8f0
+  S = #6aa0d0
+  r = #c8e8ff
+  n = #4a6ab0
+  i = #ffffff
+  h = #4a6ab0
+  H = #7a9ae0
+  j = #2a3a7a
+  c = #3a5ab0
+  C = #22346e
+  b = #7ab0f0
+  o = #ffffff
+  O = #9be8ff
+end
+palette pt_bruna from pt
+  s = #f0c09a
+  h = #c8582a
+  H = #e8843e
+  j = #8a3418
+  c = #3e8a5a
+  C = #24583a
+  b = #5aae74
+  o = #d8c8a0
+  O = #a8946a
+end
+palette pt_ravi from pt
+  s = #a86a44
+  S = #7a4628
+  r = #b87a54
+  n = #5a2a1c
+  h = #1e1a22
+  H = #3a3040
+  j = #100c14
+  c = #4e6a2e
+  C = #344a1c
+  b = #6e8e40
+  o = #c89a4a
+  O = #8a6428
+end
+palette pt_vesna from pt
+  s = #f0d0c0
+  S = #c09888
+  i = #5e0c1a
+  n = #8e1e2e
+  h = #1a1418
+  H = #4a1e2a
+  j = #0e0a0c
+  c = #8e1e2e
+  C = #5a1020
+  b = #c0344a
+  o = #e8c04a
+  O = #a8802a
+end
+palette pt_ilda from pt
+  s = #d8a888
+  S = #a87058
+  h = #9a9aa0
+  H = #c8c8cc
+  j = #6a6a70
+  c = #6a4a2e
+  C = #4a3020
+  b = #8a6a44
+  o = #e88a3a
+  O = #a85a20
+end
+palette pt_doran from pt
+  h = #e8c050
+  H = #f8e08a
+  j = #a8802a
+  c = #3a6a78
+  C = #24485a
+  b = #5a8a9a
+  o = #c8c8d0
+  O = #8a8a98
+end
+palette pt_ilse from pt
+  h = #b0aab8
+  H = #d8d4e0
+  j = #7a7488
+  c = #4e3a7a
+  C = #322450
+  b = #7060a8
+  o = #c8d0e0
+  O = #7a8498
+end
+palette pt_sena from pt
+  s = #f2d0b0
+  h = #e8e8f0
+  H = #ffffff
+  j = #b8b8c8
+  c = #e8dcc0
+  C = #b0a080
+  b = #f8f0e0
+  o = #e8c04a
+  O = #a8802a
+end
+palette pt_arao from pt
+  s = #d0a080
+  S = #a07050
+  h = #a8a8b0
+  H = #d0d0d8
+  j = #707078
+  c = #2e6a6a
+  C = #1e4848
+  b = #4a9090
+  o = #8a6a44
+  O = #5a4430
+end
+palette pt_ysa from pt
+  h = #3a2a4a
+  H = #5a4270
+  j = #241830
+  c = #b0485a
+  C = #7a2a3a
+  b = #d06a7a
+  o = #e8c04a
+  O = #b08a2a
+end
+palette pt_arauto from pt
+  K = #120c1a
+  o = #e8c04a
+  O = #a8802a
+end
+palette pt_pedra from pt
+  b = #a8a088
+  c = #8a846e
+  C = #6a6656
+  O = #4a4638
+  g = #7ae0ff
+end
+palette pt_orbe from pt
+  b = #3a5ab0
+  c = #6a9ae8
+  C = #22346e
+  o = #b8e0ff
+end
+palette pt_tobi from pt
+  h = #2a1a14
+  H = #4a3022
+  j = #160c08
+  c = #8a4a2a
+  C = #5a2e1a
+  b = #a86a3a
+  s = #d8a080
+  S = #a87058
+end
+pal pt
+
+frame pt_face mirror
+................
+................
+................
+................
+................
+................
+..........KKKKKK
+........KKssssss
+.......Kssssssss
+......Ksssssssss
+......Ksssssssss
+.....KSsssssssss
+.....KSsssssssss
+.....KSssjjjssss
+.....KSsssssssss
+....KSSsssiessss
+....KSSsssiissss
+.....KSsrsssssss
+.....KSssssssssS
+.....KSsssssssss
+......KSssssssnn
+......KSssssssss
+.......KSsssssss
+........KKSsssss
+..........KKSsss
+......KKKKKKKSss
+....KKccccccKSss
+...KccccccccbKSs
+..KcccccccccbbKo
+.KCccccccccccbKo
+.KCCcccccccccbbK
+.KCCccccccccccbK
+end
+
+# cabelo curto e rebelde (herói)
+frame pt_curto mirror over pt_face
+................
+................
+..........KKKKKK
+........KKhhhhhh
+......KKhhHHhhhh
+.....KhhhHHhhhhh
+....KhhhhhhhhhHh
+....KhhjhhhhhHhh
+...KhhjhhhhhhHhh
+...Khjhhhjhhhhhj
+...Khjhhjsjhhhjs
+...KhjhKSsjhhjss
+...KhjK.Sssjjsss
+...KjK..........
+....K...........
+end
+
+# cabelo preso em coque (Maru, Ione, Ilda, Ysa)
+frame pt_coque mirror over pt_face
+............KKKK
+...........KhHHh
+...........KhhHh
+..........KKjhhh
+........KKhhjjjj
+......KKhhhhHHhh
+.....KhhhhhhhHHh
+....KhhhhhhhhhHh
+....KhhhhhhhhhhH
+...KhhhhhhhhhhHj
+...Khhhhhhhhhjss
+...Khhhhhhjjssss
+...Khhhjjsssssss
+...KhhK.........
+...KhhK.........
+...KhK..........
+...KhK..........
+....K...........
+end
+
+# cabelo longo (Bruna, Vesna, Sena)
+frame pt_longo mirror over pt_face
+................
+................
+..........KKKKKK
+........KKhhhhhh
+......KKhhhhHHhh
+.....KhhhhhhHHhh
+....KhhhhhhhhhHh
+....KhhhhhhhhhHh
+...KhhhhhhhhhhHh
+...KhhhhhhhhhhHj
+...Khhhhhhhhhjss
+..KhhhhhhhjjSsss
+..Khhhhjjsssssss
+..KhhhK.........
+..KhhhK.........
+..KhhK..........
+..KhhK..........
+..KhhhK.........
+..KjhhK.........
+..KjhhK.........
+..KjhhhK........
+..KjjhhK........
+...KjhhK........
+...KjhhhK.......
+...KjjhhK.......
+....KjhhK.......
+....KKjhK.......
+......KK........
+end
+
+# capuz (Ravi)
+frame pt_capuz mirror over pt_face
+................
+..........KKKKKK
+........KKcccccc
+......KKccccccbb
+.....Kccccccccbb
+....Kccccccccccc
+...KcccccccCCCCC
+...KccccccCjhhhh
+..KcccccCjhhhhhh
+..KccccCjhhhhhhh
+..KccccChhhhhjss
+..KccccCjhjjssss
+..KccccC.jjsssss
+..KccccC........
+..KccccC........
+..KccccC........
+..KccccC........
+..KccccC........
+..KccccC........
+..KccccC........
+..KccccC........
+..KcccccC.......
+..KccccccC......
+..KcccccccCC....
+..KccccccccCC...
+..KccccccccccC..
+..KcccccccccccC.
+..KcccccccccccC.
+end
+
+# barba (Doran, Arão) — vai por cima de um penteado
+frame pt_barba_curto mirror over pt_curto
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+......Kh........
+......Khh..jhhhh
+......Khhhhhhhnn
+......Khhhhhhhhh
+.......Khhhhhhhh
+........KhhhhhHh
+.........KKhhhhh
+...........KKhhh
+.............KKK
+end
+
+# elmo (Capitã Ilse)
+frame pt_elmo mirror over pt_face
+................
+..........KKKKKK
+........KKooooOe
+......KKoooooOOe
+.....KooooooooOe
+....KoooooooooOe
+....KoooooooooOe
+...KOOOOOOOOOOOO
+...KKKKKKKKKKKKK
+....KhhhhhhjjSss
+....KhhK........
+....KhhK........
+....KhK.........
+...KoOK.........
+...KoOK.........
+...KoOK.........
+...KoOK.........
+...KoOK.........
+....KK..........
+end
+
+# chapéu de pescador sobre a barba (Arão)
+frame pt_chapeu mirror over pt_barba_curto
+................
+................
+..........KKKKKK
+........KKoooooo
+.......KooooooOO
+.......Koooooooo
+.......KOOOOOOOO
+..KKKKKooooooooo
+.Koooooooooooooo
+..KKKKKKKKKKKKKK
+....KhhhhjjjSsss
+....KhhK........
+....KhK.........
+end
+
+# Arauto: capuz branco, rosto vazio, olhos acesos
+frame pt_arauto mirror
+................
+................
+..........KKKKKK
+........KKwwwwww
+......KKwwwwwwww
+.....KwwwwwwwwWw
+....KwwwwwwwwWWw
+....KwwwwwwKKKKK
+...KwwwwwKKvvvvv
+...KwwwwKvvvvvvv
+...KwwwKvvvvvvvv
+..KwwwwKvvvvvvvv
+..KwwwKvvvvvvvvv
+..KwwwKvvvvvvvvv
+..KwwwKvvvgGvvvv
+..KwwwKvvvggvvvv
+..KwwwKvvvvvvvvv
+..KwwwKvvvvvvvvv
+..KwwwWKvvvvvvvv
+..KwwwWKvvvvvvvv
+..KwwwwWKvvvvvvv
+..KwwwwWKKvvvvvv
+..KwwwwwWWKKKKKK
+..KwwwwwwwWWWWWW
+.KwwwwwwwwwwwwWo
+.KwwwwwwwwwwwwWo
+KwwwwwwwwwwwwWoo
+KWwwwwwwwwwwwWoO
+KWwwwwwwwwwwwWoO
+KWWwwwwwwwwwwWoO
+KWWwwwwwwwwwwWoO
+KWWWwwwwwwwwwWoO
+end
+
+# placa / inscrição de pedra
+frame pt_pedra mirror
+................
+................
+................
+......KKKKKKKKKK
+....KKbbbbbbbbbb
+...Kbccccccccccc
+..Kbccgggcgggccc
+..Kbcccccccccccc
+..Kbccggcgggggcc
+..Kbcccccccccccc
+..Kbccgggggcggcc
+..Kbcccccccccccc
+..KbccggcggggCcc
+..Kbcccccccccccc
+..KbcccccCcccccc
+..Kbccggggcggccc
+..Kbcccccccccccc
+..KbcccccccCcccc
+..KbccgggcggggCc
+..Kbcccccccccccc
+..KCcccccccccccc
+..KCCccccccccccc
+..KCCCCCCCCCCCCC
+..KKKKKKKKKKKKKK
+.KOOOOOOOOOOOOOO
+.KKKKKKKKKKKKKKK
+end
+
+# orbe de Eco (memórias, vozes antigas)
+frame pt_orbe mirror
+................
+................
+................
+...e............
+................
+............KKKK
+..........KKbbbb
+.........Kbbcccc
+........Kbcccccc
+.......Kbccccooo
+......Kbcccooooo
+......Kbccoooooe
+.....Kbccoooooee
+.....Kbccooooeee
+.....Kbccoooooee
+.....Kbcccoooooo
+.....KCbcccooooo
+.....KCbccccoooo
+......KCbccccccc
+......KCCbcccccc
+.......KCCbbcccc
+........KCCCbbbb
+.........KKCCCCC
+...........KKKKK
+................
+................
+....o...........
+................
+end
+
+# ordem: 0 Você, 1 Maru, 2 Ione, 3 Bruna, 4 Ravi, 5 Vesna, 6 Arauto, 7 Ilda, 8 Doran, 9 Ilse,
+#        10 Sena, 11 Arão, 12 Ysa, 13 placa/inscrição, 14 memória/eco, 15 Eco de Ione, 16 Tobi/genérico
+sheet ui2_portraits.png 32 32 17
+pt_curto
+pt_coque pal=pt_maru
+pt_coque pal=pt_ione
+pt_longo pal=pt_bruna
+pt_capuz pal=pt_ravi
+pt_longo pal=pt_vesna
+pt_arauto pal=pt_arauto
+pt_coque pal=pt_ilda
+pt_barba_curto pal=pt_doran
+pt_elmo pal=pt_ilse
+pt_longo pal=pt_sena
+pt_chapeu pal=pt_arao
+pt_coque pal=pt_ysa
+pt_pedra pal=pt_pedra
+pt_orbe pal=pt_orbe
+pt_coque pal=pt_ione_eco
+pt_curto pal=pt_tobi
+end

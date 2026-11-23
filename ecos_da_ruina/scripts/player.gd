@@ -494,6 +494,7 @@ func _apply_damage(d: float) -> void:
 	Game.hero["hp"] = max(0.0, float(Game.hero["hp"]) - d)
 	Game.hero_changed.emit()
 	world.spawn_text(global_position + Vector2(0, -28), str(int(round(d))), Color(1, 0.4, 0.4))
+	Game.vibrate(40 if d < 20.0 else 80)
 	if float(Game.hero["hp"]) <= 0.0:
 		if Game.flask_ready():
 			# Frasco de Seiva: levanta o herói com metade da vida
