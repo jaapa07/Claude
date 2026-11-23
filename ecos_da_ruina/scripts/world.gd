@@ -1293,6 +1293,20 @@ func open_shrine(shrine: Ent) -> void:
 	player.set_busy(true)
 	ui.open_shrine_menu()
 
+## Reação visível ao descanso: a tela escurece e clareia, brilhos de cura no herói e na criatura.
+func rest_feedback() -> void:
+	if not test_mode:
+		player.set_busy(true)
+		await ui.fade(0.85, 0.35)
+		await get_tree().create_timer(0.25).timeout
+		await ui.fade(0.0, 0.45)
+		player.set_busy(false)
+	fx_at("sparkle", player.global_position + Vector2(0, -22), 1.0, 0.0, 1.6)
+	spawn_text(player.global_position + Vector2(0, -32), "Vida cheia!", Color(0.6, 1.0, 0.7))
+	if companion != null and is_instance_valid(companion):
+		fx_at("sparkle", companion.global_position + Vector2(0, -14), 1.0, 0.0, 1.2)
+	ui.banner("Descansou — equipe recuperada")
+
 func rest_at_shrine() -> void:
 	Game.heal_team()
 	Game.refill_flasks()

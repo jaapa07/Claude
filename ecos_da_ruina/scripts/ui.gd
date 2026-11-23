@@ -736,7 +736,7 @@ func open_shrine_menu() -> void:
 	var s := _push("Santuário", [], "")
 	s.can_cancel = true
 	var items := [
-		_it("Descansar (curar tudo)", func(): world.rest_at_shrine(); toast("Descansou. Criaturas e herói recuperados."), "Restaura herói e criaturas (inclusive exaustas). Inimigos comuns reaparecem."),
+		_it("Descansar (curar tudo)", func(): world.rest_at_shrine(); s.close(); world.rest_feedback(), "Restaura herói e criaturas (inclusive exaustas). Inimigos comuns reaparecem."),
 		_it("Salvar jogo", func(): open_save_slots(), "Grava o progresso."),
 		_it("Equipe e criaturas", func(): open_team(), "Troque criaturas com o armazenamento do santuário e evolua as que estiverem prontas."),
 		_it("Armazenamento (%d/%d)" % [Game.sanctuary.size(), Game.SANCTUARY_CAP], func(): open_storage(), "Criaturas guardadas: leve para a equipe (máximo 3), dê apelidos, ordene ou liberte."),

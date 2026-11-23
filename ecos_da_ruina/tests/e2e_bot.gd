@@ -570,6 +570,9 @@ func stage4_shrine_menu() -> void:
 	await ui_press("ui_accept")      # Descansar
 	await frames(3)
 	check("Descansar registra o ponto de retorno", Game.checkpoint.get("shrine", "") == "vila" and Game.has_flag("tut_rest"))
+	check("Descansar fecha o menu e mostra a reação (aviso na tela)", not main.ui.has_screen())
+	await frames(8)
+	await shot("05b_descansou")
 	await close_menus()
 	check("Menu fecha e o herói volta ao controle", not get_tree().paused and P.state == Player.S.FREE)
 	# pausa por Esc
