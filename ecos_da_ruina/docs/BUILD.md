@@ -17,6 +17,7 @@ godot --headless --path . --export-release "Windows" build/windows/EcosDaRuina.e
 ```bash
 godot --headless --fixed-fps 60 --path . -- --e2e     # percurso completo do capítulo
 godot --headless --fixed-fps 60 --path . -- --unit    # testes de sistema
+godot --headless --fixed-fps 60 --path . -- --e2e --regiao4   # Região 4 inteira (Fortaleza do Eclipse), a partir do estado de fim do capítulo 3
 godot --headless --fixed-fps 60 --path . -- --e2e --musica   # trilha dinâmica (lugar, combate, suspense, chefe, jingles)
 ./build/linux/EcosDaRuina.x86_64 --headless --fixed-fps 60 -- --e2e   # o mesmo no executável exportado
 ```

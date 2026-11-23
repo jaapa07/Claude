@@ -1,6 +1,6 @@
 # Relatório de testes
 
-Resumo: e2e 321/321 (sementes padrão, 7 e 3) · unit 30/30 · poderes 12/12 · equipamentos 12/12 · casas 15/15 · celular (Playwright, iPhone 13 deitado) sem erros
+Resumo: região 4 (`--e2e --regiao4`) 136/136 · e2e 321/321 (sementes padrão, 7 e 3) · unit 30/30 · poderes 12/12 · equipamentos 12/12 · casas 15/15 · celular (Playwright, iPhone 13 deitado) sem erros
 ## E2E (Capítulos 1 e 2)
 [PASS] Título abre ao iniciar o jogo
 [PASS] Novo jogo inicia na Vila Lúmen
@@ -324,3 +324,279 @@ Resumo: e2e 321/321 (sementes padrão, 7 e 3) · unit 30/30 · poderes 12/12 · 
 [PASS] R2: baú único não reaparece após carregar
 [PASS] R2: dados sem erros de validação
 TOTAL: 321 verificações, 321 aprovadas, 0 falhas
+
+## Região 4 — Fortaleza do Eclipse (`-- --e2e --regiao4`)
+Estado inicial montado pelo próprio teste (fim do capítulo 3: herói nv. 19, Raiz Viva, Ruptura Ígnea e Olhar Velado provisório, equipe Brasejante/Cinzavéu/Rocantor). Para depurar etapas finais: `--r4de=8|9|10|11`.
+[PASS] R4: região Fortaleza do Eclipse marcada como jogável
+[PASS] R4: dados sem erros de validação (mapas, espécies, inimigos)
+[PASS] R4: começa na Ponte Espiritual
+[PASS] R4: tileset da fortaleza (fonte 4 do TileSet) em uso
+[PASS] R4: o Olhar Velado revela a ponte espiritual
+[PASS] R4: sem o Olhar Velado o abismo fica sem ponte (intransponível)
+[PASS] R4: clima da fortaleza (ventania/frio/sol) cadastrado
+[PASS] R4: santuário da ponte grava o ponto de retorno
+[PASS] R4: a ponte leva ao Refúgio da Muralha
+[PASS] R4: Refúgio é seguro e tem música própria
+[PASS] R4: Capitã Ilse dá a missão principal e suprimentos
+[PASS] R4: Tália oferece a missão 'Penas ao Vento'
+[PASS] R4: Lume oferece a missão 'O Último Recado'
+[PASS] R4: santuário do Refúgio grava o ponto de retorno
+[PASS] R4: quadro de contratos do Refúgio abre a tela
+[PASS] R4: caçada e contrato em trio da região bloqueados até visitar as rotas
+[PASS] R4: nicho escondido fechado antes de observar
+[PASS] R4: observar o ar frio abre o nicho
+[PASS] R4: baú do nicho (Semente de Vida + Lente do Observatório)
+[PASS] R4: fissura do Refúgio visível e intransponível antes do Passo Umbral
+[PASS] R4: portão da Estrada Final trancado antes do guardião
+[PASS] R4: portão leste leva à Muralha Partida (rota 2)
+[PASS] R4: lanceiro do corredor com guarda frontal e estocada
+[PASS] R4: corredor da muralha liberado
+[PASS] R4: a brecha da muralha está aberta (sem ponte)
+[PASS] R4: captura de um Brasardo no habitat dos respiros quentes
+[PASS] R4: Brasardo jogável (sprite, habilidade de salto explosivo)
+[PASS] R4: Brasardo reaquece o mecanismo antigo e a ponte levadiça desce
+[PASS] R4: a explosão do salto do Brasardo reaquece mecanismos antigos
+[PASS] R4: captura de um Umbrel na sombra das ameias
+[PASS] R4: grade da muralha fechada antes da fresta
+[PASS] R4: sem Umbrel a fresta só dá a dica (alternativa: alavanca)
+[PASS] R4: Umbrel entra na fresta e aciona a grade por dentro
+[PASS] R4: Investida Umbral leva o Umbrel a um ponto visível e livre
+[PASS] R4: Armadura Vigilante contra-ataca combos previsíveis
+[PASS] R4: três golpes seguidos põem a armadura em contra-ataque anunciado (windup)
+[PASS] R4: durante o aviso a armadura apara os golpes da espada
+[PASS] R4: diário do Sargento Aurélio na plataforma sul
+[PASS] R4: fissura da muralha marcada para revisita
+[PASS] R4: grade da torre fechada antes do disparo
+[PASS] R4: virote da balestra acende o receptor e abre a grade da torre
+[PASS] R4: subida do bastião leva à Torre das Duas Sombras
+[PASS] R4: caçada de lanceiros libera depois de visitar a Muralha
+[PASS] R4: santuário do átrio da torre
+[PASS] R4: com sol, a ponte de ouro existe e a de sombra não
+[PASS] R4: atravessa a ponte de luz até a ilhota
+[PASS] R4: a alavanca do eclipse troca as plataformas (luz some, sombra surge)
+[PASS] R4: atravessa a ponte de sombra até a beirada oeste
+[PASS] R4: alavanca do atalho abre a passagem antiga ao Refúgio
+[PASS] R4: atalho da torre leva direto ao Refúgio (retorno curto)
+[PASS] R4: Lume recebe o diário do pai (missão secundária concluída)
+[PASS] R4: Lume muda de lugar depois do recado (rotina)
+[PASS] R4: aceitar a caçada de lanceiros
+[PASS] R4: a passagem do Refúgio volta à ala oeste da torre
+[PASS] R4: volta à beirada leste com o sol
+[PASS] R4: porta norte do salão fechada antes da luz
+[PASS] R4: receptor do salão apagado no início
+[PASS] R4: feixe desviado pelos espelhos ainda barrado pela persiana
+[PASS] R4: espelhos + persiana levam a luz ao cristal e a porta norte abre
+[PASS] R4: galeria fecha as portas com os inimigos
+[PASS] R4: galeria dos lanceiros vencida (portas reabrem)
+[PASS] R4: a torre leva aos Jardins Suspensos (rota 1)
+[PASS] R4: caçada de lanceiros concluída (3 lanceiros)
+[PASS] R4: névoa cortante bloqueia o terraço norte
+[PASS] R4: a manivela gira a hélice e o vento dispersa a névoa
+[PASS] R4: captura de um Ventisco no Ninho dos Ventos (local fixo)
+[PASS] R4: três Plumas de Vento coletadas
+[PASS] R4: observar o anel de flores revela um Ventisco mais velho
+[PASS] R4: ilha da hélice inacessível sem o vento
+[PASS] R4: a Rajada do Ventisco gira a hélice da ilha à distância (passarela surge)
+[PASS] R4: baú da ilha da hélice
+[PASS] R4: o terraço norte dos jardins volta ao Refúgio
+[PASS] R4: Tália recebe as plumas e recompensa uma única vez
+[PASS] R4: recompensa da Tália não duplica
+[PASS] R4: contrato em trio da região disponível
+[PASS] R4: aceitar o contrato em trio (Bruna e Ravi)
+[PASS] R4: trio formado no Refúgio
+[PASS] R4: domadores e feras do Eclipse aparecem nos Jardins
+[PASS] R4: contrato em trio concluído
+[PASS] R4: aliados voltam e recompensa entregue
+[PASS] R4: galeria leva ao andar das hélices
+[PASS] R4: névoa do corredor norte bloqueia
+[PASS] R4: o Ventisco dispersa a névoa lateral (vantagem opcional)
+[PASS] R4: manivela da torre dispersa a névoa do corredor
+[PASS] R4: armaduras da sala dos receptores derrotadas
+[PASS] R4: um só cristal aceso não abre a arena
+[PASS] R4: luz + disparo acendem os dois cristais e abrem a arena
+[PASS] R4: Gêmeos de Ferro despertam (dois corpos)
+[PASS] R4: portas da arena fechadas durante o duelo
+[PASS] R4: Gêmeos de Ferro derrotados (ataques sempre alternados)
+[PASS] R4: portas da arena reabrem e a saída leste abre
+[PASS] R4: insígnia da guarnição recebida dos Gêmeos
+[PASS] R4: tesouro e santuário depois dos Gêmeos
+[PASS] R4: o tesouro leva ao Rito do Eclipse
+[PASS] R4: rito 1 (apresentação): abrir a persiana acende o cristal
+[PASS] R4: rito 2 dá uma dica depois de três tentativas erradas
+[PASS] R4: pedra de reinício recoloca os espelhos (reinício local, sem perder nada)
+[PASS] R4: rito 2 (aplicação): dois espelhos levam o feixe ao cristal
+[PASS] R4: rito 3: com sol, as plataformas de luz levam à ilhota
+[PASS] R4: rito 3: a luz atravessa o abismo e acende o cristal
+[PASS] R4: rito 3: o eclipse apaga a lente mas o cristal fica aceso (gravado)
+[PASS] R4: altar do Rito do Eclipse concede o Manto Umbral e abre a saída
+[PASS] R4: o rito não repete a recompensa
+[PASS] R4: o rito avançado está atrás de uma fissura (Passo Umbral)
+[PASS] R4: o rito leva ao topo da torre
+[PASS] R4: o Cavaleiro não lê comandos do jogador (só posição, tempo e golpes recebidos)
+[PASS] R4: o Cavaleiro Sem Rosto desperta e fecha a arena
+[PASS] R4: fase 1 — a guarda frontal segura golpes pela frente, não pelas costas
+[PASS] R4: fase 2 — postura de muralha muda o que fere (físico 4 x distância 45)
+[PASS] R4: fase 2 — postura comunicada por pose e símbolo (não só cor)
+[PASS] R4: fase 1 — estocada anunciada seguida de exaustão (janela de ataque)
+[PASS] R4: fase 2 — alterna postura de muralha e de espelho
+[PASS] R4: fase 3 — duelos entre portais
+[PASS] R4: Cavaleiro Sem Rosto derrotado
+[PASS] R4: Eco PASSO UMBRAL recebido e posto numa tecla
+[PASS] R4: guarnição libertada (flag regional) e portas abertas
+[PASS] R4: saída do topo leva de volta ao Refúgio
+[PASS] R4: cena da guarnição libertada no Refúgio
+[PASS] R4: soldados voltaram e a Capitã foi ao portão (rotina)
+[PASS] R4: portão norte aberto: Estrada Final
+[PASS] R4: música do Refúgio muda depois da vitória
+[PASS] R4: Passo Umbral atravessa a fissura do Refúgio
+[PASS] R4: baú atrás da fissura (segredo de revisita)
+[PASS] R4: Passo Umbral volta pela fissura
+[PASS] R4: longe de fissuras e portais o Passo Umbral não faz nada (nunca atravessa paredes)
+[PASS] R4: a Estrada Final abre depois do Cavaleiro
+[PASS] R4: tecla do Eco: Passo Umbral cruza a fissura da Estrada Final
+[PASS] R4: gancho da Região 5 (selo da Catedral do Vazio)
+[PASS] R4: Passo Umbral entra na ala do rito avançado
+[PASS] R4: portal marcado leva ao outro lado da parede
+[PASS] R4: rito avançado: espelho leva a luz ao cristal escondido
+[PASS] R4: rito avançado concede o Amuleto do Eclipse
+[PASS] R4: baú atrás da fissura da Muralha Partida
+[PASS] R4: Umbrel evolui para Umbrafel (nv. 22 + vínculo)
+[PASS] R4: Umbrafel mantém a ação de fresta e ganha habilidades novas
+[PASS] R4: save/load mantém Ecos, baús, flags e não duplica recompensas
+[PASS] R4: região Fortaleza do Eclipse marcada como jogável
+[PASS] R4: dados sem erros de validação (mapas, espécies, inimigos)
+[PASS] R4: começa na Ponte Espiritual
+[PASS] R4: tileset da fortaleza (fonte 4 do TileSet) em uso
+[PASS] R4: o Olhar Velado revela a ponte espiritual
+[PASS] R4: sem o Olhar Velado o abismo fica sem ponte (intransponível)
+[PASS] R4: clima da fortaleza (ventania/frio/sol) cadastrado
+[PASS] R4: santuário da ponte grava o ponto de retorno
+[PASS] R4: a ponte leva ao Refúgio da Muralha
+[PASS] R4: Refúgio é seguro e tem música própria
+[PASS] R4: Capitã Ilse dá a missão principal e suprimentos
+[PASS] R4: Tália oferece a missão 'Penas ao Vento'
+[PASS] R4: Lume oferece a missão 'O Último Recado'
+[PASS] R4: santuário do Refúgio grava o ponto de retorno
+[PASS] R4: quadro de contratos do Refúgio abre a tela
+[PASS] R4: caçada e contrato em trio da região bloqueados até visitar as rotas
+[PASS] R4: nicho escondido fechado antes de observar
+[PASS] R4: observar o ar frio abre o nicho
+[PASS] R4: baú do nicho (Semente de Vida + Lente do Observatório)
+[PASS] R4: fissura do Refúgio visível e intransponível antes do Passo Umbral
+[PASS] R4: portão da Estrada Final trancado antes do guardião
+[PASS] R4: portão leste leva à Muralha Partida (rota 2)
+[PASS] R4: lanceiro do corredor com guarda frontal e estocada
+[PASS] R4: corredor da muralha liberado
+[PASS] R4: a brecha da muralha está aberta (sem ponte)
+[PASS] R4: captura de um Brasardo no habitat dos respiros quentes
+[PASS] R4: Brasardo jogável (sprite, habilidade de salto explosivo)
+[PASS] R4: Brasardo reaquece o mecanismo antigo e a ponte levadiça desce
+[PASS] R4: a explosão do salto do Brasardo reaquece mecanismos antigos
+[PASS] R4: captura de um Umbrel na sombra das ameias
+[PASS] R4: grade da muralha fechada antes da fresta
+[PASS] R4: sem Umbrel a fresta só dá a dica (alternativa: alavanca)
+[PASS] R4: Umbrel entra na fresta e aciona a grade por dentro
+[PASS] R4: Investida Umbral leva o Umbrel a um ponto visível e livre
+[PASS] R4: Armadura Vigilante contra-ataca combos previsíveis
+[PASS] R4: três golpes seguidos põem a armadura em contra-ataque anunciado (windup)
+[PASS] R4: durante o aviso a armadura apara os golpes da espada
+[PASS] R4: diário do Sargento Aurélio na plataforma sul
+[PASS] R4: fissura da muralha marcada para revisita
+[PASS] R4: grade da torre fechada antes do disparo
+[PASS] R4: virote da balestra acende o receptor e abre a grade da torre
+[PASS] R4: subida do bastião leva à Torre das Duas Sombras
+[PASS] R4: caçada de lanceiros libera depois de visitar a Muralha
+[PASS] R4: santuário do átrio da torre
+[PASS] R4: com sol, a ponte de ouro existe e a de sombra não
+[PASS] R4: atravessa a ponte de luz até a ilhota
+[PASS] R4: a alavanca do eclipse troca as plataformas (luz some, sombra surge)
+[PASS] R4: atravessa a ponte de sombra até a beirada oeste
+[PASS] R4: alavanca do atalho abre a passagem antiga ao Refúgio
+[PASS] R4: atalho da torre leva direto ao Refúgio (retorno curto)
+[PASS] R4: Lume recebe o diário do pai (missão secundária concluída)
+[PASS] R4: Lume muda de lugar depois do recado (rotina)
+[PASS] R4: aceitar a caçada de lanceiros
+[PASS] R4: a passagem do Refúgio volta à ala oeste da torre
+[PASS] R4: volta à beirada leste com o sol
+[PASS] R4: porta norte do salão fechada antes da luz
+[PASS] R4: receptor do salão apagado no início
+[PASS] R4: feixe desviado pelos espelhos ainda barrado pela persiana
+[PASS] R4: espelhos + persiana levam a luz ao cristal e a porta norte abre
+[PASS] R4: galeria fecha as portas com os inimigos
+[PASS] R4: galeria dos lanceiros vencida (portas reabrem)
+[PASS] R4: a torre leva aos Jardins Suspensos (rota 1)
+[PASS] R4: caçada de lanceiros concluída (3 lanceiros)
+[PASS] R4: névoa cortante bloqueia o terraço norte
+[PASS] R4: a manivela gira a hélice e o vento dispersa a névoa
+[PASS] R4: captura de um Ventisco no Ninho dos Ventos (local fixo)
+[PASS] R4: três Plumas de Vento coletadas
+[PASS] R4: observar o anel de flores revela um Ventisco mais velho
+[PASS] R4: ilha da hélice inacessível sem o vento
+[PASS] R4: a Rajada do Ventisco gira a hélice da ilha à distância (passarela surge)
+[PASS] R4: baú da ilha da hélice
+[PASS] R4: o terraço norte dos jardins volta ao Refúgio
+[PASS] R4: Tália recebe as plumas e recompensa uma única vez
+[PASS] R4: recompensa da Tália não duplica
+[PASS] R4: contrato em trio da região disponível
+[PASS] R4: aceitar o contrato em trio (Bruna e Ravi)
+[PASS] R4: trio formado no Refúgio
+[PASS] R4: domadores e feras do Eclipse aparecem nos Jardins
+[PASS] R4: contrato em trio concluído
+[PASS] R4: aliados voltam e recompensa entregue
+[PASS] R4: galeria leva ao andar das hélices
+[PASS] R4: névoa do corredor norte bloqueia
+[PASS] R4: o Ventisco dispersa a névoa lateral (vantagem opcional)
+[PASS] R4: manivela da torre dispersa a névoa do corredor
+[PASS] R4: armaduras da sala dos receptores derrotadas
+[PASS] R4: um só cristal aceso não abre a arena
+[PASS] R4: luz + disparo acendem os dois cristais e abrem a arena
+[PASS] R4: Gêmeos de Ferro despertam (dois corpos)
+[PASS] R4: portas da arena fechadas durante o duelo
+[PASS] R4: Gêmeos de Ferro derrotados (ataques sempre alternados)
+[PASS] R4: portas da arena reabrem e a saída leste abre
+[PASS] R4: insígnia da guarnição recebida dos Gêmeos
+[PASS] R4: tesouro e santuário depois dos Gêmeos
+[PASS] R4: o tesouro leva ao Rito do Eclipse
+[PASS] R4: rito 1 (apresentação): abrir a persiana acende o cristal
+[PASS] R4: rito 2 dá uma dica depois de três tentativas erradas
+[PASS] R4: pedra de reinício recoloca os espelhos (reinício local, sem perder nada)
+[PASS] R4: rito 2 (aplicação): dois espelhos levam o feixe ao cristal
+[PASS] R4: rito 3: com sol, as plataformas de luz levam à ilhota
+[PASS] R4: rito 3: a luz atravessa o abismo e acende o cristal
+[PASS] R4: rito 3: o eclipse apaga a lente mas o cristal fica aceso (gravado)
+[PASS] R4: altar do Rito do Eclipse concede o Manto Umbral e abre a saída
+[PASS] R4: o rito não repete a recompensa
+[PASS] R4: o rito avançado está atrás de uma fissura (Passo Umbral)
+[PASS] R4: o rito leva ao topo da torre
+[PASS] R4: o Cavaleiro não lê comandos do jogador (só posição, tempo e golpes recebidos)
+[PASS] R4: o Cavaleiro Sem Rosto desperta e fecha a arena
+[PASS] R4: fase 1 — a guarda frontal segura golpes pela frente, não pelas costas
+[PASS] R4: fase 2 — postura de muralha muda o que fere (físico 4 x distância 45)
+[PASS] R4: fase 2 — postura comunicada por pose e símbolo (não só cor)
+[PASS] R4: fase 1 — estocada anunciada seguida de exaustão (janela de ataque)
+[PASS] R4: fase 2 — alterna postura de muralha e de espelho
+[PASS] R4: fase 3 — duelos entre portais
+[PASS] R4: Cavaleiro Sem Rosto derrotado
+[PASS] R4: Eco PASSO UMBRAL recebido e posto numa tecla
+[PASS] R4: guarnição libertada (flag regional) e portas abertas
+[PASS] R4: saída do topo leva de volta ao Refúgio
+[PASS] R4: cena da guarnição libertada no Refúgio
+[PASS] R4: soldados voltaram e a Capitã foi ao portão (rotina)
+[PASS] R4: portão norte aberto: Estrada Final
+[PASS] R4: música do Refúgio muda depois da vitória
+[PASS] R4: Passo Umbral atravessa a fissura do Refúgio
+[PASS] R4: baú atrás da fissura (segredo de revisita)
+[PASS] R4: Passo Umbral volta pela fissura
+[PASS] R4: longe de fissuras e portais o Passo Umbral não faz nada (nunca atravessa paredes)
+[PASS] R4: a Estrada Final abre depois do Cavaleiro
+[PASS] R4: tecla do Eco: Passo Umbral cruza a fissura da Estrada Final
+[PASS] R4: gancho da Região 5 (selo da Catedral do Vazio)
+[PASS] R4: Passo Umbral entra na ala do rito avançado
+[PASS] R4: portal marcado leva ao outro lado da parede
+[PASS] R4: rito avançado: espelho leva a luz ao cristal escondido
+[PASS] R4: rito avançado concede o Amuleto do Eclipse
+[PASS] R4: baú atrás da fissura da Muralha Partida
+[PASS] R4: Umbrel evolui para Umbrafel (nv. 22 + vínculo)
+[PASS] R4: Umbrafel mantém a ação de fresta e ganha habilidades novas
+[PASS] R4: save/load mantém Ecos, baús, flags e não duplica recompensas
+TOTAL: 272 verificações, 272 aprovadas, 0 falhas
