@@ -322,7 +322,7 @@
  },
  "frasco_seiva": {
   "nome": "Frasco de Seiva",
-  "tipo": "tecnica",
+  "tipo": "melhoria",
   "raridade": 4,
   "icone": 1,
   "folha": "icons_chave",
@@ -330,7 +330,7 @@
  },
  "semente_vida": {
   "nome": "Semente de Vida",
-  "tipo": "tecnica",
+  "tipo": "melhoria",
   "raridade": 3,
   "icone": 3,
   "folha": "icons_chave",

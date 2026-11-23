@@ -912,10 +912,61 @@ def t_chefe_fortaleza():
     return s.render("music_chefe_fortaleza", room=1.6, room_mix=0.3, echo_beats=0.75, echo_fb=0.3, rms=0.14)
 
 
+def t_pantano():
+    """Pantano dos Sussurros (Regiao 3): nevoa sobre a agua, Re dorico lento, gotas e flauta grave; azul petroleo e lilas."""
+    s = Score(66, 48)
+    L = s.N
+    tt = _tt(L)
+    nz = trng.uniform(-1, 1, L)
+    lfo = 0.5 + 0.5 * np.sin(2 * np.pi * 3 * tt / (L / SR) + 0.4)
+    s.put(bandpass(nz, 300, 0.8) * lfo * 0.22, 0, 1.0, rev=0.3)
+    prog = [(["D3", "F3", "A3", "C4"], 2), (["G2", "B2", "D3", "F3"], 2), (["D3", "F3", "A3", "E4"], 2), (["C3", "E3", "G3", "B3"], 2),
+            (["Bb2", "D3", "F3", "A3"], 2), (["G2", "B2", "D3", "E3"], 1), (["A2", "C#3", "E3", "G3"], 1)]
+    s.seq(i_pad, [(c, n * 4) for c, n in prog], g=0.22, rev=0.6, legato=1.0, cutoff=900, att=1.8)
+    s.seq(i_bass, [(c[0][:-1] + "2", n * 4) for c, n in prog], g=0.22, rev=0.3, legato=0.95, bite=0.05)
+    s.seq(i_pluck, arp(prog, [0, 2, 1, 3, 2, 1], 0.5), g=0.1, rev=0.5, echo=0.4, legato=1.3)
+    mel = [("-", 4), ("A4", 2), ("C5", 1), ("D5", 1),
+           ("E5", 3), ("D5", 1), ("C5", 2), ("A4", 2),
+           ("B4", 3), ("G4", 1), ("A4", 4),
+           ("F5", 2), ("E5", 1), ("D5", 1), ("C5", 2), ("E5", 2),
+           ("D5", 3), ("B4", 1), ("G4", 4),
+           ("E5", 2), ("C#5", 2), ("D5", 4)]
+    s.seq(i_flute, mel, g=0.28, rev=0.65, echo=0.4, vib=0.012)
+    s.drums("x.......", d_timpani, 8, every=2, g=0.22, rev=0.6, f=73.4, dec=1.8)
+    for k in range(18):
+        b = float(trng.uniform(0, 47))
+        s.put(i_bell(nf(["D6", "A5", "F6", "C6", "E6"][k % 5]), 0.04, decay=0.35), b, 0.07, rev=0.7, echo=0.35)
+    return s.render("music_pantano", room=2.8, room_mix=0.5, echo_beats=1.0, echo_fb=0.45, echo_taps=5)
+
+
+def t_chefe_pantano():
+    """Chefes do Pantano (Barqueiro Sem Sombra, Bruxa Afogada): valsa sombria em Fa# menor, coro afogado e sinos."""
+    s = Score(138, 48)
+    prog = [(["F#2", "A2", "C#3"], 2), (["D2", "F#2", "A2"], 2), (["E2", "G#2", "B2"], 2), (["C#2", "E#2", "G#2"], 2),
+            (["F#2", "A2", "C#3"], 2), (["B1", "D2", "F#2"], 2), (["G2", "B2", "D3"], 2), (["C#2", "E#2", "G#2"], 2)]
+    s.seq(i_bass, roots(prog, beats_per_bar=3, rhythm=[("R", 1), ("5", 1), ("5", 1)]), g=0.45, rev=0.1, legato=0.85, bite=0.4)
+    s.drums("x..x..x..x..", d_kick, 12, g=0.6, rev=0.1, low=46)
+    s.drums("...x.x...x.x", d_hat, 12, g=0.14, rev=0.1)
+    s.drums("x", d_timpani, 12, every=2, g=0.6, rev=0.5, f=92.5)
+    s.seq(i_choir, [([c[0][:-1] + "3", c[1][:-1] + "3", c[2][:-1] + "4"], n * 3) for c, n in prog], g=0.26, rev=0.7, legato=1.0, att=0.4)
+    mel = [("C#5", 1), ("F#5", 1), ("A5", 1), ("G#5", 2), ("F#5", 1),
+           ("D5", 1), ("F#5", 1), ("A5", 1), ("C#6", 3),
+           ("B5", 1), ("G#5", 1), ("E5", 1), ("G#5", 2), ("B5", 1),
+           ("E#5", 3), ("C#5", 3),
+           ("C#5", 1), ("F#5", 1), ("A5", 1), ("C#6", 2), ("B5", 1),
+           ("A5", 1), ("F#5", 1), ("D5", 1), ("B4", 3),
+           ("D5", 1), ("G5", 1), ("B5", 1), ("A5", 2), ("G5", 1),
+           ("G#5", 3), ("E#5", 3)]
+    s.seq(i_strings, mel, g=0.3, rev=0.45, legato=0.95, bright=2600, att=0.05)
+    s.seq(i_bell, arp([([c[0][:-1] + "5", c[1][:-1] + "5", c[2][:-1] + "5"], n) for c, n in prog], [0, 1, 2], 1.0, beats_per_bar=3), g=0.08, rev=0.6, echo=0.4, decay=1.2)
+    return s.render("music_chefe_pantano", room=2.0, room_mix=0.4, echo_beats=0.75, echo_fb=0.35, rms=0.13)
+
+
 TRILHAS = {"minas": t_minas, "casa": t_casa, "masmorra": t_masmorra, "desfiladeiro": t_desfiladeiro, "suspense": t_suspense,
            "combate": t_combate, "chefe_minas": t_chefe_minas, "memoria": t_memoria, "vila_festa": t_vila_festa,
            "vitoria": j_vitoria, "descoberta": j_descoberta,
-           "fortaleza": t_fortaleza, "chefe_fortaleza": t_chefe_fortaleza}
+           "fortaleza": t_fortaleza, "chefe_fortaleza": t_chefe_fortaleza,
+           "pantano": t_pantano, "chefe_pantano": t_chefe_pantano}
 
 
 def trilhas(only=None):

@@ -493,8 +493,8 @@ func _fill_inventory(s: MenuScreen) -> void:
 	var mats: Array = []
 	for id3 in Data.items:
 		var it3: Dictionary = Data.items[id3]
-		if it3["tipo"] in ["material", "tecnica", "historia"] and Game.item_count(id3) > 0:
-			var r3 := _it("%s%s" % [it3["nome"], (" x%d" % Game.item_count(id3)) if it3["tipo"] == "material" else ""], Callable(), it3["desc"])
+		if it3["tipo"] in ["material", "tecnica", "historia", "melhoria"] and Game.item_count(id3) > 0:
+			var r3 := _it("%s%s" % [it3["nome"], (" x%d" % Game.item_count(id3)) if it3["tipo"] in ["material", "melhoria"] else ""], Callable(), it3["desc"])
 			r3["icon"] = Game.item_icon(id3)
 			if it3.has("raridade"):
 				r3["col"] = Game.rarity_color(id3)
