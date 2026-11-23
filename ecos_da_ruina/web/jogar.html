@@ -115,7 +115,8 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
 <script>
 // O motor (WebAssembly) é publicado em 3 partes; aqui elas são baixadas e remontadas antes de iniciar.
 (function () {
-  const PARTS = ["w/motor0.wasm", "w/motor1.wasm", "w/motor2.wasm"];
+  const VERSAO = "202611232207";   // muda a cada publicação: o celular baixa a versão nova em vez de usar o cache
+  const PARTS = ["w/motor0.wasm", "w/motor1.wasm", "w/motor2.wasm"].map(function (u) { return u + "?v=" + VERSAO; });
   const TOTAL = 35376909 + 4688976;
   let loaded = 0;
   const fill = document.getElementById("fill");
@@ -124,7 +125,7 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
   const origFetch = window.fetch.bind(window);
 
   async function readAll(url, label) {
-    const r = await origFetch(url);
+    const r = await origFetch(url, { cache: "no-store" });
     if (!r.ok) throw new Error("falha ao baixar " + url + " (" + r.status + ")");
     const reader = r.body.getReader();
     const chunks = [];
@@ -146,7 +147,7 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
       return new Response(new Blob(blobs, { type: "application/wasm" }), { headers: { "Content-Type": "application/wasm" } });
     }
     if (url && url.split("?")[0].endsWith("index.pck")) {
-      const b = await readAll("w/dados.wasm", "Baixando os dados do jogo");
+      const b = await readAll("w/dados.wasm?v=" + VERSAO, "Baixando os dados do jogo");
       return new Response(b, { headers: { "Content-Type": "application/octet-stream" } });
     }
     return origFetch(input, init);
@@ -160,7 +161,7 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
     document.getElementById("start").hidden = true;
     document.getElementById("loading").hidden = false;
     const s = document.createElement("script");
-    s.src = "index.js";
+    s.src = "index.js?v=" + VERSAO;
     s.onerror = () => fail("index.js não carregou");
     s.onload = function () {
       try {
