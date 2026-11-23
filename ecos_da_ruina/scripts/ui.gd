@@ -911,8 +911,8 @@ func _fill_contracts(s: MenuScreen) -> void:
 		items.append(r2)
 	items.append(_it("Voltar", func(): s.close()))
 	var keep: int = s.sel if s.sel > 0 else 1
-	s.setup("Quadro de Contratos — fragmentos: %d" % Game.fragments, items, "")
 	s.list_w = 250.0
+	s.setup("Quadro de Contratos — fragmentos: %d" % Game.fragments, items, "")
 	s.sel = min(keep, items.size() - 1)
 
 func _contract_pick(idc: String, s: MenuScreen) -> void:
@@ -1006,5 +1006,5 @@ func open_journey() -> void:
 			row2["col"] = Color(0.6, 1.0, 0.6)
 		items.append(row2)
 	items.append(_it("Voltar", func(): s.close(), goal))
-	s.setup("Jornada — %d%%" % Game.conquest_pct(), items, goal)
 	s.list_w = 250.0
+	s.setup("Jornada — %d%%" % Game.conquest_pct(), items, goal)
