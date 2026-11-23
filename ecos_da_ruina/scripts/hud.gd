@@ -263,19 +263,25 @@ func _update_hud() -> void:
 			_cr_icon.position = Vector2(16 - _cr_icon.size.x / 2.0, 20 - _cr_icon.size.y / 2.0)
 			_cr_panel.add_child(_cr_icon)
 			_cr_icon_sp = ac["species_id"]
+		_cr_name.position = Vector2(32, 5); _cr_skill.position = Vector2(32, 23)
+		_cr_hp.visible = true; _cr_cd.visible = true
 		_cr_name.text = "%s %d" % [Game.creature_name(ac).left(9), ac["nivel"]]
 		_cr_hp.value = float(ac["hp"]) / Game.creature_hp_max(ac) * 1000.0
 		var sk: Dictionary = Data.skills[Game.hab_active(ac)]
 		var cd: float = float(Game.skill_cd.get(ac["uuid"], 0.0))
-		_cr_skill.text = "Q pronto" if cd <= 0.0 else "Q %.0fs" % cd
+		var qk: String = "Estrela" if TouchControls.active else "Q"
+		_cr_skill.text = ("%s pronta" % qk if TouchControls.active else "Q pronto") if cd <= 0.0 else "%s %.0fs" % [qk, cd]
 		_cr_cd.value = (1.0 - cd / float(sk["recarga"])) * 1000.0
-		_cr_beh.text = "Modo: " + _beh_name() + "  (C)"
+		_cr_beh.text = "Modo: " + _beh_name() + ("" if TouchControls.active else "  (C)")
 	else:
 		if _cr_icon:
 			_cr_icon.queue_free(); _cr_icon = null; _cr_icon_sp = ""
-		_cr_name.text = "Sem criatura ativa"
+		# sem criatura: texto centralizado dentro do quadro, com a dica do que fazer
+		_cr_name.position = Vector2(8, 9); _cr_skill.position = Vector2(8, 24)
+		_cr_hp.visible = false; _cr_cd.visible = false
+		_cr_name.text = "Nenhuma criatura"
 		_cr_hp.value = 0
-		_cr_skill.text = ""
+		_cr_skill.text = "Capture: Selo" if TouchControls.active else "Capture: tecla F"
 		_cr_cd.value = 0
 		_cr_beh.text = ""
 	var k := 0
