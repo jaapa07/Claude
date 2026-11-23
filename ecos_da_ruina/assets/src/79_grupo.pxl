@@ -35,6 +35,14 @@ palette ravi from heroi
   W = #4a321e
   p = #3e3428
   P = #262018
+  n = #9aa652
+  v = #6e7a34
+  V = #4a5222
+  x = #b0502e
+  X = #74301c
+  u = #d88a48
+  U = #8e5428
+  i = #f4c07a
 end
 palette domador from heroi
   h = #222026

@@ -47,7 +47,8 @@
    "xp": 90,
    "itens": {
     "selo_refinado": 2,
-    "essencia_azul": 1
+    "essencia_azul": 1,
+    "coleira_couro": 1
    }
   }
  },
@@ -169,7 +170,8 @@
    "xp": 260,
    "itens": {
     "frasco_seiva": 1,
-    "selo_refinado": 3
+    "selo_refinado": 3,
+    "pena_lumen": 1
    }
   }
  },
@@ -239,7 +241,8 @@
    "xp": 450,
    "itens": {
     "corrente_vinculo": 1,
-    "essencia_laranja": 1
+    "essencia_laranja": 1,
+    "selo_ancestral": 1
    }
   }
  },

@@ -209,6 +209,8 @@ func creature_info(ind: Dictionary, compare: Dictionary = {}) -> String:
 		t += "Evolui para %s no nível %d. %s" % [Data.sp(sp["evolucao"]["para"])["nome"], sp["evolucao"]["nivel"], "PRONTA!" if ev["possivel"] else ev["motivo"]]
 	else:
 		t += "Forma final."
+	var acc: String = str(ind.get("acessorio", ""))
+	t += "\nAcessório: %s" % (Data.items[acc]["nome"] if acc != "" and Data.items.has(acc) else "—")
 	if ind.get("exausta", false):
 		t += "\n[EXAUSTA — recupere no santuário]"
 	if not compare.is_empty():
@@ -248,6 +250,7 @@ func _creature_menu(uuid: String, parent: MenuScreen) -> void:
 		else:
 			Game.set_active(uuid); world.refresh_companion(true); s.close(); _fill_team(parent), "Define esta criatura como a ativa no mapa."))
 	items.append(_it("Apelido…", func(): _rename(ind, func(): s.close(); _fill_team(parent)), "Dá um apelido (até 12 letras)."))
+	items.append(_acc_row(uuid, func(): s.close(); _fill_team(parent)))
 	var ev := Game.evolution_status(ind)
 	items.append(_it("Evoluir" + ("" if ev["possivel"] else " (indisponível)"), func(): _evolve_confirm(ind, func(): s.close(); _fill_team(parent)), ev.get("motivo", "") if not ev["possivel"] else "Confirme a evolução fora de combate.", ev["possivel"] and not world.in_combat()))
 	items.append(_it("Enviar ao santuário", func():
@@ -331,6 +334,7 @@ func _storage_menu(uuid: String, refill: Callable) -> void:
 		else:
 			toast("Equipe cheia (3)."), "", Game.team.size() < 3))
 	items.append(_it("Apelido…", func(): _rename(ind, func(): s.close(); refill.call())))
+	items.append(_acc_row(uuid, func(): s.close(); refill.call()))
 	items.append(_it("Liberar…", func():
 		var why := Game.can_release(uuid)
 		if why != "":
@@ -383,6 +387,22 @@ func _fill_inventory(s: MenuScreen) -> void:
 		row["icol"] = Game.rarity_color(idd).lerp(Color.WHITE, 0.55)
 		row["icon"] = Game.item_icon(idd)
 		items.append(row)
+	var accs: Array = []
+	for ida in Data.items:
+		if Data.items[ida]["tipo"] == "acessorio_criatura" and Game.item_count(ida) > 0:
+			var idac: String = ida
+			var users: Array = []
+			for u in Game.individuals:
+				if str(Game.individuals[u].get("acessorio", "")) == idac:
+					users.append(Game.creature_name(Game.individuals[u]))
+			var ra := _it("%s%s" % [Data.items[idac]["nome"], (" x%d" % Game.item_count(idac)) if Game.item_count(idac) > 1 else ""], Callable(),
+				Data.items[idac]["desc"] + "\n\nEm uso por: " + (", ".join(users) if users.size() > 0 else "ninguém") + "\nEquipe pela tela da Equipe (escolha a criatura).")
+			ra["col"] = Game.rarity_color(idac)
+			ra["icon"] = Game.item_icon(idac)
+			accs.append(ra)
+	if not accs.is_empty():
+		items.append(_hdr("Acessórios de criatura"))
+		items.append_array(accs)
 	items.append(_hdr("Itens"))
 	for id2 in Data.items:
 		var it2: Dictionary = Data.items[id2]
@@ -814,3 +834,49 @@ func _contract_pick(idc: String, s: MenuScreen) -> void:
 		_:
 			toast(Game.contract_lock_reason(idc))
 			Audio.play("puzzle_no")
+
+# =============================================================== ACESSÓRIOS DE CRIATURA
+func _acc_row(uuid: String, done: Callable) -> Dictionary:
+	var ind: Dictionary = Game.individuals[uuid]
+	var acc: String = str(ind.get("acessorio", ""))
+	var lab := "Acessório: %s" % (Data.items[acc]["nome"] if acc != "" and Data.items.has(acc) else "—")
+	var row := _it(lab, func(): _acc_menu(uuid, done), "Equipe um acessório nesta criatura (coleira, garras, guizo...). Cada peça serve a uma criatura por vez.")
+	if acc != "" and Data.items.has(acc):
+		row["col"] = Game.rarity_color(acc)
+	return row
+
+func _acc_menu(uuid: String, done: Callable) -> void:
+	var ind: Dictionary = Game.individuals[uuid]
+	var s := _push("Acessório — " + Game.creature_name(ind), [], "")
+	var items: Array = []
+	var cur: String = str(ind.get("acessorio", ""))
+	if cur != "":
+		items.append(_it("Remover %s" % Data.items[cur]["nome"], func():
+			Game.equip_creature(uuid, ""); Audio.play("ui_back"); s.close(); done.call(), "Devolve o acessório à bolsa."))
+	var any := false
+	for id in Data.items:
+		if Data.items[id]["tipo"] != "acessorio_criatura" or Game.item_count(id) <= 0 or id == cur:
+			continue
+		any = true
+		var idd: String = id
+		var free := Game.acc_available(idd, uuid)
+		var row := _it(Data.items[idd]["nome"] + ("" if free else " (em uso)"), func():
+			if Game.equip_creature(uuid, idd):
+				Audio.play("ui_ok"); toast("%s equipou %s." % [Game.creature_name(ind), Data.items[idd]["nome"]]); s.close(); done.call()
+			else:
+				toast("Esta peça já está em outra criatura."), func(): return Data.items[idd]["desc"] + _acc_preview(ind, idd), free)
+		row["col"] = Game.rarity_color(idd)
+		row["icon"] = Game.item_icon(idd)
+		items.append(row)
+	if not any and cur == "":
+		items.append(_it("(nenhum acessório)", Callable(), "Compre na loja da Ysa, monte na Oficina ou ganhe em contratos."))
+	items.append(_it("Voltar", func(): s.close()))
+	s.setup("Acessório — " + Game.creature_name(ind), items, "")
+
+func _acc_preview(ind: Dictionary, id: String) -> String:
+	var hp0 := Game.creature_hp_max(ind); var at0 := Game.creature_atk(ind)
+	var old = ind.get("acessorio", "")
+	ind["acessorio"] = id
+	var hp1 := Game.creature_hp_max(ind); var at1 := Game.creature_atk(ind)
+	ind["acessorio"] = old
+	return "\n\nAntes:  Vida %d  Ataque %.0f\nDepois: Vida %d  Ataque %.0f" % [int(hp0), at0, int(hp1), at1]

@@ -351,5 +351,73 @@
   "icone": 5,
   "folha": "icons_chave",
   "desc": "Aperte E diante de uma pedra solta para erguê-la e arremessá-la. Algumas pedras escondem segredos."
+ },
+ "coleira_couro": {
+  "nome": "Coleira de Couro",
+  "tipo": "acessorio_criatura",
+  "raridade": 0,
+  "icone": 0,
+  "folha": "icons_criatura",
+  "desc": "Acessório de criatura: +12 de vida.",
+  "hp": 12,
+  "preco": 60
+ },
+ "garra_cobre": {
+  "nome": "Garras de Cobre",
+  "tipo": "acessorio_criatura",
+  "raridade": 1,
+  "icone": 1,
+  "folha": "icons_criatura",
+  "desc": "Acessório de criatura: +3 de ataque.",
+  "atk": 3
+ },
+ "guizo_eco": {
+  "nome": "Guizo de Eco",
+  "tipo": "acessorio_criatura",
+  "raridade": 1,
+  "icone": 2,
+  "folha": "icons_criatura",
+  "desc": "Acessório de criatura: habilidade recarrega 20% mais rápido.",
+  "cd": 0.2,
+  "preco": 180
+ },
+ "casca_protetora": {
+  "nome": "Casca Protetora",
+  "tipo": "acessorio_criatura",
+  "raridade": 2,
+  "icone": 3,
+  "folha": "icons_criatura",
+  "desc": "Acessório de criatura: recebe 20% menos dano.",
+  "red": 0.2
+ },
+ "pena_lumen": {
+  "nome": "Pena de Lúmen",
+  "tipo": "acessorio_criatura",
+  "raridade": 2,
+  "icone": 4,
+  "folha": "icons_criatura",
+  "desc": "Acessório de criatura: +25% de XP e +15% de velocidade.",
+  "xp": 0.25,
+  "vel": 0.15
+ },
+ "coracao_brasa": {
+  "nome": "Coração de Brasa",
+  "tipo": "acessorio_criatura",
+  "raridade": 3,
+  "icone": 5,
+  "folha": "icons_criatura",
+  "desc": "Acessório de criatura: +6 de ataque e +20 de vida.",
+  "atk": 6,
+  "hp": 20
+ },
+ "selo_ancestral": {
+  "nome": "Selo Ancestral",
+  "tipo": "acessorio_criatura",
+  "raridade": 4,
+  "icone": 6,
+  "folha": "icons_criatura",
+  "desc": "Acessório de criatura: +25% de vida e ataque, recarga 15% menor.",
+  "mult": 0.25,
+  "cd": 0.15
  }
 }

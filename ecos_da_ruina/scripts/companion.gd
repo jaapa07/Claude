@@ -141,7 +141,7 @@ func _follow(delta: float, to_hero: Vector2) -> bool:
 	if to_hero.length() > 150.0 and not world.in_combat():
 		pass
 	if to_goal.length() > want_dist:
-		var spd := 92.0 if to_hero.length() < 70.0 else 120.0
+		var spd := (92.0 if to_hero.length() < 70.0 else 120.0) * (1.0 + Game.acc_stat(ind, "vel"))
 		velocity = to_goal.normalized() * spd
 		move_and_slide()
 		_face(velocity)
@@ -296,7 +296,7 @@ func command_skill(dir: Vector2) -> bool:
 	if cd > 0.0:
 		world.say("%s: habilidade em recarga (%.0f s)." % [Game.creature_name(ind), cd])
 		return false
-	Game.skill_cd[uuid()] = float(sk["recarga"])
+	Game.skill_cd[uuid()] = float(sk["recarga"]) * Game.creature_cd_mult(ind)
 	var mult := stat_mult()
 	var dmg: float = (float(sk["dano"]) + Game.creature_atk(ind) * 0.6) * mult
 	var aff: String = species["afinidade"]

@@ -64,5 +64,48 @@
   "fragmentos": 400,
   "requer": "rei_morto",
   "dica": "Disponível na Catedral do Vazio (capítulo 5)."
+ },
+ "garra_cobre": {
+  "custo": {
+   "essencia_verde": 2,
+   "essencia_azul": 1
+  },
+  "fragmentos": 50
+ },
+ "casca_protetora": {
+  "custo": {
+   "casca_oca": 1,
+   "essencia_azul": 2
+  },
+  "fragmentos": 90,
+  "requer": "lenhador_morto",
+  "dica": "Derrote o Lenhador Oco."
+ },
+ "pena_lumen": {
+  "custo": {
+   "essencia_azul": 2,
+   "essencia_roxa": 1
+  },
+  "fragmentos": 120
+ },
+ "coracao_brasa": {
+  "custo": {
+   "essencia_roxa": 2,
+   "essencia_laranja": 1,
+   "minerio_cobre": 2
+  },
+  "fragmentos": 220,
+  "requer": "visitou_forja_cobre",
+  "dica": "Chegue à Forja de Cobre."
+ },
+ "selo_ancestral": {
+  "custo": {
+   "essencia_laranja": 2,
+   "essencia_rubra": 1,
+   "osso_ancestral": 1
+  },
+  "fragmentos": 400,
+  "requer": "cervo_morto",
+  "dica": "Derrote o Cervo de Ossos."
  }
 }

@@ -438,11 +438,46 @@ func sp_of(ind: Dictionary) -> Dictionary:
 
 func creature_hp_max(ind: Dictionary) -> float:
 	var s := sp_of(ind)
-	return floor(float(s.get("hp_base", 30)) + float(s.get("hp_cresc", 4)) * (int(ind["nivel"]) - 1))
+	var hp: float = float(s.get("hp_base", 30)) + float(s.get("hp_cresc", 4)) * (int(ind["nivel"]) - 1) + acc_stat(ind, "hp")
+	return floor(hp * (1.0 + acc_stat(ind, "mult")))
 
 func creature_atk(ind: Dictionary) -> float:
 	var s := sp_of(ind)
-	return float(s.get("atk_base", 5)) + float(s.get("atk_cresc", 1)) * (int(ind["nivel"]) - 1)
+	var a: float = float(s.get("atk_base", 5)) + float(s.get("atk_cresc", 1)) * (int(ind["nivel"]) - 1) + acc_stat(ind, "atk")
+	return a * (1.0 + acc_stat(ind, "mult"))
+
+# ---- acessórios de criatura (um por criatura)
+func acc_stat(ind: Dictionary, key: String) -> float:
+	var id: String = str(ind.get("acessorio", ""))
+	if id == "" or not Data.items.has(id):
+		return 0.0
+	return float(Data.items[id].get(key, 0.0))
+
+func creature_cd_mult(ind: Dictionary) -> float:
+	return max(0.4, 1.0 - acc_stat(ind, "cd"))
+
+func acc_in_use(id: String, except_uuid := "") -> int:
+	var n := 0
+	for u in individuals:
+		if u != except_uuid and str(individuals[u].get("acessorio", "")) == id:
+			n += 1
+	return n
+
+func acc_available(id: String, for_uuid := "") -> bool:
+	return item_count(id) > acc_in_use(id, for_uuid)
+
+func equip_creature(uuid: String, id: String) -> bool:
+	var ind: Dictionary = individuals.get(uuid, {})
+	if ind.is_empty():
+		return false
+	if id != "" and not acc_available(id, uuid):
+		return false
+	var frac: float = float(ind["hp"]) / max(1.0, creature_hp_max(ind))
+	ind["acessorio"] = id
+	if not ind.get("exausta", false):
+		ind["hp"] = max(1.0, floor(creature_hp_max(ind) * frac))
+	team_changed.emit()
+	return true
 
 func creature_name(ind: Dictionary) -> String:
 	if ind.get("apelido", "") != "":
@@ -541,6 +576,7 @@ func set_active(uuid: String) -> void:
 		team_changed.emit()
 
 func damage_creature(ind: Dictionary, amount: float) -> void:
+	amount *= 1.0 - acc_stat(ind, "red")
 	ind["hp"] = max(0.0, float(ind["hp"]) - amount)
 	if float(ind["hp"]) <= 0.0:
 		ind["exausta"] = true
@@ -574,7 +610,7 @@ func revive_creature(uuid: String) -> bool:
 func add_creature_xp(ind: Dictionary, amount: float) -> void:
 	if int(ind["nivel"]) >= CREATURE_MAX_LEVEL:
 		return
-	ind["xp"] = float(ind["xp"]) + amount
+	ind["xp"] = float(ind["xp"]) + amount * (1.0 + acc_stat(ind, "xp"))
 	while int(ind["nivel"]) < CREATURE_MAX_LEVEL and float(ind["xp"]) >= creature_xp_to_next(int(ind["nivel"])):
 		ind["xp"] = float(ind["xp"]) - creature_xp_to_next(int(ind["nivel"]))
 		ind["nivel"] = int(ind["nivel"]) + 1
