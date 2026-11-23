@@ -51,6 +51,8 @@ func _ready() -> void:
 		await run_powers()
 	elif "--demo" in args:
 		await run_demo()
+	elif "--r3" in args:
+		await run_r3_dev()
 	elif mode == "unit":
 		await run_unit()
 	else:
@@ -515,6 +517,9 @@ func run_e2e() -> void:
 	if stage_limit <= 22: return
 	await r2_rito_avancado()
 	await r2_save_load()
+	if stage_limit <= 23: return
+	# ================= CAPÍTULO 3 — PÂNTANO DOS SUSSURROS (mesmo fluxo, depois de carregar o save do Capítulo 2)
+	await r3_all()
 
 # =============================================================== ESTÁGIOS
 func wait_map(id: String, timeout := 6.0) -> bool:
@@ -1516,8 +1521,42 @@ func run_unit() -> void:
 	await frames(2)
 	check("R2: válvula converte Q->q só dentro da área", q_before == "Q" and W.cur_tiles[15][20] == "q" and W.cur_tiles[33][42] == "Q")
 	Game.set_flag("pedreira_valv", false)
+	# ---- Região 3: garantias de design nos dados
+	var r3_ok := true
+	for sid in ["goturim", "brejugo", "nimbelo"]:
+		var sp3: Dictionary = Data.species[sid]
+		var evo3: Dictionary = Data.species.get(sp3["evolucao"]["para"], {})
+		if sp3["status"] != "jogavel" or evo3.get("status", "") != "jogavel" or int(sp3["evolucao"]["nivel"]) < 17 or sp3.get("acao_id", "") == "":
+			r3_ok = false
+	check("R3: Goturim, Brejugo e Nimbelo jogáveis, com evolução (17/18) e ação ambiental", r3_ok and Data.species["nimbelo"]["raridade"] == "rara")
+	var r3_creature := {}
+	var r3_eco := {}
+	for mid in Data.regions["pantano"]["mapas"]:
+		for e in Data.maps[mid]["entities"]:
+			if e["type"] in ["wheel", "mud_mark"]:
+				r3_creature[e["flag"]] = mid
+			if e["type"] == "spirit_bridge":
+				r3_eco[e["flag"]] = mid
+	var r3_bad := []
+	for mid in Data.regions["pantano"]["mapas"]:
+		for e in Data.maps[mid]["entities"]:
+			if e["type"] == "door":
+				for f in e.get("open_flags", []):
+					if (r3_creature.has(f) and not _has_local_alt(mid, f)) or r3_eco.has(f) or f == "bruxa_morta" and mid != "templo_c":
+						r3_bad.append("%s:%s" % [mid, e["id"]])
+	check("R3: portões obrigatórios não dependem de Goturim/Brejugo/Nimbelo nem do Olhar Velado", r3_bad.is_empty(), str(r3_bad))
+	check("R3: lodo marcado do templo também tem estacas locais (Brejugo é só alternativa)", _has_local_alt("templo_b", "tb_lodo"))
+	W.load_map("lago_reflexos", "from_porto")
+	await frames(3)
+	var w_before: String = W.cur_tiles[19][12]
+	Game.set_flag("lago_c1")
+	await frames(2)
+	check("R3: comporta converte W->t só no canal da área", w_before == "W" and W.cur_tiles[19][12] == "t" and W.cur_tiles[8][27] == "W")
+	Game.set_flag("lago_c1", false)
+	var sk_ok: bool = Data.skills["onda"]["exec"] == "onda" and Data.skills["lodo_pegajoso"]["exec"] == "lodo" and float(Data.skills["clarao"].get("revela", 0)) > 0.0
+	check("R3: habilidades novas (Onda, Lodo Pegajoso, Clarão) com execução própria", sk_ok)
 	# ---- habilidades aprendidas por nível (dados e regras)
-	var execs := ["prender", "pulso", "cone", "ima", "nuvem", "avanco", "avanco_cadeia", "cadeia", "cura", "escudo"]
+	var execs := ["prender", "pulso", "cone", "ima", "nuvem", "avanco", "avanco_cadeia", "cadeia", "cura", "escudo", "onda", "lodo"]
 	var bad_h: Array = []
 	for sid in Data.species:
 		if Data.species[sid]["status"] != "jogavel":
@@ -3076,3 +3115,753 @@ func run_habilidades() -> void:
 	var bad: Dictionary = Game.individuals[lum["uuid"]]
 	bad["hab_ativa"] = "eclipse"
 	check("Hab: ativa inválida volta à habilidade original", Game.hab_active(bad) == "pulso")
+
+
+# ================================================================ CAPÍTULO 3 — PÂNTANO DOS SUSSURROS
+## Atalho de desenvolvimento (-- --e2e --r3): monta o estado do fim do Capítulo 2 e roda só os estágios do Pântano.
+func run_r3_dev() -> void:
+	for i in [3]:
+		SaveSys.delete_slot(i)
+	main.start_new_game(3)
+	await frames(10)
+	await advance_dialogs()
+	for f in ["falou_maru", "tutorial_ok", "primeira_captura", "viu_santuario_seiva", "lenhador_morto", "cervo_morto", "voltou_vila", "ponte_minas",
+			"fim_cap1", "visitou_forja_cobre", "falou_doran", "visitou_fundicao_a", "vigia_morto", "ferreiro_morto", "voltou_forja", "minas_libertas",
+			"tut_move", "tut_attack", "tut_dodge", "tut_guard", "tut_command", "tut_rest", "rito_ok", "atalho_fundicao_aberto"]:
+		Game.set_flag(f)
+	Game.grant_eco("raiz_viva")
+	Game.grant_eco("ruptura_ignea")
+	Game.add_hero_xp(9000)
+	while Game.hero_level() > 12:
+		Game.hero["level"] = 12
+	Game.hero["hp"] = Game.hero_max_hp()
+	for sp in [["brasejante", 11], ["cinzaveu", 11], ["ferrunho", 11]]:
+		var ind := Game.new_individual(sp[0], sp[1])
+		ind["vinculo"] = ["a", "b", "c"]
+		Game.register_capture(ind)
+	Game.give_item("pocao", 12)
+	Game.give_item("selo_refinado", 8)
+	Game.give_item("selo_basico", 6)
+	Game.give_item("lanca_cobre", 1)
+	Game.give_item("luvas_termicas", 1)
+	Game.equip("lanca_cobre")
+	Game.fragments = 600
+	Game.checkpoint = {"map": "forja_cobre", "spawn": "", "pos": [24 * 16.0 + 8.0, 17 * 16.0 + 8.0], "shrine": "forja"}
+	W.load_map("forja_cobre", "default")
+	await frames(30)
+	await advance_dialogs()
+	await r3_all()
+
+func r3_all() -> void:
+	await r3_passagem()
+	if stage_limit <= 24: return
+	await r3_porto()
+	if stage_limit <= 25: return
+	await r3_passarela()
+	if stage_limit <= 26: return
+	await r3_porto_volta()
+	if stage_limit <= 27: return
+	await r3_lago()
+	if stage_limit <= 28: return
+	await r3_templo_a()
+	if stage_limit <= 29: return
+	await r3_templo_b()
+	if stage_limit <= 30: return
+	await r3_barqueiro()
+	if stage_limit <= 31: return
+	await r3_rito()
+	if stage_limit <= 32: return
+	await r3_bruxa()
+	if stage_limit <= 33: return
+	await r3_pos_bruxa()
+	if stage_limit <= 34: return
+	await r3_save_load()
+
+## Garante a espécie na equipe (como no santuário: troca com a criatura mais antiga).
+func ensure_in_team(sp_ids: Array) -> String:
+	var u := uuid_of(sp_ids)
+	if u == "":
+		return ""
+	if not Game.team.has(u):
+		if Game.team.size() >= Game.TEAM_MAX:
+			for v in Game.team:
+				var sid: String = Game.individuals[v]["species_id"]
+				if not sid in ["goturim", "marulume", "brejugo", "musgoral", "nimbelo", "nimbelio"]:
+					Game.move_to_sanctuary(v)
+					break
+		Game.move_to_team(u)
+		W.refresh_companion(true)
+		await frames(5)
+	return u
+
+func talk_at(ent_id: String, from: Vector2, dir: Vector2) -> void:
+	var e := ent_by_id(ent_id)
+	if e == null:
+		return
+	await goto(e.global_position + from, 6.0)
+	await face(dir)
+	await frames(3)
+	await interact_press()
+	await frames(3)
+	await advance_dialogs()
+	await frames(5)
+
+# ---------------------------------------------------------------- 24. Passagem Sul (Ruptura Ígnea) e chegada
+func r3_passagem() -> void:
+	check("R3: bloqueio de pedra fissurada da Passagem Sul existe desde o Capítulo 1", str(Data.maps["minas_entrada"]["tiles"][14][24]) == "X")
+	var ok := await exit_to("minas_entrada", 23 * 16.0 + 8.0, 35 * 16.0 + 8.0)
+	check("R3: a Forja leva de volta à Entrada das Minas", ok and W.map_id == "minas_entrada")
+	check("R3: objetivo aponta a Passagem Sul (Capítulo 2 concluído)", "Passagem Sul" in Game.objective_text() and "concluído" in Game.objective_text(), Game.objective_text())
+	check("R3: bloqueio intransponível antes da Ruptura", W.is_solid_char(W.tile_char_at(tpos(24, 14))))
+	await use_ent("passagem_sul", Vector2(-16, 0), Vector2.RIGHT)
+	check("R3: Ruptura Ígnea rompe o bloqueio da Passagem Sul", Game.has_flag("pantano_passagem") and not W.is_solid_char(W.tile_char_at(tpos(24, 14))))
+	await shot("r3_01_passagem")
+	ok = await exit_to("porto_lanternas", 29 * 16.0 + 8.0, 14 * 16.0 + 8.0)
+	check("R3: a Passagem Sul chega ao Porto das Lanternas", ok and W.map_id == "porto_lanternas")
+
+# ---------------------------------------------------------------- 25. Porto das Lanternas (núcleo)
+func r3_porto() -> void:
+	check("R3: Pântano dos Sussurros marcado como jogável", Data.regions["pantano"]["status"] == "jogavel" and Data.regions["pantano"]["mapas"].size() >= 7)
+	check("R3: tileset do pântano (quarta fonte do TileSet) em uso", W.tilemap.tile_set.has_source(3) and W.tilemap.get_cell_source_id(Vector2i(24, 18)) == 3)
+	check("R3: zona de clima do pântano (chuva/neblina)", Weather.zone_of("porto_lanternas") == "pantano" and Weather.zone_of("templo_a") == "")
+	check("R3: trilha 'pantano' nos mapas da região", Data.maps["porto_lanternas"]["music"] == "pantano" and Data.maps["templo_c"]["music"] == "pantano")
+	check("R3: objetivo aponta o mestre do Porto", "Arão" in Game.objective_text(), Game.objective_text())
+	await shot("r3_02_porto")
+	var pot0 := Game.item_count("pocao")
+	await talk("arao")
+	check("R3: Arão dá a missão principal e suprimentos", Game.has_flag("falou_arao") and Game.item_count("pocao") == pot0 + 3 and "Templo Submerso" in Game.objective_text())
+	await talk("ione")
+	check("R3: Ione oferece 'Lanternas da Passarela'", Game.has_flag("quest_lanternas"))
+	await talk_at("tito", Vector2(0, -16), Vector2.DOWN)
+	check("R3: Tito oferece 'A Rede do Tito' (rotina: pesca no píer com tempo seco)", Game.has_flag("quest_rede") and ent_by_id("tito") != null and ent_by_id("tito_abrigo") == null)
+	await rest_at("porto")
+	check("R3: santuário do Porto grava o ponto de retorno", Game.checkpoint.get("shrine", "") == "porto")
+	check("R3: quadro de contratos no Porto com caçada e contrato em dupla da região", ent_by_id("quadro_porto") != null and Data.contracts.has("caca_sapos") and Data.contracts["contrabando"]["tipo"] == "dupla")
+	check("R3: contratos da região bloqueados até visitar as rotas", Game.contract_state("caca_sapos") == "bloqueado" and Game.contract_state("contrabando") == "bloqueado")
+	# gancho da Região 4: a ponte espiritual existe mas só o Olhar Velado a revela
+	await use_ent("ponte_muralha", Vector2(-16, 0), Vector2.RIGHT)
+	check("R3: ponte espiritual (Região 4) visível como obstáculo antes do Olhar Velado", Game.has_flag("viu_oculto_ponte_muralha") and W.tile_char_at(tpos(40, 6)) == "W")
+
+# ---------------------------------------------------------------- 26. Passarela dos Ecos (rota 1)
+func r3_passarela() -> void:
+	var ok := await exit_to("passarela_ecos", 23 * 16.0 + 8.0, 8.0)
+	check("R3: norte do Porto leva à Passarela dos Ecos", ok and W.map_id == "passarela_ecos")
+	await shot("r3_03_passarela")
+	await engage_area(tpos(24, 27), 170.0, 90.0)
+	var sapo_ok := int(Game.stats["kills"].get("sapo", 0)) >= 1
+	check("R3: sapo de lodo (salto anunciado) e planta sementeira derrotados", sapo_ok and int(Game.stats["kills"].get("planta", 0)) >= 1 and P.state != Player.S.DEAD,
+		"%s" % str(Game.stats["kills"]))
+	await use_ent("guia1", Vector2(0, 16), Vector2.UP)
+	check("R3: lanterna-guia acesa pelo herói (persistente)", Game.has_flag("lit_guia1"))
+	# Brejugo na ilha oeste
+	await engage_area(tpos(7, 23), 140.0, 60.0)
+	var okb := await capture_species("pa_brejugo1")
+	check("R3: Brejugo capturado no lodo da ilha oeste (habitat fixo)", okb and Game.bestiary.get("brejugo", {}).get("capturado", false))
+	# Goturim na ilha leste
+	await engage_area(tpos(48, 25), 150.0, 60.0)
+	var okg := await capture_species("pa_goturim1")
+	check("R3: Goturim capturado na água rasa da ilha leste", okg and Game.bestiary.get("goturim", {}).get("capturado", false))
+	var ug := await ensure_in_team(["goturim", "marulume"])
+	var ub := await ensure_in_team(["brejugo", "musgoral"])
+	check("R3: Goturim e Brejugo na equipe", Game.team.has(ug) and Game.team.has(ub))
+	# roda d'água: sem o Goturim nada muda; com ele, o canal escoa
+	await set_active_species(["brejugo", "musgoral"])
+	await use_ent("roda_passarela", Vector2(0, 16), Vector2.UP)
+	check("R3: roda d'água não gira sem o Goturim (caminho opcional)", not Game.has_flag("passarela_roda") and W.tile_char_at(tpos(48, 15)) == "W")
+	await set_active_species(["goturim", "marulume"])
+	var bg := Game.bond_count(Game.individuals[ug])
+	await use_ent("roda_passarela", Vector2(0, 16), Vector2.UP)
+	check("R3: Goturim gira a roda d'água e o canal escoa (ação ambiental real)", Game.has_flag("passarela_roda") and W.tile_char_at(tpos(48, 15)) == "t")
+	check("R3: ação do Goturim conta vínculo", Game.bond_count(Game.individuals[ug]) > bg or "acao:roda_passarela" in Game.individuals[ug]["vinculo"])
+	await shot("r3_04_roda")
+	await use_ent("passarela_bau_roda", Vector2(0, 16), Vector2.UP)
+	check("R3: baú da ilhota do canal (rota do Goturim)", Game.chests.has("passarela_bau_roda"))
+	# Goturim: Onda empurra inimigos leves
+	var wolf := _spawn_wolf(W.companion.global_position + Vector2(30, 0))
+	wolf.small = true
+	var w0: float = wolf.hp
+	var p0: Vector2 = wolf.global_position
+	wolf.set_physics_process(true)
+	Game.skill_cd[ug] = 0.0
+	W.companion.target = null
+	W.companion.command_skill(Vector2.RIGHT)
+	await frames(12)
+	check("R3: Onda do Goturim fere e empurra inimigo leve", wolf.hp < w0 and wolf.global_position.distance_to(p0) > 10.0, "%s -> %s / %.1f" % [w0, wolf.hp, wolf.global_position.distance_to(p0)])
+	wolf.queue_free()
+	# lodo instável do caminho principal: estacas locais
+	check("R3: lodo instável bloqueia o caminho norte", W.is_solid_char(W.tile_char_at(tpos(27, 11))))
+	await use_ent("estacas_norte", Vector2(16, 0), Vector2.LEFT)
+	check("R3: estacas (mecanismo local) firmam o lodo", Game.has_flag("passarela_estacas") and W.tile_char_at(tpos(27, 11)) == "8")
+	await use_ent("guia2", Vector2(-16, 0), Vector2.RIGHT)
+	# atalho do Brejugo
+	await use_ent("marca_noroeste", Vector2(0, 16), Vector2.UP)
+	check("R3: lodo marcado não firma com outra criatura", not Game.has_flag("passarela_lodo_brejugo"))
+	await set_active_species(["brejugo", "musgoral"])
+	await use_ent("marca_noroeste", Vector2(0, 16), Vector2.UP)
+	check("R3: Brejugo firma o lodo marcado (atalho opcional)", Game.has_flag("passarela_lodo_brejugo") and W.tile_char_at(tpos(5, 14)) == "8")
+	# Brejugo: Lodo Pegajoso deixa inimigos lentos
+	var wolf2 := _spawn_wolf(W.companion.global_position + Vector2(40, 0))
+	Game.skill_cd[ub] = 0.0
+	W.companion.target = wolf2
+	W.companion.command_skill(Vector2.RIGHT)
+	await frames(4)
+	check("R3: Lodo Pegajoso do Brejugo deixa o inimigo lento", wolf2.slow_t > 0.0)
+	wolf2.queue_free()
+	await shot("r3_05_lodo")
+	await use_ent("passarela_bau_noroeste", Vector2(0, 16), Vector2.UP)
+	# ilha norte: terceira lanterna-guia, segredo dos juncos
+	await engage_area(tpos(28, 6), 150.0, 60.0)
+	await use_ent("guia3", Vector2(0, 16), Vector2.UP)
+	check("R3: três lanternas-guia acesas completam a missão da Ione", Game.has_flag("lanternas_ok"))
+	check("R3: nicho dos juncos fechado antes de observar", W.is_solid_char(W.tile_char_at(tpos(18, 4))))
+	await use_ent("juncos_sussurro", Vector2(16, 0), Vector2.LEFT)
+	check("R3: juncos sussurrantes revelam um nicho (segredo por observação)", Game.has_flag("passarela_sussurro") and not W.is_solid_char(W.tile_char_at(tpos(18, 4))))
+	await use_ent("passarela_bau_sussurro", Vector2(0, 16), Vector2.UP)
+	check("R3: diário da faroleira no nicho", Game.item_count("diario_faroleira") == 1)
+	await shot("r3_06_ilha_norte")
+	ok = await exit_to("porto_lanternas", 23 * 16.0 + 8.0, 39 * 16.0 + 8.0)
+	check("R3: volta ao Porto pela passarela", ok)
+
+# ---------------------------------------------------------------- 27. Porto: missão das lanternas e contrato
+func r3_porto_volta() -> void:
+	var ub := uuid_of(["brejugo", "musgoral"])
+	var b0 := Game.bond_count(Game.individuals[ub]) if ub != "" else 0
+	await talk("ione")
+	check("R3: Ione entrega o Amuleto da Maré e vínculo para a equipe", Game.has_flag("lanternas_entregue") and Game.item_count("amuleto_mare") == 1 and (ub == "" or Game.bond_count(Game.individuals[ub]) > b0))
+	check("R3: caçada da região liberada depois da Passarela", Game.contract_state("caca_sapos") == "disponivel")
+	check("R3: aceitar a caçada 'Coaxar Sem Fim'", Game.accept_contract("caca_sapos") and "Sapos" in Game.contract_progress_text())
+
+# ---------------------------------------------------------------- 28. Lago dos Reflexos (rota 2)
+func r3_lago() -> void:
+	var ok := await exit_to("lago_reflexos", 47 * 16.0 + 8.0, 17 * 16.0 + 8.0)
+	check("R3: leste do Porto leva ao Lago dos Reflexos", ok and W.map_id == "lago_reflexos")
+	check("R3: contrato em dupla do lago liberado ao chegar", Game.contract_state("contrabando") in ["ocupado", "disponivel"])
+	await shot("r3_07_lago")
+	check("R3: canal até a ilha é água funda antes da comporta", W.tile_char_at(tpos(12, 19)) == "W")
+	await use_ent("comporta_margem", Vector2(0, 16), Vector2.UP)
+	check("R3: comporta da margem esvazia o canal (nível da água)", Game.has_flag("lago_c1") and W.tile_char_at(tpos(12, 19)) == "t")
+	await goto(tpos(22, 19), 6.0, 40.0)
+	await engage_area(tpos(25, 20), 140.0, 70.0)
+	check("R3: espectro refletido derrotado (só vulnerável ao atacar ou revelado)", int(Game.stats["kills"].get("espectro", 0)) >= 1, str(Game.stats["kills"]))
+	await use_ent("comporta_ilha", Vector2(0, 16), Vector2.UP)
+	check("R3: comporta da ilha esvazia o caminho ao templo", Game.has_flag("lago_c2") and W.tile_char_at(tpos(27, 8)) == "t")
+	# anel de lanternas -> Nimbelo (descoberta ligada à criatura)
+	check("R3: Nimbelo ausente antes do anel de lanternas", ent_by_id("la_nimbelo") == null)
+	await use_ent("anel1", Vector2(0, 16), Vector2.UP)
+	await use_ent("anel2", Vector2(0, 16), Vector2.UP)
+	await use_ent("anel3", Vector2(0, -16), Vector2.DOWN)
+	await frames(6)
+	check("R3: anel de lanternas acesas atrai o Nimbelo (raro, opcional)", Game.has_flag("lago_anel") and ent_by_id("la_nimbelo") != null)
+	await engage_area(tpos(45, 24), 120.0, 60.0)
+	var okn := await capture_species("la_nimbelo", 0.25)
+	check("R3: Nimbelo capturado (opcional; não exigido pela campanha)", okn and Game.bestiary.get("nimbelo", {}).get("capturado", false))
+	await use_ent("rede_tito", Vector2(0, -16), Vector2.DOWN)
+	check("R3: rede do Tito encontrada na ilha leste", Game.item_count("rede_pesca") == 1 and Game.has_flag("rede_achada"))
+	# roda d'água do lago (Goturim)
+	await set_active_species(["goturim", "marulume"])
+	await use_ent("roda_lago", Vector2(0, 16), Vector2.UP)
+	await use_ent("lago_bau_roda", Vector2(0, 16), Vector2.UP)
+	check("R3: roda do lago escoa o canal leste (baú com Semente de Vida)", Game.has_flag("lago_roda") and Game.chests.has("lago_bau_roda"))
+	# Nimbelo revela espectros por perto
+	var un := await ensure_in_team(["nimbelo", "nimbelio"])
+	if un != "":
+		await set_active_species(["nimbelo", "nimbelio"])
+	var esp := Enemy.new()
+	esp.init(W, "espectro", {"id": "teste_espectro", "x": 30, "y": 20})
+	W.ysort.add_child(esp)
+	esp.global_position = W.companion.global_position + Vector2(30, 0)
+	esp.set_physics_process(false)
+	await frames(6)
+	check("R3: espectro invisível e intocável sem revelação", not esp.spectral_visible() or W.companion != null)
+	W.companion._passive(0.016)
+	check("R3: Nimbelo revela o espectro por perto (passiva)", esp.revealed_t > 0.0 and esp.hittable())
+	esp.queue_free()
+	# segredo do reflexo
+	await goto(tpos(27, 6), 6.0, 60.0)
+	await engage_area(tpos(24, 3), 140.0, 60.0)
+	await use_ent("lago_reflexo", Vector2(0, -16), Vector2.DOWN)
+	check("R3: o reflexo que não bate revela um baú (segredo por observação)", Game.has_flag("lago_reflexo") and ent_by_id("lago_bau_reflexo") != null)
+	await use_ent("lago_bau_reflexo", Vector2(0, -16), Vector2.DOWN)
+	check("R3: Manto de Juncos no baú do reflexo", Game.item_count("manto_juncos") == 1 and Game.has_flag("lago_bau_reflexo_aberto"))
+	await shot("r3_08_reflexo")
+	ok = await exit_to("templo_a", 27 * 16.0 + 8.0, 8.0)
+	check("R3: o caminho de pedras chega ao Templo Submerso", ok and W.map_id == "templo_a")
+
+# ---------------------------------------------------------------- 29. Templo Submerso A (Sala das Marés, Galeria, Espelhos)
+func r3_templo_a() -> void:
+	await rest_at("ta_atrio")
+	check("R3: santuário do átrio do templo", Game.checkpoint.get("shrine", "") == "ta_atrio")
+	check("R3: Sala das Marés: canal central cheio separa as alas", W.tile_char_at(tpos(30, 22)) == "W")
+	await shot("r3_09_sala_mares")
+	await goto(tpos(17, 25), 6.0, 60.0)
+	await goto(tpos(10, 25), 8.0, 10.0)
+	await frames(10)
+	check("R3: Galeria: portas do templo se fecham no combate", Game.has_flag("tmp_enc_sapos") and door_closed_at(14, 25))
+	var tt := 0.0
+	while tt < 200.0 and not Game.has_flag("enc_sapos_ok") and P.state != Player.S.DEAD:
+		await engage_area(tpos(7, 23), 200.0, 20.0)
+		tt += 20.0
+	check("R3: Galeria vencida; portas reabrem", Game.has_flag("enc_sapos_ok") and not door_closed_at(14, 25))
+	await use_ent("ta_comporta", Vector2(0, 16), Vector2.UP)
+	check("R3: comporta da Galeria esvazia o canal da Sala das Marés (efeito entre salas)", Game.has_flag("ta_canal") and W.tile_char_at(tpos(30, 22)) == "0")
+	await use_ent("ta_bau_galeria", Vector2(0, 16), Vector2.UP)
+	# Sala dos Espelhos
+	await goto(tpos(44, 18), 6.0, 60.0)
+	await engage_area(tpos(36, 18), 160.0, 40.0)
+	check("R3: porta norte fechada antes do feixe", door_closed_at(51, 7) and not ent_by_id("ta_cristal").lit)
+	await shot("r3_10_espelhos")
+	for i in 2:
+		await use_ent("ta_espelho3", Vector2(16, 0), Vector2.LEFT)
+	for i in 2:
+		await use_ent("ta_espelho1", Vector2(-16, 0), Vector2.RIGHT)
+	for i in 2:
+		await use_ent("ta_espelho2", Vector2(-16, 0), Vector2.RIGHT)
+	check("R3: espelhos: dica opcional depois de várias tentativas", toast_seen("Dica: a luz"))
+	await use_ent("ta_espelho1", Vector2(-16, 0), Vector2.RIGHT)
+	check("R3: um espelho certo desvia o feixe mas não acende o cristal", not Game.has_flag("ta_espelhos") and W.beam_layer.get_child_count() > 6)
+	await use_ent("ta_espelho2", Vector2(-16, 0), Vector2.RIGHT)
+	await use_ent("ta_espelho3", Vector2(16, 0), Vector2.LEFT)
+	await frames(4)
+	check("R3: três espelhos alinhados acendem o cristal e abrem a porta", Game.has_flag("ta_espelhos") and ent_by_id("ta_cristal").lit and not door_closed_at(51, 7))
+	await shot("r3_11_feixe")
+	await use_ent("ta_bau_espelhos", Vector2(0, -16), Vector2.DOWN)
+	check("R3: Tábua do Templo (história) na Sala dos Espelhos", Game.item_count("diario_templo") == 1)
+	var ok := await exit_to("templo_b", 51 * 16.0 + 8.0, 8.0)
+	check("R3: a porta dos espelhos leva à Câmara do Lodo", ok and W.map_id == "templo_b")
+
+# ---------------------------------------------------------------- 30. Templo B (lodo, tesouro, atalho ao Porto)
+func r3_templo_b() -> void:
+	check("R3: faixa de lodo instável corta a Câmara do Lodo", W.is_solid_char(W.tile_char_at(tpos(41, 9))))
+	await use_ent("tb_estacas", Vector2(16, 0), Vector2.LEFT)
+	check("R3: estacas do templo firmam o lodo (sem depender de criatura)", Game.has_flag("tb_lodo") and W.tile_char_at(tpos(41, 9)) == "8")
+	await engage_area(tpos(38, 10), 220.0, 90.0)
+	check("R3: plantas e espectros da câmara derrotados", hostile().filter(func(e): return e.global_position.distance_to(tpos(38, 10)) < 220.0).is_empty())
+	await rest_at("tb_tesouro")
+	await use_ent("tb_bau_tesouro", Vector2(0, 16), Vector2.UP)
+	check("R3: tesouro do templo: Remo Ancestral", Game.item_count("remo_barqueiro") == 1)
+	Game.equip("remo_barqueiro")
+	check("R3: Remo Ancestral equipado aumenta o alcance", Game.weapon_profile()["alcance"] >= 10.0)
+	check("R3: comporta do Canal Submerso fechada antes da alavanca", door_closed_at(18, 3))
+	await use_ent("tb_alavanca_canal", Vector2(0, 16), Vector2.UP)
+	check("R3: alavanca abre o Canal Submerso (atalho)", Game.has_flag("atalho_porto_aberto") and not door_closed_at(18, 3))
+	var ok := await exit_to("porto_lanternas", 18 * 16.0 + 16.0, 8.0)
+	check("R3: atalho do templo reconecta ao Porto", ok and W.map_id == "porto_lanternas" and not door_closed_at(23, 29))
+	await talk_at("tito", Vector2(0, -16), Vector2.DOWN)
+	check("R3: rede devolvida ao Tito (missão secundária)", Game.has_flag("rede_entregue") and Game.item_count("rede_pesca") == 0)
+	ok = await exit_to("templo_b", 23 * 16.0 + 16.0, 35 * 16.0 + 8.0)
+	check("R3: atalho funciona nos dois sentidos (Porto -> templo)", ok and W.map_id == "templo_b")
+	await rest_at("tb_tesouro")
+	check("R3: santuário do tesouro antes do Barqueiro", Game.checkpoint.get("shrine", "") == "tb_tesouro")
+
+# ---------------------------------------------------------------- 31. Barqueiro Sem Sombra
+func barqueiro_lanterns() -> Array:
+	var out: Array = []
+	for i in 4:
+		var l := ent_by_id("tb_lanterna%d" % (i + 1))
+		if l != null:
+			out.append(l)
+	return out
+
+func lantern_spot(b: Node, l: Node) -> Vector2:
+	var c: Vector2 = b.lake.get_center()
+	var dx: float = 16.0 if c.x > l.global_position.x else -16.0
+	return l.global_position + Vector2(dx, 0)
+
+func fight_barqueiro(b: Node, timeout := 300.0) -> String:
+	var t := 0.0
+	while t < timeout and is_instance_valid(b) and b.alive_flag:
+		if P.state == Player.S.DEAD:
+			return "morreu"
+		var before := frame_count
+		await use_potion_if_needed()
+		var q := quake_threat()
+		if q != null and P.dodge_cd <= 0.0 and P.vigor >= 25.0:
+			steer(q.dir.orthogonal())
+			await frames(1)
+			await tap("dodge", 2)
+			release_moves()
+			last_seen["esquivou_onda"] = true
+		elif b.bst == b.B.TELE_OAR and P.global_position.distance_to(b.global_position) < 76.0:
+			steer(P.global_position - b.global_position)
+			await frames(5)
+			release_moves()
+		elif b.bst in [b.B.INTRO]:
+			await frames(3)
+		elif b.has_shadow():
+			last_seen["sombra"] = true
+			var d: float = P.global_position.distance_to(b.global_position)
+			if d < 40.0:
+				await face(b.global_position - P.global_position)
+				await attack_tap()
+				await frames(8)
+			else:
+				await goto(b.global_position + (P.global_position - b.global_position).normalized() * 26.0, 8.0, 0.5)
+		else:
+			var best: Node = null
+			var bd := 1e9
+			for l in barqueiro_lanterns():
+				if l.lit or l.boss_cd > 0.0:
+					continue
+				var dd: float = l.global_position.distance_to(P.global_position)
+				if dd < bd:
+					bd = dd
+					best = l
+			if best == null:
+				await frames(4)
+			else:
+				var spot := lantern_spot(b, best)
+				if P.global_position.distance_to(spot) > 6.0:
+					await goto(spot, 4.0, 0.8)
+				elif b.global_position.distance_to(best.global_position) < 80.0:
+					await face(best.global_position - P.global_position)
+					await interact_press()
+					await frames(4)
+				else:
+					await frames(3)
+		t += float(frame_count - before) / 60.0
+	return "vitoria" if (not is_instance_valid(b) or not b.alive_flag) else "tempo"
+
+func enter_barqueiro() -> Node:
+	await goto(tpos(20, 19), 6.0, 60.0)
+	await goto(tpos(20, 24), 6.0, 20.0)
+	await frames(30)
+	return find_boss("barqueiro")
+
+func r3_barqueiro() -> void:
+	await use_ent("placa_barqueiro", Vector2(-16, 0), Vector2.RIGHT)
+	await advance_dialogs()
+	var b := await enter_barqueiro()
+	check("R3: Barqueiro Sem Sombra desperta e a porta do templo se fecha", b != null and b.activated and door_closed_at(19, 21))
+	await shot("r3_12_barqueiro")
+	await secs(1.8)
+	var h0: float = b.hp
+	b.take_damage(40.0, b.global_position + Vector2(-20, 0), {"src": "heroi", "knock": 0.0})
+	check("R3: sem sombra os golpes quase não o ferem", h0 - b.hp <= 40.0 * 0.25 and not b.has_shadow(), str(h0 - b.hp))
+	check("R3: arena com plataformas largas em volta do lago (sem quedas)", W.tile_char_at(tpos(18, 30)) == "9" and W.tile_char_at(tpos(41, 30)) == "9" and W.tile_char_at(tpos(30, 24)) == "9")
+	await die_generic(b, "arena do Barqueiro")
+	check("R3: derrota no Barqueiro: volta ao santuário, porta aberta, chefe intacto", W.map_id == "templo_b" and not Game.has_flag("barqueiro_morto") and not Game.has_flag("tmp_barqueiro_ativo") and not door_closed_at(19, 21))
+	Game.heal_team()
+	b = await enter_barqueiro()
+	check("R3: Barqueiro reiniciado com vida cheia", b != null and abs(b.hp - b.max_hp) < 0.1)
+	last_seen = {}
+	var frag0 := Game.fragments
+	var res := await fight_barqueiro(b, 300.0)
+	for k in 2:
+		if res == "vitoria":
+			break
+		print("  [dbg] barqueiro: ", res, " ", last_seen.keys())
+		await secs(4.0)
+		Game.heal_team()
+		b = await enter_barqueiro()
+		res = await fight_barqueiro(b, 300.0)
+	check("R3: Barqueiro Sem Sombra derrotado usando as lanternas", res == "vitoria", res)
+	check("R3: a luz prendeu a sombra dele (vulnerável)", last_seen.get("sombra", false))
+	await secs(2.0)
+	check("R3: recompensa do Barqueiro e porta de saída", Game.has_flag("barqueiro_morto") and Game.fragments >= frag0 + 80 and not door_closed_at(46, 30))
+	check("R3: objetivo segue para a Bruxa", "Bruxa" in Game.objective_text(), Game.objective_text())
+	await shot("r3_13_barqueiro_fim")
+
+# ---------------------------------------------------------------- 32. Rito dos Reflexos
+func r3_rito() -> void:
+	var ok := await exit_to("rito_reflexos", 59 * 16.0 + 8.0, 30 * 16.0 + 8.0)
+	check("R3: depois do Barqueiro, o Rito dos Reflexos", ok and W.map_id == "rito_reflexos")
+	await shot("r3_14_rito")
+	check("R3: rito: porta 1 fechada até observar as duas estátuas", door_closed_at(14, 14))
+	var sv := ent_by_id("rr_demo_v")
+	var sf := ent_by_id("rr_demo_f")
+	check("R3: reflexo verdadeiro repete o lado da lanterna; o falso troca de lado", sv.refl.visible and sf.refl.visible and not sv.refl.flip_h and sf.refl.flip_h)
+	await use_ent("rr_demo_v", Vector2(0, 16), Vector2.UP)
+	await use_ent("rr_demo_f", Vector2(0, 16), Vector2.UP)
+	check("R3: rito 1: observar as duas estátuas abre a porta (sem castigo)", Game.has_flag("rr_demo1") and Game.has_flag("rr_demo2") and not door_closed_at(14, 14))
+	# sala 2: o Nimbelo faz as falsas tremularem; tocar a falsa vira espectro
+	var nb := await set_active_species(["nimbelo", "nimbelio"])
+	await goto(tpos(23, 10), 6.0, 40.0)
+	await frames(20)
+	var s2a := ent_by_id("rr_s2a")
+	check("R3: com o Nimbelo por perto as estátuas falsas tremulam", not nb or s2a.sprite.modulate != Color.WHITE)
+	for id in ["rr_s2a", "rr_s2c", "rr_s2a"]:
+		await use_ent(id, Vector2(0, 16), Vector2.UP)
+		await frames(10)
+		await engage_area(tpos(23, 12), 140.0, 30.0)
+	check("R3: rito 2: estátua falsa vira espectro; dica após 3 erros", toast_seen("Dica: olhe de que lado") and int(Game.stats["kills"].get("espectro", 0)) >= 2)
+	var inv0 := Game.inventory.duplicate()
+	var fr0 := Game.fragments
+	await use_ent("rr_reset2", Vector2(0, 16), Vector2.UP)
+	check("R3: pedra de reinício não tira itens nem fragmentos", Game.inventory == inv0 and Game.fragments == fr0)
+	var safe_exit := false
+	for d in W.ent_defs:
+		if d["type"] == "exit" and d["to"] == "templo_b" and W._def_visible(d):
+			safe_exit = true
+	check("R3: saída segura do rito sempre aberta", safe_exit and not door_closed_at(1, 14))
+	await use_ent("rr_s2b", Vector2(0, 16), Vector2.UP)
+	check("R3: rito 2: a estátua de reflexo verdadeiro abre a porta", Game.has_flag("rr2_ok") and not door_closed_at(30, 14))
+	# sala 3: sem água não há reflexo; a comporta enche o tanque
+	await use_ent("rr_s3c", Vector2(0, 16), Vector2.UP)
+	check("R3: rito 3: sem água a estátua não responde", not Game.has_flag("rr3_ok") and not ent_by_id("rr_s3c").refl.visible)
+	await use_ent("rr_comporta", Vector2(0, 16), Vector2.UP)
+	await frames(4)
+	check("R3: rito 3: comporta enche o tanque e os reflexos aparecem", Game.has_flag("rr_agua") and ent_by_id("rr_s3c").refl.visible)
+	await shot("r3_15_rito_reflexos")
+	await use_ent("rr_s3c", Vector2(0, 16), Vector2.UP)
+	check("R3: rito 3: água + reflexo verdadeiro despertam o altar", Game.has_flag("rr3_ok") and not door_closed_at(49, 14))
+	var ac := Game.active_ind()
+	var b1 := Game.bond_count(ac)
+	await use_ent("rr_altar", Vector2(0, 16), Vector2.UP)
+	await advance_dialogs()
+	check("R3: conclusão do rito: Lente de Orvalho e vínculo da criatura ativa", Game.has_flag("rito_reflexos_ok") and Game.item_count("lente_orvalho") == 1 and Game.bond_count(ac) == b1 + 1)
+	W.rite_altar(ent_by_id("rr_altar"))
+	await advance_dialogs()
+	check("R3: repetir o altar não dá recompensa de novo", Game.item_count("lente_orvalho") == 1 and Game.bond_count(ac) == b1 + 1)
+	var esp := Enemy.new()
+	esp.init(W, "espectro", {"id": "teste_lente", "x": 55, "y": 16})
+	W.ysort.add_child(esp)
+	esp.global_position = P.global_position + Vector2(30, 0)
+	esp.set_physics_process(false)
+	await frames(2)
+	check("R3: Lente de Orvalho deixa espectros próximos visíveis", esp.spectral_visible())
+	esp.queue_free()
+	ok = await exit_to("templo_c", 59 * 16.0 + 8.0, 14 * 16.0 + 8.0)
+	check("R3: o rito leva ao Coração Afogado", ok and W.map_id == "templo_c")
+
+# ---------------------------------------------------------------- 33. Bruxa Afogada
+func enter_bruxa_arena() -> Node:
+	await goto(tpos(20, 17), 6.0, 60.0)
+	await frames(30)
+	return find_boss("bruxa")
+
+func bruxa_figures(b: Node) -> Array:
+	var out: Array = [b]
+	for c in b.copies:
+		if is_instance_valid(c) and c.alive_flag:
+			out.append(c)
+	return out
+
+## Escolhe pela pista visual: o reflexo que acompanha o corpo.
+func true_figure(b: Node) -> Node:
+	for f in bruxa_figures(b):
+		if f.reflexo_consistente:
+			return f
+	return b
+
+func orb_threat() -> Node:
+	for q in get_tree().get_nodes_in_group("projectiles"):
+		if q.mode != "orbe":
+			continue
+		var rel: Vector2 = P.global_position - q.global_position
+		if rel.length() < 34.0 and q.dir.dot(rel.normalized()) > 0.7:
+			return q
+	return null
+
+func bruxa_step(b: Node) -> void:
+	await use_potion_if_needed()
+	var pp := P.global_position
+	var o := orb_threat()
+	if o != null and P.dodge_cd <= 0.0 and P.vigor >= 25.0:
+		steer(o.dir.orthogonal())
+		await frames(1)
+		await tap("dodge", 2)
+		release_moves()
+		last_seen["esquivou_orbe"] = true
+		return
+	if b.bst == b.B.TELE_POCA:
+		for q in b.poca_pts:
+			if pp.distance_to(q) < 26.0:
+				await goto(pp + (pp - q).normalized() * 34.0, 6.0, 0.5)
+				return
+	for r in b.sinking_rects():
+		if r.grow(4.0).has_point(pp):
+			last_seen["aviso_plataforma"] = true
+			await goto(tpos(32, 17), 8.0, 1.5)
+			return
+	if b.bst in [b.B.INTRO, b.B.TRANSITION]:
+		await frames(3)
+		return
+	var tgt := true_figure(b)
+	if b.phase == 2 and b.copies.size() > 0:
+		last_seen["escolheu_reflexo"] = tgt == b
+	var d: float = pp.distance_to(tgt.global_position)
+	if d < 38.0:
+		await face(tgt.global_position - pp)
+		await attack_tap()
+		await frames(8)
+	else:
+		await goto(tgt.global_position, 30.0, 0.5)
+
+func fight_bruxa(b: Node, timeout := 420.0) -> String:
+	var t := 0.0
+	while t < timeout and is_instance_valid(b) and b.alive_flag:
+		if P.state == Player.S.DEAD:
+			return "morreu"
+		var before := frame_count
+		last_seen["fase%d" % b.phase] = true
+		if b.phase == 3 and Game.has_flag("tmp_bruxa_cheia"):
+			last_seen["agua_subiu"] = true
+		await bruxa_step(b)
+		t += float(frame_count - before) / 60.0
+	return "vitoria" if (not is_instance_valid(b) or not b.alive_flag) else "tempo"
+
+func r3_bruxa() -> void:
+	await rest_at("tc_prep")
+	check("R3: santuário de preparação da Bruxa", Game.checkpoint.get("shrine", "") == "tc_prep")
+	await use_ent("tc_bau_prep", Vector2(0, 16), Vector2.UP)
+	await use_ent("placa_bruxa", Vector2(0, 16), Vector2.UP)
+	await advance_dialogs()
+	# ---- derrota na fase 1
+	var b := await enter_bruxa_arena()
+	check("R3: Bruxa Afogada desperta e a porta se fecha", b != null and b.activated and door_closed_at(17, 17))
+	await shot("r3_16_bruxa")
+	await secs(2.4)
+	var saw_fan := false
+	var tf := 0.0
+	while tf < 8.0 and not saw_fan and is_instance_valid(b):
+		saw_fan = b.bst == b.B.TELE_FAN
+		await frames(3)
+		tf += 0.05
+	check("R3: fase 1: leque de orbes anunciado por linhas", saw_fan)
+	await die_generic(b, "fase 1 da Bruxa")
+	check("R3: derrota fase 1: reinício limpo", W.map_id == "templo_c" and not Game.has_flag("bruxa_morta") and not Game.has_flag("tmp_bruxa_ativo") and not door_closed_at(17, 17))
+	# ---- fase 2: cópias e reflexos
+	Game.heal_team()
+	b = await enter_bruxa_arena()
+	await secs(2.4)
+	b.take_damage(b.max_hp * 0.42, b.global_position + Vector2(-20, 0), {"src": "heroi", "knock": 0.0})
+	await secs(1.8)
+	check("R3: fase 2 (60%): a Bruxa se divide em quatro", b.phase == 2 and b.copies.size() == 3, "fase %d cópias %d" % [b.phase, b.copies.size()])
+	var cps: Array = b.copies.duplicate()
+	var ok_refl: bool = b.refl != null and b.refl.flip_h == b.sprite.flip_h and b.reflexo_consistente
+	for c in cps:
+		if c.reflexo_consistente or c.refl.flip_h == c.sprite.flip_h:
+			ok_refl = false
+	check("R3: só a verdadeira tem reflexo consistente na água da arena", ok_refl)
+	check("R3: com o Nimbelo ativo a verdadeira é marcada depressa", Game.active_ind().get("species_id", "") not in ["nimbelo", "nimbelio"] or b.real_mark_t > 0.0)
+	await shot("r3_17_bruxa_copias")
+	var c0: Node = cps[0]
+	c0.take_damage(10.0, P.global_position, {"src": "heroi"})
+	await frames(4)
+	check("R3: golpe numa cópia a desfaz (e a Bruxa responde)", b.copies.size() == 2 and b.copies_broken == 1)
+	# ---- fase 3: a água sobe
+	b.take_damage(b.hp - b.max_hp * 0.24, b.global_position + Vector2(-20, 0), {"src": "heroi", "knock": 0.0})
+	await secs(2.4)
+	check("R3: fase 3 (25%): a água sobe; cruz de pedra e plataformas do padrão ficam firmes",
+		b.phase == 3 and Game.has_flag("tmp_bruxa_cheia") and W.tile_char_at(tpos(38, 22)) == "W" and W.tile_char_at(tpos(24, 10)) == "0" and W.tile_char_at(tpos(31, 16)) == "9")
+	check("R3: nenhuma cópia na fase 3", b.copies.is_empty())
+	var warned := false
+	var t3 := 0.0
+	while t3 < 12.0 and is_instance_valid(b) and P.state != Player.S.DEAD and b.pat_i == 0:
+		if not b.sinking_rects().is_empty():
+			warned = true
+		await bruxa_step(b)
+		t3 += 0.1
+	check("R3: plataformas mudam só depois do aviso", warned and b.pat_i == 1 and W.tile_char_at(tpos(24, 10)) == "W" and W.tile_char_at(tpos(38, 22)) == "0")
+	var firm := 0
+	for k in b.padroes.size():
+		firm += (b.padroes[k] as Array).size()
+	check("R3: nunca retira todas as posições seguras (cruz sempre firme)", firm >= 6 and W.tile_char_at(tpos(31, 12)) == "9" and W.tile_char_at(tpos(40, 17)) == "9")
+	await shot("r3_18_bruxa_agua")
+	if is_instance_valid(b) and P.state != Player.S.DEAD:
+		await die_generic(b, "fase 3 da Bruxa")
+	else:
+		await secs(4.5)
+	check("R3: derrota fase 3: a água volta ao normal e o reinício é limpo", W.tile_char_at(tpos(38, 22)) == "0" and not Game.has_flag("tmp_bruxa_cheia") and not Game.has_flag("bruxa_morta"))
+	# ---- luta real
+	Game.heal_team()
+	last_seen = {}
+	b = await enter_bruxa_arena()
+	await secs(2.2)
+	var frag0 := Game.fragments
+	Game.dmg_stats = {}
+	var res := await fight_bruxa(b, 480.0)
+	for k in 3:
+		if res == "vitoria":
+			break
+		print("  [dbg] bruxa: ", res, " ", last_seen.keys(), " hp=", b.hp if is_instance_valid(b) else -1)
+		await secs(4.0)
+		Game.heal_team()
+		b = await enter_bruxa_arena()
+		await secs(2.2)
+		res = await fight_bruxa(b, 480.0)
+	print("  [info] luta da Bruxa: %s, dano herói=%.0f companheiro=%.0f, tônicos=%d, nível herói=%d" % [res, float(Game.dmg_stats.get("heroi", 0)), float(Game.dmg_stats.get("companion", 0)), Game.item_count("pocao"), Game.hero_level()])
+	check("R3: Bruxa Afogada derrotada em combate real (sem Olhar Velado)", res == "vitoria", res)
+	check("R3: luta passou pelas três fases", last_seen.get("fase2", false) and last_seen.get("fase3", false) and last_seen.get("agua_subiu", false), str(last_seen.keys()))
+	await secs(2.5)
+	check("R3: recompensa: Eco Olhar Velado + água clara (flag de região)", Game.has_eco("olhar_velado") and Game.has_flag("pantano_livre") and Game.eco_slots.has("olhar_velado"))
+	check("R3: fragmentos do chefão e porta de saída", Game.fragments >= frag0 + 200 and not door_closed_at(46, 16))
+	var n_ecos := Game.ecos.size()
+	Game.grant_eco("olhar_velado")
+	check("R3: recompensa idempotente", Game.ecos.size() == n_ecos)
+	await shot("r3_19_bruxa_fim")
+
+# ---------------------------------------------------------------- 34. vitória: água clara, travessia, margens novas, Olhar Velado
+func r3_pos_bruxa() -> void:
+	var ok := await exit_to("porto_lanternas", 55 * 16.0 + 8.0, 16 * 16.0 + 8.0)
+	await frames(60)
+	await advance_dialogs()
+	check("R3: volta ao Porto com cena de vitória", ok and Game.has_flag("voltou_porto") and "Capítulo 3 concluído" in Game.objective_text(), Game.objective_text())
+	check("R3: a água do pântano clareou", W.tilemap.get_cell_atlas_coords(Vector2i(2, 2)) == W._tc("agua_clara0") and W.tilemap.get_cell_source_id(Vector2i(2, 2)) == 3)
+	check("R3: moradores retomam a travessia (Cora, barco novo, Arão no cais)", ent_by_id("cora") != null and ent_by_id("porto_barco2") != null and ent_by_id("arao_cais") != null and ent_by_id("arao") == null)
+	await shot("r3_20_porto_claro")
+	# Olhar Velado: ponte espiritual para a Região 4 (gancho)
+	var slot := Game.eco_slots.find("olhar_velado")
+	var key := "eco%d" % (slot + 1)
+	P.energy = Player.ENERGY_MAX
+	await goto(tpos(35, 7), 4.0, 40.0)
+	await tap(key, 2)
+	await frames(10)
+	check("R3: Olhar Velado revela a ponte espiritual do nordeste", Game.has_flag("ponte_muralha") and W.tile_char_at(tpos(40, 6)) == "E")
+	await shot("r3_21_ponte_espiritual")
+	await goto(tpos(46, 6), 4.0, 40.0)
+	await frames(20)
+	await advance_dialogs()
+	check("R3: a ponte leva ao gancho da Região 4 (fim do Capítulo 3)", Game.has_flag("fim_cap3"))
+	# margens novas no lago
+	ok = await exit_to("lago_reflexos", 47 * 16.0 + 8.0, 17 * 16.0 + 8.0)
+	check("R3: margem nova no Lago dos Reflexos", ok and not W.is_solid_char(W.tile_char_at(tpos(26, 32))) and ent_by_id("lago_bau_margem") != null)
+	await use_ent("lago_bau_margem", Vector2(0, -16), Vector2.DOWN)
+	check("R3: baú da margem nova (Essência Lendária)", Game.chests.has("lago_bau_margem"))
+	await use_ent("lago_inscricao", Vector2(0, 16), Vector2.UP)
+	await advance_dialogs()
+	check("R3: inscrição espiritual legível com o Olhar Velado", Game.has_flag("revelou_lago_inscricao"))
+	ok = await exit_to("porto_lanternas", 8.0, 18 * 16.0 + 8.0)
+	# revisita: inscrição oculta da Forja (segredo das Minas)
+	ok = ok and await exit_to("minas_entrada", 8.0, 17 * 16.0 + 8.0)
+	ok = ok and await exit_to("forja_cobre", 15 * 16.0 + 8.0, 8.0)
+	check("R3: Porto -> Passagem Sul -> Forja (mundo conectado)", ok and W.map_id == "forja_cobre")
+	var sem0 := Game.item_count("semente_vida")
+	await use_ent("forja_inscricao", Vector2(0, 16), Vector2.UP)
+	await advance_dialogs()
+	check("R3: revisita: o Olhar Velado lê a inscrição da Forja (segredo das Minas)", Game.has_flag("inscricao_forja_lida") and Game.item_count("semente_vida") == sem0 + 1)
+
+# ---------------------------------------------------------------- 35. salvar e carregar
+func r3_snapshot() -> Dictionary:
+	var d := snapshot_state()
+	d["r3flags"] = []
+	for f in ["bruxa_morta", "barqueiro_morto", "pantano_livre", "rito_reflexos_ok", "atalho_porto_aberto", "lago_c1", "lago_c2", "passarela_estacas",
+			"passarela_roda", "passarela_lodo_brejugo", "passarela_sussurro", "lago_reflexo", "ta_espelhos", "ta_canal", "tb_lodo", "ponte_muralha",
+			"lanternas_entregue", "rede_entregue", "lago_anel", "fim_cap3", "lit_guia1"]:
+		if Game.has_flag(f):
+			d["r3flags"].append(f)
+	return d
+
+func r3_save_load() -> void:
+	check("R3: save permitido fora de combate", W.save_now(3))
+	var snap := r3_snapshot()
+	main.back_to_title()
+	await frames(5)
+	main.continue_from_slot(3)
+	await frames(30)
+	var after := r3_snapshot()
+	check("R3: load mantém mapa, equipe e criaturas do pântano", after["map"] == snap["map"] and after["team"] == snap["team"] and str(after["ind"]) == str(snap["ind"]))
+	check("R3: load mantém comportas, atalhos, segredos, missões e chefes", after["r3flags"] == snap["r3flags"] and after["r3flags"].size() >= 18, str(after["r3flags"]))
+	check("R3: load mantém o Olhar Velado, inventário e baús únicos", Game.has_eco("olhar_velado") and after["inv"] == snap["inv"] and after["chests"] == snap["chests"])
+	var ok := await exit_to("minas_entrada", 23 * 16.0 + 8.0, 35 * 16.0 + 8.0)
+	ok = ok and await exit_to("porto_lanternas", 29 * 16.0 + 8.0, 14 * 16.0 + 8.0)
+	check("R3: depois de carregar: água clara, comporta do canal aberta e ponte espiritual firme",
+		ok and W.tilemap.get_cell_atlas_coords(Vector2i(2, 2)) == W._tc("agua_clara0") and not door_closed_at(23, 29) and W.tile_char_at(tpos(40, 6)) == "E")
+	check("R3: dados sem erros de validação", Data.errors.is_empty(), str(Data.errors))
+
+## Um portão que depende de flag de criatura só é aceito se a mesma flag também vier de um mecanismo local (estacas).
+func _has_local_alt(mid: String, flag: String) -> bool:
+	for e in Data.maps[mid]["entities"]:
+		if e["type"] == "stakes" and e.get("flag", "") == flag:
+			return true
+	return false

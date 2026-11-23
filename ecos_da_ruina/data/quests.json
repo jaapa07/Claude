@@ -196,5 +196,81 @@
     "flag": "brinquedo_entregue"
    }
   ]
+ },
+ "principal3": {
+  "nome": "Sussurros do Pântano",
+  "tipo": "principal",
+  "ativa_se": "voltou_forja",
+  "etapas": [
+   {
+    "texto": "Quebre o bloqueio de pedra da Passagem Sul, na Entrada das Minas (Ruptura Ígnea).",
+    "flag": "pantano_passagem"
+   },
+   {
+    "texto": "Siga pela Passagem Sul até o Porto das Lanternas.",
+    "flag": "visitou_porto_lanternas"
+   },
+   {
+    "texto": "Fale com Arão, o mestre do Porto, na praça das lanternas.",
+    "flag": "falou_arao"
+   },
+   {
+    "texto": "Siga pela Passarela dos Ecos (norte) ou pelo Lago dos Reflexos (leste) até o Templo Submerso.",
+    "flag": "visitou_templo_a"
+   },
+   {
+    "texto": "Atravesse o Templo Submerso e derrote o Barqueiro Sem Sombra.",
+    "flag": "barqueiro_morto"
+   },
+   {
+    "texto": "Derrote a Bruxa Afogada no coração do templo.",
+    "flag": "bruxa_morta"
+   },
+   {
+    "texto": "Volte ao Porto das Lanternas e veja o que mudou.",
+    "flag": "voltou_porto"
+   }
+  ]
+ },
+ "lanternas": {
+  "nome": "Lanternas da Passarela",
+  "tipo": "secundaria",
+  "etapas": [
+   {
+    "texto": "Reacenda as 3 lanternas-guia da Passarela dos Ecos para a faroleira Ione.",
+    "flag": "lanternas_ok"
+   },
+   {
+    "texto": "Volte à Ione, no Porto das Lanternas.",
+    "flag": "lanternas_entregue"
+   }
+  ]
+ },
+ "rede": {
+  "nome": "A Rede do Tito",
+  "tipo": "secundaria",
+  "etapas": [
+   {
+    "texto": "Encontre a rede de pesca do Tito na ilha leste do Lago dos Reflexos.",
+    "item": "rede_pesca",
+    "alvo": 1,
+    "flag": "rede_achada"
+   },
+   {
+    "texto": "Devolva a rede ao Tito, no Porto.",
+    "flag": "rede_entregue"
+   }
+  ]
+ },
+ "reflexo": {
+  "nome": "O Reflexo que Mente",
+  "tipo": "segredo",
+  "ativa_se": "lago_reflexo",
+  "etapas": [
+   {
+    "texto": "O reflexo da estátua do lago mostrava uma lanterna que ela não tem. Ache o que estava no fundo.",
+    "flag": "lago_bau_reflexo_aberto"
+   }
+  ]
  }
 }

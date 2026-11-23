@@ -21,6 +21,9 @@ const SHEETS := {
 	"corrente": ["fx_corrente", 16, 16, 3, 16.0],
 	"reviver": ["fx_reviver", 16, 16, 4, 10.0],
 	"vento": ["fx_vento", 16, 16, 3, 14.0],
+	"splash": ["fx_splash", 16, 16, 4, 14.0],
+	"onda": ["fx_onda", 24, 24, 3, 12.0],
+	"bolhas": ["pantano_props", 16, 16, 2, 6.0, 16],
 }
 
 var mode := "hit"

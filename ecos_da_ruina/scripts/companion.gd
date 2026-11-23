@@ -92,6 +92,15 @@ func _physics_process(delta: float) -> void:
 	_check_stuck(delta, moved, to_hero)
 
 func _passive(delta: float) -> void:
+	# Nimbelo/Nimbélio: olhos de orvalho revelam espectros por perto (sem gastar nada)
+	if species.get("acao_id", "") == "reflexo":
+		world.reveal_spirits(global_position, 64.0 * (1.3 if is_evolved() else 1.0), 0.3)
+	if species_id() in ["goturim", "marulume"]:
+		if not world.in_combat() and float(ind["hp"]) < Game.creature_hp_max(ind):
+			regen_t += delta
+			if regen_t >= 4.0:
+				regen_t = 0.0
+				ind["hp"] = min(Game.creature_hp_max(ind), float(ind["hp"]) + 2.0)
 	if species_id() == "brotisco" or species_id() == "galhardo":
 		if not world.in_combat() and float(ind["hp"]) < Game.creature_hp_max(ind):
 			regen_t += delta
@@ -103,7 +112,7 @@ func species_id() -> String:
 	return ind["species_id"]
 
 func light_bonus() -> float:
-	return 1.0 if species_id() in ["lumipim", "auripim"] else 0.0
+	return 1.0 if species_id() in ["lumipim", "auripim", "nimbelo", "nimbelio"] else 0.0
 
 # =============================================================== ESCOLHA DE ALVO
 func _pick_target() -> Node:
@@ -281,8 +290,11 @@ func env_action_fx(target_pos: Vector2) -> void:
 	match species.get("acao_id", ""):
 		"trilho": col = Color(0.6, 0.8, 1.0)
 		"fumaca": col = Color(0.5, 0.45, 0.6)
+		"roda": col = Color(0.5, 0.85, 1.0)
+		"lodo": col = Color(0.55, 0.75, 0.5)
+		"reflexo": col = Color(0.85, 0.75, 1.0)
 	world.bolt(global_position + Vector2(0, -8), target_pos + Vector2(0, -6), col, func():
-		world.fx_at("fire" if species.get("acao_id", "") == "fogo" else "sparkle", target_pos + Vector2(0, -8), 0.5))
+		world.fx_at({"fogo": "fire", "roda": "splash", "lodo": "bolhas"}.get(species.get("acao_id", ""), "sparkle"), target_pos + Vector2(0, -8), 0.5))
 
 func absorb_projectile(_p: Node) -> void:
 	world.spawn_text(global_position + Vector2(0, -fh), "Absorveu", Color(0.7, 0.85, 1.0))
@@ -330,6 +342,8 @@ func command_skill(dir: Vector2) -> bool:
 			_fx_area(str(sk.get("fx", "pulse")), global_position, rad2)
 			if bool(sk.get("luz", false)):
 				world.light_pulse(global_position, rad2)
+			if float(sk.get("revela", 0.0)) > 0.0:
+				world.reveal_spirits(global_position, rad2 + 20.0, float(sk["revela"]) * mult)
 			if bool(sk.get("acende", false)):
 				world.fire_area(global_position, Vector2.RIGHT, rad2 + 10.0, 360.0, "companion")
 			var stun: float = float(sk.get("atordoa", 0.0))
@@ -402,6 +416,39 @@ func command_skill(dir: Vector2) -> bool:
 			dash_t = 0.25
 			dash_hit.clear()
 			sprite.play("attack")
+		"onda":
+			# onda d'água à frente: empurra longe os inimigos leves e interrompe ataques
+			var odir := dir if dir != Vector2.ZERO else Vector2.RIGHT
+			if target != null and is_instance_valid(target):
+				odir = (target.global_position - global_position).normalized()
+			var orr: float = float(sk["alcance"]) * (1.25 if is_evolved() else 1.0)
+			var oarc: float = float(sk.get("arco", 50))
+			for k in 3:
+				world.fx_at("onda", global_position + odir * (12.0 + orr * 0.3 * k) + Vector2(0, -6), 0.4, odir.angle(), 0.8 + 0.2 * k)
+			for e in world.enemies():
+				if e.hittable() and e.kind != "dummy" and Combat.in_arc(global_position, odir, orr, oarc, e.global_position, e.radius):
+					var push: float = float(sk.get("empurra", 220.0)) if e.small else float(sk.get("knock", 50.0))
+					e.interrupt()
+					e.take_damage(dmg, global_position, {"src": "companion", "uuid": uuid(), "aff": aff, "knock": 0.0})
+					if is_instance_valid(e) and e.alive_flag and not e.boss:
+						e.knock_v = odir * push
+			_face(odir)
+			anim_lock = 0.35
+			sprite.play("attack")
+		"lodo":
+			# campo de lodo: inimigos dentro ficam lentos; o lançamento fere de leve
+			var lc: Vector2 = world.player.global_position + dir * float(sk.get("alcance", 56))
+			if target != null and is_instance_valid(target):
+				lc = target.global_position
+			var lr: float = float(sk["raio"]) * (1.25 if is_evolved() else 1.0)
+			world.mud_field(lc, lr, float(sk["duracao"]) * mult)
+			world.fx_at("bolhas", lc, 0.5, 0.0, 1.4)
+			for e in world.enemies():
+				if e.hittable() and e.kind != "dummy" and e.global_position.distance_to(lc) <= lr + e.radius:
+					e.slow_t = max(e.slow_t, 1.0)
+					e.take_damage(dmg * 0.4, lc, {"src": "companion", "uuid": uuid(), "aff": aff, "knock": 0.0})
+			anim_lock = 0.3
+			sprite.play("windup")
 		"cadeia":
 			_chain_bolt(sk, dmg, aff)
 		"cura":

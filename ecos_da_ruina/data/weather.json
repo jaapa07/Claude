@@ -24,7 +24,8 @@
  "zonas": {
   "floresta": {"nome": "Floresta", "pesos": {"sol": 5, "chuva": 3, "neblina": 2}},
   "desfiladeiro": {"nome": "Desfiladeiro", "pesos": {"sol": 4, "frio": 3, "neve": 3}},
-  "minas": {"nome": "Minas (externo)", "pesos": {"calor": 5, "sol": 3}}
+  "minas": {"nome": "Minas (externo)", "pesos": {"calor": 5, "sol": 3}},
+  "pantano": {"nome": "Pântano", "pesos": {"chuva": 4, "neblina": 4, "sol": 2}}
  },
  "mapas": {
   "vila_lumen": "floresta",
@@ -33,7 +34,10 @@
   "desfiladeiro": "desfiladeiro",
   "minas_entrada": "minas",
   "forja_cobre": "minas",
-  "pedreira_oca": "minas"
+  "pedreira_oca": "minas",
+  "porto_lanternas": "pantano",
+  "passarela_ecos": "pantano",
+  "lago_reflexos": "pantano"
  },
- "afinidade_inimigos": {"cogumelo": "flora", "lesma": "brasa", "sentinela": "pedra", "automato": "pedra"}
+ "afinidade_inimigos": {"cogumelo": "flora", "lesma": "brasa", "sentinela": "pedra", "automato": "pedra", "sapo": "agua", "planta": "flora", "espectro": "sombra"}
 }

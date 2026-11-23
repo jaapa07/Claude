@@ -718,7 +718,7 @@ func evolve(uuid: String) -> bool:
 # =============================================================== HABILIDADES DAS CRIATURAS (aprendidas por nível; o jogador escolhe a ativa)
 ## Cada espécie lista "habilidades": [{"id", "nivel"}]; a forma evoluída repete as da base e libera exclusivas.
 ## Cada indivíduo guarda "hab_aprendidas" (ids) e "hab_ativa" (a usada no Q / botão estrela).
-const HAB_FATOR := {"prender": 0.4, "pulso": 0.5, "ima": 0.4, "nuvem": 0.3}
+const HAB_FATOR := {"prender": 0.4, "pulso": 0.5, "ima": 0.4, "nuvem": 0.3, "lodo": 0.4}
 var hab_escudo_t := 0.0      # execução: escudo ativo (herói e criatura recebem menos dano)
 var hab_escudo_red := 0.0
 var hab_novas: Array = []    # habilidades liberadas na última evolução (a UI oferece a escolha)
@@ -953,10 +953,16 @@ func grant_eco(id: String) -> bool:
 	if ecos.has(id):
 		return false   # idempotente
 	ecos[id] = true
+	var placed := false
 	for i in 2:
 		if eco_slots[i] == "":
 			eco_slots[i] = id
+			placed = true
 			break
+	if not placed:
+		# atalhos cheios: o Eco novo entra no atalho 2 (troque no Inventário > Ecos); travessias com E não dependem do atalho
+		eco_slots[1] = id
+		toast.emit("%s no atalho 2. Troque os atalhos em Inventário > Ecos." % Data.skills.get(id, {}).get("nome", id))
 	eco_changed.emit()
 	return true
 
@@ -1001,6 +1007,14 @@ func objective_text() -> String:
 		var q2: Dictionary = Data.quests["principal2"]
 		if j < q2["etapas"].size():
 			return q2["etapas"][j]["texto"]
+		if Data.quests.has("principal3") and quest_active("principal3"):
+			var k := quest_step("principal3")
+			var q3: Dictionary = Data.quests["principal3"]
+			if k == 0:
+				return "Capítulo 2 concluído! " + str(q3["etapas"][0]["texto"])
+			if k < q3["etapas"].size():
+				return q3["etapas"][k]["texto"]
+			return "Capítulo 3 concluído!"
 		return "Capítulo 2 concluído!"
 	return "Capítulo 1 concluído!"
 

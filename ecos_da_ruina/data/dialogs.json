@@ -744,5 +744,381 @@
    ],
    "contratos": true
   }
+ ],
+ "placa_passagem_sul": [
+  {
+   "lines": [
+    "Placa: PASSAGEM SUL — trilha da encosta para o Pântano dos Sussurros.",
+    "Placa: Fechada por desabamento depois que o Ferreiro acordou. A rocha racha quente por dentro: só uma força ígnea a rompe."
+   ]
+  }
+ ],
+ "arao": [
+  {
+   "if": "voltou_porto",
+   "lines": [
+    "Arão: As lanternas acesas de dia... nunca pensei ver isso de novo. O Porto é seu, Vinculador.",
+    "Arão: Os barqueiros voltaram à travessia. E dizem que ao nordeste há tábuas de luz que só os olhos velados enxergam: o caminho velho para a Muralha."
+   ]
+  },
+  {
+   "if": "bruxa_morta",
+   "lines": [
+    "Arão: A Bruxa Afogada caiu? Então a água vai clarear. Volte ao Porto e veja com seus próprios olhos."
+   ]
+  },
+  {
+   "if": "barqueiro_morto",
+   "lines": [
+    "Arão: O Barqueiro Sem Sombra descansou, enfim. Agora só resta a Bruxa, no fundo do templo.",
+    "Arão: Dizem que ela se divide em reflexos. A água da arena não mente: observe qual reflexo acompanha o corpo."
+   ]
+  },
+  {
+   "if": "falou_arao",
+   "lines": [
+    "Arão: O Templo Submerso fica ao norte. A Passarela dos Ecos é o caminho dos barqueiros; o Lago dos Reflexos tem comportas antigas.",
+    "Arão: Lodo que borbulha engole quem pisa: crave estacas antes. Espectros só aparecem quando atacam... ou quando a luz certa os mostra."
+   ]
+  },
+  {
+   "lines": [
+    "Arão: Um Vinculador, vindo das minas? Então foi você que rompeu a pedra da passagem.",
+    "Arão: Desde que a Bruxa Afogada despertou no Templo Submerso, a água escureceu e os reflexos começaram a mentir. Os barqueiros não atravessam mais.",
+    "Arão: O templo fica ao norte. Vá pela Passarela dos Ecos ou pelo Lago dos Reflexos. Leve estes tônicos e selos.",
+    "Arão: A Dalva vende o que precisar, e o quadro da praça tem contratos para quem quer ajudar."
+   ],
+   "set": [
+    "falou_arao"
+   ],
+   "give": {
+    "pocao": 3,
+    "selo_refinado": 2
+   }
+  }
+ ],
+ "ione": [
+  {
+   "if": "lanternas_entregue",
+   "lines": [
+    "Ione: As lanternas da passarela seguem acesas. Os barqueiros cantam quando passam por elas."
+   ]
+  },
+  {
+   "if": "lanternas_ok",
+   "lines": [
+    "Ione: Eu vi daqui! As três lanternas-guia brilhando de novo...",
+    "Ione: Tome o Amuleto da Maré que era do meu pai. E isto: as lanternas acesas despertaram sua equipe também. (vínculo +1 para a equipe)"
+   ],
+   "set": [
+    "lanternas_entregue",
+    "quest_lanternas"
+   ],
+   "give": {
+    "amuleto_mare": 1,
+    "fragmentos": 80
+   },
+   "bond": "missao:lanternas_ione"
+  },
+  {
+   "if": "quest_lanternas",
+   "lines": [
+    "Ione: Três lanternas-guia na Passarela dos Ecos: uma na ilha do meio, uma na plataforma das estacas e uma na ilha norte. Aperte E para acendê-las."
+   ]
+  },
+  {
+   "lines": [
+    "Ione: Sou a faroleira do Porto. As lanternas-guia da passarela apagaram e os barqueiros se perdem na neblina.",
+    "Ione: Se acender as três de novo, eu te recompenso. Elas ficam na Passarela dos Ecos, ao norte."
+   ],
+   "set": [
+    "quest_lanternas"
+   ]
+  }
+ ],
+ "tito": [
+  {
+   "if": "rede_entregue",
+   "lines": [
+    "Tito: Com a rede de volta, o peixe voltou para a panela. Valeu, Vinculador!"
+   ]
+  },
+  {
+   "if_item": "rede_pesca",
+   "lines": [
+    "Tito: Minha rede! Remendada e tudo... Tome, pérolas que os sapos cuspiram no meu barco e uns selos."
+   ],
+   "set": [
+    "rede_entregue"
+   ],
+   "take": {
+    "rede_pesca": 1
+   },
+   "give": {
+    "perola_brejo": 2,
+    "selo_refinado": 2,
+    "fragmentos": 60
+   }
+  },
+  {
+   "if": "quest_rede",
+   "lines": [
+    "Tito: A rede ficou presa na ilha leste do Lago dos Reflexos, perto das lanternas velhas. A água sobe e desce com as comportas."
+   ]
+  },
+  {
+   "lines": [
+    "Tito: Chuva ou sol, eu pesco. Ou pescava: perdi minha rede no Lago dos Reflexos quando um espectro virou meu barco.",
+    "Tito: Se achar, traz de volta? Fica na ilha leste, perto das lanternas velhas."
+   ],
+   "set": [
+    "quest_rede"
+   ]
+  }
+ ],
+ "nina": [
+  {
+   "if": "pantano_livre",
+   "lines": [
+    "Nina: A água ficou clarinha! Dá pra ver os Goturins brincando no fundo."
+   ]
+  },
+  {
+   "lines": [
+    "Nina: Sabia que no lago tem um anel de lanternas velhas? Minha avó dizia que, se acender todas, aparece uma nuvenzinha com um olho de lua.",
+    "Nina: Os Goturins vivem na água rasa e os Brejugos dormem no lodo da ilha oeste da passarela. Eles são fofos e ajudam muito!"
+   ]
+  }
+ ],
+ "dalva": [
+  {
+   "lines": [
+    "Dalva: Selos, tônicos e o que o brejo dá. Pérolas eu compro... quer dizer, vendo caro."
+   ],
+   "shop": "dalva"
+  }
+ ],
+ "cora": [
+  {
+   "lines": [
+    "Cora: A travessia voltou! Meu barco leva gente do Porto ao lago de novo.",
+    "Cora: Com a água clara, apareceram margens novas no Lago dos Reflexos. Vale a pena olhar."
+   ]
+  }
+ ],
+ "placa_porto": [
+  {
+   "lines": [
+    "Placa: PORTO DAS LANTERNAS — Norte: Passarela dos Ecos. Leste: Lago dos Reflexos. Oeste: Passagem Sul (Minas).",
+    "Placa: Sul: Canal Submerso, fechado pela comporta do templo."
+   ]
+  }
+ ],
+ "placa_canal": [
+  {
+   "lines": [
+    "Placa: CANAL SUBMERSO — a comporta só abre por dentro do Templo Submerso."
+   ]
+  }
+ ],
+ "placa_muralha": [
+  {
+   "lines": [
+    "Placa: TRILHA DA MURALHA — a ponte espiritual leva às montanhas e à Fortaleza do Eclipse."
+   ]
+  }
+ ],
+ "placa_passarela": [
+  {
+   "lines": [
+    "Placa: PASSARELA DOS ECOS — siga as tábuas e as lanternas-guia até o Templo Submerso, ao norte.",
+    "Placa: Lodo que borbulha não aguenta peso. Há estacas na plataforma leste para firmá-lo."
+   ]
+  }
+ ],
+ "placa_estacas": [
+  {
+   "lines": [
+    "Placa: ESTACAS DOS BARQUEIROS — crave-as (E) no lodo instável para formar chão firme."
+   ]
+  }
+ ],
+ "placa_lago": [
+  {
+   "lines": [
+    "Placa: LAGO DOS REFLEXOS — as comportas antigas mudam a água de lugar.",
+    "Placa: A comporta da margem esvazia o canal até a ilha. A comporta da ilha esvazia o caminho de pedras até o templo."
+   ]
+  }
+ ],
+ "placa_reflexo_lago": [
+  {
+   "lines": [
+    "Inscrição: A guardiã olha o lago com a lanterna apagada.",
+    "Inscrição: Quem vê luz no reflexo dela, procure onde a luz cai."
+   ]
+  }
+ ],
+ "placa_templo": [
+  {
+   "lines": [
+    "Inscrição: TEMPLO SUBMERSO — a água obedece às comportas das alas. A luz obedece aos espelhos."
+   ]
+  }
+ ],
+ "placa_canal_central": [
+  {
+   "lines": [
+    "Inscrição: SALA DAS MARÉS — o canal só baixa quando a comporta da Galeria oeste é girada."
+   ]
+  }
+ ],
+ "placa_espelhos": [
+  {
+   "lines": [
+    "Inscrição: A luz entra pelo oeste e procura o cristal ao norte.",
+    "Inscrição: Gire os espelhos (E). A luz sobe pela coluna leste antes de voltar para oeste."
+   ]
+  }
+ ],
+ "placa_lodo_templo": [
+  {
+   "lines": [
+    "Inscrição: CÂMARA DO LODO — estacas ao leste firmam o lodo. Um Brejugo faz o mesmo onde as folhas marcam."
+   ]
+  }
+ ],
+ "placa_atalho_porto": [
+  {
+   "lines": [
+    "Inscrição: A alavanca abre a comporta do Canal Submerso, até o Porto das Lanternas."
+   ]
+  }
+ ],
+ "placa_barqueiro": [
+  {
+   "lines": [
+    "Inscrição: O Barqueiro Sem Sombra não pode ser tocado enquanto não tiver sombra.",
+    "Inscrição: Acenda uma lanterna da plataforma (E) quando ele estiver perto: a luz prende a sombra dele e os golpes passam a acertar."
+   ]
+  }
+ ],
+ "placa_bruxa": [
+  {
+   "lines": [
+    "Inscrição: A Bruxa Afogada se divide em reflexos. Só o corpo verdadeiro tem um reflexo que o acompanha.",
+    "Inscrição: Quando a água sobe, as plataformas mudam. Fique atento ao aviso: sempre há chão firme."
+   ]
+  }
+ ],
+ "rito_r_placa1": [
+  {
+   "lines": [
+    "Inscrição: PRIMEIRA LIÇÃO DOS REFLEXOS — observe cada estátua e o reflexo dela na água.",
+    "Inscrição: A guardiã segura a lanterna na mão esquerda. Um reflexo verdadeiro mostra a lanterna do mesmo lado; o falso, do outro.",
+    "Inscrição: Toque as duas estátuas para aprender. A saída para trás está sempre aberta."
+   ]
+  }
+ ],
+ "rito_r_placa2": [
+  {
+   "lines": [
+    "Inscrição: SEGUNDA LIÇÃO — só uma das três estátuas é verdadeira. Toque nela.",
+    "Inscrição: Tocar uma falsa desfaz a ilusão em espectro. A pedra de reinício recomeça a sala."
+   ]
+  }
+ ],
+ "rito_r_placa3": [
+  {
+   "lines": [
+    "Inscrição: TERCEIRA LIÇÃO — sem água não há reflexo. Abra a comporta e depois escolha.",
+    "Inscrição: Duas inscrições aqui mentem; o Nimbelo vê quais. Mas a água mostra o mesmo a quem observa."
+   ]
+  }
+ ],
+ "rito_r_falsa": [
+  {
+   "lines": [
+    "Inscrição: \"Todas as estátuas são verdadeiras. Toque qualquer uma.\"",
+    "(As letras tremulam, como um reflexo mexido.)"
+   ]
+  }
+ ],
+ "rito_r_placa_av": [
+  {
+   "lines": [
+    "Inscrição: LIÇÃO AVANÇADA — a ponte que só o Olhar Velado mostra leva ao altar de quem vê através da água."
+   ]
+  }
+ ],
+ "inscricao_generica": [
+  {
+   "lines": [
+    "Inscrição: As letras, agora claras, contam de guardiões antigos que liam a verdade nos reflexos."
+   ]
+  }
+ ],
+ "inscricao_forja": [
+  {
+   "if": "inscricao_forja_lida",
+   "lines": [
+    "Inscrição: \"O depósito do capataz fica sob a praça.\" — já não há mais nada aqui."
+   ]
+  },
+  {
+   "lines": [
+    "Inscrição revelada: \"O fundidor-chefe guardou sua reserva sob a praça, onde a fuligem esconde as letras.\"",
+    "Você encontra uma laje solta logo abaixo das letras: uma Semente de Vida e lingotes!"
+   ],
+   "set": [
+    "inscricao_forja_lida"
+   ],
+   "give": {
+    "semente_vida": 1,
+    "lingote": 2
+   }
+  }
+ ],
+ "inscricao_fundicao": [
+  {
+   "if": "inscricao_fundicao_lida",
+   "lines": [
+    "Inscrição: O mapa riscado no tijolo agora está completo. Nada mais a achar."
+   ]
+  },
+  {
+   "lines": [
+    "Inscrição revelada: o mapa riscado no tijolo se completa e aponta um tijolo oco logo abaixo.",
+    "Dentro: uma Essência Lendária e um Néctar de Vínculo."
+   ],
+   "set": [
+    "inscricao_fundicao_lida"
+   ],
+   "give": {
+    "essencia_laranja": 1,
+    "tonico_criatura": 1
+   }
+  }
+ ],
+ "inscricao_vila": [
+  {
+   "if": "inscricao_vila_lida",
+   "lines": [
+    "Inscrição: As letras dos guardiões continuam ali, quietas."
+   ]
+  },
+  {
+   "lines": [
+    "Inscrição revelada: \"Aos que voltarem com olhos velados: o primeiro Vinculador deixou um presente sob o santuário.\"",
+    "Você encontra um Selo Ancestral envolto em folhas secas."
+   ],
+   "set": [
+    "inscricao_vila_lida"
+   ],
+   "give": {
+    "selo_ancestral": 1,
+    "semente_vida": 1
+   }
+  }
  ]
 }

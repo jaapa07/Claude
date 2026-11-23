@@ -69,6 +69,17 @@
     "selo_refinado",
     "pocao"
    ]
+  },
+  "dalva": {
+   "nome": "Banca da Dalva",
+   "itens": [
+    "selo_basico",
+    "selo_refinado",
+    "pocao",
+    "tonico_criatura",
+    "junco_trancado",
+    "perola_brejo"
+   ]
   }
  }
 }

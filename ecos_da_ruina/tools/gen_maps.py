@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Desenha os mapas dos Capitulos 1 e 2 (layouts manuais, nao procedurais de masmorra).
+"""Desenha os mapas dos Capitulos 1, 2 e 3 (layouts manuais, nao procedurais de masmorra).
 Saida: data/maps/*.json. Verifica alcancabilidade de entidades por BFS."""
 import json, os, random, sys
 from collections import deque
@@ -7,11 +7,14 @@ from collections import deque
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 OUT = os.path.join(ROOT, "data", "maps")
 os.makedirs(OUT, exist_ok=True)
-SOLID = set("T~RhHcxFbDPoCvMLuJZXOAaI")
-PASS_FOR_BFS = set(".,fprySwBgGkeDx" + "mQq=|jz%<I")  # portas/barreiras contam como abriveis
+SOLID = set("T~RhHcxFbDPoCvMLuJZXOAaI" + "nWUY^&*!i")
+PASS_FOR_BFS = set(".,fprySwBgGkeDx" + "mQq=|jz%<I" + "lst+890E;!")  # portas/barreiras contam como abriveis
 # entidades opcionais atras de rocha fissurada, passagem secreta ou trilho do Ferrunho
 OPTIONAL_BEHIND = {"forja_bau_rocha", "veio_bau", "veio_placa", "veio_rocha", "trilhos_bau_ilha", "trilhos_bau_vapor",
-                   "fa_bau_caldeira", "rito_mec1", "rito_mec2", "rito_mec3", "rito_altar2", "rito_placa_av"}
+                   "fa_bau_caldeira", "rito_mec1", "rito_mec2", "rito_mec3", "rito_altar2", "rito_placa_av",
+                   # Região 3: atrás de roda d'água (Goturim), segredo, margem nova ou ponte espiritual
+                   "passarela_bau_roda", "passarela_bau_sussurro", "lago_bau_reflexo", "lago_bau_roda", "lago_bau_margem",
+                   "lago_inscricao", "rr_altar2", "rr_ponte2"}
 
 
 class M:
@@ -20,6 +23,7 @@ class M:
         self.g = [[fill] * w for _ in range(h)]
         self.music, self.region, self.safe = music, region, safe
         self.spawns, self.ents, self.cond, self.puzzles = {}, [], [], {}
+        self.bfs_flags = []   # flags de mecanismos locais aplicadas na verificacao (ex.: comporta que esvazia um canal)
 
     def set(self, x, y, c):
         if 0 <= x < self.w and 0 <= y < self.h:
@@ -147,6 +151,8 @@ def vila():
     m.ent(type="npc", id="bruna", sprite="aliada_bruna", human=True, dialog="bruna", x=31, y=13, nome="Bruna", party_id="bruna")
     m.ent(type="npc", id="ravi", sprite="aliado_ravi", human=True, dialog="ravi", x=28, y=15, nome="Ravi", party_id="ravi", if_flag="saqueadores_ok")
     m.ent(type="sign", id="placa_vila", dialog="placa_vila", x=19, y=18)
+    m.ent(type="spirit_mark", id="vila_inscricao", x=24, y=12, requires_eco="olhar_velado", dialog="inscricao_vila",
+          msg="Perto do santuário, letras finas brilham e somem como orvalho. (Olhar Velado — volte depois)")
     m.ent(type="dummy", id="dummy1", x=11, y=10)
     m.ent(type="dummy", id="dummy2", x=14, y=10)
     m.ent(type="wild", id="brotisco_tutorial", species="brotisco", level=1, x=12, y=19, unique=True, garantida=True)
@@ -436,7 +442,14 @@ def minas_entrada():
     # boca da mina ao norte: o caminho segue para a Forja de Cobre
     m.rect(9, 0, 12, 4, "M"); m.rect(13, 0, 4, 4, "m")
     m.set(12, 3, "u"); m.set(17, 3, "u")
-    m.spawns = {"from_desfiladeiro": [15, 17], "from_forja": [15, 2]}
+    m.rect(22, 13, 8, 3, "k")                       # Passagem Sul (encosta sudeste) para o Pântano
+    m.rect(24, 13, 2, 3, "X")                       # bloqueio de pedra fissurada (Ruptura Ígnea)
+    m.set(23, 12, "o"); m.set(27, 16, "o")
+    m.spawns = {"from_desfiladeiro": [15, 17], "from_forja": [15, 2], "from_pantano": [27, 14]}
+    m.ent(type="sign", id="placa_passagem_sul", dialog="placa_passagem_sul", x=21, y=12)
+    m.ent(type="crack", id="passagem_sul", x=23, y=14, flag="pantano_passagem")
+    m.cond.append({"if": "pantano_passagem", "rects": [[24, 13, 2, 3, "k"]]})
+    m.ent(type="exit", x=29, y=13, w=1, h=3, to="porto_lanternas", spawn="from_minas")
     m.ent(type="exit", x=13, y=19, w=4, h=1, to="desfiladeiro", spawn="from_minas")
     m.ent(type="exit", x=13, y=0, w=4, h=1, to="forja_cobre", spawn="from_entrada")
     m.ent(type="sign", id="placa_minas", dialog="placa_minas", x=15, y=8)
@@ -494,7 +507,7 @@ def forja():
     m.ent(type="npc", id="doran_forja", sprite="npc_forja2", dialog="doran", x=33, y=12, nome="Doran", if_flag="ferreiro_morto")
     m.ent(type="npc", id="ilda", sprite="npc_forja1", dialog="ilda", x=35, y=8, nome="Mestra Ilda")
     m.ent(type="npc", id="joca", sprite="npc_forja2", dialog="joca", x=28, y=21, nome="Joca", if_flag="ferreiro_morto")
-    m.ent(type="spirit_mark", id="forja_inscricao", x=17, y=13, requires_eco="olhar_velado",
+    m.ent(type="spirit_mark", id="forja_inscricao", x=17, y=13, requires_eco="olhar_velado", dialog="inscricao_forja",
           msg="Sob a fuligem do chão da praça há letras que somem quando você as encara. Algo oculto... (Olhar Velado — volte depois)")
     m.ent(type="anvil", id="bigorna", x=37, y=8)
     m.ent(type="furnace", id="forja_f1", x=32, y=8, lit_flag="ferreiro_morto")
@@ -660,7 +673,7 @@ def fundicao_a():
     m.ent(type="chest", id="fa_bau_escoria", x=9, y=21, loot={"diario_mineiro": 1, "minerio_cobre": 2})
     m.ent(type="ore", id="fa_veio1", x=7, y=21, loot={"minerio_cobre": 2})
     m.ent(type="enemy", kind="lesma", id="fa_lesma_ala", x=11, y=25)
-    m.ent(type="spirit_mark", id="fa_inscricao", x=5, y=26, requires_eco="olhar_velado",
+    m.ent(type="spirit_mark", id="fa_inscricao", x=5, y=26, requires_eco="olhar_velado", dialog="inscricao_fundicao",
           msg="Riscos no tijolo formam um mapa incompleto; parte dele parece existir só para outros olhos. (Olhar Velado — volte depois)")
     m.ent(type="valve", id="fa_valvula", x=25, y=28, flag="fa_valvula1")
     m.cond.append({"if": "fa_valvula1", "area": [22, 22, 16, 6], "chars": {"Q": "q"}})
@@ -834,12 +847,436 @@ def rito():
           loot={"amuleto_brasa": 1}, lines=["O altar avançado ruge. Você domina o fogo que quebra a pedra.", "Você recebeu o AMULETO DA BRASA."])
     return m
 
+# ================================================================== CAPITULO 3 — PÂNTANO DOS SUSSURROS
+# Caracteres (docs/REGIAO3_CONTRATO.md): l lodo, s capim, n juncos*, W agua funda*, t agua rasa, + passarela,
+# U lodo instavel*, 8 lodo firme, Y parede do templo*, 9 piso do templo, 0 piso alagado, E ponte espiritual,
+# ^ telhado de palha*, & parede de palafita*, * poste de lanterna*, ! porta do templo*, i pilar submerso*, ; degraus
+def proom(m, x, y, w, h, floor="9", wall="Y"):
+    mroom(m, x, y, w, h, floor, wall)
+
+
+def palafita(m, x, y, w):
+    """casa de palafita do Porto: telhado de palha (2 linhas) + parede de tábuas com porta"""
+    m.rect(x, y, w, 2, "^")
+    m.rect(x, y + 2, w, 1, "&")
+
+
+# ------------------------------------------------------------------ PORTO DAS LANTERNAS (núcleo seguro)
+def porto():
+    m = M("porto_lanternas", "Porto das Lanternas", 48, 36, fill="W", music="pantano", region="pantano", safe=True)
+    rnd = random.Random(301)
+    m.rect(10, 8, 28, 20, "s")                      # ilha do porto
+    for (x, y) in ((10, 8), (11, 8), (10, 9), (37, 8), (36, 8), (37, 9), (10, 27), (11, 27), (10, 26), (37, 27), (36, 27), (37, 26)):
+        m.set(x, y, "W")
+    for j in range(8, 28):
+        for i in range(10, 38):
+            if m.g[j][i] == "s" and rnd.random() < 0.18:
+                m.g[j][i] = "l"
+    m.rect(17, 13, 14, 9, "+")                      # praça de tábuas
+    m.rect(0, 16, 10, 3, "+")                       # oeste: Passagem Sul (Minas)
+    m.rect(22, 0, 4, 8, "+")                        # norte: Passarela dos Ecos
+    m.rect(38, 16, 10, 3, "+")                      # leste: Lago dos Reflexos
+    m.rect(22, 28, 4, 8, "+")                       # sul: Canal Submerso (atalho do templo)
+    m.rect(17, 26, 2, 5, "+"); m.rect(29, 26, 2, 5, "+")    # píeres
+    palafita(m, 11, 9, 6)                           # casa da Ione (farol)
+    palafita(m, 31, 9, 6)                           # casa do Arão
+    palafita(m, 11, 23, 5)                          # casa da Dalva
+    palafita(m, 32, 23, 5)                          # casa do Tito
+    for (x, y) in ((16, 12), (31, 12), (16, 22), (31, 22), (21, 8), (26, 8)):
+        m.set(x, y, "*")
+    m.rect(19, 24, 2, 2, "n"); m.set(27, 25, "n"); m.set(13, 19, "n"); m.set(35, 19, "n")
+    # margem nova e trilha da Muralha (gancho da Região 4): ponte espiritual a nordeste
+    m.rect(44, 3, 4, 7, "s")
+    m.rect(34, 6, 3, 2, "+")                        # cais da ponte espiritual
+    m.spawns = {"default": [24, 18], "from_minas": [2, 17], "from_passarela": [23, 2], "from_lago": [45, 17], "from_templo": [23, 33],
+                "from_templo_c": [24, 18], "from_muralha": [45, 6]}
+    m.ent(type="shrine", id="porto", x=24, y=15)
+    m.ent(type="sign", id="placa_porto", dialog="placa_porto", x=19, y=20)
+    m.ent(type="prop", id="quadro_porto", sheet="quadro_porto", frame=0, x=28, y=12, solid=True, contratos=True)
+    # moradores (rotinas: mudam de lugar com o progresso e com o tempo)
+    m.ent(type="npc", id="arao", sprite="npc_porto1", dialog="arao", x=21, y=15, nome="Arão", unless_flag="bruxa_morta")
+    m.ent(type="npc", id="arao_cais", sprite="npc_porto1", dialog="arao", x=24, y=26, nome="Arão", if_flag="bruxa_morta")
+    m.ent(type="npc", id="ione", sprite="npc_porto2", dialog="ione", x=14, y=13, nome="Ione")
+    m.ent(type="npc", id="tito", sprite="npc_porto3", dialog="tito", x=6, y=18, nome="Tito", clima=["sol", "neblina"], unless_flag="bruxa_morta")
+    m.ent(type="npc", id="tito_abrigo", sprite="npc_porto3", dialog="tito", x=34, y=27, nome="Tito", clima="chuva", unless_flag="bruxa_morta")
+    m.ent(type="npc", id="tito_pier", sprite="npc_porto3", dialog="tito", x=30, y=27, nome="Tito", if_flag="bruxa_morta")
+    m.ent(type="npc", id="nina", sprite="npc_kid", dialog="nina", x=27, y=19, nome="Nina")
+    m.ent(type="npc", id="dalva", sprite="npc_porto4", dialog="dalva", x=13, y=26, nome="Dalva")
+    m.ent(type="npc", id="cora", sprite="npc_porto4", dialog="cora", x=18, y=27, nome="Cora", if_flag="bruxa_morta")
+    m.ent(type="decor", id="porto_barco1", frame="barco", x=19, y=29)
+    m.ent(type="decor", id="porto_barco2", frame="barco", x=31, y=29, if_flag="bruxa_morta")
+    m.ent(type="decor", id="porto_cesto1", frame="cesto", x=20, y=21)
+    m.ent(type="decor", id="porto_cesto2", frame="cesto", x=33, y=13)
+    m.ent(type="sign", id="placa_canal", dialog="placa_canal", x=21, y=27)
+    m.ent(type="door", id="porto_comporta", tiles=[[22, 29], [23, 29], [24, 29], [25, 29]], open_flags=["atalho_porto_aberto"], closed_char="!", open_char="+")
+    m.ent(type="spirit_bridge", id="ponte_muralha", x=36, y=7, flag="ponte_muralha", requires_eco="olhar_velado",
+          msg="Tábuas de luz tremulam sobre a água rumo ao nordeste e somem quando você as encara. (Olhar Velado — volte depois)",
+          msg_ok="O Olhar Velado revela a ponte espiritual da Trilha da Muralha!")
+    m.cond.append({"if": "ponte_muralha", "rects": [[37, 6, 7, 1, "E"]]})
+    m.ent(type="sign", id="placa_muralha", dialog="placa_muralha", x=45, y=4)
+    m.ent(type="chapter_end", id="fim_cap3", x=46, y=3, w=2, h=7, flag="fim_cap3", if_flag="ponte_muralha",
+          lines=["FIM DO CAPÍTULO 3 — Pântano dos Sussurros.",
+                 "A ponte espiritual leva à Trilha da Muralha e às montanhas da Fortaleza do Eclipse.",
+                 "(A Fortaleza do Eclipse e a Catedral do Vazio ainda estão em desenvolvimento.)"])
+    m.ent(type="exit", x=0, y=16, w=1, h=3, to="minas_entrada", spawn="from_pantano")
+    m.ent(type="exit", x=22, y=0, w=4, h=1, to="passarela_ecos", spawn="from_porto")
+    m.ent(type="exit", x=47, y=16, w=1, h=3, to="lago_reflexos", spawn="from_porto")
+    m.ent(type="exit", x=22, y=35, w=4, h=1, to="templo_b", spawn="from_porto")
+    return m
+
+
+# ------------------------------------------------------------------ PASSARELA DOS ECOS (rota 1)
+def passarela():
+    m = M("passarela_ecos", "Passarela dos Ecos", 56, 40, fill="W", music="pantano", region="pantano")
+    rnd = random.Random(311)
+    m.rect(22, 30, 4, 10, "+")                      # entrada sul (do Porto)
+    m.rect(14, 24, 20, 6, "l")                      # 1. ilha do meio
+    m.rect(2, 18, 10, 12, "l")                      # 2. ilha oeste (lodo do Brejugo)
+    m.rect(6, 26, 8, 2, "+")
+    m.rect(26, 14, 3, 10, "+")                      # passarela norte
+    m.rect(29, 14, 3, 3, "l")                       # plataforma das estacas
+    m.rect(26, 10, 3, 4, "U")                       # lodo instável (caminho principal: estacas)
+    m.rect(20, 3, 16, 7, "l")                       # 3. ilha norte
+    m.rect(26, 0, 4, 3, "+")                        # saída ao Templo Submerso
+    m.rect(34, 26, 10, 2, "+")                      # passarela leste
+    m.rect(44, 20, 10, 10, "l")                     # 4. ilha leste (Goturim)
+    m.rect(46, 22, 6, 5, "t")
+    m.rect(2, 4, 10, 8, "l")                        # 5. ilha noroeste (atalho do Brejugo)
+    m.rect(4, 12, 3, 6, "U")
+    m.rect(12, 8, 8, 2, "+")                        # tábuas da ilha noroeste até a ilha norte
+    m.rect(44, 4, 8, 6, "l")                        # 6. ilhota do canal (roda d'água)
+    m.rect(47, 10, 3, 10, "W")
+    m.rect(14, 3, 3, 3, "l")                        # nicho dos juncos sussurrantes
+    m.rect(17, 3, 3, 3, "n")
+    for (x0, y0, w0, h0) in ((14, 24, 20, 6), (2, 18, 10, 12), (20, 3, 16, 7), (44, 20, 10, 10), (2, 4, 10, 8), (44, 4, 8, 6)):
+        for j in range(y0, y0 + h0):
+            for i in range(x0, x0 + w0):
+                if m.g[j][i] == "l" and rnd.random() < 0.3:
+                    m.g[j][i] = "s"
+    for (x, y) in ((15, 28), (32, 24), (3, 19), (10, 28), (21, 8), (34, 4), (52, 21), (45, 28), (3, 10), (22, 3)):
+        m.set(x, y, "n")
+    m.set(6, 6, "n"); m.set(7, 6, "n"); m.set(6, 7, "n"); m.set(22, 4, "s")
+    m.spawns = {"from_porto": [23, 38], "from_templo": [27, 1]}
+    m.ent(type="exit", x=22, y=39, w=4, h=1, to="porto_lanternas", spawn="from_passarela")
+    m.ent(type="exit", x=26, y=0, w=4, h=1, to="templo_a", spawn="from_passarela")
+    m.ent(type="sign", id="placa_passarela", dialog="placa_passarela", x=21, y=28)
+    m.ent(type="lantern", id="guia1", group="guias", x=19, y=25, msg="Uma lanterna-guia acesa. (Ione pediu três)")
+    m.ent(type="lantern", id="guia2", group="guias", x=31, y=16, msg="Mais uma lanterna-guia acesa.")
+    m.ent(type="lantern", id="guia3", group="guias", x=24, y=5, msg="Uma lanterna-guia acesa.")
+    m.puzzles["guias"] = {"type": "lanterns", "flag": "lanternas_ok", "msg": "As três lanternas-guia brilham: a passarela inteira se acende! Volte à Ione."}
+    # lodo instável do caminho principal: estacas locais
+    m.ent(type="sign", id="placa_estacas", dialog="placa_estacas", x=30, y=14)
+    m.ent(type="stakes", id="estacas_norte", x=29, y=15, flag="passarela_estacas")
+    m.cond.append({"if": "passarela_estacas", "area": [26, 10, 3, 4], "chars": {"U": "8"}})
+    # atalho do Brejugo: lodo marcado entre a ilha oeste e a ilha noroeste
+    m.ent(type="mud_mark", id="marca_noroeste", x=5, y=18, flag="passarela_lodo_brejugo")
+    m.cond.append({"if": "passarela_lodo_brejugo", "area": [4, 12, 3, 6], "chars": {"U": "8"}})
+    m.ent(type="chest", id="passarela_bau_noroeste", x=8, y=5, loot={"semente_vida": 1, "selo_refinado": 2})
+    # roda d'água do Goturim: escoa o canal até a ilhota
+    m.ent(type="wheel", id="roda_passarela", x=48, y=20, flag="passarela_roda")
+    m.cond.append({"if": "passarela_roda", "area": [47, 10, 3, 10], "chars": {"W": "t"}})
+    m.ent(type="chest", id="passarela_bau_roda", x=48, y=6, loot={"perola_brejo": 2, "tonico_criatura": 1, "fragmentos": 60})
+    # segredo por observação: juncos que sussurram escondem um nicho
+    m.ent(type="ripple", id="juncos_sussurro", x=20, y=4, flag="passarela_sussurro", prompt="Ouvir os juncos",
+          msg="Os juncos sussurram com voz de gente... Você os afasta e encontra um nicho escondido!")
+    m.cond.append({"if": "passarela_sussurro", "rects": [[17, 3, 3, 3, "l"]]})
+    m.ent(type="chest", id="passarela_bau_sussurro", x=15, y=4, loot={"diario_faroleira": 1, "essencia_azul": 1})
+    m.ent(type="chest", id="passarela_bau1", x=32, y=25, loot={"pocao": 2, "perola_brejo": 1})
+    # criaturas (habitats fixos)
+    m.ent(type="wild", id="pa_brejugo1", species="brejugo", level=13, x=5, y=22)
+    m.ent(type="wild", id="pa_brejugo2", species="brejugo", level=14, x=8, y=26)
+    m.ent(type="wild", id="pa_goturim1", species="goturim", level=13, x=48, y=24)
+    m.ent(type="wild", id="pa_goturim2", species="goturim", level=14, x=50, y=25)
+    m.ent(type="wild", id="pa_goturim_chuva", species="goturim", level=15, x=17, y=26, clima="chuva")
+    m.ent(type="wild", id="pa_brejugo_neblina", species="brejugo", level=15, x=30, y=6, clima="neblina")
+    # inimigos
+    m.ent(type="enemy", kind="sapo", id="pa_sapo1", x=28, y=26)
+    m.ent(type="enemy", kind="sapo", id="pa_sapo2", x=46, y=27)
+    m.ent(type="enemy", kind="sapo", id="pa_sapo3", x=31, y=7)
+    m.ent(type="enemy", kind="planta", id="pa_planta1", x=18, y=26)
+    m.ent(type="enemy", kind="planta", id="pa_planta2", x=33, y=5)
+    m.ent(type="enemy", kind="sapo", id="pa_sapo4", x=9, y=21)
+    return m
+
+
+# ------------------------------------------------------------------ LAGO DOS REFLEXOS (rota 2)
+def lago():
+    m = M("lago_reflexos", "Lago dos Reflexos", 56, 40, fill="W", music="pantano", region="pantano")
+    m.bfs_flags = ["lago_c1"]
+    rnd = random.Random(321)
+    m.rect(0, 14, 10, 12, "s")                      # margem oeste
+    m.rect(0, 17, 3, 3, "+")
+    m.rect(2, 22, 5, 3, "t")                        # poça rasa (Goturim)
+    m.rect(20, 15, 10, 9, "l")                      # ilha da comporta
+    m.rect(14, 1, 28, 4, "s")                       # margem norte (templo)
+    m.rect(26, 0, 4, 1, "+")
+    m.rect(32, 5, 4, 2, "t")                        # enseada rasa do reflexo
+    m.rect(30, 20, 10, 2, "+")                      # tábuas até a ilha leste
+    m.rect(40, 18, 10, 10, "l")                     # ilha leste (anel de lanternas)
+    m.rect(46, 3, 8, 6, "l")                        # ilhota do canal leste (roda do Goturim)
+    # margem nova (aparece quando a água clareia, depois da Bruxa)
+    for (x0, y0, w0, h0) in ((0, 14, 10, 12), (20, 15, 10, 9), (14, 1, 28, 4), (40, 18, 10, 10), (46, 3, 8, 6)):
+        for j in range(y0, y0 + h0):
+            for i in range(x0, x0 + w0):
+                if m.g[j][i] in "sl" and rnd.random() < 0.25:
+                    m.g[j][i] = "l" if m.g[j][i] == "s" else "s"
+    for (x, y) in ((9, 14), (9, 25), (21, 22), (14, 4), (41, 4), (49, 27), (40, 27)):
+        m.set(x, y, "n")
+    for (x, y) in ((14, 10), (36, 12), (12, 30), (44, 33)):
+        m.set(x, y, "i")
+    m.spawns = {"from_porto": [2, 18], "from_templo": [27, 1]}
+    m.ent(type="exit", x=0, y=17, w=1, h=3, to="porto_lanternas", spawn="from_lago")
+    m.ent(type="exit", x=26, y=0, w=4, h=1, to="templo_a", spawn="from_lago")
+    m.ent(type="sign", id="placa_lago", dialog="placa_lago", x=6, y=15)
+    # comportas: a da margem esvazia o canal A; a da ilha esvazia o caminho B e devolve a água ao canal A
+    m.ent(type="sluice", id="comporta_margem", x=8, y=17, flag="lago_c1",
+          msg_on="A comporta range e a água do canal escoa: um caminho raso surge até a ilha.", msg_off="A comporta fecha: o canal volta a encher.")
+    m.ent(type="sluice", id="comporta_ilha", x=25, y=16, flag="lago_c2",
+          msg_on="A comporta da ilha desvia a água para o lago fundo: o caminho de pedras até o templo aparece.",
+          msg_off="A comporta da ilha volta: o caminho ao templo afunda de novo.")
+    m.cond.append({"if": "lago_c1", "area": [10, 18, 10, 3], "chars": {"W": "t"}})
+    m.cond.append({"if": "lago_c2", "area": [26, 5, 3, 10], "chars": {"W": "t"}})
+    # anel de lanternas da ilha leste: acesas, atraem o Nimbelo (descoberta ligada à criatura)
+    m.ent(type="lantern", id="anel1", group="anel", x=42, y=19)
+    m.ent(type="lantern", id="anel2", group="anel", x=47, y=21)
+    m.ent(type="lantern", id="anel3", group="anel", x=44, y=26)
+    m.puzzles["anel"] = {"type": "lanterns", "flag": "lago_anel", "msg": "O anel de lanternas brilha... uma nuvenzinha curiosa desce da neblina!"}
+    m.ent(type="wild", id="la_nimbelo", species="nimbelo", level=14, x=45, y=22, if_flag="lago_anel")
+    m.ent(type="pickup", id="rede_tito", item="rede_pesca", sheet="icons_pantano", frame=6, flag="rede_pega", x=48, y=26, unless_flag="rede_pega")
+    # segredo por observação: o reflexo da estátua mostra uma lanterna que ela não tem
+    m.ent(type="decor", id="lago_estatua", frame="estatua", x=34, y=3, solid=True)
+    m.ent(type="sign", id="placa_reflexo_lago", dialog="placa_reflexo_lago", x=31, y=3)
+    m.ent(type="ripple", id="lago_reflexo", x=34, y=6, flag="lago_reflexo", prompt="Tatear o reflexo",
+          msg="O reflexo da estátua brilhava onde a estátua não tem lanterna. Você tateia o fundo... um baú afundado!")
+    m.ent(type="chest", id="lago_bau_reflexo", x=33, y=6, loot={"manto_juncos": 1, "fragmentos": 50}, if_flag="lago_reflexo", set_flag="lago_bau_reflexo_aberto")
+    # roda d'água do Goturim (caminho opcional)
+    m.ent(type="wheel", id="roda_lago", x=46, y=18, flag="lago_roda")
+    m.cond.append({"if": "lago_roda", "area": [47, 9, 3, 9], "chars": {"W": "t"}})
+    m.ent(type="chest", id="lago_bau_roda", x=49, y=5, loot={"semente_vida": 1, "essencia_roxa": 1})
+    # margem nova (depois da Bruxa): a água baixa e revela a enseada sul
+    m.cond.append({"if": "pantano_livre", "rects": [[18, 30, 16, 6, "s"], [24, 24, 3, 6, "t"]]})
+    m.ent(type="chest", id="lago_bau_margem", x=26, y=33, loot={"essencia_laranja": 1, "diario_barqueiro": 1}, if_flag="pantano_livre")
+    m.ent(type="spirit_mark", id="lago_inscricao", x=30, y=32, requires_eco="olhar_velado", dialog="inscricao_generica", if_flag="pantano_livre",
+          msg="Letras tremulam na pedra molhada. (Olhar Velado)")
+    # criaturas e inimigos
+    m.ent(type="wild", id="la_goturim1", species="goturim", level=13, x=4, y=23)
+    m.ent(type="wild", id="la_goturim2", species="goturim", level=14, x=5, y=24)
+    m.ent(type="enemy", kind="espectro", id="la_esp1", x=24, y=20)
+    m.ent(type="enemy", kind="espectro", id="la_esp2", x=20, y=3)
+    m.ent(type="enemy", kind="espectro", id="la_esp3", x=45, y=24)
+    m.ent(type="enemy", kind="sapo", id="la_sapo1", x=37, y=2)
+    m.ent(type="enemy", kind="planta", id="la_planta1", x=28, y=22)
+    return m
+
+
+# ------------------------------------------------------------------ TEMPLO SUBMERSO A (átrio, Sala das Marés, Galeria, Espelhos)
+def templo_a():
+    m = M("templo_a", "Templo Submerso — Sala das Marés", 60, 44, fill="v", music="pantano", region="pantano")
+    proom(m, 26, 32, 10, 8)                         # 1. átrio (seguro)
+    proom(m, 30, 40, 2, 4); proom(m, 0, 35, 26, 2)  # entradas: lago (sul) e passarela (oeste)
+    proom(m, 20, 16, 22, 12)                        # 2. Sala das Marés (sala central)
+    m.rect(20, 21, 22, 3, "W")                      # canal central
+    for (x, y) in ((23, 18), (38, 18), (23, 25), (38, 25)):
+        m.set(x, y, "i")
+    proom(m, 30, 28, 2, 4)
+    proom(m, 2, 18, 12, 12, floor="0")              # 3. Galeria dos Sapos (combate)
+    proom(m, 14, 25, 6, 2)
+    proom(m, 42, 17, 4, 2)
+    proom(m, 46, 8, 12, 16)                         # 4. Sala dos Espelhos
+    proom(m, 51, 0, 2, 8)
+    for (x, y) in ((27, 33), (34, 33), (27, 38), (34, 38)):
+        m.set(x, y, "i")
+    m.set(3, 28, "i"); m.set(12, 28, "i")
+    m.spawns = {"from_lago": [30, 42], "from_passarela": [1, 35], "from_b": [51, 1]}
+    m.ent(type="exit", x=30, y=43, w=2, h=1, to="lago_reflexos", spawn="from_templo")
+    m.ent(type="exit", x=0, y=35, w=1, h=2, to="passarela_ecos", spawn="from_templo")
+    m.ent(type="exit", x=51, y=0, w=2, h=1, to="templo_b", spawn="from_a")
+    m.ent(type="shrine", id="ta_atrio", x=30, y=34)
+    m.ent(type="sign", id="placa_templo", dialog="placa_templo", x=34, y=36)
+    m.ent(type="chest", id="ta_bau_atrio", x=27, y=36, loot={"pocao": 2, "selo_refinado": 1})
+    # Sala das Marés: a comporta da Galeria esvazia o canal central (efeito entre salas)
+    m.ent(type="sign", id="placa_canal_central", dialog="placa_canal_central", x=33, y=26)
+    m.cond.append({"if": "ta_canal", "area": [20, 21, 22, 3], "chars": {"W": "0"}})
+    # Galeria dos Sapos (portas fecham)
+    m.ent(type="enemy", kind="sapo", id="ta_sapo1", x=5, y=21, enc="galeria_sapos")
+    m.ent(type="enemy", kind="sapo", id="ta_sapo2", x=10, y=24, enc="galeria_sapos")
+    m.ent(type="enemy", kind="planta", id="ta_planta1", x=4, y=27, enc="galeria_sapos")
+    m.ent(type="enemy", kind="espectro", id="ta_esp1", x=9, y=20, enc="galeria_sapos")
+    m.ent(type="encounter", id="galeria_sapos", x=2, y=18, w=12, h=12, flag_done="enc_sapos_ok", flag_active="tmp_enc_sapos")
+    m.ent(type="door", id="ta_d_galeria", tiles=[[14, 25], [14, 26]], close_flags=["tmp_enc_sapos"], closed_char="!")
+    m.ent(type="sluice", id="ta_comporta", x=7, y=19, flag="ta_canal",
+          msg_on="A comporta da Galeria gira: ouve-se a água escoar na Sala das Marés!", msg_off="A comporta volta: o canal central enche de novo.")
+    m.ent(type="chest", id="ta_bau_galeria", x=11, y=19, loot={"perola_brejo": 2, "selo_refinado": 2})
+    # Sala dos Espelhos: feixe do oeste, três espelhos, cristal ao norte
+    m.ent(type="sign", id="placa_espelhos", dialog="placa_espelhos", x=47, y=22)
+    m.ent(type="beam_source", id="ta_emissor", x=47, y=20, dir=[1, 0])
+    m.ent(type="mirror", id="ta_espelho1", group="espelhos", x=55, y=20, start="b", goal="a")
+    m.ent(type="mirror", id="ta_espelho2", group="espelhos", x=55, y=12, start="a", goal="b")
+    m.ent(type="mirror", id="ta_espelho3", group="espelhos", x=49, y=12, start="a", goal="b")
+    m.ent(type="beam_target", id="ta_cristal", group="espelhos", x=49, y=9)
+    m.puzzles["espelhos"] = {"type": "beam", "flag": "ta_espelhos", "dica_apos": 6, "msg": "O feixe acende o cristal: a porta norte se abre!",
+                             "dica": "Dica: a luz vai ao leste, sobe pela coluna leste, volta para oeste e só então sobe até o cristal."}
+    m.ent(type="door", id="ta_d_espelhos", tiles=[[51, 7], [52, 7]], open_flags=["ta_espelhos"], closed_char="!")
+    m.ent(type="chest", id="ta_bau_espelhos", x=56, y=22, loot={"diario_templo": 1, "essencia_azul": 1})
+    m.ent(type="enemy", kind="espectro", id="ta_esp2", x=33, y=17)
+    return m
+
+
+# ------------------------------------------------------------------ TEMPLO SUBMERSO B (Câmara do Lodo, tesouro, atalho, Barqueiro)
+def templo_b():
+    m = M("templo_b", "Templo Submerso — Câmara do Lodo", 60, 46, fill="v", music="pantano", region="pantano")
+    proom(m, 34, 3, 22, 14)                         # 5. Câmara do Lodo
+    m.rect(40, 3, 4, 14, "U")                       # faixa de lodo instável
+    proom(m, 56, 6, 4, 2)                           # entrada (do templo A)
+    proom(m, 26, 8, 8, 2)
+    proom(m, 14, 4, 12, 10)                         # 6. tesouro + santuário
+    proom(m, 18, 0, 2, 4)                           # 7. Canal Submerso (atalho ao Porto)
+    proom(m, 19, 14, 2, 8)
+    proom(m, 14, 22, 32, 18)                        # 8. arena do Barqueiro Sem Sombra
+    m.rect(22, 27, 16, 8, "W")                      # lago central (plataformas largas em volta)
+    proom(m, 46, 30, 14, 2)
+    for (x, y) in ((15, 23), (44, 23), (15, 38), (44, 38)):
+        m.set(x, y, "i")
+    m.spawns = {"from_a": [57, 6], "from_porto": [18, 1], "from_rito": [57, 30]}
+    m.ent(type="exit", x=59, y=6, w=1, h=2, to="templo_a", spawn="from_b")
+    m.ent(type="sign", id="placa_lodo_templo", dialog="placa_lodo_templo", x=54, y=4)
+    m.ent(type="stakes", id="tb_estacas", x=46, y=12, flag="tb_lodo")
+    m.ent(type="mud_mark", id="tb_marca", x=44, y=5, flag="tb_lodo", opcional=False)
+    m.cond.append({"if": "tb_lodo", "area": [40, 3, 4, 14], "chars": {"U": "8"}})
+    m.ent(type="enemy", kind="planta", id="tb_planta1", x=36, y=5)
+    m.ent(type="enemy", kind="planta", id="tb_planta2", x=36, y=14)
+    m.ent(type="enemy", kind="sapo", id="tb_sapo1", x=50, y=9)
+    m.ent(type="enemy", kind="espectro", id="tb_esp1", x=37, y=10)
+    # tesouro + santuário + atalho
+    m.ent(type="shrine", id="tb_tesouro", x=22, y=6)
+    m.ent(type="chest", id="tb_bau_tesouro", x=16, y=6, loot={"remo_barqueiro": 1, "perola_brejo": 1, "fragmentos": 70})
+    m.ent(type="sign", id="placa_atalho_porto", dialog="placa_atalho_porto", x=21, y=5)
+    m.ent(type="lever", id="tb_alavanca_canal", group="canal", idx=0, x=17, y=5)
+    m.puzzles["canal"] = {"type": "levers", "toggles": [[0]], "start": [0], "goal": [1], "flag": "atalho_porto_aberto", "dica_apos": 9, "dica": ""}
+    m.ent(type="door", id="tb_comporta_canal", tiles=[[18, 3], [19, 3]], open_flags=["atalho_porto_aberto"], closed_char="!")
+    m.ent(type="exit", x=18, y=0, w=2, h=1, to="porto_lanternas", spawn="from_templo")
+    # arena do Barqueiro
+    m.ent(type="sign", id="placa_barqueiro", dialog="placa_barqueiro", x=21, y=13)
+    m.ent(type="door", id="tb_d_barqueiro", tiles=[[19, 21], [20, 21]], close_flags=["tmp_barqueiro_ativo"], closed_char="!")
+    m.ent(type="miniboss", boss="barqueiro", id="barqueiro", x=30, y=30, x0=14, y0=22, w=32, h=18, flag_done="barqueiro_morto",
+          flag_active="tmp_barqueiro_ativo", lago=[22, 27, 16, 8])
+    for (i, (x, y)) in enumerate(((21, 26), (38, 26), (21, 35), (38, 35))):
+        m.ent(type="lantern", id="tb_lanterna%d" % (i + 1), x=x, y=y, boss=True)
+    m.ent(type="door", id="tb_d_barqueiro_out", tiles=[[46, 30], [46, 31]], open_flags=["barqueiro_morto"], closed_char="!")
+    m.ent(type="exit", x=59, y=30, w=1, h=2, to="rito_reflexos", spawn="from_b")
+    return m
+
+
+# ------------------------------------------------------------------ RITO DOS REFLEXOS (prova antes da Bruxa + ala avançada)
+def rito_reflexos():
+    m = M("rito_reflexos", "Rito dos Reflexos", 60, 30, fill="v", music="pantano", region="pantano")
+    proom(m, 2, 10, 12, 10)                         # 1. apresentação segura
+    proom(m, 16, 6, 14, 18)                         # 2. aplicação
+    proom(m, 33, 6, 16, 18)                         # 3. combinação (nível da água + reflexo)
+    proom(m, 52, 10, 6, 10)                         # 4. conclusão (altar)
+    proom(m, 50, 1, 9, 5)                           # 5. rito avançado (Olhar Velado)
+    proom(m, 0, 14, 2, 2); proom(m, 14, 14, 2, 2); proom(m, 30, 14, 3, 2); proom(m, 49, 14, 3, 2); proom(m, 58, 14, 2, 2)
+    m.rect(3, 16, 10, 2, "0")                       # espelho d'água da apresentação
+    m.rect(17, 9, 12, 2, "0")                       # espelho d'água da sala 2
+    m.rect(34, 9, 14, 2, "9")                       # sala 3: tanque seco (a comporta enche)
+    m.rect(54, 6, 2, 4, "W")                        # fosso até a ala avançada (ponte espiritual)
+    m.rect(50, 3, 9, 1, "W")                        # fosso interno da ala avançada
+    m.spawns = {"from_b": [1, 14], "from_c": [58, 14]}
+    m.ent(type="exit", x=0, y=14, w=1, h=2, to="templo_b", spawn="from_rito")
+    m.ent(type="exit", x=59, y=14, w=1, h=2, to="templo_c", spawn="from_rito")
+    # 1. apresentação: uma estátua verdadeira e uma falsa, sem castigo
+    m.ent(type="sign", id="rito_r_placa1", dialog="rito_r_placa1", x=4, y=11)
+    m.ent(type="statue", id="rr_demo_v", x=5, y=15, demo=True, demo_verdadeira=True, flag="rr_demo1",
+          msg="Lanterna na mão esquerda... e no reflexo também, do mesmo lado. Este reflexo é verdadeiro.")
+    m.ent(type="statue", id="rr_demo_f", x=10, y=15, demo=True, flag="rr_demo2",
+          msg="A estátua segura a lanterna na esquerda, mas o reflexo a mostra do outro lado: reflexo falso!")
+    m.ent(type="door", id="rr_d1", tiles=[[14, 14], [14, 15]], open_flags=["rr_demo1", "rr_demo2"], closed_char="!")
+    # 2. aplicação: uma verdadeira entre três
+    m.ent(type="sign", id="rito_r_placa2", dialog="rito_r_placa2", x=17, y=21)
+    m.ent(type="rite_reset", id="rr_reset2", x=17, y=13)
+    m.ent(type="statue", id="rr_s2a", group="rr2", x=19, y=8)
+    m.ent(type="statue", id="rr_s2b", group="rr2", x=23, y=8, verdadeira=True)
+    m.ent(type="statue", id="rr_s2c", group="rr2", x=27, y=8)
+    m.puzzles["rr2"] = {"type": "statues", "flag": "rr2_ok", "dica_apos": 3, "msg": "A estátua do meio brilha: o reflexo dela acompanha a lanterna. A porta cede.",
+                        "dica": "Dica: olhe de que lado está a lanterna na estátua e de que lado ela aparece no reflexo."}
+    m.ent(type="door", id="rr_d2", tiles=[[30, 14], [30, 15]], open_flags=["rr2_ok"], closed_char="!")
+    # 3. combinação: a comporta enche o tanque (sem água, sem reflexo) e então se escolhe entre quatro
+    m.ent(type="sign", id="rito_r_placa3", dialog="rito_r_placa3", x=34, y=21)
+    m.ent(type="sign", id="rr_inscricao_falsa", dialog="rito_r_falsa", x=46, y=21)
+    m.ent(type="rite_reset", id="rr_reset3", x=34, y=13)
+    m.ent(type="sluice", id="rr_comporta", x=36, y=17, flag="rr_agua",
+          msg_on="A comporta abre: o tanque enche e as estátuas ganham reflexo.", msg_off="A comporta fecha: o tanque esvazia.")
+    m.cond.append({"if": "rr_agua", "area": [34, 9, 14, 2], "chars": {"9": "0"}})
+    for (i, (x, v)) in enumerate(((35, False), (39, False), (43, True), (47, False))):
+        m.ent(type="statue", id="rr_s3%s" % "abcd"[i], group="rr3", x=x, y=8, verdadeira=v)
+    m.puzzles["rr3"] = {"type": "statues", "flag": "rr3_ok", "dica_apos": 3, "msg": "Água e reflexo concordam: o altar desperta!",
+                        "dica": "Dica: abra a comporta para encher o tanque; só então os reflexos aparecem."}
+    m.ent(type="door", id="rr_d3", tiles=[[49, 14], [49, 15]], open_flags=["rr3_ok"], closed_char="!")
+    # 4. conclusão
+    m.ent(type="altar", id="rr_altar", x=55, y=16, flag="rito_reflexos_ok", requires="rr3_ok", bond="missao:rito_reflexos",
+          loot={"lente_orvalho": 1}, lines=["A água do altar fica parada como vidro e mostra você, sem mentira nenhuma.",
+          "Uma voz antiga, de quem guardava estas águas: \"Quem lê o reflexo não se perde nas cópias.\"",
+          "Você recebeu a LENTE DE ORVALHO: espectros refletidos ficam visíveis quando chegam perto."])
+    m.ent(type="door", id="rr_d4", tiles=[[58, 14], [58, 15]], open_flags=["rito_reflexos_ok"], closed_char="!")
+    # 5. avançado (depois da Bruxa): duas pontes espirituais em sequência
+    m.ent(type="sign", id="rito_r_placa_av", dialog="rito_r_placa_av", x=56, y=11)
+    m.ent(type="spirit_bridge", id="rr_ponte1", x=55, y=10, flag="rr_ponte1", requires_eco="olhar_velado")
+    m.cond.append({"if": "rr_ponte1", "rects": [[54, 6, 2, 4, "E"]]})
+    m.ent(type="spirit_bridge", id="rr_ponte2", x=54, y=4, flag="rr_ponte2", requires_eco="olhar_velado")
+    m.cond.append({"if": "rr_ponte2", "rects": [[53, 3, 2, 1, "E"]]})
+    m.ent(type="altar", id="rr_altar2", x=53, y=2, flag="rito_reflexos_av_ok", requires="rr_ponte2",
+          msg_falta="O altar avançado está além da água.",
+          loot={"amuleto_reflexo": 1}, lines=["Sobre tábuas que só os olhos velados enxergam, o altar avançado acende em lilás.",
+                                              "Você recebeu o AMULETO DO REFLEXO."])
+    return m
+
+
+# ------------------------------------------------------------------ TEMPLO SUBMERSO C (Bruxa Afogada)
+def templo_c():
+    m = M("templo_c", "Templo Submerso — Coração Afogado", 56, 36, fill="v", music="pantano", region="pantano")
+    proom(m, 2, 14, 12, 8)                          # 9. preparação
+    proom(m, 18, 6, 28, 22, floor="0")              # 10. arena da Bruxa (piso alagado: reflexos)
+    proom(m, 0, 17, 2, 2); proom(m, 14, 17, 4, 2); proom(m, 46, 16, 10, 2)
+    m.rect(18, 16, 28, 2, "9"); m.rect(31, 6, 2, 22, "9")          # cruz de pedra (sempre firme)
+    for (x, y) in ((21, 9), (42, 9), (21, 24), (42, 24)):
+        m.set(x, y, "i")
+    m.spawns = {"from_rito": [2, 17]}
+    m.ent(type="exit", x=0, y=17, w=1, h=2, to="rito_reflexos", spawn="from_c")
+    m.ent(type="shrine", id="tc_prep", x=7, y=16)
+    m.ent(type="chest", id="tc_bau_prep", x=11, y=15, loot={"pocao": 2, "tonico_criatura": 1})
+    m.ent(type="sign", id="placa_bruxa", dialog="placa_bruxa", x=4, y=20)
+    m.ent(type="door", id="tc_d_in", tiles=[[17, 17], [17, 18]], close_flags=["tmp_bruxa_ativo"], closed_char="!")
+    # fase 3: a água sobe (alagado vira água funda) e só as plataformas do padrão atual ficam firmes
+    plats = {"A": [19, 8, 12, 6], "B": [33, 8, 12, 6], "C": [19, 20, 12, 6], "D": [33, 20, 12, 6]}
+    m.ent(type="boss", boss="bruxa", id="bruxa", x=32, y=10, x0=18, y0=6, w=28, h=22, flag_done="bruxa_morta", flag_active="tmp_bruxa_ativo",
+          plataformas=plats, padroes=[["A", "B", "C"], ["B", "D", "C"], ["A", "D", "C"]])
+    m.cond.append({"if": "tmp_bruxa_cheia", "area": [18, 6, 28, 22], "chars": {"0": "W"}})
+    for (pi, pat) in enumerate([["A", "B", "C"], ["B", "D", "C"], ["A", "D", "C"]]):
+        m.cond.append({"if": "tmp_bruxa_p%d" % pi, "rects": [plats[k] + ["0"] for k in pat]})
+    m.ent(type="door", id="tc_d_out", tiles=[[46, 16], [46, 17]], open_flags=["bruxa_morta"], closed_char="!")
+    m.ent(type="exit", x=55, y=16, w=1, h=2, to="porto_lanternas", spawn="from_templo_c")
+    return m
+
+
 # ------------------------------------------------------------------ verificacao
 def bfs_check(m):
     msgs = []
     starts = [tuple(s) for s in m.spawns.values()]
     seen = set()
     dq = deque()
+    g = [r[:] for r in m.g]
+    for c in m.cond:
+        if c.get("if") in m.bfs_flags and c.get("unless") not in m.bfs_flags:
+            for r in c.get("rects", []):
+                for j in range(r[3]):
+                    for i in range(r[2]):
+                        g[r[1] + j][r[0] + i] = r[4]
+            if c.get("chars"):
+                ax, ay, aw, ah = c.get("area", [0, 0, m.w, m.h])
+                for j in range(ay, ay + ah):
+                    for i in range(ax, ax + aw):
+                        if g[j][i] in c["chars"]:
+                            g[j][i] = c["chars"][g[j][i]]
     for s in starts:
         seen.add(s); dq.append(s)
     # tiles que viram transitaveis (pontes/cipos) so contam nas verificacoes especificas
@@ -847,11 +1284,11 @@ def bfs_check(m):
         x, y = dq.popleft()
         for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
             nx, ny = x + dx, y + dy
-            if 0 <= nx < m.w and 0 <= ny < m.h and (nx, ny) not in seen and m.g[ny][nx] in PASS_FOR_BFS:
+            if 0 <= nx < m.w and 0 <= ny < m.h and (nx, ny) not in seen and g[ny][nx] in PASS_FOR_BFS:
                 seen.add((nx, ny)); dq.append((nx, ny))
     for e in m.ents:
         t = e["type"]
-        if t in ("exit", "door", "encounter", "boss", "miniboss", "chapter_end"):
+        if t in ("exit", "door", "encounter", "boss", "miniboss", "chapter_end", "decor"):
             continue
         p = (e["x"], e["y"])
         ch = m.g[p[1]][p[0]]
@@ -866,7 +1303,8 @@ def bfs_check(m):
 
 def main():
     maps = [vila(), bosque(), clareira(), santuario_a(), santuario_b(), santuario_c(), desfiladeiro(), minas_entrada(),
-            forja(), pedreira(), trilhos(), fundicao_a(), fundicao_b(), rito(), fundicao_c()]
+            forja(), pedreira(), trilhos(), fundicao_a(), fundicao_b(), rito(), fundicao_c(),
+            porto(), passarela(), lago(), templo_a(), templo_b(), rito_reflexos(), templo_c()]
     bad = []
     for m in maps:
         for row in m.g:
@@ -882,7 +1320,9 @@ def main():
             g = [r[:] for r in m.g]
             for e in m.ents:
                 if "x" in e and e["type"] not in ("exit", "door", "encounter"):
-                    c = {"wild": "W", "enemy": "E", "chest": "C", "npc": "N", "shrine": "@", "lever": "L", "flower": "*", "plate": "_", "crate": "#", "sign": "?", "miniboss": "M", "boss": "B", "dummy": "d", "vine": "V", "bridge_spot": "&", "bond_stone": "$", "valve": "V", "furnace": "F", "brazier": "f", "cart": "c", "rail_lever": "/", "ore": "o", "crack": "x", "draft": "~", "rail_marked": "&", "anvil": "n", "altar": "A", "rite_reset": "r", "spirit_mark": "s"}.get(e["type"], "!")
+                    c = {"wild": "W", "enemy": "E", "chest": "C", "npc": "N", "shrine": "@", "lever": "L", "flower": "*", "plate": "_", "crate": "#", "sign": "?", "miniboss": "M", "boss": "B", "dummy": "d", "vine": "V", "bridge_spot": "&", "bond_stone": "$", "valve": "V", "furnace": "F", "brazier": "f", "cart": "c", "rail_lever": "/", "ore": "o", "crack": "x", "draft": "~", "rail_marked": "&", "anvil": "n", "altar": "A", "rite_reset": "r", "spirit_mark": "s",
+                         "lantern": "*", "sluice": "V", "wheel": "O", "stakes": "#", "mud_mark": "%", "mirror": "/", "beam_source": ">",
+                         "beam_target": "@", "statue": "S", "ripple": "~", "spirit_bridge": "&", "decor": "d", "pickup": "p"}.get(e["type"], "!")
                     if 0 <= e["y"] < m.h and 0 <= e["x"] < m.w:
                         g[e["y"]][e["x"]] = c
             print("==", m.id, m.w, m.h)

@@ -2,6 +2,9 @@ extends Node2D
 ## Projéteis da Região 2 (sprites autorais):
 ##  "tool"  — picareta arremessada pelo mineiro (ferramenta.png); colide com paredes, pode ser defendida e é atraída pelo Ímã do Ferrunho.
 ##  "quake" — onda de choque do martelo no chão (fx_quake.png); só a esquiva (invulnerável) ou sair da faixa evita.
+## Região 3:
+##  "semente" — semente da planta sementeira (semente.png); voa sobre a água, para em paredes, pode ser defendida.
+##  "orbe"    — orbe d'água da Bruxa Afogada (orbe.png); idem, mais lenta e maior.
 
 var world: Node
 var mode := "tool"
@@ -16,6 +19,7 @@ var t := 0.0
 var travelled := 0.0
 var hit := {}
 var opts := {}
+var over_water := false     # onda do Barqueiro: atravessa a água do lago
 var _spr: AnimatedSprite2D
 
 func _ready() -> void:
@@ -36,6 +40,12 @@ func _ready() -> void:
 	elif mode == "tool":
 		_spr.sprite_frames = Art.fx_frames("ferramenta", 12, 12, 2, 14.0, true)
 		_spr.offset = Vector2(0, -10)
+	elif mode == "semente":
+		_spr.sprite_frames = Art.fx_frames("semente", 8, 8, 2, 10.0, true)
+		_spr.offset = Vector2(0, -6)
+	elif mode == "orbe":
+		_spr.sprite_frames = Art.fx_frames("orbe", 12, 12, 3, 10.0, true)
+		_spr.offset = Vector2(0, -8)
 	else:
 		_spr.sprite_frames = Art.fx_frames("fx_quake", 48, 16, 3, 12.0, true)
 		_spr.rotation = dir.angle() + PI / 2.0
@@ -66,20 +76,22 @@ func _physics_process(delta: float) -> void:
 	var step := dir * speed * delta
 	position += step
 	travelled += step.length()
-	if mode == "tool":
-		if world.tile_solid_at(global_position):
+	if mode == "tool" or mode == "semente" or mode == "orbe":
+		var blocked: bool = world.tile_solid_at(global_position) if mode == "tool" else world.blocks_projectile(global_position)
+		if blocked or (mode != "tool" and travelled >= max_dist * 2.5):
 			world.spark(global_position)
 			Audio.play("thud", -12.0)
 			queue_free()
 			return
 		for tg in world.targets():
-			if tg.global_position.distance_to(global_position) <= 9.0:
+			if tg.global_position.distance_to(global_position) <= (11.0 if mode == "orbe" else 9.0):
 				tg.take_hit(damage, global_position - dir * 6.0, {"knock": 70.0})
 				world.spark(global_position)
 				queue_free()
 				return
 	else:
-		if world.tile_solid_at(global_position + dir * 6.0):
+		var ahead := global_position + dir * 6.0
+		if (world.blocks_projectile(ahead) if over_water else world.tile_solid_at(ahead)):
 			queue_free()
 			return
 		for tg in world.targets():

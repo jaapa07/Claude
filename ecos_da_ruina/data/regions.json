@@ -51,10 +51,18 @@
    18
   ],
   "nucleo": "porto_lanternas",
-  "mapas": [],
+  "mapas": [
+   "porto_lanternas",
+   "passarela_ecos",
+   "lago_reflexos",
+   "templo_a",
+   "templo_b",
+   "rito_reflexos",
+   "templo_c"
+  ],
   "guardiao": "bruxa",
   "eco": "olhar_velado",
-  "status": "não implementada"
+  "status": "jogavel"
  },
  "fortaleza": {
   "nome": "Fortaleza do Eclipse",
