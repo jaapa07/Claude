@@ -48,7 +48,11 @@ static func count() -> int:
 ## Texto para reler a lembrança (tela de Artefatos e Jornada).
 static func lembranca_text(a: Dictionary) -> String:
 	var l: Dictionary = a.get("lembranca", {})
-	return "%s\n%s\n\n%s\n\n%s" % [a.get("nome", ""), str(a.get("desc", "")), l.get("titulo", ""), "\n".join(l.get("linhas", []))]
+	var body := "\n".join(l.get("linhas", []))
+	# o painel lateral não rola: mostra o começo da lembrança e indica onde reler inteira
+	if body.length() > 170:
+		body = body.left(170).rstrip(" ") + "…"
+	return "%s\n%s\n\n%s\n%s" % [a.get("nome", ""), str(a.get("desc", "")), l.get("titulo", ""), body]
 
 ## Linha descritiva da criatura ativa ("Brotisco encosta a cabeça na sua mão."). Vazia se não há criatura ativa.
 static func reaction(ctx: String, key: String = "") -> String:

@@ -676,7 +676,11 @@ func open_diary() -> void:
 			var it: String = str(m.get("item", ""))
 			if it != "" and Data.items.has(it):
 				txt += "\n\n— " + Data.items[it]["nome"] + " —\n" + Data.items[it]["desc"]
-			var row := _it(m["titulo"], Callable(), txt)
+			var mlines: Array = m["linhas"]
+			if txt.length() > 260:
+				txt = txt.left(260).rstrip(" ") + "…"
+			txt += "\n\n[OK / E: reler inteira]"
+			var row := _it(m["titulo"], func(): reread(mlines), txt)
 			row["col"] = Color(0.85, 0.8, 1.0)
 			mems.append(row)
 	items.append(_hdr("Memórias e Diário de Ione"))
@@ -1021,7 +1025,12 @@ func _artefato_rows() -> Array:
 			info = "Um espaço vazio. Esta lembrança está guardada no fim do caminho, com o %s." % str(a.get("chefe", "último guardião"))
 		else:
 			info = "Um espaço vazio. Liberte o guardião (%s) para recuperar esta lembrança." % str(a.get("chefe", "?"))
-		var row := _it(("%s" % a["nome"]) if got else "[ ] ???", Callable(), info)
+		var reler := Callable()
+		if got:
+			var lines: Array = a.get("lembranca", {}).get("linhas", [])
+			reler = func(): reread(lines)
+			info += "\n\n[OK / E: reler a lembrança inteira]"
+		var row := _it(("%s" % a["nome"]) if got else "[ ] ???", reler, info)
 		if got and Data.items.has(id):
 			row["icon"] = Game.item_icon(id)
 			row["col"] = Color(1.0, 0.88, 0.6)
@@ -1069,3 +1078,13 @@ func open_journey() -> void:
 	items.append(_it("Voltar", func(): s.close(), goal))
 	s.list_w = 250.0
 	s.setup("Jornada — %d%%" % Game.conquest_pct(), items, goal)
+
+
+## Relê um texto longo como diálogo (fecha os menus; volta ao jogo no fim).
+func reread(lines: Array) -> void:
+	close_all()
+	if world != null and world.player != null:
+		world.player.set_busy(true)
+	dialog(lines, func():
+		if world != null and world.player != null:
+			world.player.set_busy(false))

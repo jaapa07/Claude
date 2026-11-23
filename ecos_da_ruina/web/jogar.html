@@ -115,9 +115,9 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
 <script>
 // O motor (WebAssembly) é publicado em 3 partes; aqui elas são baixadas e remontadas antes de iniciar.
 (function () {
-  const VERSAO = "202611232234";   // muda a cada publicação: o celular baixa a versão nova em vez de usar o cache
+  const VERSAO = "202611232255";   // muda a cada publicação: o celular baixa a versão nova em vez de usar o cache
   const PARTS = ["w/motor0.wasm", "w/motor1.wasm", "w/motor2.wasm"].map(function (u) { return u + "?v=" + VERSAO; });
-  const TOTAL = 35376909 + 4734496;
+  const TOTAL = 35376909 + 4776560;
   let loaded = 0;
   const fill = document.getElementById("fill");
   const status = document.getElementById("status");
@@ -167,7 +167,7 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
       try {
         const engine = new Engine({
           args: [], canvasResizePolicy: 0, executable: "index", experimentalVK: false,
-          fileSizes: { "index.pck": 4734496, "index.wasm": 35376909 },
+          fileSizes: { "index.pck": 4776560, "index.wasm": 35376909 },
           focusCanvas: true, gdextensionLibs: [], ensureCrossOriginIsolationHeaders: false
         });
         engine.startGame({
