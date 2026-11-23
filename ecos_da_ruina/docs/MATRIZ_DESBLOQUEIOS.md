@@ -87,15 +87,22 @@ Cada Rito pré-guardião usa só mecanismos locais; cada Rito avançado (opciona
 | Fissuras e portais marcados (Refúgio, Muralha, Estrada, Rito avançado) | **Passo Umbral** | após o Cavaleiro | — | segredos e Amuleto do Eclipse | ✅ |
 | Mudança pós-guardião | — | após o Cavaleiro | — | guarnição volta, rotinas mudam, música, Estrada Final aberta | ✅ |
 
-## 5. Catedral do Vazio 📐
-| Obstáculo | Habilidade necessária | Quando | Alternativa | Recompensa |
-|---|---|---|---|---|
-| Selo externo | Passo Umbral | após o Cavaleiro | — | Acampamento da Aurora |
-| Salas combinadas | Raiz Viva + Ruptura Ígnea + Olhar Velado + Passo Umbral (todos já obtidos) | antes do Rei | criaturas de cada região facilitam | caminho ao Rei |
-| Prismas | espelhos locais | chegada | Cristil redireciona feixes | — |
-| Âncoras gravitacionais | contrapesos locais | chegada | Gravito mantém âncoras | — |
-| **Rito da Convergência** | os quatro Ecos combinados | antes do Rei (opcional avançado após) | dica opcional | técnica final + vínculo |
-| Desafios pós-jogo | Harmonia dos Ecos | após o Rei | — | bestiário expandido (nunca exigida antes do final) |
+## 5. Catedral do Vazio
+| Obstáculo | Habilidade necessária | Quando | Alternativa | Recompensa | Status |
+|---|---|---|---|---|---|
+| Selo externo (sul do Acampamento) | Passo Umbral | após o Cavaleiro | — | Acampamento da Aurora | ✅ |
+| Prismas do Jardim e da Sala dos Prismas | espelhos locais (E) | chegada | Cristil gira o prisma (ilha do mirante / nicho com baú) | portões, baús | ✅ |
+| Âncoras gravitacionais (Escadaria, Sala das Âncoras) | contrapeso local (bloco na placa) | chegada | Gravito/Monolito sustenta a âncora | escada, ponte de fragmentos | ✅ |
+| Câmara das Raízes e Brasas | Raiz Viva + chama do braseiro | chegada | Ruptura Ígnea reaquece direto | saída oeste | ✅ |
+| Coro Velado | Olhar Velado + portal (Passo Umbral) | chegada | Velúnio materializa a marca | caminho à arena | ✅ |
+| Marcas espirituais, anel do Jardim | Olhar Velado | chegada | Velúnio (ação "marca") | Velúnio (raro), baú | ✅ |
+| Cristais rachados (Escadaria, Rito) | Ruptura Ígnea | chegada | — | alcova, porta do rito | ✅ |
+| **Rito da Convergência** | os quatro Ecos em salas legíveis (placas explicam cada passo; dica após tentativas; pedra de reinício) | antes do Rei | — | Amuleto da Convergência + vínculo | ✅ |
+| Arauto Partido | — (Olhar Velado rasga o véu; sem ele, o véu cai sozinho e ele surge num portal) | antes do Rei | criaturas de luz revelam | página 7 | ✅ |
+| Câmara do Eco (quatro elos de Ione) | um Eco por elo (todos já obtidos) | antes do Rei | — | Ione livre, porta do trono | ✅ |
+| Rei dos Ecos | — (qualquer equipe evoluída; nenhuma rara exigida) | — | — | Harmonia dos Ecos, quinto artefato | ✅ |
+| Segredos (pedra limpa do Acampamento, estrelas invertidas) | observação | chegada | — | baú, Lente Estelar | ✅ |
+| Salão da Harmonia (pós-jogo) | Harmonia dos Ecos | após o Rei | — | Provas da Harmonia, Coroa da Harmonia, notas do bestiário (nunca exigida antes do final) | ✅ |
 
 ## Verificações automáticas (tests/e2e_bot.gd)
 - Ordem sem ciclos: cada Eco só aparece como requisito em regiões posteriores ao seu guardião — checado nos dados de mapa (`requires_eco`).

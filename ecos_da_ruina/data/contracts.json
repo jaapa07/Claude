@@ -515,5 +515,83 @@
     "essencia_roxa": 1
    }
   }
+ },
+ "caca_escribas": {
+  "nome": "Silêncio no Jardim",
+  "tipo": "caca",
+  "aliados": [],
+  "nivel": 25,
+  "requer": [
+   "visitou_jardim_invertido"
+  ],
+  "alvo": {
+   "kind": "escriba",
+   "qtd": 3
+  },
+  "texto": "Os Escribas do Vazio ainda selam o Jardim Invertido para a Ordem. Vesna, agora do lado de cá, paga por cada pena quebrada.",
+  "objetivo": "Caçada: derrote 3 Escribas do Vazio.",
+  "recompensa": {
+   "fragmentos": 320,
+   "xp": 420,
+   "itens": {
+    "semente_vida": 1,
+    "fragmento_prisma": 2
+   }
+  }
+ },
+ "ultimas_correntes": {
+  "nome": "As Últimas Correntes",
+  "tipo": "trio",
+  "aliados": [
+   "bruna",
+   "ravi"
+  ],
+  "nivel": 26,
+  "requer": [
+   "visitou_escadaria_fragmentos"
+  ],
+  "mapa": "escadaria_fragmentos",
+  "texto": "Domadores contratados pela Ordem levam feras acorrentadas pela Escadaria dos Fragmentos até a Catedral. Leve Bruna e Ravi e corte as últimas correntes.",
+  "objetivo": "Derrote os domadores da Escadaria (trio: Bruna e Ravi) e liberte as feras.",
+  "inimigos": [
+   {
+    "kind": "domador",
+    "id": "uc_d1",
+    "x": 12,
+    "y": 22,
+    "nivel": 26
+   },
+   {
+    "kind": "domadora",
+    "id": "uc_d2",
+    "x": 19,
+    "y": 25,
+    "nivel": 26
+   },
+   {
+    "kind": "fera",
+    "dono": "uc_d1",
+    "species": "gravito",
+    "level": 25,
+    "x": 13,
+    "y": 24
+   },
+   {
+    "kind": "fera",
+    "dono": "uc_d2",
+    "species": "cristil",
+    "level": 25,
+    "x": 20,
+    "y": 22
+   }
+  ],
+  "recompensa": {
+   "fragmentos": 380,
+   "xp": 480,
+   "itens": {
+    "essencia_laranja": 1,
+    "selo_refinado": 3
+   }
+  }
  }
 }

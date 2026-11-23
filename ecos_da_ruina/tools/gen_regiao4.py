@@ -461,6 +461,7 @@ def estrada():
     m.ent(type="fissura", id="estrada_fissura", x=15, y=9, to=[15, 6])
     m.ent(type="fissura", id="estrada_fissura_volta", x=16, y=7, to=[16, 10])
     m.ent(type="sign", id="estrada_selo", dialog="placa_catedral", x=15, y=3)
+    m.ent(type="exit", x=13, y=0, w=6, h=1, to="acampamento_aurora", spawn="from_estrada")   # Região 5: selo externo da Catedral
     return m
 
 

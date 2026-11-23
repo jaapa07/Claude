@@ -176,5 +176,77 @@
   "embaralha_s": 14.0,
   "aviso_plataforma": 2.2,
   "troca_plataforma": 10.0
+ },
+ "arauto": {
+  "nome": "Arauto Partido",
+  "hp": 980,
+  "fases": [
+   1.0,
+   0.5
+  ],
+  "recompensa": {
+   "xp": 600,
+   "frag": 200,
+   "itens": {
+    "fragmento_prisma": 3,
+    "essencia_roxa": 1
+   }
+  },
+  "flag_morte": "arauto_morto",
+  "aviso_raiz": 1.0,
+  "alcance_raiz": 130,
+  "dano_raiz": 24,
+  "brasa_s": 3.5,
+  "veu_s": 1.6,
+  "revelado_s": 2.6,
+  "aviso_corte": 0.7,
+  "raio_corte": 52,
+  "dano_corte": 26,
+  "dano_selo": 22,
+  "armar_selo": 1.1,
+  "recupera_s": 1.8,
+  "mult_recupera": 1.4
+ },
+ "rei": {
+  "nome": "Rei dos Ecos",
+  "hp": 4000,
+  "fases": [
+   1.0,
+   0.65,
+   0.3
+  ],
+  "hesita": 0.06,
+  "recompensa": {
+   "eco": "harmonia",
+   "xp": 1400,
+   "frag": 500
+  },
+  "flag_morte": "rei_morto",
+  "flag_regiao": "catedral_liberta",
+  "aviso_raiz": 1.0,
+  "alcance_raiz": 150,
+  "dano_raiz": 26,
+  "aviso_martelo": 1.0,
+  "alcance_martelo": 170,
+  "dano_martelo": 26,
+  "aviso_orbes": 0.9,
+  "dano_orbe": 20,
+  "poca_s": 4.0,
+  "aviso_estocada": 0.95,
+  "vel_estocada": 330,
+  "dano_estocada": 32,
+  "exausto_s": 1.8,
+  "recupera_s": 1.3,
+  "intervalo_s": 1.4,
+  "mult_exausto": 1.4,
+  "mult_recupera": 1.2,
+  "mult_protegido": 0.06,
+  "mult_exposto": 1.4,
+  "ataque_focos_s": 3.6,
+  "exposto_s": 8.0,
+  "aviso_ruina": 2.5,
+  "respiro_s": 3.5,
+  "cura_ione": 0.12,
+  "dano_queda": 8
  }
 }

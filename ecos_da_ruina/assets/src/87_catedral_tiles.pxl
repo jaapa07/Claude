@@ -1,0 +1,751 @@
+# Tileset autoral 16x16 — Região 5: Catedral do Vazio (Acampamento da Aurora, Escadaria dos Fragmentos, Jardim Invertido, Catedral).
+# Desenho manual pixel a pixel. Luz de cima/esquerda. Contorno #1b1626.
+# Paleta da região: marfim, azul profundo e vermelho de energia (docs/REGIAO5_CONTRATO.md).
+# Ordem dos 36 tiles = Catedral.NAMES em scripts/catedral.gd. Prefixo de quadro: c5_ (quadros são globais entre os .pxl).
+
+palette cat
+  K = #1b1626
+  a = #5e5648
+  b = #8c8270
+  c = #b8ad96
+  d = #d8cfb8
+  e = #efe8d6
+  f = #fffaf0
+  n = #0b0f2a
+  o = #141c46
+  p = #1f2d6a
+  q = #2f4596
+  s = #4a66c0
+  t = #7d9be0
+  u = #b8ccf4
+  m = #4a0f1e
+  r = #8a1a2c
+  R = #c8283a
+  x = #f04848
+  X = #ff8a7a
+  y = #ffd0c0
+  g = #a07c3c
+  G = #d8b060
+  h = #2f5a3c
+  H = #4f8a4c
+  j = #8ab86c
+  J = #c4e08c
+  v = #5a3c8a
+  V = #8a6ac8
+  w = #c8b0f0
+  k = #4a3c2c
+  l = #6a5a44
+  L = #8a7656
+  z = #a8946c
+  Z = #c4b088
+end
+pal cat
+
+# ------------------------------------------------ 0-2 piso de marfim (lajes em amarração), lajota rachada com energia, borda sob parede
+frame c5_floor0
+eeeeeeedeeeeeeeb
+eddddddbeddddddb
+edddcddbedddddcb
+eddddddbeddcdddb
+edddddcbeddddddb
+eddddddbedddddcb
+ccccccbbccccccbb
+bbbbbbbbbbbbbbbb
+eeedeeeeeeedeeee
+dddbeddddddbeddd
+dcdbedddcddbeddd
+dddbeddddddbedcd
+ddcbedddddcbeddd
+dddbeddddddbeddd
+cccbbccccccbbccc
+bbbbbbbbbbbbbbbb
+end
+
+frame c5_floor1
+eeeeeeedeeeeeeeb
+eddddddbeddddddb
+eddddKdbedddddcb
+eddddKxbeddcdddb
+edddKRcbeddddddb
+eddKrddbedddddcb
+ccKcccbbccccccbb
+bbbbbbbbbbbbbbbb
+eeedeeeeeeedeeee
+dddbeddddddbeddd
+dcdbedddcddbeddd
+dddbedddddKbedcd
+ddcbeddddKRbeddd
+dddbedddKxdbeddd
+cccbbccKcccbbccc
+bbbbbbbbbbbbbbbb
+end
+
+frame c5_floor_edge_n over c5_floor0
+aaaaaaaaaaaaaaaa
+bbbbbbbbbbbbbbbb
+cddddddbcddddddb
+end
+
+# ------------------------------------------------ 3-5 parede de marfim: face, topo e face com vitral
+frame c5_wall_front
+ffffffffffffffff
+eeeeeeeeeeeeeeee
+bbbbbbbbbbbbbbbb
+dddddddbdddddddb
+ddddcddbddcddddb
+cccccccbcccccccb
+bbbbbbbbbbbbbbbb
+ddddbdddddddbddd
+dcddbddddcddbddd
+ccccbcccccccbccc
+bbbbbbbbbbbbbbbb
+dddddddbdddddddb
+cccccccbcccccccb
+RRRRRRRRRRRRRRRR
+qqqqqqqqqqqqqqqq
+pppppppppppppppp
+end
+
+frame c5_wall_top
+cccccccpcccccccp
+cbbbbbbpcbbbbbbp
+cbbbbbbpcbbabbbp
+cbbabbbpcbbbbbbp
+cbbbbbbpcbbbbbbp
+cbbbbbbpcbbbbabp
+cbbbbbbpcbbbbbbp
+pppppppppppppppp
+cccpcccccccpcccc
+bbbpcbbbbbbpcbbb
+babpcbbbbbbpcbbb
+bbbpcbbbabbpcbbb
+bbbpcbbbbbbpcbab
+bbbpcbbbbbbpcbbb
+bbbpcbbbbbbpcbbb
+pppppppppppppppp
+end
+
+frame c5_wall_glass
+ffffffffffffffff
+eeeeeKKKKKKeeeee
+bbbbKsqtqsqKbbbb
+dddKqtsuusqqKddb
+ddKqsuqRqusqqKdb
+ccKsqqRxRqqsqKcb
+bbKqsRxyxRsqqKbb
+ddKsqqRxRqqsqKdd
+dcKqtsqRqstqsKdd
+ccKsqqsqsqqsqKcc
+bbKqsqtqtqsqqKbb
+ddKKKKKKKKKKKKdb
+cccccccbcccccccb
+RRRRRRRRRRRRRRRR
+qqqqqqqqqqqqqqqq
+pppppppppppppppp
+end
+
+# ------------------------------------------------ 6-7 mosaico azul profundo (tesselas com grão marfim e vermelho)
+frame c5_mosaic
+pppnqqqnpppnsssn
+pqpnqpqnpqpnstsn
+pppnqqqnpppnsssn
+nnnnnnnnnnnnnnnn
+qqqnpppnRRRnpppn
+qpqnpqpnRxRnpqpn
+qqqnpppnRRRnpppn
+nnnnnnnnnnnnnnnn
+pppnsssnpppnqqqn
+pqpnstsnpqpnqpqn
+pppnsssnpppnqqqn
+nnnnnnnnnnnnnnnn
+qqqnpppnqqqndddn
+qpqnpqpnqpqndedn
+qqqnpppnqqqndddn
+nnnnnnnnnnnnnnnn
+end
+
+frame c5_mosaic_edge_n over c5_mosaic
+nnnnnnnnnnnnnnnn
+oooooooooooooooo
+ooonoooonooonooo
+end
+
+# ------------------------------------------------ 8-10 o vazio (céu estrelado abaixo da Catedral; 2 quadros) e a borda do piso
+frame c5_void0
+nnnnnnnnnnnnnnnn
+nnnnonnnnnnnnnnn
+nnnnnnnnnnnfnnnn
+nnonnnnnnnnnnnnn
+nnnnnnnnnonnnnnn
+nunnnnnnnnnnnnnn
+nnnnnnnonnnnnnrn
+nnnnnnnnnnnnnnnn
+nnnnnnnnnnnnnnnn
+nnnnunnnnnnnonnn
+nnnnnnnnnnnnnnnn
+nnonnnnnnnnnnnnn
+nnnnnnnnnfnnnnnn
+nnnnnnnnnnnnnnon
+nnnnnnonnnnnnnnn
+nnnnnnnnnnnnnnnn
+end
+
+frame c5_void1
+nnnnnnnnnnnnnnnn
+nnnnnnnnnnnnnnnn
+nnnnnnnnnnnunnnn
+nnonnnnnnnnnnnnn
+nnnnnnnnnnnnnnnn
+nfnnnnnnnonnnnnn
+nnnnnnnonnnnnnnn
+nnnnnnnnnnnnnnrn
+nnnnnnnnnnnnnnnn
+nnnnfnnnnnnnnnnn
+nnnnnnnnnnnnonnn
+nnnnnnnnnnnnnnnn
+nnonnnnnnunnnnnn
+nnnnnnnnnnnnnnnn
+nnnnnnonnnnnnnon
+nnnnnnnnnnnnnnnn
+end
+
+frame c5_void_lip
+cccccccccccccccc
+bbbbbbbbbbbbbbbb
+abababaabababaab
+aKaaKaKaaKaaKaKa
+KoKKoKKooKoKKoKK
+oooooooooooooooo
+ooonooooonoooooo
+nonnnonnnnnonnnn
+nnnnnnnnnnnnnnnn
+nnnnnnnnnnnnfnnn
+nnnnnnnnnnnnnnnn
+nnnonnnnnnnnnnnn
+nnnnnnnnnnnnnnnn
+nnnnnnnnunnnnnnn
+nnnnnnnnnnnnnnnn
+nnnnnnnnnnnnnnnn
+end
+
+# ------------------------------------------------ 11-13 fragmento flutuante (detalhe), degraus e pilar (detalhe)
+frame c5_frag_plat
+................
+.KKKKKKKKKKKKKK.
+KfeeeeeeeeeeeeeK
+KeddddddddddddcK
+KedddcdddddddccK
+KeddddddddcdddcK
+KedddddddddddccK
+KeddcdddddddddcK
+KedddddddddcdccK
+KcdddddddddddccK
+KbcccccccccccbbK
+.KbbbbbbbbbbbbK.
+..KaaaaaaaaaaK..
+...KKaaaaaaKK...
+.....KKaaKK.....
+.......KK.......
+end
+
+frame c5_stairs
+ffffffffffffffff
+eeeeeeeeeeeeeeee
+dddddddddddddddd
+bbbbbbbbbbbbbbbb
+ffffffffffffffff
+eeeeeeeeeeeeeeee
+dddddcdddddddddd
+bbbbbbbbbbbbbbbb
+ffffffffffffffff
+eeeeeeeeeeeeeeee
+dddddddddddcdddd
+bbbbbbbbbbbbbbbb
+ffffffffffffffff
+eeeeeeeeeeeeeeee
+dddddddddddddddd
+aaaaaaaaaaaaaaaa
+end
+
+frame c5_pillar
+..KKKKKKKKKKKK..
+.KffeeeeeeeeddK.
+.KbbbbbbbbbbbbK.
+..KqqqqRRqqqqK..
+...KeeddddddK...
+...KeddddddcK...
+...KeddddddcK...
+...KedddddccK...
+...KeddddddcK...
+...KeddddddcK...
+...KedddddccK...
+...KeddddddcK...
+..KqqqqqqqqqqK..
+.KeeeeeeeeeeddK.
+.KbbbbbbbbbbbbK.
+..KKKKKKKKKKKK..
+end
+
+# ------------------------------------------------ 14-15 selo vermelho (barreira de energia; 2 quadros)
+frame c5_seal0
+KKKKKKKKKKKKKKKK
+mrRxRrmmmrRxRrmm
+mrRxRrmmmrRxRrmm
+mmrxrmmRmmrxrmmR
+mmRxRmmxmmRxRmmx
+mrRxRrmRmrRxRrmR
+mrxyxrmmmrxyxrmm
+mRyfyRmmmRyfyRmm
+mrxyxrmmmrxyxrmm
+mrRxRrmRmrRxRrmR
+mmRxRmmxmmRxRmmx
+mmrxrmmRmmrxrmmR
+mrRxRrmmmrRxRrmm
+mrRxRrmmmrRxRrmm
+rrRRRrrrrrRRRrrr
+KKKKKKKKKKKKKKKK
+end
+
+frame c5_seal1
+KKKKKKKKKKKKKKKK
+mmrRxRrmmmrRxRrm
+mmRxRmmRmmRxRmmR
+mrRxRrmxmrRxRrmx
+mrxyxrmRmrxyxrmR
+mRyfyRmmmRyfyRmm
+mrxyxrmmmrxyxrmm
+mrRxRrmRmrRxRrmR
+mmRxRmmxmmRxRmmx
+mmrxrmmRmmrxrmmR
+mrRxRrmmmrRxRrmm
+mmrRxRrmmmrRxRrm
+mmrRxRrmmmrRxRrm
+mmrxrmmRmmrxrmmR
+rrRRRrrrrrRRRrrr
+KKKKKKKKKKKKKKKK
+end
+
+# ------------------------------------------------ 16-19 piso de runas, ponte de raiz (detalhe), rocha de cristal, caminho espiritual (detalhe)
+frame c5_rune_floor
+eeeeeeedeeeeeeeb
+edddddRRRRddddcb
+eddddRdddcRdddcb
+edddRddddddRdddb
+eddRddxRRddcRddb
+eddRdxddddxdRdcb
+edRddRdyydRddRdb
+edRddRdyydRddRdb
+edRddRdddcRddRdb
+eddRdxddddxdRdcb
+eddRddxRRddcRddb
+edddRddddddRdddb
+eddddRdddcRdddcb
+edddddRRRRddddcb
+cccccccbcccccccb
+bbbbbbbbbbbbbbbb
+end
+
+frame c5_root_bridge
+................
+.KKKKKKKKKKKKKK.
+KLzzLLLzzLLzLLLK
+KlLLllLLlLLlLLlK
+KkllkkllklkllkkK
+KHjLLzzLLLjzzLHK
+KlLlllLLlLlllLlK
+KkkllkklkkllklkK
+KLzLLLzzLLLzLLLK
+KlLllLLlllLlLLlK
+KkllkklkllkkllkK
+.KhKkKKkKKhKKkK.
+..KH.Kk..Kh..K..
+...K..K...K.....
+................
+................
+end
+
+frame c5_crystal_rock
+KKKKKKKKKKKKKKKK
+KfeeKdddeeKfedcK
+KedKdcccdKedcccK
+KdKccbbbcKdcbbcK
+KKcbbRbbcbKcbbbK
+KcbbRxRbbbcKbbaK
+KcbRxyxRbbcbKbaK
+KbbbRxRbbcbbbKaK
+KbbbbRbbcbbbbbKK
+KKbbbbbcbbbRbbbK
+KeKbbbcbbbRxRbbK
+KdeKbcbbbbbRbbaK
+KcddKbbbbbbbbaaK
+KbccbKaaabbbaaaK
+KaaaaaKaaaaaaaaK
+KKKKKKKKKKKKKKKK
+end
+
+frame c5_spirit_path
+................
+.wwwwwwwwwwwwww.
+wwVVVVVVVVVVVVww
+wVVwwVVVVVwwVVVw
+wVwffwVVVwffwVVw
+wVVwwVVVVVwwVVVw
+wVVVVVVwVVVVVVVw
+wVVVVVwfwVVVVwVw
+wVVwVVVwVVVVwfww
+wVwfwVVVVVVVVwVw
+wVVwVVVVVwwVVVVw
+wVVVVVVVwffwVVVw
+wwVVVVVVVwwVVVww
+.wwwwwwwwwwwwww.
+..v.v..v..v.v...
+................
+end
+
+# ------------------------------------------------ 20-22 jardim invertido: grama pálida (2 variações) e flores pendentes (detalhe, sólido)
+frame c5_garden0
+jjjJjjjjjjjjJjjj
+jjjjjjHjjjjjjjjj
+jHjjjjjjjjJjjjHj
+jjjjJjjjjjjjjjjj
+jjjjjjjjHjjjjjjj
+jjJjjjjjjjjjjJjj
+jjjjjjjJjjjHjjjj
+jHjjjjjjjjjjjjjj
+jjjjjjHjjjjJjjjj
+jjjJjjjjjjjjjjHj
+jjjjjjjjjHjjjjjj
+jjHjjjJjjjjjjJjj
+jjjjjjjjjjjjjjjj
+jJjjjjjjjHjjjjjj
+jjjjjHjjjjjjJjjj
+jjjjjjjjjjjjjjjj
+end
+
+frame c5_garden1 over c5_garden0
+................
+.....K..........
+....KuK.........
+....KtK.........
+.....H..........
+.....H......K...
+...........KfK..
+...........KeK..
+............H...
+..K.........H...
+.KyK............
+.KXK............
+..H.............
+..H......K......
+........KuK.....
+........KtK.....
+end
+
+frame c5_hanging
+.KhK..KhK..KhK..
+.KHhKKHhKKHhK...
+..KHhhHhhHhK....
+..KhHKhHKhHK....
+.KuKHKKKhKKHK...
+.KtKKuK.KHKuK...
+.KsKKtK.KKKtK...
+..K.KsK.KuKsK...
+.....K..KtK.K...
+.KhK....KsK.....
+.KHhK....K..KhK.
+..KhK.......KHK.
+.KuKH......KuKH.
+.KtK.......KtK..
+.KsK.......KsK..
+..K.........K...
+end
+
+# ------------------------------------------------ 23-24 chão do acampamento (terra batida; variação com tufo e pedrinhas)
+frame c5_camp0
+LLLLzLLLLLLLLzLL
+LLLLLLLlLLLLLLLL
+LzLLLLLLLLLLLLlL
+LLLLLLlLLLzLLLLL
+LLLlLLLLLLLLLLLL
+LLLLLLLLLLLLlLLL
+LLzLLLLLlLLLLLLL
+LLLLLLLLLLLLLLzL
+LLLLLlLLLLLLLLLL
+LLlLLLLLLzLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLzLLLLLLLlLLL
+LLLLLLLLlLLLLLLL
+LlLLLLLLLLLLLLLL
+LLLLLLzLLLLLLLlL
+LLLLLLLLLLLLLLLL
+end
+
+frame c5_camp1 over c5_camp0
+................
+..........K.....
+.........KdK....
+.........KcK....
+..........K.....
+................
+....h...........
+...hjh..........
+....H...........
+................
+.............Kd.
+............Kcb.
+................
+.......K........
+......KdK.......
+.......K........
+end
+
+# ------------------------------------------------ 25-29 tendas: lona (esquerda, meio, direita), frente e entrada (detalhes)
+frame c5_tent_l
+...............K
+.............KKf
+...........KKfee
+.........KKfeeee
+.......KKfeeeess
+.....KKfeeeesspp
+...KKfeeeesspped
+.KKfeeeesspppedd
+KfeeeesspppedddK
+KeeesspppeddddcK
+KesspppedddddccK
+KspppeddddddcccK
+KppedddddddccbbK
+KeddddddcccbbbbK
+KcccccccbbbbbbbK
+KKKKKKKKKKKKKKKK
+end
+
+frame c5_tent_m
+KKKKKKKKKKKKKKKK
+ffffffffffffffff
+eeeeeeeeeeeeeeee
+ssssssssssssssss
+pppppppppppppppp
+eeeeeeeeeeeeeeee
+dddddddddddddddd
+ddddddddddddddcd
+dddddddddddddddd
+ssssssssssssssss
+pppppppppppppppp
+dddddddddddddddd
+dddcdddddddddddd
+cccccccccccccccc
+bbbbbbbbbbbbbbbb
+KKKKKKKKKKKKKKKK
+end
+
+frame c5_tent_r
+K...............
+fKK.............
+eefKK...........
+eeeefKK.........
+sseeeefKK.......
+ppsseeeefKK.....
+deppsseeeefKK...
+ddeppsseeeefKK..
+KdddeppsseeeefKK
+KcdddeppsseeeeeK
+KccdddeppsseeeeK
+KcccddddeppsseeK
+KbbcccdddddeppsK
+KbbbbcccdddddeeK
+KbbbbbbbccccccbK
+KKKKKKKKKKKKKKKK
+end
+
+frame c5_tent_front
+KKKKKKKKKKKKKKKK
+eeeeeeeeeeeeeeee
+ddddddddddddddcd
+dddddddddddddddd
+ssssssssssssssss
+pppppppppppppppp
+dddddddddddddddd
+ddcddddddddddddd
+dddddddddddddddd
+ddddddddddddcddd
+dddddddddddddddd
+cccccccccccccccc
+cccccccccccccccc
+bbbbbbbbbbbbbbbb
+KKKKKKKKKKKKKKKK
+................
+end
+
+frame c5_tent_door
+KKKKKKKKKKKKKKKK
+eeeeeKKKKKKeeeee
+dddddKoooooKdddd
+ddddKoonnnooKddd
+ssssKonnnnnoKsss
+ppppKonnnnnoKppp
+dddKeonnnnnoeKdd
+ddKedonnnnnodeKd
+dKeddonnnnnoddeK
+KeddcKonnnoKcddK
+KdddcKonnnoKcddK
+KcccbKonnnoKbccK
+KcccbKonnnoKbccK
+KbbbbKKKKKKKbbbK
+KKKKKKKKKKKKKKKK
+................
+end
+
+# ------------------------------------------------ 30-33 paliçada (detalhe), tapete vermelho, luz de vitral, portão da catedral
+frame c5_fence
+................
+.K...K....K...K.
+KzK.KzK..KzK.KzK
+KLK.KLK..KLK.KLK
+KLKKKLKKKKLKKKLK
+KLeeeLeeeeLeeeLK
+KLdddLddddLdddLK
+KLRRRLRRRRLRRRLK
+KLKKKLKKKKLKKKLK
+KlK.KlK..KlK.KlK
+KlK.KlK..KlK.KlK
+KlK.KlK..KlK.KlK
+KkK.KkK..KkK.KkK
+.K...K....K...K.
+................
+................
+end
+
+frame c5_carpet
+GgRRRRRRRRRRRRgG
+gRrrrrrrrrrrrrRg
+RrRRRRRRRRRRRRrR
+RrRxRRRRRRRRxRrR
+RrRRRRRRRRRRRRrR
+RrRRRRxRRxRRRRrR
+RrRRRRRRRRRRRRrR
+RrRRRRRxxRRRRRrR
+RrRRRRRxxRRRRRrR
+RrRRRRRRRRRRRRrR
+RrRRRRxRRxRRRRrR
+RrRRRRRRRRRRRRrR
+RrRxRRRRRRRRxRrR
+RrRRRRRRRRRRRRrR
+gRrrrrrrrrrrrrRg
+GgRRRRRRRRRRRRgG
+end
+
+frame c5_glass_light
+eeeeeeedeeeeeeeb
+edddduutttddddcb
+eddduuuttttdddcb
+edduuutttXXXdddb
+edduuttXXXyyXdcb
+eddututXXyyyXXdb
+ccututXXyyyXXXbb
+bbuttXXXyXXXXbbb
+eeettXXXXXXttdee
+dddbeXXXXttubddd
+dcdbetXXttuubddd
+dddbettttuubedcd
+ddcbeduuuuucbddd
+dddbedduuddbeddd
+cccbbccccccbbccc
+bbbbbbbbbbbbbbbb
+end
+
+frame c5_gate
+KKKKKKKKKKKKKKKK
+KeeeeeeeeeeeeedK
+KdKKKKKKKKKKKKcK
+KdKpqpqpqpqpqKcK
+KdKqpqpKKqpqpKcK
+KdKpqpKyyKpqpKcK
+KdKqpKyRRyKpqKcK
+KdKpKyRxxRyKpKcK
+KdKqpKKKKKKpqKcK
+KdKpqpqpqpqpqKcK
+KdKqpqpqpqpqpKcK
+KdKpqpqpqpqpqKcK
+KdKqpqpqpqpqpKcK
+KdKKKKKKKKKKKKcK
+KcccccccccccccbK
+KKKKKKKKKKKKKKKK
+end
+
+# ------------------------------------------------ 34-35 rocha de marfim da montanha (topo e face)
+frame c5_rock_top
+ccccccccbccccccc
+cbbbbcccbbbcccbc
+cbbbbbcbbbbbcbbc
+bbbabbbbbbabbbbb
+cbbbbbbcbbbbbbbc
+ccbbbcccccbbbccc
+cbbbbbcbbbbbcbbc
+bbabbbbbbabbbbbb
+cbbbbbbcbbbbbbac
+ccccbcccccccbccc
+cbbbbbbbcbbbbbbc
+bbbbabbbbbbbabbb
+cbbbbbbcbbbbbbbc
+ccbbbcccccbbbccc
+cbbbbbcbbbbbcbbc
+bbbbbbbbbbbbbbbb
+end
+
+frame c5_rock_front
+eeedddeeeedddeee
+ddddcddddddcdddd
+dddcccddddcccddd
+cccbbbccccbbbccc
+cbbbbbbccbbbbbbc
+bbbbabbbbbbbabbb
+bbbaabbbbbbaabbb
+abbbbbbaabbbbbba
+ccbbbbbccbbbbbcc
+bbbbbbbbbbbbbbbb
+bbbabbbbbbbbabbb
+abbbbbbaabbbbbbb
+aabbbbaaaabbbbaa
+aaaaaaaaaaaaaaaa
+KaaKaaaKaaKaaaKa
+KKKKKKKKKKKKKKKK
+end
+
+sheet tiles_catedral.png 16 16 16
+c5_floor0
+c5_floor1
+c5_floor_edge_n
+c5_wall_front
+c5_wall_top
+c5_wall_glass
+c5_mosaic
+c5_mosaic_edge_n
+c5_void0
+c5_void1
+c5_void_lip
+c5_frag_plat
+c5_stairs
+c5_pillar
+c5_seal0
+c5_seal1
+c5_rune_floor
+c5_root_bridge
+c5_crystal_rock
+c5_spirit_path
+c5_garden0
+c5_garden1
+c5_hanging
+c5_camp0
+c5_camp1
+c5_tent_l
+c5_tent_m
+c5_tent_r
+c5_tent_front
+c5_tent_door
+c5_fence
+c5_carpet
+c5_glass_light
+c5_gate
+c5_rock_top
+c5_rock_front
+end

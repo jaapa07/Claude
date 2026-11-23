@@ -549,6 +549,8 @@ func use_eco(slot: int) -> void:
 		world.eco_olhar(global_position)
 	elif id == "passo_umbral":
 		FortEnt.eco_passo_umbral(world)    # Região 4
+	elif id == "harmonia":
+		Catedral.eco_harmonia(world)       # Região 5 (pós-jogo)
 
 # =============================================================== CAPTURA
 func _capture_pressed() -> void:

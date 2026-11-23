@@ -147,6 +147,7 @@ func _ready() -> void:
 	Game.party_changed.connect(_on_party_changed)
 	Weather.attach(self)
 	Fortaleza.attach(self)   # Região 4: chefes, feixes de luz, retorno ao Refúgio
+	Catedral.attach(self)    # Região 5: chefes, resgate de Ione, epílogo
 
 func _make_tileset() -> TileSet:
 	if _tileset:
@@ -202,11 +203,13 @@ func _make_tileset() -> TileSet:
 				src4.set_tile_animation_frame_duration(c4, 1, 0.9)
 		ts.add_source(src4, 3)
 	Fortaleza.add_source(ts)   # Região 4 (fonte 4 do TileSet)
+	Catedral.add_source(ts)    # Região 5 (fonte 5 do TileSet)
 	_tileset = ts
 	return ts
 
 func _tc(name: String) -> Vector2i:
 	if Fortaleza.is_name(name): return Fortaleza.coords(name)
+	if Catedral.is_name(name): return Catedral.coords(name)
 	var i := TILE_NAMES.find(name)
 	if i < 0:
 		i = MINAS_NAMES.find(name)
@@ -219,6 +222,7 @@ func _tc(name: String) -> Vector2i:
 ## Fonte do atlas: 0 = floresta (tiles2.png), 1 = minas (tiles_minas.png)
 func _src(name: String) -> int:
 	if Fortaleza.is_name(name): return Fortaleza.SOURCE_ID
+	if Catedral.is_name(name): return Catedral.SOURCE_ID
 	if INT_NAMES.has(name):
 		return 2
 	if PANTANO_NAMES.has(name):
@@ -395,6 +399,7 @@ func _cell_tiles(x: int, y: int) -> Array:
 			out[1] = "pilar_submerso"
 		";": out[0] = "degraus"
 	if Fortaleza.CHARS.contains(c): out = Fortaleza.cell_tiles(self, x, y, c, hv)   # Região 4
+	if Catedral.CHARS.contains(c): out = Catedral.cell_tiles(self, x, y, c, hv)     # Região 5
 	return out
 
 ## Comprimento da sequência do mesmo caractere passando por (x, y) na direção d (orienta as tábuas da passarela).
@@ -424,7 +429,7 @@ func _paint_cell(i: int, j: int) -> void:
 		cover.set_cell(Vector2i(i, j - 1), _src(t[3]), _tc(t[3]))
 
 func is_solid_char(c: String) -> bool:
-	return SOLID.contains(c) or Fortaleza.SOLID.contains(c)
+	return SOLID.contains(c) or Fortaleza.SOLID.contains(c) or Catedral.SOLID.contains(c)
 
 # =============================================================== CARREGAR MAPA
 ## spawn: nome do ponto de entrada; pos: posição em pixels (sobrepõe o spawn, usada por continue/checkpoint).
@@ -619,7 +624,7 @@ func tile_solid_at(p: Vector2) -> bool:
 ## Projéteis do pântano (sementes, orbes) voam sobre água, lodo e juncos; param em paredes.
 func blocks_projectile(p: Vector2) -> bool:
 	var c := tile_char_at(p)
-	return is_solid_char(c) and not c in ["W", "i", "U", "n"]
+	return is_solid_char(c) and not c in ["W", "i", "U", "n"] and not Catedral.LIGHT_PASS.contains(c)
 
 # =============================================================== ENTIDADES
 func _spawn_all(player_pos: Vector2) -> void:
@@ -693,6 +698,10 @@ func _spawn_def(i: int, player_pos: Vector2 = Vector2(-9999, -9999)) -> void:
 				var fe := FortEnt.new()
 				fe.init(self, d)
 				node = fe
+			elif Catedral.ENT_KINDS.has(t):   # mecanismos da Região 5 (scripts/cat_ent.gd)
+				var ce := CatEnt.new()
+				ce.init(self, d)
+				node = ce
 	if node != null:
 		ysort.add_child(node)
 		ent_nodes[i] = node
@@ -1194,6 +1203,7 @@ func eco_raiz_viva(center: Vector2) -> void:
 		if e.hittable() and e.global_position.distance_to(center) <= float(sk["raio"]) + e.radius and e.kind != "dummy":
 			e.root(float(sk["duracao"]))
 			e.take_damage(float(sk["dano"]) + Game.hero_atk() * 0.3, center, {"src": "heroi", "knock": 0.0, "aff": "flora"})
+	Catedral.on_eco(self, "raiz_viva", center, float(sk["raio"]))   # Região 5: suportes de raiz e elos
 
 func light_pulse(center: Vector2, rad: float) -> void:
 	light_boost_t = 4.0
@@ -1726,6 +1736,7 @@ func eco_ruptura(center: Vector2, dir: Vector2) -> void:
 		if e.kind == "crack" and e.global_position.distance_to(center) <= rad + 20.0:
 			e.break_rock()
 	fire_area(center - dir * 30.0, dir, rad + 30.0, 70.0, "ruptura")
+	Catedral.on_eco(self, "ruptura_ignea", center, rad + 20.0)   # Região 5: cristais rachados e elos
 
 # =============================================================== CARRINHOS SOBRE TRILHOS
 func is_rail(c: Vector2i) -> bool:
@@ -1962,6 +1973,7 @@ func eco_olhar(center: Vector2) -> void:
 			_open_spirit_bridge(e)
 		elif e.kind == "spirit_mark":
 			e.reveal_mark()
+	Catedral.on_eco(self, "olhar_velado", center, rad)   # Região 5: marcas, anéis e elos ocultos
 
 ## Espectros dentro do raio ficam visíveis (e vulneráveis) por `dur` segundos.
 func reveal_spirits(center: Vector2, rad: float, dur: float) -> int:

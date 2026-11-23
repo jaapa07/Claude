@@ -22,14 +22,18 @@
    "efeito": "Inimigos enxergam 30% menos: fica mais fácil se esgueirar."},
   "ventania": {"nome": "Ventania", "icone": 0, "folha": "clima_fortaleza", "tom": "#e4e8f8",
    "dano": {"vento": 1.15, "brasa": 0.85}, "percepcao": 0.85,
-   "efeito": "Vento causa +15% de dano e brasa -15%; o uivo do vento deixa os inimigos 15% menos atentos."}
+   "efeito": "Vento causa +15% de dano e brasa -15%; o uivo do vento deixa os inimigos 15% menos atentos."},
+  "aurora": {"nome": "Aurora", "icone": 0, "folha": "clima_catedral", "tom": "#f2ecff",
+   "dano": {"luz": 1.15, "sombra": 1.15},
+   "efeito": "Fitas de luz vermelha e azul no céu invertido: luz e sombra causam +15% de dano. Velúnios saem para dançar."}
  },
  "zonas": {
   "floresta": {"nome": "Floresta", "pesos": {"sol": 5, "chuva": 3, "neblina": 2}},
   "desfiladeiro": {"nome": "Desfiladeiro", "pesos": {"sol": 4, "frio": 3, "neve": 3}},
   "minas": {"nome": "Minas (externo)", "pesos": {"calor": 5, "sol": 3}},
   "pantano": {"nome": "Pântano", "pesos": {"chuva": 4, "neblina": 4, "sol": 2}},
-  "fortaleza": {"nome": "Fortaleza (montanhas)", "pesos": {"ventania": 4, "frio": 3, "sol": 3}}
+  "fortaleza": {"nome": "Fortaleza (montanhas)", "pesos": {"ventania": 4, "frio": 3, "sol": 3}},
+  "catedral": {"nome": "Catedral (céu invertido)", "pesos": {"aurora": 4, "frio": 3, "neve": 2, "sol": 1}}
  },
  "mapas": {
   "vila_lumen": "floresta",
@@ -46,7 +50,10 @@
   "refugio_muralha": "fortaleza",
   "jardins_suspensos": "fortaleza",
   "muralha_partida": "fortaleza",
-  "estrada_final": "fortaleza"
+  "estrada_final": "fortaleza",
+  "acampamento_aurora": "catedral",
+  "escadaria_fragmentos": "catedral",
+  "jardim_invertido": "catedral"
  },
- "afinidade_inimigos": {"cogumelo": "flora", "lesma": "brasa", "sentinela": "pedra", "automato": "pedra", "lanceiro": "sombra", "arqueiro": "vento", "armadura": "pedra", "sapo": "agua", "planta": "flora", "espectro": "sombra"}
+ "afinidade_inimigos": {"cogumelo": "flora", "lesma": "brasa", "sentinela": "pedra", "automato": "pedra", "lanceiro": "sombra", "arqueiro": "vento", "armadura": "pedra", "sapo": "agua", "planta": "flora", "espectro": "sombra", "escriba": "luz", "sentinela_prisma": "luz", "fragmento": "pedra"}
 }

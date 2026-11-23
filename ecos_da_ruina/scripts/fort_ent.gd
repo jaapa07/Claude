@@ -358,7 +358,7 @@ static func _layer(w: Node) -> Node2D:
 
 static func _ent_at(w: Node, c: Vector2i) -> FortEnt:
 	for e in w.get_tree().get_nodes_in_group("ents"):
-		if e is FortEnt and e.kind in ["espelho", "persiana", "receptor", "lente", "balestra", "helice", "manivela", "solar", "eclipse"] \
+		if e is FortEnt and e.kind in ["espelho", "persiana", "receptor", "lente", "balestra", "helice", "manivela", "solar", "eclipse", "prisma"] \
 				and not e.is_queued_for_deletion() and e.cell() == c:
 			return e
 	return null
@@ -420,7 +420,7 @@ static func _trace(w: Node, layer: Node2D, start: Vector2i, dir: Vector2i, hit: 
 		if c.x < 0 or c.y < 0 or c.x >= w.W or c.y >= w.H:
 			return
 		var ch: String = w.cur_tiles[c.y][c.x]
-		if Fortaleza.BLOCKS_LIGHT.contains(ch) or (not Fortaleza.CHARS.contains(ch) and w.is_solid_char(ch)):
+		if Fortaleza.BLOCKS_LIGHT.contains(ch) or (not Fortaleza.CHARS.contains(ch) and not Catedral.LIGHT_PASS.contains(ch) and w.is_solid_char(ch)):
 			_spark(layer, c - dir, dir)
 			return
 		var e := _ent_at(w, c)
@@ -429,6 +429,10 @@ static func _trace(w: Node, layer: Node2D, start: Vector2i, dir: Vector2i, hit: 
 				"espelho":
 					_spark(layer, c, Vector2i.ZERO)
 					dir = Vector2i(-dir.y, -dir.x) if e.ori == "a" else Vector2i(dir.y, dir.x)
+					continue
+				"prisma":   # Região 5: o prisma da Catedral dobra o feixe para a direção da seta
+					_spark(layer, c, Vector2i.ZERO)
+					dir = e.out_dir
 					continue
 				"persiana":
 					if not e.open_state:

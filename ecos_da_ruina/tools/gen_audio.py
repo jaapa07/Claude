@@ -962,11 +962,97 @@ def t_chefe_pantano():
     return s.render("music_chefe_pantano", room=2.0, room_mix=0.4, echo_beats=0.75, echo_fb=0.35, rms=0.13)
 
 
+def t_catedral():
+    """Catedral do Vazio (Regiao 5): orgao etereo, coro distante e sinos de vidro; La menor com quarta aumentada (marfim, azul profundo, vermelho)."""
+    s = Score(70, 64)
+    prog = [(["A2", "E3", "C4"], 2), (["F2", "C3", "A3"], 2), (["D2", "A2", "F3"], 2), (["E2", "B2", "G#3"], 2),
+            (["A2", "E3", "C4"], 2), (["D#2", "A2", "F#3"], 2), (["F2", "C3", "A3"], 2), (["E2", "B2", "G#3"], 2)]
+    s.seq(i_pad, [(c, n * 4) for c, n in prog], g=0.24, rev=0.7, legato=1.0, cutoff=1100, att=1.6)
+    s.seq(i_choir, [([c[0][:-1] + "3", c[1][:-1] + "3", c[2][:-1] + "4"], n * 4) for c, n in prog], g=0.16, rev=0.8, legato=1.0, att=1.2)
+    s.seq(i_bass, [(c[0], n * 4) for c, n in prog], g=0.26, rev=0.3, legato=0.95, bite=0.05)
+    s.seq(i_glass, arp([([c[0][:-1] + "5", c[1][:-1] + "5", c[2][:-1] + "5"], n) for c, n in prog], [0, 2, 1, None, 2, None, 0, None], 0.5),
+          g=0.1, rev=0.7, echo=0.45)
+    mel = [("-", 8), ("E5", 3), ("D5", 1), ("C5", 2), ("B4", 2),
+           ("A4", 4), ("C5", 2), ("E5", 2),
+           ("F5", 3), ("E5", 1), ("D5", 2), ("D#5", 2), ("E5", 8),
+           ("A5", 3), ("G#5", 1), ("E5", 4), ("C5", 2), ("D5", 2), ("B4", 4)]
+    s.seq(i_flute, mel, g=0.22, rev=0.75, echo=0.35, vib=0.01)
+    s.drums("x...............", d_timpani, 16, every=2, g=0.25, rev=0.7, f=55.0, dec=2.2)
+    return s.render("music_catedral", room=3.2, room_mix=0.55, echo_beats=1.0, echo_fb=0.45, echo_taps=5)
+
+
+def t_aurora():
+    """Acampamento da Aurora: fogueira, harpa e flauta calmas sob o ceu invertido; Re maior com setima."""
+    s = Score(80, 48)
+    L = s.N
+    s.put(d_crackle(70, L, vol=0.12), 0, 1.0, rev=0.1)
+    prog = [(["D3", "F#3", "A3", "C#4"], 2), (["B2", "D3", "F#3", "A3"], 2), (["G2", "B2", "D3", "F#3"], 2), (["A2", "C#3", "E3", "G3"], 2),
+            (["D3", "F#3", "A3", "C#4"], 2), (["G2", "B2", "D3", "E3"], 2)]
+    s.seq(i_pad, [(c, n * 4) for c, n in prog], g=0.18, rev=0.6, legato=1.0, cutoff=1300, att=1.0)
+    s.seq(i_pluck, arp(prog, [0, 1, 2, 3, 2, 1], 0.5), g=0.16, rev=0.5, echo=0.25, legato=1.2)
+    s.seq(i_bass, [(c[0][:-1] + "2", n * 4) for c, n in prog], g=0.2, rev=0.2, legato=0.9, bite=0.05)
+    mel = [("-", 4), ("F#5", 2), ("A5", 2), ("E5", 3), ("D5", 1),
+           ("B4", 2), ("D5", 2), ("C#5", 4),
+           ("D5", 2), ("F#5", 1), ("G5", 1), ("A5", 3), ("F#5", 1),
+           ("E5", 2), ("C#5", 2), ("D5", 4), ("B4", 4), ("A4", 4)]
+    s.seq(i_flute, mel, g=0.24, rev=0.55, echo=0.2, vib=0.008)
+    return s.render("music_aurora", room=2.0, room_mix=0.4, echo_beats=0.75, echo_fb=0.3)
+
+
+def t_chefe_catedral():
+    """Arauto Partido (minichefe): leitura apressada de um livro rachado; Mi frigio, cordas em ostinato e caixa."""
+    s = Score(132, 64)
+    prog = [(["E2", "G2", "B2"], 2), (["F2", "A2", "C3"], 2), (["E2", "G2", "B2"], 2), (["D2", "F2", "A2"], 2),
+            (["C2", "E2", "G2"], 2), (["F2", "A2", "C3"], 2), (["B1", "D#2", "F#2"], 2), (["B1", "D#2", "F#2"], 2)]
+    s.seq(i_bass, roots(prog, rhythm=[("R", 0.5), ("R", 0.5), ("O", 0.5), ("R", 0.5), ("5", 0.5), ("R", 0.5), ("O", 0.5), ("5", 0.5)]), g=0.48, rev=0.05, legato=0.8, bite=0.5)
+    s.drums("x.......x.x.....", d_kick, 16, g=0.8, rev=0.05, low=46)
+    s.drums("....x.......x...", d_snare, 16, g=0.4, rev=0.2)
+    s.drums("x.x.x.x.x.x.x.x.", d_hat, 16, g=0.16, rev=0.05)
+    s.seq(i_strings, arp([([c[0][:-1] + "4", c[1][:-1] + "4", c[2][:-1] + "4"], n) for c, n in prog], [0, 1, 2, 1], 0.25), g=0.14, rev=0.3, legato=0.5, bright=3000, att=0.01)
+    mel = [("E4", 1), ("F4", 1), ("G4", 2), ("B4", 2), ("A4", 2),
+           ("F4", 1), ("A4", 1), ("C5", 2), ("B4", 2), ("A4", 2),
+           ("G4", 1), ("B4", 1), ("E5", 4), ("D5", 2),
+           ("C5", 2), ("A4", 2), ("F4", 2), ("A4", 2),
+           ("B4", 2), ("D#5", 2), ("F#5", 4), ("E5", 4), ("B4", 4)]
+    s.seq(i_brass, mel, g=0.38, rev=0.35, echo=0.1, cutoff=1700)
+    return s.render("music_chefe_catedral", room=1.8, room_mix=0.35, echo_beats=0.75, echo_fb=0.3, rms=0.14)
+
+
+def t_rei():
+    """Rei dos Ecos: o tema de cada guardiao reaparece em cima de um orgao em Re menor harmonico; coro, timpanos e sinos."""
+    s = Score(116, 96)
+    prog = [(["D2", "F2", "A2"], 2), (["Bb1", "D2", "F2"], 2), (["G1", "Bb1", "D2"], 2), (["A1", "C#2", "E2"], 2),
+            (["D2", "F2", "A2"], 2), (["E2", "G2", "Bb2"], 2), (["C#2", "E2", "G2"], 2), (["A1", "C#2", "E2"], 2),
+            (["F2", "A2", "C3"], 2), (["G2", "Bb2", "D3"], 2), (["E2", "G#2", "B2"], 2), (["A1", "C#2", "E2"], 2)]
+    s.seq(i_bass, roots(prog, rhythm=[("R", 0.5), ("R", 0.5), ("O", 0.5), ("R", 0.5), ("5", 0.5), ("R", 0.5), ("O", 0.5), ("R", 0.5)]), g=0.5, rev=0.05, legato=0.8, bite=0.55)
+    s.seq(i_choir, [([c[0][:-1] + "3", c[1][:-1] + "3", c[2][:-1] + "4"], n * 4) for c, n in prog], g=0.3, rev=0.7, legato=1.0, att=0.3)
+    s.seq(i_pad, [([c[0][:-1] + "3", c[1][:-1] + "3", c[2][:-1] + "3"], n * 4) for c, n in prog], g=0.16, rev=0.6, legato=1.0, cutoff=1600, att=0.2)
+    s.drums("x.....x...x.....", d_kick, 24, g=0.85, rev=0.05, low=44)
+    s.drums("....x.......x..x", d_snare, 24, g=0.36, rev=0.2)
+    s.drums("x.x.x.x.x.x.x.x.", d_hat, 24, g=0.15, rev=0.05)
+    s.drums("x", d_timpani, 24, every=2, g=0.8, rev=0.5, f=73.4)
+    mel = [("D4", 1), ("F4", 1), ("A4", 2), ("C#5", 2), ("D5", 2),
+           ("Bb4", 1), ("A4", 1), ("G4", 2), ("F4", 2), ("E4", 2),
+           ("D4", 1), ("E4", 1), ("F4", 2), ("A4", 2), ("D5", 2),
+           ("C#5", 2), ("E5", 2), ("A4", 4),
+           ("D5", 1), ("F5", 1), ("A5", 2), ("G5", 1), ("F5", 1), ("E5", 2),
+           ("Bb4", 1), ("D5", 1), ("G5", 2), ("F5", 2), ("E5", 2),
+           ("C#5", 2), ("E5", 2), ("G5", 2), ("Bb5", 2),
+           ("A5", 4), ("A4", 4),
+           ("F5", 2), ("A5", 2), ("C6", 4), ("Bb5", 2), ("D6", 2), ("G5", 4),
+           ("G#5", 2), ("B5", 2), ("E5", 4), ("A5", 8)]
+    s.seq(i_brass, mel, g=0.4, rev=0.4, echo=0.12, cutoff=1900)
+    s.seq(i_bell, arp([([c[0][:-1] + "5", c[1][:-1] + "5", c[2][:-1] + "5"], n) for c, n in prog], [0, None, 2, None, 1, None, None, None], 0.5),
+          g=0.1, rev=0.6, echo=0.4, decay=1.3)
+    return s.render("music_rei", room=2.4, room_mix=0.4, echo_beats=0.75, echo_fb=0.32, rms=0.14)
+
+
 TRILHAS = {"minas": t_minas, "casa": t_casa, "masmorra": t_masmorra, "desfiladeiro": t_desfiladeiro, "suspense": t_suspense,
            "combate": t_combate, "chefe_minas": t_chefe_minas, "memoria": t_memoria, "vila_festa": t_vila_festa,
            "vitoria": j_vitoria, "descoberta": j_descoberta,
            "fortaleza": t_fortaleza, "chefe_fortaleza": t_chefe_fortaleza,
-           "pantano": t_pantano, "chefe_pantano": t_chefe_pantano}
+           "pantano": t_pantano, "chefe_pantano": t_chefe_pantano,
+           "catedral": t_catedral, "aurora": t_aurora, "chefe_catedral": t_chefe_catedral, "rei": t_rei}
 
 
 def trilhas(only=None):

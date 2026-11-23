@@ -46,6 +46,9 @@ static func attach(w: Node) -> void:
 	Game.flag_changed.connect(func(_n, _v): FortEnt.request(w))
 
 static func new_enemy(kind: String) -> Enemy:
+	var c5 := Catedral.new_enemy(kind)   # Região 5
+	if c5 != null:
+		return c5
 	if kind in ENEMY_KINDS:
 		return load("res://scripts/enemy_fortaleza.gd").new()
 	return Enemy.new()

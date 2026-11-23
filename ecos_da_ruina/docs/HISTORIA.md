@@ -30,7 +30,16 @@ O rastro de Ione é contado por três meios:
 | Contratos | Vesna, a Caçadora | Os Domadores vendem feras vinculadas à Ordem: "o Rei precisa de vozes". | Carta do Arquivista |
 | 3 Pântano | Bruxa Afogada | **(a fazer pela Região 3)** A Bruxa guardava os reflexos/lembranças; Ione tentou salvá-la. | 5 |
 | 4 Fortaleza | Cavaleiro Sem Rosto | Era Aldren, capitão da Catedral; deixou Ione passar. O Rei é Ivar, o Arquivista. | 6 (última) |
-| 5 Catedral | Rei dos Ecos | **(futuro)** Ione está presa dentro do Eco; o herói vence devolvendo ao Rei uma memória que é dele (o nome "Ivar"), e não só pela força. Epílogo nas cinco comunidades. | — |
+| 5 Catedral | Arauto Partido (minichefe) | O Arauto da Ordem do Vazio (manto branco, olho fechado) carregou vozes demais e se partiu; deixou Ione passar e lhe contou o nome do Rei. | 7 |
+| 5 Catedral | Rei dos Ecos | Ione está presa dentro do Eco (Câmara do Eco, quatro elos — um para cada Eco). Resgatada, conta que foi aprendiz de Ivar. O herói vence devolvendo ao Rei o nome "Ivar", junto de Ione e das criaturas da equipe; o Rei se desfaz em paz. | Artefato do Rei (`artefato_rei`) |
+
+## O final (Região 5 — docs/REGIAO5_CONTRATO.md)
+1. **Acampamento da Aurora:** do outro lado do selo externo (Passo Umbral). O **Arauto da Ordem do Vazio** proclama que o Rei "guarda tudo" e some na Catedral; o herói responde. O **Eco de Ione** — uma figura azul e translúcida — aparece um passo à frente (Acampamento, Nave, tesouro, preparação), com frases curtas.
+2. **Catedral:** o Arauto reaparece na Nave, o livro rachando; no andar das âncoras vira o **Arauto Partido**. Sua memória (página 7) conta que ele deixou Ione passar.
+3. **Câmara do Eco:** Ione está presa num cristal, presa por quatro elos (raiz, brasa, véu, sombra). Livre, ela fala com o aprendiz (calor humano, "chegou na hora, teimoso como sempre") e revela: Ivar foi o mestre dela.
+4. **O Rei dos Ecos:** três fases; a 6% ele hesita. O herói — que também acordou sem memória e a recuperou pelos vínculos — diz o nome **Ivar**, com Ione e as criaturas da equipe (a cena cita as espécies e os vínculos). O Rei lembra e se desfaz em paz. Memória de Ivar → **quinto artefato** (`artefato_rei`, flags `artefato_rei` e `lembranca_5`).
+5. **Revelação final:** com os cinco artefatos, o herói lembra de tudo: fazia parte da expedição; quando a fenda se abriu, Ione selou suas memórias para que a corrente da Ordem não as levasse; ele acordou perto de Lúmen só com a carta dela.
+6. **Epílogo:** as fissuras se fecham e o jogo visita as cinco comunidades (Vila Lúmen, Forja de Cobre, Porto das Lanternas, Refúgio da Muralha, Acampamento da Aurora) com moradores e decorações novas; Bruna, Ravi e Vesna fecham seus arcos com uma linha cada; créditos; **Harmonia dos Ecos** (desafios opcionais e notas do bestiário — nada antes depende dela).
 
 ## Tom
 Aventura acolhedora nas vilas, descoberta nas rotas, tensão nas masmorras. Antagonistas têm motivo

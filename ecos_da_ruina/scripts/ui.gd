@@ -653,7 +653,7 @@ func open_bestiary() -> void:
 			return "%s\nAfinidade: %s   Raridade: %s   Papel: %s\nHabitat: %s\n%s\n\nHabilidade: %s — %s\nPassiva: %s\nAção ambiental: %s\n\nVisto: sim   Capturado: %s\nEvolução: %s" % [
 				sp["nome"], sp["afinidade"], sp["raridade"], sp["papel"], sp["habitat"], sp["descricao"], skn["nome"], skn["descricao"], sp["passiva"], sp["acao_ambiental"],
 				"sim" if b.get("capturado", false) else "não",
-				("descoberta: %s (nv.%d)" % [Data.sp(evo_id)["nome"], sp["evolucao"]["nivel"]]) if evo_found else ("%s no nv.%d (não vista)" % ["???", sp["evolucao"]["nivel"]] if evo_id != "" else "—")] + "\n" + Weather.species_note(sp["afinidade"])))
+				("descoberta: %s (nv.%d)" % [Data.sp(evo_id)["nome"], sp["evolucao"]["nivel"]]) if evo_found else ("%s no nv.%d (não vista)" % ["???", sp["evolucao"]["nivel"]] if evo_id != "" else "—")] + "\n" + Weather.species_note(sp["afinidade"]) + Catedral.harmonia_note(idd)))
 	items.append(_it("Voltar", func(): s.close()))
 	s.setup("Bestiário  vistas %d • capturadas %d / %d" % [seen, cap, base_ids.size()], items, "")
 	s.list_w = 200.0
