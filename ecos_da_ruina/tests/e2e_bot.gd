@@ -3890,9 +3890,15 @@ func r3_pos_bruxa() -> void:
 	ok = ok and await exit_to("forja_cobre", 15 * 16.0 + 8.0, 8.0)
 	check("R3: Porto -> Passagem Sul -> Forja (mundo conectado)", ok and W.map_id == "forja_cobre")
 	var sem0 := Game.item_count("semente_vida")
+	await advance_dialogs()
+	await frames(30)
 	await use_ent("forja_inscricao", Vector2(0, 16), Vector2.UP)
 	await advance_dialogs()
-	check("R3: revisita: o Olhar Velado lê a inscrição da Forja (segredo das Minas)", Game.has_flag("inscricao_forja_lida") and Game.item_count("semente_vida") == sem0 + 1)
+	var dbg_ins := "pos=%s prompt=%s busy=%s dlg=%s" % [str(tile_of(P.global_position)), W.current_prompt, str(P.state), str(main.ui.hud.dlg_active)]
+	if not Game.has_flag("inscricao_forja_lida"):
+		await use_ent("forja_inscricao", Vector2(16, 0), Vector2.LEFT)
+		await advance_dialogs()
+	check("R3: revisita: o Olhar Velado lê a inscrição da Forja (segredo das Minas)", Game.has_flag("inscricao_forja_lida") and Game.item_count("semente_vida") == sem0 + 1, dbg_ins)
 
 # ---------------------------------------------------------------- 35. salvar e carregar
 func r3_snapshot() -> Dictionary:

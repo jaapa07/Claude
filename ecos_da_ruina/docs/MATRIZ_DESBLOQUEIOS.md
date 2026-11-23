@@ -49,15 +49,23 @@ Cada Rito pré-guardião usa só mecanismos locais; cada Rito avançado (opciona
 | Segredo de revisita | **Olhar Velado** | após a Bruxa (região 3) | — | inscrição oculta | 🔶 (marcado) |
 | **Rito da Forja avançado** (opcional) | Ruptura Ígnea | após o Ferreiro | — | recompensa secundária | 🔶 |
 
-## 3. Pântano dos Sussurros 📐
-| Obstáculo | Habilidade necessária | Quando | Alternativa | Recompensa |
-|---|---|---|---|---|
-| Bloqueio de pedra na passagem sul | Ruptura Ígnea | após o Ferreiro | — | Porto das Lanternas |
-| Níveis de água | comportas e rodas locais | chegada | Goturim gira rodas d'água | rotas do lago |
-| Reflexos falsos | observação (reflexo consistente) | chegada | Nimbelo (raro) revela mais rápido — nunca obrigatório | caminho correto |
-| Plataformas de lodo | estacas locais | chegada | Brejugo estabiliza | atalhos |
-| **Rito dos Reflexos** | observação da água e ilusões | chegada | dica opcional | técnica + vínculo |
-| Plataformas/inscrições espirituais | **Olhar Velado** | após a Bruxa | — | segredos das Minas e da Floresta (revisita) |
+## 3. Pântano dos Sussurros
+| Obstáculo | Habilidade necessária | Quando | Alternativa | Recompensa | Status |
+|---|---|---|---|---|---|
+| Bloqueio de pedra da Passagem Sul (Entrada das Minas, encosta sudeste) | **Ruptura Ígnea** | após o Ferreiro (visível desde o Capítulo 1) | — | Porto das Lanternas | ✅ |
+| Lodo instável da Passarela e da Câmara do Lodo | estacas locais | chegada | Brejugo firma o lodo marcado (o do templo tem as duas soluções) | caminho ao templo / atalho noroeste | ✅ |
+| Níveis de água (Lago, Sala das Marés, tanque do rito) | comportas locais | chegada | — | rotas do lago, ala norte do templo | ✅ |
+| Rodas d'água (Passarela e Lago) | Goturim (comum, habitat fixo) | chegada | — (opcional) | baús com Semente de Vida e materiais | ✅ |
+| Sala dos Espelhos | girar três espelhos | chegada | dica após várias tentativas | porta ao Templo B + diário | ✅ |
+| Reflexos falsos (Rito dos Reflexos, Bruxa fase 2) | observação (reflexo consistente) | chegada | Nimbelo (raro) faz as falsas tremularem e marca a Bruxa verdadeira — nunca obrigatório | caminho correto | ✅ |
+| Espectros refletidos | observação (vulneráveis ao atacar) | chegada | Nimbelo/Clarão revelam; Lente de Orvalho (rito) | — | ✅ |
+| **Rito dos Reflexos** | observação da água e ilusões | antes da Bruxa | dica opcional, pedra de reinício, saída sempre aberta | **Lente de Orvalho** + 1 vínculo (1ª vez) | ✅ |
+| Barqueiro Sem Sombra | lanternas da arena | antes da Bruxa | — | Pérolas, juncos | ✅ |
+| Canal Submerso (Templo B ↔ Porto) | alavanca no tesouro | durante a região | — | retorno rápido | ✅ |
+| Segredo atual: juncos sussurrantes (Passarela), reflexo que mostra uma lanterna (Lago) | observação | chegada | — | Diário da Faroleira, Manto de Juncos | ✅ |
+| Descoberta de criatura: anel de lanternas do Lago | acender as três | chegada | — | Nimbelo (raro) | ✅ |
+| Plataformas/inscrições espirituais | **Olhar Velado** | após a Bruxa | — | ponte à Região 4, rito avançado (Amuleto do Reflexo), inscrições da Forja, Fundição e Vila (revisita) | ✅ |
+| Mudança explorável pós-Bruxa | — | após a Bruxa | — | água clara, travessia, margem nova no Lago, ponte espiritual | ✅ |
 
 ## 4. Fortaleza do Eclipse
 | Obstáculo | Habilidade necessária | Quando | Alternativa | Recompensa | Status |
@@ -91,6 +99,6 @@ Cada Rito pré-guardião usa só mecanismos locais; cada Rito avançado (opciona
 
 ## Verificações automáticas (tests/e2e_bot.gd)
 - Ordem sem ciclos: cada Eco só aparece como requisito em regiões posteriores ao seu guardião — checado nos dados de mapa (`requires_eco`).
-- Campanha sem raras: o percurso do teste usa só Brotisco/Lumipim/Cascalito (nenhuma rara).
+- Campanha sem raras: o percurso do teste usa só Brotisco/Lumipim/Cascalito (nenhuma rara); no Pântano, o Nimbelo (raro) só acelera — portões não dependem de Goturim/Brejugo/Nimbelo nem do Olhar Velado (teste de unidade "R3: portões obrigatórios...").
 - Caminho com exaustas: trecho obrigatório concluído com a criatura ativa exausta (Galeria dos Lobos).
 - Recompensas únicas: baús, chefões e Ecos não duplicam após salvar/carregar.
