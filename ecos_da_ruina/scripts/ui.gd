@@ -649,10 +649,28 @@ func open_diary() -> void:
 	var s := _push("Diário", [], "")
 	var lines := Game.diary_lines()
 	var items: Array = []
+	items.append(_hdr("Missões"))
 	for l in lines:
 		items.append(_it(l, Callable(), "\n".join(lines)))
+	# o fio da história: memórias dos guardiões e as páginas da Mestra Ione
+	var mems: Array = []
+	for f in Data.story.get("memorias", {}):
+		if Game.has_flag("mem_" + f):
+			var m: Dictionary = Data.story["memorias"][f]
+			var txt: String = "\n\n".join(m["linhas"])
+			var it: String = str(m.get("item", ""))
+			if it != "" and Data.items.has(it):
+				txt += "\n\n— " + Data.items[it]["nome"] + " —\n" + Data.items[it]["desc"]
+			var row := _it(m["titulo"], Callable(), txt)
+			row["col"] = Color(0.85, 0.8, 1.0)
+			mems.append(row)
+	items.append(_hdr("Memórias e Diário de Ione"))
+	if mems.is_empty():
+		items.append(_it("(nenhuma ainda)", Callable(), "Cada guardião que cai mostra uma memória do passado e o rastro da Mestra Ione, sua mentora desaparecida."))
+	else:
+		items.append_array(mems)
 	items.append(_it("Voltar", func(): s.close(), "\n".join(lines)))
-	s.setup("Diário de missões", items, "\n".join(lines))
+	s.setup("Diário", items, "\n".join(lines))
 	s.list_w = 250.0
 
 func open_map() -> void:

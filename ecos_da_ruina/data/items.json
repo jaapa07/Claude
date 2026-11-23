@@ -481,5 +481,41 @@
   "icone": 7,
   "folha": "icons_fortaleza",
   "desc": "Técnica do Rito do Eclipse: tecido de sombra que reduz 18% do dano recebido."
+ },
+ "pagina_ione_1": {
+  "nome": "Diário de Ione — Página 1",
+  "tipo": "historia",
+  "icone": 6,
+  "desc": "\"Dia 9 na Floresta. Os guardiões estão doentes, e não é doença da terra: há correntes de metal escuro presas aos santuários. Alguém está drenando o Eco. Se você estiver lendo isto, aprendiz: confie nas criaturas antes de confiar em mim.\""
+ },
+ "pagina_ione_2": {
+  "nome": "Diário de Ione — Página 2",
+  "tipo": "historia",
+  "icone": 6,
+  "desc": "\"Perdi a expedição nas raízes. Os Corvelo escaparam, os outros... não sei. Abri uma fenda com o diapasão e vou ao norte, às Minas. O metal das correntes vem de lá. Não me siga. (Eu sei que você vai seguir.)\""
+ },
+ "pagina_ione_3": {
+  "nome": "Diário de Ione — Página 3",
+  "tipo": "historia",
+  "icone": 6,
+  "desc": "\"A pedra-eco sai da Fundição em carrinhos e segue para o sul, para os pântanos, e de lá para a Catedral. Marco os vagões com giz. Os mineiros acham que trabalham para a Forja; trabalham para a Ordem do Vazio.\""
+ },
+ "pagina_ione_4": {
+  "nome": "Diário de Ione — Página 4",
+  "tipo": "historia",
+  "icone": 6,
+  "desc": "\"O Ferreiro forjou as correntes sem saber. Agora uma delas o devora. Quebrei um elo: o metal-eco canta quando está perto de outro igual. Vou usá-lo como bússola até a Catedral. A Bruxa do Pântano foi a próxima a ser presa.\""
+ },
+ "pagina_ione_6": {
+  "nome": "Diário de Ione — Última página",
+  "tipo": "historia",
+  "icone": 6,
+  "desc": "\"O Rei dos Ecos é Ivar, o primeiro Arquivista. Ele guardou o Eco de Auralis dentro de si para que nada se perdesse — e perdeu a si mesmo. As correntes não são para poder: são para lembrar, roubando a memória dos guardiões. Vou entrar. Se eu falhar, aprendiz, devolva a ele uma memória que seja dele.\""
+ },
+ "carta_arquivista": {
+  "nome": "Carta do Arquivista",
+  "tipo": "historia",
+  "icone": 6,
+  "desc": "Lacrada com o olho fechado da Ordem do Vazio: \"Vesna — cada fera vinculada carrega uma voz. Traga-as à Estrada Final. O Rei precisa de vozes para lembrar o próprio nome. — O Arquivista\""
  }
 }

@@ -37,7 +37,9 @@ func _ready() -> void:
 	if not "--clima" in args:
 		Game.weather_lock = "sol"
 		Game.weather_neutral = true
-	if "--clima" in args:
+	if "--historia" in args:
+		await run_historia()
+	elif "--clima" in args:
 		await run_clima()
 	elif "--regiao4" in args:
 		await run_regiao4()
@@ -4007,3 +4009,58 @@ func run_regiao4() -> void:
 	await r4_pos()
 	await r4_revisitas()
 	await r4_save_load()
+
+
+# ================================================================ HISTÓRIA (fio condutor: Mestra Ione e memórias)
+func run_historia() -> void:
+	SaveSys.delete_slot(5)
+	main.start_new_game(5)
+	await frames(5)
+	var intro: String = " ".join(main.ui.hud.dlg_lines)
+	check("Abertura apresenta a Mestra Ione e o motivo da viagem", "Ione" in intro and "Maru" in intro)
+	await advance_dialogs()
+	await talk("anciao")
+	check("Maru conhece o herói como aprendiz de Ione", Game.has_flag("falou_maru"))
+	var flags_ok := true
+	var bosses := {}
+	for f in Data.maps:
+		for e in Data.maps[f]["entities"]:
+			if e.has("flag_done"):
+				bosses[e["flag_done"]] = true
+	for mf in Data.story["memorias"]:
+		var it: String = str(Data.story["memorias"][mf].get("item", ""))
+		if not Data.items.has(it):
+			flags_ok = false
+		if not (bosses.has(mf) or Data.contracts.has(mf.trim_suffix("_ok"))):
+			flags_ok = false
+	check("Cada memória aponta para um chefe/contrato real e uma página existente", flags_ok)
+	W.memory_in_tests = true
+	Game.set_flag("lenhador_morto")
+	await secs(2.5)
+	check("Guardião caído mostra a memória do passado", main.ui.hud.dlg_active and "Lenhador" in " ".join(main.ui.hud.dlg_lines))
+	await advance_dialogs()
+	await frames(5)
+	check("Memória entrega a página do Diário de Ione", Game.item_count("pagina_ione_1") == 1 and Game.has_flag("mem_lenhador_morto"))
+	Game.set_flag("lenhador_morto", false)
+	Game.set_flag("lenhador_morto")
+	await secs(2.5)
+	check("A mesma memória não se repete", not main.ui.hud.dlg_active)
+	main.ui.open_pause()
+	main.ui.open_diary()
+	await frames(3)
+	var has_row := false
+	for it in main.ui._top().items:
+		if str(it.get("t", "")) == "Memória do Lenhador Oco":
+			has_row = true
+	check("Diário lista as memórias para reler a história", has_row)
+	await close_menus()
+	Game.set_flag("cervo_morto")
+	await secs(2.5)
+	await advance_dialogs()
+	await frames(5)
+	check("Memória do Cervo revela o rastro de Ione (página 2)", Game.item_count("pagina_ione_2") == 1)
+	W.save_now(5)
+	SaveSys.load_game(5)
+	await frames(5)
+	check("Save mantém páginas e memórias", Game.has_flag("mem_cervo_morto") and Game.item_count("pagina_ione_2") == 1)
+	W.memory_in_tests = false

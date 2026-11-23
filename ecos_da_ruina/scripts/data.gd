@@ -13,6 +13,7 @@ var dialogs := {}
 var forge := {}
 var allies := {}
 var contracts := {}
+var story := {}
 var maps := {}
 var errors: Array = []
 
@@ -42,6 +43,7 @@ func load_all() -> void:
 	recipes = _read("res://data/recipes.json")
 	allies = _read("res://data/allies.json")
 	contracts = _read("res://data/contracts.json")
+	story = _read("res://data/story.json")
 	dialogs = _read("res://data/dialogs.json")
 	forge = _read("res://data/forge.json")
 	maps.clear()
