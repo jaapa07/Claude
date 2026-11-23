@@ -63,9 +63,9 @@ func lit_lantern_near() -> Node:
 func has_shadow() -> bool:
 	return lit_lantern_near() != null
 
-## Ponto da beira do lago (um pouco para dentro da água) mais próximo de `p`.
+## Ponto da beira do lago mais próximo de `p`: ele emerge e apoia o barco na borda da plataforma (dá para alcançá-lo).
 func edge_point(p: Vector2) -> Vector2:
-	var inner := lake.grow(-8.0)
+	var inner := lake.grow(7.0)
 	var q := Vector2(clamp(p.x, inner.position.x, inner.end.x), clamp(p.y, inner.position.y, inner.end.y))
 	var dl: float = q.x - inner.position.x
 	var dr: float = inner.end.x - q.x

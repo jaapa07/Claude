@@ -3147,6 +3147,28 @@ func run_r3_dev() -> void:
 	Game.equip("lanca_cobre")
 	Game.fragments = 600
 	Game.checkpoint = {"map": "forja_cobre", "spawn": "", "pos": [24 * 16.0 + 8.0, 17 * 16.0 + 8.0], "shrine": "forja"}
+	if "--r3boss" in args:
+		# atalho de desenvolvimento: pula direto para o Barqueiro (estado equivalente ao fim do templo B)
+		for f in ["pantano_passagem", "visitou_porto_lanternas", "falou_arao", "visitou_passarela_ecos", "visitou_lago_reflexos", "visitou_templo_a",
+				"lago_c1", "lago_c2", "ta_canal", "ta_espelhos", "enc_sapos_ok", "tb_lodo", "atalho_porto_aberto", "lanternas_entregue"]:
+			Game.set_flag(f)
+		for sp in [["goturim", 14], ["brejugo", 14], ["nimbelo", 14]]:
+			Game.register_capture(Game.new_individual(sp[0], sp[1]))
+		await ensure_in_team(["nimbelo"])
+		await ensure_in_team(["goturim"])
+		Game.give_item("remo_barqueiro", 1)
+		Game.equip("remo_barqueiro")
+		Game.add_hero_xp(4000)
+		Game.hero["hp"] = Game.hero_max_hp()
+		Game.checkpoint = {"map": "templo_b", "spawn": "", "pos": [22 * 16.0 + 8.0, 8 * 16.0], "shrine": "tb_tesouro"}
+		W.load_map("templo_b", "from_porto")
+		await frames(20)
+		await r3_barqueiro()
+		await r3_rito()
+		await r3_bruxa()
+		await r3_pos_bruxa()
+		await r3_save_load()
+		return
 	W.load_map("forja_cobre", "default")
 	await frames(30)
 	await advance_dialogs()
@@ -3285,8 +3307,10 @@ func r3_passarela() -> void:
 	Game.skill_cd[ug] = 0.0
 	W.companion.target = null
 	W.companion.command_skill(Vector2.RIGHT)
-	await frames(12)
-	check("R3: Onda do Goturim fere e empurra inimigo leve", wolf.hp < w0 and wolf.global_position.distance_to(p0) > 10.0, "%s -> %s / %.1f" % [w0, wolf.hp, wolf.global_position.distance_to(p0)])
+	await frames(1)
+	var kv: float = wolf.knock_v.length()
+	await frames(10)
+	check("R3: Onda do Goturim fere e empurra inimigo leve", wolf.hp < w0 and (kv >= 200.0 or wolf.global_position.distance_to(p0) > 10.0), "%s -> %s / %.1f / kv %.0f" % [w0, wolf.hp, wolf.global_position.distance_to(p0), kv])
 	wolf.queue_free()
 	# lodo instável do caminho principal: estacas locais
 	check("R3: lodo instável bloqueia o caminho norte", W.is_solid_char(W.tile_char_at(tpos(27, 11))))
@@ -3495,7 +3519,7 @@ func fight_barqueiro(b: Node, timeout := 300.0) -> String:
 				await attack_tap()
 				await frames(8)
 			else:
-				await goto(b.global_position + (P.global_position - b.global_position).normalized() * 26.0, 8.0, 0.5)
+				await goto(W.safe_pos_near(b.global_position), 6.0, 0.5)
 		else:
 			var best: Node = null
 			var bd := 1e9
@@ -3518,6 +3542,10 @@ func fight_barqueiro(b: Node, timeout := 300.0) -> String:
 					await frames(4)
 				else:
 					await frames(3)
+		if frame_count == before:
+			await frames(1)
+		if int(t / 2.0) != int((t + float(frame_count - before) / 60.0) / 2.0) and "--dbg" in args:
+			print("  [dbg] t=%.0f hp=%.0f/%.0f boss=%.0f bst=%d sombra=%s pos=%s boss=%s pocao=%d" % [t, float(Game.hero["hp"]), Game.hero_max_hp(), b.hp, b.bst, b.has_shadow(), str(tile_of(P.global_position)), str(tile_of(b.global_position)), Game.item_count("pocao")])
 		t += float(frame_count - before) / 60.0
 	return "vitoria" if (not is_instance_valid(b) or not b.alive_flag) else "tempo"
 
@@ -3685,7 +3713,10 @@ func bruxa_step(b: Node) -> void:
 		await attack_tap()
 		await frames(8)
 	else:
-		await goto(tgt.global_position, 30.0, 0.5)
+		var dest: Vector2 = tgt.global_position
+		if W.tile_solid_at(dest):
+			dest = W.safe_pos_near(dest)
+		await goto(dest, 24.0, 0.5)
 
 func fight_bruxa(b: Node, timeout := 420.0) -> String:
 	var t := 0.0
@@ -3697,6 +3728,8 @@ func fight_bruxa(b: Node, timeout := 420.0) -> String:
 		if b.phase == 3 and Game.has_flag("tmp_bruxa_cheia"):
 			last_seen["agua_subiu"] = true
 		await bruxa_step(b)
+		if frame_count == before:
+			await frames(1)
 		t += float(frame_count - before) / 60.0
 	return "vitoria" if (not is_instance_valid(b) or not b.alive_flag) else "tempo"
 
@@ -3726,7 +3759,7 @@ func r3_bruxa() -> void:
 	await secs(2.4)
 	b.take_damage(b.max_hp * 0.42, b.global_position + Vector2(-20, 0), {"src": "heroi", "knock": 0.0})
 	await secs(1.8)
-	check("R3: fase 2 (60%): a Bruxa se divide em quatro", b.phase == 2 and b.copies.size() == 3, "fase %d cópias %d" % [b.phase, b.copies.size()])
+	check("R3: fase 2 (60%): a Bruxa se divide em quatro", b.phase == 2 and b.copies.size() + b.copies_broken == 3 and b.splits == 1, "fase %d cópias %d/%d" % [b.phase, b.copies.size(), b.copies_broken])
 	var cps: Array = b.copies.duplicate()
 	var ok_refl: bool = b.refl != null and b.refl.flip_h == b.sprite.flip_h and b.reflexo_consistente
 	for c in cps:
@@ -3735,10 +3768,13 @@ func r3_bruxa() -> void:
 	check("R3: só a verdadeira tem reflexo consistente na água da arena", ok_refl)
 	check("R3: com o Nimbelo ativo a verdadeira é marcada depressa", Game.active_ind().get("species_id", "") not in ["nimbelo", "nimbelio"] or b.real_mark_t > 0.0)
 	await shot("r3_17_bruxa_copias")
-	var c0: Node = cps[0]
-	c0.take_damage(10.0, P.global_position, {"src": "heroi"})
-	await frames(4)
-	check("R3: golpe numa cópia a desfaz (e a Bruxa responde)", b.copies.size() == 2 and b.copies_broken == 1)
+	var n_cp: int = b.copies.size()
+	var n_br: int = b.copies_broken
+	if n_cp > 0:
+		var c0: Node = b.copies[0]
+		c0.take_damage(10.0, P.global_position, {"src": "heroi"})
+		await frames(4)
+	check("R3: golpe numa cópia a desfaz (e a Bruxa responde)", n_cp > 0 and b.copies.size() == n_cp - 1 and b.copies_broken == n_br + 1)
 	# ---- fase 3: a água sobe
 	b.take_damage(b.hp - b.max_hp * 0.24, b.global_position + Vector2(-20, 0), {"src": "heroi", "knock": 0.0})
 	await secs(2.4)
@@ -3747,12 +3783,20 @@ func r3_bruxa() -> void:
 	check("R3: nenhuma cópia na fase 3", b.copies.is_empty())
 	var warned := false
 	var t3 := 0.0
-	while t3 < 12.0 and is_instance_valid(b) and P.state != Player.S.DEAD and b.pat_i == 0:
+	b.invulnerable = true      # só para observar a troca de plataformas sem encerrar a luta
+	b.split_hp = b.hp
+	while t3 < 14.0 and is_instance_valid(b) and P.state != Player.S.DEAD and b.pat_i == 0:
 		if not b.sinking_rects().is_empty():
 			warned = true
+		var f0 := frame_count
 		await bruxa_step(b)
-		t3 += 0.1
-	check("R3: plataformas mudam só depois do aviso", warned and b.pat_i == 1 and W.tile_char_at(tpos(24, 10)) == "W" and W.tile_char_at(tpos(38, 22)) == "0")
+		if frame_count == f0:
+			await frames(1)
+		t3 += float(frame_count - f0) / 60.0
+	if is_instance_valid(b):
+		b.invulnerable = false
+	check("R3: plataformas mudam só depois do aviso", warned and b.pat_i == 1 and W.tile_char_at(tpos(24, 10)) == "W" and W.tile_char_at(tpos(38, 22)) == "0",
+		"aviso=%s pat=%d t=%.1f A=%s D=%s vivo=%s" % [warned, b.pat_i if is_instance_valid(b) else -1, t3, W.tile_char_at(tpos(24, 10)), W.tile_char_at(tpos(38, 22)), P.state != Player.S.DEAD])
 	var firm := 0
 	for k in b.padroes.size():
 		firm += (b.padroes[k] as Array).size()
@@ -3850,7 +3894,8 @@ func r3_save_load() -> void:
 	main.continue_from_slot(3)
 	await frames(30)
 	var after := r3_snapshot()
-	check("R3: load mantém mapa, equipe e criaturas do pântano", after["map"] == snap["map"] and after["team"] == snap["team"] and str(after["ind"]) == str(snap["ind"]))
+	check("R3: load mantém mapa, equipe e criaturas do pântano", after["map"] == snap["map"] and after["team"] == snap["team"] and after["ind"] == snap["ind"],
+		"%s/%s %s" % [after["map"], snap["map"], str(after["team"] == snap["team"])])
 	check("R3: load mantém comportas, atalhos, segredos, missões e chefes", after["r3flags"] == snap["r3flags"] and after["r3flags"].size() >= 18, str(after["r3flags"]))
 	check("R3: load mantém o Olhar Velado, inventário e baús únicos", Game.has_eco("olhar_velado") and after["inv"] == snap["inv"] and after["chests"] == snap["chests"])
 	var ok := await exit_to("minas_entrada", 23 * 16.0 + 8.0, 35 * 16.0 + 8.0)

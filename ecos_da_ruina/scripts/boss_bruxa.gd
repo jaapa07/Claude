@@ -151,10 +151,13 @@ func _pick_float(pp: Vector2) -> void:
 	if phase == 2:
 		p = anchor + Vector2(randf_range(-24, 24), randf_range(-18, 18))
 	elif phase == 3:
-		p = pp + Vector2.from_angle(randf() * TAU) * 34.0
+		p = pp + Vector2.from_angle(randf() * TAU) * 22.0
 	else:
 		p = pp + Vector2.from_angle(randf() * TAU) * randf_range(60.0, 110.0)
 	float_to = Vector2(clamp(p.x, inner.position.x, inner.end.x), clamp(p.y, inner.position.y, inner.end.y))
+	# com a água alta ela paira sobre chão firme (sempre ao alcance da espada)
+	if phase == 3 and world.tile_solid_at(float_to):
+		float_to = _nearest_firm(float_to)
 
 func _tele_fan(pp: Vector2) -> void:
 	bst = B.TELE_FAN
