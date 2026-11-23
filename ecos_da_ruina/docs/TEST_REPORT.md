@@ -1,3 +1,7 @@
+# Relatório de testes
+
+Resumo: e2e 321/321 (sementes padrão, 7 e 3) · unit 30/30 · poderes 12/12 · equipamentos 12/12 · casas 15/15 · celular (Playwright, iPhone 13 deitado) sem erros
+## E2E (Capítulos 1 e 2)
 [PASS] Título abre ao iniciar o jogo
 [PASS] Novo jogo inicia na Vila Lúmen
 [PASS] Dados do jogo sem erros de validação

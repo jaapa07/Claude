@@ -1,8 +1,6 @@
 <meta charset="utf-8">
 <title>Ecos da Ruína</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600&display=swap">
 <style>
 /* Layout: janela de jogo 16:9 no topo, faixa de controles abaixo. Visual único, escuro (tela de jogo). */
 :root {
@@ -13,8 +11,8 @@
   --muted: #a49cc0;
   --accent: #9be8ff;
   --leaf: #7ac860;
-  --display: "Press Start 2P", ui-monospace, monospace;
-  --body: "Inter", system-ui, sans-serif;
+  --display: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --body: system-ui, -apple-system, "Segoe UI", sans-serif;
   color-scheme: dark;
 }
 html, body { height: 100%; }
@@ -63,7 +61,7 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
 <div class="wrap">
   <header>
     <h1>ECOS DA RUÍNA</h1>
-    <p class="sub">Capítulo 1 — Floresta dos Esquecidos. Versão de teste para navegador.</p>
+    <p class="sub">Capítulos 1 e 2 — Floresta dos Esquecidos e Minas da Brasa. Versão para navegador e iPhone.</p>
   </header>
 
   <div class="screen">
@@ -118,7 +116,7 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
 // O motor (WebAssembly) é publicado em 3 partes; aqui elas são baixadas e remontadas antes de iniciar.
 (function () {
   const PARTS = ["w/motor0.wasm", "w/motor1.wasm", "w/motor2.wasm"];
-  const TOTAL = 35376909 + 1706896;
+  const TOTAL = 35376909 + 1715248;
   let loaded = 0;
   const fill = document.getElementById("fill");
   const status = document.getElementById("status");
@@ -168,7 +166,7 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
       try {
         const engine = new Engine({
           args: [], canvasResizePolicy: 0, executable: "index", experimentalVK: false,
-          fileSizes: { "index.pck": 1706896, "index.wasm": 35376909 },
+          fileSizes: { "index.pck": 1715248, "index.wasm": 35376909 },
           focusCanvas: true, gdextensionLibs: [], ensureCrossOriginIsolationHeaders: false
         });
         engine.startGame({
