@@ -1291,6 +1291,20 @@ func stage11_vila_transformada() -> void:
 	check("Fim do capítulo 1 sinalizado (demais regiões em desenvolvimento)", Game.has_flag("fim_cap1") and Game.has_flag("ponte_minas"))
 	await shot("27_fim_capitulo")
 
+## Seleciona no menu do topo o primeiro item habilitado cujo texto começa com `prefix` e confirma.
+func menu_pick(prefix: String) -> bool:
+	var top: MenuScreen = main.ui._top()
+	if top == null:
+		return false
+	for i in top.items.size():
+		var it: Dictionary = top.items[i]
+		if str(it.get("t", "")).begins_with(prefix) and it.get("en", true) and not it.get("hdr", false):
+			top.sel = i
+			await frames(1)
+			await ui_press("ui_accept")
+			return true
+	return false
+
 func evolve_via_ui(uuid: String) -> void:
 	await ui_press("pause")
 	await ui_press("ui_down")
@@ -1301,9 +1315,7 @@ func evolve_via_ui(uuid: String) -> void:
 		await ui_press("ui_down")
 	await ui_press("ui_accept")      # menu da criatura
 	await frames(3)
-	await ui_press("ui_down")
-	await ui_press("ui_down")        # Evoluir…
-	await ui_press("ui_accept")
+	await menu_pick("Evoluir")       # Evoluir… (procura pelo nome: o menu ganhou a linha de acessório)
 	await frames(3)
 	await shot("28_evolucao_confirma")
 	await ui_press("ui_accept")      # Confirmar
@@ -2738,6 +2750,7 @@ func run_grupo() -> void:
 	check("Recompensa entregue e aliada volta para a vila", Game.item_count("selo_refinado") >= 2 and Game.party.is_empty() and W.allies().is_empty())
 	if freed.size() > 0 and is_instance_valid(freed[0]):
 		Game.give_item("selo_basico", 4)
+		await weaken(freed[0])
 		var cap := await capture_wild(freed[0], 8)
 		check("Fera libertada pode ser capturada", cap)
 	# fera libertada: teste determinístico do mecanismo
@@ -2906,9 +2919,7 @@ func run_habilidades() -> void:
 	check("Hab: aprender não troca a ativa sozinho", Game.hab_active(bro) == "raizes")
 	# ---- escolher no menu (Pausa > Equipe > criatura > Habilidades…)
 	await _hab_open_team_creature(bro["uuid"])
-	for i in 3:
-		await ui_press("ui_down")    # Tornar ativa, Apelido, Evoluir, Habilidades…
-	await ui_press("ui_accept")
+	await menu_pick("Habilidades")   # Tornar ativa, Apelido, Acessório, Evoluir, Habilidades…
 	await frames(3)
 	var top: MenuScreen = main.ui._top()
 	check("Hab: menu da criatura abre a tela Habilidades", top != null and top.title.begins_with("Habilidades"), _hab_top_title())
@@ -3005,9 +3016,7 @@ func run_habilidades() -> void:
 	W.combat_t = 0.0
 	hab_toasts.clear()
 	await _hab_open_team_creature(bro["uuid"])
-	await ui_press("ui_down")
-	await ui_press("ui_down")        # Evoluir
-	await ui_press("ui_accept")
+	await menu_pick("Evoluir")
 	await frames(3)
 	await ui_press("ui_accept")      # Confirmar
 	await frames(6)
@@ -3038,9 +3047,7 @@ func run_habilidades() -> void:
 	await ui_press("ui_down")        # primeira criatura guardada (abaixo de "Ordenar")
 	await ui_press("ui_accept")
 	await frames(3)
-	await ui_press("ui_down")
-	await ui_press("ui_down")        # Levar à equipe, Apelido…, Habilidades…
-	await ui_press("ui_accept")
+	await menu_pick("Habilidades")   # Levar à equipe, Apelido…, Acessório, Habilidades…
 	await frames(3)
 	check("Hab: Santuário (armazenamento) também abre Habilidades", _hab_top_title().begins_with("Habilidades"), _hab_top_title())
 	await close_menus()
