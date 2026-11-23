@@ -14,6 +14,7 @@ var stage_limit := 99
 var frame_count := 0
 var seen_errors := 0
 var exhausted_events := 0
+var all_toasts: Array = []     # histórico de avisos do jogo (a fila visível do HUD guarda só 4)
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -32,6 +33,7 @@ func _ready() -> void:
 	seed(sd)
 	Game.rng.seed = sd
 	Game.toast.connect(func(t): if "exausta" in t: exhausted_events += 1)
+	Game.toast.connect(func(t): all_toasts.append(t))
 	main.ui.instant = true
 	# clima: fora do modo --clima, fica travado em "sol" sem efeitos (fluxo determinístico)
 	if not "--clima" in args:
@@ -1217,9 +1219,7 @@ func snapshot_state() -> Dictionary:
 func stage10_save_load() -> void:
 	# ---- salvar pelo menu de pausa (UI real) no slot 2, duas vezes para criar o backup
 	await ui_press("pause")
-	for i in 6:
-		await ui_press("ui_down")
-	await ui_press("ui_accept")      # Salvar jogo
+	await menu_pick("Salvar jogo")   # procura pelo nome (o menu de pausa ganhou a Jornada)
 	await frames(3)
 	await ui_press("ui_down")        # slot 2
 	await ui_press("ui_accept")
@@ -2623,7 +2623,7 @@ func run_clima() -> void:
 	# 1) sorteio em mapa externo
 	check("Clima sorteado ao entrar na Vila (zona Floresta)", Weather.zone == "floresta" and Weather.now() in ["sol", "chuva", "neblina"], "%s/%s" % [Weather.zone, Weather.now()])
 	check("Troca agendada para 4–6 minutos", Weather.timer >= 230.0 and Weather.timer <= 360.0, str(Weather.timer))
-	check("Aviso do tempo ao chegar", toast_seen("Tempo: "))
+	check("Aviso do tempo ao chegar", toast_seen("Tempo: ") or all_toasts.any(func(t): return str(t).begins_with("Tempo: ")))
 	check("Ícone do clima no HUD", fx.icon_panel.visible and fx.icon.texture != null)
 	var before: String = Weather.current
 	# 2) interior sem clima
