@@ -862,19 +862,19 @@ func _contract_info(cid: String) -> String:
 
 func _fill_contracts(s: MenuScreen) -> void:
 	var items: Array = []
-	items.append(_hdr("Contratos (dupla e trio)"))
+	items.append(_hdr("Contratos e caçadas"))
 	for cid in Data.contracts:
 		var c: Dictionary = Data.contracts[cid]
 		var stt := Game.contract_state(cid)
-		var tag: String = {"feito": "(feito) ", "ativo": "> ", "bloqueado": "(bloq.) ", "ocupado": "", "disponivel": ""}.get(stt, "")
-		var lab := "%s%s [%s]" % [tag, c["nome"], {"dupla": "Dupla", "trio": "Trio", "caca": "Caçada"}.get(c["tipo"], "")]
+		var tag: String = {"feito": "", "ativo": "> ", "bloqueado": "", "ocupado": "", "disponivel": ""}.get(stt, "")
+		var lab := "%s%s" % [tag, c["nome"]]
 		var idc: String = cid
 		var row := _it(lab, func(): _contract_pick(idc, s), func(): return _contract_info(idc), stt != "bloqueado")
 		row["icon"] = Art.region("icons_grupo", (2 if c["tipo"] != "trio" else 3) * 16, 0, 16, 16) if ResourceLoader.exists("res://assets/sprites/icons_grupo.png") else null
 		if stt == "feito":
 			row["col"] = Color(0.6, 0.9, 0.6)
 		items.append(row)
-	items.append(_hdr("Patrulha (aliados fora de contratos)"))
+	items.append(_hdr("Patrulha"))
 	for aid in Data.allies:
 		var al: Dictionary = Data.allies[aid]
 		var ida: String = aid
@@ -889,7 +889,11 @@ func _fill_contracts(s: MenuScreen) -> void:
 			_fill_contracts(s), al["desc"] + ("\n\nNo grupo: aperte de novo para dispensar." if on else ("\n\nConvocar para acompanhar você." if ok else "\n\nDisponível depois de um contrato juntos.")), ok)
 		r2["icon"] = Art.region("icons_grupo", int(al["icone"]) * 16, 0, 16, 16) if ResourceLoader.exists("res://assets/sprites/icons_grupo.png") else null
 		items.append(r2)
-	_refresh(s, items)
+	items.append(_it("Voltar", func(): s.close()))
+	var keep: int = s.sel if s.sel > 0 else 1
+	s.setup("Quadro de Contratos — fragmentos: %d" % Game.fragments, items, "")
+	s.list_w = 250.0
+	s.sel = min(keep, items.size() - 1)
 
 func _contract_pick(idc: String, s: MenuScreen) -> void:
 	match Game.contract_state(idc):
