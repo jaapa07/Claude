@@ -859,9 +859,63 @@ def j_descoberta():
     return s.render("music_descoberta", room=2.0, room_mix=0.4, echo_beats=0.5, echo_fb=0.35, rms=0.12, fade_out=1.2)
 
 
+def t_fortaleza():
+    """Fortaleza do Eclipse (Regiao 4): vento nas ameias, metais solenes e sinos; Mi eolio com sexta dorica (violeta e dourado)."""
+    s = Score(76, 64)
+    L = s.N
+    tt = _tt(L)
+    nz = trng.uniform(-1, 1, L)
+    lfo = 0.5 + 0.5 * np.sin(2 * np.pi * 4 * tt / (L / SR) + 0.7)
+    s.put(bandpass(nz, 700, 1.4) * lfo * 0.35, 0, 1.0, rev=0.2)
+    prog = [(["E2", "B2", "G3"], 2), (["C2", "G2", "E3"], 2), (["D2", "A2", "F#3"], 2), (["E2", "B2", "G3"], 2),
+            (["A1", "E2", "C#3"], 2), (["C2", "G2", "E3"], 2), (["B1", "F#2", "D#3"], 2), (["B1", "F#2", "D#3"], 2)]
+    s.seq(i_strings, [([c[0][:-1] + "3", c[1][:-1] + "3", c[2]], n * 4) for c, n in prog], g=0.24, rev=0.6, legato=1.0, bright=1500, att=0.8)
+    s.seq(i_bass, roots(prog, rhythm=[("R", 1.5), ("R", 0.5), ("5", 1), ("R", 1)]), g=0.4, rev=0.1, legato=0.9, bite=0.2)
+    s.drums("x.......x.......", d_timpani, 16, g=0.45, rev=0.5, f=82.4, dec=1.6)
+    s.drums("....o.......o...", d_tom, 16, g=0.25, rev=0.4, f0=98.0)
+    mel = [("-", 8),
+           ("B3", 2), ("E4", 1), ("F#4", 1), ("G4", 3), ("F#4", 1),
+           ("E4", 2), ("C#4", 2), ("D4", 2), ("A3", 2),
+           ("B3", 2), ("E4", 1), ("G4", 1), ("B4", 3), ("A4", 1),
+           ("G4", 2), ("F#4", 1), ("E4", 1), ("D#4", 4),
+           ("E4", 2), ("G4", 1), ("B4", 1), ("C5", 3), ("B4", 1),
+           ("A4", 2), ("F#4", 2), ("G4", 2), ("E4", 2),
+           ("F#4", 3), ("D#4", 1), ("B3", 4)]
+    s.seq(i_brass, mel, g=0.4, rev=0.45, echo=0.15, cutoff=1500)
+    s.seq(i_bell, arp([([c[0][:-1] + "5", c[1][:-1] + "5", c[2][:-1] + "5"], n) for c, n in prog], [0, None, 2, None, 1, None, None, None], 0.5),
+          g=0.1, rev=0.5, echo=0.4, decay=1.4)
+    s.seq(i_choir, [("-", 32), (["E3", "B3", "G4"], 8), (["C3", "G3", "E4"], 8), (["B2", "F#3", "D#4"], 16)], g=0.2, rev=0.6, legato=1.0)
+    return s.render("music_fortaleza", room=2.2, room_mix=0.4, echo_beats=1.0, echo_fb=0.35)
+
+
+def t_chefe_fortaleza():
+    """Chefes da Fortaleza (Gemeos de Ferro, Cavaleiro Sem Rosto): duelo marcial em Si menor com tritono, coro e caixa."""
+    s = Score(128, 64)
+    prog = [(["B1", "D2", "F#2"], 2), (["C2", "E2", "G2"], 1), (["B1", "D2", "F#2"], 1), (["G1", "B1", "D2"], 2), (["F1", "A1", "C2"], 2),
+            (["B1", "D2", "F#2"], 2), (["E2", "G2", "B2"], 2), (["F#1", "A#1", "C#2"], 2), (["F#1", "A#1", "C#2"], 2)]
+    s.seq(i_bass, roots(prog, rhythm=[("R", 0.5), ("R", 0.5), ("O", 0.5), ("R", 0.5), ("5", 0.5), ("R", 0.5), ("O", 0.5), ("5", 0.5)]), g=0.5, rev=0.05, legato=0.8, bite=0.6)
+    s.drums("x...x...x.x.x...", d_kick, 16, g=0.85, rev=0.05, low=44)
+    s.drums("....x.......x..x", d_snare, 16, g=0.4, rev=0.2)
+    s.drums("x.x.x.x.x.x.x.x.", d_hat, 16, g=0.18, rev=0.05)
+    s.drums("x", d_timpani, 16, every=2, g=0.75, rev=0.5, f=61.7)
+    s.seq(i_choir, [([c[0][:-1] + "3", c[1][:-1] + "3", c[2][:-1] + "4"], n * 4) for c, n in prog], g=0.28, rev=0.6, legato=1.0, att=0.3)
+    mel = [("B3", 1), ("D4", 1), ("F#4", 2), ("G4", 1), ("F#4", 1), ("E4", 2),
+           ("D4", 1), ("F4", 1), ("B4", 2), ("A4", 1), ("G4", 1), ("F4", 2),
+           ("F#4", 1), ("B4", 1), ("D5", 2), ("C5", 1), ("B4", 1), ("G4", 2),
+           ("E4", 1), ("G4", 1), ("B4", 2), ("A#4", 2), ("C#5", 2),
+           ("B4", 1), ("D5", 1), ("F#5", 2), ("G5", 1), ("F#5", 1), ("E5", 2),
+           ("D5", 1), ("F5", 1), ("B5", 2), ("A5", 1), ("G5", 1), ("F5", 2),
+           ("F#5", 2), ("D5", 2), ("E5", 2), ("C#5", 2),
+           ("A#4", 2), ("C#5", 2), ("F#5", 4)]
+    s.seq(i_brass, mel, g=0.42, rev=0.35, echo=0.1, cutoff=1800)
+    s.seq(i_strings, arp([([c[0][:-1] + "4", c[1][:-1] + "4", c[2][:-1] + "4"], n) for c, n in prog], [0, 1, 2, 1], 0.25), g=0.1, rev=0.3, legato=0.5, bright=3200, att=0.01)
+    return s.render("music_chefe_fortaleza", room=1.6, room_mix=0.3, echo_beats=0.75, echo_fb=0.3, rms=0.14)
+
+
 TRILHAS = {"minas": t_minas, "casa": t_casa, "masmorra": t_masmorra, "desfiladeiro": t_desfiladeiro, "suspense": t_suspense,
            "combate": t_combate, "chefe_minas": t_chefe_minas, "memoria": t_memoria, "vila_festa": t_vila_festa,
-           "vitoria": j_vitoria, "descoberta": j_descoberta}
+           "vitoria": j_vitoria, "descoberta": j_descoberta,
+           "fortaleza": t_fortaleza, "chefe_fortaleza": t_chefe_fortaleza}
 
 
 def trilhas(only=None):

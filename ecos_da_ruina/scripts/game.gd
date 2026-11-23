@@ -1001,7 +1001,14 @@ func objective_text() -> String:
 		var q2: Dictionary = Data.quests["principal2"]
 		if j < q2["etapas"].size():
 			return q2["etapas"][j]["texto"]
-		return "Capítulo 2 concluído!"
+		for qid in Data.quests:   # capítulos seguintes (principal3, principal4...): o primeiro ativo e incompleto
+			if str(qid).begins_with("principal") and not qid in ["principal", "principal2"] and quest_active(qid) and quest_step(qid) < Data.quests[qid]["etapas"].size():
+				return Data.quests[qid]["etapas"][quest_step(qid)]["texto"]
+		var last := 2
+		for qid in Data.quests:
+			if str(qid).begins_with("principal") and str(qid).substr(9).is_valid_int() and quest_active(qid):
+				last = max(last, int(str(qid).substr(9)))
+		return "Capítulo %d concluído!" % last
 	return "Capítulo 1 concluído!"
 
 func diary_lines() -> Array:

@@ -129,6 +129,7 @@ func _ready() -> void:
 	Game.team_changed.connect(_on_team_changed)
 	Game.party_changed.connect(_on_party_changed)
 	Weather.attach(self)
+	Fortaleza.attach(self)   # Região 4: chefes, feixes de luz, retorno ao Refúgio
 
 func _make_tileset() -> TileSet:
 	if _tileset:
@@ -169,10 +170,12 @@ func _make_tileset() -> TileSet:
 		for i in INT_NAMES.size():
 			src3.create_tile(Vector2i(i % 16, i / 16))
 		ts.add_source(src3, 2)
+	Fortaleza.add_source(ts)   # Região 4 (fonte 4 do TileSet)
 	_tileset = ts
 	return ts
 
 func _tc(name: String) -> Vector2i:
+	if Fortaleza.is_name(name): return Fortaleza.coords(name)
 	var i := TILE_NAMES.find(name)
 	if i < 0:
 		i = MINAS_NAMES.find(name)
@@ -182,6 +185,7 @@ func _tc(name: String) -> Vector2i:
 
 ## Fonte do atlas: 0 = floresta (tiles2.png), 1 = minas (tiles_minas.png)
 func _src(name: String) -> int:
+	if Fortaleza.is_name(name): return Fortaleza.SOURCE_ID
 	if INT_NAMES.has(name):
 		return 2
 	return 1 if MINAS_NAMES.has(name) else 0
@@ -314,6 +318,7 @@ func _cell_tiles(x: int, y: int) -> Array:
 				out[0] = "chimney"
 			else:
 				out[0] = "forge_door" if x == mid2 else ("forge_window" if (x - a2) % 2 == 1 else "forge_wall")
+	if Fortaleza.CHARS.contains(c): out = Fortaleza.cell_tiles(self, x, y, c, hv)   # Região 4
 	return out
 
 func _paint_cell(i: int, j: int) -> void:
@@ -328,7 +333,7 @@ func _paint_cell(i: int, j: int) -> void:
 		cover.set_cell(Vector2i(i, j - 1), _src(t[3]), _tc(t[3]))
 
 func is_solid_char(c: String) -> bool:
-	return SOLID.contains(c)
+	return SOLID.contains(c) or Fortaleza.SOLID.contains(c)
 
 # =============================================================== CARREGAR MAPA
 ## spawn: nome do ponto de entrada; pos: posição em pixels (sobrepõe o spawn, usada por continue/checkpoint).
@@ -409,6 +414,8 @@ func _compute_tiles() -> void:
 			continue
 		if c.has("unless") and Game.has_flag(c["unless"]):
 			continue
+		if c.has("eco") and not (Game.has_eco(c["eco"]) or Game.has_flag("eco_" + str(c["eco"]))):
+			continue   # ex.: a ponte espiritual só existe para quem tem o Olhar Velado
 		for r in c.get("rects", []):
 			for j in range(int(r[3])):
 				for i in range(int(r[2])):
@@ -483,6 +490,8 @@ func _rebuild_collision() -> void:
 				i += 1
 
 func refresh_tiles() -> void:
+	if base_tiles.size() != H or cur_tiles.size() != H:
+		return     # mapa em troca (load_map limpa flags temporárias antes de ler os tiles novos)
 	var before := cur_tiles.duplicate(true)
 	_compute_tiles()
 	var changed := false
@@ -546,7 +555,7 @@ func _spawn_def(i: int, player_pos: Vector2 = Vector2(-9999, -9999)) -> void:
 		"enemy":
 			if d.has("enc") and Game.has_flag(_enc_done_flag(d["enc"])):
 				return
-			var en2 := Enemy.new()
+			var en2: Enemy = Fortaleza.new_enemy(d["kind"])
 			en2.init(self, d["kind"], d)
 			if player_pos.distance_to(en2.position) < 80.0:
 				return
@@ -573,6 +582,11 @@ func _spawn_def(i: int, player_pos: Vector2 = Vector2(-9999, -9999)) -> void:
 			bb.init(self, bk, d)
 			node = bb
 			boss_nodes[i] = bb
+		_:
+			if Fortaleza.ENT_KINDS.has(t):   # mecanismos da Região 4 (scripts/fort_ent.gd)
+				var fe := FortEnt.new()
+				fe.init(self, d)
+				node = fe
 	if node != null:
 		ysort.add_child(node)
 		ent_nodes[i] = node
@@ -707,7 +721,7 @@ func _spawn_contract() -> void:
 		d["contrato"] = cid
 		if not d.has("id"):
 			d["id"] = "%s_f%d_%d" % [cid, int(d["x"]), int(d["y"])]
-		var en := Enemy.new()
+		var en: Enemy = Fortaleza.new_enemy(d["kind"])
 		en.init(self, d["kind"], d)
 		ysort.add_child(en)
 		if d["kind"] == "vesna":
@@ -1254,7 +1268,7 @@ func cell_free_for_crate(pos: Vector2, me: Node) -> bool:
 
 func reset_room_puzzles() -> void:
 	## Reinicia caixas e alavancas ainda não resolvidas (evita travar por caixa encurralada).
-	const RESET := ["crate", "lever", "flower", "plate", "cart", "furnace", "rail_lever", "brazier"]
+	var RESET: Array = ["crate", "lever", "flower", "plate", "cart", "furnace", "rail_lever", "brazier"] + Fortaleza.RESET_KINDS
 	for i in ent_defs.size():
 		var d: Dictionary = ent_defs[i]
 		if d["type"] in RESET:
@@ -1264,8 +1278,8 @@ func reset_room_puzzles() -> void:
 			ent_nodes.erase(i)
 		elif d["type"] == "valve" and (d.has("dura") or str(d.get("flag", "")).begins_with("tmp_")):
 			Game.set_flag(d["flag"], false)      # válvulas temporizadas do rito voltam a fechar
-		elif d["type"] == "rail_lever":
-			pass
+		elif d["type"] == "eclipse" and str(d.get("flag", "")).begins_with("tmp_"):
+			Game.set_flag(d["flag"], false)      # Região 4: o eclipse do rito volta ao sol
 		if d["type"] == "rail_lever":
 			rail_switch[d["id"]] = str(d.get("start", "a"))
 	for g in map.get("puzzles", {}):
@@ -1279,6 +1293,7 @@ func reset_room_puzzles() -> void:
 	for i in ent_defs.size():
 		if ent_defs[i]["type"] in RESET:
 			_spawn_def(i)
+	FortEnt.retrace(self)
 
 # =============================================================== ENCONTROS
 func _update_encounters() -> void:
@@ -1541,6 +1556,7 @@ func fire_area(origin: Vector2, dir: Vector2, rad: float, arc: float, src: Strin
 				var ac := Game.active_ind()
 				if not ac.is_empty():
 					Game.bond_activity(ac["uuid"], "acao:" + e.eid)
+	n += FortEnt.heat_area(self, origin, dir, rad, arc)   # Região 4: mecanismos antigos
 	return n
 
 # =============================================================== ECO: RUPTURA ÍGNEA

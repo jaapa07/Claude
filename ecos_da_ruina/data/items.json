@@ -419,5 +419,67 @@
   "desc": "Acessório de criatura: +25% de vida e ataque, recarga 15% menor.",
   "mult": 0.25,
   "cd": 0.15
+ },
+ "lasca_umbral": {
+  "nome": "Lasca Umbral",
+  "tipo": "material",
+  "preco": 40,
+  "icone": 1,
+  "folha": "icons_fortaleza",
+  "desc": "Fragmento de sombra endurecida das armaduras do Eclipse. Usado em peças da forja."
+ },
+ "pluma_vento": {
+  "nome": "Pluma de Vento",
+  "tipo": "missao",
+  "icone": 0,
+  "folha": "icons_fortaleza",
+  "desc": "Pena que flutua sozinha. A jardineira Tália usa para guiar as hélices dos jardins."
+ },
+ "brasa_solar": {
+  "nome": "Brasa Solar",
+  "tipo": "material",
+  "preco": 55,
+  "icone": 2,
+  "folha": "icons_fortaleza",
+  "desc": "Brasa dourada dos mecanismos antigos. Nunca esfria."
+ },
+ "insignia_guarnicao": {
+  "nome": "Insígnia da Guarnição",
+  "tipo": "historia",
+  "icone": 3,
+  "folha": "icons_fortaleza",
+  "desc": "Sol dourado sobre violeta. Os Gêmeos de Ferro a arrancaram do comandante da guarnição."
+ },
+ "diario_guarnicao": {
+  "nome": "Diário do Sargento Aurélio",
+  "tipo": "missao",
+  "icone": 4,
+  "folha": "icons_fortaleza",
+  "desc": "\"O eclipse não passou. O Cavaleiro tirou o próprio rosto e o deu à sombra. Lume, se ler isto: seu pai não desertou.\""
+ },
+ "amuleto_eclipse": {
+  "nome": "Amuleto do Eclipse",
+  "tipo": "amuleto",
+  "hp": 30,
+  "raridade": 2,
+  "icone": 5,
+  "folha": "icons_fortaleza",
+  "desc": "+30 de vida máxima. Recompensa do Rito do Eclipse avançado."
+ },
+ "lente_observatorio": {
+  "nome": "Lente do Observatório",
+  "tipo": "historia",
+  "icone": 6,
+  "folha": "icons_fortaleza",
+  "desc": "\"Do observatório víamos a Catedral do Vazio. No dia do eclipse, ela piscou de volta.\""
+ },
+ "manto_umbral": {
+  "nome": "Manto Umbral",
+  "tipo": "protecao",
+  "reducao": 0.18,
+  "raridade": 2,
+  "icone": 7,
+  "folha": "icons_fortaleza",
+  "desc": "Técnica do Rito do Eclipse: tecido de sombra que reduz 18% do dano recebido."
  }
 }

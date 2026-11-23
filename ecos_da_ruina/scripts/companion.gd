@@ -281,6 +281,9 @@ func env_action_fx(target_pos: Vector2) -> void:
 	match species.get("acao_id", ""):
 		"trilho": col = Color(0.6, 0.8, 1.0)
 		"fumaca": col = Color(0.5, 0.45, 0.6)
+		"fresta": col = Color(0.6, 0.45, 0.9)
+		"helice": col = Color(0.75, 0.9, 1.0)
+		"calor": col = Color(1.0, 0.8, 0.3)
 	world.bolt(global_position + Vector2(0, -8), target_pos + Vector2(0, -6), col, func():
 		world.fx_at("fire" if species.get("acao_id", "") == "fogo" else "sparkle", target_pos + Vector2(0, -8), 0.5))
 
@@ -358,6 +361,8 @@ func command_skill(dir: Vector2) -> bool:
 					e.take_damage(dmg, global_position, {"src": "companion", "uuid": uuid(), "aff": aff, "knock": float(sk.get("knock", 40.0))})
 			if bool(sk.get("acende", false)):
 				world.fire_area(global_position, cdir, rr + 10.0, arc + 10.0, "companion")
+			if bool(sk.get("vento", false)):
+				FortEnt.wind_area(world, global_position, cdir, rr + 16.0, arc + 10.0)   # Região 4: hélices, névoa, cata-ventos
 			_face(cdir)
 			anim_lock = 0.35
 			sprite.play("attack")
@@ -392,6 +397,8 @@ func command_skill(dir: Vector2) -> bool:
 			anim_lock = 0.3
 			sprite.play("windup")
 		"avanco", "avanco_cadeia":
+			if bool(sk.get("umbral", false)) and _umbral_blink(sk, dir, dmg):
+				return true      # Região 4: investida de sombra entre pontos visíveis
 			dash_dir = dir if dir != Vector2.ZERO else Vector2.RIGHT
 			dash_sk = sk
 			dash_hops = int(sk.get("saltos", 0)) if ex == "avanco_cadeia" else 0
@@ -536,5 +543,52 @@ func _dash(delta: float) -> void:
 		dash_hops = 0
 	if dash_t <= 0.0:
 		velocity = Vector2.ZERO
+		if dash_sk.has("explosao"):
+			_explode(dash_sk)    # Região 4: salto com explosão localizada (Brasardo/Solarco)
 		dash_sk = {}
 		dash_hops = 0
+
+
+# =============================================================== REGIÃO 4 (Fortaleza do Eclipse)
+## Investida Umbral: some na sombra e ressurge num ponto VISÍVEL à frente (alvo ou direção), ferindo quem estiver na linha.
+## Nunca atravessa paredes: o destino precisa estar livre e com linha de visão.
+func _umbral_blink(sk: Dictionary, dir: Vector2, dmg: float) -> bool:
+	var reach: float = float(sk.get("alcance", 70)) * (1.2 if is_evolved() else 1.0)
+	var goal: Vector2 = global_position + (dir if dir != Vector2.ZERO else Vector2.RIGHT) * reach
+	if target != null and is_instance_valid(target) and target.hittable() and target.global_position.distance_to(global_position) <= reach * 1.3:
+		goal = target.global_position + (target.global_position - global_position).normalized() * 14.0
+	var steps := 8
+	while steps > 0 and (world.tile_solid_at(goal) or Combat.ray_blocked(world, global_position, goal)):
+		goal = global_position.lerp(goal, 0.8)
+		steps -= 1
+	if steps == 0 or goal.distance_to(global_position) < 12.0:
+		return false
+	var from := global_position
+	world.fx_at("vortex", from + Vector2(0, -6), 0.3)
+	for e in world.enemies():
+		if not e.hittable() or e.kind == "dummy":
+			continue
+		var seg: Vector2 = goal - from
+		var tt: float = clamp((e.global_position - from).dot(seg) / max(1.0, seg.length_squared()), 0.0, 1.0)
+		if (from + seg * tt).distance_to(e.global_position) <= float(sk.get("raio", 16)) + e.radius:
+			e.take_damage(dmg, from, {"src": "companion", "uuid": uuid(), "aff": species["afinidade"], "knock": 60.0, "ignore_guard": true})
+	global_position = goal
+	world.fx_at("vortex", goal + Vector2(0, -6), 0.3)
+	_face(goal - from)
+	anim_lock = 0.3
+	sprite.play("attack")
+	return true
+
+## Explosão localizada ao fim do salto: fere em volta, reaquece mecanismos antigos e acende fornalhas.
+func _explode(sk: Dictionary) -> void:
+	var rad: float = float(sk["explosao"]) * (1.2 if is_evolved() else 1.0)
+	var dmg: float = (float(sk["dano"]) + Game.creature_atk(ind) * 0.6) * stat_mult() * 0.6
+	for k in 5:
+		world.fx_at("fire", global_position + Vector2.from_angle(TAU * k / 5.0) * rad * 0.5 + Vector2(0, -4), 0.45, 0.0, 1.2)
+	world.fx_at("hit", global_position + Vector2(0, -6), 0.3, 0.0, 2.0)
+	world.shake(1.5, 0.15)
+	Audio.play("thud", -4.0)
+	for e in world.enemies():
+		if e.hittable() and e.kind != "dummy" and e.global_position.distance_to(global_position) <= rad + e.radius:
+			e.take_damage(dmg, global_position, {"src": "companion", "uuid": uuid(), "aff": species["afinidade"], "knock": 80.0})
+	world.fire_area(global_position, Vector2.RIGHT, rad + 12.0, 360.0, "companion")

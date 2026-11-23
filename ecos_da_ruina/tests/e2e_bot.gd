@@ -39,6 +39,8 @@ func _ready() -> void:
 		Game.weather_neutral = true
 	if "--clima" in args:
 		await run_clima()
+	elif "--regiao4" in args:
+		await run_regiao4()
 	elif "--habilidades" in args:
 		await run_habilidades()
 	elif "--casas" in args:
@@ -3201,3 +3203,806 @@ func run_musica() -> void:
 	check("Fechar o diálogo retoma a festa", await mus_wait("vila_festa"), mus_info())
 	Audio.music("titulo")
 	check("API antiga Audio.music continua funcionando", Audio.current_track() == "titulo", mus_info())
+
+# =============================================================== REGIÃO 4 — FORTALEZA DO ECLIPSE
+## Uso: godot --headless --fixed-fps 60 --path . -- --e2e --regiao4
+## Monta o estado do fim do Capítulo 3 (herói nv.19, Ecos Raiz Viva, Ruptura Ígnea e o Olhar Velado provisório,
+## equipe evoluída) e joga a região toda: ponte espiritual, Refúgio, Muralha Partida, Torre, Jardins, contratos,
+## Gêmeos de Ferro, Rito do Eclipse, Cavaleiro Sem Rosto, Passo Umbral e os segredos de revisita.
+
+func r4_ind(sp_id: String, lvl: int) -> Dictionary:
+	var ind := Game.new_individual(sp_id, lvl)
+	Game.individuals[ind["uuid"]] = ind
+	Game.mark_seen(sp_id)
+	Game.mark_captured(sp_id)
+	return ind
+
+func r4_setup(slot: int) -> void:
+	SaveSys.delete_slot(slot)
+	main.start_new_game(slot)
+	await frames(10)
+	await advance_dialogs()
+	Game.hero["level"] = 19
+	Game.hero["xp"] = 0
+	Game.hero["talents"] = {"espada": 3, "resistencia": 2, "vinculo": 1}
+	for it in {"pocao": 12, "selo_refinado": 14, "selo_basico": 10, "tonico_criatura": 4, "galhada_ossea": 1, "couraca_ossos": 1,
+			"amuleto_brasa": 1, "luvas_termicas": 1, "botas_vento": 1, "frasco_seiva": 1, "semente_vida": 2}:
+		Game.give_item(it, int({"pocao": 12, "selo_refinado": 14, "selo_basico": 10, "tonico_criatura": 4, "semente_vida": 2}.get(it, 1)))
+	Game.equip("galhada_ossea"); Game.equip("couraca_ossos"); Game.equip("amuleto_brasa")
+	Game.fragments = 900
+	for f in ["falou_maru", "tutorial_ok", "primeira_captura", "viu_santuario_seiva", "lenhador_morto", "cervo_morto", "voltou_vila", "ponte_minas",
+			"fim_cap1", "visitou_forja_cobre", "falou_doran", "visitou_fundicao_a", "vigia_morto", "ferreiro_morto", "minas_libertas", "voltou_forja",
+			"saqueadores_ok", "emboscada_ok", "rito_ok", "tut_move", "tut_attack", "tut_dodge", "tut_guard", "tut_command", "tut_rest", "eco_olhar_velado", "bruxa_morta", "fim_cap3"]:
+		Game.set_flag(f)
+	Game.grant_eco("raiz_viva")
+	Game.grant_eco("ruptura_ignea")
+	Game.ecos["olhar_velado"] = true      # placeholder do Eco da Região 3 (fora das teclas até a Região 3 cadastrar a habilidade)
+	Game.team = []
+	for pair in [["brasejante", 20], ["cinzaveu", 19], ["rocantor", 19]]:
+		var ind := r4_ind(pair[0], pair[1])
+		Game.team.append(ind["uuid"])
+	Game.active_idx = 0
+	Game.hero["hp"] = Game.hero_max_hp()
+	Game.checkpoint = {"map": "ponte_espiritual", "spawn": "from_pantano", "shrine": ""}
+	Game.team_changed.emit(); Game.hero_changed.emit(); Game.inventory_changed.emit()
+	W.load_map("ponte_espiritual", "from_pantano")
+	await frames(20)
+
+## põe a espécie na equipe (troca com o santuário se preciso) e a deixa ativa
+func r4_use(sp_ids: Array) -> bool:
+	var u := uuid_of(sp_ids)
+	if u == "":
+		return false
+	if not Game.team.has(u):
+		for v in Game.team.duplicate():
+			if Game.individuals[v]["species_id"] in ["rocantor", "cinzaveu", "umbrel", "ventisco", "brasardo"] and v != u:
+				Game.move_to_sanctuary(v)
+				break
+		if Game.team.size() >= Game.TEAM_MAX:
+			Game.move_to_sanctuary(Game.team[Game.team.size() - 1])
+		Game.move_to_team(u)
+	Game.individuals[u]["exausta"] = false
+	Game.individuals[u]["hp"] = Game.creature_hp_max(Game.individuals[u])
+	return await set_active_species(sp_ids)
+
+func r4_heal() -> void:
+	Game.heal_team()
+	Game.hero["hp"] = Game.hero_max_hp()
+	Game.hero_changed.emit()
+
+## passo de combate com as leituras próprias da região (estocada em linha, contra-ataque da armadura)
+func r4_step(tgt: Node) -> void:
+	await use_potion_if_needed()
+	for e in hostile():
+		if e.st != Enemy.St.WINDUP:
+			continue
+		var rel: Vector2 = P.global_position - e.global_position
+		var danger := false
+		match str(e.def.get("ataque", "")):
+			"estocada":
+				danger = rel.dot(e.attack_dir) > -8.0 and rel.dot(e.attack_dir) < 80.0 and abs(rel.dot(e.attack_dir.orthogonal())) < 22.0
+			"flecha":
+				danger = rel.length() < 170.0 and abs(rel.normalized().dot(e.attack_dir.orthogonal())) < 0.25
+			_:
+				danger = rel.length() < 56.0
+		if e.get("countering") == true:
+			danger = rel.length() < 60.0
+		if danger and P.vigor >= 25.0 and P.dodge_cd <= 0.0:
+			var wind: float = float(e.P.get("wind", 0.6)) * Game.warning_mult()
+			if e.st_t > wind - 0.3:
+				steer(e.attack_dir.orthogonal() if randf() < 0.5 else -e.attack_dir.orthogonal())
+				await frames(1)
+				await tap("dodge", 2)
+				release_moves()
+				return
+	# armadura: depois de dois golpes seguidos, recua um pouco para quebrar o ritmo
+	if not is_instance_valid(tgt):
+		return
+	if tgt.kind == "armadura" and tgt.get("hit_times") != null and tgt.hit_times.size() >= 2:
+		steer(P.global_position - tgt.global_position)
+		await frames(30)
+		release_moves()
+		await frames(20)
+		if is_instance_valid(tgt):
+			tgt.hit_times.clear()
+		return
+	await combat_step(tgt)
+
+func r4_engage(center: Vector2, radius := 160.0, timeout := 120.0) -> void:
+	var t := 0.0
+	while t < timeout and P.state != Player.S.DEAD:
+		var es := hostile().filter(func(e): return e.global_position.distance_to(center) < radius and not e.boss)
+		if es.is_empty():
+			break
+		es.sort_custom(func(a, b): return a.global_position.distance_to(P.global_position) < b.global_position.distance_to(P.global_position))
+		var tgt: Node = es[0]
+		var before := frame_count
+		if P.global_position.distance_to(tgt.global_position) > 90.0:
+			await goto(tgt.global_position, 60.0, 12.0)
+		await r4_step(tgt)
+		t += float(frame_count - before) / 60.0
+
+func r4_tile(tx: int, ty: int) -> String:
+	return W.cur_tiles[ty][tx]
+
+func r4_fent(id: String) -> Node:
+	return ent_by_id(id)
+
+# ---------------------------------------------------------------- 1. ponte espiritual
+func r4_ponte() -> void:
+	check("R4: região Fortaleza do Eclipse marcada como jogável", Data.regions["fortaleza"]["status"] == "jogavel" and Data.regions["fortaleza"]["mapas"].size() >= 8)
+	check("R4: dados sem erros de validação (mapas, espécies, inimigos)", Data.errors.is_empty(), str(Data.errors))
+	check("R4: começa na Ponte Espiritual", W.map_id == "ponte_espiritual")
+	check("R4: tileset da fortaleza (fonte 4 do TileSet) em uso", W.tilemap.tile_set.has_source(Fortaleza.SOURCE_ID) and W.tilemap.get_cell_source_id(Vector2i(20, 11)) == Fortaleza.SOURCE_ID)
+	check("R4: o Olhar Velado revela a ponte espiritual", r4_tile(20, 11) == "ξ" and r4_tile(20, 12) == "ξ")
+	# sem o Olhar Velado não há ponte
+	Game.ecos.erase("olhar_velado"); Game.set_flag("eco_olhar_velado", false)
+	W.refresh_tiles()
+	var sem: String = r4_tile(20, 11)
+	Game.ecos["olhar_velado"] = true; Game.set_flag("eco_olhar_velado")
+	W.refresh_tiles()
+	check("R4: sem o Olhar Velado o abismo fica sem ponte (intransponível)", sem == "θ" and W.is_solid_char(sem))
+	check("R4: clima da fortaleza (ventania/frio/sol) cadastrado", Weather.zone_of("ponte_espiritual") == "fortaleza" and Weather.climates().has("ventania"))
+	await shot("r4_01_ponte")
+	await use_ent("ponte", Vector2(0, 18), Vector2.UP)
+	await ui_press("ui_accept")
+	await close_menus()
+	check("R4: santuário da ponte grava o ponto de retorno", Game.checkpoint.get("shrine", "") == "ponte")
+	await goto(tpos(24, 12), 4.0, 30.0)
+	await shot("r4_02_ponte_espiritual")
+	await r4_engage(tpos(33, 9), 200.0, 40.0)
+	var ok := await exit_to("refugio_muralha", 39 * 16.0 + 8.0, 12 * 16.0 + 8.0)
+	check("R4: a ponte leva ao Refúgio da Muralha", ok and W.map_id == "refugio_muralha")
+
+# ---------------------------------------------------------------- 2. Refúgio da Muralha
+func r4_refugio() -> void:
+	check("R4: Refúgio é seguro e tem música própria", W.map.get("safe", false) and W.map.get("music", "") == "fortaleza")
+	await shot("r4_03_refugio")
+	await talk("ilse")
+	check("R4: Capitã Ilse dá a missão principal e suprimentos", Game.has_flag("falou_ilse") and "Jardins" in Game.objective_text(), Game.objective_text())
+	await talk("talia")
+	check("R4: Tália oferece a missão 'Penas ao Vento'", Game.has_flag("quest_penas"))
+	await talk("lume")
+	check("R4: Lume oferece a missão 'O Último Recado'", Game.has_flag("quest_recado"))
+	await rest_at("refugio")
+	check("R4: santuário do Refúgio grava o ponto de retorno", Game.checkpoint.get("shrine", "") == "refugio")
+	await use_ent("quadro_refugio", Vector2(0, 16), Vector2.UP)
+	await frames(5)
+	check("R4: quadro de contratos do Refúgio abre a tela", main.ui.has_screen())
+	await shot("r4_04_quadro")
+	await close_menus()
+	check("R4: caçada e contrato em trio da região bloqueados até visitar as rotas", Game.contract_state("caca_lanceiros") == "bloqueado" and Game.contract_state("domadores_eclipse") == "bloqueado")
+	# segredo por observação: ar frio entre as pedras do muro oeste
+	check("R4: nicho escondido fechado antes de observar", W.is_solid_char(r4_tile(2, 28)))
+	await use_ent("refugio_ar_frio", Vector2(0, 14), Vector2.UP)
+	check("R4: observar o ar frio abre o nicho", Game.has_flag("refugio_nicho") and not W.is_solid_char(r4_tile(2, 28)))
+	await use_ent("refugio_bau_nicho", Vector2(16, 0), Vector2.LEFT)
+	check("R4: baú do nicho (Semente de Vida + Lente do Observatório)", Game.chests.has("refugio_bau_nicho") and Game.item_count("lente_observatorio") == 1)
+	# obstáculo antes da solução: fissura violeta (Passo Umbral)
+	await use_ent("refugio_fissura", Vector2(0, -14), Vector2.DOWN)
+	check("R4: fissura do Refúgio visível e intransponível antes do Passo Umbral", Game.has_flag("viu_umbral_refugio_fissura") and W.map_id == "refugio_muralha" and P.global_position.y < 26 * 16)
+	check("R4: portão da Estrada Final trancado antes do guardião", W.is_solid_char(r4_tile(23, 1)))
+
+# ---------------------------------------------------------------- 3. Muralha Partida (rota 2)
+func r4_muralha() -> void:
+	var ok := await exit_to("muralha_partida", 47 * 16.0 + 8.0, 17 * 16.0 + 8.0)
+	check("R4: portão leste leva à Muralha Partida (rota 2)", ok and W.map_id == "muralha_partida")
+	await shot("r4_05_muralha")
+	# lanceiro do corredor: guarda o posto
+	var ln := ent_by_id("m_lan1")
+	check("R4: lanceiro do corredor com guarda frontal e estocada", ln != null and ln.guard_front > 0.0 and ln.def["ataque"] == "estocada")
+	await r4_engage(tpos(14, 19), 140.0, 60.0)
+	check("R4: corredor da muralha liberado", ent_by_id("m_lan1") == null or not ent_by_id("m_lan1").alive_flag)
+	check("R4: a brecha da muralha está aberta (sem ponte)", W.is_solid_char(r4_tile(21, 19)))
+	# capturas: Brasardo (respiros quentes) e Umbrel (sombra das ameias)
+	var cap := await capture_species("m_brasardo1")
+	check("R4: captura de um Brasardo no habitat dos respiros quentes", cap and uuid_of(["brasardo"]) != "")
+	check("R4: Brasardo jogável (sprite, habilidade de salto explosivo)", Data.species["brasardo"]["status"] == "jogavel" and Data.skills["salto_brasa"].has("explosao"))
+	# mecanismo antigo: o Brasardo reaquece direto
+	await r4_use(["brasardo"])
+	await use_ent("muralha_solar", Vector2(-16, 0), Vector2.RIGHT)
+	await frames(10)
+	check("R4: Brasardo reaquece o mecanismo antigo e a ponte levadiça desce", Game.has_flag("muralha_ponte") and not W.is_solid_char(r4_tile(21, 19)))
+	await shot("r4_06_ponte_levadica")
+	# salto explosivo do Brasardo também reaquece (teste do efeito real no mecanismo)
+	var tmp := FortEnt.new()
+	tmp.init(W, {"type": "solar", "id": "t_solar", "x": int(W.companion.global_position.x / 16) + 2, "y": int(W.companion.global_position.y / 16), "flag": "t_solar_ok"})
+	W.ysort.add_child(tmp)
+	await frames(2)
+	W.companion._explode(Data.skills["salto_brasa"])
+	await frames(2)
+	check("R4: a explosão do salto do Brasardo reaquece mecanismos antigos", Game.has_flag("t_solar_ok"))
+	tmp.queue_free()
+	Game.set_flag("t_solar_ok", false)
+	await goto(tpos(26, 19), 6.0, 30.0)
+	await r4_engage(tpos(34, 17), 120.0, 40.0)
+	cap = await capture_species("m_umbrel1")
+	check("R4: captura de um Umbrel na sombra das ameias", cap and uuid_of(["umbrel"]) != "")
+	# fresta: só o Umbrel entra (a alavanca da plataforma sul é a alternativa)
+	check("R4: grade da muralha fechada antes da fresta", W.is_solid_char(r4_tile(38, 19)))
+	await r4_use(["brasejante"])
+	await use_ent("muralha_fresta", Vector2(-16, 0), Vector2.RIGHT)
+	check("R4: sem Umbrel a fresta só dá a dica (alternativa: alavanca)", not Game.has_flag("muralha_portao"))
+	await r4_use(["umbrel"])
+	await use_ent("muralha_fresta", Vector2(-16, 0), Vector2.RIGHT)
+	await frames(5)
+	check("R4: Umbrel entra na fresta e aciona a grade por dentro", Game.has_flag("muralha_portao") and not W.is_solid_char(r4_tile(38, 19)))
+	# investida umbral: ressurge num ponto visível, nunca atrás de parede
+	var c0: Vector2 = W.companion.global_position
+	var okb := false
+	for dv in [Vector2.LEFT, Vector2.DOWN, Vector2.RIGHT, Vector2.UP]:
+		c0 = W.companion.global_position
+		okb = W.companion._umbral_blink(Data.skills["investida_umbral"], dv, 1.0)
+		if okb:
+			break
+	await frames(2)
+	var c1: Vector2 = W.companion.global_position
+	check("R4: Investida Umbral leva o Umbrel a um ponto visível e livre", okb and c1.distance_to(c0) > 12.0 and not W.tile_solid_at(c1) and not Combat.ray_blocked(W, c0, c1))
+	await shot("r4_07_fresta")
+	# plataforma sul: armadura e lanceiro, diário do sargento
+	await goto(tpos(28, 26), 6.0, 30.0)
+	var arm := ent_by_id("m_arm1")
+	check("R4: Armadura Vigilante contra-ataca combos previsíveis", arm != null and arm.has_method("_start_counter"))
+	if arm != null:
+		# três golpes no mesmo ritmo -> postura de contra-ataque anunciada (nunca instantânea)
+		var hp0: float = arm.hp
+		for k in 3:
+			arm.take_damage(5.0, P.global_position, {"src": "heroi", "ataque": "espada"})
+		check("R4: três golpes seguidos põem a armadura em contra-ataque anunciado (windup)", arm.countering and arm.st == Enemy.St.WINDUP and arm.hp < hp0)
+		var hp1: float = arm.hp
+		arm.take_damage(20.0, P.global_position, {"src": "heroi"})
+		check("R4: durante o aviso a armadura apara os golpes da espada", hp1 - arm.hp <= 4.5)
+	await r4_engage(tpos(31, 30), 140.0, 90.0)
+	await use_ent("muralha_bau_diario", Vector2(0, 14), Vector2.UP)
+	check("R4: diário do Sargento Aurélio na plataforma sul", Game.item_count("diario_guarnicao") == 1 and Game.has_flag("recado_achado"),
+		"pos=%s baú=%s vivos=%d" % [str(tile_of(P.global_position)), str(Game.chests.has("muralha_bau_diario")), hostile().size()])
+	# fissura de revisita na plataforma sul
+	await use_ent("muralha_fissura", Vector2(-14, 0), Vector2.RIGHT)
+	check("R4: fissura da muralha marcada para revisita", Game.has_flag("viu_umbral_muralha_fissura") and not Game.chests.has("muralha_bau_umbral"))
+	# bastião: balestra dispara no receptor
+	await goto(tpos(40, 19), 6.0, 40.0)
+	await r4_engage(tpos(44, 21), 120.0, 40.0)
+	check("R4: grade da torre fechada antes do disparo", W.is_solid_char(r4_tile(47, 13)))
+	await use_ent("muralha_balestra", Vector2(-16, 0), Vector2.RIGHT)
+	await secs(1.2)
+	check("R4: virote da balestra acende o receptor e abre a grade da torre", Game.has_flag("muralha_receptor") and not W.is_solid_char(r4_tile(47, 13)))
+	await shot("r4_08_bastiao")
+	ok = await exit_to("torre_a", 47 * 16.0 + 8.0, 8.0)
+	check("R4: subida do bastião leva à Torre das Duas Sombras", ok and W.map_id == "torre_a")
+	check("R4: caçada de lanceiros libera depois de visitar a Muralha", Game.contract_state("caca_lanceiros") == "disponivel")
+
+# ---------------------------------------------------------------- 4. torre (base): átrio, ala da sombra, atalho
+func r4_torre_base() -> void:
+	await shot("r4_09_torre_atrio")
+	await rest_at("torre_atrio")
+	check("R4: santuário do átrio da torre", Game.checkpoint.get("shrine", "") == "torre_atrio" and Game.has_flag("visitou_torre_a"))
+	# ala da sombra: sol -> plataformas de luz; lua -> plataformas de sombra
+	await goto(tpos(15, 20), 6.0, 60.0)
+	check("R4: com sol, a ponte de ouro existe e a de sombra não", r4_tile(12, 20) == "Λ" and r4_tile(9, 17) == "Ψ")
+	await goto(tpos(9, 20), 4.0, 20.0)
+	check("R4: atravessa a ponte de luz até a ilhota", tile_of(P.global_position) == Vector2i(9, 20))
+	await use_ent("ta_eclipse2", Vector2(16, 0), Vector2.LEFT)
+	await frames(5)
+	check("R4: a alavanca do eclipse troca as plataformas (luz some, sombra surge)", r4_tile(12, 20) == "Δ" and r4_tile(9, 17) == "Σ" and W.is_solid_char("Δ"))
+	await shot("r4_10_ala_sombra")
+	await goto(tpos(5, 15), 4.0, 20.0)
+	check("R4: atravessa a ponte de sombra até a beirada oeste", P.global_position.y < 16 * 16)
+	await use_ent("ta_bau_sombra", Vector2(0, 14), Vector2.UP)
+	await use_ent("ta_alavanca_atalho", Vector2(0, 14), Vector2.UP)
+	await frames(10)
+	check("R4: alavanca do atalho abre a passagem antiga ao Refúgio", Game.has_flag("torre_atalho") and not W.is_solid_char(r4_tile(2, 14)))
+	var ok := await exit_to("refugio_muralha", 8.0, 14 * 16.0 + 8.0)
+	check("R4: atalho da torre leva direto ao Refúgio (retorno curto)", ok and W.map_id == "refugio_muralha" and not W.is_solid_char(r4_tile(2, 6)))
+	# no Refúgio: entrega o diário e aceita a caçada
+	await talk("lume")
+	check("R4: Lume recebe o diário do pai (missão secundária concluída)", Game.has_flag("recado_entregue") and Game.item_count("diario_guarnicao") == 0)
+	check("R4: Lume muda de lugar depois do recado (rotina)", ent_by_id("lume_quartel") != null and ent_by_id("lume") == null)
+	check("R4: aceitar a caçada de lanceiros", Game.accept_contract("caca_lanceiros"))
+	ok = await exit_to("torre_a", 8.0, 6 * 16.0 + 8.0)
+	check("R4: a passagem do Refúgio volta à ala oeste da torre", ok and W.map_id == "torre_a")
+	# volta pela ponte de sombra
+	await goto(tpos(9, 20), 4.0, 30.0)
+	await use_ent("ta_eclipse2", Vector2(16, 0), Vector2.LEFT)
+	await frames(5)
+	await goto(tpos(15, 20), 4.0, 30.0)
+	check("R4: volta à beirada leste com o sol", tile_of(P.global_position).x >= 14)
+
+# ---------------------------------------------------------------- 5. Salão do Eclipse (luz) e galeria
+func r4_salao() -> void:
+	await goto(tpos(30, 22), 6.0, 40.0)
+	await shot("r4_11_salao")
+	check("R4: porta norte do salão fechada antes da luz", W.is_solid_char(r4_tile(29, 13)))
+	var rec := ent_by_id("ta_receptor")
+	check("R4: receptor do salão apagado no início", rec != null and not rec.lit)
+	await use_ent("ta_espelho1", Vector2(0, 14), Vector2.UP)
+	await frames(4)
+	await use_ent("ta_espelho2", Vector2(0, -14), Vector2.DOWN)
+	await frames(4)
+	check("R4: feixe desviado pelos espelhos ainda barrado pela persiana", not rec.lit)
+	await use_ent("ta_persiana", Vector2(0, -14), Vector2.DOWN)
+	await frames(6)
+	check("R4: espelhos + persiana levam a luz ao cristal e a porta norte abre", Game.has_flag("salao_luz") and rec.lit and not W.is_solid_char(r4_tile(29, 13)))
+	await shot("r4_12_salao_luz")
+	await goto(tpos(29, 10), 6.0, 30.0)
+	await frames(10)
+	check("R4: galeria fecha as portas com os inimigos", Game.has_flag("tmp_enc_galeria_t"))
+	await r4_engage(tpos(30, 6), 300.0, 150.0)
+	await secs(1.0)
+	check("R4: galeria dos lanceiros vencida (portas reabrem)", Game.has_flag("enc_galeria_t_ok"))
+	await use_ent("ta_bau_galeria", Vector2(-16, 0), Vector2.RIGHT)
+
+# ---------------------------------------------------------------- 6. Jardins Suspensos (rota 1)
+func r4_jardins() -> void:
+	var ok := await exit_to("torre_a", 29 * 16.0 + 8.0, 30 * 16.0)
+	await goto(tpos(10, 35), 6.0, 60.0)
+	ok = await exit_to("jardins_suspensos", 8.0, 35 * 16.0 + 8.0)
+	check("R4: a torre leva aos Jardins Suspensos (rota 1)", ok and W.map_id == "jardins_suspensos")
+	await shot("r4_13_jardins")
+	await r4_engage(tpos(10, 29), 120.0, 60.0)
+	check("R4: caçada de lanceiros concluída (3 lanceiros)", Game.has_flag("caca_lanceiros_ok"), "n=%d" % int(Game.hero.get("caca_n", 0)))
+	await r4_engage(tpos(27, 26), 260.0, 120.0)
+	await goto(tpos(16, 30), 4.0, 30.0); await interact_press(); await frames(5)
+	await goto(tpos(37, 30), 4.0, 40.0); await interact_press(); await frames(5)
+	check("R4: névoa cortante bloqueia o terraço norte", W.is_solid_char(r4_tile(26, 20)))
+	await use_ent("jardins_manivela_sul", Vector2(0, 14), Vector2.UP)
+	await secs(1.2)
+	check("R4: a manivela gira a hélice e o vento dispersa a névoa", Game.has_flag("jardins_vento") and not W.is_solid_char(r4_tile(26, 20)))
+	await goto(tpos(26, 15), 6.0, 40.0)
+	await shot("r4_14_ninho")
+	var cap := await capture_species("j_ventisco1")
+	check("R4: captura de um Ventisco no Ninho dos Ventos (local fixo)", cap and uuid_of(["ventisco"]) != "")
+	await goto(tpos(35, 12), 4.0, 30.0); await interact_press(); await frames(5)
+	check("R4: três Plumas de Vento coletadas", Game.item_count("pluma_vento") >= 3 and Game.has_flag("penas_ok"))
+	# descoberta de criatura: o anel de flores
+	await use_ent("jardins_anel", Vector2(0, 14), Vector2.UP)
+	await frames(10)
+	check("R4: observar o anel de flores revela um Ventisco mais velho", Game.has_flag("jardins_flores") and ent_by_id("j_ventisco_anel") != null)
+	# hélice da ilha: só uma rajada a alcança
+	await r4_use(["ventisco"])
+	check("R4: ilha da hélice inacessível sem o vento", W.is_solid_char(r4_tile(40, 18)))
+	await goto(tpos(37, 16), 3.0, 30.0)
+	await face(Vector2.RIGHT)
+	W.companion.global_position = tpos(37, 16) + Vector2(-4, 6)
+	await frames(2)
+	Game.skill_cd.clear()
+	W.companion.command_skill(Vector2.RIGHT)
+	await frames(10)
+	check("R4: a Rajada do Ventisco gira a hélice da ilha à distância (passarela surge)", Game.has_flag("jardins_ilha") and not W.is_solid_char(r4_tile(40, 18)))
+	await shot("r4_15_rajada")
+	await use_ent("jardins_bau_ilha", Vector2(0, 14), Vector2.UP)
+	check("R4: baú da ilha da hélice", Game.chests.has("jardins_bau_ilha"))
+	ok = await exit_to("refugio_muralha", 26 * 16.0 + 8.0, 8.0)
+	check("R4: o terraço norte dos jardins volta ao Refúgio", ok and W.map_id == "refugio_muralha")
+	await talk("talia")
+	check("R4: Tália recebe as plumas e recompensa uma única vez", Game.has_flag("penas_entregue") and Game.item_count("pluma_vento") == 0)
+	var sem := Game.item_count("semente_vida")
+	await talk("talia")
+	check("R4: recompensa da Tália não duplica", Game.item_count("semente_vida") == sem)
+
+# ---------------------------------------------------------------- 7. contrato em trio nos Jardins
+func r4_contrato() -> void:
+	check("R4: contrato em trio da região disponível", Game.contract_state("domadores_eclipse") == "disponivel")
+	check("R4: aceitar o contrato em trio (Bruna e Ravi)", Game.accept_contract("domadores_eclipse"))
+	await frames(8)
+	check("R4: trio formado no Refúgio", W.allies().size() == 2)
+	r4_heal()
+	var ok := await exit_to("jardins_suspensos", 23 * 16.0 + 8.0, 35 * 16.0 + 8.0)
+	await frames(10)
+	var es := contract_enemies("domadores_eclipse")
+	check("R4: domadores e feras do Eclipse aparecem nos Jardins", ok and es.size() == 4, str(es.size()))
+	await goto(tpos(27, 21), 20.0, 40.0)
+	await shot("r4_16_trio")
+	await r4_engage(tpos(33, 26), 320.0, 200.0)
+	await secs(1.5)
+	check("R4: contrato em trio concluído", Game.has_flag("domadores_eclipse_ok"), "vivos=%d" % contract_enemies("domadores_eclipse").size())
+	await advance_dialogs()
+	await frames(10)
+	check("R4: aliados voltam e recompensa entregue", Game.party.is_empty() and Game.item_count("essencia_laranja") >= 1)
+
+# ---------------------------------------------------------------- 8. torre (andar médio): hélices, receptores, Gêmeos
+func r4_torre_b() -> void:
+	var ok := await exit_to("torre_a", 8.0, 29 * 16.0 + 8.0)
+	await goto(tpos(29, 10), 6.0, 80.0)
+	ok = await exit_to("torre_b", 29 * 16.0 + 8.0, 8.0)
+	check("R4: galeria leva ao andar das hélices", ok and W.map_id == "torre_b")
+	await shot("r4_17_helices")
+	check("R4: névoa do corredor norte bloqueia", W.is_solid_char(r4_tile(27, 32)))
+	# névoa lateral: só o vento de uma criatura (opcional)
+	await r4_use(["ventisco"])
+	await use_ent("tb_nevoa_lado", Vector2(-14, 0), Vector2.RIGHT)
+	await frames(5)
+	check("R4: o Ventisco dispersa a névoa lateral (vantagem opcional)", Game.has_flag("torre_vento2") and not W.is_solid_char(r4_tile(34, 37)))
+	await use_ent("tb_bau_nevoa", Vector2(0, 14), Vector2.UP)
+	await use_ent("tb_manivela", Vector2(0, 14), Vector2.UP)
+	await secs(1.2)
+	check("R4: manivela da torre dispersa a névoa do corredor", Game.has_flag("torre_vento") and not W.is_solid_char(r4_tile(27, 32)))
+	await goto(tpos(28, 29), 6.0, 30.0)
+	await r4_use(["brasejante"])
+	await r4_engage(tpos(28, 23), 240.0, 150.0)
+	check("R4: armaduras da sala dos receptores derrotadas", hostile().filter(func(e): return e.kind == "armadura").is_empty())
+	await shot("r4_18_receptores")
+	await use_ent("tb_persiana", Vector2(0, -14), Vector2.DOWN)
+	await frames(6)
+	check("R4: um só cristal aceso não abre a arena", not Game.has_flag("torre_receptores"))
+	await use_ent("tb_balestra", Vector2(16, 0), Vector2.LEFT)
+	await secs(2.6)
+	check("R4: luz + disparo acendem os dois cristais e abrem a arena", Game.has_flag("torre_receptores") and not W.is_solid_char(r4_tile(27, 17)))
+	r4_heal()
+	await use_ent("placa_gemeos", Vector2(0, 14), Vector2.UP)
+	await advance_dialogs()
+	await r4_gemeos()
+
+func r4_gemeo_threat() -> Node:
+	for e in W.enemies():
+		if e.kind == "gemeos" and e.alive_flag and e.bst == e.B.TELE:
+			if e.role == "b" and e.global_position.distance_to(P.global_position) < 70.0:
+				return e
+			if e.role == "a":
+				var rel: Vector2 = P.global_position - e.global_position
+				if rel.dot(e.wave_dir) > -10.0 and abs(rel.dot(e.wave_dir.orthogonal())) < 30.0:
+					return e
+	return null
+
+func r4_gemeos() -> void:
+	await goto(tpos(28, 12), 6.0, 20.0)
+	await frames(30)
+	var a := find_boss("gemeos")
+	check("R4: Gêmeos de Ferro despertam (dois corpos)", a != null and a.activated and W.enemies().filter(func(e): return e.kind == "gemeos").size() == 2)
+	check("R4: portas da arena fechadas durante o duelo", Game.has_flag("tmp_gemeos_ativo") and W.is_solid_char(r4_tile(27, 15)))
+	await secs(2.0)
+	await shot("r4_19_gemeos")
+	var both_tele := 0
+	var t := 0.0
+	while t < 260.0 and not Game.has_flag("gemeos_morto") and P.state != Player.S.DEAD:
+		var before := frame_count
+		var gs := W.enemies().filter(func(e): return e.kind == "gemeos" and e.alive_flag)
+		var nt := 0
+		for g in gs:
+			if g.bst == g.B.TELE or g.bst == g.B.ATTACK:
+				nt += 1
+		if nt >= 2:
+			both_tele += 1
+		await use_potion_if_needed()
+		var th := r4_gemeo_threat()
+		if th != null and P.vigor >= 25.0 and P.dodge_cd <= 0.0 and th.bt < 0.35:
+			var away: Vector2 = (P.global_position - th.global_position).normalized()
+			if th.role == "a":
+				away = th.wave_dir.orthogonal() * (1.0 if (P.global_position - th.global_position).dot(th.wave_dir.orthogonal()) >= 0.0 else -1.0)
+			steer(away)
+			await frames(1)
+			await tap("dodge", 2)
+			release_moves()
+		elif not gs.is_empty():
+			# prefere o gêmeo exposto (recuperando) e depois o mais próximo
+			gs.sort_custom(func(x, y): return (0 if x.bst == x.B.RECOVER else 1) * 1000 + x.global_position.distance_to(P.global_position) < (0 if y.bst == y.B.RECOVER else 1) * 1000 + y.global_position.distance_to(P.global_position))
+			var g: Node = gs[0]
+			if P.global_position.distance_to(g.global_position) > 28.0:
+				steer(g.global_position - P.global_position)
+				await frames(3)
+				release_moves()
+			else:
+				await face(g.global_position - P.global_position)
+				await attack_tap()
+				await frames(8)
+		else:
+			await frames(5)
+		t += float(frame_count - before) / 60.0
+	await secs(1.0)
+	check("R4: Gêmeos de Ferro derrotados (ataques sempre alternados)", Game.has_flag("gemeos_morto") and both_tele == 0, "t=%.0f hp=%d alternancia=%d" % [t, int(Game.hero["hp"]), both_tele])
+	check("R4: portas da arena reabrem e a saída leste abre", not W.is_solid_char(r4_tile(27, 15)) and not W.is_solid_char(r4_tile(42, 7)))
+	check("R4: insígnia da guarnição recebida dos Gêmeos", Game.item_count("insignia_guarnicao") == 1)
+	await goto(tpos(48, 7), 6.0, 40.0)
+	await use_ent("tb_bau_tesouro", Vector2(0, 14), Vector2.UP)
+	await rest_at("torre_tesouro")
+	check("R4: tesouro e santuário depois dos Gêmeos", Game.chests.has("tb_bau_tesouro") and Game.checkpoint.get("shrine", "") == "torre_tesouro")
+
+# ---------------------------------------------------------------- 9. Rito do Eclipse
+func r4_rito() -> void:
+	var ok := await exit_to("rito_eclipse", 55 * 16.0 + 8.0, 7 * 16.0 + 16.0)
+	check("R4: o tesouro leva ao Rito do Eclipse", ok and W.map_id == "rito_eclipse")
+	await shot("r4_20_rito")
+	await use_ent("rito_e_placa1", Vector2(0, -14), Vector2.DOWN)
+	await advance_dialogs()
+	await use_ent("re_persiana1", Vector2(0, 14), Vector2.UP)
+	await frames(6)
+	check("R4: rito 1 (apresentação): abrir a persiana acende o cristal", Game.has_flag("rito_e1_ok") and not W.is_solid_char(r4_tile(14, 14)))
+	# 2. aplicação: errar de propósito, reiniciar e resolver
+	await use_ent("re_espelho2b", Vector2(-14, 0), Vector2.RIGHT)
+	await use_ent("re_espelho2b", Vector2(-14, 0), Vector2.RIGHT)
+	await use_ent("re_espelho2b", Vector2(-14, 0), Vector2.RIGHT)
+	check("R4: rito 2 dá uma dica depois de três tentativas erradas", toast_seen("Dica:"))
+	await use_ent("re_reset2", Vector2(14, 0), Vector2.LEFT)
+	await frames(10)
+	check("R4: pedra de reinício recoloca os espelhos (reinício local, sem perder nada)", ent_by_id("re_espelho2b") != null and ent_by_id("re_espelho2b").ori == "b" and W.map_id == "rito_eclipse")
+	await use_ent("re_espelho2a", Vector2(0, 14), Vector2.UP)
+	await use_ent("re_espelho2b", Vector2(-14, 0), Vector2.RIGHT)
+	await frames(6)
+	check("R4: rito 2 (aplicação): dois espelhos levam o feixe ao cristal", Game.has_flag("rito_e2_ok") and not W.is_solid_char(r4_tile(30, 14)))
+	# 3. combinação: sol -> ilhota -> persiana; lua -> saída
+	await goto(tpos(36, 15), 4.0, 40.0)
+	await goto(tpos(40, 15), 3.0, 20.0)
+	check("R4: rito 3: com sol, as plataformas de luz levam à ilhota", tile_of(P.global_position) == Vector2i(40, 15))
+	await use_ent("re_persiana3", Vector2(-16, 0), Vector2.RIGHT)
+	await frames(8)
+	check("R4: rito 3: a luz atravessa o abismo e acende o cristal", Game.has_flag("rito_e3_ok"))
+	await use_ent("re_eclipse3", Vector2(0, 16), Vector2.UP)
+	await frames(6)
+	check("R4: rito 3: o eclipse apaga a lente mas o cristal fica aceso (gravado)", ent_by_id("re_receptor3").lit and r4_tile(43, 15) == "Σ")
+	await shot("r4_21_rito_lua")
+	await goto(tpos(46, 15), 3.0, 30.0)
+	await goto(tpos(53, 14), 4.0, 30.0)
+	await use_ent("re_altar", Vector2(0, 14), Vector2.UP)
+	await advance_dialogs()
+	check("R4: altar do Rito do Eclipse concede o Manto Umbral e abre a saída", Game.has_flag("rito_eclipse_ok") and Game.item_count("manto_umbral") == 1 and not W.is_solid_char(r4_tile(58, 14)))
+	Game.equip("manto_umbral")
+	await use_ent("re_altar", Vector2(0, 14), Vector2.UP)
+	check("R4: o rito não repete a recompensa", Game.item_count("manto_umbral") == 1)
+	await use_ent("rito_fissura", Vector2(0, 14), Vector2.UP)
+	check("R4: o rito avançado está atrás de uma fissura (Passo Umbral)", not Game.has_flag("rito_eclipse_avancado_ok") and P.global_position.y > 9 * 16)
+
+# ---------------------------------------------------------------- 10. Cavaleiro Sem Rosto
+func r4_cav_threat(b: Node) -> bool:
+	var rel: Vector2 = P.global_position - b.global_position
+	if b.bst == b.B.TELE_THRUST:
+		return rel.dot(b.attack_dir) > -10.0 and rel.dot(b.attack_dir) < 190.0 and abs(rel.dot(b.attack_dir.orthogonal())) < 26.0
+	if b.bst == b.B.TELE_SLASH:
+		return rel.length() < 70.0
+	return false
+
+func r4_cav_step(b: Node) -> void:
+	await use_potion_if_needed()
+	if r4_cav_threat(b):
+		if b.bt < 0.4 and P.vigor >= 25.0 and P.dodge_cd <= 0.0:
+			var side: Vector2 = b.attack_dir.orthogonal()
+			if (P.global_position - b.global_position).dot(side) < 0.0:
+				side = -side
+			steer(side if b.bst == b.B.TELE_THRUST else (P.global_position - b.global_position).normalized())
+			await frames(1)
+			await tap("dodge", 2)
+			release_moves()
+		else:
+			var side2: Vector2 = b.attack_dir.orthogonal()
+			if (P.global_position - b.global_position).dot(side2) < 0.0:
+				side2 = -side2
+			steer(side2)
+			await frames(4)
+			release_moves()
+		return
+	var melee_ok: bool = b.bst == b.B.EXHAUSTED or (b.phase == 2 and b.posture == "espelho") or (b.phase == 1 and not b._front(P.global_position)) \
+			or (b.phase == 3 and b.bst in [b.B.EXHAUSTED])
+	if b.phase == 2 and b.posture == "muralha" and b.bst != b.B.EXHAUSTED:
+		melee_ok = false
+	var d: float = P.global_position.distance_to(b.global_position)
+	if melee_ok and not b.invulnerable:
+		var goal: Vector2 = b.global_position - b.facing_dir * 22.0 if b.bst == b.B.EXHAUSTED else b.global_position
+		if d > 30.0:
+			steer(goal - P.global_position)
+			await frames(3)
+			release_moves()
+		else:
+			await face(b.global_position - P.global_position)
+			await attack_tap()
+			await frames(6)
+	else:
+		# fica a uma distância segura, de lado, esperando a janela (a criatura ataca de longe)
+		var want := 100.0
+		var to: Vector2 = P.global_position - b.global_position
+		var goal2: Vector2 = b.global_position + (to.normalized() if to.length() > 1.0 else Vector2.DOWN).rotated(0.6) * want
+		goal2.x = clamp(goal2.x, 19 * 16.0 + 8.0, 44 * 16.0)
+		goal2.y = clamp(goal2.y, 7 * 16.0 + 8.0, 26 * 16.0)
+		if P.global_position.distance_to(goal2) > 10.0:
+			steer(goal2 - P.global_position)
+			await frames(4)
+			release_moves()
+		else:
+			await frames(4)
+
+func r4_cavaleiro() -> void:
+	var ok := await exit_to("torre_c", 59 * 16.0 + 8.0, 14 * 16.0 + 16.0)
+	check("R4: o rito leva ao topo da torre", ok and W.map_id == "torre_c")
+	await rest_at("torre_topo")
+	await use_ent("tc_bau_prep", Vector2(0, 14), Vector2.UP)
+	var src := FileAccess.get_file_as_string("res://scripts/boss_cavaleiro.gd")
+	check("R4: o Cavaleiro não lê comandos do jogador (só posição, tempo e golpes recebidos)", not ("Input." in src) and not ("is_action" in src))
+	await r4_use(["brasejante"])
+	r4_heal()
+	Game.behavior = "atacar"
+	await goto(tpos(22, 17), 6.0, 30.0)
+	await frames(20)
+	var b := find_boss("cavaleiro")
+	check("R4: o Cavaleiro Sem Rosto desperta e fecha a arena", b != null and b.activated and Game.has_flag("tmp_cavaleiro_ativo"))
+	await secs(2.2)
+	await shot("r4_22_cavaleiro")
+	# fase 1: guarda frontal
+	var hp0: float = b.hp
+	b.take_damage(40.0, b.global_position + b.facing_dir * 30.0, {"src": "heroi"})
+	var front_dmg: float = hp0 - b.hp
+	hp0 = b.hp
+	b.take_damage(40.0, b.global_position - b.facing_dir * 30.0, {"src": "heroi"})
+	var back_dmg: float = hp0 - b.hp
+	check("R4: fase 1 — a guarda frontal segura golpes pela frente, não pelas costas", front_dmg < back_dmg * 0.3 and back_dmg > 0.0, "%.1f %.1f" % [front_dmg, back_dmg])
+	var saw := {"estocada": false, "exausto": false, "muralha": false, "espelho": false, "portal": false, "costas": false}
+	var t := 0.0
+	var checked2 := false
+	var deaths0 := int(Game.stats["mortes"])
+	while t < 420.0 and b != null and is_instance_valid(b) and b.alive_flag and P.state != Player.S.DEAD:
+		var before := frame_count
+		if b.bst == b.B.TELE_THRUST: saw["estocada"] = true
+		if b.bst == b.B.EXHAUSTED: saw["exausto"] = true
+		if b.phase == 2 and b.posture == "muralha": saw["muralha"] = true
+		if b.phase == 2 and b.posture == "espelho": saw["espelho"] = true
+		if b.phase == 3 and b.bst == b.B.EMERGE: saw["portal"] = true
+		if b.flank_hits > 0: saw["costas"] = true
+		if b.phase == 2 and not checked2 and b.posture != "" and b.bst == b.B.CHASE:
+			checked2 = true
+			var p0: String = b.posture
+			var h0: float = b.hp
+			b.take_damage(30.0, b.global_position + Vector2(0, 30), {"src": "heroi"})
+			var fis: float = h0 - b.hp
+			h0 = b.hp
+			b.take_damage(30.0, b.global_position + Vector2(0, 30), {"src": "balestra", "proj": true})
+			var dist: float = h0 - b.hp
+			check("R4: fase 2 — postura de %s muda o que fere (físico %.0f x distância %.0f)" % [p0, fis, dist], (fis < dist) if p0 == "muralha" else (fis > dist))
+			check("R4: fase 2 — postura comunicada por pose e símbolo (não só cor)", b._pose.visible and b._sym.visible)
+			await shot("r4_23_postura_" + p0)
+		if b.phase == 3 and b.bst == b.B.TELE_SLASH and W.companion != null and is_instance_valid(W.companion):
+			# o companheiro flanqueia: posiciona-se às costas (como o comando Atacar faz) e golpeia
+			pass
+		if b.phase == 2 and b.posture == "muralha" and b.bst == b.B.CHASE and randf() < 0.08:
+			# balestra da arena: dispara quando o cavaleiro está na linha
+			for bid in ["tc_balestra_o", "tc_balestra_l"]:
+				var bl := ent_by_id(bid)
+				if bl != null and abs(b.global_position.y - bl.global_position.y) < 14.0:
+					bl.fire_balestra()
+		await r4_cav_step(b)
+		t += float(frame_count - before) / 60.0
+	await secs(2.0)
+	check("R4: fase 1 — estocada anunciada seguida de exaustão (janela de ataque)", saw["estocada"] and saw["exausto"])
+	check("R4: fase 2 — alterna postura de muralha e de espelho", saw["muralha"] and saw["espelho"])
+	check("R4: fase 3 — duelos entre portais", saw["portal"])
+	check("R4: Cavaleiro Sem Rosto derrotado", Game.has_flag("cavaleiro_morto"), "t=%.0f hp_boss=%s mortes=%d" % [t, str(b.hp) if is_instance_valid(b) else "-", int(Game.stats["mortes"]) - deaths0])
+	check("R4: Eco PASSO UMBRAL recebido e posto numa tecla", Game.has_eco("passo_umbral") and "passo_umbral" in Game.eco_slots)
+	check("R4: guarnição libertada (flag regional) e portas abertas", Game.has_flag("fortaleza_liberta") and not W.is_solid_char(r4_tile(46, 16)))
+	Game.behavior = "preservar"
+
+# ---------------------------------------------------------------- 11. pós-guardião: Refúgio, Estrada Final e segredos de revisita
+func r4_pos() -> void:
+	var ok := await exit_to("refugio_muralha", 55 * 16.0 + 8.0, 16 * 16.0 + 16.0)
+	check("R4: saída do topo leva de volta ao Refúgio", ok and W.map_id == "refugio_muralha")
+	await secs(1.5)
+	await advance_dialogs()
+	check("R4: cena da guarnição libertada no Refúgio", Game.has_flag("voltou_refugio"))
+	check("R4: soldados voltaram e a Capitã foi ao portão (rotina)", ent_by_id("soldado1") != null and ent_by_id("ilse_portao") != null and ent_by_id("ilse") == null)
+	check("R4: portão norte aberto: Estrada Final", not W.is_solid_char(r4_tile(23, 1)))
+	check("R4: música do Refúgio muda depois da vitória", Audio.place_for_map("refugio_muralha", W.map) == "vila_festa")
+	await shot("r4_24_refugio_libertado")
+	# segredo de revisita: a fissura do Refúgio
+	await use_ent("refugio_fissura", Vector2(0, -14), Vector2.DOWN)
+	await frames(5)
+	check("R4: Passo Umbral atravessa a fissura do Refúgio", P.global_position.y > 27 * 16 and P.global_position.y < 32 * 16)
+	await use_ent("refugio_bau_umbral", Vector2(0, 14), Vector2.UP)
+	check("R4: baú atrás da fissura (segredo de revisita)", Game.chests.has("refugio_bau_umbral"))
+	await use_ent("refugio_fissura_volta", Vector2(0, 14), Vector2.UP)
+	await frames(5)
+	check("R4: Passo Umbral volta pela fissura", P.global_position.y < 26 * 16)
+	# o Passo Umbral nunca atravessa parede comum
+	var p0: Vector2 = P.global_position
+	await goto(tpos(10, 10), 6.0, 30.0)
+	p0 = P.global_position
+	FortEnt.eco_passo_umbral(W)
+	await frames(3)
+	check("R4: longe de fissuras e portais o Passo Umbral não faz nada (nunca atravessa paredes)", P.global_position.distance_to(p0) < 2.0 and toast_seen("só atravessa"))
+	ok = await exit_to("estrada_final", 23 * 16.0 + 8.0, 8.0)
+	check("R4: a Estrada Final abre depois do Cavaleiro", ok and W.map_id == "estrada_final")
+	await shot("r4_25_estrada")
+	await goto(tpos(15, 10), 4.0, 30.0)
+	await face(Vector2.UP)
+	await tap("eco2", 2)
+	await frames(5)
+	check("R4: tecla do Eco: Passo Umbral cruza a fissura da Estrada Final", P.global_position.y < 8 * 16)
+	await use_ent("estrada_selo", Vector2(0, 14), Vector2.UP)
+	await advance_dialogs()
+	check("R4: gancho da Região 5 (selo da Catedral do Vazio)", Game.has_flag("viu_selo_catedral"))
+
+func r4_revisitas() -> void:
+	# volta à torre pelo atalho e ao rito avançado
+	W.load_map("rito_eclipse", "from_c")
+	await frames(20)
+	await use_ent("rito_fissura", Vector2(0, 14), Vector2.UP)
+	await frames(5)
+	check("R4: Passo Umbral entra na ala do rito avançado", P.global_position.y < 7 * 16)
+	await use_ent("rito_av_portal_a", Vector2(0, 14), Vector2.UP)
+	await frames(5)
+	check("R4: portal marcado leva ao outro lado da parede", P.global_position.x > 55 * 16)
+	await use_ent("rito_av_espelho", Vector2(0, 14), Vector2.UP)
+	await frames(6)
+	check("R4: rito avançado: espelho leva a luz ao cristal escondido", Game.has_flag("rito_av_luz"))
+	await use_ent("rito_av_portal_b", Vector2(0, 14), Vector2.UP)
+	await frames(5)
+	await use_ent("rito_av_altar", Vector2(0, 14), Vector2.UP)
+	await advance_dialogs()
+	check("R4: rito avançado concede o Amuleto do Eclipse", Game.has_flag("rito_eclipse_avancado_ok") and Game.item_count("amuleto_eclipse") == 1)
+	# muralha: fissura da plataforma sul
+	W.load_map("muralha_partida", "from_torre")
+	await frames(20)
+	await goto(tpos(47, 9), 6.0, 30.0)
+	await goto(tpos(39, 30), 6.0, 90.0)
+	await use_ent("muralha_fissura", Vector2(-14, 0), Vector2.RIGHT)
+	await frames(5)
+	await use_ent("muralha_bau_umbral", Vector2(0, 14), Vector2.UP)
+	check("R4: baú atrás da fissura da Muralha Partida", Game.chests.has("muralha_bau_umbral"))
+	# criaturas: evolução do Umbrel e ação ambiental reaproveitada
+	var u := uuid_of(["umbrel"])
+	if u != "":
+		var ind: Dictionary = Game.individuals[u]
+		ind["nivel"] = 22
+		for k in ["vitoria:a", "acao:b", "missao:c"]:
+			Game.bond_activity(u, k)
+		check("R4: Umbrel evolui para Umbrafel (nv. 22 + vínculo)", Game.evolve(u) and Game.individuals[u]["species_id"] == "umbrafel")
+		check("R4: Umbrafel mantém a ação de fresta e ganha habilidades novas", Data.species["umbrafel"]["acao_id"] == "fresta" and Game.hab_list("umbrafel").size() >= 5)
+
+func r4_save_load() -> void:
+	var snap := {"ecos": Game.ecos.duplicate(), "chests": Game.chests.size(), "flags": Game.flags.size(), "frag": Game.fragments}
+	W.save_now(5)
+	SaveSys.load_game(5)
+	await frames(10)
+	check("R4: save/load mantém Ecos, baús, flags e não duplica recompensas",
+		Game.has_eco("passo_umbral") and Game.chests.size() == snap["chests"] and Game.flags.size() == snap["flags"] and Game.fragments == snap["frag"]
+		and Game.item_count("manto_umbral") == 1 and Game.item_count("amuleto_eclipse") == 1)
+
+## Atalho de desenvolvimento: -- --e2e --regiao4 --r4de=N começa direto na etapa N (8 torre média, 9 rito, 10 Cavaleiro, 11 pós-guardião)
+func r4_jump(n: int) -> void:
+	for f in ["visitou_refugio_muralha", "falou_ilse", "quest_penas", "penas_ok", "penas_entregue", "quest_recado", "recado_achado", "recado_entregue",
+			"visitou_muralha_partida", "visitou_jardins_suspensos", "visitou_torre_a", "muralha_ponte", "muralha_portao", "muralha_receptor", "salao_luz",
+			"enc_galeria_t_ok", "torre_atalho", "jardins_vento", "caca_lanceiros_ok", "domadores_eclipse_ok", "shrine_refugio"]:
+		Game.set_flag(f)
+	for pair in [["umbrel", 21], ["ventisco", 21], ["brasardo", 21]]:
+		var ind := r4_ind(pair[0], pair[1])
+		Game.sanctuary.append(ind["uuid"])
+	Game.hero["level"] = 22
+	r4_heal()
+	if n >= 9:
+		for f in ["visitou_torre_b", "torre_vento", "torre_receptores", "gemeos_morto"]:
+			Game.set_flag(f)
+	if n >= 10:
+		for f in ["rito_e1_ok", "rito_e2_ok", "rito_e3_ok", "rito_eclipse_ok"]:
+			Game.set_flag(f)
+		Game.give_item("manto_umbral", 1); Game.equip("manto_umbral")
+	if n >= 11:
+		Game.set_flag("cavaleiro_morto"); Game.set_flag("fortaleza_liberta")
+		Game.grant_eco("passo_umbral"); Game.eco_slots[1] = "passo_umbral"
+	match n:
+		8: W.load_map("torre_b", "from_a")
+		9: W.load_map("torre_b", "from_rito")
+		10: W.load_map("rito_eclipse", "from_c")
+		11: W.load_map("torre_c", "from_rito")
+	await frames(20)
+
+func run_regiao4() -> void:
+	var de := 0
+	for a in args:
+		if a.begins_with("--r4de="):
+			de = int(a.substr(7))
+	await r4_setup(5)
+	if de > 0:
+		await r4_jump(de)
+		if de <= 8: await r4_torre_b()
+		if de <= 9: await r4_rito()
+		if de <= 10: await r4_cavaleiro()
+		await r4_pos()
+		await r4_revisitas()
+		await r4_save_load()
+		return
+	await r4_ponte()
+	await r4_refugio()
+	await r4_muralha()
+	await r4_torre_base()
+	await r4_salao()
+	await r4_jardins()
+	await r4_contrato()
+	await r4_torre_b()
+	await r4_rito()
+	await r4_cavaleiro()
+	await r4_pos()
+	await r4_revisitas()
+	await r4_save_load()

@@ -59,15 +59,25 @@ Cada Rito pré-guardião usa só mecanismos locais; cada Rito avançado (opciona
 | **Rito dos Reflexos** | observação da água e ilusões | chegada | dica opcional | técnica + vínculo |
 | Plataformas/inscrições espirituais | **Olhar Velado** | após a Bruxa | — | segredos das Minas e da Floresta (revisita) |
 
-## 4. Fortaleza do Eclipse 📐
-| Obstáculo | Habilidade necessária | Quando | Alternativa | Recompensa |
-|---|---|---|---|---|
-| Ponte espiritual nas montanhas | Olhar Velado | após a Bruxa | — | Refúgio da Muralha |
-| Luz e sombra | espelhos e persianas locais | chegada | Lumipim/Cristil iluminam | salas da torre |
-| Hélices e névoa | manivelas locais | chegada | Ventisco move hélices e dispersa névoa | rotas alternadas |
-| Receptores em frestas | alavancas locais | chegada | Umbrel aciona por dentro | atalhos |
-| **Rito do Eclipse** | luz, sombra, posicionamento, rotas alternadas | chegada | dica opcional | técnica + vínculo |
-| Fissuras e portais marcados | **Passo Umbral** | após o Cavaleiro | — | segredos de todas as regiões |
+## 4. Fortaleza do Eclipse
+| Obstáculo | Habilidade necessária | Quando | Alternativa | Recompensa | Status |
+|---|---|---|---|---|---|
+| Ponte espiritual nas montanhas (`ponte_espiritual`) | Olhar Velado | após a Bruxa | — | Refúgio da Muralha | ✅ (ligação com a Região 3 pendente do merge) |
+| Corredores guardados por lanceiros | combate (esperar a estocada) | chegada | criatura flanqueia | caminho das rotas; caçada "Corredores Livres" | ✅ |
+| Brecha da Muralha Partida | mecanismo antigo + chama do braseiro | chegada | Brasardo/Solarco reaquece direto (ação ou salto explosivo) | ponte levadiça | ✅ |
+| Grade da Muralha | alavanca no fim da plataforma sul | chegada | Umbrel entra na fresta e aciona por dentro (atalho) | caminho ao bastião | ✅ |
+| Grade da torre (bastião) | balestra dispara no receptor | chegada | — (alavanca interna do lado da torre) | subida à torre | ✅ |
+| Névoa cortante (Jardins e torre) | manivela gira a hélice | chegada | Ventisco dispersa a névoa / gira a hélice de longe | terraços e corredor | ✅ |
+| Ilha da hélice / névoa lateral da torre (opcionais) | Ventisco (Rajada à distância) | chegada | — (opcional, sinalizado) | baús | ✅ |
+| Luz e sombra (Salão do Eclipse) | espelhos e persianas locais | chegada | — | porta norte | ✅ |
+| Plataformas de sol e de lua (Ala da Sombra) | alavanca do eclipse | chegada | — | atalho Torre ↔ Refúgio | ✅ |
+| Receptores de luz + disparo | persiana + balestra | chegada | — | arena dos Gêmeos | ✅ |
+| **Rito do Eclipse** | luz, sombra, posicionamento, rotas alternadas | chegada | dica após 3 tentativas; pedra de reinício | Manto Umbral + vínculo | ✅ |
+| Segredo atual: ar frio entre as pedras (Refúgio) | observação | chegada | — | Semente de Vida + Lente do Observatório | ✅ |
+| Descoberta de criatura: anel de flores (Jardins) | observação | chegada | — | Ventisco mais velho | ✅ |
+| Cavaleiro Sem Rosto | — (nenhuma espécie obrigatória; balestras na arena) | — | criaturas à distância e flanqueio | Passo Umbral | ✅ |
+| Fissuras e portais marcados (Refúgio, Muralha, Estrada, Rito avançado) | **Passo Umbral** | após o Cavaleiro | — | segredos e Amuleto do Eclipse | ✅ |
+| Mudança pós-guardião | — | após o Cavaleiro | — | guarnição volta, rotinas mudam, música, Estrada Final aberta | ✅ |
 
 ## 5. Catedral do Vazio 📐
 | Obstáculo | Habilidade necessária | Quando | Alternativa | Recompensa |
