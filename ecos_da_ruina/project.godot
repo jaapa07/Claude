@@ -19,6 +19,8 @@ Weather="*res://scripts/weather.gd"
 
 [display]
 
+window/handheld/orientation=4
+
 window/size/viewport_width=480
 window/size/viewport_height=270
 window/size/window_width_override=1440
@@ -42,6 +44,8 @@ theme/default_font_antialiasing=0
 common/physics_ticks_per_second=60
 
 [rendering]
+
+textures/vram_compression/import_etc2_astc=true
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
