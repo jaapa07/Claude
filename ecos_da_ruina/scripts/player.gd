@@ -618,8 +618,6 @@ func validate_target(t: Node) -> String:
 		return "Fora de alcance."
 	if t.protect_t > 0.0:
 		return "O alvo está protegido (%.0f s)." % t.protect_t
-	if t.hp / t.max_hp > Game.CAPTURE_HP_LIMIT:
-		return "Enfraqueça mais (≤ 35%% de vida)."
 	if Combat.ray_blocked(world, global_position, t.global_position):
 		return "Sem linha de visão."
 	if not Game.storage_has_room():
@@ -628,7 +626,7 @@ func validate_target(t: Node) -> String:
 
 func chance_for(t: Node) -> float:
 	var seal := "selo_refinado" if Game.item_count("selo_refinado") > 0 else "selo_basico"
-	if t.garantida:
+	if t.garantida and t.hp / t.max_hp <= Game.CAPTURE_HP_LIMIT:
 		return 1.0
 	return Game.capture_chance(t.species_id, t.level, t.hp / t.max_hp, t.is_controlled(), seal)
 

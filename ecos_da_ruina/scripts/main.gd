@@ -73,7 +73,7 @@ func start_new_game(slot: int) -> void:
 	world.load_map("vila_lumen", "default")
 	world.player.set_busy(true)
 	ui.dialog(["Auralis, ano da Ruína. Uma expedição desapareceu na Floresta dos Esquecidos, e você chegou à Vila Lúmen para descobrir o porquê.",
-		"A Anciã Maru, no centro da vila, espera por você. (WASD para andar, E para falar.)"], func():
+		"A Anciã Maru, no centro da vila, espera por você. (Ande com {andar}; fale com {interagir}.)"], func():
 		world.player.set_busy(false))
 
 func continue_from_slot(slot: int) -> void:

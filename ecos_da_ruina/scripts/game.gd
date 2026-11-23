@@ -18,7 +18,7 @@ const TEAM_MAX := 3
 const SWAP_CD := 6.0
 const HERO_MAX_LEVEL := 30
 const CREATURE_MAX_LEVEL := 30
-const CAPTURE_HP_LIMIT := 0.35
+const CAPTURE_HP_LIMIT := 0.35   # ponto ideal (barra laranja); a captura pode ser tentada com qualquer vida
 const MIN_BOND_ACTIVITIES := 3
 
 # ---- estado persistente (vai para o save)
@@ -884,7 +884,7 @@ func capture_chance(species_id: String, wild_level: int, hp_ratio: float, contro
 	var s := 0.10 if controlled else 0.0
 	var t := float(Data.items.get(seal_id, {}).get("bonus", 0.0)) + capture_bonus()
 	var l: float = min(0.20, 0.02 * max(0, wild_level - hero_level()))
-	return clamp(b + 0.45 * (1.0 - hp_ratio) + s + t - l, 0.10, 0.95)
+	return clamp(b - 0.12 + 0.6 * (1.0 - hp_ratio) + s + t - l, 0.08, 0.95)
 
 # =============================================================== INVENTÁRIO
 func item_count(id: String) -> int:
@@ -1036,20 +1036,20 @@ func tutorial_hint() -> String:
 	if not has_flag("falou_maru"):
 		return ""
 	if not has_flag("tut_move"):
-		return "Mova-se com WASD ou as setas."
+		return "Mova-se com {andar}."
 	if not has_flag("tutorial_ok"):
 		if not has_flag("tut_attack"):
-			return "Ataque o boneco: J ou clique esquerdo (combo de 3 golpes)."
+			return "Ataque o boneco com {atacar} (combo de 3 golpes; segure para o golpe carregado)."
 		if not has_flag("tut_dodge"):
-			return "Esquive com Espaço (consome vigor, invulnerável por instantes)."
+			return "Esquive com {esquivar} (gasta vigor; fica invulnerável por um instante)."
 		if not has_flag("tut_guard"):
-			return "Segure K ou o botão direito para defender de frente."
+			return "Segure {defender} para defender de frente."
 	if not has_flag("primeira_captura"):
-		return "Enfraqueça o Brotisco do cercado até 35%, aperte F para mirar e F de novo para lançar o selo."
+		return "Capture o Brotisco do cercado: toque {capturar} para mirar e de novo para lançar. Quanto menos vida ele tiver, maior a chance."
 	if not has_flag("tut_command"):
-		return "Comande o companheiro com Q. Tab troca de criatura, C muda o comportamento."
+		return "Use a habilidade da criatura com {habilidade}. {trocar} troca de criatura."
 	if not has_flag("tut_rest"):
-		return "Descanse no santuário da vila (E) para curar a equipe e gravar o ponto de retorno."
+		return "Descanse no santuário da vila ({interagir}) para curar a equipe e gravar o ponto de retorno."
 	return ""
 
 func tutorial_event(ev: String) -> void:
@@ -1316,3 +1316,19 @@ func contract_progress_text() -> String:
 	if c.get("tipo", "") == "caca":
 		return "%s (%d/%d)" % [c["objetivo"], int(hero.get("caca_n", 0)), int(c["alvo"]["qtd"])]
 	return c["objetivo"]
+
+
+# =============================================================== NOMES DOS CONTROLES (teclado x toque)
+## Textos usam marcadores como {atacar}; aqui viram a tecla ou o botão de toque certo.
+const KEYS_PC := {"andar": "WASD", "atacar": "J", "defender": "K", "esquivar": "Espaço", "interagir": "E", "capturar": "F",
+	"habilidade": "Q", "trocar": "Tab", "comportamento": "C", "tonico": "R", "menu": "I", "cancelar": "K"}
+const KEYS_TOUCH := {"andar": "o polegar esquerdo", "atacar": "a Espada", "defender": "o Escudo", "esquivar": "as Setas", "interagir": "o botão E",
+	"capturar": "o Selo", "habilidade": "a Estrela", "trocar": "Troca (no alto)", "comportamento": "o menu da Equipe", "tonico": "o Tônico (no alto)", "menu": "o Menu (no alto)", "cancelar": "o Escudo"}
+
+func k(text: String) -> String:
+	if text.find("{") < 0:
+		return text
+	var m: Dictionary = KEYS_TOUCH if TouchControls.active else KEYS_PC
+	for key in m:
+		text = text.replace("{" + key + "}", m[key])
+	return text

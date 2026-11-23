@@ -17,7 +17,7 @@
 | Pausa | Esc |
 
 ## Guia rápido
-- Capture: enfraqueça a criatura até **35% de vida**, aperte F para ver alcance e chance, e F de novo. O vínculo canaliza por 1,2 s; se você for atingido, ele é interrompido.
+- Capture: aperte F para mirar (mostra alcance e a chance em %) e F de novo para lançar. Pode tentar com qualquer vida; quanto menos vida, maior a chance (barra laranja = ponto ideal, ≤ 35%). O vínculo canaliza por 1,2 s; se você for atingido, ele é interrompido.
 - Ataques inimigos são anunciados com um "!" e um aviso listrado no chão. Esquive (Espaço) no fim do aviso.
 - Santuários (cristal azul) curam a equipe, gravam o ponto de retorno e salvam o jogo.
 - Sentinelas defendem pela frente: ataque pelos lados ou use o Avanço do Cascalito.

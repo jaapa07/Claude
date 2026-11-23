@@ -192,6 +192,7 @@ func _fill_pause(s: MenuScreen) -> void:
 			else:
 				world.reset_room_puzzles(); s.close(); toast("Enigmas da sala reiniciados."), "Recoloca caixas e alavancas se algo ficou preso. Enigmas resolvidos continuam resolvidos."),
 		_it("Opções", func(): open_options(), "Volume, acessibilidade, controles."),
+		_it("Botões do toque", func(): close_all(); TouchControls.instance.show_legend(), "Mostra o que cada botão da tela faz.", TouchControls.active),
 		_it("Voltar ao título", func(): _confirm("Voltar ao título?", "O progresso não salvo desde o último autosave será perdido.", func(): get_tree().root.get_node("Main").back_to_title()), "Sai da partida."),
 	]
 	s.setup("Pausa — " + world.map.get("name", ""), items, "Pausa — a simulação está parada.")

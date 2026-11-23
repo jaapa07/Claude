@@ -41,8 +41,8 @@
   {
    "if": "falou_maru",
    "lines": [
-    "Maru: Pegue os Selos de Vínculo e vá ao cercado, a oeste. Enfraqueça o Brotisco até 35% e use F.",
-    "Maru: Treine nos bonecos primeiro: J ataca, Espaço esquiva, K defende."
+    "Maru: Pegue os Selos de Vínculo e vá ao cercado, a oeste. Mire com {capturar} e lance o selo; quanto mais fraco ele estiver, maior a chance (a barra fica laranja no ponto ideal).",
+    "Maru: Treine nos bonecos primeiro: {atacar} ataca, {esquivar} esquiva, {defender} defende."
    ]
   },
   {
@@ -179,7 +179,7 @@
  "treino": [
   {
    "lines": [
-    "Placa: CAMPO DE TREINO — J / clique esquerdo: golpe (combo de 3). K / clique direito: defender. Espaço: esquivar."
+    "Placa: CAMPO DE TREINO — {atacar}: golpe (combo de 3). {defender}: defender. {esquivar}: esquivar."
    ]
   }
  ],
@@ -358,7 +358,7 @@
   {
    "lines": [
     "Tessa: Meus companheiros desceram e voltaram... diferentes. Agora arremessam picaretas em qualquer um.",
-    "Tessa: Defenda-se de frente (K) ou saia da linha do arremesso. Derrote quatro deles e traga as ferramentas de volta."
+    "Tessa: Defenda-se de frente ({defender}) ou saia da linha do arremesso. Derrote quatro deles e traga as ferramentas de volta."
    ],
    "set": [
     "quest_ferramentas"

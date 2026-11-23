@@ -462,16 +462,17 @@ func run_e2e() -> void:
 	var br := ent_by_id("brotisco_tutorial")
 	check("Brotisco do cercado existe e é capturável", br != null and br.capturable and br.garantida)
 	await goto(Vector2(12 * 16 + 8, 17 * 16 + 8), 6.0, 20.0)
-	# rejeição sem alvo elegível (vida cheia): não consome selo
+	# vida cheia: a captura é permitida, mas a chance é baixa; mirar e cancelar não gasta selo
 	var seals_before := Game.item_count("selo_basico")
 	await tap("capture", 2)
 	await frames(2)
 	P.cap_target = br
 	await frames(3)
-	check("Captura rejeita alvo com vida alta", P.cap_msg != "" and "Enfraqueça" in P.cap_msg, P.cap_msg)
-	await tap("capture", 2)
+	var full_ch: float = P.chance_for(br)
+	check("Captura com vida cheia é permitida, mas com chance baixa", P.cap_msg == "" and full_ch < 0.25, "%s %.2f" % [P.cap_msg, full_ch])
+	P.aiming = false
 	await frames(3)
-	check("Alvo inválido não consome selo", Game.item_count("selo_basico") == seals_before and P.cap_state == "")
+	check("Mirar e cancelar não consome selo", Game.item_count("selo_basico") == seals_before and P.cap_state == "")
 	P.aiming = false
 	await weaken(br)
 	check("Brotisco enfraquecido (<=35%)", br.hp / br.max_hp <= 0.35, str(br.hp / br.max_hp))
@@ -1389,10 +1390,10 @@ func run_unit() -> void:
 	Game.hero["talents"]["vinculo"] = 5
 	var pmax := Game.capture_chance("brotisco", 1, 0.0, true, "selo_refinado")
 	Game.hero["talents"]["vinculo"] = 0
-	check("Probabilidade respeita mínimo 10%", is_equal_approx(pmin, 0.10), str(pmin))
+	check("Probabilidade respeita mínimo 8%", is_equal_approx(pmin, 0.08), str(pmin))
 	check("Probabilidade respeita máximo 95%", is_equal_approx(pmax, 0.95), str(pmax))
 	var pc := Game.capture_chance("brotisco", 1, 0.5, false, "selo_basico")
-	check("Fórmula: comum a 50% de vida = 0,25 + 0,225", is_equal_approx(pc, 0.475), str(pc))
+	check("Fórmula: comum a 50% de vida = 0,25 - 0,12 + 0,30", is_equal_approx(pc, 0.43), str(pc))
 	var pl := Game.capture_chance("brotisco", 6, 0.5, false, "selo_basico")
 	check("Penalidade de nível L = 0,02 x diferença", is_equal_approx(pc - pl, 0.10), str(pc - pl))
 	Game.rng_override = func(): return 0.5

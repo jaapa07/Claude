@@ -147,6 +147,7 @@ func add_toast(t: String) -> void:
 			x["life"] = 3.0
 			return
 	var p := UIKit.panel(Vector2.ZERO, Vector2(10, 16))
+	t = Game.k(t)
 	var l := Fonts.label(t, 8)
 	l.position = Vector2(5, 4)
 	p.add_child(l)
@@ -180,7 +181,7 @@ func start_dialog(lines: Array, cb: Callable) -> void:
 	_show_line()
 
 func _show_line() -> void:
-	var line: String = dlg_lines[dlg_i]
+	var line: String = Game.k(dlg_lines[dlg_i])
 	var ci := line.find(":")
 	if ci > 0 and ci <= 22 and (line.substr(0, ci).find(" ") < 0 or line.begins_with("Dona")):
 		_dlg_name.text = line.substr(0, ci)
@@ -328,7 +329,7 @@ func _update_hud() -> void:
 			var t: Node = p.cap_target
 			var head: String = "%s — vida %d%%" % [t.shown_name, int(t.hp / t.max_hp * 100.0)]
 			if p.cap_msg == "":
-				_cap_lab.text = head + "\nChance %d%%  •  F: lançar  •  Tab: outro alvo  •  K: cancelar" % int(p.chance_for(t) * 100.0 + 0.5)
+				_cap_lab.text = head + Game.k("\nChance %d%%  •  {capturar}: lançar  •  {trocar}: outro alvo  •  {cancelar}: cancelar" % int(p.chance_for(t) * 100.0 + 0.5))
 			else:
 				_cap_lab.text = head + "\n" + p.cap_msg
 		else:
@@ -345,7 +346,23 @@ func _update_hud() -> void:
 	var ct := Game.contract_progress_text()
 	if ct != "":
 		obj = "[Contrato] " + ct
-	_obj_lab.text = ("Objetivo: " + obj) if obj != "" else ""
-	var hint := Game.tutorial_hint()
+	_obj_lab.text = Game.k(("Objetivo: " + obj) if obj != "" else "")
+	var hint := Game.k(Game.tutorial_hint())
 	_hint.visible = hint != "" and not dlg_active
 	_hint_lab.text = hint
+	_touch_layout()
+
+
+## No toque, os textos de baixo não podem ficar sob os botões da direita.
+var _touch_done := false
+func _touch_layout() -> void:
+	if _touch_done or not TouchControls.active:
+		return
+	_touch_done = true
+	_obj_lab.size.x = 330.0
+	_obj_lab.position.y = 242.0
+	_hint.position = Vector2(6, 196)
+	_hint.size.x = 336.0
+	_hint_lab.size.x = 324.0
+	_toast_box.position.x = 10.0
+	_toast_box.size.x = 336.0
