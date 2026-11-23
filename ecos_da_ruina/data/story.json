@@ -62,5 +62,40 @@
     "O escudo do Cavaleiro se parte; dentro, a última página do diário, ainda quente."
    ]
   }
+ },
+ "jornada": {
+  "objetivo": "Reúna os Ecos dos cinco guardiões, abra caminho até a Catedral do Vazio, resgate a Mestra Ione e liberte o Rei dos Ecos.",
+  "guardioes": [
+   {
+    "regiao": "floresta",
+    "nome": "Cervo de Ossos",
+    "flag": "cervo_morto",
+    "eco": "Raiz Viva"
+   },
+   {
+    "regiao": "minas",
+    "nome": "Ferreiro Devorador",
+    "flag": "ferreiro_morto",
+    "eco": "Ruptura Ígnea"
+   },
+   {
+    "regiao": "pantano",
+    "nome": "Bruxa Afogada",
+    "flag": "bruxa_morta",
+    "eco": "Olhar Velado"
+   },
+   {
+    "regiao": "fortaleza",
+    "nome": "Cavaleiro Sem Rosto",
+    "flag": "cavaleiro_morto",
+    "eco": "Passo Umbral"
+   },
+   {
+    "regiao": "catedral",
+    "nome": "Rei dos Ecos",
+    "flag": "rei_morto",
+    "eco": "Harmonia dos Ecos"
+   }
+  ]
  }
 }

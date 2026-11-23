@@ -138,7 +138,7 @@ func _slot_label(i: int) -> String:
 	var nm := "Autosave" if i == 0 else "Slot %d" % i
 	if inf.is_empty():
 		return "%s — vazio" % nm
-	return "%s — Nv.%d  %s  %dmin%s" % [nm, inf["nivel"], inf["mapa"], int(inf["tempo"] / 60.0), " (backup)" if inf["recuperado"] else ""]
+	return "%s — Nv.%d  %s  %d%%  %dmin%s" % [nm, inf["nivel"], inf["mapa"], int(inf.get("conquista", 0)), int(inf["tempo"] / 60.0), " (backup)" if inf["recuperado"] else ""]
 
 func _slot_menu(main: Node, saving: bool, continue_best: bool) -> void:
 	if continue_best:
@@ -180,6 +180,7 @@ func open_pause() -> void:
 func _fill_pause(s: MenuScreen) -> void:
 	var items := [
 		_it("Continuar", func(): s.close(), "Volta ao jogo.\n\n" + Weather.describe()),
+		_it("Jornada (%d%%)" % Game.conquest_pct(), func(): open_journey(), "O grande objetivo e quanto falta para conquistar tudo."),
 		_it("Equipe e criaturas", func(): open_team(), "Veja, ordene e evolua suas criaturas."),
 		_it("Inventário e herói", func(): open_inventory(), "Itens, equipamentos, talentos."),
 		_it("Bestiário", func(): open_bestiary(), "Criaturas vistas e capturadas."),
@@ -980,3 +981,30 @@ func _acc_preview(ind: Dictionary, id: String) -> String:
 	var hp1 := Game.creature_hp_max(ind); var at1 := Game.creature_atk(ind)
 	ind["acessorio"] = old
 	return "\n\nAntes:  Vida %d  Ataque %.0f\nDepois: Vida %d  Ataque %.0f" % [int(hp0), at0, int(hp1), at1]
+
+# =============================================================== JORNADA
+func open_journey() -> void:
+	var s := _push("Jornada", [], "")
+	var items: Array = []
+	var j: Dictionary = Data.story.get("jornada", {})
+	var goal := "GRANDE OBJETIVO\n%s\n\nConquista total: %d%%" % [j.get("objetivo", ""), Game.conquest_pct()]
+	items.append(_hdr("Os cinco guardiões (%d/5)" % Game.guardians_done()))
+	for g in j.get("guardioes", []):
+		var done: bool = Game.has_flag(g["flag"])
+		var reg: Dictionary = Data.regions.get(g["regiao"], {})
+		var open_reg: bool = reg.get("status", "") == "jogavel"
+		var lab := "%s %s" % ["[X]" if done else "[ ]", reg.get("nome", g["regiao"])]
+		var info := "%s\n\nGuardião: %s\nEco: %s\n\n%s" % [reg.get("nome", ""), g["nome"] if (done or open_reg) else "desconhecido", g["eco"] if done else "???",
+			"Libertado!" if done else ("Região aberta: vá até lá." if open_reg else "Ainda inalcançável (em desenvolvimento).")]
+		var row := _it(lab, Callable(), info)
+		row["col"] = Color(0.6, 1.0, 0.6) if done else (Color.WHITE if open_reg else Color(0.6, 0.6, 0.7))
+		items.append(row)
+	items.append(_hdr("Conquistar tudo: %d%%" % Game.conquest_pct()))
+	for p in Game.conquest_parts():
+		var row2 := _it("%s: %d/%d" % [p[0], int(p[1]), int(p[2])], Callable(), goal)
+		if int(p[1]) >= int(p[2]) and int(p[2]) > 0:
+			row2["col"] = Color(0.6, 1.0, 0.6)
+		items.append(row2)
+	items.append(_it("Voltar", func(): s.close(), goal))
+	s.setup("Jornada — %d%%" % Game.conquest_pct(), items, goal)
+	s.list_w = 250.0

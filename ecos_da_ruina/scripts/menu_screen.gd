@@ -9,7 +9,11 @@ var items: Array = []           # {"t": String, "fn": Callable, "en": bool, "inf
 var sel := 0
 var info_default := ""
 var can_cancel := true
-var list_w := 190.0
+var list_w := 190.0:
+	set(v):
+		list_w = v
+		if is_inside_tree() and _list_panel != null:
+			_refresh()
 var key_capture := ""           # ação aguardando nova tecla
 var on_key: Callable = Callable()
 var scroll := 0

@@ -623,6 +623,10 @@ func respawn_commons() -> void:
 func _on_flag_changed(name: String, _v: bool) -> void:
 	if _v and Data.story.get("memorias", {}).has(name) and not Game.has_flag("mem_" + name):
 		_memory_queue.append(name)
+	if _v:
+		for g in Data.story.get("jornada", {}).get("guardioes", []):
+			if g["flag"] == name:
+				say("Ecos dos guardiões: %d/5 — Jornada %d%% (Menu > Jornada)" % [Game.guardians_done(), Game.conquest_pct()])
 	if map.is_empty():
 		return
 	refresh_tiles()

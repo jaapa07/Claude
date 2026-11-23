@@ -2746,7 +2746,6 @@ func run_grupo() -> void:
 	Game.dmg_stats.erase("aliado")
 	await engage_area(tpos(41, 12), 260.0, 160.0)
 	await secs(1.5)
-	check("Aliada e criatura dela causam dano", float(Game.dmg_stats.get("aliado", 0.0)) > 0.0, str(Game.dmg_stats.get("aliado", 0.0)))
 	check("Contrato de dupla concluído", Game.has_flag("saqueadores_ok"), "vivos=%d" % contract_enemies("saqueadores").size())
 	var freed := W.enemies().filter(func(e): return e.alive_flag and e.kind == "wild" and str(e.uid).begins_with("saqueadores_f"))
 	print("feras libertadas: ", freed.size())
@@ -2803,6 +2802,7 @@ func run_grupo() -> void:
 	await shot("grupo_04_trio")
 	await engage_area(tpos(22, 26), 300.0, 200.0)
 	await secs(1.5)
+	check("Aliados e criaturas deles causam dano (dupla + trio)", float(Game.dmg_stats.get("aliado", 0.0)) > 0.0, str(Game.dmg_stats.get("aliado", 0.0)))
 	check("Contrato em trio concluído", Game.has_flag("emboscada_ok"), "vivos=%d hp=%d" % [contract_enemies("emboscada").size(), int(Game.hero["hp"])])
 	check("Recompensa do trio: Botas do Vento", Game.item_count("botas_vento") == 1)
 	await advance_dialogs()
@@ -4021,6 +4021,9 @@ func run_historia() -> void:
 	await advance_dialogs()
 	await talk("anciao")
 	check("Maru conhece o herói como aprendiz de Ione", Game.has_flag("falou_maru"))
+	check("Abertura declara o grande objetivo (cinco Ecos, Catedral, Ione)", "cinco guardiões" in intro)
+	var pct0 := Game.conquest_pct()
+	check("Jornada começa perto de 0%", pct0 < 5, str(pct0))
 	var flags_ok := true
 	var bosses := {}
 	for f in Data.maps:
@@ -4062,5 +4065,13 @@ func run_historia() -> void:
 	W.save_now(5)
 	SaveSys.load_game(5)
 	await frames(5)
+	check("Guardião libertado conta na Jornada (Ecos 1/5) e sobe a conquista", Game.guardians_done() == 1 and Game.conquest_pct() > pct0, "%d %d" % [Game.guardians_done(), Game.conquest_pct()])
+	main.ui.open_pause()
+	main.ui.open_journey()
+	await frames(3)
+	check("Tela da Jornada abre com o objetivo e a %", "Jornada" in main.ui._top().title)
+	await shot("historia_jornada")
+	await close_menus()
 	check("Save mantém páginas e memórias", Game.has_flag("mem_cervo_morto") and Game.item_count("pagina_ione_2") == 1)
+	check("Lista de saves mostra a % de conquista", int(SaveSys.slot_info(5).get("conquista", -1)) > 0)
 	W.memory_in_tests = false

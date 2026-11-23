@@ -79,7 +79,7 @@ func slot_info(slot: int) -> Dictionary:
 	var lvl: int = int(d["hero"].get("level", 1))
 	var mapname: String = Data.maps.get(d["location"]["map"], {}).get("name", "?")
 	return {"nivel": lvl, "mapa": mapname, "tempo": float(d.get("play_time", 0.0)), "quando": d.get("saved_at", ""),
-		"equipe": d["team"].size(), "recuperado": d.get("_recuperado", false)}
+		"equipe": d["team"].size(), "recuperado": d.get("_recuperado", false), "conquista": int(d.get("conquista", 0))}
 
 func delete_slot(slot: int) -> void:
 	for p in [path(slot), path(slot) + ".bak", path(slot) + ".tmp"]:
