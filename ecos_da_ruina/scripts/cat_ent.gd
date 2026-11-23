@@ -192,7 +192,7 @@ func interact(player: Node) -> void:
 		_count_try(str(def["dica_grupo"]))
 	match kind:
 		"lente":
-			world.say("Um olho de cristal recolhe a luz do vitral e a lança num feixe. Espelhos desviam o feixe; prismas o dobram.")
+			world.say("Um olho de cristal lança a luz do vitral num feixe. Espelhos desviam; prismas dobram.")
 		"receptor":
 			world.say("Cristal receptor: acende quando um feixe de luz o atinge.")
 		"prisma": _prisma()
@@ -335,7 +335,7 @@ func _cristal() -> void:
 	if lit:
 		return
 	if not Game.has_eco("ruptura_ignea"):
-		world.say("Um cristal de eco rachado, quente por dentro. Só uma explosão ígnea o estilhaçaria. (Ruptura Ígnea)")
+		world.say("Cristal de eco rachado, quente por dentro. (Ruptura Ígnea)")
 		return
 	world.eco_ruptura(global_position + world.player.aim_dir * 8.0, world.player.aim_dir)
 	shatter_crystal()
@@ -368,7 +368,7 @@ func _marca() -> void:
 	if Game.has_eco("olhar_velado"):
 		world.eco_olhar(world.player.global_position)
 		return
-	world.say("Uma marca espiritual tremula no chão. Olhos comuns não a firmam. (Olhar Velado — ou um Velúnio)")
+	world.say("Uma marca espiritual tremula no chão. (Olhar Velado — ou um Velúnio)")
 
 func materialize() -> void:
 	if lit:
@@ -408,7 +408,7 @@ func _selo() -> void:
 	if Game.has_eco("harmonia"):
 		Catedral.eco_harmonia(world)
 		return
-	world.say("Um selo com as cinco marcas dos guardiões. Só responde a quem trouxer a Harmonia de todos os Ecos.")
+	world.say("Um selo com as cinco marcas dos guardiões. Só a Harmonia dos Ecos o abre.")
 
 func open_selo() -> void:
 	if lit:

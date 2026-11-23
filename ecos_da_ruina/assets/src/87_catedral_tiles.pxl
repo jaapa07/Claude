@@ -146,21 +146,21 @@ end
 
 # ------------------------------------------------ 6-7 mosaico azul profundo (tesselas com grão marfim e vermelho)
 frame c5_mosaic
-pppnqqqnpppnsssn
-pqpnqpqnpqpnstsn
-pppnqqqnpppnsssn
+pppnqqqnpppnqqqn
+pqpnqpqnpqpnqsqn
+pppnqqqnpppnqqqn
 nnnnnnnnnnnnnnnn
-qqqnpppnRRRnpppn
-qpqnpqpnRxRnpqpn
-qqqnpppnRRRnpppn
+qqqnpppnqqqnpppn
+qpqnpqpnqpqnpqpn
+qqqnpppnqqqnpppn
 nnnnnnnnnnnnnnnn
-pppnsssnpppnqqqn
-pqpnstsnpqpnqpqn
-pppnsssnpppnqqqn
+pppnqqqnpppnqqqn
+pqpnqsqnpqpnqpqn
+pppnqqqnpppnqqqn
 nnnnnnnnnnnnnnnn
-qqqnpppnqqqndddn
-qpqnpqpnqpqndedn
-qqqnpppnqqqndddn
+qqqnpppnqqqnpppn
+qpqnpqpnqpqnprpn
+qqqnpppnqqqnpppn
 nnnnnnnnnnnnnnnn
 end
 

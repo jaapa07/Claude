@@ -65,7 +65,7 @@ func activate() -> void:
 	Audio.play("boss_roar")
 	world.shake(2.0, 0.6)
 	world.boss_started(self)
-	world.say("O Arauto Partido abre o livro rachado: \"Raiz, brasa, véu e sombra — tudo para o Rei!\" Observe o nome de cada combinação.")
+	world.say("Arauto: \"Raiz, brasa, véu e sombra — tudo para o Rei!\" Leia o nome de cada combinação.")
 
 func _hero() -> Vector2:
 	return world.player.global_position
@@ -270,7 +270,7 @@ func take_damage(amount: float, from_pos: Vector2, opts: Dictionary = {}) -> flo
 			sprite.modulate.a = 1.0
 		Audio.play("boss_roar")
 		world.shake(2.5, 0.5)
-		world.say("O livro do Arauto se parte de vez: agora ele encadeia DUAS combinações antes de recuperar o fôlego.")
+		world.say("O livro se parte de vez: agora ele encadeia DUAS combinações antes de parar.")
 	return got
 
 func spectral_visible() -> bool:

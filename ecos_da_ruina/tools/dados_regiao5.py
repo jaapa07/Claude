@@ -309,14 +309,13 @@ EPILOGO = {
             "dialogos": {"ilse_portao": "ilse_fim", "talia": "talia_fim"}},
     },
     "creditos": [
-        {"titulo": "Ecos da Ruína", "linhas": ["Um RPG de ação e captura de criaturas em Auralis.", "Feito em Godot 4.3 (GDScript)."]},
-        {"titulo": "Arte", "linhas": ["Pixel art autoral, desenhada à mão pixel a pixel em arquivos .pxl", "(tiles, criaturas, chefes, moradores e efeitos)."]},
-        {"titulo": "Música e sons", "linhas": ["Trilhas e efeitos sintetizados nota a nota (tools/gen_audio.py):", "Floresta, Minas, Pântano, Fortaleza, Catedral, Aurora e o Rei dos Ecos."]},
-        {"titulo": "Elenco", "linhas": ["Mestra Ione, a vinculadora de capa azul", "Ivar, o primeiro Arquivista (o Rei dos Ecos)", "Anciã Maru e Pipo, da Vila Lúmen",
-                                         "Doran, Ilda e Nino, da Forja de Cobre", "Arão, Iara e Cora, do Porto das Lanternas", "Capitã Ilse, Tália e Lume, do Refúgio da Muralha",
-                                         "Arquivista Sena, Mira e Caio, do Acampamento da Aurora", "Vesna, Bruna e Ravi"]},
-        {"titulo": "Os guardiões", "linhas": ["Cervo de Ossos • Ferreiro Devorador • Bruxa Afogada", "Cavaleiro Sem Rosto (Aldren) • Rei dos Ecos (Ivar)"]},
-        {"titulo": "E você", "linhas": ["que ouviu cada eco até o fim.", "Obrigado por jogar!"]},
+        {"titulo": "Ecos da Ruína", "linhas": ["RPG de ação e captura", "Feito em Godot 4.3"]},
+        {"titulo": "Arte", "linhas": ["Pixel art autoral", "desenhada à mão em .pxl"]},
+        {"titulo": "Música e sons", "linhas": ["Sintetizados nota a nota", "(tools/gen_audio.py)"]},
+        {"titulo": "Elenco", "linhas": ["Mestra Ione", "Ivar, o Arquivista", "Maru e Pipo", "Doran, Ilda e Nino", "Arão, Iara e Cora",
+                                         "Ilse, Tália e Lume", "Sena, Mira e Caio", "Vesna, Bruna e Ravi", "O Arauto da Ordem"]},
+        {"titulo": "Os guardiões", "linhas": ["Cervo de Ossos", "Ferreiro Devorador", "Bruxa Afogada", "Cavaleiro (Aldren)", "Rei dos Ecos (Ivar)"]},
+        {"titulo": "E você", "linhas": ["que ouviu cada eco", "até o fim. Obrigado!"]},
     ],
 }
 

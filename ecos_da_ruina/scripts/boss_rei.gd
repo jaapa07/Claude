@@ -92,7 +92,7 @@ func activate() -> void:
 	Audio.play("boss_roar")
 	world.shake(3.0, 1.0)
 	world.boss_started(self)
-	world.say("O Rei dos Ecos ergue as mãos: \"Raiz... brasa... água... sombra. Eu guardei tudo. Por que não lembro de NADA?\"")
+	world.say("Rei: \"Raiz, brasa, água, sombra... Eu guardei tudo. Por que não lembro de NADA?\"")
 
 func _hero() -> Vector2:
 	return world.player.global_position
@@ -327,7 +327,7 @@ func _light_focos() -> void:
 	invulnerable = false
 	attack_t = float(bdef["ataque_focos_s"])
 	Audio.play("guard")
-	world.say("Dois focos de luz protegem o núcleo do Rei. Cada foco só cede a golpes vindos DE TRÁS — dê a volta neles!" if shield_cycles == 1
+	world.say("Dois focos protegem o núcleo. Golpeie cada foco POR TRÁS (do lado oposto ao Rei)!" if shield_cycles == 1
 		else "Os focos se reacendem! Por trás deles, de novo.")
 
 func _focos_down() -> bool:
@@ -353,7 +353,7 @@ func _start_ruin() -> void:
 	bt = float(bdef["aviso_ruina"]) * Game.warning_mult()
 	ruin_attacks = 0
 	Audio.play("telegraph")
-	world.say("O chão treme: as faixas marcadas vão cair no vazio! Fique na cruz central ou nas partes firmes.")
+	world.say("O chão treme: as faixas marcadas vão cair! Fique na cruz central.")
 
 func ruin_rects(i: int) -> Array:
 	var out: Array = []
@@ -425,7 +425,7 @@ func _hesitate() -> void:
 		if is_instance_valid(f):
 			f.queue_free()
 	Audio.play("boss_roar", -10.0)
-	world.say("O Rei para no ar. As correntes afrouxam. \"Quem... sou eu?\" — Não é a força que vai terminar isto.")
+	world.say("O Rei para no ar: \"Quem... sou eu?\" Aproxime-se e diga o nome dele (E).")
 	var c := CatEnt.new()
 	c.init(world, {"type": "nome", "id": "rei_nome", "x": int(global_position.x / 16.0), "y": int(global_position.y / 16.0) + 2, "rei_node": self})
 	world.ysort.add_child(c)
@@ -495,13 +495,13 @@ func _enter_phase(n: int) -> void:
 	Audio.play("boss_roar")
 	world.shake(3.0, 0.7)
 	if n == 2:
-		world.say("\"Não! Eu não vou esquecer de novo!\" O Rei sobe ao centro e acende dois focos de luz.")
+		world.say("Rei: \"Não vou esquecer de novo!\" Ele sobe ao centro e acende dois focos.")
 	else:
 		for f in focos:
 			if is_instance_valid(f):
 				f.queue_free()
 		focos.clear()
-		world.say("A arena começa a se partir! Os trechos que vão cair ficam marcados. Ione grita: \"Aguente! Eu cuido de você entre as quedas!\"")
+		world.say("A arena se parte! Ione: \"Aguente! Eu cuido de você entre as quedas!\"")
 
 func interrupt() -> void:
 	pass
