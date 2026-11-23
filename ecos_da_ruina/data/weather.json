@@ -1,0 +1,39 @@
+{
+ "_doc": "Clima das áreas externas. 'zonas' lista os climas possíveis com pesos; 'mapas' liga cada mapa externo a uma zona (mapas ausentes = interiores, casas e masmorras, sem clima). 'dano' multiplica o dano causado por quem tem a afinidade; 'lentidao' multiplica a velocidade de criaturas e inimigos (exceto 'imunes_lentidao'); 'vigor' multiplica a recuperação de vigor do herói; 'percepcao' multiplica o alcance de visão dos inimigos.",
+ "troca_seg": [240, 360],
+ "climas": {
+  "sol": {"nome": "Sol", "icone": 0, "tom": "#fff8e6",
+   "dano": {"luz": 1.15, "flora": 1.15},
+   "efeito": "Luz e flora causam +15% de dano."},
+  "chuva": {"nome": "Chuva", "icone": 1, "tom": "#aebbd6",
+   "dano": {"agua": 1.15, "flora": 1.15, "brasa": 0.85},
+   "efeito": "Água e flora causam +15% de dano; brasa causa -15%. Braseiros acesos continuam acesos."},
+  "neve": {"nome": "Neve", "icone": 2, "tom": "#d6e2f6",
+   "dano": {"gelo": 1.15, "pedra": 1.15}, "lentidao": 0.85, "imunes_lentidao": ["gelo"],
+   "efeito": "Criaturas e inimigos (menos gelo) ficam 15% mais lentos; gelo e pedra causam +15% de dano."},
+  "frio": {"nome": "Frio", "icone": 3, "tom": "#dae4f2",
+   "dano": {"gelo": 1.15, "pedra": 1.15}, "lentidao": 0.85, "imunes_lentidao": ["gelo"],
+   "efeito": "Criaturas e inimigos (menos gelo) ficam 15% mais lentos; gelo e pedra causam +15% de dano."},
+  "calor": {"nome": "Onda de calor", "curto": "Calor", "icone": 4, "tom": "#ffe2c2",
+   "dano": {"brasa": 1.15}, "vigor": 0.8,
+   "efeito": "Brasa causa +15% de dano; o vigor do herói se recupera 20% mais devagar."},
+  "neblina": {"nome": "Neblina", "icone": 5, "tom": "#c8d0d4",
+   "percepcao": 0.7,
+   "efeito": "Inimigos enxergam 30% menos: fica mais fácil se esgueirar."}
+ },
+ "zonas": {
+  "floresta": {"nome": "Floresta", "pesos": {"sol": 5, "chuva": 3, "neblina": 2}},
+  "desfiladeiro": {"nome": "Desfiladeiro", "pesos": {"sol": 4, "frio": 3, "neve": 3}},
+  "minas": {"nome": "Minas (externo)", "pesos": {"calor": 5, "sol": 3}}
+ },
+ "mapas": {
+  "vila_lumen": "floresta",
+  "bosque_lanternas": "floresta",
+  "clareira_raizes": "floresta",
+  "desfiladeiro": "desfiladeiro",
+  "minas_entrada": "minas",
+  "forja_cobre": "minas",
+  "pedreira_oca": "minas"
+ },
+ "afinidade_inimigos": {"cogumelo": "flora", "lesma": "brasa", "sentinela": "pedra", "automato": "pedra"}
+}

@@ -228,7 +228,7 @@ func _anim(n: String) -> void:
 		sprite.play(n)
 
 func _move(dir: Vector2, spd: float, delta: float) -> void:
-	velocity = dir * spd + knock_v
+	velocity = dir * spd * Weather.enemy_speed_mult(self) + knock_v
 	knock_v = knock_v.move_toward(Vector2.ZERO, 520.0 * delta)
 	move_and_slide()
 
@@ -252,7 +252,7 @@ func _acquire() -> void:
 		return
 	los_t = 0.35
 	var best: Node2D = null
-	var bd := float(def.get("percepcao", 90)) * (1.6 if st == St.CHASE else 1.0)
+	var bd := float(def.get("percepcao", 90)) * Weather.enemy_perception_mult(self) * (1.6 if st == St.CHASE else 1.0)
 	for t in world.targets():
 		var d := global_position.distance_to(t.global_position)
 		if d < bd and not Combat.ray_blocked(world, global_position, t.global_position):
@@ -374,10 +374,10 @@ func _begin_attack() -> void:
 		var dir := (target.global_position - global_position).normalized()
 		if blind_t > 0.0:
 			dir = dir.rotated(randf_range(-0.6, 0.6))      # na fumaça a mira falha
-		world.spawn_projectile(global_position + Vector2(0, -2) + dir * 8.0, dir, damage, self, "tool")
+		world.spawn_projectile(global_position + Vector2(0, -2) + dir * 8.0, dir, damage * Weather.enemy_attack_mult(self), self, "tool")
 		Audio.play("swing", -6.0)
 	elif a == "martelo":
-		var q = world.spawn_projectile(global_position + attack_dir * 14.0, attack_dir, damage, self, "quake")
+		var q = world.spawn_projectile(global_position + attack_dir * 14.0, attack_dir, damage * Weather.enemy_attack_mult(self), self, "quake")
 		q.speed = 190.0
 		q.max_dist = P["len"]
 		q.width = P["w"]
@@ -387,7 +387,7 @@ func _begin_attack() -> void:
 
 func _attack_tick(delta: float) -> void:
 	var a: String = def.get("ataque", "")
-	var dmg := damage
+	var dmg := damage * Weather.enemy_attack_mult(self)
 	if a == "investida":
 		_move(attack_dir, P["dash"], delta)
 		_hit_circle(global_position + attack_dir * 6.0, P["hit_r"], dmg, {"knock": 110.0})
@@ -495,7 +495,7 @@ func take_damage(amount: float, from_pos: Vector2, opts: Dictionary = {}) -> flo
 	if not hittable():
 		return 0.0
 	var src: String = opts.get("src", "heroi")
-	var dmg := amount * Combat.affinity_mult(str(opts.get("aff", "")), affinity)
+	var dmg := amount * Combat.affinity_mult(str(opts.get("aff", "")), affinity) * Game.weather_mult(str(opts.get("aff", "")))
 	var to_att := (from_pos - global_position).normalized()
 	if guard_front > 0.0 and not opts.get("ignore_guard", false) and face.dot(to_att) > 0.3 and st != St.RECOVER:
 		dmg *= guard_front

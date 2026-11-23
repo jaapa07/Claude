@@ -36,3 +36,7 @@ tools/gen_audio.py               sintetiza as trilhas/efeitos a partir das notas
 tests/e2e_bot.gd                 teste ponta a ponta e testes de sistema (rodam no próprio jogo)
 docs/                            CONTROLS, BUILD, ASSET_LICENSES, KNOWN_ISSUES, TEST_REPORT
 ```
+
+## Clima
+
+Mapas externos têm clima (`data/weather.json`, regras em `scripts/weather.gd`, visual em `scripts/weather_fx.gd`, sprites em `assets/src/80_clima.pxl`): Floresta (sol/chuva/neblina), Desfiladeiro (sol/frio/neve) e Minas externas (calor/sol). Interiores, casas e masmorras não têm clima. O tempo é sorteado ao entrar na zona e ao descansar no santuário, muda sozinho a cada 4–6 min de jogo e vai para o save. Efeitos (±15% de dano por afinidade, lentidão no frio, vigor mais lento no calor, percepção menor na neblina) aparecem no menu de pausa e no bestiário; algumas criaturas só surgem com certo clima. Teste: `-- --e2e --clima` (os demais modos travam o clima em "sol" sem efeitos).

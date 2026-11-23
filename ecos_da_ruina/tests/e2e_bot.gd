@@ -33,7 +33,13 @@ func _ready() -> void:
 	Game.rng.seed = sd
 	Game.toast.connect(func(t): if "exausta" in t: exhausted_events += 1)
 	main.ui.instant = true
-	if "--casas" in args:
+	# clima: fora do modo --clima, fica travado em "sol" sem efeitos (fluxo determinístico)
+	if not "--clima" in args:
+		Game.weather_lock = "sol"
+		Game.weather_neutral = true
+	if "--clima" in args:
+		await run_clima()
+	elif "--casas" in args:
 		await run_casas()
 	elif "--equip" in args:
 		await run_equip()
@@ -2497,3 +2503,168 @@ func run_casas() -> void:
 	W.save_now(3)
 	SaveSys.load_game(3)
 	check("Save mantém missões das casas", Game.has_flag("ervas_entregue") and Game.has_flag("brinquedo_entregue") and Game.has_flag("folha1_pega"))
+
+
+## Clima das áreas externas (scripts/weather.gd, data/weather.json)
+func _clima_shot(id: String, map_id: String, spawn: String) -> void:
+	if W.map_id != map_id:
+		W.load_map(map_id, spawn)
+		await frames(20)
+	Weather.change_to(id, false)
+	Weather.fx.apply(id, true)
+	await secs(3.6)
+	await shot("clima_" + id)
+
+func _vigor_gain() -> float:
+	P.vigor = 0.0
+	P.vigor_idle = 1.0
+	await frames(30)
+	return P.vigor
+
+func run_clima() -> void:
+	SaveSys.delete_slot(3)
+	Game.weather_lock = ""
+	Game.weather_neutral = false
+	main.start_new_game(3)
+	await frames(10)
+	await advance_dialogs()
+	var fx: Node = Weather.fx
+	# 1) sorteio em mapa externo
+	check("Clima sorteado ao entrar na Vila (zona Floresta)", Weather.zone == "floresta" and Weather.now() in ["sol", "chuva", "neblina"], "%s/%s" % [Weather.zone, Weather.now()])
+	check("Troca agendada para 4–6 minutos", Weather.timer >= 230.0 and Weather.timer <= 360.0, str(Weather.timer))
+	check("Aviso do tempo ao chegar", toast_seen("Tempo: "))
+	check("Ícone do clima no HUD", fx.icon_panel.visible and fx.icon.texture != null)
+	var before: String = Weather.current
+	# 2) interior sem clima
+	var ok := await enter_house(Vector2i(8, 7), "casa_maru")
+	check("Casa da Maru: interior sem clima", ok and Weather.now() == "" and not fx.icon_panel.visible, "%s %s" % [W.map_id, Weather.now()])
+	await secs(0.3)
+	var vis := 0
+	for k in fx.groups:
+		if fx.groups[k].visible:
+			vis += 1
+	check("Interior sem partículas de clima", vis == 0 and fx.tint.color == Color.WHITE)
+	check("Interior: multiplicadores neutros", Game.weather_mult("flora") == 1.0 and Game.weather_speed_mult("pedra") == 1.0 and Game.weather_vigor_mult() == 1.0)
+	await leave_house()
+	check("Voltar à mesma zona mantém o clima", Weather.now() == before, "%s -> %s" % [before, Weather.now()])
+	# 3) multiplicadores
+	P.global_position = Vector2(22 * 16 + 8, 16 * 16 + 8)
+	await frames(3)
+	Weather.change_to("chuva")
+	check("Chuva: água/flora +15%, brasa -15%, luz neutra", is_equal_approx(Game.weather_mult("agua"), 1.15) and is_equal_approx(Game.weather_mult("flora"), 1.15) and is_equal_approx(Game.weather_mult("brasa"), 0.85) and Game.weather_mult("luz") == 1.0)
+	var wolf := _spawn_wolf(P.global_position + Vector2(200, 0))
+	var hp0: float = wolf.hp
+	wolf.take_damage(10.0, wolf.global_position, {"src": "companion", "aff": "agua", "knock": 0.0})
+	var d_chuva: float = hp0 - wolf.hp
+	wolf.hp = hp0
+	wolf.take_damage(10.0, wolf.global_position, {"src": "companion", "aff": "brasa", "knock": 0.0})
+	var d_brasa: float = hp0 - wolf.hp
+	wolf.hp = hp0
+	check("Chuva aplicada no dano real (enemy.take_damage)", is_equal_approx(d_chuva, 11.5) and is_equal_approx(d_brasa, 8.5), "%.2f %.2f" % [d_chuva, d_brasa])
+	check("Toast \"O tempo mudou: Chuva\"", toast_seen("O tempo mudou: Chuva"))
+	Weather.change_to("sol")
+	wolf.take_damage(10.0, wolf.global_position, {"src": "companion", "aff": "luz", "knock": 0.0})
+	check("Sol fortalece luz (Lumipim)", is_equal_approx(hp0 - wolf.hp, 11.5), str(hp0 - wolf.hp))
+	wolf.hp = hp0
+	var g_sol: float = await _vigor_gain()
+	Weather.change_to("neve")
+	check("Neve: criaturas não-gelo 15% mais lentas, gelo não", is_equal_approx(Game.weather_speed_mult("flora"), 0.85) and Game.weather_speed_mult("gelo") == 1.0)
+	check("Neve fortalece pedra", is_equal_approx(Game.weather_mult("pedra"), 1.15))
+	wolf._move(Vector2.RIGHT, 100.0, 0.016)
+	check("Neve: inimigo realmente mais lento (enemy._move)", is_equal_approx(wolf.velocity.x, 85.0), str(wolf.velocity))
+	wolf.velocity = Vector2.ZERO
+	Weather.change_to("calor")
+	check("Calor fortalece brasa", is_equal_approx(Game.weather_mult("brasa"), 1.15))
+	var g_calor: float = await _vigor_gain()
+	check("Calor: vigor do herói regenera 20% mais devagar", g_calor < g_sol * 0.85 and g_calor > g_sol * 0.75, "%.2f vs %.2f" % [g_calor, g_sol])
+	# neblina: o lobo a 90 px enxerga no sol (percepção 110) e não na neblina (77)
+	wolf.global_position = P.global_position + Vector2(90, 0)
+	Weather.change_to("sol")
+	wolf.target = null; wolf.los_t = 0.0; wolf.st = Enemy.St.IDLE
+	wolf._acquire()
+	var saw_sol: bool = wolf.target != null
+	Weather.change_to("neblina")
+	wolf.target = null; wolf.los_t = 0.0
+	wolf._acquire()
+	check("Neblina reduz a percepção dos inimigos em 30%", saw_sol and wolf.target == null and is_equal_approx(Weather.perception_mult(), 0.7))
+	wolf.queue_free()
+	# 4) transição suave e troca com o tempo
+	Weather.change_to("chuva", false)
+	await secs(3.5)
+	Weather.timer = 0.5
+	await secs(0.8)
+	var novo: String = Weather.current
+	check("Clima muda sozinho com o tempo", novo != "chuva" and novo in ["sol", "neblina"], novo)
+	check("Nova troca reagendada", Weather.timer > 200.0)
+	check("Toast de troca com o tempo", toast_seen("O tempo mudou: " + Weather.name_of(novo)))
+	await frames(30)
+	var w_old: float = fx.weight["chuva"]
+	check("Transição suave: chuva ainda esmaecendo", w_old > 0.2 and w_old < 0.95, str(w_old))
+	await secs(3.0)
+	check("Transição concluída", fx.weight["chuva"] == 0.0 and fx.weight[novo] == 1.0)
+	# 5) criaturas que dependem do clima
+	Weather.change_to("chuva", false)
+	W.load_map("bosque_lanternas", "from_vila")
+	await frames(10)
+	check("Bosque na chuva: Brotisco da chuva aparece", ent_by_id("b_brotisco_chuva") != null and ent_by_id("b_lumipim_neblina") == null)
+	Weather.change_to("neblina")
+	await frames(5)
+	check("Neblina: Lumipim da névoa aparece e o da chuva some", ent_by_id("b_lumipim_neblina") != null and ent_by_id("b_brotisco_chuva") == null)
+	check("Espécies garantidas continuam no bosque", ent_by_id("b_brotisco1") != null and ent_by_id("b_lumipim1") != null)
+	# 6) save/load mantém
+	Weather.change_to("neblina", false)
+	Weather.timer = 123.0
+	W.save_now(3)
+	Weather.change_to("sol", false)
+	SaveSys.load_game(3)
+	check("Save/load mantém clima, zona e tempo restante", Weather.current == "neblina" and Weather.zone == "floresta" and absf(Weather.timer - 123.0) < 1.0, "%s %s %.1f" % [Weather.current, Weather.zone, Weather.timer])
+	main.continue_from_slot(3)
+	await frames(10)
+	check("Continuar do slot mostra o mesmo clima", Weather.now() == "neblina" and fx.target == "neblina")
+	# 7) outras zonas
+	W.load_map("desfiladeiro", "from_vila")
+	await frames(5)
+	check("Desfiladeiro sorteia sol/frio/neve", Weather.zone == "desfiladeiro" and Weather.now() in ["sol", "frio", "neve"], Weather.now())
+	Weather.change_to("neve")
+	await frames(5)
+	check("Desfiladeiro na neve: Cascalito da neve aparece", ent_by_id("d_cascalito_neve") != null)
+	W.load_map("minas_entrada", "from_desfiladeiro")
+	await frames(5)
+	check("Minas externas sorteiam calor/sol", Weather.zone == "minas" and Weather.now() in ["calor", "sol"], Weather.now())
+	W.load_map("fundicao_a", "from_pedreira")
+	await frames(5)
+	check("Masmorra (Fundição) sem clima", Weather.now() == "")
+	# 8) descanso no santuário sorteia de novo
+	W.load_map("vila_lumen", "default")
+	await frames(5)
+	var rolls := {}
+	for i in 30:
+		W.rest_at_shrine()
+		rolls[Weather.current] = true
+	W.player.state = Player.S.FREE
+	check("Descansar sorteia o clima da zona (pesos da Floresta)", rolls.size() >= 2 and rolls.keys().all(func(k): return k in ["sol", "chuva", "neblina"]), str(rolls.keys()))
+	# 9) travamento para testes
+	Game.weather_lock = "sol"
+	Weather.timer = 0.2
+	await secs(0.5)
+	check("weather_lock força sol e não troca", Weather.now() == "sol")
+	Game.weather_neutral = true
+	check("weather_neutral desliga os efeitos", Game.weather_mult("flora") == 1.0)
+	Game.weather_lock = ""
+	Game.weather_neutral = false
+	# 10) textos explicativos
+	Weather.change_to("chuva", false)
+	check("Menu de pausa explica o clima", "Chuva" in Weather.describe() and "+15%" in Weather.describe())
+	check("Bestiário explica o clima por afinidade", "Chuva" in Weather.species_note("flora") and "mais fraca com Chuva" in Weather.species_note("brasa"))
+	await ui_press("pause")
+	await frames(4)
+	await shot("clima_pausa")
+	await close_menus()
+	# 11) screenshots de cada clima
+	await _clima_shot("sol", "bosque_lanternas", "from_vila")
+	await _clima_shot("chuva", "bosque_lanternas", "from_vila")
+	await _clima_shot("neblina", "bosque_lanternas", "from_vila")
+	await _clima_shot("neve", "desfiladeiro", "from_vila")
+	await _clima_shot("frio", "desfiladeiro", "from_vila")
+	await _clima_shot("calor", "minas_entrada", "from_desfiladeiro")
+	check("Sem erros de script durante o teste de clima", true)
