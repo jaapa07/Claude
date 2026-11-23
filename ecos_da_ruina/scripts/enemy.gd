@@ -510,6 +510,9 @@ func take_damage(amount: float, from_pos: Vector2, opts: Dictionary = {}) -> flo
 		if src == "heroi":
 			Game.tutorial_event("attack_dummy")
 		return dmg
+	# modo Preservar: a criatura parceira não derruba um alvo capturável — deixa a captura para o herói
+	if src == "companion" and capturable and not boss and Game.behavior == "preservar":
+		dmg = min(dmg, max(0.0, hp - max_hp * 0.08))
 	hp -= dmg
 	hurt_t = 0.16
 	Game.dmg_stats[src] = float(Game.dmg_stats.get(src, 0.0)) + min(dmg, hp + dmg)
