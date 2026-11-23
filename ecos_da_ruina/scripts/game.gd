@@ -40,7 +40,7 @@ var checkpoint := {"map": "vila_lumen", "spawn": "default", "shrine": "vila"}
 var stats := {"kills": {}, "capturas": 0, "mortes": 0}
 var play_time := 0.0
 var difficulty := "aventura"
-var behavior := "acompanhar"
+var behavior := "preservar"
 var slot := 1
 
 # ---- estado de execução (não vai para o save)
@@ -52,6 +52,7 @@ var in_game := false
 var rng := RandomNumberGenerator.new()
 var rng_override: Callable = Callable()   # testes: func() -> float
 var god_mode := false
+var last_death := {}
 
 # ---- preferências (arquivo separado)
 var prefs := {"master": 0.8, "musica": 0.6, "efeitos": 0.8, "texto": 1.0, "reduz_tremor": false, "reduz_flash": false,
@@ -143,7 +144,7 @@ func new_game(p_slot: int = 1) -> void:
 	checkpoint = {"map": "vila_lumen", "spawn": "default", "shrine": "vila"}
 	stats = {"kills": {}, "capturas": 0, "mortes": 0}
 	play_time = 0.0
-	behavior = "acompanhar"
+	behavior = "preservar"
 	tmp_flags = {}
 	skill_cd = {}
 	swap_cd = 0.0
@@ -184,7 +185,7 @@ func from_dict(d: Dictionary) -> bool:
 	flags = d["flags"]; chests = d.get("chests", {}); ecos = d.get("ecos", {}); eco_slots = d.get("eco_slots", ["", ""])
 	bestiary = d.get("bestiary", {}); location = d["location"]; checkpoint = d["checkpoint"]
 	stats = d.get("stats", stats); play_time = float(d.get("play_time", 0.0)); difficulty = d.get("difficulty", "aventura")
-	behavior = d.get("behavior", "acompanhar"); slot = int(d.get("slot", 1))
+	behavior = d.get("behavior", "preservar"); slot = int(d.get("slot", 1))
 	tmp_flags = {}; skill_cd = {}; swap_cd = 0.0; save_block = 0
 	in_game = true
 	hero["hp"] = min(float(hero.get("hp", 1.0)), hero_max_hp())

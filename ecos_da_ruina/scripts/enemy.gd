@@ -502,10 +502,9 @@ func _give_rewards(_src: String) -> void:
 	Game.register_kill(kind)
 	if def.get("relevante", false):
 		var ac := Game.active_ind()
-		if not ac.is_empty() and participants.has(ac["uuid"]):
+		var near: bool = world.companion != null and is_instance_valid(world.companion) and world.companion.global_position.distance_to(global_position) < 150.0
+		if not ac.is_empty() and (participants.has(ac["uuid"]) or near):
 			Game.bond_activity(ac["uuid"], "vitoria:" + uid)
-		elif not ac.is_empty() and participants.is_empty() and false:
-			pass
 
 func _death_fx() -> void:
 	if sprite == null:

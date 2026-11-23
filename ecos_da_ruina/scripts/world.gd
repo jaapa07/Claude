@@ -356,7 +356,8 @@ func _on_flag_changed(name: String, _v: bool) -> void:
 		pass
 
 func _on_team_changed() -> void:
-	pass
+	if not map.is_empty() and player != null and Game.in_game:
+		refresh_companion(false)
 
 # =============================================================== COMPANHEIRO
 func refresh_companion(fx: bool) -> void:
@@ -537,8 +538,6 @@ func travel(to_map: String, spawn: String) -> void:
 	autosave()
 
 func autosave() -> void:
-	if test_mode:
-		return
 	save_now(0)
 
 ## Salva em estado estável. Se a posição não for segura, usa o checkpoint associado.
@@ -825,10 +824,12 @@ func _update_encounters() -> void:
 				Audio.play("puzzle_ok")
 				say("As portas se abriram.")
 	for i in boss_nodes.keys():
-		var b: Node = boss_nodes[i]
-		if is_instance_valid(b) and not b.activated and b.alive_flag:
+		var b = boss_nodes[i]
+		if not is_instance_valid(b):
+			continue
+		if not b.activated and b.alive_flag:
 			var d2: Dictionary = ent_defs[i]
-			var r2 := Rect2(float(d2["x0"]) * TILE, float(d2["y0"]) * TILE, float(d2["w"]) * TILE, float(d2["h"]) * TILE).grow(-40.0)
+			var r2 := Rect2(float(d2["x0"]) * TILE, float(d2["y0"]) * TILE, float(d2["w"]) * TILE, float(d2["h"]) * TILE).grow(-16.0)
 			if r2.has_point(player.global_position) and arrival_t <= 0.0:
 				b.activate()
 
@@ -856,6 +857,7 @@ func on_player_died() -> void:
 	await get_tree().create_timer(1.3).timeout
 	await ui.fade(1.0, 0.5)
 	var lost := int(floor(Game.fragments * 0.10))
+	Game.last_death = {"antes": Game.fragments, "perdidos": lost, "mapa": map_id}
 	Game.fragments -= lost
 	Game.inventory_changed.emit()
 	Game.heal_team()

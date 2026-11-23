@@ -179,6 +179,7 @@ def bosque():
     m.rect(43, 25, 1, 3, "p")
     # portao do santuario
     m.rect(50, 6, 2, 3, "p"); m.rect(52, 6, 1, 3, "D"); m.rect(53, 6, 3, 3, "r")
+    m.rect(0, 15, 2, 5, "p")
     m.spawns = {"from_vila": [4, 17], "from_santuario": [50, 7]}
     m.ent(type="npc", id="guarda_b", sprite="npc_ranger", dialog="guarda", x=6, y=18, nome="Bram")
     m.ent(type="sign", id="placa_bosque", dialog="placa_bosque", x=48, y=9)
@@ -233,6 +234,7 @@ def clareira():
         m.set(x, y, "P")
     m.rect(21, 32, 4, 1, "x")                       # barreira de raizes ao sul
     carve_path(m, [(23, 33), (23, 36)], 4, "p")
+    m.rect(21, 36, 4, 2, "p"); m.rect(21, 0, 4, 2, "p")
     m.spawns = {"from_vila": [23, 3], "from_santuario": [23, 35]}
     m.ent(type="sign", id="placa_clareira", dialog="placa_clareira", x=22, y=23)
     m.ent(type="plate", id="c_placa1", group="placas_c", x=15, y=28)
@@ -276,7 +278,7 @@ def santuario_a():
     m.corr(51, 15, 2, 4)
     m.room(46, 19, 12, 8)
     m.corr(58, 22, 6, 2)
-    m.corr(51, 27, 2, 12)
+    m.corr(51, 27, 2, 13)
     for (x, y) in ((23, 29), (32, 29), (23, 34), (32, 34), (22, 18), (33, 18), (22, 23), (33, 23)):
         m.set(x, y, "P")
     for (x, y) in ((18, 6), (37, 6), (18, 10), (37, 10)):
@@ -357,6 +359,7 @@ def santuario_b():
 def santuario_c():
     m = M("santuario_c", "Santuário da Seiva — Sala do Cervo", 52, 36, fill="v", music="santuario")
     m.room(2, 15, 12, 8)                            # preparacao
+    m.corr(0, 18, 3, 2)
     m.corr(14, 18, 6, 2)
     m.room(20, 10, 24, 16)                          # arena
     m.corr(44, 18, 8, 2)

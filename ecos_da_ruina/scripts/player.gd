@@ -101,6 +101,9 @@ func reset_resources() -> void:
 	sprite.modulate = Color.WHITE
 	sprite.rotation = 0.0
 
+func is_alive() -> bool:
+	return state != S.DEAD
+
 func hp() -> float:
 	return float(Game.hero["hp"])
 
@@ -359,6 +362,8 @@ func take_hit(dmg: float, from: Vector2, opts: Dictionary = {}) -> bool:
 		Audio.play("guard_break")
 		stagger_extra = 0.25
 	_apply_damage(dmg)
+	if state == S.DEAD:
+		return true
 	inv_timer = HURT_INVULN
 	state = S.HURT
 	hurt_t = 0.22 + stagger_extra
