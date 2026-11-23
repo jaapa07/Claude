@@ -274,7 +274,7 @@ func hero_level() -> int:
 	return int(hero.get("level", 1))
 
 func hero_max_hp() -> float:
-	var hp = 100.0 + 8.0 * (hero_level() - 1) + 6.0 * hero["talents"].get("resistencia", 0) + 12.0 * item_count("semente_vida")
+	var hp = 100.0 + 6.0 * (hero_level() - 1) + 6.0 * hero["talents"].get("resistencia", 0) + 10.0 * item_count("semente_vida")
 	var am: String = equipment.get("amuleto", "")
 	if am != "" and Data.items.has(am):
 		hp += float(Data.items[am].get("hp", 0)) + float(forge_bonus("amuleto", "hp")) * upgrade_level(am)
@@ -408,11 +408,35 @@ func capture_bonus() -> float:
 		b += float(Data.items[am].get("selo_chance", 0))
 	return b
 
+## Modos de dificuldade (curva em docs/BALANCO.md, gerado por tools/balanco.py).
+##   historia: para quem quer a história — metade do dano inimigo e avisos bem mais longos.
+##   aventura: padrão — dano inimigo x0,75 e avisos 20% mais longos.
+##   desafio:  valores-base dos dados.
+const DIFFICULTY := {
+	"historia": {"dano": 0.5, "aviso": 1.35, "nome": "História"},
+	"aventura": {"dano": 0.75, "aviso": 1.2, "nome": "Aventura"},
+	"desafio": {"dano": 1.0, "aviso": 1.0, "nome": "Desafio"},
+}
+const DIFFICULTY_ORDER := ["historia", "aventura", "desafio"]
+## Fração do dano inimigo que chega às criaturas (companheiro e criaturas dos aliados) e aos aliados humanos.
+## O dano dos inimigos é calibrado para o herói (vida com Sementes, amuleto e armadura); criaturas e aliados
+## têm vida menor e sem equipamento, então recebem uma fração para aguentar um número de golpes parecido.
+const COMPANION_DAMAGE_TAKEN := 0.3
+const ALLY_DAMAGE_TAKEN := 0.5
+
 func enemy_damage_mult() -> float:
-	return 0.75 if difficulty == "aventura" else 1.0
+	return float(DIFFICULTY.get(difficulty, DIFFICULTY["aventura"])["dano"])
 
 func warning_mult() -> float:
-	return 1.2 if difficulty == "aventura" else 1.0
+	return float(DIFFICULTY.get(difficulty, DIFFICULTY["aventura"])["aviso"])
+
+func difficulty_name() -> String:
+	return str(DIFFICULTY.get(difficulty, DIFFICULTY["aventura"])["nome"])
+
+## Próximo modo no ciclo das opções (História → Aventura → Desafio → História).
+func next_difficulty() -> String:
+	var i := DIFFICULTY_ORDER.find(difficulty)
+	return str(DIFFICULTY_ORDER[(i + 1) % DIFFICULTY_ORDER.size()])
 
 func xp_to_next(level: int) -> int:
 	return 20 * level

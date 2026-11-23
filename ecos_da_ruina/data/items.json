@@ -19,9 +19,9 @@
   "nome": "Tônico de Seiva",
   "tipo": "consumivel",
   "preco": 25,
-  "cura": 45,
+  "cura": 60,
   "icone": 2,
-  "desc": "Restaura 45 de vida do herói. Tecla R."
+  "desc": "Restaura 60 de vida do herói. Tecla R."
  },
  "tonico_criatura": {
   "nome": "Néctar de Vínculo",
@@ -205,12 +205,12 @@
  "galhada_ossea": {
   "nome": "Galhada Óssea",
   "tipo": "arma",
-  "dano": 9,
+  "dano": 7,
   "alcance": 6,
   "arco": 1.0,
   "raridade": 3,
   "icone": 2,
-  "desc": "Espada forjada com a galhada do Cervo. +9 de dano e alcance maior.",
+  "desc": "Espada forjada com a galhada do Cervo. +7 de dano e alcance maior.",
   "folha": "icons_equip"
  },
  "lamina_ruina": {
@@ -366,7 +366,7 @@
   "raridade": 3,
   "icone": 3,
   "folha": "icons_chave",
-  "desc": "Cada semente aumenta a vida máxima em 12, para sempre. Há sementes escondidas sob pedras, em segredos e como recompensa de contratos."
+  "desc": "Cada semente aumenta a vida máxima em 10, para sempre. Há sementes escondidas sob pedras, em segredos e como recompensa de contratos."
  },
  "corrente_vinculo": {
   "nome": "Corrente de Vínculo",

@@ -1,7 +1,7 @@
 {
  "cervo": {
   "nome": "Cervo de Ossos",
-  "hp": 640,
+  "hp": 1700,
   "fases": [
    1.0,
    0.6,
@@ -9,29 +9,29 @@
   ],
   "recompensa": {
    "eco": "raiz_viva",
-   "xp": 300,
-   "frag": 120
+   "xp": 160,
+   "frag": 100
   },
   "flag_morte": "cervo_morto",
-  "dano_investida": 24,
-  "dano_raizes": 18,
-  "dano_contato": 10
+  "dano_investida": 53,
+  "dano_raizes": 40,
+  "dano_contato": 22
  },
  "lenhador": {
   "nome": "Lenhador Oco",
-  "hp": 190,
+  "hp": 700,
   "fases": [
    1.0
   ],
   "recompensa": {
-   "xp": 90,
+   "xp": 50,
    "frag": 40
   },
   "flag_morte": "lenhador_morto"
  },
  "vigia": {
   "nome": "Vigia de Escória",
-  "hp": 420,
+  "hp": 1200,
   "fases": [
    1.0
   ],
@@ -44,8 +44,8 @@
    }
   },
   "flag_morte": "vigia_morto",
-  "dano_golpe": 18,
-  "dano_escoria": 14,
+  "dano_golpe": 54,
+  "dano_escoria": 42,
   "couraca": 0.15,
   "vulneravel": 1.6,
   "trinca_s": 6.0,
@@ -53,7 +53,7 @@
  },
  "ferreiro": {
   "nome": "Ferreiro Devorador",
-  "hp": 900,
+  "hp": 2400,
   "fases": [
    1.0,
    0.65,
@@ -61,15 +61,15 @@
   ],
   "recompensa": {
    "eco": "ruptura_ignea",
-   "xp": 400,
-   "frag": 160
+   "xp": 300,
+   "frag": 140
   },
   "flag_morte": "ferreiro_morto",
   "flag_regiao": "minas_libertas",
-  "dano_onda": 16,
-  "dano_golpe": 18,
-  "dano_grande": 30,
-  "dano_queda": 8,
+  "dano_onda": 32,
+  "dano_golpe": 36,
+  "dano_grande": 60,
+  "dano_queda": 16,
   "armadura_quente": 0.25,
   "armadura_quente_f3": 0.5,
   "resfriada": 1.3,
@@ -79,27 +79,27 @@
  },
  "gemeos": {
   "nome": "Gêmeos de Ferro",
-  "hp": 520,
+  "hp": 1150,
   "fases": [
    1.0
   ],
   "recompensa": {
    "xp": 300,
-   "frag": 120,
+   "frag": 80,
    "itens": {
     "lasca_umbral": 2,
     "insignia_guarnicao": 1
    }
   },
   "flag_morte": "gemeos_morto",
-  "dano_onda": 22,
-  "dano_golpe": 24,
-  "dano_corrente": 26,
+  "dano_onda": 110,
+  "dano_golpe": 120,
+  "dano_corrente": 130,
   "raio_corrente": 50
  },
  "cavaleiro": {
   "nome": "Cavaleiro Sem Rosto",
-  "hp": 1500,
+  "hp": 3200,
   "fases": [
    1.0,
    0.6,
@@ -107,15 +107,15 @@
   ],
   "recompensa": {
    "eco": "passo_umbral",
-   "xp": 900,
-   "frag": 260
+   "xp": 600,
+   "frag": 180
   },
   "flag_morte": "cavaleiro_morto",
   "flag_regiao": "fortaleza_liberta",
   "giro": 2.2,
   "aviso_estocada": 0.9,
   "vel_estocada": 330,
-  "dano_estocada": 34,
+  "dano_estocada": 163,
   "recarga_estocada": 2.4,
   "exausto_s": 1.7,
   "mult_exausto": 1.3,
@@ -126,13 +126,13 @@
   "espelho_fisico": 1.5,
   "espelho_distancia": 0.1,
   "raio_corte": 56,
-  "dano_corte": 26,
+  "dano_corte": 125,
   "exausto_duelo_s": 1.6,
   "mult_costas": 1.6
  },
  "barqueiro": {
   "nome": "Barqueiro Sem Sombra",
-  "hp": 560,
+  "hp": 1100,
   "fases": [
    1.0
   ],
@@ -145,8 +145,8 @@
    }
   },
   "flag_morte": "barqueiro_morto",
-  "dano_remo": 20,
-  "dano_onda": 14,
+  "dano_remo": 36,
+  "dano_onda": 25,
   "sem_sombra": 0.2,
   "com_sombra": 1.6,
   "lanterna_s": 9.0,
@@ -155,7 +155,7 @@
  },
  "bruxa": {
   "nome": "Bruxa Afogada",
-  "hp": 1100,
+  "hp": 2800,
   "fases": [
    1.0,
    0.6,
@@ -163,14 +163,14 @@
   ],
   "recompensa": {
    "eco": "olhar_velado",
-   "xp": 520,
-   "frag": 200
+   "xp": 400,
+   "frag": 160
   },
   "flag_morte": "bruxa_morta",
   "flag_regiao": "pantano_livre",
-  "dano_orbe": 13,
-  "dano_poca": 9,
-  "dano_queda": 8,
+  "dano_orbe": 46,
+  "dano_poca": 32,
+  "dano_queda": 28,
   "copia_mult": 0.5,
   "embaralha_dano": 0.1,
   "embaralha_s": 14.0,
@@ -179,14 +179,14 @@
  },
  "arauto": {
   "nome": "Arauto Partido",
-  "hp": 980,
+  "hp": 2200,
   "fases": [
    1.0,
    0.5
   ],
   "recompensa": {
-   "xp": 600,
-   "frag": 200,
+   "xp": 400,
+   "frag": 140,
    "itens": {
     "fragmento_prisma": 3,
     "essencia_roxa": 1
@@ -195,21 +195,21 @@
   "flag_morte": "arauto_morto",
   "aviso_raiz": 1.0,
   "alcance_raiz": 130,
-  "dano_raiz": 24,
+  "dano_raiz": 96,
   "brasa_s": 3.5,
   "veu_s": 1.6,
   "revelado_s": 2.6,
   "aviso_corte": 0.7,
   "raio_corte": 52,
-  "dano_corte": 26,
-  "dano_selo": 22,
+  "dano_corte": 104,
+  "dano_selo": 88,
   "armar_selo": 1.1,
   "recupera_s": 1.8,
   "mult_recupera": 1.4
  },
  "rei": {
   "nome": "Rei dos Ecos",
-  "hp": 4000,
+  "hp": 5000,
   "fases": [
    1.0,
    0.65,
@@ -219,22 +219,22 @@
   "recompensa": {
    "eco": "harmonia",
    "xp": 1400,
-   "frag": 500
+   "frag": 350
   },
   "flag_morte": "rei_morto",
   "flag_regiao": "catedral_liberta",
   "aviso_raiz": 1.0,
   "alcance_raiz": 150,
-  "dano_raiz": 26,
+  "dano_raiz": 104,
   "aviso_martelo": 1.0,
   "alcance_martelo": 170,
-  "dano_martelo": 26,
+  "dano_martelo": 104,
   "aviso_orbes": 0.9,
-  "dano_orbe": 20,
+  "dano_orbe": 80,
   "poca_s": 4.0,
   "aviso_estocada": 0.95,
   "vel_estocada": 330,
-  "dano_estocada": 32,
+  "dano_estocada": 128,
   "exausto_s": 1.8,
   "recupera_s": 1.3,
   "intervalo_s": 1.4,
@@ -247,6 +247,6 @@
   "aviso_ruina": 2.5,
   "respiro_s": 3.5,
   "cura_ione": 0.12,
-  "dano_queda": 8
+  "dano_queda": 32
  }
 }

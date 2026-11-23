@@ -244,7 +244,7 @@ func reposition() -> void:
 func take_hit(dmg: float, from: Vector2, opts: Dictionary = {}) -> bool:
 	if not is_alive() or inv_t > 0.0:
 		return false
-	dmg *= Game.enemy_damage_mult()
+	dmg *= Game.enemy_damage_mult() * Game.COMPANION_DAMAGE_TAKEN
 	if species_id() == "cascalito":
 		dmg *= 0.9
 	elif species_id() == "rocantor":

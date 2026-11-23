@@ -813,13 +813,13 @@ func _fill_options(s: MenuScreen) -> void:
 		"l": func(): p["texto"] = max(1.0, snappedf(float(p["texto"]) - 0.1, 0.1)); Game.save_prefs(); _fill_options(s),
 		"r": func(): p["texto"] = min(1.4, snappedf(float(p["texto"]) + 0.1, 0.1)); Game.save_prefs(); _fill_options(s)})
 	items.append(_hdr("Jogo"))
-	items.append({"t": "Dificuldade: %s" % ("Aventura" if Game.difficulty == "aventura" else "Desafio"),
-		"info": "Aventura: -25% de dano inimigo e avisos 20% mais longos. Desafio: valores-base. Só fora de combate.",
+	items.append({"t": "Dificuldade: %s" % Game.difficulty_name(),
+		"info": "História: metade do dano inimigo e avisos 35% mais longos. Aventura (padrão): -25% de dano e avisos 20% mais longos. Desafio: valores-base. Só fora de combate.",
 		"fn": func():
 			if world != null and world.map != null and world.in_combat():
 				toast("Só fora de combate.")
 			else:
-				Game.difficulty = "desafio" if Game.difficulty == "aventura" else "aventura"; _fill_options(s)})
+				Game.difficulty = Game.next_difficulty(); _fill_options(s)})
 	items.append(_hdr("Controles (Enter/E para remapear)"))
 	for a in Game.ACTION_NAMES:
 		var aa: String = a
