@@ -727,6 +727,12 @@ func respawn_commons() -> void:
 				_spawn_def(i, player.global_position)
 
 func _on_flag_changed(name: String, _v: bool) -> void:
+	if _v and Data.story.get("memorias", {}).has(name) and not Game.has_flag("mem_" + name):
+		_memory_queue.append(name)
+	if _v:
+		for g in Data.story.get("jornada", {}).get("guardioes", []):
+			if g["flag"] == name:
+				say("Ecos dos guardiões: %d/5 — Jornada %d%% (Menu > Jornada)" % [Game.guardians_done(), Game.conquest_pct()])
 	if map.is_empty():
 		return
 	refresh_tiles()
@@ -836,6 +842,10 @@ func _spawn_contract() -> void:
 	if boss_node != null:
 		ui.boss_bar(boss_node)
 		Audio.set_mood("chefe", true, "chefao")
+		if not test_mode:
+			player.set_busy(true)
+			ui.dialog(["Vesna: O aprendiz da vinculadora de capa azul. Ela também tentou me convencer a largar o chicote.",
+				"Vesna: Minhas feras não vão para as correntes da Catedral. Se para isso eu tiver de te derrubar... que seja."], func(): player.set_busy(false))
 
 ## Um domador do contrato caiu: as feras dele ficam livres (e podem ser capturadas); se não sobrou nenhum, o contrato termina.
 func contract_enemy_down(e: Node) -> void:
@@ -954,6 +964,7 @@ func say(text: String) -> void:
 func _physics_process(delta: float) -> void:
 	if map.is_empty() or get_tree().paused:
 		return
+	_memory_tick(delta)
 	arrival_t = max(0.0, arrival_t - delta)
 	combat_t = max(0.0, combat_t - delta)
 	Game.swap_cd = max(0.0, Game.swap_cd - delta)
@@ -1497,7 +1508,7 @@ func _vila_return_scene() -> void:
 	Game.set_flag("voltou_vila")
 	await get_tree().create_timer(0.8).timeout
 	player.set_busy(true)
-	ui.dialog(["As raízes recuaram da vila e as flores abriram por toda parte.", "A família Corvelo voltou para casa, e a passagem ao norte, para o Desfiladeiro do Eco, está aberta.",
+	ui.dialog(["As raízes recuaram da vila e as flores abriram por toda parte. Pela primeira vez em três luas, ninguém ouviu vozes à noite.", "A família Corvelo voltou para casa. Pipo corre para mostrar a todos o que você fez — e a passagem ao norte, para o Desfiladeiro do Eco, está aberta.",
 		"Só a Raiz Viva pode construir uma ponte sobre a ravina: vá até lá e aperte E no suporte marcado."], func():
 		player.set_busy(false)
 		autosave())
@@ -1535,7 +1546,8 @@ func _forja_return_scene() -> void:
 	Game.set_flag("voltou_forja")
 	await get_tree().create_timer(0.8).timeout
 	player.set_busy(true)
-	ui.dialog(["O calor bom voltou às pedras: as forjas da Forja de Cobre se acenderam outra vez.",
+	ui.dialog(["O calor bom voltou às pedras: as forjas da Forja de Cobre se acenderam outra vez. Os mineiros cantam enquanto trabalham.",
+		"No bolso, o elo partido da corrente de Ione vibra fraquinho, apontando para o sul — para os pântanos.",
 		"A família Ruivo, presa na Fundição, está de volta, e o vapor da grande forja moveu o elevador da praça leste.",
 		"Com a Ruptura Ígnea você pode quebrar rochas fissuradas — há uma no muro leste da vila — e o Rito da Forja guarda uma prova avançada."], func():
 		player.set_busy(false)
@@ -2113,3 +2125,47 @@ func mud_field(pos: Vector2, rad: float, life: float) -> Node2D:
 	h.position = pos
 	ysort.add_child(h)
 	return h
+
+
+# =============================================================== MEMÓRIAS DOS GUARDIÕES (fio da história)
+## Quando um guardião cai, uma visão do passado conta um pedaço da história e entrega uma página do Diário.
+var _memory_queue: Array = []
+var _memory_wait := 0.0
+
+func _memory_tick(delta: float) -> void:
+	if _memory_queue.is_empty():
+		_memory_wait = 0.0
+		return
+	if test_mode and not memory_in_tests:
+		for f in _memory_queue:
+			_memory_reward(f)
+		_memory_queue.clear()
+		return
+	if ui.is_modal() or ui.has_screen() or transition_busy or in_combat() or player.state == Player.S.DEAD or active_boss != null:
+		_memory_wait = 0.0
+		return
+	_memory_wait += delta
+	if _memory_wait < 1.6:
+		return
+	var f: String = _memory_queue.pop_front()
+	_memory_wait = 0.0
+	if Game.has_flag("mem_" + f):
+		return
+	var m: Dictionary = Data.story["memorias"][f]
+	Audio.mood_for("memoria", 25.0)
+	player.set_busy(true)
+	ui.banner(m["titulo"])
+	ui.dialog(m["linhas"], func():
+		player.set_busy(false)
+		_memory_reward(f))
+
+var memory_in_tests := false
+
+func _memory_reward(f: String) -> void:
+	if Game.has_flag("mem_" + f):
+		return
+	Game.set_flag("mem_" + f)
+	var it: String = str(Data.story["memorias"][f].get("item", ""))
+	if it != "" and Data.items.has(it):
+		Game.give_item(it, 1)
+		say("Diário: %s" % Data.items[it]["nome"])

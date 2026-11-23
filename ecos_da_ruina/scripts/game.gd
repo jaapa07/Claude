@@ -170,7 +170,7 @@ func to_dict() -> Dictionary:
 		"individuals": individuals, "team": team, "sanctuary": sanctuary, "active_idx": active_idx, "flags": flags,
 		"chests": chests, "ecos": ecos, "eco_slots": eco_slots, "bestiary": bestiary, "location": location,
 		"checkpoint": checkpoint, "stats": stats, "play_time": play_time, "difficulty": difficulty, "behavior": behavior, "slot": slot,
-		"party": party, "contract": contract,
+		"party": party, "contract": contract, "conquista": conquest_pct(),
 		"clima": Weather.to_dict()}
 
 func validate_save(d: Dictionary) -> String:
@@ -1347,3 +1347,65 @@ func k(text: String) -> String:
 	for key in m:
 		text = text.replace("{" + key + "}", m[key])
 	return text
+
+
+# =============================================================== JORNADA (o grande objetivo e a % de conquista)
+func guardians_done() -> int:
+	var n := 0
+	for g in Data.story.get("jornada", {}).get("guardioes", []):
+		if has_flag(g["flag"]):
+			n += 1
+	return n
+
+## Partes da conquista: [nome, feito, total, peso]
+func conquest_parts() -> Array:
+	var gs: Array = Data.story.get("jornada", {}).get("guardioes", [])
+	var sp_total := 0; var sp_cap := 0
+	for sid in Data.species:
+		if Data.species[sid].get("status", "") == "jogavel":
+			sp_total += 1
+			if bestiary.get(sid, {}).get("capturado", false):
+				sp_cap += 1
+	var ch_total := 0; var ch_open := 0; var seeds_total := 0; var seeds := 0
+	for m in Data.maps:
+		for e in Data.maps[m]["entities"]:
+			if e["type"] == "chest":
+				ch_total += 1
+				if chests.has(str(e.get("id", ""))):
+					ch_open += 1
+			if e["type"] == "pickup" and e.get("item", "") == "semente_vida":
+				seeds_total += 1
+				if has_flag(str(e.get("flag", ""))):
+					seeds += 1
+	var ct_total := 0; var ct_done := 0
+	for cid in Data.contracts:
+		ct_total += 1
+		if has_flag(cid + "_ok"):
+			ct_done += 1
+		if Data.contracts[cid].get("recompensa", {}).get("itens", {}).has("semente_vida"):
+			seeds_total += 1
+			if has_flag(cid + "_ok"):
+				seeds += 1
+	var mem_total: int = Data.story.get("memorias", {}).size()
+	var mem := 0
+	for f in Data.story.get("memorias", {}):
+		if has_flag("mem_" + f):
+			mem += 1
+	return [["Guardiões libertados", guardians_done(), gs.size(), 40.0],
+		["Criaturas capturadas", sp_cap, sp_total, 20.0],
+		["Baús abertos", ch_open, ch_total, 12.0],
+		["Contratos e caçadas", ct_done, ct_total, 12.0],
+		["Sementes de Vida", seeds, seeds_total, 8.0],
+		["Memórias recuperadas", mem, mem_total, 8.0]]
+
+func conquest_pct() -> int:
+	var tot := 0.0; var got := 0.0
+	for p in conquest_parts():
+		tot += float(p[3])
+		if int(p[2]) > 0:
+			got += float(p[3]) * float(p[1]) / float(p[2])
+	return int(floor(100.0 * got / max(1.0, tot)))
+
+func grand_goal_text() -> String:
+	var j: Dictionary = Data.story.get("jornada", {})
+	return "%s  (Ecos: %d/%d)" % [j.get("objetivo", ""), guardians_done(), j.get("guardioes", []).size()]

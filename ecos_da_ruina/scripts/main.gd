@@ -72,7 +72,10 @@ func start_new_game(slot: int) -> void:
 	begin_world()
 	world.load_map("vila_lumen", "default")
 	world.player.set_busy(true)
-	ui.dialog(["Auralis, ano da Ruína. Uma expedição desapareceu na Floresta dos Esquecidos, e você chegou à Vila Lúmen para descobrir o porquê.",
+	ui.dialog(["Auralis, ano da Ruína. O Eco — a energia que dá voz às criaturas e às terras — está adoecendo, e fissuras se abrem entre o mundo e sua memória.",
+		"Três luas atrás, sua mentora, a Mestra Ione, partiu com uma expedição para a Floresta dos Esquecidos. Nenhum deles voltou.",
+		"A última carta dela dizia apenas: \"Se eu não voltar, vá a Lúmen. Procure a Anciã Maru. E traga selos.\"",
+		"Seu objetivo: reunir os Ecos dos cinco guardiões, abrir caminho até a Catedral do Vazio e trazer Ione de volta. (Acompanhe em Menu > Jornada.)",
 		"A Anciã Maru, no centro da vila, espera por você. (Ande com {andar}; fale com {interagir}.)"], func():
 		world.player.set_busy(false))
 

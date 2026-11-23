@@ -19,15 +19,16 @@
   {
    "if": "ponte_minas",
    "lines": [
-    "Maru: A ponte de raízes nos devolveu o caminho... Os Ecos nos escolheram bem, Vinculador.",
-    "Maru: O capítulo da floresta termina aqui. As Minas da Brasa ainda estão por vir."
+    "Maru: A ponte de raízes nos devolveu o caminho. A Floresta respira, e o rastro de Ione segue para as Minas.",
+    "Maru: Quando encontrá-la, diga que o chá dela continua no caldeirão, esperando."
    ]
   },
   {
    "if": "cervo_morto",
    "lines": [
-    "Maru: As raízes recuaram! Você libertou a floresta do Cervo.",
-    "Maru: A família Corvelo voltou para casa. E o desfiladeiro ao norte está aberto — mas só a Raiz Viva constrói pontes sobre ele."
+    "Maru: As raízes recuaram... e a família Corvelo voltou para casa. Você libertou a floresta, criança.",
+    "Maru: A memória do Cervo mostrou o que eu temia: Ione ficou para trás para salvar os outros. Mas ela abriu caminho ao norte. Ela está viva.",
+    "Maru: O Desfiladeiro do Eco leva às Minas da Brasa. Só a Raiz Viva constrói pontes sobre a ravina — use o Eco que o Cervo te deixou."
    ]
   },
   {
@@ -47,10 +48,12 @@
   },
   {
    "lines": [
-    "Maru: Bem-vindo à Vila Lúmen, jovem Vinculador. Uma expedição sumiu na Floresta dos Esquecidos e raízes fecham os caminhos.",
-    "Maru: Os moradores ouvem as vozes dos desaparecidos à noite. Algo guarda o Santuário da Seiva.",
-    "Maru: Leve estes Selos de Vínculo. No campo de treino a oeste você aprende a lutar e a criar seu primeiro vínculo.",
-    "Maru: E mais: forme vínculo com as três criaturas da floresta — Brotisco, Lumipim e Cascalito. Elas evoluem e vão ajudar contra os guardiões."
+    "Maru: Então você é o aprendiz da Ione. Ela me escreveu que você viria — teimoso, ela disse, e de bom coração.",
+    "Maru: A expedição dela entrou na Floresta dos Esquecidos há três luas. Desde então as raízes fecham os caminhos e, à noite, ouvimos as vozes dos que sumiram.",
+    "Maru: Algo adoeceu o guardião do Santuário da Seiva. Se Ione está viva, o rastro dela começa lá.",
+    "Maru: Escute bem: cinco guardiões adoeceram — Floresta, Minas, Pântano, Fortaleza e Catedral. Cada um que você libertar devolve um Eco, e cada Eco abre o caminho seguinte. No fim desse caminho está a Catedral do Vazio... e, aposto, Ione.",
+    "Maru: Leve estes Selos de Vínculo. No campo de treino, a oeste, você aprende a lutar e a criar seu primeiro vínculo.",
+    "Maru: E forme vínculo com as três criaturas da floresta — Brotisco, Lumipim e Cascalito. Elas crescem com você e vão ajudar contra os guardiões."
    ],
    "set": [
     "falou_maru",
@@ -147,14 +150,15 @@
   },
   {
    "lines": [
-    "Pipo: Quando eu crescer vou ter um Lumipim só meu!"
+    "Pipo: A moça de capa azul me deu um Lumipim de pano antes de ir pro Santuário! Quando eu crescer, vou ter um de verdade."
    ]
   }
  ],
  "mae": [
   {
    "lines": [
-    "Dona Corvelo: Voltamos! Passamos meses presos entre as raízes, ouvindo vozes. Obrigada, de coração."
+    "Dona Corvelo: Voltamos! Passamos meses presos entre as raízes, ouvindo vozes.",
+    "Dona Corvelo: Uma moça de capa azul segurou as raízes para a gente fugir. Ela falava de você, sabia? 'Meu aprendiz vem buscar o resto.'"
    ]
   }
  ],
@@ -281,7 +285,8 @@
     "Doran: Um Vinculador! Desde que o Ferreiro Devorador acordou na Fundição, as forjas apagaram e o calor ruim tomou os túneis.",
     "Doran: Mineiros viraram sombras de si mesmos, jogando picaretas em quem passa. E os autômatos da Fundição voltaram a marchar.",
     "Doran: A Fundição fica ao norte. Vá pela Pedreira Oca (oeste) ou pelos Trilhos Fundidos (leste). Tome estes tônicos e selos.",
-    "Doran: A Mestra Ilda, na forja, melhora equipamentos. O Bento vende o que você precisar."
+    "Doran: A Mestra Ilda, na forja, melhora equipamentos. O Bento vende o que você precisar.",
+    "Doran: E tem outra coisa: os carrinhos de pedra-eco saem cheios para o sul e ninguém sabe quem paga. Se quiser respostas, comece pela Fundição."
    ],
    "set": [
     "falou_doran"
@@ -310,6 +315,7 @@
   {
    "lines": [
     "Ilda: Sou Ilda, mestra-forjadora. A grande forja está fria, mas a bigorna ainda canta.",
+    "Ilda: Uma vinculadora de capa azul passou por aqui faz umas luas. Perguntou de onde vinha o metal das correntes escuras... e eu não soube responder.",
     "Ilda: Traga minério de cobre, brasa viva e lingotes, e pague o carvão em fragmentos: melhoro sua arma, proteção e amuleto até +2.",
     "Ilda: Quando o Devorador cair e a grande forja acender, chego ao +3."
    ],
@@ -660,8 +666,10 @@
   {
    "lines": [
     "Um livro gasto se destaca na estante: Livro dos Guardiões.",
-    "\"Cinco guardiões mantinham o Eco em equilíbrio. Quando a Catedral tentou guardá-lo, eles adoeceram.\"",
-    "\"Cada guardião caído devolve à terra um Eco. Quem o carrega pode mudar o mundo — para o bem ou para o mal.\""
+    "\"Cinco guardiões mantinham o Eco em equilíbrio: Floresta, Minas, Pântano, Fortaleza e Catedral.\"",
+    "\"Quando o primeiro Arquivista tentou guardar todo o Eco na Catedral do Vazio, para que nada se perdesse, os guardiões adoeceram.\"",
+    "\"Cada guardião libertado devolve à terra um Eco. Quem o carrega pode mudar o mundo — para o bem ou para o mal.\"",
+    "Na margem, a letra de Ione: \"Quem é o Arquivista? Por que ninguém lembra o nome dele?\""
    ],
    "give": {
     "livro_guardioes": 1
@@ -724,6 +732,7 @@
    "unless": "saqueadores_ok",
    "lines": [
     "Bruna: Sou a Bruna, escudeira da vila. Domadores andam roubando selos no Bosque.",
+    "Bruna: Eles vendem as criaturas para gente de manto branco, com um olho fechado bordado. Ninguém sabe para onde levam.",
     "Bruna: Sozinho você não segura dois domadores com feras. Em dupla, sim.",
     "Bruna: Os contratos ficam no quadro ao lado. Aceite e eu vou junto."
    ],
@@ -779,7 +788,8 @@
     "Ilse: Um Vinculador... atravessou a ponte espiritual? Então o Olhar Velado é real.",
     "Ilse: Sou Ilse, capitã do que restou da guarnição. No dia do eclipse, o nosso comandante tirou o próprio rosto e virou o Cavaleiro Sem Rosto.",
     "Ilse: Os meus soldados foram arrastados para as sombras da Torre das Duas Sombras. Só sobraram as famílias, aqui no Refúgio.",
-    "Ilse: Leve estes tônicos. Liberte a torre e a estrada para a Catedral se abre."
+    "Ilse: Leve estes tônicos. Liberte a torre e a estrada para a Catedral se abre.",
+    "Ilse: Antes do eclipse fechar a ponte, uma vinculadora de capa azul cruzou por aqui rumo à Catedral. Disse que voltaria. Não voltou."
    ],
    "set": [
     "falou_ilse"
@@ -1054,7 +1064,8 @@
  "placa_catedral": [
   {
    "lines": [
-    "O selo externo da Catedral do Vazio pulsa, frio. O caminho continua... (Região 5 — Catedral do Vazio — em desenvolvimento.)"
+    "O selo externo da Catedral do Vazio pulsa, frio. Riscado na pedra, o sinal de mão do seu treino com Ione.",
+    "Ela passou por aqui. O caminho continua... (Região 5 — Catedral do Vazio — em desenvolvimento.)"
    ],
    "set": [
     "viu_selo_catedral"

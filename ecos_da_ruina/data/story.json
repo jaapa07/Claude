@@ -1,0 +1,112 @@
+{
+ "_doc": "Fio condutor da campanha. 'memorias': ao marcar a flag (chefe derrotado), uma visão do passado aparece e uma página vai para o Diário. Ver docs/HISTORIA.md.",
+ "memorias": {
+  "lenhador_morto": {
+   "titulo": "Memória do Lenhador Oco",
+   "item": "pagina_ione_1",
+   "linhas": [
+    "Memória do Eco: o Lenhador era um homem que cuidava das árvores velhas do Santuário. Cortava só o que já estava morto.",
+    "Memória do Eco: um dia vieram pessoas de manto branco, com a insígnia de um olho fechado. Pediram madeira viva, cheia de Eco, para a Catedral do Vazio.",
+    "Memória do Eco: ele recusou. Os mantos brancos deixaram uma corrente de metal escuro presa ao tronco do santuário... e o Eco da mata começou a apodrecer.",
+    "Entre as cascas que caem do Lenhador, uma folha dobrada com uma letra que você conhece: a da Mestra Ione."
+   ]
+  },
+  "cervo_morto": {
+   "titulo": "Memória do Cervo de Ossos",
+   "item": "pagina_ione_2",
+   "linhas": [
+    "Memória do Eco: o Cervo era o guardião da Floresta. Por séculos, sua galhada guardou a seiva que alimenta todas as raízes.",
+    "Memória do Eco: a corrente escura chegou até ele. A seiva parou, as raízes enlouqueceram e engoliram a expedição que entrava no Santuário.",
+    "Memória do Eco: uma mulher de capa azul ficou para trás para segurar as raízes enquanto os Corvelo fugiam. Era Ione. Com um diapasão de Eco, ela abriu uma fenda ao norte e desapareceu nela.",
+    "Memória do Eco: antes de sumir, ela gravou a mão na casca do Cervo — o sinal que vocês usavam no treino. Ela sabia que você viria.",
+    "A galhada se desfaz em luz. No lugar dela, outra página do diário de Ione."
+   ]
+  },
+  "vigia_morto": {
+   "titulo": "Memória do Vigia de Escória",
+   "item": "pagina_ione_3",
+   "linhas": [
+    "Memória do Eco: o Vigia guardava a entrada da Fundição. Viu carrinhos de minério saírem cheios de pedra-eco rumo ao sul... e voltarem vazios.",
+    "Memória do Eco: uma vinculadora de capa azul passou escondida entre os carrinhos. Ela marcava os vagões com giz: um olho fechado riscado.",
+    "Presa na couraça, uma página de diário, chamuscada nas bordas."
+   ]
+  },
+  "ferreiro_morto": {
+   "titulo": "Memória do Ferreiro Devorador",
+   "item": "pagina_ione_4",
+   "linhas": [
+    "Memória do Eco: o guardião das Minas era o primeiro ferreiro, que ensinou o fogo a ser paciente. A Ordem do Vazio o contratou para forjar correntes.",
+    "Memória do Eco: correntes de metal-eco, capazes de prender um guardião e drenar sua força até a Catedral. Ele forjou a primeira sem saber para quê.",
+    "Memória do Eco: quando entendeu, tentou destruí-las. A Ordem o prendeu com a própria corrente, e a fome dela virou a dele.",
+    "Memória do Eco: Ione chegou tarde para salvá-lo, mas quebrou um elo. Com o metal na mão, seguiu para o Pântano: 'a Bruxa ainda pode ser salva', disse.",
+    "Das brasas que esfriam, uma página do diário e um elo de corrente partido."
+   ]
+  },
+  "bruxa_morta": {
+   "titulo": "Memória da Bruxa Afogada",
+   "item": "pagina_ione_5",
+   "linhas": [
+    "Memória do Eco: a Bruxa não era bruxa. Era a guardiã das águas, e guardava os reflexos do pântano — as lembranças de cada barqueiro, de cada criança que se olhava no lago.",
+    "Memória do Eco: os mantos brancos da Ordem do Vazio prenderam uma corrente de metal-eco ao altar do templo. A água escureceu, e ela se afogou nas próprias memórias.",
+    "Memória do Eco: uma vinculadora de capa azul mergulhou atrás dela. Não conseguiu trazê-la de volta, mas a guardiã lhe emprestou o Olhar Velado por um instante.",
+    "Memória do Eco: com ele, Ione viu a ponte de luz nas montanhas e seguiu por ela, rumo à Fortaleza do Eclipse.",
+    "Na água clara do altar boia uma página encharcada, com a letra da sua mestra."
+   ]
+  },
+  "vesna_ok": {
+   "titulo": "Carta encontrada com Vesna",
+   "item": "carta_arquivista",
+   "linhas": [
+    "Vesna: Vocês acham que salvam as feras? A Catedral paga em ouro por cada criatura vinculada. Vozes, eles dizem. O Rei precisa de vozes.",
+    "Vesna: Eu só... queria que as minhas não fossem levadas. Ficam fortes ao meu lado, ou somem nas correntes deles.",
+    "Ela foge pelo desfiladeiro e deixa cair uma carta lacrada com o olho fechado da Ordem do Vazio."
+   ]
+  },
+  "cavaleiro_morto": {
+   "titulo": "Memória do Cavaleiro Sem Rosto",
+   "item": "pagina_ione_6",
+   "linhas": [
+    "Memória do Eco: antes do eclipse, ele era Aldren, capitão da guarda da Catedral. Seu rosto ficou preso no espelho do portão quando o Eco foi armazenado.",
+    "Memória do Eco: anos depois, uma vinculadora atravessou a ponte espiritual. Aldren a deixou passar — o último ato da vontade que ainda tinha.",
+    "Memória do Eco: 'O Rei dos Ecos não é um rei', ela disse. 'É o primeiro Arquivista, que guardou o Eco dentro de si e esqueceu quem era. Ele não quer o poder. Quer lembrar.'",
+    "Memória do Eco: Ione entrou na Catedral. O portão se fechou atrás dela.",
+    "O escudo do Cavaleiro se parte; dentro, a última página do diário, ainda quente."
+   ]
+  }
+ },
+ "jornada": {
+  "objetivo": "Reúna os Ecos dos cinco guardiões, abra caminho até a Catedral do Vazio, resgate a Mestra Ione e liberte o Rei dos Ecos.",
+  "guardioes": [
+   {
+    "regiao": "floresta",
+    "nome": "Cervo de Ossos",
+    "flag": "cervo_morto",
+    "eco": "Raiz Viva"
+   },
+   {
+    "regiao": "minas",
+    "nome": "Ferreiro Devorador",
+    "flag": "ferreiro_morto",
+    "eco": "Ruptura Ígnea"
+   },
+   {
+    "regiao": "pantano",
+    "nome": "Bruxa Afogada",
+    "flag": "bruxa_morta",
+    "eco": "Olhar Velado"
+   },
+   {
+    "regiao": "fortaleza",
+    "nome": "Cavaleiro Sem Rosto",
+    "flag": "cavaleiro_morto",
+    "eco": "Passo Umbral"
+   },
+   {
+    "regiao": "catedral",
+    "nome": "Rei dos Ecos",
+    "flag": "rei_morto",
+    "eco": "Harmonia dos Ecos"
+   }
+  ]
+ }
+}
