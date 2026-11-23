@@ -36,7 +36,7 @@ func _ready() -> void:
 		"npc":
 			solid = true
 			anim = AnimatedSprite2D.new()
-			anim.sprite_frames = Art.human_frames(def.get("sprite", "npc_elder"))
+			anim.sprite_frames = Art.npc_frames(def.get("sprite", "npc_elder"))
 			anim.offset = Vector2(0, -6)
 			add_child(anim)
 			anim.play("idle_down")
@@ -63,6 +63,7 @@ func _ready() -> void:
 			solid = false
 		"bridge_spot":
 			_spr("bridge_mark", Vector2.ZERO)
+			sprite.modulate = Color(1, 1, 1, 0.75)
 			solid = false
 		"bond_stone":
 			_spr("shrine", Vector2(0, -8), true, 24, Game.has_flag(def.get("flag", "")))
@@ -76,10 +77,8 @@ func _ready() -> void:
 		add_child(cs)
 
 func _shadow() -> void:
-	var sh := Sprite2D.new()
-	sh.texture = Art.sprite_tex("shadow")
+	var sh := Art.shadow(0.8)
 	sh.position = Vector2(0, 7)
-	sh.show_behind_parent = true
 	add_child(sh)
 
 func _spr(name: String, off: Vector2, sheet := false, fw := 16, second := false) -> Sprite2D:
@@ -150,7 +149,6 @@ func _pull_lever() -> void:
 func refresh_lever() -> void:
 	lever_on = world.lever_state(def["group"], int(def["idx"]))
 	set_frame(lever_on)
-	queue_redraw()
 
 func _pressed() -> bool:
 	return pressed_by_crate or held or Game.has_flag(world.puzzle_flag(def.get("group", "")))
@@ -243,21 +241,6 @@ func _process(delta: float) -> void:
 				var n := "idle_" + Art.dir_name(d)
 				if anim.animation != n:
 					anim.play(n)
-	if kind in ["lever", "flower", "shrine", "bridge_spot"]:
-		queue_redraw()
+	if kind == "shrine":
+		set_frame(Game.has_flag("shrine_" + eid), 24)
 
-func _draw() -> void:
-	if kind == "lever":
-		# glifo de estado (forma + posição): triângulo para cima = erguida, para baixo = abaixada
-		var y := -14.0
-		if lever_on:
-			draw_colored_polygon(PackedVector2Array([Vector2(-4, y + 6), Vector2(4, y + 6), Vector2(0, y)]), Color(1.0, 0.9, 0.4))
-		else:
-			draw_colored_polygon(PackedVector2Array([Vector2(-4, y), Vector2(4, y), Vector2(0, y + 6)]), Color(0.7, 0.7, 0.85))
-		draw_string(ThemeDB.fallback_font, Vector2(-3, y + 16), str(int(def["idx"]) + 1), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color.WHITE)
-	elif kind == "flower" and lit:
-		draw_circle(Vector2(0, -2), 12.0 + sin(glow_t * 3.0) * 1.5, Color(1.0, 0.95, 0.5, 0.18))
-	elif kind == "shrine" and Game.has_flag("shrine_" + eid):
-		draw_circle(Vector2(0, -12), 16.0 + sin(glow_t * 2.0) * 2.0, Color(0.5, 0.9, 1.0, 0.14))
-	elif kind == "bridge_spot" and not Game.has_flag(def.get("flag", "")):
-		draw_circle(Vector2.ZERO, 7.0 + sin(glow_t * 4.0), Color(0.6, 1.0, 0.5, 0.25))

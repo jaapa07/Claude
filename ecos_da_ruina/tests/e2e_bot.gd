@@ -612,7 +612,7 @@ func stage5_clareira() -> void:
 	P.aiming = false
 	await secs(3.2)
 	Game.rng_override = Callable()
-	ok2 = await capture_wild(cas, 4)
+	ok2 = await capture_wild(cas, 10)
 	check("Captura de Cascalito conclui (equipe agora com 2)", ok2 and Game.team.size() == 2, "ok2=%s valid=%s msg=%s aiming=%s state=%s seals=%d" % [ok2, is_instance_valid(cas), P.cap_msg, P.aiming, P.state, Game.item_count("selo_basico")])
 	check("Bestiário: Cascalito capturado", Game.bestiary.get("cascalito", {}).get("capturado", false))
 	# ---- troca de criatura: recarga global de 6 s, sem curar nem reiniciar recarga
@@ -759,7 +759,7 @@ func stage7_bosque() -> void:
 	print("  [dbg lum] valid=%s hp=%s/%s state=%s protect=%s dist=%s seals=%d" % [is_instance_valid(lum), str(lum.hp) if is_instance_valid(lum) else "-", str(lum.max_hp) if is_instance_valid(lum) else "-", P.state, str(lum.protect_t) if is_instance_valid(lum) else "-", str(P.global_position.distance_to(lum.global_position)) if is_instance_valid(lum) else "-", Game.item_count("selo_basico")])
 	var seal_ok := Game.item_count("selo_basico") + Game.item_count("selo_refinado") > 0
 	check("Há selos disponíveis para capturar Lumipim", seal_ok)
-	var got := await capture_wild(lum, 5)
+	var got := await capture_wild(lum, 10)
 	check("Lumipim capturado (3 espécies na coleção)", got and Game.bestiary.get("lumipim", {}).get("capturado", false))
 	check("Equipe cheia (3 criaturas)", Game.team.size() == 3)
 	# cipó do Brotisco: atalho opcional

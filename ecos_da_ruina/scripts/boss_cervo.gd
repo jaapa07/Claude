@@ -272,46 +272,92 @@ func _death_fx() -> void:
 		world.spark(global_position + Vector2(randf_range(-24, 24), randf_range(-40, 0)), 12)
 	super._death_fx()
 
-# =============================================================== DESENHO
-func _draw() -> void:
-	super._draw()
-	if not alive_flag:
+# =============================================================== VISUAIS (decalques autorais)
+var _charge_decal: Sprite2D
+var _lanes: Node2D
+var _core: AnimatedSprite2D
+var _lanes_built := false
+
+func _ensure_boss_visuals() -> void:
+	if _charge_decal != null:
 		return
-	var off := arena.position - global_position
-	if bst == B.TELE_CHARGE:
+	_charge_decal = Sprite2D.new()
+	_charge_decal.texture = Art.sprite_tex("fx_warn_tile")
+	_charge_decal.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
+	_charge_decal.region_enabled = true
+	_charge_decal.region_rect = Rect2(0, 0, 260, 24)
+	_charge_decal.z_as_relative = false
+	_charge_decal.z_index = -1
+	_charge_decal.visible = false
+	add_child(_charge_decal)
+	_lanes = Node2D.new()
+	_lanes.top_level = true
+	_lanes.z_index = -1
+	add_child(_lanes)
+	_core = AnimatedSprite2D.new()
+	_core.sprite_frames = Art.fx_frames("fx_sparkle", 16, 12, 2, 10.0, true)
+	_core.position = Vector2(-8, -34)
+	_core.scale = Vector2(1.6, 1.6)
+	_core.visible = false
+	_core.play("a")
+	add_child(_core)
+
+func _build_lanes() -> void:
+	for c in _lanes.get_children():
+		c.queue_free()
+	_lanes.global_position = arena.position
+	var count := int((arena.size.x if lanes_vertical else arena.size.y) / LANE_W) + 1
+	for i in count:
+		var r: Rect2
+		if lanes_vertical:
+			r = Rect2(i * LANE_W, 0, LANE_W, arena.size.y)
+		else:
+			r = Rect2(0, i * LANE_W, arena.size.x, LANE_W)
+		r = r.intersection(Rect2(Vector2.ZERO, arena.size))
+		if r.size.x <= 0 or r.size.y <= 0:
+			continue
+		var danger := (i + lanes_phase) % 2 == 0
+		var sp := Sprite2D.new()
+		sp.texture = Art.sprite_tex("fx_warn_tile")
+		sp.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
+		sp.region_enabled = true
+		sp.centered = false
+		sp.position = r.position
+		sp.region_rect = Rect2(0 if danger else 16, 0, r.size.x, r.size.y) if danger else Rect2(16, 0, 16, 16)
+		if not danger:
+			sp.region_rect = Rect2(16, 0, 16, 16)
+			sp.scale = r.size / 16.0
+			sp.modulate = Color(1, 1, 1, 0.9)
+		else:
+			sp.set_meta("danger", true)
+		_lanes.add_child(sp)
+	_lanes_built = true
+
+func _visuals() -> void:
+	super._visuals()
+	if not is_inside_tree():
+		return
+	_ensure_boss_visuals()
+	_alert.visible = bst == B.TELE_CHARGE or bst == B.TELE_ROOTS
+	_charge_decal.visible = bst == B.TELE_CHARGE and alive_flag
+	if _charge_decal.visible:
 		var f: float = clamp(1.0 - bt / (0.9 * Game.warning_mult()), 0.0, 1.0)
-		var n := charge_dir.orthogonal() * 12.0
-		var L := 260.0
-		var col := Color(1.0, 0.25, 0.2, 0.15 + 0.25 * f)
-		draw_colored_polygon(PackedVector2Array([n, n + charge_dir * L, -n + charge_dir * L, -n]), col)
-		draw_polyline(PackedVector2Array([n, n + charge_dir * L, -n + charge_dir * L, -n, n]), Color(1, 0.85, 0.3, 0.95), 1.5)
-		draw_rect(Rect2(-1, -fh - 12, 2, 6), Color(1, 0.85, 0.3)); draw_rect(Rect2(-1, -fh - 4, 2, 2), Color(1, 0.85, 0.3))
-	if bst == B.TELE_ROOTS or bst == B.ROOTS:
-		var active := bst == B.ROOTS
-		var count := int((arena.size.x if lanes_vertical else arena.size.y) / LANE_W) + 1
-		for i in count:
-			var danger := (i + lanes_phase) % 2 == 0
-			var r: Rect2
-			if lanes_vertical:
-				r = Rect2(off.x + i * LANE_W, off.y, LANE_W, arena.size.y)
-			else:
-				r = Rect2(off.x, off.y + i * LANE_W, arena.size.x, LANE_W)
-			r = r.intersection(Rect2(off, arena.size))
-			if danger:
-				draw_rect(r, Color(0.9, 0.2, 0.15, 0.45 if active else 0.22))
-				# hachura (forma, além da cor)
-				var k := 0.0
-				while k < r.size.x + r.size.y:
-					var a := Vector2(r.position.x + min(k, r.size.x), r.position.y + max(0.0, k - r.size.x))
-					var b := Vector2(r.position.x + max(0.0, k - r.size.y), r.position.y + min(k, r.size.y))
-					draw_line(a, b, Color(1, 0.8, 0.3, 0.7), 1.0)
-					k += 8.0
-				if active:
-					for s in range(0, int(max(r.size.x, r.size.y)), 10):
-						var p := r.position + (Vector2(r.size.x * 0.5, s) if lanes_vertical else Vector2(s, r.size.y * 0.5))
-						draw_line(p, p + Vector2(0, -8), Color(0.5, 0.35, 0.2), 2.0)
-			else:
-				draw_rect(r, Color(0.4, 1.0, 0.5, 0.10))
-				draw_rect(r, Color(0.5, 1.0, 0.6, 0.6), false, 1.0)
-	if exposed:
-		draw_circle(Vector2(-4, -22), 8.0 + sin(Time.get_ticks_msec() / 90.0) * 1.5, Color(0.6, 1.0, 0.4, 0.45))
+		_charge_decal.rotation = charge_dir.angle()
+		_charge_decal.position = charge_dir * 130.0 + Vector2(0, -6)
+		_charge_decal.modulate = Color(1, 1, 1, 0.35 + 0.45 * f)
+	var lanes_on := (bst == B.TELE_ROOTS or bst == B.ROOTS) and alive_flag
+	if lanes_on and not _lanes_built:
+		_build_lanes()
+	elif not lanes_on and _lanes_built:
+		for c in _lanes.get_children():
+			c.queue_free()
+		_lanes_built = false
+	if lanes_on:
+		for c in _lanes.get_children():
+			if c.has_meta("danger"):
+				c.modulate = Color(1, 1, 1, 0.85 if bst == B.ROOTS else 0.45)
+		if bst == B.ROOTS and int(bt * 10.0) % 3 == 0:
+			var lp := Vector2(randf_range(arena.position.x, arena.end.x), randf_range(arena.position.y, arena.end.y))
+			if _lane_is_danger(lp):
+				world.fx_at("roots", lp, 0.5)
+	_core.visible = exposed and alive_flag

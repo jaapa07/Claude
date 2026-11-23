@@ -700,9 +700,9 @@ func diary_lines() -> Array:
 		var i := quest_step(qid)
 		var head: String = "%s [%s]" % [q["nome"], q["tipo"]]
 		if i >= q["etapas"].size():
-			out.append("✔ " + head + " — concluída")
+			out.append("+ " + head + " — concluída")
 		else:
-			out.append("• " + head)
+			out.append("- " + head)
 			var step: Dictionary = q["etapas"][i]
 			var txt: String = step["texto"]
 			if step.has("contador"):

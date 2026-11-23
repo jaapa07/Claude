@@ -132,7 +132,7 @@ def vila():
     m.ent(type="npc", id="ysa", sprite="npc_mother", dialog="ysa", x=26, y=15, nome="Ysa")
     m.ent(type="npc", id="guarda", sprite="npc_ranger", dialog="guarda", x=38, y=16, nome="Bram")
     m.ent(type="npc", id="pipo", sprite="npc_kid", dialog="pipo", x=16, y=11, nome="Pipo")
-    m.ent(type="npc", id="mae", sprite="npc_mother", dialog="mae", x=26, y=18, nome="Dona Corvelo", if_flag="cervo_morto")
+    m.ent(type="npc", id="mae", sprite="npc_corvelo", dialog="mae", x=26, y=18, nome="Dona Corvelo", if_flag="cervo_morto")
     m.ent(type="npc", id="tobi", sprite="npc_smith", dialog="ferreiro", x=30, y=20, nome="Tobi")
     m.ent(type="sign", id="treino", dialog="treino", x=10, y=11)
     m.ent(type="sign", id="placa_vila", dialog="placa_vila", x=19, y=18)

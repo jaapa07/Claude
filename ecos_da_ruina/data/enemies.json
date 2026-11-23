@@ -31,8 +31,8 @@
   ],
   "sprite": "lobo_espinhos",
   "frame": [
-   30,
-   20
+   32,
+   24
   ],
   "ataque": "investida",
   "raio": 9,
@@ -54,7 +54,7 @@
   "sprite": "cogumelo",
   "frame": [
    24,
-   22
+   24
   ],
   "ataque": "esporos",
   "raio": 8,
@@ -98,8 +98,8 @@
   ],
   "sprite": "lenhador",
   "frame": [
-   44,
-   44
+   48,
+   48
   ],
   "ataque": "lenhador",
   "raio": 14,
@@ -138,8 +138,8 @@
   ],
   "sprite": "cervo",
   "frame": [
-   68,
-   56
+   72,
+   64
   ],
   "ataque": "cervo",
   "raio": 16,

@@ -67,7 +67,9 @@ var _seal: Node2D = null
 var sprite: AnimatedSprite2D
 var shadow: Sprite2D
 var _flash := 0.0
-var last_slash_draw := 0.0
+var _aim_ring: Sprite2D
+var _vortex: AnimatedSprite2D
+var _slash_done := false
 
 func _ready() -> void:
 	collision_layer = 2
@@ -77,10 +79,20 @@ func _ready() -> void:
 	var c := CircleShape2D.new(); c.radius = 5.0
 	cs.shape = c
 	add_child(cs)
-	shadow = Sprite2D.new()
-	shadow.texture = Art.sprite_tex("shadow")
-	shadow.position = Vector2(0, 1)
-	add_child(shadow)
+	add_child(Art.shadow(0.8))
+	_aim_ring = Sprite2D.new()
+	_aim_ring.texture = Art.sprite_tex("fx_aim")
+	_aim_ring.top_level = true
+	_aim_ring.z_index = 45
+	_aim_ring.visible = false
+	add_child(_aim_ring)
+	_vortex = AnimatedSprite2D.new()
+	_vortex.sprite_frames = Art.fx_frames("fx_vortex", 32, 32, 2, 10.0, true)
+	_vortex.top_level = true
+	_vortex.z_index = 45
+	_vortex.visible = false
+	_vortex.play("a")
+	add_child(_vortex)
 	sprite = AnimatedSprite2D.new()
 	sprite.sprite_frames = Art.human_frames("hero")
 	sprite.offset = Vector2(0, -14)
@@ -133,7 +145,7 @@ func _physics_process(delta: float) -> void:
 		S.HURT: _state_hurt(delta)
 	_regen(delta)
 	_update_anim()
-	queue_redraw()
+	_update_capture_fx()
 
 func _tick_timers(delta: float) -> void:
 	inv_timer = max(0.0, inv_timer - delta)
@@ -225,6 +237,11 @@ func _state_attack(delta: float) -> void:
 		velocity = Vector2.ZERO
 	move_and_slide()
 	if atk_t >= wind and atk_t < wind + act:
+		if not _slash_done:
+			_slash_done = true
+			var snap := snappedf(aim_dir.angle(), PI / 2.0)
+			var sc: float = float(atk_def["r"]) / 26.0
+			world.fx_at("slash", global_position + Vector2(0, -10) + Vector2.from_angle(snap) * 12.0, act + 0.05, snap, sc)
 		_attack_hits()
 	# buffer do próximo golpe durante a recuperação
 	if Input.is_action_just_pressed("attack") and atk_t > wind:
@@ -270,6 +287,7 @@ func _start_attack(def: Dictionary, charged: bool) -> void:
 		atk_def["charged"] = true
 	atk_t = 0.0
 	atk_queued = false
+	_slash_done = false
 	atk_hit.clear()
 	if world.mouse_aiming():
 		var d := (get_global_mouse_position() - global_position)
@@ -309,6 +327,7 @@ func _try_dodge() -> void:
 	aiming = false
 	atk_queued = false
 	Audio.play("dodge")
+	world.dust(global_position)
 	Game.tutorial_event("dodge")
 
 func _state_dodge(delta: float) -> void:
@@ -626,30 +645,15 @@ func _update_anim() -> void:
 	if state == S.DODGE:
 		sprite.modulate.a = 0.55 if is_dodge_invulnerable() else 0.85
 
-func _draw() -> void:
-	if state == S.ATTACK and atk_t >= float(atk_def["wind"]) and atk_t < float(atk_def["wind"]) + float(atk_def["act"]):
-		var r: float = atk_def["r"]
-		var arc: float = deg_to_rad(float(atk_def["arc"]))
-		var a0 := aim_dir.angle() - arc
-		var pts := PackedVector2Array()
-		for i in range(0, 13):
-			var a := a0 + (2.0 * arc) * float(i) / 12.0
-			pts.append(Vector2(cos(a), sin(a)) * r + Vector2(0, -10))
-		draw_polyline(pts, Color(0.95, 0.97, 1.0, 0.9), 2.0)
-		var pts2 := PackedVector2Array()
-		for i in range(0, 13):
-			var a2 := a0 + (2.0 * arc) * float(i) / 12.0
-			pts2.append(Vector2(cos(a2), sin(a2)) * (r - 5.0) + Vector2(0, -10))
-		draw_polyline(pts2, Color(0.7, 0.85, 1.0, 0.6), 1.0)
-	if state == S.GUARD:
-		draw_arc(Vector2(0, -10), 14.0, aim_dir.angle() - 1.0, aim_dir.angle() + 1.0, 8, Color(0.6, 0.85, 1.0, 0.8), 2.0)
-	if aiming and cap_target != null and is_instance_valid(cap_target):
-		var p = cap_target.global_position - global_position
-		var good := cap_msg == ""
-		draw_dashed_line(Vector2(0, -10), p + Vector2(0, -6), Color(0.5, 1, 0.6) if good else Color(1, 0.6, 0.4), 1.0, 3.0)
-		draw_arc(p, cap_target.radius + 5.0, 0.0, TAU, 20, Color(0.5, 1, 0.6) if good else Color(1, 0.6, 0.4), 1.5)
-	if cap_state == "canal" and cap_target != null and is_instance_valid(cap_target):
-		var p2 = cap_target.global_position - global_position
+func _update_capture_fx() -> void:
+	var t: Node = cap_target if (cap_target != null and is_instance_valid(cap_target)) else null
+	_aim_ring.visible = aiming and t != null
+	if _aim_ring.visible:
+		_aim_ring.global_position = t.global_position + Vector2(0, -4)
+		_aim_ring.modulate = Color(0.6, 1.0, 0.7) if cap_msg == "" else Color(1.0, 0.6, 0.45)
+	_vortex.visible = cap_state == "canal" and t != null
+	if _vortex.visible:
+		_vortex.global_position = t.global_position + Vector2(0, -6)
 		var f := cap_timer / CAPTURE_CHANNEL
-		draw_arc(p2, cap_target.radius + 8.0, -PI / 2.0, -PI / 2.0 + TAU * f, 24, Color(0.6, 0.95, 1.0), 2.5)
-		draw_line(Vector2(0, -10), p2 + Vector2(0, -6), Color(0.6, 0.95, 1.0, 0.6), 1.0)
+		_vortex.scale = Vector2.ONE * (1.2 - 0.5 * f)
+		_vortex.rotation += 0.15

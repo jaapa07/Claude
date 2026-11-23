@@ -5,7 +5,12 @@ class_name World
 const TILE := 16
 const TILE_ORDER := ".,fpT~rRhHwcxFbSDPoCgGvkeBy"
 const SOLID := "T~RhHcxFbDPoCv"
-const TILESET_PATH := "res://assets/tilesets/tiles.png"
+const TILESET_PATH := "res://assets/sprites/tiles2.png"
+const TILE_NAMES := ["grass0", "grass1", "grass2", "grassd0", "flowers0", "lush0", "bloom0", "path0", "path1", "pedge_n", "pedge_s", "pedge_w", "pedge_e",
+	"water0", "water1", "shore_n", "shore_s", "shore_w", "shore_e", "tree_bot0", "tree_top0", "tree_bot1", "tree_top1", "bush", "rock", "fence", "roots",
+	"rfloor0", "rfloor1", "rmoss", "rwall_front", "rwall_top", "pillar", "pillar_top", "door_closed", "door_open", "sap", "roof_l", "roof_m", "roof_r",
+	"hwall", "hwindow", "hdoor", "wood", "chasm", "chasm_lip", "bridge", "cliff_front", "cliff_top", "cave", "void"]
+const GRASSY := ".,fgGFbox"
 
 var map_id := ""
 var map: Dictionary = {}
@@ -14,6 +19,9 @@ var H := 0
 var base_tiles: Array = []
 var cur_tiles: Array = []
 var tilemap: TileMapLayer
+var detail: TileMapLayer
+var detail2: TileMapLayer
+var cover: TileMapLayer
 var col_body: StaticBody2D
 var ysort: Node2D
 var fx_layer: Node2D
@@ -55,6 +63,12 @@ func _ready() -> void:
 	tilemap = TileMapLayer.new()
 	tilemap.tile_set = _make_tileset()
 	add_child(tilemap)
+	detail = TileMapLayer.new()
+	detail.tile_set = tilemap.tile_set
+	add_child(detail)
+	detail2 = TileMapLayer.new()
+	detail2.tile_set = tilemap.tile_set
+	add_child(detail2)
 	col_body = StaticBody2D.new()
 	col_body.collision_layer = 1
 	col_body.collision_mask = 0
@@ -62,6 +76,10 @@ func _ready() -> void:
 	ysort = Node2D.new()
 	ysort.y_sort_enabled = true
 	add_child(ysort)
+	cover = TileMapLayer.new()
+	cover.tile_set = tilemap.tile_set
+	cover.z_index = 25
+	add_child(cover)
 	fx_layer = Node2D.new()
 	fx_layer.z_index = 50
 	add_child(fx_layer)
@@ -98,11 +116,111 @@ func _make_tileset() -> TileSet:
 	var src := TileSetAtlasSource.new()
 	src.texture = Art.tex(TILESET_PATH)
 	src.texture_region_size = Vector2i(TILE, TILE)
-	for i in TILE_ORDER.length():
-		src.create_tile(Vector2i(i, 0))
+	for i in TILE_NAMES.size():
+		if TILE_NAMES[i] == "water1":
+			continue
+		var c := Vector2i(i % 16, i / 16)
+		src.create_tile(c)
+		if TILE_NAMES[i] == "water0":
+			src.set_tile_animation_frames_count(c, 2)
+			src.set_tile_animation_frame_duration(c, 0, 0.7)
+			src.set_tile_animation_frame_duration(c, 1, 0.7)
 	ts.add_source(src, 0)
 	_tileset = ts
 	return ts
+
+func _tc(name: String) -> Vector2i:
+	var i := TILE_NAMES.find(name)
+	return Vector2i(i % 16, i / 16)
+
+func _ch(x: int, y: int) -> String:
+	if x < 0 or y < 0 or x >= W or y >= H:
+		return "#"
+	return cur_tiles[y][x]
+
+func _hash(x: int, y: int) -> int:
+	return ((x * 73856093) ^ (y * 19349663)) & 0xffff
+
+## Escolhe o desenho de cada célula pela vizinhança (autotile). Retorna [chão, detalhe, detalhe2, copa acima].
+func _cell_tiles(x: int, y: int) -> Array:
+	var c := _ch(x, y)
+	var hv := _hash(x, y)
+	var g: String = ["grass0", "grass1", "grass2", "grass0"][hv % 4]
+	var out := [g, "", "", ""]
+	match c:
+		".": out[0] = g
+		",": out[0] = "grassd0"
+		"f": out[0] = "flowers0"
+		"g": out[0] = "lush0"
+		"G": out[0] = "bloom0"
+		"p":
+			out[0] = "path0" if hv % 3 else "path1"
+			var e: Array = []
+			if GRASSY.contains(_ch(x, y - 1)): e.append("pedge_n")
+			if GRASSY.contains(_ch(x, y + 1)): e.append("pedge_s")
+			if GRASSY.contains(_ch(x - 1, y)): e.append("pedge_w")
+			if GRASSY.contains(_ch(x + 1, y)): e.append("pedge_e")
+			if e.size() > 0: out[1] = e[0]
+			if e.size() > 1: out[2] = e[1]
+		"~":
+			out[0] = "water0"
+			var e2: Array = []
+			if _ch(x, y - 1) != "~": e2.append("shore_n")
+			if _ch(x, y + 1) != "~": e2.append("shore_s")
+			if _ch(x - 1, y) != "~": e2.append("shore_w")
+			if _ch(x + 1, y) != "~": e2.append("shore_e")
+			if e2.size() > 0: out[1] = e2[0]
+			if e2.size() > 1: out[2] = e2[1]
+		"T":
+			out[0] = "grassd0"
+			var v := hv % 3
+			out[1] = "tree_bot1" if v == 0 else "tree_bot0"
+			out[3] = "tree_top1" if v == 0 else "tree_top0"
+		"b": out[0] = "bush"
+		"o": out[0] = "rock"
+		"F": out[0] = "fence"
+		"x":
+			out[0] = "grassd0"
+			out[1] = "roots"
+		"r": out[0] = "rfloor0" if hv % 4 else "rfloor1"
+		"y": out[0] = "rmoss"
+		"e": out[0] = "door_open"
+		"D": out[0] = "door_closed"
+		"S": out[0] = "sap"
+		"R": out[0] = "rwall_top" if _ch(x, y + 1) in ["R", "v", "#"] else "rwall_front"
+		"P":
+			out[0] = "rfloor0"
+			out[1] = "pillar"
+			out[3] = "pillar_top"
+		"H":
+			var l := _ch(x - 1, y) == "H"
+			var r := _ch(x + 1, y) == "H"
+			out[0] = "roof_m" if (l and r) else ("roof_l" if r else "roof_r")
+		"h":
+			var a := x
+			while _ch(a - 1, y) == "h": a -= 1
+			var b := x
+			while _ch(b + 1, y) == "h": b += 1
+			var mid := (a + b) / 2
+			out[0] = "hdoor" if x == mid else ("hwindow" if (x - a) % 2 == 1 else "hwall")
+		"w": out[0] = "wood"
+		"c": out[0] = "chasm" if _ch(x, y - 1) in ["c", "B"] else "chasm_lip"
+		"B": out[0] = "bridge"
+		"C": out[0] = "cliff_top" if _ch(x, y + 1) in ["C", "#"] else "cliff_front"
+		"k": out[0] = "cave"
+		"v": out[0] = "void"
+	return out
+
+func _paint_cell(i: int, j: int) -> void:
+	var t := _cell_tiles(i, j)
+	var p := Vector2i(i, j)
+	tilemap.set_cell(p, 0, _tc(t[0]))
+	if t[1] != "": detail.set_cell(p, 0, _tc(t[1]))
+	else: detail.erase_cell(p)
+	if t[2] != "": detail2.set_cell(p, 0, _tc(t[2]))
+	else: detail2.erase_cell(p)
+	if t[3] != "" and j > 0:
+		cover.set_cell(Vector2i(i, j - 1), 0, _tc(t[3]))
 
 func is_solid_char(c: String) -> bool:
 	return SOLID.contains(c)
@@ -159,9 +277,10 @@ func load_map(id: String, spawn: String = "default", pos: Variant = null) -> voi
 		ui.banner(map.get("name", id))
 	arrival_t = 0.6
 	Game.save_block = max(0, Game.save_block - 1)
-	Game.set_flag("visitou_" + id)
+	if Game.in_game:
+		Game.set_flag("visitou_" + id)
 	map_loaded.emit(id)
-	if map_id == "vila_lumen" and Game.has_flag("cervo_morto") and not Game.has_flag("voltou_vila"):
+	if Game.in_game and map_id == "vila_lumen" and Game.has_flag("cervo_morto") and not Game.has_flag("voltou_vila"):
 		_vila_return_scene()
 
 func _compute_tiles() -> void:
@@ -204,14 +323,11 @@ func _set_cur(x: int, y: int, c: String) -> void:
 	if x >= 0 and y >= 0 and x < W and y < H:
 		cur_tiles[y][x] = c
 
-func _rebuild_tilemap(full: bool) -> void:
+func _rebuild_tilemap(_full: bool) -> void:
+	tilemap.clear(); detail.clear(); detail2.clear(); cover.clear()
 	for j in H:
 		for i in W:
-			var ch: String = cur_tiles[j][i]
-			var idx := TILE_ORDER.find(ch)
-			if idx < 0:
-				idx = TILE_ORDER.find(".")
-			tilemap.set_cell(Vector2i(i, j), 0, Vector2i(idx, 0))
+			_paint_cell(i, j)
 
 func _rebuild_collision() -> void:
 	for c in col_body.get_children():
@@ -236,13 +352,16 @@ func _rebuild_collision() -> void:
 func refresh_tiles() -> void:
 	var before := cur_tiles.duplicate(true)
 	_compute_tiles()
+	var changed := false
 	var changed_solid := false
 	for j in H:
 		for i in W:
 			if before[j][i] != cur_tiles[j][i]:
-				tilemap.set_cell(Vector2i(i, j), 0, Vector2i(max(0, TILE_ORDER.find(cur_tiles[j][i])), 0))
+				changed = true
 				if is_solid_char(before[j][i]) != is_solid_char(cur_tiles[j][i]):
 					changed_solid = true
+	if changed:
+		_rebuild_tilemap(true)
 	if changed_solid:
 		_rebuild_collision()
 
@@ -597,11 +716,20 @@ func spawn_text(pos: Vector2, text: String, col: Color) -> void:
 	f.position = pos
 	fx_layer.add_child(f)
 
-func spark(pos: Vector2, n: int = 5) -> void:
+func fx_at(mode: String, pos: Vector2, life: float, rot := 0.0, sc := 1.0) -> Fx:
 	var f := Fx.new()
-	f.mode = "spark"; f.life = 0.3; f.count = n
+	f.mode = mode; f.life = life
 	f.position = pos
+	f.rotation = rot
+	f.scale = Vector2.ONE * sc
 	fx_layer.add_child(f)
+	return f
+
+func spark(pos: Vector2, n: int = 5) -> void:
+	fx_at("spark", pos, 0.2)
+
+func dust(pos: Vector2) -> void:
+	fx_at("dust", pos, 0.3)
 
 func add_fx(n: Node2D) -> void:
 	fx_layer.add_child(n)
@@ -621,7 +749,7 @@ func fx_roots(center: Vector2, rad: float) -> void:
 
 func fx_pulse(center: Vector2, rad: float) -> void:
 	var f := Fx.new()
-	f.mode = "ring"; f.life = 0.4; f.radius = rad; f.color = Color(1.0, 0.95, 0.6)
+	f.mode = "pulse"; f.life = 0.3; f.radius = rad
 	f.position = center
 	fx_layer.add_child(f)
 

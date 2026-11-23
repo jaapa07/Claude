@@ -34,10 +34,7 @@ func _ready() -> void:
 	var c := CircleShape2D.new(); c.radius = 4.0
 	cs.shape = c
 	add_child(cs)
-	var sh := Sprite2D.new()
-	sh.texture = Art.sprite_tex("shadow")
-	sh.scale = Vector2(0.7, 0.7)
-	add_child(sh)
+	add_child(Art.shadow(0.7))
 	fw = int(species["frame"][0]); fh = int(species["frame"][1])
 	sprite = AnimatedSprite2D.new()
 	sprite.sprite_frames = Art.creature_frames(species["sprite"], fw, fh)
@@ -83,7 +80,6 @@ func _physics_process(delta: float) -> void:
 	else:
 		moved = _follow(delta, to_hero)
 	_check_stuck(delta, moved, to_hero)
-	queue_redraw()
 
 func _passive(delta: float) -> void:
 	if species_id() == "brotisco" or species_id() == "galhardo":
@@ -305,10 +301,3 @@ func _dash(delta: float) -> void:
 	if dash_t <= 0.0:
 		velocity = Vector2.ZERO
 
-func _draw() -> void:
-	# anel de recarga da habilidade
-	var cd: float = float(Game.skill_cd.get(uuid(), 0.0))
-	if cd > 0.0:
-		var sk: Dictionary = Data.skills[species["skill"]]
-		var f: float = 1.0 - cd / float(sk["recarga"])
-		draw_arc(Vector2(0, 3), 7.0, 0.0, TAU * f, 12, Color(0.6, 0.9, 1.0, 0.7), 1.0)

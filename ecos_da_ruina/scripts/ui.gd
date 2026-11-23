@@ -14,7 +14,7 @@ func _ready() -> void:
 	layer = 10
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	font = FontFile.new()
-	font.data = FileAccess.get_file_as_bytes("res://assets/fonts/PixelifySans.ttf")
+	font.data = FileAccess.get_file_as_bytes("res://assets/fonts/PressStart2P.ttf")
 	font.antialiasing = TextServer.FONT_ANTIALIASING_NONE
 	font.hinting = TextServer.HINTING_NONE
 	font.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_DISABLED
@@ -274,7 +274,7 @@ func _rename(ind: Dictionary, done: Callable) -> void:
 	le.text = ind.get("apelido", "")
 	le.placeholder_text = "Apelido"
 	le.add_theme_font_override("font", font)
-	le.add_theme_font_size_override("font_size", 10)
+	le.add_theme_font_size_override("font_size", 8)
 	add_child(le)
 	le.grab_focus()
 	le.text_submitted.connect(func(t):
@@ -437,7 +437,7 @@ func open_bestiary() -> void:
 		if b.get("capturado", false): cap += 1
 		var evo_id: String = sp["evolucao"]["para"] if sp.get("evolucao") != null else ""
 		var evo_found: bool = evo_id != "" and Game.bestiary.get(evo_id, {}).get("evoluiu", false)
-		items.append(_it("%s %s" % [("✔" if b.get("capturado", false) else ("•" if vis else "?")), sp["nome"] if vis else "???"], Callable(), func():
+		items.append(_it("%s %s" % [("+" if b.get("capturado", false) else ("•" if vis else "?")), sp["nome"] if vis else "???"], Callable(), func():
 			if not vis:
 				return "Ainda não encontrada.\nRegião %d — %s" % [sp["regiao"], "jogável" if sp["status"] == "jogavel" else "em desenvolvimento nesta versão"]
 			var skn: Dictionary = Data.skills[sp["skill"]]
@@ -474,9 +474,9 @@ func open_map() -> void:
 				"desfiladeiro": note = "" if Game.has_flag("ponte_minas") else "  ⚠ ponte (Raiz Viva)"
 				"bosque_lanternas": note = "" if Game.has_flag("bosque_flores") else "  ⚠ portão de flores"
 				"clareira_raizes": note = "" if Game.has_flag("clareira_placas") else "  ⚠ raízes/placas"
-			items.append(_it("%s %s%s" % ["✔" if visited else "·", m["name"] if visited else "???", note], Callable(), "Bloqueios marcados com ⚠ mostram o que ainda impede a passagem."))
+			items.append(_it("%s %s%s" % ["+" if visited else "·", m["name"] if visited else "???", note], Callable(), "Bloqueios marcados com ⚠ mostram o que ainda impede a passagem."))
 	items.append(_it("Voltar", func(): s.close()))
-	s.setup("Mapa do continente de Auralis", items, "✔ visitada   · ainda não visitada   ⚠ bloqueio.")
+	s.setup("Mapa do continente de Auralis", items, "+ visitada   · ainda não visitada   ⚠ bloqueio.")
 	s.list_w = 250.0
 
 # =============================================================== SALVAR

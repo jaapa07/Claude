@@ -1,14 +1,12 @@
 extends Control
 class_name Hud
-## HUD compacto, caixa de diálogo, barra de chefão, avisos e fade.
+## HUD compacto, caixa de diálogo, barra de chefão, avisos e transição — montados com nós e arte autoral.
 
 var ui: Node
 var world: Node
 var font: Font
-var toasts: Array = []       # {"t": String, "life": float}
-var banner_text := ""
+var toasts: Array = []       # {"t": String, "life": float, "node": Control}
 var banner_t := 0.0
-var fade_a := 0.0
 var boss: Node = null
 var dlg_lines: Array = []
 var dlg_i := 0
@@ -16,23 +14,153 @@ var dlg_chars := 0.0
 var dlg_cb: Callable = Callable()
 var dlg_active := false
 var hud_hidden := false
+var fade_a := 0.0:
+	set(v):
+		fade_a = v
+		if _fade:
+			_fade.color.a = v
+
+var _fade: ColorRect
+var _root: Control
+var _hp: TextureProgressBar
+var _vig: TextureProgressBar
+var _en: TextureProgressBar
+var _hp_lab: Label
+var _hero_lab: Label
+var _cr_panel: NinePatchRect
+var _cr_icon: TextureRect
+var _cr_icon_sp := ""
+var _cr_name: Label
+var _cr_hp: TextureProgressBar
+var _cr_skill: Label
+var _cr_cd: TextureProgressBar
+var _cr_beh: Label
+var _res: Array = []
+var _swap_lab: Label
+var _frag_lab: Label
+var _seal_lab: Label
+var _ton_lab: Label
+var _eco_lab: Label
+var _boss_panel: NinePatchRect
+var _boss_name: Label
+var _boss_bar: TextureProgressBar
+var _toast_box: VBoxContainer
+var _prompt: NinePatchRect
+var _prompt_lab: Label
+var _obj_lab: Label
+var _hint: NinePatchRect
+var _hint_lab: Label
+var _cap: NinePatchRect
+var _cap_lab: Label
+var _cap_bar: TextureProgressBar
+var _banner: NinePatchRect
+var _banner_lab: Label
+var _dlg: NinePatchRect
+var _dlg_name: Label
+var _dlg_body: Label
+var _dlg_more: Label
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	size = Vector2(480, 270)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	Game.toast.connect(func(t): add_toast(t))
+	_root = Control.new()
+	_root.size = size
+	_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_root)
+	# herói
+	var hp_panel := UIKit.panel(Vector2(4, 4), Vector2(150, 38))
+	_root.add_child(hp_panel)
+	_hero_lab = Fonts.label("Herói", 8, Color(1, 0.9, 0.6)); _hero_lab.position = Vector2(6, 5); hp_panel.add_child(_hero_lab)
+	_hp_lab = Fonts.label("", 7); _hp_lab.position = Vector2(88, 5); _hp_lab.size = Vector2(56, 10); _hp_lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT; hp_panel.add_child(_hp_lab)
+	_hp = Art.bar(1, 140); _hp.position = Vector2(5, 16); _hp.size = Vector2(140, 6); hp_panel.add_child(_hp)
+	_vig = Art.bar(2, 140); _vig.position = Vector2(5, 24); hp_panel.add_child(_vig)
+	_en = Art.bar(3, 140); _en.position = Vector2(5, 29); hp_panel.add_child(_en)
+	# criatura ativa
+	_cr_panel = UIKit.panel(Vector2(4, 44), Vector2(150, 42))
+	_root.add_child(_cr_panel)
+	_cr_name = Fonts.label("", 8, Color(0.75, 1.0, 0.8)); _cr_name.position = Vector2(32, 5); _cr_panel.add_child(_cr_name)
+	_cr_hp = Art.bar(4, 112); _cr_hp.position = Vector2(32, 16); _cr_hp.size = Vector2(112, 5); _cr_panel.add_child(_cr_hp)
+	_cr_skill = Fonts.label("", 7, Color(1, 1, 0.7)); _cr_skill.position = Vector2(32, 23); _cr_panel.add_child(_cr_skill)
+	_cr_cd = Art.bar(3, 112); _cr_cd.position = Vector2(32, 34); _cr_panel.add_child(_cr_cd)
+	_cr_beh = Fonts.label("", 7, Color(0.8, 0.8, 0.95)); _cr_beh.position = Vector2(6, 88); _root.add_child(_cr_beh)
+	for i in 2:
+		var p := UIKit.panel(Vector2(156 + i * 34, 44), Vector2(32, 30))
+		p.visible = false
+		_root.add_child(p)
+		var bar := Art.bar(4, 24); bar.position = Vector2(4, 23); p.add_child(bar)
+		_res.append({"panel": p, "bar": bar, "icon": null, "sp": ""})
+	_swap_lab = Fonts.label("", 7, Color(0.7, 0.85, 1)); _swap_lab.position = Vector2(158, 76); _root.add_child(_swap_lab)
+	# recursos (direita)
+	var rp := UIKit.panel(Vector2(358, 4), Vector2(118, 38))
+	_root.add_child(rp)
+	var i1 := UIKit.icon(3); i1.position = Vector2(4, 3); rp.add_child(i1)
+	_frag_lab = Fonts.label("0", 8, Color(0.7, 0.95, 1)); _frag_lab.position = Vector2(20, 8); rp.add_child(_frag_lab)
+	var i2 := UIKit.icon(0); i2.position = Vector2(56, 3); rp.add_child(i2)
+	_seal_lab = Fonts.label("0", 8); _seal_lab.position = Vector2(72, 8); rp.add_child(_seal_lab)
+	var i3 := UIKit.icon(2); i3.position = Vector2(84, 3); rp.add_child(i3)
+	_ton_lab = Fonts.label("0", 8); _ton_lab.position = Vector2(100, 8); rp.add_child(_ton_lab)
+	var i4 := UIKit.icon(6); i4.position = Vector2(4, 19); rp.add_child(i4)
+	_eco_lab = Fonts.label("—", 7, Color(0.75, 1, 0.65)); _eco_lab.position = Vector2(20, 24); rp.add_child(_eco_lab)
+	# chefão
+	_boss_panel = UIKit.panel(Vector2(156, 4), Vector2(198, 30)); _boss_panel.position = Vector2(156, 4); _boss_panel.size = Vector2(200, 28); _boss_panel.visible = false; _root.add_child(_boss_panel)
+	_boss_name = Fonts.label("", 10, Color(1, 0.85, 0.5)); _boss_name.position = Vector2(4, 5); _boss_name.size = Vector2(192, 10)
+	_boss_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; _boss_panel.add_child(_boss_name)
+	_boss_bar = Art.bar(1, 188); _boss_bar.position = Vector2(6, 17); _boss_bar.size = Vector2(188, 6); _boss_panel.add_child(_boss_bar)
+	# avisos
+	_toast_box = VBoxContainer.new()
+	_toast_box.position = Vector2(20, 120); _toast_box.size = Vector2(440, 64)
+	_toast_box.alignment = BoxContainer.ALIGNMENT_END
+	_toast_box.add_theme_constant_override("separation", 1)
+	_toast_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_root.add_child(_toast_box)
+	# dica, captura, prompt, objetivo
+	_hint = UIKit.panel(Vector2(10, 204), Vector2(460, 28)); _root.add_child(_hint)
+	_hint_lab = Fonts.label("", 8, Color(0.85, 1.0, 0.85)); _hint_lab.position = Vector2(6, 5); _hint_lab.size = Vector2(448, 20); _hint_lab.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_hint_lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; _hint.add_child(_hint_lab)
+	_cap = UIKit.panel(Vector2(40, 160), Vector2(400, 40)); _cap.visible = false; _root.add_child(_cap)
+	_cap_lab = Fonts.label("", 8, Color(0.75, 1, 1)); _cap_lab.position = Vector2(6, 5); _cap_lab.size = Vector2(388, 24); _cap_lab.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_cap_lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; _cap.add_child(_cap_lab)
+	_cap_bar = Art.bar(3, 300); _cap_bar.position = Vector2(50, 31); _cap.add_child(_cap_bar)
+	_prompt = UIKit.panel(Vector2(190, 234), Vector2(100, 16)); _prompt.visible = false; _root.add_child(_prompt)
+	_prompt_lab = Fonts.label("", 9); _prompt_lab.position = Vector2(4, 4); _prompt_lab.size = Vector2(92, 10)
+	_prompt_lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; _prompt.add_child(_prompt_lab)
+	_obj_lab = Fonts.label("", 7, Color(1, 0.95, 0.75)); _obj_lab.position = Vector2(6, 252); _obj_lab.size = Vector2(468, 18); _obj_lab.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; _root.add_child(_obj_lab)
+	# faixa com nome do mapa
+	_banner = UIKit.panel(Vector2(110, 92), Vector2(260, 26)); _banner.visible = false; add_child(_banner)
+	_banner_lab = Fonts.label("", 11, Color(1, 0.9, 0.55)); _banner_lab.position = Vector2(4, 9); _banner_lab.size = Vector2(252, 10)
+	_banner_lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; _banner.add_child(_banner_lab)
+	# diálogo
+	_dlg = UIKit.panel(Vector2(10, 180), Vector2(460, 86)); _dlg.visible = false; add_child(_dlg)
+	_dlg_name = Fonts.label("", 10, Color(1, 0.85, 0.4)); _dlg_name.position = Vector2(10, 7); _dlg.add_child(_dlg_name)
+	_dlg_body = Fonts.label("", 10); _dlg_body.position = Vector2(10, 21); _dlg_body.size = Vector2(440, 58)
+	_dlg_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; _dlg.add_child(_dlg_body)
+	_dlg_more = Fonts.label("E >", 8, Color(1, 0.85, 0.4)); _dlg_more.position = Vector2(428, 74); _dlg.add_child(_dlg_more)
+	# transição
+	_fade = ColorRect.new(); _fade.size = size; _fade.color = Color(0, 0, 0, 0); _fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_fade)
 
 func add_toast(t: String) -> void:
-	if toasts.size() > 0 and toasts[toasts.size() - 1]["t"] == t:
-		toasts[toasts.size() - 1]["life"] = 3.0
-		return
-	toasts.append({"t": t, "life": 3.2})
-	if toasts.size() > 4:
-		toasts.pop_front()
+	for x in toasts:
+		if x["t"] == t:
+			x["life"] = 3.0
+			return
+	var p := UIKit.panel(Vector2.ZERO, Vector2(10, 16))
+	var l := Fonts.label(t, 8)
+	l.position = Vector2(5, 4)
+	p.add_child(l)
+	var w: float = l.get_minimum_size().x + 10.0
+	p.custom_minimum_size = Vector2(w, 16)
+	p.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	_toast_box.add_child(p)
+	toasts.append({"t": t, "life": 3.2, "node": p})
+	while toasts.size() > 4:
+		var old: Dictionary = toasts.pop_front()
+		old["node"].queue_free()
 
 func show_banner(t: String) -> void:
-	banner_text = t
+	_banner_lab.text = t
 	banner_t = 2.6
 
 func start_dialog(lines: Array, cb: Callable) -> void:
@@ -41,15 +169,38 @@ func start_dialog(lines: Array, cb: Callable) -> void:
 	dlg_chars = 0.0
 	dlg_cb = cb
 	dlg_active = true
+	_show_line()
+
+func _show_line() -> void:
+	var line: String = dlg_lines[dlg_i]
+	var ci := line.find(":")
+	if ci > 0 and ci <= 22 and (line.substr(0, ci).find(" ") < 0 or line.begins_with("Dona")):
+		_dlg_name.text = line.substr(0, ci)
+		_dlg_body.text = line.substr(ci + 2)
+	else:
+		_dlg_name.text = ""
+		_dlg_body.text = line
+	_dlg_body.visible_characters = 0
 
 func _process(delta: float) -> void:
 	for t in toasts:
 		t["life"] -= delta
-	toasts = toasts.filter(func(t): return t["life"] > 0.0)
+		t["node"].modulate.a = clamp(t["life"], 0.0, 1.0)
+	for t in toasts.duplicate():
+		if t["life"] <= 0.0:
+			t["node"].queue_free()
+			toasts.erase(t)
 	banner_t = max(0.0, banner_t - delta)
+	_banner.visible = banner_t > 0.0 and Game.in_game
+	_banner.modulate.a = clamp(banner_t / 0.6, 0.0, 1.0)
+	_dlg.visible = dlg_active
 	if dlg_active:
 		dlg_chars += delta * 55.0
-	queue_redraw()
+		_dlg_body.visible_characters = int(dlg_chars)
+		_dlg_more.visible = _dlg_body.visible_characters >= _dlg_body.text.length()
+	_root.visible = world != null and Game.in_game and world.player != null and not hud_hidden
+	if _root.visible:
+		_update_hud()
 
 func _input(event: InputEvent) -> void:
 	if not dlg_active:
@@ -62,173 +213,128 @@ func _input(event: InputEvent) -> void:
 	if not adv:
 		return
 	get_viewport().set_input_as_handled()
-	var line: String = dlg_lines[dlg_i]
-	if dlg_chars < line.length():
-		dlg_chars = line.length()
+	if _dlg_body.visible_characters < _dlg_body.text.length():
+		dlg_chars = 9999.0
+		_dlg_body.visible_characters = -1
 		return
 	dlg_i += 1
 	dlg_chars = 0.0
 	Audio.play("ui_move", -10.0)
 	if dlg_i >= dlg_lines.size():
 		dlg_active = false
+		_dlg.visible = false
 		var cb := dlg_cb
 		ui.dialog_closed()
 		if cb.is_valid():
 			cb.call()
-
-# =============================================================== DESENHO
-func _bar(x: float, y: float, w: float, h: float, f: float, col: Color, back := Color(0.1, 0.06, 0.12, 0.9)) -> void:
-	draw_rect(Rect2(x, y, w, h), back)
-	draw_rect(Rect2(x + 1, y + 1, (w - 2) * clamp(f, 0.0, 1.0), h - 2), col)
-
-func _text(p: Vector2, s: String, sz := 9, col := Color.WHITE, w := -1.0) -> void:
-	draw_string(font, p + Vector2(1, 1), s, HORIZONTAL_ALIGNMENT_LEFT, w, sz, Color(0, 0, 0, 0.8))
-	draw_string(font, p, s, HORIZONTAL_ALIGNMENT_LEFT, w, sz, col)
-
-func _draw() -> void:
-	if world == null or not Game.in_game or world.player == null:
-		draw_rect(Rect2(0, 0, 480, 270), Color(0, 0, 0, fade_a))
-		return
-	if not hud_hidden:
-		_draw_hud()
-	if banner_t > 0.0:
-		var a: float = clamp(banner_t / 0.6, 0.0, 1.0)
-		draw_rect(Rect2(120, 52, 240, 22), Color(0.05, 0.04, 0.1, 0.7 * a))
-		draw_string(font, Vector2(120, 67), banner_text, HORIZONTAL_ALIGNMENT_CENTER, 240, 12, Color(1.0, 0.9, 0.5, a))
-	if dlg_active:
-		_draw_dialog()
-	draw_rect(Rect2(0, 0, 480, 270), Color(0, 0, 0, fade_a))
-
-func _draw_hud() -> void:
-	var p: Player = world.player
-	var maxhp := Game.hero_max_hp()
-	var hp := float(Game.hero["hp"])
-	# herói
-	draw_rect(Rect2(4, 4, 112, 30), Color(0.05, 0.04, 0.1, 0.55))
-	_text(Vector2(8, 12), "Herói Nv.%d" % Game.hero_level(), 8, Color(1, 0.9, 0.6))
-	_bar(8, 15, 104, 7, hp / maxhp, Color(0.9, 0.25, 0.3) if hp / maxhp > 0.3 else Color(1.0, 0.5, 0.2))
-	_text(Vector2(10, 21), "%d/%d" % [int(hp), int(maxhp)], 7)
-	_bar(8, 23, 104, 4, p.vigor / Player.VIGOR_MAX, Color(0.95, 0.85, 0.3))
-	_bar(8, 28, 104, 3, p.energy / Player.ENERGY_MAX, Color(0.35, 0.6, 1.0))
-	# criatura ativa e reservas
-	var y := 38.0
-	var ac := Game.active_ind()
-	draw_rect(Rect2(4, y, 112, 36), Color(0.05, 0.04, 0.1, 0.55))
-	if not ac.is_empty():
-		var spd: Dictionary = Game.sp_of(ac)
-		_text(Vector2(8, y + 9), "%s Nv.%d" % [Game.creature_name(ac), ac["nivel"]], 8, Color(0.7, 1.0, 0.8))
-		_bar(8, y + 12, 104, 6, float(ac["hp"]) / Game.creature_hp_max(ac), Color(0.4, 0.85, 0.5))
-		var cd: float = float(Game.skill_cd.get(ac["uuid"], 0.0))
-		var sk: Dictionary = Data.skills[spd["skill"]]
-		if cd > 0.0:
-			_bar(8, y + 20, 60, 4, 1.0 - cd / float(sk["recarga"]), Color(0.5, 0.7, 1.0))
-			_text(Vector2(72, y + 25), "%.0fs" % cd, 7, Color(0.7, 0.8, 1.0))
-		else:
-			_text(Vector2(8, y + 26), "Q: %s" % sk["nome"], 7, Color(1, 1, 0.7))
-		_text(Vector2(8, y + 34), _beh_name(), 7, Color(0.8, 0.8, 0.9))
 	else:
-		_text(Vector2(8, y + 12), "Sem criatura ativa", 8, Color(0.7, 0.7, 0.8))
-	# reservas
-	var rx := 120.0
-	for i in Game.team.size():
-		if i == Game.active_idx:
-			continue
-		var r: Dictionary = Game.individuals[Game.team[i]]
-		draw_rect(Rect2(rx, y, 42, 16), Color(0.05, 0.04, 0.1, 0.55))
-		_text(Vector2(rx + 2, y + 8), Game.creature_name(r).left(6), 7, Color(0.8, 0.8, 0.9) if not r.get("exausta", false) else Color(0.6, 0.4, 0.4))
-		_bar(rx + 2, y + 10, 38, 4, float(r["hp"]) / Game.creature_hp_max(r), Color(0.4, 0.85, 0.5))
-		rx += 44.0
-	if Game.swap_cd > 0.0 and Game.team.size() > 1:
-		_text(Vector2(120, y + 26), "Troca %.0fs" % Game.swap_cd, 7, Color(0.7, 0.8, 1.0))
-	# itens e Ecos (canto superior direito)
-	draw_rect(Rect2(380, 4, 96, 30), Color(0.05, 0.04, 0.1, 0.55))
-	_text(Vector2(384, 14), "◆ %d" % Game.fragments, 8, Color(0.6, 0.95, 1.0))
-	_text(Vector2(384, 24), "Selos %d  Tônicos %d" % [Game.item_count("selo_basico") + Game.item_count("selo_refinado"), Game.item_count("pocao")], 7)
-	for i in 2:
-		var eid: String = Game.eco_slots[i]
-		var ex := 384.0 + i * 46.0
-		if eid != "":
-			var cdv: float = p.eco_cd[i]
-			_text(Vector2(ex, 32), "%d:%s" % [i + 1, Data.skills[eid]["nome"].left(8)], 7, Color(0.7, 1.0, 0.6) if cdv <= 0.0 else Color(0.6, 0.6, 0.7))
-	# alerta de captura
-	if p.aiming or p.cap_state != "":
-		_draw_capture(p)
-	# chefão
-	if boss != null and is_instance_valid(boss) and boss.alive_flag:
-		var bw := 260.0
-		var bx := 110.0
-		draw_rect(Rect2(bx - 3, 6, bw + 6, 22), Color(0.05, 0.03, 0.08, 0.8))
-		draw_string(font, Vector2(bx, 15), boss.shown_name, HORIZONTAL_ALIGNMENT_CENTER, bw, 10, Color(1.0, 0.85, 0.5))
-		_bar(bx, 18, bw, 6, boss.hp / boss.max_hp, Color(0.85, 0.2, 0.25))
-		for th in [0.6, 0.3] if boss.kind == "cervo" else []:
-			draw_rect(Rect2(bx + bw * th, 18, 1, 6), Color(1, 1, 1, 0.8))
-	# avisos
-	var ty := 232.0
-	for i in toasts.size():
-		var t: Dictionary = toasts[i]
-		var a: float = clamp(t["life"], 0.0, 1.0)
-		var w := font.get_string_size(t["t"], HORIZONTAL_ALIGNMENT_LEFT, -1, 9).x + 10.0
-		draw_rect(Rect2(240 - w / 2.0, ty - 10 - (toasts.size() - 1 - i) * 13.0, w, 12), Color(0.05, 0.04, 0.1, 0.75 * a))
-		draw_string(font, Vector2(240 - w / 2.0 + 5, ty - 1 - (toasts.size() - 1 - i) * 13.0), t["t"], HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color(1, 1, 1, a))
-	# prompt de interação
-	if world.current_prompt != "":
-		var s = "[E] " + world.current_prompt
-		var w2 := font.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, 10).x + 12.0
-		draw_rect(Rect2(240 - w2 / 2.0, 244, w2, 14), Color(0.05, 0.04, 0.1, 0.8))
-		draw_rect(Rect2(240 - w2 / 2.0, 244, w2, 14), Color(1.0, 0.85, 0.4), false, 1.0)
-		draw_string(font, Vector2(240 - w2 / 2.0 + 6, 255), s, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color.WHITE)
-	# objetivo e dica de tutorial
-	var obj := Game.objective_text()
-	if obj != "":
-		draw_string(font, Vector2(6, 264), "Objetivo: " + obj, HORIZONTAL_ALIGNMENT_LEFT, 468, 8, Color(1.0, 0.95, 0.7, 0.9))
-	var hint := Game.tutorial_hint()
-	if hint != "":
-		var w3 := font.get_string_size(hint, HORIZONTAL_ALIGNMENT_LEFT, -1, 9).x + 12.0
-		w3 = min(w3, 440.0)
-		draw_rect(Rect2(240 - w3 / 2.0, 205, w3, 14), Color(0.1, 0.2, 0.15, 0.85))
-		draw_string(font, Vector2(240 - w3 / 2.0 + 6, 215), hint, HORIZONTAL_ALIGNMENT_LEFT, w3 - 8, 9, Color(0.8, 1.0, 0.85))
+		_show_line()
 
 func _beh_name() -> String:
 	return {"acompanhar": "Acompanhar", "atacar": "Atacar alvo", "proteger": "Proteger", "preservar": "Preservar"}.get(Game.behavior, "")
 
-func _draw_capture(p: Player) -> void:
-	var lines: Array = []
-	if p.cap_state == "voo":
-		lines.append("Selo em voo...")
-	elif p.cap_state == "canal":
-		lines.append("Canalizando vínculo... %d%%" % int(p.cap_chance * 100.0 + 0.5))
-		_bar(190, 190, 100, 5, p.cap_timer / Player.CAPTURE_CHANNEL, Color(0.6, 0.95, 1.0))
-	elif p.cap_target != null and is_instance_valid(p.cap_target):
-		var t: Node = p.cap_target
-		lines.append("%s — vida %d%%" % [t.shown_name, int(t.hp / t.max_hp * 100.0)])
-		var ok: bool = p.cap_msg == ""
-		if ok:
-			lines.append("Chance %d%%  •  F: lançar selo  •  Esc: cancelar" % int(p.chance_for(t) * 100.0 + 0.5))
-		else:
-			lines.append(p.cap_msg)
+func _update_hud() -> void:
+	var p: Player = world.player
+	var maxhp := Game.hero_max_hp()
+	var hp := float(Game.hero["hp"])
+	_hero_lab.text = "Nv.%d" % Game.hero_level()
+	_hp_lab.text = "%d/%d" % [int(hp), int(maxhp)]
+	_hp.value = hp / maxhp * 1000.0
+	_vig.value = p.vigor / Player.VIGOR_MAX * 1000.0
+	_en.value = p.energy / Player.ENERGY_MAX * 1000.0
+	var ac := Game.active_ind()
+	_cr_panel.visible = true
+	if not ac.is_empty():
+		if _cr_icon_sp != ac["species_id"]:
+			if _cr_icon:
+				_cr_icon.queue_free()
+			_cr_icon = UIKit.portrait(ac["species_id"])
+			_cr_icon.position = Vector2(3, 20 - _cr_icon.size.y / 2.0 + 0)
+			_cr_icon.position = Vector2(16 - _cr_icon.size.x / 2.0, 20 - _cr_icon.size.y / 2.0)
+			_cr_panel.add_child(_cr_icon)
+			_cr_icon_sp = ac["species_id"]
+		_cr_name.text = "%s %d" % [Game.creature_name(ac).left(9), ac["nivel"]]
+		_cr_hp.value = float(ac["hp"]) / Game.creature_hp_max(ac) * 1000.0
+		var sk: Dictionary = Data.skills[Game.sp_of(ac)["skill"]]
+		var cd: float = float(Game.skill_cd.get(ac["uuid"], 0.0))
+		_cr_skill.text = "Q pronto" if cd <= 0.0 else "Q %.0fs" % cd
+		_cr_cd.value = (1.0 - cd / float(sk["recarga"])) * 1000.0
+		_cr_beh.text = "Modo: " + _beh_name() + "  (C)"
 	else:
-		lines.append(p.cap_msg if p.cap_msg != "" else "Mirando...")
-	var y := 170.0
-	for l in lines:
-		var w := font.get_string_size(l, HORIZONTAL_ALIGNMENT_LEFT, -1, 9).x + 12.0
-		draw_rect(Rect2(240 - w / 2.0, y, w, 13), Color(0.05, 0.1, 0.18, 0.9))
-		draw_string(font, Vector2(240 - w / 2.0 + 6, y + 10), l, HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color(0.7, 1.0, 1.0))
-		y += 14.0
-
-func _draw_dialog() -> void:
-	draw_rect(Rect2(20, 196, 440, 66), Color(0.08, 0.06, 0.16, 0.96))
-	draw_rect(Rect2(20, 196, 440, 66), Color(0.85, 0.7, 0.35), false, 1.0)
-	var line: String = dlg_lines[dlg_i]
-	var shown := line.substr(0, int(dlg_chars))
-	var name_part := ""
-	var body := shown
-	var full := line
-	var ci := full.find(":")
-	if ci > 0 and ci <= 18 and full.substr(0, ci).find(" ") < 0 or (ci > 0 and ci <= 22 and full.begins_with("Dona")):
-		name_part = full.substr(0, ci)
-		body = shown.substr(min(ci + 2, shown.length()))
-	if name_part != "":
-		draw_string(font, Vector2(28, 210), name_part, HORIZONTAL_ALIGNMENT_LEFT, 200, 10, Color(1.0, 0.85, 0.4))
-	draw_multiline_string(font, Vector2(28, 224 if name_part != "" else 214), body, HORIZONTAL_ALIGNMENT_LEFT, 424, 10, 4, Color.WHITE)
-	if dlg_chars >= line.length():
-		draw_string(font, Vector2(430, 256), "▼ E", HORIZONTAL_ALIGNMENT_LEFT, 40, 8, Color(1, 0.85, 0.4))
+		if _cr_icon:
+			_cr_icon.queue_free(); _cr_icon = null; _cr_icon_sp = ""
+		_cr_name.text = "Sem criatura ativa"
+		_cr_hp.value = 0
+		_cr_skill.text = ""
+		_cr_cd.value = 0
+		_cr_beh.text = ""
+	var k := 0
+	for i in Game.team.size():
+		if i == Game.active_idx:
+			continue
+		if k >= 2:
+			break
+		var r: Dictionary = Game.individuals[Game.team[i]]
+		var slot: Dictionary = _res[k]
+		slot["panel"].visible = true
+		if slot["sp"] != r["species_id"]:
+			if slot["icon"]:
+				slot["icon"].queue_free()
+			var ic := UIKit.portrait(r["species_id"])
+			ic.scale = Vector2.ONE * (16.0 / max(ic.size.x, ic.size.y))
+			ic.position = Vector2(8, 4)
+			slot["panel"].add_child(ic)
+			slot["icon"] = ic
+			slot["sp"] = r["species_id"]
+		slot["icon"].modulate = Color(0.5, 0.4, 0.4) if r.get("exausta", false) else Color.WHITE
+		slot["bar"].value = float(r["hp"]) / Game.creature_hp_max(r) * 1000.0
+		k += 1
+	for j in range(k, 2):
+		_res[j]["panel"].visible = false
+	_swap_lab.text = ("Troca %.0fs" % Game.swap_cd) if (Game.swap_cd > 0.0 and Game.team.size() > 1) else ""
+	_frag_lab.text = str(Game.fragments)
+	_seal_lab.text = str(Game.item_count("selo_basico") + Game.item_count("selo_refinado"))
+	_ton_lab.text = str(Game.item_count("pocao"))
+	var ecos: Array = []
+	for i in 2:
+		var eid: String = Game.eco_slots[i]
+		if eid != "":
+			ecos.append("%d:%s%s" % [i + 1, Data.skills[eid]["nome"], "" if p.eco_cd[i] <= 0.0 else " %.0fs" % p.eco_cd[i]])
+	_eco_lab.text = "  ".join(ecos) if not ecos.is_empty() else "Ecos: —"
+	# chefão
+	var b_ok = boss != null and is_instance_valid(boss) and boss.alive_flag
+	_boss_panel.visible = b_ok
+	if b_ok:
+		_boss_name.text = boss.shown_name
+		_boss_bar.value = boss.hp / boss.max_hp * 1000.0
+	# captura
+	_cap.visible = p.aiming or p.cap_state != ""
+	if _cap.visible:
+		_cap_bar.visible = p.cap_state == "canal"
+		if p.cap_state == "voo":
+			_cap_lab.text = "Selo em voo..."
+		elif p.cap_state == "canal":
+			_cap_lab.text = "Canalizando vínculo... chance %d%%" % int(p.cap_chance * 100.0 + 0.5)
+			_cap_bar.value = p.cap_timer / Player.CAPTURE_CHANNEL * 1000.0
+		elif p.cap_target != null and is_instance_valid(p.cap_target):
+			var t: Node = p.cap_target
+			var head: String = "%s — vida %d%%" % [t.shown_name, int(t.hp / t.max_hp * 100.0)]
+			if p.cap_msg == "":
+				_cap_lab.text = head + "\nChance %d%%  •  F: lançar  •  Tab: outro alvo  •  K: cancelar" % int(p.chance_for(t) * 100.0 + 0.5)
+			else:
+				_cap_lab.text = head + "\n" + p.cap_msg
+		else:
+			_cap_lab.text = p.cap_msg if p.cap_msg != "" else "Mirando..."
+	# prompt
+	_prompt.visible = world.current_prompt != ""
+	if _prompt.visible:
+		_prompt_lab.text = "E  " + world.current_prompt
+		var w: float = _prompt_lab.get_minimum_size().x + 14.0
+		_prompt.size.x = w
+		_prompt.position.x = 240.0 - w / 2.0
+		_prompt_lab.size.x = w - 8.0
+	var obj := Game.objective_text()
+	_obj_lab.text = ("Objetivo: " + obj) if obj != "" else ""
+	var hint := Game.tutorial_hint()
+	_hint.visible = hint != "" and not dlg_active
+	_hint_lab.text = hint

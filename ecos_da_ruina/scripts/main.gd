@@ -14,7 +14,6 @@ func _ready() -> void:
 	ui = preload("res://scripts/ui.gd").new()
 	add_child(ui)
 	title_bg = TextureRect.new()
-	title_bg.texture = Art.sprite_tex("title_bg")
 	title_bg.size = Vector2(480, 270)
 	title_bg.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	var cl := CanvasLayer.new()
@@ -36,9 +35,17 @@ func _ready() -> void:
 
 func show_title() -> void:
 	Game.in_game = false
-	world.visible = false
+	# fundo do título: a própria Vila Lúmen desenhada com o tileset, sem o herói
+	world.visible = true
+	world.process_mode = Node.PROCESS_MODE_INHERIT
+	world.load_map("vila_lumen", "default")
+	world.player.visible = false
+	world.player.global_position = Vector2(22 * 16, 15 * 16)
+	if world.companion:
+		world.companion.queue_free()
+		world.companion = null
 	world.process_mode = Node.PROCESS_MODE_DISABLED
-	title_bg.visible = true
+	title_bg.visible = false
 	Audio.music("titulo")
 	get_tree().paused = false
 	ui.modal = 0
@@ -46,6 +53,7 @@ func show_title() -> void:
 
 func begin_world() -> void:
 	title_bg.visible = false
+	world.player.visible = true
 	world.visible = true
 	world.process_mode = Node.PROCESS_MODE_INHERIT
 	Game.in_game = true

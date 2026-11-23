@@ -52,7 +52,8 @@ func _begin_attack() -> void:
 
 func _end_attack() -> void:
 	super._end_attack()
-	world.say("Ofegante! Ataque agora!") if swings % 2 == 1 else null
+	if swings % 2 == 1:
+		world.say("Ofegante! Ataque agora!")
 
 func take_damage(amount: float, from_pos: Vector2, opts: Dictionary = {}) -> float:
 	if vulnerable:
@@ -82,7 +83,15 @@ func _death_fx() -> void:
 		world.spark(global_position + Vector2(randf_range(-14, 14), randf_range(-30, 0)), 10)
 	super._death_fx()
 
-func _draw() -> void:
-	super._draw()
-	if vulnerable and alive_flag:
-		draw_arc(Vector2(0, -fh / 2.0), 18.0, 0.0, TAU, 20, Color(1.0, 0.9, 0.3, 0.7), 1.5)
+var _tired_fx: AnimatedSprite2D
+
+func _visuals() -> void:
+	super._visuals()
+	if _tired_fx == null and is_inside_tree():
+		_tired_fx = AnimatedSprite2D.new()
+		_tired_fx.sprite_frames = Art.fx_frames("fx_sparkle", 16, 12, 2, 8.0, true)
+		_tired_fx.position = Vector2(0, -fh - 2)
+		_tired_fx.play("a")
+		add_child(_tired_fx)
+	if _tired_fx:
+		_tired_fx.visible = vulnerable and alive_flag

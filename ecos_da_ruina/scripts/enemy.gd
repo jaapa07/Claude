@@ -111,11 +111,7 @@ func _ready() -> void:
 	var c := CircleShape2D.new(); c.radius = max(4.0, radius * 0.7)
 	cs.shape = c
 	add_child(cs)
-	var sh := Sprite2D.new()
-	sh.texture = Art.sprite_tex("shadow")
-	sh.scale = Vector2(max(0.6, radius / 9.0), max(0.6, radius / 9.0))
-	sh.position = Vector2(0, 1)
-	add_child(sh)
+	add_child(Art.shadow(max(0.6, radius / 9.0)))
 	var sp_name: String = def.get("sprite", "")
 	if kind == "dummy":
 		sp_name = "sentinela"
@@ -129,6 +125,7 @@ func _ready() -> void:
 		sprite.play("idle")
 		if kind == "dummy":
 			sprite.modulate = Color(1.0, 0.9, 0.7)
+	_build_visuals()
 	add_to_group("enemies")
 	if kind == "wild":
 		add_to_group("wild")
@@ -166,7 +163,7 @@ func _physics_process(delta: float) -> void:
 	if contained or world.frozen:
 		velocity = Vector2.ZERO
 		_anim("idle")
-		queue_redraw()
+		_visuals()
 		return
 	if rooted_t > 0.0:
 		rooted_t -= delta
@@ -174,10 +171,10 @@ func _physics_process(delta: float) -> void:
 		knock_v = knock_v.move_toward(Vector2.ZERO, 500.0 * delta)
 		move_and_slide()
 		_anim("idle")
-		queue_redraw()
+		_visuals()
 		return
 	_ai(delta)
-	queue_redraw()
+	_visuals()
 
 func _tint() -> Color:
 	if flash > 0.0:
@@ -534,54 +531,95 @@ func captured_by_hero() -> void:
 func is_alive() -> bool:
 	return alive_flag
 
-# =============================================================== DESENHO (telegrafos e barra de vida)
-func _draw() -> void:
-	if not alive_flag:
-		return
-	if st == St.WINDUP and not P.is_empty():
-		_draw_telegraph()
-	if hp_bar_t > 0.0 or (capturable and world.player != null and world.player.aiming):
-		var w := 22.0
-		var y := -fh - 4.0
-		draw_rect(Rect2(-w / 2.0, y, w, 3.0), Color(0.1, 0.05, 0.1, 0.85))
-		var f: float = clamp(hp / max_hp, 0.0, 1.0)
-		var col := Color(0.4, 0.9, 0.4) if f > 0.35 else Color(1.0, 0.7, 0.3)
-		draw_rect(Rect2(-w / 2.0 + 0.5, y + 0.5, (w - 1.0) * f, 2.0), col)
-		if capturable and f <= Game.CAPTURE_HP_LIMIT:
-			draw_rect(Rect2(w / 2.0 + 1.0, y, 2.0, 3.0), Color(0.5, 0.95, 1.0))
-	if protect_t > 0.0:
-		draw_arc(Vector2(0, -fh / 2.0), radius + 6.0, 0.0, TAU, 16, Color(0.7, 0.9, 1.0, 0.6), 1.0)
-	if world.hero_target == self and kind != "dummy":
-		var y2 := -fh - 10.0
-		draw_colored_polygon(PackedVector2Array([Vector2(-3, y2), Vector2(3, y2), Vector2(0, y2 + 4)]), Color(1, 0.9, 0.3))
+# =============================================================== VISUAIS (sprites; nada desenhado por código)
+var _bar: TextureProgressBar
+var _alert: AnimatedSprite2D
+var _marker: Sprite2D
+var _decal: Sprite2D
+var _shield: Sprite2D
+var _decal_kind := ""
 
-func _draw_telegraph() -> void:
-	var f: float = clamp(st_t / (P["wind"] * Game.warning_mult()), 0.0, 1.0)
-	var col := Color(1.0, 0.25, 0.2, 0.18 + 0.28 * f)
-	var edge := Color(1.0, 0.85, 0.3, 0.95)
+func _build_visuals() -> void:
+	_decal = Sprite2D.new()
+	_decal.texture = Art.sprite_tex("fx_warn_tile")
+	_decal.show_behind_parent = true
+	_decal.z_as_relative = false
+	_decal.z_index = -1
+	_decal.visible = false
+	add_child(_decal)
+	_bar = Art.bar(4, 22)
+	_bar.position = Vector2(-11, -fh - 6)
+	_bar.visible = false
+	add_child(_bar)
+	_alert = AnimatedSprite2D.new()
+	_alert.sprite_frames = Art.fx_frames("fx_alert", 6, 12, 2, 8.0, true)
+	_alert.position = Vector2(0, -fh - 12)
+	_alert.visible = false
+	_alert.play("a")
+	add_child(_alert)
+	_marker = Sprite2D.new()
+	_marker.texture = Art.sprite_tex("fx_target")
+	_marker.position = Vector2(0, -fh - 10)
+	_marker.visible = false
+	add_child(_marker)
+	_shield = Sprite2D.new()
+	_shield.texture = Art.sprite_tex("fx_aim")
+	_shield.position = Vector2(0, -fh / 2.0)
+	_shield.modulate = Color(0.7, 0.9, 1.0, 0.7)
+	_shield.visible = false
+	add_child(_shield)
+
+func _set_decal(kind: String) -> void:
+	if kind == _decal_kind:
+		return
+	_decal_kind = kind
+	_decal.region_enabled = false
+	_decal.texture_repeat = CanvasItem.TEXTURE_REPEAT_DISABLED
+	match kind:
+		"line", "rect":
+			_decal.texture = Art.sprite_tex("fx_warn_tile")
+			_decal.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
+			_decal.region_enabled = true
+		"circle":
+			_decal.texture = Art.sprite_tex("fx_warn_circle")
+
+func _visuals() -> void:
+	if _bar == null:
+		return
+	var show_bar = alive_flag and (hp_bar_t > 0.0 or (capturable and world.player != null and world.player.aiming)) and kind != "dummy"
+	_bar.visible = show_bar
+	if show_bar:
+		var f: float = clamp(hp / max_hp, 0.0, 1.0)
+		_bar.value = f * 1000.0
+		_bar.texture_progress = Art.region("ui_bars", 0, (4 if f > Game.CAPTURE_HP_LIMIT or not capturable else 5) * 4, 40, 4)
+	_shield.visible = protect_t > 0.0 and alive_flag
+	_marker.visible = alive_flag and world.hero_target == self and kind != "dummy"
+	var tele := alive_flag and st == St.WINDUP and not P.is_empty()
+	_alert.visible = tele
+	_decal.visible = tele
+	if tele:
+		var f2: float = clamp(st_t / (float(P["wind"]) * Game.warning_mult()), 0.0, 1.0)
+		_decal.modulate = Color(1, 1, 1, 0.35 + 0.45 * f2)
+		_draw_telegraph_decal()
+
+func _draw_telegraph_decal() -> void:
 	var a: String = def.get("ataque", "")
 	if a == "investida":
-		var d := attack_dir
-		var n := d.orthogonal() * 6.0
-		var L := 80.0
-		var pts := PackedVector2Array([n, n + d * L, -n + d * L, -n])
-		draw_colored_polygon(pts, col)
-		draw_polyline(PackedVector2Array([n, n + d * L, -n + d * L, -n, n]), edge, 1.0)
+		_set_decal("line")
+		_decal.region_rect = Rect2(0, 0, 80, 12)
+		_decal.rotation = attack_dir.angle()
+		_decal.position = attack_dir * 40.0
+		_decal.scale = Vector2.ONE
 	elif a == "esporos":
-		draw_circle(Vector2.ZERO, P["aoe"] * f, col)
-		draw_arc(Vector2.ZERO, P["aoe"], 0.0, TAU, 28, edge, 1.5)
+		_set_decal("circle")
+		_decal.rotation = 0.0
+		_decal.position = Vector2.ZERO
+		_decal.scale = Vector2.ONE * (float(P["aoe"]) / 34.0)
 	else:
+		_set_decal("rect")
 		var r: float = P["r"]
-		var arc: float = deg_to_rad(float(P["arc"]))
-		var a0 := attack_dir.angle() - arc
-		var pts2 := PackedVector2Array([Vector2.ZERO])
-		for i in range(0, 13):
-			var aa := a0 + 2.0 * arc * float(i) / 12.0
-			pts2.append(Vector2(cos(aa), sin(aa)) * r)
-		draw_colored_polygon(pts2, col)
-		pts2.append(Vector2.ZERO)
-		draw_polyline(pts2, edge, 1.0)
-	# símbolo de alerta (forma, não só cor)
-	var y := -fh - 14.0
-	draw_rect(Rect2(-1, y, 2, 6), edge)
-	draw_rect(Rect2(-1, y + 8, 2, 2), edge)
+		var w: float = 2.0 * r * sin(deg_to_rad(min(float(P["arc"]), 89.0)))
+		_decal.region_rect = Rect2(0, 0, r, max(12.0, w))
+		_decal.rotation = attack_dir.angle()
+		_decal.position = attack_dir * r * 0.5
+		_decal.scale = Vector2.ONE

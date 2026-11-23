@@ -1,0 +1,1036 @@
+# Tileset autoral 16x16 — Floresta dos Esquecidos, Vila Lúmen e Santuário da Seiva.
+# A escolha de variação/borda é feita pelo mapa (autotile por vizinhança); os desenhos são manuais.
+
+palette tile
+  K = #1b1626
+  g = #5a9c44
+  G = #4a8638
+  h = #74b852
+  j = #3a6e30
+  d = #b48c58
+  D = #9a7448
+  e = #caa470
+  w = #3c7cc0
+  W = #2c62a0
+  q = #6aa8e0
+  Q = #c4e4f8
+  t = #2e6a34
+  T = #3f8a3a
+  u = #5aa848
+  U = #86c860
+  n = #6b4528
+  N = #4a301c
+  r = #c8c0a6
+  R = #a8a088
+  s = #8a846e
+  S = #6a6656
+  m = #6f9a4a
+  M = #8fba5a
+  o = #a8764a
+  O = #7a5232
+  p = #c9946a
+  f = #f2e6c8
+  y = #f0c040
+  z = #e0707a
+  b = #9a7ad8
+  c = #b5503c
+  C = #8a3a2c
+  x = #d46a50
+  v = #e6d2a6
+  V = #c8b08a
+  i = #3a5a8a
+  I = #9bd0f0
+  k = #141020
+  l = #2a2238
+  a = #4a3a5a
+  L = #7ae070
+  E = #c8f080
+  P = #7a6a58
+  X = #5a4a3c
+  Y = #9a8a76
+  A = #6ac04c
+  B = #8ad868
+end
+pal tile
+
+# ------------------------------------------------ grama
+frame grass0
+gggggggGgggggggg
+ggggggggggghgggg
+gghgggggggggggGg
+ggggggGgggggggggg
+gggggggggghggggg
+ggGgggggggggggggg
+gggggghgggggGggg
+gggggggggggggggg
+ggggGgggggggghgg
+gghggggggggggggg
+gggggggggGgggggg
+ggggghggggggggGg
+gGgggggggggggggg
+gggggggggghggggg
+ggggggGggggggggg
+gggggggggggggGgg
+end
+frame grass1
+gggggggggggggggg
+ggGghggggggggggg
+gggGgggggghggggg
+gggggggggggGgggg
+gggggggggggggggg
+gggghgggGggggggg
+ggggGgggggggghgg
+gggggggggggggGgg
+gGgggggggggggggg
+ghggggghgggggggg
+gggggggGgggggggg
+gggggggggggggggg
+ggggggggggghgggg
+gggGggggggggGggg
+gggghggggggggggg
+gggggggggggggggg
+end
+frame grass2
+gggggggggggggggg
+ggggggggggggGggg
+gggghgggggggghgg
+ggggGgggggggggggg
+gggggggggggggggg
+gggggggggghggggg
+gGgggggggggGgggg
+gghggggggggggggg
+gggggggggggggggg
+ggggggghgggggggg
+gggggggGgggggGgg
+ggGgggggggggghgg
+gggggggggggggggg
+ggghggggGggggggg
+gggGgggggggggggg
+gggggggggggggggg
+end
+frame grassd0
+GGGGGGGGGjGGGGGG
+GGjGGGGGGGGGGGGG
+GGGGGGGgGGGGGjGG
+GGGGjGGGGGGGGGGG
+GGGGGGGGGGGgGGGG
+GjGGGGGGjGGGGGGG
+GGGGgGGGGGGGGGjG
+GGGGGGGGGGGGGGGG
+GGjGGGGGGGgGGGGG
+GGGGGGGjGGGGGGGG
+GGGgGGGGGGGGGjGG
+GGGGGGGGGGGGGGGG
+GjGGGGGgGGGGGGGG
+GGGGGjGGGGGGjGGG
+GGGGGGGGGGGGGGGG
+GGgGGGGGGjGGGGGG
+end
+frame flowers0
+gggggggggggggggg
+ggfgggggggggyggg
+gfyfgggggggyKygg
+ggfggggggggGyggg
+ggGggzgggggGgggg
+gggGzKzggggggggg
+ggggGzgggggggfgg
+gggggGggggggfyfg
+ggyggggggggggfgg
+gyKyggbggggggGgg
+ggygggbKbggggggg
+ggGggggbgggggggg
+gggGgggGgggzgggg
+ggggggggggzKzggg
+gggfggggggGzgggg
+ggfyfgggggggGggg
+end
+# ------------------------------------------------ grama viva (após o Cervo)
+frame lush0
+AAAAAAAAAAAAAAAA
+AABAAAAAAAAAAAAA
+AAAAAAAAABAAAAAA
+AAAAgAAAAAAAAAAA
+AAAAAAAAAAAAABAA
+AABAAAAAgAAAAAAA
+AAAAAAAAAAAAAAAA
+AAAAAABAAAAAAAAA
+AgAAAAAAAAAABAAA
+AAAAAAAAAAAAAAAA
+AAAABAAAAgAAAAAA
+AAAAAAAAAAAAAABA
+ABAAAAAAAAAAAAAA
+AAAAAAgAAAABAAAA
+AAAAAAAAAAAAAAAA
+AAAAABAAAAAAAgAA
+end
+frame bloom0
+AAAAAAAAAAAAAAAA
+AAzAAAAAAAAAbAAA
+AzfzAAAAAAAbfbAA
+AAzAAAyAAAAAbAAA
+AAgAAyfyAAAAgAAA
+AAAAAAyAAAAAAAAA
+AAAAAAgAAAzAAAAA
+AbAAAAAAAAzfzAAA
+bfbAAAAAAAAzAAAA
+AbAAAAAyAAAgAAAA
+AgAAAAyfyAAAAAAA
+AAAAAAAyAAAAAAbA
+AAAzAAAgAAAAAbfb
+AAzfzAAAAAAAAAbA
+AAAzAAAAAAyAAAgA
+AAAgAAAAAAyfyAAA
+end
+# ------------------------------------------------ caminho de terra e bordas de grama
+frame path0
+dddddddddDdddddd
+ddeddddddddddedd
+ddddddDddddddddd
+dddddddddddddddd
+ddDdddddddeddddd
+dddddeddddddDddd
+dddddddddddddddd
+deddddddDddddddd
+ddddDddddddddedd
+dddddddddddddddd
+ddddddddeddddDdd
+ddDddddddddddddd
+dddddddDdddddddd
+ddedddddddddeddd
+dddddddddddDdddd
+ddddDddddddddddd
+end
+frame path1
+dddddddddddddddd
+ddddDddddddedddd
+dddddddddddddddd
+dedddddeDddddddd
+ddddddddddddDddd
+dddDdddddddddddd
+dddddddddeDddddd
+ddddeddddddddddd
+dddddddDddddddDd
+ddDddddddddeddd
+dddddddddddddddd
+dddeddddDddddddd
+ddddddddddddDddd
+dDdddddddddddddd
+ddddddeddddddedd
+dddddddddddddddd
+end
+frame pedge_n
+gGgggGggggGgggGg
+GgjGGgGjGGgjgGjG
+DjDDjDDDjDDjDDDj
+dDddDdddDddDddDd
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+end
+frame pedge_s
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+dDddDdddDddDddDd
+gDgDgDgDgDgDggDg
+GgjGgGjGgGjGgGjg
+gggGgggggGgggggg
+end
+frame pedge_w
+gGD.............
+gjD.............
+Gd..............
+gjD.............
+gGD.............
+gd..............
+GjD.............
+ggD.............
+gGD.............
+gd..............
+gjD.............
+GgD.............
+gGd.............
+gjD.............
+gd..............
+GgD.............
+end
+frame pedge_e
+.............DGg
+.............Djg
+..............dG
+.............Djg
+.............DGg
+..............dg
+.............DjG
+.............Dgg
+.............DGg
+..............dg
+.............Djg
+.............DgG
+.............dGg
+.............Djg
+..............dg
+.............DgG
+end
+# ------------------------------------------------ água com espuma nas margens
+frame water0
+wwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwww
+wwqqqwwwwwwwwwww
+wwwwwwwwwwwqqwww
+wwwwwwWwwwwwwwww
+wwwwwwwwwwwwwwww
+wWwwwwwwwwwwwWww
+wwwwwwwwqqqwwwww
+wwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwww
+wwqqwwwwwwwwwwww
+wwwwwwwwwWwwwwww
+wwwwwwwwwwwwwqqw
+wwwWwwwwwwwwwwww
+wwwwwwwwwwwwwwww
+wwwwwwwqqwwwwwww
+end
+frame water1
+wwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwww
+wwwwqqqwwwwwwwww
+wwwwwwwwwwwwwqqw
+wwwwwwwwWwwwwwww
+wwwwwwwwwwwwwwww
+wwwWwwwwwwwwwwwW
+wwwwwwwwwwqqqwww
+wwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwww
+wwwwqqwwwwwwwwww
+wwwwwwwwwwwWwwww
+wqwwwwwwwwwwwwwq
+wwwwwWwwwwwwwwww
+wwwwwwwwwwwwwwww
+wwwwwwwwwqqwwwww
+end
+frame shore_n
+GgGgGGgGgGgGGgGg
+DdDDdDDdDDdDDdDD
+QQQqQQQQqQQQQQqQ
+qqwqqqwqqqqwqqqq
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+end
+frame shore_s
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+qqqqwqqqqqwqqqqq
+QQqQQQQQqQQQQqQQ
+WWWWWWWWWWWWWWWW
+................
+end
+frame shore_w
+GDQq............
+gdQw............
+GDqq............
+gDQq............
+GdQw............
+gDQq............
+GDqq............
+gdQq............
+GDQw............
+gDQq............
+GdQq............
+gDqw............
+GDQq............
+gdQq............
+GDQw............
+gDQq............
+end
+frame shore_e
+............qQDG
+............wQdg
+............qqDG
+............qQDg
+............wQdG
+............qQDg
+............qqDG
+............qQdg
+............wQDG
+............qQDg
+............qQdG
+............wqDg
+............qQDG
+............qQdg
+............wQDG
+............qQDg
+end
+# ------------------------------------------------ árvores (parte baixa no chão + copa na camada de cobertura)
+frame tree_bot0
+.tTTuuTTTTTTTTt.
+tTTuUuTTTTTuTTTt
+tTTTuTTTTTTTTTTt
+tTTTTTTTTtTTTTTt
+.tTTTTTTTTTTTTt.
+.ttTTTTtTTTTTtt.
+..tttTTTTTTttt..
+...ttttnnttttt..
+.....tNnnNt.....
+......NnnN......
+......NnnN......
+......Nnnn......
+.....NNnnnN.....
+...jjNNnnNNjj...
+..jjjjjjjjjjjj..
+...jjjjjjjjjj...
+end
+frame tree_top0
+................
+................
+................
+.......tttt.....
+.....ttTTuTtt...
+....tTTuUUuTTt..
+...tTTuUUuTTTTt.
+..tTTTuUuTTTTTTt
+..tTTTTTTTTuTTTt
+.tTTuuTTTTuUuTTt
+.tTuUUuTTTTuTTTt
+tTTuUuTTTTTTTTTt
+tTTTuTTTTtTTTTTt
+tTTTTTTTTTTTuTTt
+tTTTTTtTTTTuUuTt
+.tTTTTTTTTTTuTt.
+end
+frame tree_bot1
+.tttTTTTTTTTttt.
+..ttTTTTTTTTtt..
+.tTTTTTuTTTTTTt.
+tTTTTuUuTTTTTTTt
+ttTTTTuTTTTTTTtt
+.tttTTTTTTTTttt.
+...ttttttttttt..
+.....tttnntt....
+.......NnN......
+......NnnN......
+......NnnN......
+......Nnnn......
+.....NNnnnN.....
+...jjNNnnNNjj...
+..jjjjjjjjjjjj..
+...jjjjjjjjjj...
+end
+frame tree_top1
+................
+.......tt.......
+......tTTt......
+......tTuTt.....
+.....tTTuTt.....
+.....tTTTTTt....
+....ttTuTTTtt...
+....tTTuUTTTt...
+...tTTTTuTTTTt..
+...ttTTTTTTTtt..
+..tTTTuTTTTTTTt.
+..tTTuUuTTTuTTt.
+.tTTTTuTTTTuUTTt
+.tttTTTTTTTTTttt
+..ttTTTTTTTTTtt.
+.tTTTTuTTTTTTTt.
+end
+frame bush
+gggggggggggggggg
+gggggggggggggggg
+ggggggggggggGggg
+gggggtttttgggggg
+ggggtTTuTTttgggg
+gggtTTuUuTTTtggg
+ggtTTTTuTTyTTtgg
+ggtTzTTTTTTTTtgg
+gtTTTTTTTTTuTTtg
+gtTTuTTTTTuUuTtg
+gtTuUuTTTTTuTTtg
+ggtTuTTTTTTTTtgg
+ggjttTTTTTTTttjg
+gggjjtttttttjjgg
+ggggjjjjjjjjjggg
+gggggggggggggggg
+end
+frame rock
+gggggggggggggggg
+gggggggggggggggg
+gggggggggggggggg
+gggggKKKKKKggggg
+ggggKrrrRRRKgggg
+gggKrrrRRRRsKggg
+ggKrrRRRRRRssKgg
+ggKrRRRRRRsssKgg
+gKRRRRRRRssssSKg
+gKRRmRRRsssssSKg
+gKsRRmmsssssSSKg
+gKssRsssssSSSSKg
+ggKSssssSSSSSKgg
+gggKKKKKKKKKKjgg
+ggggjjjjjjjjjggg
+gggggggggggggggg
+end
+frame fence
+gggggggggggggggg
+gggggggggggggggg
+gKKggggKKggggKKg
+KppKggKppKggKppK
+KpOKKKKpOKKKKpOK
+KoOpppKoOpppKoOK
+KoOoooKoOoooKoOK
+KoOKKKKoOKKKKoOK
+KoOpppKoOpppKoOK
+KoOoooKoOoooKoOK
+KoOKKKKoOKKKKoOK
+KoOKggKoOKggKoOK
+KoOKggKoOKggKoOK
+jKKjggjKKjggjKKj
+gjjgggjjjgggjjjg
+gggggggggggggggg
+end
+frame roots
+gggKnNKggggKNnKg
+ggKnNKgggggKNnKg
+gKnNKggKKggKNnKg
+gKnNKgKnnKgKNNnK
+KnNKgKnfNnKgKNnK
+KnNKKnNKKNnKKNnK
+KnNnnNKfgKNnnNnK
+gKnNNKggggKNNnKg
+gKnnNnKKKKnNnnKg
+KnNKKNnnnnNKKNnK
+KnNKgKKnnKKgKNnK
+KNnKfgKnNKgfKnNK
+KnNKggKnNKggKNnK
+gKnNKKnNNnKKnNKg
+jjKnnNNKKNNnnKjj
+jjjKKKKjjKKKKjjj
+end
+# ------------------------------------------------ ruína: piso, parede (face e topo), musgo, pilar, porta
+frame rfloor0
+RrrrrrrSRrrrrrrS
+rrrrrrrSrrrrrrrS
+rrrRrrrSrrrrRrrS
+rrrrrrrSrrrrrrrS
+rrrrrrrSrRrrrrrS
+SSSSSSSSSSSSSSSS
+rrrrRrrrrrrSrrrr
+rrrrrrrrrrrSrrrr
+rRrrrrrrrrrSrrrR
+rrrrrrrRrrrSrrrr
+rrrrrrrrrrrSrrrr
+SSSSSSSSSSSSSSSS
+RrrrrrrSRrrrrrrS
+rrrrRrrSrrrrrRrS
+rrrrrrrSrrrrrrrS
+SSSSSSSSSSSSSSSS
+end
+frame rfloor1
+rrrrrrrSrrrrrrrS
+rRrrrrrSrrrrRrrS
+rrrrrrrSrrrrrrrS
+rrrrrRrSrRrrrrrS
+rrrrrrrSrrrrrrrS
+SSSSSSSSSSSSSSSS
+rrrSrrrrrrrrrrrS
+rrrSrrrRrrrrrrrS
+rrrSrrrrrrrRrrrS
+RrrSrrrrrrrrrrrS
+rrrSrrrrRrrrrrrS
+SSSSSSSSSSSSSSSS
+rrrrrrrSrrrrrrrS
+rrRrrrrSrrrRrrrS
+rrrrrrrSrrrrrrrS
+SSSSSSSSSSSSSSSS
+end
+frame rmoss
+RrrmmrrSRrrrrrrS
+rrmMmrrSrrrrmrrS
+rrrmrrrSrrrmMmrS
+rrrrrrrSrrrrmrrS
+rrrrrrrSrRrrrrrS
+SSSmSSSSSSSSSSSS
+rrmMmRrrrrrSrrrr
+rrrmrrrrrrrSrrrr
+rRrrrrrrrrmSmrrR
+rrrrrrrRrmMmMmrr
+rrrrrrrrrrmSmrrr
+SSSSSSSSSSSSSSSS
+RrrrrrrSRrrmrrrS
+rrrrRrrSrrmMmRrS
+rrrrrrrSrrrmrrrS
+SSSSSSSSSSSSSSSS
+end
+frame rwall_front
+RrrrrrrRrrrrrrrR
+SSSSSSSSSSSSSSSS
+sRRRRRRsRRRRRRRs
+sRRRRRRsRRRRmRRs
+sRRRmRRsRRRmMmRs
+SSSSSSSSSSSSSSSS
+RRRsRRRRRRRsRRRR
+RRRsRRRRmRRsRRRR
+RmRsRRRRRRRsRRRR
+SSSSSSSSSSSSSSSS
+sRRRRRRsRRRRRRRs
+sRRRRRRsRRRRRRRs
+sRRRmRRsRRRRRRRs
+SSSSSSSSSSSSSSSS
+SSSSSSSSSSSSSSSS
+KKKKKKKKKKKKKKKK
+end
+frame rwall_top
+SSSSSSSSSSSSSSSS
+SPPPPPPPPPPPPPPS
+SPXPPPPPPPXPPPPS
+SPPPPPPXPPPPPPPS
+SPPPPPPPPPPPPXPS
+SPPXPPPPPPPPPPPS
+SPPPPPPPPXPPPPPS
+SPPPPPPPPPPPPPPS
+SPPPPXPPPPPPPPPS
+SPPPPPPPPPPPXPPS
+SPXPPPPPPPPPPPPS
+SPPPPPPPXPPPPPPS
+SPPPPPPPPPPPPPPS
+SPPPPPPPPPXPPPPS
+SPPXPPPPPPPPPPPS
+SSSSSSSSSSSSSSSS
+end
+frame pillar
+rrrrrrrrrrrrrrrr
+rrrKKKKKKKKKKrrr
+rrKrrrrrrRRRsKrr
+rrKRRRRRRRRssKrr
+rrrKsRRRRRssKrrr
+rrrKsRRRRRRsKrrr
+rrrKsRRmRRRsKrrr
+rrrKsRRRRRRsKrrr
+rrrKsRRRRRRsKrrr
+rrrKsRRRRmRsKrrr
+rrrKsRRRRRRsKrrr
+rrKRRRRRRRRssKrr
+rrKsssssssssSKrr
+rrrKKKKKKKKKKrrr
+rrrSSSSSSSSSSrrr
+rrrrrrrrrrrrrrrr
+end
+frame pillar_top
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+..KKKKKKKKKKKK..
+.KrrrrrrrrRRRsK.
+.KrRRRRRRRRRssK.
+..KssssssssssK..
+...KsRRRRRRsK...
+...KsRRRRRRsK...
+end
+frame door_closed
+SSSSSSSSSSSSSSSS
+SKKKKKKKKKKKKKKS
+SKOOOOOOOOOOOOKS
+SKOoooKooooKoOKS
+SKOoooKooooKoOKS
+SKOoooKooooKoOKS
+SKOoooKooooKoOKS
+SKOKKKKyyyyKKOKS
+SKOoooKyKKyKoOKS
+SKOoooKyyyyKoOKS
+SKOoooKooooKoOKS
+SKOoooKooooKoOKS
+SKOoooKooooKoOKS
+SKOOOOOOOOOOOOKS
+SKKKKKKKKKKKKKKS
+SSSSSSSSSSSSSSSS
+end
+frame door_open
+SSrrrrrrrrrrrrSS
+SrrrrrrrrrrrrrrS
+SrrrRrrrrrrrRrrS
+SrrrrrrrrrrrrrrS
+SrrrrrrrrrrrrrrS
+SrrrrrRrrrrrrrrS
+SrrrrrrrrrRrrrrS
+SrrrrrrrrrrrrrrS
+SrrRrrrrrrrrrrrS
+SrrrrrrrrrrrrrrS
+SrrrrrrrRrrrrrrS
+SrrrrrrrrrrrrrrS
+SrrrrRrrrrrrrrrS
+SrrrrrrrrrrrRrrS
+SrrrrrrrrrrrrrrS
+SSrrrrrrrrrrrrSS
+end
+frame sap
+rrrrrrrSrrrrrrrS
+rrrRrrrSrrrrrRrS
+rrrrrrrSrrrrrrrS
+SSSSSSSSSSSSSSSS
+KKKKKKKKKKKKKKKK
+LLLLLLLLLLLLLLLL
+EELLLLEELLLLLEEL
+LLEEELLLLEEELLLL
+LLLLLLLLLLLLLLLL
+KKKKKKKKKKKKKKKK
+SSSSSSSSSSSSSSSS
+rrrrrrrSrrrrrrrS
+rrRrrrrSrrrRrrrS
+rrrrrrrSrrrrrrrS
+rrrrrRrSrrrrrrrS
+SSSSSSSSSSSSSSSS
+end
+# ------------------------------------------------ casas da vila
+frame roof_l
+.........KKKKKKK
+......KKKxxxxxxx
+....KKxxxccccccc
+...KxxcccccCcccc
+..KxccccCcccccCc
+..KcccCcccccCccc
+.KxcccccccCccccc
+.KccCcccccccccCc
+KxcccccCcccccccc
+KccCcccccccCcccc
+KcccccccCccccccc
+KccccCcccccccCcc
+KCCCCCCCCCCCCCCC
+KKKKKKKKKKKKKKKK
+.CCCCCCCCCCCCCCC
+.KKKKKKKKKKKKKKK
+end
+frame roof_m
+KKKKKKKKKKKKKKKK
+xxxxxxxxxxxxxxxx
+cccccccccccccccc
+ccccCcccccccCccc
+ccCcccccCccccccc
+cccccCccccccccCc
+cccccccccCcccccc
+cCcccccccccccCcc
+cccccCcccccccccc
+cccccccccCcccccc
+ccCccccccccccCcc
+cccccccCcccccccc
+CCCCCCCCCCCCCCCC
+KKKKKKKKKKKKKKKK
+CCCCCCCCCCCCCCCC
+KKKKKKKKKKKKKKKK
+end
+frame roof_r
+KKKKKKK.........
+xxxxxxxKKK......
+cccccccxxxKK....
+ccccCcccccxxK...
+cCcccccCccccxK..
+cccCcccccCcccK..
+cccccCcccccccxK.
+cCcccccccccCccK.
+ccccCcccccccccxK
+cccccccCccCccccK
+cCcccccccccccccK
+cccCcccccCccccCK
+CCCCCCCCCCCCCCCK
+KKKKKKKKKKKKKKKK
+CCCCCCCCCCCCCCC.
+KKKKKKKKKKKKKKK.
+end
+frame hwall
+vvvvVvvvvvvvVvvv
+vvvvVvvvvvvvVvvv
+VVVVVVVVVVVVVVVV
+vvvvvvVvvvvvvvVv
+vvvvvvVvvvvvvvVv
+vvvvvvVvvvvvvvVv
+VVVVVVVVVVVVVVVV
+vvVvvvvvvvVvvvvv
+vvVvvvvvvvVvvvvv
+vvVvvvvvvvVvvvvv
+VVVVVVVVVVVVVVVV
+vvvvvVvvvvvvvVvv
+vvvvvVvvvvvvvVvv
+OOOOOOOOOOOOOOOO
+NNNNNNNNNNNNNNNN
+KKKKKKKKKKKKKKKK
+end
+frame hwindow
+vvvvVvvvvvvvVvvv
+vvvvVvvvvvvvVvvv
+VVKKKKKKKKKKKVVV
+vvKOOOOOOOOOKvVv
+vvKOiiIOiiIOKvVv
+vvKOiIiOiIiOKvVv
+VVKOOOOOOOOOKVVV
+vvKOiiiOiiIOKvvv
+vvKOiiiOiiiOKvvv
+vvKOOOOOOOOOKvvv
+VVKppppppppppKVV
+vvvKzyzKzyzKvvVv
+vvvvKKKKKKKKvvVv
+OOOOOOOOOOOOOOOO
+NNNNNNNNNNNNNNNN
+KKKKKKKKKKKKKKKK
+end
+frame hdoor
+vvvvVvvvvvvvVvvv
+vvvKKKKKKKKKKvvv
+VVKOOOOOOOOOOKVV
+vvKOooooooooOKvv
+vvKOoKooooKoOKvv
+vvKOoKooooKoOKvv
+VVKOoKooooKoOKVV
+vvKOoKooooKoOKvv
+vvKOoKooyyKoOKvv
+vvKOoKooyyKoOKvv
+VVKOoKooooKoOKVV
+vvKOoKooooKoOKvv
+vvKOoKooooKoOKvv
+OOKOooooooooOKOO
+NNKKKKKKKKKKKKNN
+KKKKKKKKKKKKKKKK
+end
+# ------------------------------------------------ madeira, abismo, ponte, penhasco, caverna
+frame wood
+oooooooOoooooooo
+ppppppppppppppOo
+OOOOOOOOOOOOOOOO
+ooooOoooooooOooo
+ooooOoooooooOooo
+ppppppppppppppOo
+OOOOOOOOOOOOOOOO
+oooooooooOoooooo
+oooooooooOoooooo
+ppppppppppppppOo
+OOOOOOOOOOOOOOOO
+ooOoooooooooooOo
+ooOoooooooooooOo
+ppppppppppppppOo
+OOOOOOOOOOOOOOOO
+oooooooOoooooooo
+end
+frame chasm
+kkkkkkkkkkkkkkkk
+kkkkkkkklkkkkkkk
+kkklkkkkkkkkkkkk
+kkkkkkkkkkkklkkk
+kkkkkkkkkkkkkkkk
+kklkkkkkkkkkkkkk
+kkkkkkkkklkkkkkk
+kkkkkkkkkkkkkkkk
+kkkkklkkkkkkkklk
+kkkkkkkkkkkkkkkk
+kkkkkkkkkkkkkkkk
+klkkkkkkklkkkkkk
+kkkkkkkkkkkkkkkk
+kkkkkkklkkkkkkkk
+kkkkkkkkkkkkkklk
+kkkkkkkkkkkkkkkk
+end
+frame chasm_lip
+YYPYYPYYYPYYPYYY
+PPXPPPXPPXPPPXPP
+XaXXaXXXaXXaXXXa
+aalaaalaaalaaala
+llllklllllkllllk
+lkllllkllkllllll
+kkklkkkkkklkkkkk
+kkkkkkkkkkkkkkkk
+kkkkklkkkkkkkkkk
+kkkkkkkkkkkklkkk
+kkkkkkkkkkkkkkkk
+kklkkkkkkkkkkkkk
+kkkkkkklkkkkkkkk
+kkkkkkkkkkkkkkkk
+kkkkkkkkkkkkklkk
+kkkkkkkkkkkkkkkk
+end
+frame bridge
+kKNnnnnnnnnnnnNK
+kKNoooooooooooNK
+kKNOOOOOOOOOOONK
+kKNoooOoooooooNK
+kKNpppppppppppNK
+kKNOOOOOOOOOOONK
+kKNoooooooOoooNK
+kKNpppppppppppNK
+kKNOOOOOOOOOOONK
+kKNooOooooooooNK
+kKNpppppppppppNK
+kKNOOOOOOOOOOONK
+kKNooooooOooooNK
+kKNpppppppppppNK
+kKNOOOOOOOOOOONK
+kKNnnnnnnnnnnnNK
+end
+frame cliff_front
+YPPPYPPPPYPPPYPP
+PXPPPPXPPPPXPPPP
+PPPPYPPPXPPPPPYP
+XXXXXXXXXXXXXXXX
+PPYPPPPPPYPPPPPP
+PPPPXPPPPPPPPXPP
+PYPPPPPPXPPYPPPP
+XXXXXXXXXXXXXXXX
+PPPPPYPPPPPPPYPP
+PXPPPPPPPPXPPPPP
+PPPPPPXPPYPPPPPP
+XXXXXXXXXXXXXXXX
+PPYPPPPPPPPPPYPP
+PPPPXPPPYPPPPPPP
+XXXXXXXXXXXXXXXX
+KKKKKKKKKKKKKKKK
+end
+frame cliff_top
+XXXXXXXXXXXXXXXX
+XYYYYYYYYYYYYYYX
+XYPYYYYYYYPYYYYX
+XYYYYYYPYYYYYYYX
+XYYYYYYYYYYYYPYX
+XYYPYYYYYYYYYYYX
+XYYYYYYYYPYYYYYX
+XYYYYYYYYYYYYYYX
+XYYYYPYYYYYYYYYX
+XYYYYYYYYYYYPYYX
+XYPYYYYYYYYYYYYX
+XYYYYYYYPYYYYYYX
+XYYYYYYYYYYYYYYX
+XYYYYYYYYYPYYYYX
+XYYPYYYYYYYYYYYX
+XXXXXXXXXXXXXXXX
+end
+frame cave
+SSSSSSSSsSSSSSSS
+SSsSSSSSSSSSSSSS
+SSSSSSSSSSSSsSSS
+SSSSSsSSSSSSSSSS
+SSSSSSSSSSSSSSSS
+SsSSSSSSSsSSSSSS
+SSSSSSSSSSSSSSsS
+SSSSSSSSSSSSSSSS
+SSSsSSSSSSSSSSSS
+SSSSSSSSSSsSSSSS
+SSSSSSSSSSSSSSSS
+SSSSSsSSSSSSSSsS
+SsSSSSSSSSSSSSSS
+SSSSSSSSsSSSSSSS
+SSSSSSSSSSSSSSSS
+SSSsSSSSSSSSSsSS
+end
+frame void
+kkkkkkkkkkkkkkkk
+kkkkkkkkkkkkkkkk
+kkkkkkkkkkkkkkkk
+kkkkkkkkkkkkkkkk
+kkkkkkkkkkkkkkkk
+kkkkkkkkkkkkkkkk
+kkkkkkkkkkkkkkkk
+kkkkkkkkkkkkkkkk
+kkkkkkkkkkkkkkkk
+kkkkkkkkkkkkkkkk
+kkkkkkkkkkkkkkkk
+kkkkkkkkkkkkkkkk
+kkkkkkkkkkkkkkkk
+kkkkkkkkkkkkkkkk
+kkkkkkkkkkkkkkkk
+kkkkkkkkkkkkkkkk
+end
+
+# A ordem abaixo é o índice usado por scripts/world.gd (TILE_NAMES). Não reordene sem atualizar o código.
+sheet tiles2.png 16 16 16
+grass0
+grass1
+grass2
+grassd0
+flowers0
+lush0
+bloom0
+path0
+path1
+pedge_n
+pedge_s
+pedge_w
+pedge_e
+water0
+water1
+shore_n
+shore_s
+shore_w
+shore_e
+tree_bot0
+tree_top0
+tree_bot1
+tree_top1
+bush
+rock
+fence
+roots
+rfloor0
+rfloor1
+rmoss
+rwall_front
+rwall_top
+pillar
+pillar_top
+door_closed
+door_open
+sap
+roof_l
+roof_m
+roof_r
+hwall
+hwindow
+hdoor
+wood
+chasm
+chasm_lip
+bridge
+cliff_front
+cliff_top
+cave
+void
+end
