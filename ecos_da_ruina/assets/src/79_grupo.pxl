@@ -1,5 +1,6 @@
 # Grupo: aliados (Bruna, Ravi) e Domadores inimigos — mesmos desenhos do herói com roupas próprias.
-# (variações de silhueta em 79b_grupo_extra.pxl quando prontas)
+# Silhuetas próprias (trança/escudo, capuz/cachecol, capacete de osso, capa, coroa) em 79b_grupo_extra.pxl;
+# as folhas abaixo usam esses quadros sobrepostos, na mesma ordem de colunas da folha hero.png.
 
 palette bruna from heroi
   h = #c8582a
@@ -102,432 +103,432 @@ palette vesna from heroi
   z = #d23c50
 end
 sheet aliada_bruna.png 24 32 21
-hd_idle0 pal=bruna
-hd_idle1 pal=bruna
-hd_idle0 pal=bruna
-hd_blink pal=bruna
-hd_walkA pal=bruna
-hd_walkA dy=-1 pal=bruna
-hd_idle0 dy=-1 pal=bruna
-hd_walkB pal=bruna
-hd_walkB dy=-1 pal=bruna
-hd_idle0 dy=-1 pal=bruna
-hd_atk0n pal=bruna
-hd_atk1n pal=bruna
-hd_atk2n pal=bruna
-hd_guard pal=bruna
-hd_idle0 dy=2 pal=bruna
-hx_roll0 pal=bruna
-hx_roll1 pal=bruna
-hx_roll0 flip pal=bruna
-hd_hurt pal=bruna
-hd_capture pal=bruna
-hd_dead pal=bruna
-hs_idle0 flip pal=bruna
-hs_idle1 flip pal=bruna
-hs_idle0 flip pal=bruna
-hs_blink flip pal=bruna
-hs_walkA flip pal=bruna
-hs_walk1 flip dy=-1 pal=bruna
-hs_walk1 flip pal=bruna
-hs_walkB flip pal=bruna
-hs_walk1 flip dy=-1 pal=bruna
-hs_walk1 flip pal=bruna
-hs_atk0n flip pal=bruna
-hs_atk1n flip pal=bruna
-hs_atk2n flip pal=bruna
-hs_guard flip pal=bruna
-hs_idle0 flip dy=2 pal=bruna
-hx_roll0 flip pal=bruna
-hx_roll1 flip pal=bruna
-hx_roll0 pal=bruna
-hs_hurt flip pal=bruna
-hs_capture flip pal=bruna
-hd_dead flip pal=bruna
-hs_idle0 pal=bruna
-hs_idle1 pal=bruna
-hs_idle0 pal=bruna
-hs_blink pal=bruna
-hs_walkA pal=bruna
-hs_walk1 dy=-1 pal=bruna
-hs_walk1 pal=bruna
-hs_walkB pal=bruna
-hs_walk1 dy=-1 pal=bruna
-hs_walk1 pal=bruna
-hs_atk0n pal=bruna
-hs_atk1n pal=bruna
-hs_atk2n pal=bruna
-hs_guard pal=bruna
-hs_idle0 dy=2 pal=bruna
-hx_roll0 pal=bruna
-hx_roll1 pal=bruna
-hx_roll0 flip pal=bruna
-hs_hurt pal=bruna
-hs_capture pal=bruna
-hd_dead pal=bruna
-hu_idle0 pal=bruna
-hu_idle0 dy=1 pal=bruna
-hu_idle0 pal=bruna
-hu_idle0 pal=bruna
-hu_walkA pal=bruna
-hu_walkA dy=-1 pal=bruna
-hu_idle0 dy=-1 pal=bruna
-hu_walkB pal=bruna
-hu_walkB dy=-1 pal=bruna
-hu_idle0 dy=-1 pal=bruna
-hu_atk0n pal=bruna
-hu_atk1n pal=bruna
-hu_atk2n pal=bruna
-hu_guard pal=bruna
-hu_idle0 dy=2 pal=bruna
-hx_roll0 pal=bruna
-hx_roll1 pal=bruna
-hx_roll0 flip pal=bruna
-hu_idle0 pal=bruna
-hu_idle0 pal=bruna
-hd_dead pal=bruna
+br_hd_idle0 pal=bruna
+br_hd_idle1 pal=bruna
+br_hd_idle0 pal=bruna
+br_hd_blink pal=bruna
+br_hd_walkA pal=bruna
+br_hd_walkA dy=-1 pal=bruna
+br_hd_idle0 dy=-1 pal=bruna
+br_hd_walkB pal=bruna
+br_hd_walkB dy=-1 pal=bruna
+br_hd_idle0 dy=-1 pal=bruna
+br_hd_atk0n pal=bruna
+br_hd_atk1n pal=bruna
+br_hd_atk2n pal=bruna
+br_hd_guard pal=bruna
+br_hd_idle0 dy=2 pal=bruna
+br_roll0 pal=bruna
+br_roll1 pal=bruna
+br_roll0 flip pal=bruna
+br_hd_hurt pal=bruna
+br_hd_capture pal=bruna
+br_dead pal=bruna
+br_hs_idle0 flip pal=bruna
+br_hs_idle1 flip pal=bruna
+br_hs_idle0 flip pal=bruna
+br_hs_blink flip pal=bruna
+br_hs_walkA flip pal=bruna
+br_hs_walk1 flip dy=-1 pal=bruna
+br_hs_walk1 flip pal=bruna
+br_hs_walkB flip pal=bruna
+br_hs_walk1 flip dy=-1 pal=bruna
+br_hs_walk1 flip pal=bruna
+br_hs_atk0n flip pal=bruna
+br_hs_atk1n flip pal=bruna
+br_hs_atk2n flip pal=bruna
+br_hs_guard flip pal=bruna
+br_hs_idle0 flip dy=2 pal=bruna
+br_roll0 flip pal=bruna
+br_roll1 flip pal=bruna
+br_roll0 pal=bruna
+br_hs_hurt flip pal=bruna
+br_hs_capture flip pal=bruna
+br_dead flip pal=bruna
+br_hs_idle0 pal=bruna
+br_hs_idle1 pal=bruna
+br_hs_idle0 pal=bruna
+br_hs_blink pal=bruna
+br_hs_walkA pal=bruna
+br_hs_walk1 dy=-1 pal=bruna
+br_hs_walk1 pal=bruna
+br_hs_walkB pal=bruna
+br_hs_walk1 dy=-1 pal=bruna
+br_hs_walk1 pal=bruna
+br_hs_atk0n pal=bruna
+br_hs_atk1n pal=bruna
+br_hs_atk2n pal=bruna
+br_hs_guard pal=bruna
+br_hs_idle0 dy=2 pal=bruna
+br_roll0 pal=bruna
+br_roll1 pal=bruna
+br_roll0 flip pal=bruna
+br_hs_hurt pal=bruna
+br_hs_capture pal=bruna
+br_dead pal=bruna
+br_hu_idle0 pal=bruna
+br_hu_idle0 dy=1 pal=bruna
+br_hu_idle0 pal=bruna
+br_hu_idle0 pal=bruna
+br_hu_walkA pal=bruna
+br_hu_walkA dy=-1 pal=bruna
+br_hu_idle0 dy=-1 pal=bruna
+br_hu_walkB pal=bruna
+br_hu_walkB dy=-1 pal=bruna
+br_hu_idle0 dy=-1 pal=bruna
+br_hu_atk0n pal=bruna
+br_hu_atk1n pal=bruna
+br_hu_atk2n pal=bruna
+br_hu_guard pal=bruna
+br_hu_idle0 dy=2 pal=bruna
+br_roll0 pal=bruna
+br_roll1 pal=bruna
+br_roll0 flip pal=bruna
+br_hu_idle0 pal=bruna
+br_hu_idle0 pal=bruna
+br_dead pal=bruna
 end
 sheet aliado_ravi.png 24 32 21
-hd_idle0 pal=ravi
-hd_idle1 pal=ravi
-hd_idle0 pal=ravi
-hd_blink pal=ravi
-hd_walkA pal=ravi
-hd_walkA dy=-1 pal=ravi
-hd_idle0 dy=-1 pal=ravi
-hd_walkB pal=ravi
-hd_walkB dy=-1 pal=ravi
-hd_idle0 dy=-1 pal=ravi
-hd_atk0n pal=ravi
-hd_atk1n pal=ravi
-hd_atk2n pal=ravi
-hd_guard pal=ravi
-hd_idle0 dy=2 pal=ravi
-hx_roll0 pal=ravi
-hx_roll1 pal=ravi
-hx_roll0 flip pal=ravi
-hd_hurt pal=ravi
-hd_capture pal=ravi
-hd_dead pal=ravi
-hs_idle0 flip pal=ravi
-hs_idle1 flip pal=ravi
-hs_idle0 flip pal=ravi
-hs_blink flip pal=ravi
-hs_walkA flip pal=ravi
-hs_walk1 flip dy=-1 pal=ravi
-hs_walk1 flip pal=ravi
-hs_walkB flip pal=ravi
-hs_walk1 flip dy=-1 pal=ravi
-hs_walk1 flip pal=ravi
-hs_atk0n flip pal=ravi
-hs_atk1n flip pal=ravi
-hs_atk2n flip pal=ravi
-hs_guard flip pal=ravi
-hs_idle0 flip dy=2 pal=ravi
-hx_roll0 flip pal=ravi
-hx_roll1 flip pal=ravi
-hx_roll0 pal=ravi
-hs_hurt flip pal=ravi
-hs_capture flip pal=ravi
-hd_dead flip pal=ravi
-hs_idle0 pal=ravi
-hs_idle1 pal=ravi
-hs_idle0 pal=ravi
-hs_blink pal=ravi
-hs_walkA pal=ravi
-hs_walk1 dy=-1 pal=ravi
-hs_walk1 pal=ravi
-hs_walkB pal=ravi
-hs_walk1 dy=-1 pal=ravi
-hs_walk1 pal=ravi
-hs_atk0n pal=ravi
-hs_atk1n pal=ravi
-hs_atk2n pal=ravi
-hs_guard pal=ravi
-hs_idle0 dy=2 pal=ravi
-hx_roll0 pal=ravi
-hx_roll1 pal=ravi
-hx_roll0 flip pal=ravi
-hs_hurt pal=ravi
-hs_capture pal=ravi
-hd_dead pal=ravi
-hu_idle0 pal=ravi
-hu_idle0 dy=1 pal=ravi
-hu_idle0 pal=ravi
-hu_idle0 pal=ravi
-hu_walkA pal=ravi
-hu_walkA dy=-1 pal=ravi
-hu_idle0 dy=-1 pal=ravi
-hu_walkB pal=ravi
-hu_walkB dy=-1 pal=ravi
-hu_idle0 dy=-1 pal=ravi
-hu_atk0n pal=ravi
-hu_atk1n pal=ravi
-hu_atk2n pal=ravi
-hu_guard pal=ravi
-hu_idle0 dy=2 pal=ravi
-hx_roll0 pal=ravi
-hx_roll1 pal=ravi
-hx_roll0 flip pal=ravi
-hu_idle0 pal=ravi
-hu_idle0 pal=ravi
-hd_dead pal=ravi
+rv_hd_idle0 pal=ravi
+rv_hd_idle1 pal=ravi
+rv_hd_idle0 pal=ravi
+rv_hd_blink pal=ravi
+rv_hd_walkA pal=ravi
+rv_hd_walkA dy=-1 pal=ravi
+rv_hd_idle0 dy=-1 pal=ravi
+rv_hd_walkB pal=ravi
+rv_hd_walkB dy=-1 pal=ravi
+rv_hd_idle0 dy=-1 pal=ravi
+rv_hd_atk0n pal=ravi
+rv_hd_atk1n pal=ravi
+rv_hd_atk2n pal=ravi
+rv_hd_guard pal=ravi
+rv_hd_idle0 dy=2 pal=ravi
+rv_roll0 pal=ravi
+rv_roll1 pal=ravi
+rv_roll0 flip pal=ravi
+rv_hd_hurt pal=ravi
+rv_hd_capture pal=ravi
+rv_dead pal=ravi
+rv_hs_idle0 flip pal=ravi
+rv_hs_idle1 flip pal=ravi
+rv_hs_idle0 flip pal=ravi
+rv_hs_blink flip pal=ravi
+rv_hs_walkA flip pal=ravi
+rv_hs_walk1 flip dy=-1 pal=ravi
+rv_hs_walk1 flip pal=ravi
+rv_hs_walkB flip pal=ravi
+rv_hs_walk1 flip dy=-1 pal=ravi
+rv_hs_walk1 flip pal=ravi
+rv_hs_atk0n flip pal=ravi
+rv_hs_atk1n flip pal=ravi
+rv_hs_atk2n flip pal=ravi
+rv_hs_guard flip pal=ravi
+rv_hs_idle0 flip dy=2 pal=ravi
+rv_roll0 flip pal=ravi
+rv_roll1 flip pal=ravi
+rv_roll0 pal=ravi
+rv_hs_hurt flip pal=ravi
+rv_hs_capture flip pal=ravi
+rv_dead flip pal=ravi
+rv_hs_idle0 pal=ravi
+rv_hs_idle1 pal=ravi
+rv_hs_idle0 pal=ravi
+rv_hs_blink pal=ravi
+rv_hs_walkA pal=ravi
+rv_hs_walk1 dy=-1 pal=ravi
+rv_hs_walk1 pal=ravi
+rv_hs_walkB pal=ravi
+rv_hs_walk1 dy=-1 pal=ravi
+rv_hs_walk1 pal=ravi
+rv_hs_atk0n pal=ravi
+rv_hs_atk1n pal=ravi
+rv_hs_atk2n pal=ravi
+rv_hs_guard pal=ravi
+rv_hs_idle0 dy=2 pal=ravi
+rv_roll0 pal=ravi
+rv_roll1 pal=ravi
+rv_roll0 flip pal=ravi
+rv_hs_hurt pal=ravi
+rv_hs_capture pal=ravi
+rv_dead pal=ravi
+rv_hu_idle0 pal=ravi
+rv_hu_idle0 dy=1 pal=ravi
+rv_hu_idle0 pal=ravi
+rv_hu_idle0 pal=ravi
+rv_hu_walkA pal=ravi
+rv_hu_walkA dy=-1 pal=ravi
+rv_hu_idle0 dy=-1 pal=ravi
+rv_hu_walkB pal=ravi
+rv_hu_walkB dy=-1 pal=ravi
+rv_hu_idle0 dy=-1 pal=ravi
+rv_hu_atk0n pal=ravi
+rv_hu_atk1n pal=ravi
+rv_hu_atk2n pal=ravi
+rv_hu_guard pal=ravi
+rv_hu_idle0 dy=2 pal=ravi
+rv_roll0 pal=ravi
+rv_roll1 pal=ravi
+rv_roll0 flip pal=ravi
+rv_hu_idle0 pal=ravi
+rv_hu_idle0 pal=ravi
+rv_dead pal=ravi
 end
 sheet domador.png 24 32 21
-hd_idle0 pal=domador
-hd_idle1 pal=domador
-hd_idle0 pal=domador
-hd_blink pal=domador
-hd_walkA pal=domador
-hd_walkA dy=-1 pal=domador
-hd_idle0 dy=-1 pal=domador
-hd_walkB pal=domador
-hd_walkB dy=-1 pal=domador
-hd_idle0 dy=-1 pal=domador
-hd_atk0n pal=domador
-hd_atk1n pal=domador
-hd_atk2n pal=domador
-hd_guard pal=domador
-hd_idle0 dy=2 pal=domador
-hx_roll0 pal=domador
-hx_roll1 pal=domador
-hx_roll0 flip pal=domador
-hd_hurt pal=domador
-hd_capture pal=domador
-hd_dead pal=domador
-hs_idle0 flip pal=domador
-hs_idle1 flip pal=domador
-hs_idle0 flip pal=domador
-hs_blink flip pal=domador
-hs_walkA flip pal=domador
-hs_walk1 flip dy=-1 pal=domador
-hs_walk1 flip pal=domador
-hs_walkB flip pal=domador
-hs_walk1 flip dy=-1 pal=domador
-hs_walk1 flip pal=domador
-hs_atk0n flip pal=domador
-hs_atk1n flip pal=domador
-hs_atk2n flip pal=domador
-hs_guard flip pal=domador
-hs_idle0 flip dy=2 pal=domador
-hx_roll0 flip pal=domador
-hx_roll1 flip pal=domador
-hx_roll0 pal=domador
-hs_hurt flip pal=domador
-hs_capture flip pal=domador
-hd_dead flip pal=domador
-hs_idle0 pal=domador
-hs_idle1 pal=domador
-hs_idle0 pal=domador
-hs_blink pal=domador
-hs_walkA pal=domador
-hs_walk1 dy=-1 pal=domador
-hs_walk1 pal=domador
-hs_walkB pal=domador
-hs_walk1 dy=-1 pal=domador
-hs_walk1 pal=domador
-hs_atk0n pal=domador
-hs_atk1n pal=domador
-hs_atk2n pal=domador
-hs_guard pal=domador
-hs_idle0 dy=2 pal=domador
-hx_roll0 pal=domador
-hx_roll1 pal=domador
-hx_roll0 flip pal=domador
-hs_hurt pal=domador
-hs_capture pal=domador
-hd_dead pal=domador
-hu_idle0 pal=domador
-hu_idle0 dy=1 pal=domador
-hu_idle0 pal=domador
-hu_idle0 pal=domador
-hu_walkA pal=domador
-hu_walkA dy=-1 pal=domador
-hu_idle0 dy=-1 pal=domador
-hu_walkB pal=domador
-hu_walkB dy=-1 pal=domador
-hu_idle0 dy=-1 pal=domador
-hu_atk0n pal=domador
-hu_atk1n pal=domador
-hu_atk2n pal=domador
-hu_guard pal=domador
-hu_idle0 dy=2 pal=domador
-hx_roll0 pal=domador
-hx_roll1 pal=domador
-hx_roll0 flip pal=domador
-hu_idle0 pal=domador
-hu_idle0 pal=domador
-hd_dead pal=domador
+dm_hd_idle0 pal=domador
+dm_hd_idle1 pal=domador
+dm_hd_idle0 pal=domador
+dm_hd_blink pal=domador
+dm_hd_walkA pal=domador
+dm_hd_walkA dy=-1 pal=domador
+dm_hd_idle0 dy=-1 pal=domador
+dm_hd_walkB pal=domador
+dm_hd_walkB dy=-1 pal=domador
+dm_hd_idle0 dy=-1 pal=domador
+dm_hd_atk0n pal=domador
+dm_hd_atk1n pal=domador
+dm_hd_atk2n pal=domador
+dm_hd_guard pal=domador
+dm_hd_idle0 dy=2 pal=domador
+dm_roll0 pal=domador
+dm_roll1 pal=domador
+dm_roll0 flip pal=domador
+dm_hd_hurt pal=domador
+dm_hd_capture pal=domador
+dm_dead pal=domador
+dm_hs_idle0 flip pal=domador
+dm_hs_idle1 flip pal=domador
+dm_hs_idle0 flip pal=domador
+dm_hs_blink flip pal=domador
+dm_hs_walkA flip pal=domador
+dm_hs_walk1 flip dy=-1 pal=domador
+dm_hs_walk1 flip pal=domador
+dm_hs_walkB flip pal=domador
+dm_hs_walk1 flip dy=-1 pal=domador
+dm_hs_walk1 flip pal=domador
+dm_hs_atk0n flip pal=domador
+dm_hs_atk1n flip pal=domador
+dm_hs_atk2n flip pal=domador
+dm_hs_guard flip pal=domador
+dm_hs_idle0 flip dy=2 pal=domador
+dm_roll0 flip pal=domador
+dm_roll1 flip pal=domador
+dm_roll0 pal=domador
+dm_hs_hurt flip pal=domador
+dm_hs_capture flip pal=domador
+dm_dead flip pal=domador
+dm_hs_idle0 pal=domador
+dm_hs_idle1 pal=domador
+dm_hs_idle0 pal=domador
+dm_hs_blink pal=domador
+dm_hs_walkA pal=domador
+dm_hs_walk1 dy=-1 pal=domador
+dm_hs_walk1 pal=domador
+dm_hs_walkB pal=domador
+dm_hs_walk1 dy=-1 pal=domador
+dm_hs_walk1 pal=domador
+dm_hs_atk0n pal=domador
+dm_hs_atk1n pal=domador
+dm_hs_atk2n pal=domador
+dm_hs_guard pal=domador
+dm_hs_idle0 dy=2 pal=domador
+dm_roll0 pal=domador
+dm_roll1 pal=domador
+dm_roll0 flip pal=domador
+dm_hs_hurt pal=domador
+dm_hs_capture pal=domador
+dm_dead pal=domador
+dm_hu_idle0 pal=domador
+dm_hu_idle0 dy=1 pal=domador
+dm_hu_idle0 pal=domador
+dm_hu_idle0 pal=domador
+dm_hu_walkA pal=domador
+dm_hu_walkA dy=-1 pal=domador
+dm_hu_idle0 dy=-1 pal=domador
+dm_hu_walkB pal=domador
+dm_hu_walkB dy=-1 pal=domador
+dm_hu_idle0 dy=-1 pal=domador
+dm_hu_atk0n pal=domador
+dm_hu_atk1n pal=domador
+dm_hu_atk2n pal=domador
+dm_hu_guard pal=domador
+dm_hu_idle0 dy=2 pal=domador
+dm_roll0 pal=domador
+dm_roll1 pal=domador
+dm_roll0 flip pal=domador
+dm_hu_idle0 pal=domador
+dm_hu_idle0 pal=domador
+dm_dead pal=domador
 end
 sheet domadora.png 24 32 21
-hd_idle0 pal=domadora
-hd_idle1 pal=domadora
-hd_idle0 pal=domadora
-hd_blink pal=domadora
-hd_walkA pal=domadora
-hd_walkA dy=-1 pal=domadora
-hd_idle0 dy=-1 pal=domadora
-hd_walkB pal=domadora
-hd_walkB dy=-1 pal=domadora
-hd_idle0 dy=-1 pal=domadora
-hd_atk0n pal=domadora
-hd_atk1n pal=domadora
-hd_atk2n pal=domadora
-hd_guard pal=domadora
-hd_idle0 dy=2 pal=domadora
-hx_roll0 pal=domadora
-hx_roll1 pal=domadora
-hx_roll0 flip pal=domadora
-hd_hurt pal=domadora
-hd_capture pal=domadora
-hd_dead pal=domadora
-hs_idle0 flip pal=domadora
-hs_idle1 flip pal=domadora
-hs_idle0 flip pal=domadora
-hs_blink flip pal=domadora
-hs_walkA flip pal=domadora
-hs_walk1 flip dy=-1 pal=domadora
-hs_walk1 flip pal=domadora
-hs_walkB flip pal=domadora
-hs_walk1 flip dy=-1 pal=domadora
-hs_walk1 flip pal=domadora
-hs_atk0n flip pal=domadora
-hs_atk1n flip pal=domadora
-hs_atk2n flip pal=domadora
-hs_guard flip pal=domadora
-hs_idle0 flip dy=2 pal=domadora
-hx_roll0 flip pal=domadora
-hx_roll1 flip pal=domadora
-hx_roll0 pal=domadora
-hs_hurt flip pal=domadora
-hs_capture flip pal=domadora
-hd_dead flip pal=domadora
-hs_idle0 pal=domadora
-hs_idle1 pal=domadora
-hs_idle0 pal=domadora
-hs_blink pal=domadora
-hs_walkA pal=domadora
-hs_walk1 dy=-1 pal=domadora
-hs_walk1 pal=domadora
-hs_walkB pal=domadora
-hs_walk1 dy=-1 pal=domadora
-hs_walk1 pal=domadora
-hs_atk0n pal=domadora
-hs_atk1n pal=domadora
-hs_atk2n pal=domadora
-hs_guard pal=domadora
-hs_idle0 dy=2 pal=domadora
-hx_roll0 pal=domadora
-hx_roll1 pal=domadora
-hx_roll0 flip pal=domadora
-hs_hurt pal=domadora
-hs_capture pal=domadora
-hd_dead pal=domadora
-hu_idle0 pal=domadora
-hu_idle0 dy=1 pal=domadora
-hu_idle0 pal=domadora
-hu_idle0 pal=domadora
-hu_walkA pal=domadora
-hu_walkA dy=-1 pal=domadora
-hu_idle0 dy=-1 pal=domadora
-hu_walkB pal=domadora
-hu_walkB dy=-1 pal=domadora
-hu_idle0 dy=-1 pal=domadora
-hu_atk0n pal=domadora
-hu_atk1n pal=domadora
-hu_atk2n pal=domadora
-hu_guard pal=domadora
-hu_idle0 dy=2 pal=domadora
-hx_roll0 pal=domadora
-hx_roll1 pal=domadora
-hx_roll0 flip pal=domadora
-hu_idle0 pal=domadora
-hu_idle0 pal=domadora
-hd_dead pal=domadora
+da_hd_idle0 pal=domadora
+da_hd_idle1 pal=domadora
+da_hd_idle0 pal=domadora
+da_hd_blink pal=domadora
+da_hd_walkA pal=domadora
+da_hd_walkA dy=-1 pal=domadora
+da_hd_idle0 dy=-1 pal=domadora
+da_hd_walkB pal=domadora
+da_hd_walkB dy=-1 pal=domadora
+da_hd_idle0 dy=-1 pal=domadora
+da_hd_atk0n pal=domadora
+da_hd_atk1n pal=domadora
+da_hd_atk2n pal=domadora
+da_hd_guard pal=domadora
+da_hd_idle0 dy=2 pal=domadora
+da_roll0 pal=domadora
+da_roll1 pal=domadora
+da_roll0 flip pal=domadora
+da_hd_hurt pal=domadora
+da_hd_capture pal=domadora
+da_dead pal=domadora
+da_hs_idle0 flip pal=domadora
+da_hs_idle1 flip pal=domadora
+da_hs_idle0 flip pal=domadora
+da_hs_blink flip pal=domadora
+da_hs_walkA flip pal=domadora
+da_hs_walk1 flip dy=-1 pal=domadora
+da_hs_walk1 flip pal=domadora
+da_hs_walkB flip pal=domadora
+da_hs_walk1 flip dy=-1 pal=domadora
+da_hs_walk1 flip pal=domadora
+da_hs_atk0n flip pal=domadora
+da_hs_atk1n flip pal=domadora
+da_hs_atk2n flip pal=domadora
+da_hs_guard flip pal=domadora
+da_hs_idle0 flip dy=2 pal=domadora
+da_roll0 flip pal=domadora
+da_roll1 flip pal=domadora
+da_roll0 pal=domadora
+da_hs_hurt flip pal=domadora
+da_hs_capture flip pal=domadora
+da_dead flip pal=domadora
+da_hs_idle0 pal=domadora
+da_hs_idle1 pal=domadora
+da_hs_idle0 pal=domadora
+da_hs_blink pal=domadora
+da_hs_walkA pal=domadora
+da_hs_walk1 dy=-1 pal=domadora
+da_hs_walk1 pal=domadora
+da_hs_walkB pal=domadora
+da_hs_walk1 dy=-1 pal=domadora
+da_hs_walk1 pal=domadora
+da_hs_atk0n pal=domadora
+da_hs_atk1n pal=domadora
+da_hs_atk2n pal=domadora
+da_hs_guard pal=domadora
+da_hs_idle0 dy=2 pal=domadora
+da_roll0 pal=domadora
+da_roll1 pal=domadora
+da_roll0 flip pal=domadora
+da_hs_hurt pal=domadora
+da_hs_capture pal=domadora
+da_dead pal=domadora
+da_hu_idle0 pal=domadora
+da_hu_idle0 dy=1 pal=domadora
+da_hu_idle0 pal=domadora
+da_hu_idle0 pal=domadora
+da_hu_walkA pal=domadora
+da_hu_walkA dy=-1 pal=domadora
+da_hu_idle0 dy=-1 pal=domadora
+da_hu_walkB pal=domadora
+da_hu_walkB dy=-1 pal=domadora
+da_hu_idle0 dy=-1 pal=domadora
+da_hu_atk0n pal=domadora
+da_hu_atk1n pal=domadora
+da_hu_atk2n pal=domadora
+da_hu_guard pal=domadora
+da_hu_idle0 dy=2 pal=domadora
+da_roll0 pal=domadora
+da_roll1 pal=domadora
+da_roll0 flip pal=domadora
+da_hu_idle0 pal=domadora
+da_hu_idle0 pal=domadora
+da_dead pal=domadora
 end
 sheet vesna.png 24 32 21
-hd_idle0 pal=vesna
-hd_idle1 pal=vesna
-hd_idle0 pal=vesna
-hd_blink pal=vesna
-hd_walkA pal=vesna
-hd_walkA dy=-1 pal=vesna
-hd_idle0 dy=-1 pal=vesna
-hd_walkB pal=vesna
-hd_walkB dy=-1 pal=vesna
-hd_idle0 dy=-1 pal=vesna
-hd_atk0n pal=vesna
-hd_atk1n pal=vesna
-hd_atk2n pal=vesna
-hd_guard pal=vesna
-hd_idle0 dy=2 pal=vesna
-hx_roll0 pal=vesna
-hx_roll1 pal=vesna
-hx_roll0 flip pal=vesna
-hd_hurt pal=vesna
-hd_capture pal=vesna
-hd_dead pal=vesna
-hs_idle0 flip pal=vesna
-hs_idle1 flip pal=vesna
-hs_idle0 flip pal=vesna
-hs_blink flip pal=vesna
-hs_walkA flip pal=vesna
-hs_walk1 flip dy=-1 pal=vesna
-hs_walk1 flip pal=vesna
-hs_walkB flip pal=vesna
-hs_walk1 flip dy=-1 pal=vesna
-hs_walk1 flip pal=vesna
-hs_atk0n flip pal=vesna
-hs_atk1n flip pal=vesna
-hs_atk2n flip pal=vesna
-hs_guard flip pal=vesna
-hs_idle0 flip dy=2 pal=vesna
-hx_roll0 flip pal=vesna
-hx_roll1 flip pal=vesna
-hx_roll0 pal=vesna
-hs_hurt flip pal=vesna
-hs_capture flip pal=vesna
-hd_dead flip pal=vesna
-hs_idle0 pal=vesna
-hs_idle1 pal=vesna
-hs_idle0 pal=vesna
-hs_blink pal=vesna
-hs_walkA pal=vesna
-hs_walk1 dy=-1 pal=vesna
-hs_walk1 pal=vesna
-hs_walkB pal=vesna
-hs_walk1 dy=-1 pal=vesna
-hs_walk1 pal=vesna
-hs_atk0n pal=vesna
-hs_atk1n pal=vesna
-hs_atk2n pal=vesna
-hs_guard pal=vesna
-hs_idle0 dy=2 pal=vesna
-hx_roll0 pal=vesna
-hx_roll1 pal=vesna
-hx_roll0 flip pal=vesna
-hs_hurt pal=vesna
-hs_capture pal=vesna
-hd_dead pal=vesna
-hu_idle0 pal=vesna
-hu_idle0 dy=1 pal=vesna
-hu_idle0 pal=vesna
-hu_idle0 pal=vesna
-hu_walkA pal=vesna
-hu_walkA dy=-1 pal=vesna
-hu_idle0 dy=-1 pal=vesna
-hu_walkB pal=vesna
-hu_walkB dy=-1 pal=vesna
-hu_idle0 dy=-1 pal=vesna
-hu_atk0n pal=vesna
-hu_atk1n pal=vesna
-hu_atk2n pal=vesna
-hu_guard pal=vesna
-hu_idle0 dy=2 pal=vesna
-hx_roll0 pal=vesna
-hx_roll1 pal=vesna
-hx_roll0 flip pal=vesna
-hu_idle0 pal=vesna
-hu_idle0 pal=vesna
-hd_dead pal=vesna
+vs_hd_idle0 pal=vesna
+vs_hd_idle1 pal=vesna
+vs_hd_idle0 pal=vesna
+vs_hd_blink pal=vesna
+vs_hd_walkA pal=vesna
+vs_hd_walkA dy=-1 pal=vesna
+vs_hd_idle0 dy=-1 pal=vesna
+vs_hd_walkB pal=vesna
+vs_hd_walkB dy=-1 pal=vesna
+vs_hd_idle0 dy=-1 pal=vesna
+vs_hd_atk0n pal=vesna
+vs_hd_atk1n pal=vesna
+vs_hd_atk2n pal=vesna
+vs_hd_guard pal=vesna
+vs_hd_idle0 dy=2 pal=vesna
+vs_roll0 pal=vesna
+vs_roll1 pal=vesna
+vs_roll0 flip pal=vesna
+vs_hd_hurt pal=vesna
+vs_hd_capture pal=vesna
+vs_dead pal=vesna
+vs_hs_idle0 flip pal=vesna
+vs_hs_idle1 flip pal=vesna
+vs_hs_idle0 flip pal=vesna
+vs_hs_blink flip pal=vesna
+vs_hs_walkA flip pal=vesna
+vs_hs_walk1 flip dy=-1 pal=vesna
+vs_hs_walk1 flip pal=vesna
+vs_hs_walkB flip pal=vesna
+vs_hs_walk1 flip dy=-1 pal=vesna
+vs_hs_walk1 flip pal=vesna
+vs_hs_atk0n flip pal=vesna
+vs_hs_atk1n flip pal=vesna
+vs_hs_atk2n flip pal=vesna
+vs_hs_guard flip pal=vesna
+vs_hs_idle0 flip dy=2 pal=vesna
+vs_roll0 flip pal=vesna
+vs_roll1 flip pal=vesna
+vs_roll0 pal=vesna
+vs_hs_hurt flip pal=vesna
+vs_hs_capture flip pal=vesna
+vs_dead flip pal=vesna
+vs_hs_idle0 pal=vesna
+vs_hs_idle1 pal=vesna
+vs_hs_idle0 pal=vesna
+vs_hs_blink pal=vesna
+vs_hs_walkA pal=vesna
+vs_hs_walk1 dy=-1 pal=vesna
+vs_hs_walk1 pal=vesna
+vs_hs_walkB pal=vesna
+vs_hs_walk1 dy=-1 pal=vesna
+vs_hs_walk1 pal=vesna
+vs_hs_atk0n pal=vesna
+vs_hs_atk1n pal=vesna
+vs_hs_atk2n pal=vesna
+vs_hs_guard pal=vesna
+vs_hs_idle0 dy=2 pal=vesna
+vs_roll0 pal=vesna
+vs_roll1 pal=vesna
+vs_roll0 flip pal=vesna
+vs_hs_hurt pal=vesna
+vs_hs_capture pal=vesna
+vs_dead pal=vesna
+vs_hu_idle0 pal=vesna
+vs_hu_idle0 dy=1 pal=vesna
+vs_hu_idle0 pal=vesna
+vs_hu_idle0 pal=vesna
+vs_hu_walkA pal=vesna
+vs_hu_walkA dy=-1 pal=vesna
+vs_hu_idle0 dy=-1 pal=vesna
+vs_hu_walkB pal=vesna
+vs_hu_walkB dy=-1 pal=vesna
+vs_hu_idle0 dy=-1 pal=vesna
+vs_hu_atk0n pal=vesna
+vs_hu_atk1n pal=vesna
+vs_hu_atk2n pal=vesna
+vs_hu_guard pal=vesna
+vs_hu_idle0 dy=2 pal=vesna
+vs_roll0 pal=vesna
+vs_roll1 pal=vesna
+vs_roll0 flip pal=vesna
+vs_hu_idle0 pal=vesna
+vs_hu_idle0 pal=vesna
+vs_dead pal=vesna
 end
