@@ -170,8 +170,10 @@
   {
    "lines": [
     "Tobi: As Minas da Brasa ficam ao norte, depois do desfiladeiro. Dizem que a forja de lá ainda aquece sozinha.",
-    "Tobi: Quando a ponte estiver pronta, eu aviso o pessoal da Forja de Cobre."
-   ]
+    "Tobi: Quando a ponte estiver pronta, eu aviso o pessoal da Forja de Cobre.",
+    "Tobi: Enquanto isso, posso DESMONTAR equipamento velho em essências e MONTAR peças novas. Quer ver?"
+   ],
+   "forge": true
   }
  ],
  "treino": [

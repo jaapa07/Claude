@@ -364,25 +364,42 @@ func _fill_inventory(s: MenuScreen) -> void:
 			toast("Talentos redistribuídos."); _fill_inventory(s)
 		else:
 			toast("Fragmentos insuficientes."), "Devolve todos os pontos gastos."))
-	items.append(_hdr("Equipamento"))
+	items.append(_hdr("Equipamento (cor = raridade)"))
+	var eqs: Array = []
 	for id in Data.items:
+		if Game.is_equipment(id) and Game.item_count(id) > 0:
+			eqs.append(id)
+	var slot_order := {"arma": 0, "protecao": 1, "amuleto": 2}
+	eqs.sort_custom(func(x, y):
+		var sx: int = slot_order[Data.items[x]["tipo"]]; var sy: int = slot_order[Data.items[y]["tipo"]]
+		return sx < sy or (sx == sy and Game.rarity_of(x) > Game.rarity_of(y)))
+	for id in eqs:
 		var it: Dictionary = Data.items[id]
 		var idd: String = id
-		if it["tipo"] in ["arma", "protecao", "amuleto"] and Game.item_count(idd) > 0:
-			var eq: bool = Game.equipment.get(it["tipo"], "") == idd
-			var lv := Game.upgrade_level(idd)
-			items.append(_it("%s%s%s" % ["● " if eq else "  ", it["nome"], (" +%d" % lv) if lv > 0 else ""], func(): Game.equip(idd); _fill_inventory(s), it["desc"]))
+		var eq: bool = Game.equipment.get(it["tipo"], "") == idd
+		var lv := Game.upgrade_level(idd)
+		var row := _it("%s%s%s" % ["● " if eq else "  ", it["nome"], (" +%d" % lv) if lv > 0 else ""], func(): _equip_menu(idd, s), func(): return Game.item_details(idd))
+		row["col"] = Game.rarity_color(idd)
+		row["icol"] = Game.rarity_color(idd).lerp(Color.WHITE, 0.55)
+		row["icon"] = Game.item_icon(idd)
+		items.append(row)
 	items.append(_hdr("Itens"))
 	for id2 in Data.items:
 		var it2: Dictionary = Data.items[id2]
 		var id2c: String = id2
 		if it2["tipo"] in ["selo", "consumivel", "consumivel_criatura"] and Game.item_count(id2c) > 0:
-			items.append(_it("%s x%d" % [it2["nome"], Game.item_count(id2c)], func(): _use_item(id2c, s), it2["desc"] + "\nAção: usar", it2["tipo"] != "selo"))
+			var r2 := _it("%s x%d" % [it2["nome"], Game.item_count(id2c)], func(): _use_item(id2c, s), it2["desc"] + "\nAção: usar", it2["tipo"] != "selo")
+			r2["icon"] = Game.item_icon(id2c)
+			items.append(r2)
 	var mats: Array = []
 	for id3 in Data.items:
 		var it3: Dictionary = Data.items[id3]
 		if it3["tipo"] in ["material", "tecnica", "historia"] and Game.item_count(id3) > 0:
-			mats.append(_it("%s%s" % [it3["nome"], (" x%d" % Game.item_count(id3)) if it3["tipo"] == "material" else ""], Callable(), it3["desc"]))
+			var r3 := _it("%s%s" % [it3["nome"], (" x%d" % Game.item_count(id3)) if it3["tipo"] == "material" else ""], Callable(), it3["desc"])
+			r3["icon"] = Game.item_icon(id3)
+			if it3.has("raridade"):
+				r3["col"] = Game.rarity_color(id3)
+			mats.append(r3)
 	if not mats.is_empty():
 		items.append(_hdr("Materiais, técnicas e diários"))
 		items.append_array(mats)
@@ -400,6 +417,77 @@ func _fill_inventory(s: MenuScreen) -> void:
 	s.setup("Inventário e herói", items, "")
 	s.list_w = 220.0
 	s.sel = 1
+
+func _equip_menu(id: String, parent: MenuScreen) -> void:
+	var it: Dictionary = Data.items[id]
+	var s := _push(it["nome"], [], "")
+	var eq: bool = Game.equipment.get(it["tipo"], "") == id
+	var why := Game.dismantle_check(id)
+	var items: Array = []
+	items.append(_it("Equipar" if not eq else "Equipado", func():
+		Game.equip(id); s.close(); _fill_inventory(parent), Game.item_details(id), not eq))
+	items.append(_it("Desmontar…", func():
+		_confirm("Desmontar %s?" % it["nome"], Game.item_details(id) + "\n\nA peça some para sempre.", func():
+			if Game.dismantle(id):
+				Audio.play("thud"); s.close(); _fill_inventory(parent)), Game.item_details(id) if why == "" else why, why == ""))
+	items.append(_it("Voltar", func(): s.close()))
+	for row in items:
+		row["icon"] = Game.item_icon(id)
+		row["icol"] = Game.rarity_color(id).lerp(Color.WHITE, 0.55)
+	s.setup(it["nome"], items, Game.item_details(id))
+
+func open_craft() -> void:
+	var s := _push("Montar equipamento", [], "")
+	_fill_craft(s)
+
+func _fill_craft(s: MenuScreen) -> void:
+	var items: Array = []
+	var ids: Array = Data.recipes.keys()
+	ids.sort_custom(func(x, y): return Game.rarity_of(x) < Game.rarity_of(y))
+	for rid in ids:
+		var r: String = rid
+		var why := Game.craft_check(r)
+		var info := func(): return Game.item_details(r).split("\n\nDesmontar")[0] + "\n\nCusto: " + Game.craft_cost_text(r) + ("" if Game.craft_check(r) == "" else "\n\n" + Game.craft_check(r))
+		var row := _it(Data.items[r]["nome"] if Game.has_flag(str(Data.recipes[r].get("requer", ""))) or not Data.recipes[r].has("requer") else "??? (" + Game.rarity_name(r) + ")", func():
+			var w2 := Game.craft_check(r)
+			if w2 != "":
+				toast(w2); Audio.play("puzzle_no"); return
+			_confirm("Montar %s?" % Data.items[r]["nome"], "Custo: " + Game.craft_cost_text(r), func():
+				if Game.craft(r):
+					Audio.play("levelup"); world.shake(1.0, 0.1)
+				_fill_craft(s)), info, why == "" or why == "Faltam materiais." or why == "Fragmentos insuficientes.")
+		row["col"] = Game.rarity_color(r)
+		row["icol"] = Game.rarity_color(r).lerp(Color.WHITE, 0.55)
+		row["icon"] = Game.item_icon(r)
+		items.append(row)
+	items.append(_it("Voltar", func(): s.close()))
+	s.setup("Montar — fragmentos: %d" % Game.fragments, items, "")
+	s.list_w = 230.0
+
+func open_dismantle() -> void:
+	var s := _push("Desmontar equipamento", [], "")
+	_fill_dismantle(s)
+
+func _fill_dismantle(s: MenuScreen) -> void:
+	var items: Array = []
+	for id in Data.items:
+		if Game.is_equipment(id) and Game.item_count(id) > 0:
+			var idd: String = id
+			var why := Game.dismantle_check(idd)
+			var row := _it(Data.items[idd]["nome"] + ((" +%d" % Game.upgrade_level(idd)) if Game.upgrade_level(idd) > 0 else ""), func():
+				_confirm("Desmontar %s?" % Data.items[idd]["nome"], Game.item_details(idd) + "\n\nA peça some para sempre.", func():
+					if Game.dismantle(idd):
+						Audio.play("thud")
+					_fill_dismantle(s)), func(): return Game.item_details(idd) + ("" if Game.dismantle_check(idd) == "" else "\n\n" + Game.dismantle_check(idd)), why == "")
+			row["col"] = Game.rarity_color(idd)
+			row["icol"] = Game.rarity_color(idd).lerp(Color.WHITE, 0.55)
+			row["icon"] = Game.item_icon(idd)
+			items.append(row)
+	if items.is_empty():
+		items.append(_it("(nada para desmontar)", Callable(), "Peças equipadas não podem ser desmontadas."))
+	items.append(_it("Voltar", func(): s.close()))
+	s.setup("Desmontar", items, "")
+	s.list_w = 230.0
 
 func _use_item(id: String, s: MenuScreen) -> void:
 	if world.in_combat():
@@ -641,8 +729,11 @@ func _fill_forge(s: MenuScreen) -> void:
 						Audio.play("levelup")
 						world.shake(1.0, 0.1)
 					_fill_forge(s)), func(): return _forge_info(idd)))
+	items.append(_hdr("Oficina"))
+	items.append(_it("Montar equipamento", func(): open_craft(), "Monte peças novas com essências e materiais. A cor mostra a raridade: verde, azul, roxo, laranja e vermelho."))
+	items.append(_it("Desmontar equipamento", func(): open_dismantle(), "Transforme peças que você não usa em essências da mesma cor e fragmentos."))
 	items.append(_hdr("Materiais"))
-	for mat in ["minerio_cobre", "brasa_viva", "lingote"]:
+	for mat in ["minerio_cobre", "brasa_viva", "lingote", "essencia_verde", "essencia_azul", "essencia_roxa", "essencia_laranja", "essencia_rubra", "casca_oca", "osso_ancestral"]:
 		items.append(_it("%s x%d" % [Data.items[mat]["nome"], Game.item_count(mat)], Callable(), Data.items[mat]["desc"]))
 	items.append(_it("Sair", func(): s.close()))
 	s.setup("Forja — fragmentos: %d" % Game.fragments, items, "Escolha o que melhorar.")

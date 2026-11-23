@@ -35,21 +35,24 @@
   "tipo": "arma",
   "dano": 0,
   "icone": 7,
-  "desc": "Espada equilibrada de aprendiz."
+  "desc": "Espada equilibrada de aprendiz.",
+  "raridade": 0
  },
  "couraca_fibra": {
   "nome": "Couraça de Fibra",
   "tipo": "protecao",
   "reducao": 0.08,
   "icone": 5,
-  "desc": "Reduz 8% do dano recebido."
+  "desc": "Reduz 8% do dano recebido.",
+  "raridade": 0
  },
  "amuleto_seiva": {
   "nome": "Amuleto de Seiva",
   "tipo": "amuleto",
   "hp": 15,
   "icone": 5,
-  "desc": "+15 de vida máxima."
+  "desc": "+15 de vida máxima.",
+  "raridade": 1
  },
  "amuleto_vinculo": {
   "nome": "Amuleto do Vínculo",
@@ -57,7 +60,8 @@
   "hp": 0,
   "selo_chance": 0.03,
   "icone": 5,
-  "desc": "+3% de chance de captura."
+  "desc": "+3% de chance de captura.",
+  "raridade": 0
  },
  "minerio_cobre": {
   "nome": "Minério de Cobre",
@@ -90,7 +94,8 @@
   "alcance": 14,
   "arco": 0.6,
   "icone": 7,
-  "desc": "Alcance frontal maior (+14) e arco de golpe mais estreito. Mantém o combo."
+  "desc": "Alcance frontal maior (+14) e arco de golpe mais estreito. Mantém o combo.",
+  "raridade": 1
  },
  "placa_cobre": {
   "nome": "Couraça de Placas de Cobre",
@@ -98,7 +103,8 @@
   "reducao": 0.12,
   "icone": 3,
   "folha": "icons_minas",
-  "desc": "Reduz 12% do dano recebido."
+  "desc": "Reduz 12% do dano recebido.",
+  "raridade": 1
  },
  "luvas_termicas": {
   "nome": "Luvas Térmicas",
@@ -112,7 +118,8 @@
   "hp": 20,
   "calor": 0.5,
   "icone": 5,
-  "desc": "+20 de vida máxima e o calor fere metade (acumula com as Luvas Térmicas)."
+  "desc": "+20 de vida máxima e o calor fere metade (acumula com as Luvas Térmicas).",
+  "raridade": 2
  },
  "diario_fundidor": {
   "nome": "Diário do Fundidor",
@@ -143,5 +150,138 @@
   "tipo": "historia",
   "icone": 6,
   "desc": "\"Selamos o depósito com rocha antes que o Devorador o encontrasse. Quem tiver fogo bastante para romper a pedra merece o que está lá.\""
+ },
+ "espada_seiva": {
+  "nome": "Espada de Seiva",
+  "tipo": "arma",
+  "dano": 3,
+  "raridade": 1,
+  "icone": 0,
+  "desc": "Lâmina com veios de seiva viva. +3 de dano.",
+  "folha": "icons_equip"
+ },
+ "laminas_ocas": {
+  "nome": "Lâminas Ocas",
+  "tipo": "arma",
+  "dano": 5,
+  "arco": 1.25,
+  "raridade": 2,
+  "icone": 1,
+  "desc": "Par de lâminas leves talhadas da casca do Lenhador. +5 de dano e arco de golpe 25% maior.",
+  "folha": "icons_equip"
+ },
+ "galhada_ossea": {
+  "nome": "Galhada Óssea",
+  "tipo": "arma",
+  "dano": 9,
+  "alcance": 6,
+  "arco": 1.0,
+  "raridade": 3,
+  "icone": 2,
+  "desc": "Espada forjada com a galhada do Cervo. +9 de dano e alcance maior.",
+  "folha": "icons_equip"
+ },
+ "lamina_ruina": {
+  "nome": "Lâmina da Ruína",
+  "tipo": "arma",
+  "dano": 16,
+  "alcance": 4,
+  "raridade": 4,
+  "icone": 3,
+  "desc": "Lâmina mítica feita de Eco puro. Só pode ser montada com essências míticas.",
+  "folha": "icons_equip"
+ },
+ "gibao_seiva": {
+  "nome": "Gibão de Seiva",
+  "tipo": "protecao",
+  "reducao": 0.1,
+  "raridade": 1,
+  "icone": 4,
+  "desc": "Couro tratado com seiva. Reduz 10% do dano recebido.",
+  "folha": "icons_equip"
+ },
+ "manto_lenhador": {
+  "nome": "Manto do Lenhador",
+  "tipo": "protecao",
+  "reducao": 0.15,
+  "raridade": 2,
+  "icone": 5,
+  "desc": "Casca oca costurada em placas. Reduz 15% do dano recebido.",
+  "folha": "icons_equip"
+ },
+ "couraca_ossos": {
+  "nome": "Couraça de Ossos",
+  "tipo": "protecao",
+  "reducao": 0.2,
+  "raridade": 3,
+  "icone": 6,
+  "desc": "Ossos ancestrais do Cervo. Reduz 20% do dano recebido.",
+  "folha": "icons_equip"
+ },
+ "amuleto_galhada": {
+  "nome": "Amuleto da Galhada",
+  "tipo": "amuleto",
+  "hp": 35,
+  "selo_chance": 0.05,
+  "raridade": 3,
+  "icone": 7,
+  "desc": "+35 de vida máxima e +5% de chance de captura.",
+  "folha": "icons_equip"
+ },
+ "essencia_verde": {
+  "nome": "Essência Comum",
+  "tipo": "material",
+  "raridade": 0,
+  "icone": 8,
+  "desc": "Resto de Eco de equipamentos comuns. Usada para montar peças.",
+  "folha": "icons_equip"
+ },
+ "essencia_azul": {
+  "nome": "Essência Rara",
+  "tipo": "material",
+  "raridade": 1,
+  "icone": 9,
+  "desc": "Eco condensado de equipamentos raros.",
+  "folha": "icons_equip"
+ },
+ "essencia_roxa": {
+  "nome": "Essência Épica",
+  "tipo": "material",
+  "raridade": 2,
+  "icone": 10,
+  "desc": "Eco denso de equipamentos épicos.",
+  "folha": "icons_equip"
+ },
+ "essencia_laranja": {
+  "nome": "Essência Lendária",
+  "tipo": "material",
+  "raridade": 3,
+  "icone": 11,
+  "desc": "Eco brilhante de equipamentos lendários.",
+  "folha": "icons_equip"
+ },
+ "essencia_rubra": {
+  "nome": "Essência Mítica",
+  "tipo": "material",
+  "raridade": 4,
+  "icone": 12,
+  "desc": "Eco rubro dos guardiões. Rara: aparece nas regiões finais.",
+  "folha": "icons_equip"
+ },
+ "casca_oca": {
+  "nome": "Casca Oca",
+  "tipo": "material",
+  "raridade": 2,
+  "icone": 13,
+  "desc": "Casca endurecida do Lenhador Oco.",
+  "folha": "icons_equip"
+ },
+ "osso_ancestral": {
+  "nome": "Osso Ancestral",
+  "tipo": "material",
+  "raridade": 3,
+  "icone": 14,
+  "desc": "Fragmento da galhada do Cervo de Ossos.",
+  "folha": "icons_equip"
  }
 }

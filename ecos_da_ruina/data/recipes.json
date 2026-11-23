@@ -1,0 +1,68 @@
+{
+ "espada_seiva": {
+  "custo": {
+   "essencia_verde": 3
+  },
+  "fragmentos": 40
+ },
+ "gibao_seiva": {
+  "custo": {
+   "essencia_verde": 4
+  },
+  "fragmentos": 40
+ },
+ "laminas_ocas": {
+  "custo": {
+   "casca_oca": 2,
+   "essencia_azul": 2
+  },
+  "fragmentos": 80,
+  "requer": "lenhador_morto",
+  "dica": "Derrote o Lenhador Oco."
+ },
+ "manto_lenhador": {
+  "custo": {
+   "casca_oca": 2,
+   "essencia_azul": 2
+  },
+  "fragmentos": 90,
+  "requer": "lenhador_morto",
+  "dica": "Derrote o Lenhador Oco."
+ },
+ "galhada_ossea": {
+  "custo": {
+   "osso_ancestral": 2,
+   "essencia_roxa": 2
+  },
+  "fragmentos": 150,
+  "requer": "cervo_morto",
+  "dica": "Derrote o Cervo de Ossos."
+ },
+ "couraca_ossos": {
+  "custo": {
+   "osso_ancestral": 2,
+   "essencia_roxa": 2
+  },
+  "fragmentos": 160,
+  "requer": "cervo_morto",
+  "dica": "Derrote o Cervo de Ossos."
+ },
+ "amuleto_galhada": {
+  "custo": {
+   "osso_ancestral": 1,
+   "essencia_roxa": 2
+  },
+  "fragmentos": 140,
+  "requer": "cervo_morto",
+  "dica": "Derrote o Cervo de Ossos."
+ },
+ "lamina_ruina": {
+  "custo": {
+   "essencia_laranja": 3,
+   "essencia_rubra": 2
+  },
+  "fragmentos": 400,
+  "requer": "rei_morto",
+  "dica": "Disponível na Catedral do Vazio (capítulo 5)."
+ }
+}

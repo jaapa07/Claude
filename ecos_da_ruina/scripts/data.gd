@@ -5,6 +5,7 @@ var species := {}
 var skills := {}
 var enemies := {}
 var items := {}
+var recipes := {}
 var bosses := {}
 var regions := {}
 var quests := {}
@@ -36,6 +37,7 @@ func load_all() -> void:
 	bosses = _read("res://data/bosses.json")
 	regions = _read("res://data/regions.json")
 	quests = _read("res://data/quests.json")
+	recipes = _read("res://data/recipes.json")
 	dialogs = _read("res://data/dialogs.json")
 	forge = _read("res://data/forge.json")
 	maps.clear()
@@ -89,6 +91,12 @@ func validate() -> Array:
 				for it in e.get("loot", {}):
 					if not items.has(it):
 						errors.append("Mapa %s: item inexistente '%s' no altar" % [mid, it])
+	for rid in recipes:
+		if not items.has(rid):
+			errors.append("Receita %s: item resultante inexistente" % rid)
+		for it in recipes[rid].get("custo", {}):
+			if not items.has(it):
+				errors.append("Receita %s: material inexistente '%s'" % [rid, it])
 	for did in dialogs:
 		for v in dialogs[did]:
 			for it in v.get("give", {}):

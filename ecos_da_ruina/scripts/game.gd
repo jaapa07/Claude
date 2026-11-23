@@ -880,3 +880,120 @@ func tutorial_event(ev: String) -> void:
 	if has_flag("tut_guard") and not has_flag("tutorial_ok"):
 		set_flag("tutorial_ok")
 		toast.emit("Treino concluído! Agora capture o Brotisco do cercado.")
+
+
+# =============================================================== RARIDADE, DESMONTAR E MONTAR
+const RARITY_NAMES := ["Comum", "Raro", "Épico", "Lendário", "Mítico"]
+const RARITY_COLORS := [Color(0.45, 0.9, 0.45), Color(0.4, 0.7, 1.0), Color(0.78, 0.5, 1.0), Color(1.0, 0.65, 0.25), Color(1.0, 0.32, 0.32)]
+const ESSENCES := ["essencia_verde", "essencia_azul", "essencia_roxa", "essencia_laranja", "essencia_rubra"]
+
+func rarity_of(id: String) -> int:
+	return clampi(int(Data.items.get(id, {}).get("raridade", 0)), 0, 4)
+
+func rarity_color(id: String) -> Color:
+	return RARITY_COLORS[rarity_of(id)]
+
+func rarity_name(id: String) -> String:
+	return RARITY_NAMES[rarity_of(id)]
+
+func is_equipment(id: String) -> bool:
+	return Data.items.get(id, {}).get("tipo", "") in ["arma", "protecao", "amuleto"]
+
+## O que desmontar rende: essências da cor da peça (2 + nível de melhoria) e fragmentos.
+func dismantle_yield(id: String) -> Dictionary:
+	var r := rarity_of(id)
+	var out := {ESSENCES[r]: 2 + upgrade_level(id), "fragmentos": 10 * (r + 1)}
+	if r > 0:
+		out[ESSENCES[r - 1]] = 1
+	return out
+
+## Motivo pelo qual não dá para desmontar ("" = pode).
+func dismantle_check(id: String) -> String:
+	if not is_equipment(id) or item_count(id) <= 0:
+		return "Você não tem esta peça."
+	for slot in equipment:
+		if equipment[slot] == id:
+			return "Equipado: troque por outra peça antes de desmontar."
+	return ""
+
+func dismantle(id: String) -> bool:
+	if dismantle_check(id) != "":
+		return false
+	var y := dismantle_yield(id)
+	inventory.erase(id)
+	upgrades.erase(id)
+	for k in y:
+		if k == "fragmentos":
+			fragments += int(y[k])
+		else:
+			inventory[k] = item_count(k) + int(y[k])
+	toast.emit("%s desmontada." % Data.items[id]["nome"])
+	inventory_changed.emit()
+	hero_changed.emit()
+	return true
+
+## Motivo pelo qual não dá para montar ("" = pode).
+func craft_check(rid: String) -> String:
+	var rc: Dictionary = Data.recipes.get(rid, {})
+	if rc.is_empty():
+		return "Receita desconhecida."
+	if rc.has("requer") and not has_flag(rc["requer"]):
+		return "Bloqueada: " + str(rc.get("dica", ""))
+	if item_count(rid) > 0:
+		return "Você já tem esta peça."
+	if fragments < int(rc.get("fragmentos", 0)):
+		return "Fragmentos insuficientes."
+	for it in rc["custo"]:
+		if item_count(it) < int(rc["custo"][it]):
+			return "Faltam materiais."
+	return ""
+
+func craft_cost_text(rid: String) -> String:
+	var rc: Dictionary = Data.recipes.get(rid, {})
+	var parts: Array = []
+	for it in rc.get("custo", {}):
+		parts.append("%s %d/%d" % [Data.items[it]["nome"], item_count(it), int(rc["custo"][it])])
+	parts.append("fragmentos %d/%d" % [fragments, int(rc.get("fragmentos", 0))])
+	return ", ".join(parts)
+
+func craft(rid: String) -> bool:
+	if craft_check(rid) != "":
+		return false
+	var rc: Dictionary = Data.recipes[rid]
+	for it in rc["custo"]:
+		inventory[it] = item_count(it) - int(rc["custo"][it])
+	fragments -= int(rc.get("fragmentos", 0))
+	give_item(rid, 1)
+	toast.emit("Montou: %s (%s)!" % [Data.items[rid]["nome"], rarity_name(rid)])
+	return true
+
+## Descrição de equipamento com atributos, raridade e melhoria
+func item_details(id: String) -> String:
+	var it: Dictionary = Data.items.get(id, {})
+	var t := "%s\n[%s]" % [it.get("nome", id), rarity_name(id)]
+	if upgrade_level(id) > 0:
+		t += "  +%d" % upgrade_level(id)
+	t += "\n\n" + str(it.get("desc", ""))
+	match it.get("tipo", ""):
+		"arma":
+			t += "\n\nDano extra: +%d" % (int(it.get("dano", 0)) + int(forge_bonus("arma", "dano")) * upgrade_level(id))
+			if it.has("alcance"): t += "\nAlcance: +%d" % int(it["alcance"])
+			if float(it.get("arco", 1.0)) != 1.0: t += "\nArco do golpe: x%.2f" % float(it["arco"])
+		"protecao":
+			t += "\n\nRedução de dano: %d%%" % int(round((float(it.get("reducao", 0)) + float(forge_bonus("protecao", "reducao")) * upgrade_level(id)) * 100.0))
+		"amuleto":
+			t += "\n\nVida extra: +%d" % (int(it.get("hp", 0)) + int(forge_bonus("amuleto", "hp")) * upgrade_level(id))
+			if it.has("selo_chance"): t += "\nCaptura: +%d%%" % int(float(it["selo_chance"]) * 100.0)
+	if is_equipment(id):
+		var y := dismantle_yield(id)
+		var parts: Array = []
+		for k in y:
+			parts.append(("%d fragmentos" % y[k]) if k == "fragmentos" else ("%s x%d" % [Data.items[k]["nome"], y[k]]))
+		t += "\n\nDesmontar rende: " + ", ".join(parts)
+	return t
+
+## Ícone do item (folha e coluna)
+func item_icon(id: String) -> Texture2D:
+	var it: Dictionary = Data.items.get(id, {})
+	var sheet: String = it.get("folha", "icons")
+	return Art.region(sheet, int(it.get("icone", 0)) * 16, 0, 16, 16)

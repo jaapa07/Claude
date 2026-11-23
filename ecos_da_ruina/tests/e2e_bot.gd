@@ -33,7 +33,9 @@ func _ready() -> void:
 	Game.rng.seed = sd
 	Game.toast.connect(func(t): if "exausta" in t: exhausted_events += 1)
 	main.ui.instant = true
-	if "--powers" in args:
+	if "--equip" in args:
+		await run_equip()
+	elif "--powers" in args:
 		await run_powers()
 	elif "--demo" in args:
 		await run_demo()
@@ -2347,3 +2349,60 @@ func run_powers() -> void:
 	await tap("skill", 2)
 	Input.action_release("guard")
 	check("Fúria do Vínculo respeita a recarga", P.energy <= 21.0)
+
+## Raridade, desmontar e montar equipamento
+func run_equip() -> void:
+	main.start_new_game(3)
+	await frames(10)
+	await advance_dialogs()
+	check("Cores de raridade: verde < azul < roxo < laranja < vermelho", Game.rarity_name("espada_viajante") == "Comum" and Game.rarity_name("espada_seiva") == "Raro" and Game.rarity_name("laminas_ocas") == "Épico" and Game.rarity_name("galhada_ossea") == "Lendário" and Game.rarity_name("lamina_ruina") == "Mítico")
+	check("Peça equipada não pode ser desmontada", Game.dismantle_check("espada_viajante") != "")
+	Game.give_item("couraca_fibra", 1)
+	Game.equipment["protecao"] = ""
+	var ess0 := Game.item_count("essencia_verde")
+	check("Desmontar peça comum rende essência verde", Game.dismantle("couraca_fibra") and Game.item_count("essencia_verde") == ess0 + 2 and Game.item_count("couraca_fibra") == 0)
+	check("Montar exige materiais", Game.craft_check("espada_seiva") != "")
+	Game.give_item("essencia_verde", 3)
+	Game.fragments += 50
+	check("Montar Espada de Seiva (azul) com essências", Game.craft("espada_seiva") and Game.item_count("espada_seiva") == 1)
+	check("Não monta a mesma peça duas vezes", Game.craft_check("espada_seiva") == "Você já tem esta peça.")
+	Game.give_item("osso_ancestral", 2); Game.give_item("essencia_roxa", 2); Game.fragments += 200
+	check("Receita lendária bloqueada antes do Cervo", Game.craft_check("galhada_ossea").begins_with("Bloqueada"))
+	Game.set_flag("cervo_morto")
+	check("Receita lendária liberada após o Cervo", Game.craft("galhada_ossea"))
+	Game.equip("galhada_ossea")
+	check("Arma lendária aumenta o dano", Game.hero_atk() >= 12.0 + 9.0)
+	# interface: inventário com cores e detalhes
+	await ui_press("pause")
+	await ui_press("ui_down"); await ui_press("ui_down")
+	await ui_press("ui_accept")
+	await frames(4)
+	var top = main.ui._top()
+	var colored := 0
+	for it in top.items:
+		if it.has("col") and it.has("icon"):
+			colored += 1
+	check("Inventário lista equipamentos com cor e ícone", colored >= 3, str(colored))
+	for i in 12:
+		await ui_press("ui_down")
+		if top.items[top.sel].has("col"):
+			break
+	await shot("inv_cores")
+	await close_menus()
+	# persistência
+	W.save_now(3)
+	var inv_before := Game.inventory.duplicate()
+	SaveSys.load_game(3)
+	check("Save mantém peças montadas e essências", Game.item_count("galhada_ossea") == 1 and Game.item_count("espada_seiva") == 1 and Game.inventory == inv_before)
+	W.player.global_position = W.player.global_position
+	Game.equipment["arma"] = "galhada_ossea"
+	await frames(5)
+	await talk("tobi")
+	await frames(5)
+	check("Tobi abre a forja na vila", main.ui.has_screen())
+	await shot("forja_tobi")
+	await ui_press("ui_down"); await ui_press("ui_down"); await ui_press("ui_down"); await ui_press("ui_down")
+	await ui_press("ui_accept")
+	await frames(4)
+	await shot("montar")
+	await close_menus()

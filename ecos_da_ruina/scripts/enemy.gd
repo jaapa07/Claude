@@ -577,6 +577,15 @@ func _give_rewards(_src: String) -> void:
 			Game.give_item(it, int(dr[1]))
 			world.spawn_text(global_position + Vector2(0, -fh - 16), Data.items.get(it, {}).get("nome", it), Color(1.0, 0.8, 0.5))
 	Game.register_kill(kind)
+	# chance de essência (material para montar equipamento)
+	var ess := ""
+	if kind == "sentinela" or kind == "automato":
+		ess = "essencia_azul" if Game.rand_f() < 0.3 else ("essencia_verde" if Game.rand_f() < 0.5 else "")
+	elif def.get("relevante", false) and Game.rand_f() < 0.25:
+		ess = "essencia_verde"
+	if ess != "":
+		Game.give_item(ess, 1)
+		world.spawn_text(global_position + Vector2(0, -fh - 16), Data.items[ess]["nome"], Game.rarity_color(ess))
 	if def.get("relevante", false):
 		var ac := Game.active_ind()
 		var near: bool = world.companion != null and is_instance_valid(world.companion) and world.companion.global_position.distance_to(global_position) < 150.0

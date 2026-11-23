@@ -173,6 +173,7 @@ var _count_lab: Label
 var _info_panel: NinePatchRect
 var _info_lab: Label
 var _foot_lab: Label
+var _info_icon: TextureRect
 var _key_panel: NinePatchRect
 var _logo: Label
 var _sub: Label
@@ -196,6 +197,8 @@ func _build() -> void:
 	_info_lab = Fonts.label("", 9, Color(0.92, 0.92, 1.0)); _info_lab.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_info_panel.add_child(_info_lab)
 	_foot_lab = Fonts.label("", 8, Color(0.65, 0.65, 0.8)); add_child(_foot_lab)
+	_info_icon = TextureRect.new(); _info_icon.scale = Vector2(2, 2); _info_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_info_panel.add_child(_info_icon)
 	_key_panel = UIKit.panel(Vector2(110, 110), Vector2(260, 30)); _key_panel.visible = false
 	var kl := Fonts.label("Pressione a nova tecla (Esc cancela)", 10); kl.position = Vector2(12, 8); _key_panel.add_child(kl)
 	add_child(_key_panel)
@@ -249,7 +252,8 @@ func _refresh() -> void:
 			l.modulate = Color(0.6, 0.72, 1.0)
 		else:
 			l.add_theme_font_size_override("font_size", 8)
-			l.modulate = Color.WHITE if it.get("en", true) else Color(0.5, 0.5, 0.55)
+			var base_col: Color = it.get("col", Color.WHITE)
+			l.modulate = base_col if it.get("en", true) else base_col.darkened(0.5)
 	var row := sel - scroll
 	_sel_bar.visible = row >= 0 and row < VIS and not items.is_empty()
 	_sel_bar.position = Vector2(X0 - 2, Y0 + 19.0 + row * 16.0); _sel_bar.size = Vector2(list_w - 2, 15)
@@ -264,4 +268,11 @@ func _refresh() -> void:
 	_info_panel.position = Vector2(ix, Y0 - 6); _info_panel.size = Vector2(iw, 232)
 	_info_lab.position = Vector2(8, 6); _info_lab.size = Vector2(iw - 16, 220)
 	_info_lab.text = _info_text()
+	var cur: Dictionary = items[sel] if (sel >= 0 and sel < items.size()) else {}
+	var icon = cur.get("icon")
+	_info_icon.visible = icon != null
+	if icon != null:
+		_info_icon.texture = icon
+		_info_icon.position = Vector2(iw - 42, 6)
+	_info_lab.modulate = cur.get("icol", Color.WHITE)
 	_foot_lab.position = Vector2(X0, 254); _foot_lab.size = Vector2(450, 12); _foot_lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
