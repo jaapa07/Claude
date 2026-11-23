@@ -77,6 +77,59 @@
   "valvula_recarga": 10.0,
   "aviso_grande": 1.2
  },
+ "gemeos": {
+  "nome": "Gêmeos de Ferro",
+  "hp": 520,
+  "fases": [
+   1.0
+  ],
+  "recompensa": {
+   "xp": 300,
+   "frag": 120,
+   "itens": {
+    "lasca_umbral": 2,
+    "insignia_guarnicao": 1
+   }
+  },
+  "flag_morte": "gemeos_morto",
+  "dano_onda": 22,
+  "dano_golpe": 24,
+  "dano_corrente": 26,
+  "raio_corrente": 50
+ },
+ "cavaleiro": {
+  "nome": "Cavaleiro Sem Rosto",
+  "hp": 1500,
+  "fases": [
+   1.0,
+   0.6,
+   0.3
+  ],
+  "recompensa": {
+   "eco": "passo_umbral",
+   "xp": 900,
+   "frag": 260
+  },
+  "flag_morte": "cavaleiro_morto",
+  "flag_regiao": "fortaleza_liberta",
+  "giro": 2.2,
+  "aviso_estocada": 0.9,
+  "vel_estocada": 330,
+  "dano_estocada": 34,
+  "recarga_estocada": 2.4,
+  "exausto_s": 1.7,
+  "mult_exausto": 1.3,
+  "guarda_frontal": 0.15,
+  "postura_s": 6.0,
+  "muralha_fisico": 0.15,
+  "muralha_distancia": 1.5,
+  "espelho_fisico": 1.5,
+  "espelho_distancia": 0.1,
+  "raio_corte": 56,
+  "dano_corte": 26,
+  "exausto_duelo_s": 1.6,
+  "mult_costas": 1.6
+ },
  "barqueiro": {
   "nome": "Barqueiro Sem Sombra",
   "hp": 560,

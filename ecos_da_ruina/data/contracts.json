@@ -360,6 +360,84 @@
    }
   }
  },
+ "caca_lanceiros": {
+  "nome": "Corredores Livres",
+  "tipo": "caca",
+  "aliados": [],
+  "nivel": 20,
+  "requer": [
+   "visitou_muralha_partida"
+  ],
+  "alvo": {
+   "kind": "lanceiro",
+   "qtd": 3
+  },
+  "texto": "Lanceiros do Eclipse trancam os corredores da Muralha Partida. A Capitã Ilse paga por cada corredor livre.",
+  "objetivo": "Caçada: derrote 3 Lanceiros do Eclipse.",
+  "recompensa": {
+   "fragmentos": 280,
+   "xp": 350,
+   "itens": {
+    "semente_vida": 1,
+    "lasca_umbral": 2
+   }
+  }
+ },
+ "domadores_eclipse": {
+  "nome": "Domadores do Eclipse",
+  "tipo": "trio",
+  "aliados": [
+   "bruna",
+   "ravi"
+  ],
+  "nivel": 21,
+  "requer": [
+   "visitou_jardins_suspensos"
+  ],
+  "mapa": "jardins_suspensos",
+  "texto": "Domadores que fugiram do Desfiladeiro agora caçam Ventiscos nos Jardins Suspensos com feras do Eclipse. Leve Bruna e Ravi.",
+  "objetivo": "Derrote os Domadores dos Jardins Suspensos (trio: Bruna e Ravi) e liberte as feras.",
+  "inimigos": [
+   {
+    "kind": "domador",
+    "id": "de_d1",
+    "x": 30,
+    "y": 26,
+    "nivel": 21
+   },
+   {
+    "kind": "domadora",
+    "id": "de_d2",
+    "x": 37,
+    "y": 27,
+    "nivel": 21
+   },
+   {
+    "kind": "fera",
+    "dono": "de_d1",
+    "species": "umbrel",
+    "level": 20,
+    "x": 31,
+    "y": 28
+   },
+   {
+    "kind": "fera",
+    "dono": "de_d2",
+    "species": "brasardo",
+    "level": 20,
+    "x": 36,
+    "y": 25
+   }
+  ],
+  "recompensa": {
+   "fragmentos": 320,
+   "xp": 400,
+   "itens": {
+    "essencia_laranja": 1,
+    "selo_refinado": 3
+   }
+  }
+ },
  "caca_sapos": {
   "nome": "Coaxar Sem Fim",
   "tipo": "caca",

@@ -379,6 +379,7 @@ func _give_rewards(_src: String) -> void:
 	if not ac.is_empty() and participants.has(ac["uuid"]):
 		Game.bond_activity(ac["uuid"], "vitoria:bruxa")
 	Game.grant_eco(r["eco"])
+	Game.set_flag("eco_olhar_velado")      # nome usado pela Região 4
 	world.boss_finished(self)
 	Audio.play("boss_die")
 	world.shake(4.0, 1.0)

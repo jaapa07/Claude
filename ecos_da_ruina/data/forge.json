@@ -70,6 +70,17 @@
     "pocao"
    ]
   },
+  "refugio": {
+   "nome": "Banca do Odo",
+   "itens": [
+    "selo_basico",
+    "selo_refinado",
+    "pocao",
+    "tonico_criatura",
+    "lasca_umbral",
+    "brasa_solar"
+   ]
+  },
   "dalva": {
    "nome": "Banca da Dalva",
    "itens": [

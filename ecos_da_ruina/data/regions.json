@@ -71,10 +71,20 @@
    24
   ],
   "nucleo": "refugio_muralha",
-  "mapas": [],
+  "mapas": [
+   "ponte_espiritual",
+   "refugio_muralha",
+   "jardins_suspensos",
+   "muralha_partida",
+   "torre_a",
+   "torre_b",
+   "rito_eclipse",
+   "torre_c",
+   "estrada_final"
+  ],
   "guardiao": "cavaleiro",
   "eco": "passo_umbral",
-  "status": "não implementada"
+  "status": "jogavel"
  },
  "catedral": {
   "nome": "Catedral do Vazio",

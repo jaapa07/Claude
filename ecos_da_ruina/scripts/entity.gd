@@ -385,6 +385,7 @@ func _open_chest() -> void:
 	Game.chests[eid] = true
 	set_frame(true)
 	Audio.play("pickup")
+	Audio.on_treasure(def.get("loot", {}))
 	Game.give_loot(def.get("loot", {}))
 	if def.has("set_flag"):
 		Game.set_flag(def["set_flag"])
@@ -478,12 +479,14 @@ func _draft() -> void:
 		world.steam_at(global_position + Vector2(0, -6), 1.2)
 		Game.set_flag(flag)
 		world.say(def.get("msg", "Você força a placa solta de onde o vapor vazava. Uma passagem!"))
+		Audio.on_treasure({}, true)
 		steam.visible = false
 		return
 	if world.creature_action(self, "fumaca", "%s soprou fumaça: a corrente de ar revela uma fresta na rocha!",
 			"Um ar frio escapa da rocha... algo que faça fumaça mostraria por onde. (Fuligin)"):
 		world.smoke_cloud(global_position + Vector2(0, 10), 20.0, 2.0)
 		Audio.play("dodge")
+		Audio.on_treasure({}, true)
 		Game.set_flag(flag)
 		steam.visible = false
 
@@ -502,6 +505,7 @@ func break_rock() -> void:
 		return
 	Game.set_flag(flag)
 	Audio.play("thud")
+	Audio.on_treasure({}, true)
 	world.fx_at("shards", global_position + Vector2(0, -4), 0.5, 0.0, 1.4)
 	world.say("A Ruptura Ígnea partiu a rocha fissurada!")
 	if sprite:

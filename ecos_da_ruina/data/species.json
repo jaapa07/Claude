@@ -898,16 +898,30 @@
   "hp_cresc": 5,
   "atk_base": 8,
   "atk_cresc": 1.2,
-  "skill": "avanco",
-  "passiva": "",
+  "skill": "investida_umbral",
+  "habilidades": [
+   {
+    "id": "investida_umbral",
+    "nivel": 1
+   },
+   {
+    "id": "garras_sombra",
+    "nivel": 19
+   },
+   {
+    "id": "veu_umbral",
+    "nivel": 21
+   }
+  ],
+  "passiva": "Passo leve: 15% de chance de evitar golpes.",
   "acao_ambiental": "Aciona receptores em frestas",
   "acao_id": "fresta",
   "evolucao": {
    "para": "umbrafel",
    "nivel": 22
   },
-  "habitat": "Fortaleza do Eclipse",
-  "sprite": "",
+  "habitat": "Muralha Partida (sombra das ameias)",
+  "sprite": "umbrel",
   "frame": [
    20,
    20
@@ -915,11 +929,13 @@
   "basic": {
    "tipo": "melee",
    "alcance": 18,
-   "recarga": 1.0
+   "recarga": 0.9
   },
   "regiao": 4,
-  "status": "planejada",
-  "descricao": ""
+  "status": "jogavel",
+  "descricao": "Um gatinho feito de sombra de muralha. Some no escuro e surge onde o olho alcança; cabe em qualquer fresta.",
+  "pequeno": true,
+  "esquiva": 0.15
  },
  "ventisco": {
   "nome": "Ventisco",
@@ -930,16 +946,30 @@
   "hp_cresc": 4,
   "atk_base": 8,
   "atk_cresc": 1.1,
-  "skill": "pulso",
-  "passiva": "",
+  "skill": "rajada",
+  "habilidades": [
+   {
+    "id": "rajada",
+    "nivel": 1
+   },
+   {
+    "id": "redemoinho",
+    "nivel": 19
+   },
+   {
+    "id": "penas_cortantes",
+    "nivel": 21
+   }
+  ],
+  "passiva": "Pena leve: não é desacelerado pelo frio.",
   "acao_ambiental": "Move hélices e dispersa névoa",
   "acao_id": "helice",
   "evolucao": {
    "para": "vendraco",
    "nivel": 22
   },
-  "habitat": "Fortaleza do Eclipse",
-  "sprite": "",
+  "habitat": "Jardins Suspensos (Ninho dos Ventos, sempre no mesmo terraço)",
+  "sprite": "ventisco",
   "frame": [
    20,
    20
@@ -950,8 +980,9 @@
    "recarga": 1.0
   },
   "regiao": 4,
-  "status": "planejada",
-  "descricao": ""
+  "status": "jogavel",
+  "descricao": "Passarinho-nuvem dos terraços. Uma batida de asa vira rajada: gira hélices e espanta a névoa.",
+  "pequeno": true
  },
  "brasardo": {
   "nome": "Brasardo",
@@ -962,16 +993,30 @@
   "hp_cresc": 5,
   "atk_base": 9,
   "atk_cresc": 1.3,
-  "skill": "avanco",
-  "passiva": "",
+  "skill": "salto_brasa",
+  "habilidades": [
+   {
+    "id": "salto_brasa",
+    "nivel": 1
+   },
+   {
+    "id": "carapaca_brasa",
+    "nivel": 20
+   },
+   {
+    "id": "chuva_brasas",
+    "nivel": 22
+   }
+  ],
+  "passiva": "Couro de brasa: imune a pisos quentes e poças de escória.",
   "acao_ambiental": "Reaquece mecanismos antigos",
   "acao_id": "calor",
   "evolucao": {
    "para": "solarco",
    "nivel": 23
   },
-  "habitat": "Fortaleza do Eclipse",
-  "sprite": "",
+  "habitat": "Muralha Partida (respiros quentes da forja antiga)",
+  "sprite": "brasardo",
   "frame": [
    20,
    20
@@ -979,11 +1024,168 @@
   "basic": {
    "tipo": "melee",
    "alcance": 18,
-   "recarga": 1.0
+   "recarga": 0.9
   },
   "regiao": 4,
-  "status": "planejada",
-  "descricao": ""
+  "status": "jogavel",
+  "descricao": "Tatu de placas douradas que dorme encostado nos braseiros antigos. Quando salta, explode em brasa.",
+  "pequeno": true,
+  "imune_calor": true
+ },
+ "umbrafel": {
+  "nome": "Umbrafel",
+  "afinidade": "sombra",
+  "raridade": "comum",
+  "papel": "Mobilidade",
+  "hp_base": 70,
+  "hp_cresc": 6,
+  "atk_base": 11,
+  "atk_cresc": 1.4,
+  "skill": "investida_umbral",
+  "habilidades": [
+   {
+    "id": "investida_umbral",
+    "nivel": 1
+   },
+   {
+    "id": "garras_sombra",
+    "nivel": 19
+   },
+   {
+    "id": "veu_umbral",
+    "nivel": 21
+   },
+   {
+    "id": "eclipse_umbral",
+    "nivel": 22
+   },
+   {
+    "id": "manto_noturno",
+    "nivel": 25
+   }
+  ],
+  "passiva": "Passo leve: 20% de chance de evitar golpes.",
+  "acao_ambiental": "Aciona receptores em frestas",
+  "acao_id": "fresta",
+  "evolucao": null,
+  "habitat": "Evolução de Umbrel",
+  "sprite": "umbrafel",
+  "frame": [
+   28,
+   28
+  ],
+  "basic": {
+   "tipo": "melee",
+   "alcance": 22,
+   "recarga": 0.8
+  },
+  "regiao": 4,
+  "status": "jogavel",
+  "descricao": "Pantera de sombra com um crescente dourado na testa. Atravessa o campo de ponto visível em ponto visível.",
+  "esquiva": 0.2
+ },
+ "vendraco": {
+  "nome": "Vendraco",
+  "afinidade": "vento",
+  "raridade": "comum",
+  "papel": "Distância",
+  "hp_base": 62,
+  "hp_cresc": 5,
+  "atk_base": 11,
+  "atk_cresc": 1.3,
+  "skill": "rajada",
+  "habilidades": [
+   {
+    "id": "rajada",
+    "nivel": 1
+   },
+   {
+    "id": "redemoinho",
+    "nivel": 19
+   },
+   {
+    "id": "penas_cortantes",
+    "nivel": 21
+   },
+   {
+    "id": "tufao",
+    "nivel": 22
+   },
+   {
+    "id": "asas_tempestade",
+    "nivel": 25
+   }
+  ],
+  "passiva": "Pena leve: não é desacelerado pelo frio.",
+  "acao_ambiental": "Move hélices e dispersa névoa",
+  "acao_id": "helice",
+  "evolucao": null,
+  "habitat": "Evolução de Ventisco",
+  "sprite": "vendraco",
+  "frame": [
+   28,
+   28
+  ],
+  "basic": {
+   "tipo": "ranged",
+   "alcance": 100,
+   "recarga": 0.9
+  },
+  "regiao": 4,
+  "status": "jogavel",
+  "descricao": "Serpe de penas que mora nas correntes de ar das torres. Seu tufão varre corredores inteiros."
+ },
+ "solarco": {
+  "nome": "Solarco",
+  "afinidade": "brasa",
+  "raridade": "incomum",
+  "papel": "Agressão",
+  "hp_base": 70,
+  "hp_cresc": 6,
+  "atk_base": 12,
+  "atk_cresc": 1.5,
+  "skill": "salto_brasa",
+  "habilidades": [
+   {
+    "id": "salto_brasa",
+    "nivel": 1
+   },
+   {
+    "id": "carapaca_brasa",
+    "nivel": 20
+   },
+   {
+    "id": "chuva_brasas",
+    "nivel": 22
+   },
+   {
+    "id": "coroa_solar",
+    "nivel": 23
+   },
+   {
+    "id": "salto_solar",
+    "nivel": 26
+   }
+  ],
+  "passiva": "Couro de brasa: imune a pisos quentes e poças de escória.",
+  "acao_ambiental": "Reaquece mecanismos antigos",
+  "acao_id": "calor",
+  "evolucao": null,
+  "habitat": "Evolução de Brasardo",
+  "sprite": "solarco",
+  "frame": [
+   28,
+   28
+  ],
+  "basic": {
+   "tipo": "melee",
+   "alcance": 22,
+   "recarga": 0.8
+  },
+  "regiao": 4,
+  "status": "jogavel",
+  "descricao": "Leão-sol de juba radiante. Sua coroa de luz desperta máquinas que dormiam desde o primeiro eclipse.",
+  "imune_calor": true
  },
  "cristil": {
   "nome": "Cristil",

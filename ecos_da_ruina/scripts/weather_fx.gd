@@ -250,7 +250,7 @@ func _update_icon(id: String) -> void:
 	if id == "":
 		return
 	var c: Dictionary = Weather.climates().get(id, {})
-	icon.texture = Art.region("clima_icones", int(c.get("icone", 0)) * 16, 0, 16, 16)
+	icon.texture = Art.region(str(c.get("folha", "clima_icones")), int(c.get("icone", 0)) * 16, 0, 16, 16)
 	icon_lab.text = Weather.short_name(id)
 
 func _update_icon_visibility() -> void:

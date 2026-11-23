@@ -305,8 +305,3 @@ end
 sheet quadro_porto.png 32 32 1
 quadro_porto
 end
-
-# o quadro de contratos da Vila e da Forja usa o mesmo desenho (a folha faltava no projeto)
-sheet quadro_contratos.png 32 32 1
-quadro_porto
-end

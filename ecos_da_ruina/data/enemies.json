@@ -400,6 +400,142 @@
   "pequeno": true,
   "capturavel": false
  },
+ "lanceiro": {
+  "nome": "Lanceiro do Eclipse",
+  "hp": 170,
+  "dano": 24,
+  "vel": 40,
+  "xp": 40,
+  "frag": [
+   10,
+   18
+  ],
+  "sprite": "lanceiro",
+  "frame": [
+   24,
+   32
+  ],
+  "ataque": "estocada",
+  "raio": 9,
+  "percepcao": 120,
+  "relevante": true,
+  "pequeno": false,
+  "capturavel": false,
+  "nivel": 20,
+  "guarda_frontal": 0.2,
+  "drops": {
+   "lasca_umbral": [
+    0.4,
+    1
+   ]
+  }
+ },
+ "arqueiro": {
+  "nome": "Arqueiro do Eclipse",
+  "hp": 110,
+  "dano": 18,
+  "vel": 56,
+  "xp": 36,
+  "frag": [
+   9,
+   16
+  ],
+  "sprite": "arqueiro",
+  "frame": [
+   24,
+   32
+  ],
+  "ataque": "flecha",
+  "raio": 8,
+  "percepcao": 170,
+  "relevante": true,
+  "pequeno": false,
+  "capturavel": false,
+  "nivel": 20,
+  "drops": {
+   "pluma_vento": [
+    0.25,
+    1
+   ]
+  }
+ },
+ "armadura": {
+  "nome": "Armadura Vigilante",
+  "hp": 260,
+  "dano": 22,
+  "vel": 30,
+  "xp": 55,
+  "frag": [
+   14,
+   22
+  ],
+  "sprite": "armadura",
+  "frame": [
+   32,
+   34
+  ],
+  "ataque": "golpe",
+  "raio": 11,
+  "percepcao": 110,
+  "relevante": true,
+  "pequeno": false,
+  "capturavel": false,
+  "nivel": 21,
+  "drops": {
+   "lasca_umbral": [
+    0.5,
+    1
+   ]
+  }
+ },
+ "gemeos": {
+  "nome": "Gêmeos de Ferro",
+  "hp": 520,
+  "dano": 22,
+  "vel": 46,
+  "xp": 0,
+  "frag": [
+   0,
+   0
+  ],
+  "sprite": "gemeo_ferro",
+  "frame": [
+   40,
+   40
+  ],
+  "ataque": "gemeos",
+  "raio": 13,
+  "percepcao": 400,
+  "relevante": true,
+  "pequeno": false,
+  "capturavel": false,
+  "miniboss": true,
+  "nivel": 21
+ },
+ "cavaleiro": {
+  "nome": "Cavaleiro Sem Rosto",
+  "hp": 1500,
+  "dano": 30,
+  "vel": 46,
+  "xp": 0,
+  "frag": [
+   0,
+   0
+  ],
+  "sprite": "cavaleiro",
+  "frame": [
+   64,
+   64
+  ],
+  "ataque": "cavaleiro",
+  "raio": 16,
+  "percepcao": 600,
+  "relevante": true,
+  "pequeno": false,
+  "capturavel": false,
+  "miniboss": false,
+  "nivel": 24
+ },
  "sapo": {
   "nome": "Sapo de Lodo",
   "hp": 96,

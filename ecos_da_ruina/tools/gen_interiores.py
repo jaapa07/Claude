@@ -15,7 +15,7 @@ def room(mid, name, rw, rh, floor="1", wall="5"):
             g[j][i] = floor if inside else wall
     door_x = x0 + rw // 2 - 1
     g[y0 + rh][door_x] = "7"; g[y0 + rh][door_x + 1] = "7"
-    return {"id": mid, "name": name, "music": "vila", "region": "floresta", "safe": True, "w": W, "h": H, "g": g, "x0": x0, "y0": y0,
+    return {"id": mid, "name": name, "music": "casa", "region": "floresta", "safe": True, "w": W, "h": H, "g": g, "x0": x0, "y0": y0,
             "spawns": {"entrada": [door_x, y0 + rh - 1]}, "entities": [], "conditional": [], "puzzles": {},
             "door": (door_x, y0 + rh)}
 

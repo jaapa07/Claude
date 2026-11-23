@@ -146,6 +146,7 @@ func _ready() -> void:
 	Game.team_changed.connect(_on_team_changed)
 	Game.party_changed.connect(_on_party_changed)
 	Weather.attach(self)
+	Fortaleza.attach(self)   # Região 4: chefes, feixes de luz, retorno ao Refúgio
 
 func _make_tileset() -> TileSet:
 	if _tileset:
@@ -200,10 +201,12 @@ func _make_tileset() -> TileSet:
 				src4.set_tile_animation_frame_duration(c4, 0, 0.9)
 				src4.set_tile_animation_frame_duration(c4, 1, 0.9)
 		ts.add_source(src4, 3)
+	Fortaleza.add_source(ts)   # Região 4 (fonte 4 do TileSet)
 	_tileset = ts
 	return ts
 
 func _tc(name: String) -> Vector2i:
+	if Fortaleza.is_name(name): return Fortaleza.coords(name)
 	var i := TILE_NAMES.find(name)
 	if i < 0:
 		i = MINAS_NAMES.find(name)
@@ -215,6 +218,7 @@ func _tc(name: String) -> Vector2i:
 
 ## Fonte do atlas: 0 = floresta (tiles2.png), 1 = minas (tiles_minas.png)
 func _src(name: String) -> int:
+	if Fortaleza.is_name(name): return Fortaleza.SOURCE_ID
 	if INT_NAMES.has(name):
 		return 2
 	if PANTANO_NAMES.has(name):
@@ -390,6 +394,7 @@ func _cell_tiles(x: int, y: int) -> Array:
 			out[0] = "agua_clara0" if _water_clear() else "agua_funda0"
 			out[1] = "pilar_submerso"
 		";": out[0] = "degraus"
+	if Fortaleza.CHARS.contains(c): out = Fortaleza.cell_tiles(self, x, y, c, hv)   # Região 4
 	return out
 
 ## Comprimento da sequência do mesmo caractere passando por (x, y) na direção d (orienta as tábuas da passarela).
@@ -419,7 +424,7 @@ func _paint_cell(i: int, j: int) -> void:
 		cover.set_cell(Vector2i(i, j - 1), _src(t[3]), _tc(t[3]))
 
 func is_solid_char(c: String) -> bool:
-	return SOLID.contains(c)
+	return SOLID.contains(c) or Fortaleza.SOLID.contains(c)
 
 # =============================================================== CARREGAR MAPA
 ## spawn: nome do ponto de entrada; pos: posição em pixels (sobrepõe o spawn, usada por continue/checkpoint).
@@ -479,9 +484,9 @@ func load_map(id: String, spawn: String = "default", pos: Variant = null) -> voi
 	camera.limit_right = W * TILE; camera.limit_bottom = H * TILE
 	_spawn_all(sp)
 	refresh_companion(false)
+	Audio.enter_map(id, map)
 	refresh_party()
 	_spawn_contract()
-	Audio.music(map.get("music", ""))
 	Game.location = {"map": id, "spawn": spawn, "pos": [sp.x, sp.y]}
 	if ui:
 		ui.banner(map.get("name", id))
@@ -508,6 +513,8 @@ func _compute_tiles() -> void:
 			continue
 		if c.has("unless") and Game.has_flag(c["unless"]):
 			continue
+		if c.has("eco") and not (Game.has_eco(c["eco"]) or Game.has_flag("eco_" + str(c["eco"]))):
+			continue   # ex.: a ponte espiritual só existe para quem tem o Olhar Velado
 		for r in c.get("rects", []):
 			for j in range(int(r[3])):
 				for i in range(int(r[2])):
@@ -583,6 +590,8 @@ func _rebuild_collision() -> void:
 				i += 1
 
 func refresh_tiles() -> void:
+	if base_tiles.size() != H or cur_tiles.size() != H:
+		return     # mapa em troca (load_map limpa flags temporárias antes de ler os tiles novos)
 	var before := cur_tiles.duplicate(true)
 	_compute_tiles()
 	var changed := false
@@ -652,7 +661,7 @@ func _spawn_def(i: int, player_pos: Vector2 = Vector2(-9999, -9999)) -> void:
 		"enemy":
 			if d.has("enc") and Game.has_flag(_enc_done_flag(d["enc"])):
 				return
-			var en2 := Enemy.new()
+			var en2: Enemy = Fortaleza.new_enemy(d["kind"])
 			en2.init(self, d["kind"], d)
 			if player_pos.distance_to(en2.position) < 80.0:
 				return
@@ -679,6 +688,11 @@ func _spawn_def(i: int, player_pos: Vector2 = Vector2(-9999, -9999)) -> void:
 			bb.init(self, bk, d)
 			node = bb
 			boss_nodes[i] = bb
+		_:
+			if Fortaleza.ENT_KINDS.has(t):   # mecanismos da Região 4 (scripts/fort_ent.gd)
+				var fe := FortEnt.new()
+				fe.init(self, d)
+				node = fe
 	if node != null:
 		ysort.add_child(node)
 		ent_nodes[i] = node
@@ -813,7 +827,7 @@ func _spawn_contract() -> void:
 		d["contrato"] = cid
 		if not d.has("id"):
 			d["id"] = "%s_f%d_%d" % [cid, int(d["x"]), int(d["y"])]
-		var en := Enemy.new()
+		var en: Enemy = Fortaleza.new_enemy(d["kind"])
 		en.init(self, d["kind"], d)
 		ysort.add_child(en)
 		if d["kind"] == "vesna":
@@ -821,7 +835,7 @@ func _spawn_contract() -> void:
 	say("Contrato: " + c["objetivo"])
 	if boss_node != null:
 		ui.boss_bar(boss_node)
-		Audio.music("chefao")
+		Audio.set_mood("chefe", true, "chefao")
 
 ## Um domador do contrato caiu: as feras dele ficam livres (e podem ser capturadas); se não sobrou nenhum, o contrato termina.
 func contract_enemy_down(e: Node) -> void:
@@ -831,7 +845,7 @@ func contract_enemy_down(e: Node) -> void:
 			f.liberate()
 	if e.kind == "vesna":
 		ui.boss_bar(null)
-		Audio.music(map.get("music", ""))
+		Audio.set_mood("chefe", false)
 	var left := 0
 	for o in enemies():
 		if o != e and o.alive_flag and o.contrato == cid and o.kind != "fera":
@@ -840,6 +854,7 @@ func contract_enemy_down(e: Node) -> void:
 		return
 	Game.complete_contract(cid)
 	Audio.play("puzzle_ok")
+	Audio.stinger("vitoria")
 	var lines: Array = ["Contrato concluído: " + Data.contracts[cid]["nome"] + "!"]
 	for a in allies():
 		lines.append(Data.allies[a.aid]["falas"]["fim"])
@@ -958,6 +973,7 @@ func _physics_process(delta: float) -> void:
 	_update_encounters()
 	_update_camera(delta)
 	_update_darkness(delta)
+	Audio.world_tick(self, delta)
 	_update_heat(delta)
 	_update_chapter_end()
 	if light_boost_t > 0.0:
@@ -1209,7 +1225,9 @@ func talk_to(npc: Ent) -> void:
 func start_dialog(did: String, speaker: Node = null) -> void:
 	var v := pick_variant(did)
 	player.set_busy(true)
+	Audio.dialog_mood(did, true)
 	ui.dialog(v["lines"], func():
+		Audio.dialog_mood(did, false)
 		for f in v.get("set", []):
 			Game.set_flag(f)
 		for k in v.get("take", {}):
@@ -1373,7 +1391,7 @@ func cell_free_for_crate(pos: Vector2, me: Node) -> bool:
 
 func reset_room_puzzles() -> void:
 	## Reinicia caixas e alavancas ainda não resolvidas (evita travar por caixa encurralada).
-	const RESET := ["crate", "lever", "flower", "plate", "cart", "furnace", "rail_lever", "brazier"]
+	var RESET: Array = ["crate", "lever", "flower", "plate", "cart", "furnace", "rail_lever", "brazier"] + Fortaleza.RESET_KINDS
 	for i in ent_defs.size():
 		var d: Dictionary = ent_defs[i]
 		if d["type"] in RESET:
@@ -1383,8 +1401,8 @@ func reset_room_puzzles() -> void:
 			ent_nodes.erase(i)
 		elif d["type"] == "valve" and (d.has("dura") or str(d.get("flag", "")).begins_with("tmp_")):
 			Game.set_flag(d["flag"], false)      # válvulas temporizadas do rito voltam a fechar
-		elif d["type"] == "rail_lever":
-			pass
+		elif d["type"] == "eclipse" and str(d.get("flag", "")).begins_with("tmp_"):
+			Game.set_flag(d["flag"], false)      # Região 4: o eclipse do rito volta ao sol
 		if d["type"] == "rail_lever":
 			rail_switch[d["id"]] = str(d.get("start", "a"))
 	for g in map.get("puzzles", {}):
@@ -1398,6 +1416,7 @@ func reset_room_puzzles() -> void:
 	for i in ent_defs.size():
 		if ent_defs[i]["type"] in RESET:
 			_spawn_def(i)
+	FortEnt.retrace(self)
 
 # =============================================================== ENCONTROS
 func _update_encounters() -> void:
@@ -1439,12 +1458,12 @@ func enemy_died(e: Node) -> void:
 func boss_started(b: Node) -> void:
 	active_boss = b
 	ui.boss_bar(b)
-	Audio.music("chefao")
+	Audio.boss_music(str(b.kind), true)
 
 func boss_finished(b: Node) -> void:
 	active_boss = null
 	ui.boss_bar(null)
-	Audio.music(map.get("music", ""))
+	Audio.boss_music(str(b.kind), false, not b.alive_flag)
 
 # =============================================================== MORTE E RETOMADA
 func on_player_died() -> void:
@@ -1676,6 +1695,7 @@ func fire_area(origin: Vector2, dir: Vector2, rad: float, arc: float, src: Strin
 				var ac := Game.active_ind()
 				if not ac.is_empty():
 					Game.bond_activity(ac["uuid"], "acao:" + e.eid)
+	n += FortEnt.heat_area(self, origin, dir, rad, arc)   # Região 4: mecanismos antigos
 	return n
 
 # =============================================================== ECO: RUPTURA ÍGNEA

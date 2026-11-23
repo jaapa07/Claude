@@ -41,8 +41,8 @@
   {
    "if": "falou_maru",
    "lines": [
-    "Maru: Pegue os Selos de Vínculo e vá ao cercado, a oeste. Enfraqueça o Brotisco até 35% e use F.",
-    "Maru: Treine nos bonecos primeiro: J ataca, Espaço esquiva, K defende."
+    "Maru: Pegue os Selos de Vínculo e vá ao cercado, a oeste. Mire com {capturar} e lance o selo; quanto mais fraco ele estiver, maior a chance (a barra fica laranja no ponto ideal).",
+    "Maru: Treine nos bonecos primeiro: {atacar} ataca, {esquivar} esquiva, {defender} defende."
    ]
   },
   {
@@ -179,7 +179,7 @@
  "treino": [
   {
    "lines": [
-    "Placa: CAMPO DE TREINO — J / clique esquerdo: golpe (combo de 3). K / clique direito: defender. Espaço: esquivar."
+    "Placa: CAMPO DE TREINO — {atacar}: golpe (combo de 3). {defender}: defender. {esquivar}: esquivar."
    ]
   }
  ],
@@ -358,7 +358,7 @@
   {
    "lines": [
     "Tessa: Meus companheiros desceram e voltaram... diferentes. Agora arremessam picaretas em qualquer um.",
-    "Tessa: Defenda-se de frente (K) ou saia da linha do arremesso. Derrote quatro deles e traga as ferramentas de volta."
+    "Tessa: Defenda-se de frente ({defender}) ou saia da linha do arremesso. Derrote quatro deles e traga as ferramentas de volta."
    ],
    "set": [
     "quest_ferramentas"
@@ -745,6 +745,322 @@
    "contratos": true
   }
  ],
+ "ilse": [
+  {
+   "lines": [
+    "Ilse: A guarnição está em casa. Eu nunca vou conseguir pagar isso, Vinculador.",
+    "Ilse: O portão norte está aberto: a Estrada Final leva à Catedral do Vazio. Que o seu Passo Umbral encontre o caminho."
+   ],
+   "if": "voltou_refugio"
+  },
+  {
+   "lines": [
+    "Ilse: O Cavaleiro caiu? Então os meus soldados... estão voltando! Ouço os passos deles na muralha!"
+   ],
+   "if": "cavaleiro_morto"
+  },
+  {
+   "lines": [
+    "Ilse: Os Gêmeos de Ferro caíram. Acima deles fica o Rito do Eclipse e, no topo, o trono do Cavaleiro Sem Rosto.",
+    "Ilse: Ele vira o escudo para quem o encara. Espere a estocada — depois dela a lâmina crava no chão. E observe a postura dele."
+   ],
+   "if": "gemeos_morto"
+  },
+  {
+   "lines": [
+    "Ilse: Duas rotas levam à Torre das Duas Sombras: os Jardins Suspensos, ao sul, e a Muralha Partida, a leste.",
+    "Ilse: Na torre, luz e sombra mudam o caminho. Espelhos desviam o feixe; persianas o cortam.",
+    "Ilse: O quadro ao lado da praça tem contratos. O mascate Odo vende o que sobrou do nosso armazém."
+   ],
+   "if": "falou_ilse"
+  },
+  {
+   "lines": [
+    "Ilse: Um Vinculador... atravessou a ponte espiritual? Então o Olhar Velado é real.",
+    "Ilse: Sou Ilse, capitã do que restou da guarnição. No dia do eclipse, o nosso comandante tirou o próprio rosto e virou o Cavaleiro Sem Rosto.",
+    "Ilse: Os meus soldados foram arrastados para as sombras da Torre das Duas Sombras. Só sobraram as famílias, aqui no Refúgio.",
+    "Ilse: Leve estes tônicos. Liberte a torre e a estrada para a Catedral se abre."
+   ],
+   "set": [
+    "falou_ilse"
+   ],
+   "give": {
+    "pocao": 3,
+    "selo_refinado": 2
+   }
+  }
+ ],
+ "talia": [
+  {
+   "lines": [
+    "Tália: As hélices giram de novo com as plumas certas. Os Ventiscos voltaram a dançar no Ninho!"
+   ],
+   "if": "penas_entregue"
+  },
+  {
+   "lines": [
+    "Tália: Três Plumas de Vento! Com elas eu acerto o passo das hélices dos jardins.",
+    "Tália: Tome: um Néctar de Vínculo e uma Semente de Vida que guardei do canteiro antigo."
+   ],
+   "if": "penas_ok",
+   "set": [
+    "penas_entregue"
+   ],
+   "take": {
+    "pluma_vento": 3
+   },
+   "give": {
+    "tonico_criatura": 2,
+    "semente_vida": 1
+   },
+   "bond": "missao:penas"
+  },
+  {
+   "lines": [
+    "Tália: As plumas ficam onde o vento dorme: no Ninho dos Ventos e nos terraços dos arqueiros."
+   ],
+   "if": "quest_penas"
+  },
+  {
+   "lines": [
+    "Tália: Cuido destes canteiros desde antes do eclipse. Lá fora, nos Jardins Suspensos, as hélices pararam.",
+    "Tália: Sem vento, a névoa cortante toma os terraços. Uma manivela gira cada hélice — e um Ventisco sopra até de longe.",
+    "Tália: Se achar Plumas de Vento pelo caminho, me traga três?"
+   ],
+   "set": [
+    "quest_penas"
+   ]
+  }
+ ],
+ "lume": [
+  {
+   "lines": [
+    "Lume: Agora eu ajudo no quartel. Quando crescer, vou ser sentinela igual ao meu pai!"
+   ],
+   "if": "recado_entregue"
+  },
+  {
+   "lines": [
+    "Lume: É... a letra do meu pai. \"Seu pai não desertou.\" Eu sabia!",
+    "Lume: Ele guardava isto para quando eu fosse corajoso. Acho que é pra você."
+   ],
+   "if": "recado_achado",
+   "set": [
+    "recado_entregue"
+   ],
+   "take": {
+    "diario_guarnicao": 1
+   },
+   "give": {
+    "garra_cobre": 1,
+    "fragmentos": 120
+   },
+   "bond": "missao:recado"
+  },
+  {
+   "lines": [
+    "Lume: O meu pai patrulhava a Muralha Partida, na plataforma sul. Se achar alguma coisa dele..."
+   ],
+   "if": "quest_recado"
+  },
+  {
+   "lines": [
+    "Lume: Você é Vinculador? O meu pai, o Sargento Aurélio, sumiu na Muralha Partida no dia do eclipse.",
+    "Lume: Dizem que ele fugiu. Eu não acredito. Se achar alguma coisa dele, me traz?"
+   ],
+   "set": [
+    "quest_recado"
+   ]
+  }
+ ],
+ "odo": [
+  {
+   "lines": [
+    "Odo: Selos, tônicos e lascas da muralha. Pago em fragmentos, vendo em fragmentos!"
+   ],
+   "shop": "refugio"
+  }
+ ],
+ "soldado": [
+  {
+   "lines": [
+    "Soldado: Eu lembro de tudo: o escudo, a sombra, o rosto dele indo embora. Obrigado por nos trazer de volta."
+   ]
+  }
+ ],
+ "soldado2": [
+  {
+   "lines": [
+    "Soldado: A Estrada Final sobe até o selo da Catedral. Há uma fissura violeta no caminho — só o Passo Umbral atravessa."
+   ]
+  }
+ ],
+ "placa_ponte": [
+  {
+   "lines": [
+    "Placa gasta: \"PONTE DOS VIGIAS — só os olhos que veem o oculto encontram o caminho sobre o abismo.\"",
+    "(Sem o Olhar Velado não há ponte alguma. Com ele, a ponte espiritual aparece.)"
+   ]
+  }
+ ],
+ "placa_ponte_leste": [
+  {
+   "lines": [
+    "Placa: \"Refúgio da Muralha, a leste. Viajante: os vigias do Eclipse atiram em quem vem da ponte.\""
+   ]
+  }
+ ],
+ "placa_refugio": [
+  {
+   "lines": [
+    "Placa do Refúgio: Portão sul — Jardins Suspensos. Portão leste — Muralha Partida. Portão norte — Estrada Final (trancado desde o eclipse)."
+   ]
+  }
+ ],
+ "placa_jardins": [
+  {
+   "lines": [
+    "Placa: \"JARDINS SUSPENSOS. Sem vento, a névoa cortante fecha os terraços: gire as hélices.\""
+   ]
+  }
+ ],
+ "placa_helices": [
+  {
+   "lines": [
+    "Placa: \"Manivela da hélice do Ninho. Gire (E) e o vento empurra a névoa.\"",
+    "(Um Ventisco ativo também sopra hélices e névoa — de perto ou com a Rajada (Q), até de longe.)"
+   ]
+  }
+ ],
+ "placa_muralha": [
+  {
+   "lines": [
+    "Placa: TRILHA DA MURALHA — a ponte espiritual leva às montanhas e à Fortaleza do Eclipse."
+   ]
+  }
+ ],
+ "placa_solar": [
+  {
+   "lines": [
+    "Placa: \"A ponte levadiça desce com o calor do mecanismo antigo. Leve uma chama do braseiro (E) — ou peça a um Brasardo.\""
+   ]
+  }
+ ],
+ "placa_fresta": [
+  {
+   "lines": [
+    "Placa: \"A grade abre por dentro, pela fresta. Quem não cabe nela use a alavanca no fim da plataforma sul.\"",
+    "(Um Umbrel ativo entra na fresta e aciona o receptor.)"
+   ]
+  }
+ ],
+ "placa_balestra": [
+  {
+   "lines": [
+    "Placa: \"Balestra do bastião. Dispare (E) no receptor do outro lado do fosso para erguer a grade da torre.\""
+   ]
+  }
+ ],
+ "placa_torre": [
+  {
+   "lines": [
+    "Placa: \"TORRE DAS DUAS SOMBRAS. O Salão do Eclipse, ao norte, guarda a porta para os andares de cima.\"",
+    "\"A ala oeste esconde a passagem antiga ao Refúgio.\""
+   ]
+  }
+ ],
+ "placa_espelhos": [
+  {
+   "lines": [
+    "Inscrição: A luz entra pelo oeste e procura o cristal ao norte.",
+    "Inscrição: Gire os espelhos (E). A luz sobe pela coluna leste antes de voltar para oeste."
+   ]
+  }
+ ],
+ "placa_ala_sombra": [
+  {
+   "lines": [
+    "Inscrição: \"Com o sol, a ponte de ouro. Com a lua, a ponte de sombra.\" (A alavanca do eclipse alterna as duas.)"
+   ]
+  }
+ ],
+ "placa_helices_torre": [
+  {
+   "lines": [
+    "Inscrição: \"Gire a manivela e as pás da torre rasgam a névoa.\" (A névoa do corredor lateral só um vento de criatura alcança.)"
+   ]
+  }
+ ],
+ "placa_receptores": [
+  {
+   "lines": [
+    "Inscrição: \"Dois cristais: um bebe luz, o outro, um disparo. Os dois juntos abrem a arena dos Gêmeos.\""
+   ]
+  }
+ ],
+ "placa_gemeos": [
+  {
+   "lines": [
+    "Inscrição riscada: \"Os Gêmeos de Ferro nunca atacam juntos. Quem espera a vez se defende; quem acabou de atacar fica exposto.\""
+   ]
+  }
+ ],
+ "rito_e_placa1": [
+  {
+   "lines": [
+    "Voz antiga: \"Primeira lição do Eclipse: a luz caminha reta, e o que se fecha diante dela a detém.\"",
+    "(Abra a persiana para o feixe alcançar o cristal.)"
+   ]
+  }
+ ],
+ "rito_e_placa2": [
+  {
+   "lines": [
+    "Voz antiga: \"Segunda lição: o espelho dobra a luz. Gire-os até o feixe dar a volta na sala.\"",
+    "(A pedra de reinício recoloca os espelhos. Errou três vezes? Uma dica aparece.)"
+   ]
+  }
+ ],
+ "rito_e_placa3": [
+  {
+   "lines": [
+    "Voz antiga: \"Terceira lição: o sol mostra um caminho, a lua outro. Use os dois.\"",
+    "(O eclipse apaga a lente: acenda o cristal antes de chamar a lua.)"
+   ]
+  }
+ ],
+ "rito_e_placa_av": [
+  {
+   "lines": [
+    "Voz antiga: \"Lição final, para quem já caminha entre as sombras: o cristal está atrás da parede. Os portais levam até ele.\""
+   ]
+  }
+ ],
+ "placa_cavaleiro": [
+  {
+   "lines": [
+    "Inscrição: \"O Cavaleiro Sem Rosto não ouve as suas intenções: ele lê onde você está.\"",
+    "\"Pela frente, o escudo. Depois da estocada, a lâmina presa. Na muralha, use disparos; no espelho, a espada. Entre portais, as costas.\""
+   ]
+  }
+ ],
+ "placa_estrada": [
+  {
+   "lines": [
+    "Placa: \"ESTRADA FINAL. Além da fissura, o selo da Catedral do Vazio.\""
+   ]
+  }
+ ],
+ "placa_catedral": [
+  {
+   "lines": [
+    "O selo externo da Catedral do Vazio pulsa, frio. O caminho continua... (Região 5 — Catedral do Vazio — em desenvolvimento.)"
+   ],
+   "set": [
+    "viu_selo_catedral"
+   ]
+  }
+ ],
  "placa_passagem_sul": [
   {
    "lines": [
@@ -921,13 +1237,6 @@
    ]
   }
  ],
- "placa_muralha": [
-  {
-   "lines": [
-    "Placa: TRILHA DA MURALHA — a ponte espiritual leva às montanhas e à Fortaleza do Eclipse."
-   ]
-  }
- ],
  "placa_passarela": [
   {
    "lines": [
@@ -970,14 +1279,6 @@
   {
    "lines": [
     "Inscrição: SALA DAS MARÉS — o canal só baixa quando a comporta da Galeria oeste é girada."
-   ]
-  }
- ],
- "placa_espelhos": [
-  {
-   "lines": [
-    "Inscrição: A luz entra pelo oeste e procura o cristal ao norte.",
-    "Inscrição: Gire os espelhos (E). A luz sobe pela coluna leste antes de voltar para oeste."
    ]
   }
  ],

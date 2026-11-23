@@ -19,13 +19,17 @@
    "efeito": "Brasa causa +15% de dano; o vigor do herói se recupera 20% mais devagar."},
   "neblina": {"nome": "Neblina", "icone": 5, "tom": "#c8d0d4",
    "percepcao": 0.7,
-   "efeito": "Inimigos enxergam 30% menos: fica mais fácil se esgueirar."}
+   "efeito": "Inimigos enxergam 30% menos: fica mais fácil se esgueirar."},
+  "ventania": {"nome": "Ventania", "icone": 0, "folha": "clima_fortaleza", "tom": "#e4e8f8",
+   "dano": {"vento": 1.15, "brasa": 0.85}, "percepcao": 0.85,
+   "efeito": "Vento causa +15% de dano e brasa -15%; o uivo do vento deixa os inimigos 15% menos atentos."}
  },
  "zonas": {
   "floresta": {"nome": "Floresta", "pesos": {"sol": 5, "chuva": 3, "neblina": 2}},
   "desfiladeiro": {"nome": "Desfiladeiro", "pesos": {"sol": 4, "frio": 3, "neve": 3}},
   "minas": {"nome": "Minas (externo)", "pesos": {"calor": 5, "sol": 3}},
-  "pantano": {"nome": "Pântano", "pesos": {"chuva": 4, "neblina": 4, "sol": 2}}
+  "pantano": {"nome": "Pântano", "pesos": {"chuva": 4, "neblina": 4, "sol": 2}},
+  "fortaleza": {"nome": "Fortaleza (montanhas)", "pesos": {"ventania": 4, "frio": 3, "sol": 3}}
  },
  "mapas": {
   "vila_lumen": "floresta",
@@ -37,7 +41,12 @@
   "pedreira_oca": "minas",
   "porto_lanternas": "pantano",
   "passarela_ecos": "pantano",
-  "lago_reflexos": "pantano"
+  "lago_reflexos": "pantano",
+  "ponte_espiritual": "fortaleza",
+  "refugio_muralha": "fortaleza",
+  "jardins_suspensos": "fortaleza",
+  "muralha_partida": "fortaleza",
+  "estrada_final": "fortaleza"
  },
- "afinidade_inimigos": {"cogumelo": "flora", "lesma": "brasa", "sentinela": "pedra", "automato": "pedra", "sapo": "agua", "planta": "flora", "espectro": "sombra"}
+ "afinidade_inimigos": {"cogumelo": "flora", "lesma": "brasa", "sentinela": "pedra", "automato": "pedra", "lanceiro": "sombra", "arqueiro": "vento", "armadura": "pedra", "sapo": "agua", "planta": "flora", "espectro": "sombra"}
 }

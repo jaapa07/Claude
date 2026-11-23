@@ -192,6 +192,7 @@ func _fill_pause(s: MenuScreen) -> void:
 			else:
 				world.reset_room_puzzles(); s.close(); toast("Enigmas da sala reiniciados."), "Recoloca caixas e alavancas se algo ficou preso. Enigmas resolvidos continuam resolvidos."),
 		_it("Opções", func(): open_options(), "Volume, acessibilidade, controles."),
+		_it("Botões do toque", func(): close_all(); TouchControls.instance.show_legend(), "Mostra o que cada botão da tela faz.", TouchControls.active),
 		_it("Voltar ao título", func(): _confirm("Voltar ao título?", "O progresso não salvo desde o último autosave será perdido.", func(): get_tree().root.get_node("Main").back_to_title()), "Sai da partida."),
 	]
 	s.setup("Pausa — " + world.map.get("name", ""), items, "Pausa — a simulação está parada.")
@@ -251,7 +252,6 @@ func _creature_menu(uuid: String, parent: MenuScreen) -> void:
 		else:
 			Game.set_active(uuid); world.refresh_companion(true); s.close(); _fill_team(parent), "Define esta criatura como a ativa no mapa."))
 	items.append(_it("Apelido…", func(): _rename(ind, func(): s.close(); _fill_team(parent)), "Dá um apelido (até 12 letras)."))
-	items.append(_acc_row(uuid, func(): s.close(); _fill_team(parent)))
 	var ev := Game.evolution_status(ind)
 	items.append(_it("Evoluir" + ("" if ev["possivel"] else " (indisponível)"), func(): _evolve_confirm(ind, func(): s.close(); _fill_team(parent)), ev.get("motivo", "") if not ev["possivel"] else "Confirme a evolução fora de combate.", ev["possivel"] and not world.in_combat()))
 	items.append(_it("Habilidades…", func(): open_habilidades(uuid, func(): s.setup(Game.creature_name(ind), items, creature_info(ind))), "Escolha qual habilidade aprendida a criatura usa no Q (botão estrela no toque)."))
@@ -260,6 +260,7 @@ func _creature_menu(uuid: String, parent: MenuScreen) -> void:
 			world.refresh_companion(true); s.close(); _fill_team(parent)
 		else:
 			toast("Precisa manter ao menos uma criatura na equipe."), "Guarda no armazenamento (não recebe XP).", Game.team.size() > 1))
+	items.append(_acc_row(uuid, func(): s.close(); _fill_team(parent)))
 	items.append(_it("Voltar", func(): s.close()))
 	s.setup(Game.creature_name(ind), items, creature_info(ind))
 	for it in items:
@@ -410,7 +411,6 @@ func _storage_menu(uuid: String, refill: Callable) -> void:
 		else:
 			toast("Equipe cheia (3)."), "", Game.team.size() < 3))
 	items.append(_it("Apelido…", func(): _rename(ind, func(): s.close(); refill.call())))
-	items.append(_acc_row(uuid, func(): s.close(); refill.call()))
 	items.append(_it("Habilidades…", func(): open_habilidades(uuid, func(): s.setup(Game.creature_name(ind), items, creature_info(ind, Game.active_ind()))), "Escolha qual habilidade aprendida a criatura usa no Q."))
 	items.append(_it("Liberar…", func():
 		var why := Game.can_release(uuid)
@@ -419,6 +419,7 @@ func _storage_menu(uuid: String, refill: Callable) -> void:
 		else:
 			_confirm("Liberar %s?" % Game.creature_name(ind), "Esta criatura será liberada para sempre. Isso não pode ser desfeito.", func():
 				Game.release(uuid); s.close(); refill.call()), "Liberta a criatura (pede confirmação)."))
+	items.append(_acc_row(uuid, func(): s.close(); refill.call()))
 	items.append(_it("Voltar", func(): s.close()))
 	s.setup(Game.creature_name(ind), items, creature_info(ind, Game.active_ind()))
 
@@ -874,19 +875,19 @@ func _contract_info(cid: String) -> String:
 
 func _fill_contracts(s: MenuScreen) -> void:
 	var items: Array = []
-	items.append(_hdr("Contratos (dupla e trio)"))
+	items.append(_hdr("Contratos e caçadas"))
 	for cid in Data.contracts:
 		var c: Dictionary = Data.contracts[cid]
 		var stt := Game.contract_state(cid)
-		var tag: String = {"feito": "(feito) ", "ativo": "> ", "bloqueado": "(bloq.) ", "ocupado": "", "disponivel": ""}.get(stt, "")
-		var lab := "%s%s [%s]" % [tag, c["nome"], {"dupla": "Dupla", "trio": "Trio", "caca": "Caçada"}.get(c["tipo"], "")]
+		var tag: String = {"feito": "", "ativo": "> ", "bloqueado": "", "ocupado": "", "disponivel": ""}.get(stt, "")
+		var lab := "%s%s" % [tag, c["nome"]]
 		var idc: String = cid
 		var row := _it(lab, func(): _contract_pick(idc, s), func(): return _contract_info(idc), stt != "bloqueado")
 		row["icon"] = Art.region("icons_grupo", (2 if c["tipo"] != "trio" else 3) * 16, 0, 16, 16) if ResourceLoader.exists("res://assets/sprites/icons_grupo.png") else null
 		if stt == "feito":
 			row["col"] = Color(0.6, 0.9, 0.6)
 		items.append(row)
-	items.append(_hdr("Patrulha (aliados fora de contratos)"))
+	items.append(_hdr("Patrulha"))
 	for aid in Data.allies:
 		var al: Dictionary = Data.allies[aid]
 		var ida: String = aid
@@ -901,7 +902,11 @@ func _fill_contracts(s: MenuScreen) -> void:
 			_fill_contracts(s), al["desc"] + ("\n\nNo grupo: aperte de novo para dispensar." if on else ("\n\nConvocar para acompanhar você." if ok else "\n\nDisponível depois de um contrato juntos.")), ok)
 		r2["icon"] = Art.region("icons_grupo", int(al["icone"]) * 16, 0, 16, 16) if ResourceLoader.exists("res://assets/sprites/icons_grupo.png") else null
 		items.append(r2)
-	_refresh(s, items)
+	items.append(_it("Voltar", func(): s.close()))
+	var keep: int = s.sel if s.sel > 0 else 1
+	s.setup("Quadro de Contratos — fragmentos: %d" % Game.fragments, items, "")
+	s.list_w = 250.0
+	s.sel = min(keep, items.size() - 1)
 
 func _contract_pick(idc: String, s: MenuScreen) -> void:
 	match Game.contract_state(idc):
