@@ -1,0 +1,223 @@
+{
+ "anciao": [
+  {
+   "if": "ponte_minas",
+   "lines": [
+    "Maru: A ponte de raízes nos devolveu o caminho... Os Ecos nos escolheram bem, Vinculador.",
+    "Maru: O capítulo da floresta termina aqui. As Minas da Brasa ainda estão por vir."
+   ]
+  },
+  {
+   "if": "cervo_morto",
+   "lines": [
+    "Maru: As raízes recuaram! Você libertou a floresta do Cervo.",
+    "Maru: A família Corvelo voltou para casa. E o desfiladeiro ao norte está aberto — mas só a Raiz Viva constrói pontes sobre ele."
+   ]
+  },
+  {
+   "if": "primeira_captura",
+   "lines": [
+    "Maru: Seu primeiro vínculo... forte e bonito. Descanse no santuário (E) para curar a equipe.",
+    "Maru: Duas rotas levam ao Santuário da Seiva: o Bosque das Lanternas, a leste, e a Clareira das Raízes, ao sul.",
+    "Maru: Capture Lumipim e Cascalito pelo caminho — ajudam, mas você pode vencer sem eles."
+   ]
+  },
+  {
+   "if": "falou_maru",
+   "lines": [
+    "Maru: Pegue os Selos de Vínculo e vá ao cercado, a oeste. Enfraqueça o Brotisco até 35% e use F.",
+    "Maru: Treine nos bonecos primeiro: J ataca, Espaço esquiva, K defende."
+   ]
+  },
+  {
+   "lines": [
+    "Maru: Bem-vindo à Vila Lúmen, jovem Vinculador. Uma expedição sumiu na Floresta dos Esquecidos e raízes fecham os caminhos.",
+    "Maru: Os moradores ouvem as vozes dos desaparecidos à noite. Algo guarda o Santuário da Seiva.",
+    "Maru: Leve estes Selos de Vínculo. No campo de treino a oeste você aprende a lutar e a criar seu primeiro vínculo."
+   ],
+   "set": [
+    "falou_maru"
+   ],
+   "give": {
+    "selo_basico": 5,
+    "pocao": 2
+   }
+  }
+ ],
+ "ysa": [
+  {
+   "if": "esporos_entregue",
+   "lines": [
+    "Ysa: Obrigada de novo! Minha loja segue de portas abertas. Selos, tônicos... é só dizer."
+   ],
+   "shop": true
+  },
+  {
+   "if": "esporos_ok",
+   "lines": [
+    "Ysa: Você acabou com os esporos! Tome, 60 fragmentos e dois Selos Refinados."
+   ],
+   "set": [
+    "esporos_entregue"
+   ],
+   "give": {
+    "selo_refinado": 2,
+    "fragmentos": 60
+   }
+  },
+  {
+   "if": "quest_esporos",
+   "lines": [
+    "Ysa: Já derrotou os 3 Cogumelos? Eles ficam espalhados pelas rotas da floresta."
+   ],
+   "shop": true
+  },
+  {
+   "lines": [
+    "Ysa: Cogumelos esporíferos estão infestando as rotas e minha clientela sumiu! Derrote 3 e eu pago bem.",
+    "Ysa: Enquanto isso, veja minha loja."
+   ],
+   "set": [
+    "quest_esporos"
+   ],
+   "shop": true
+  }
+ ],
+ "guarda": [
+  {
+   "if": "cervo_morto",
+   "lines": [
+    "Bram: A floresta respira outra vez. Nunca vi as flores abrirem assim."
+   ]
+  },
+  {
+   "lines": [
+    "Bram: Lobos de espinhos flanqueiam: circulam e atacam de lado. Use a esquiva quando eles pararem para arrancar.",
+    "Bram: Sentinelas de madeira se protegem pela frente. Contorne-as ou use a habilidade do seu companheiro (Q).",
+    "Bram: Há atalhos pela floresta. O Santuário da Seiva tem uma passagem de volta para a vila."
+   ]
+  }
+ ],
+ "pipo": [
+  {
+   "if": "vinculo_entregue",
+   "lines": [
+    "Pipo: Você achou a clareira! Eu sabia!"
+   ]
+  },
+  {
+   "if": "clareira_vinculo",
+   "lines": [
+    "Pipo: Você foi até lá?! Pegue isto: Néctar de Vínculo para sua equipe!"
+   ],
+   "set": [
+    "vinculo_entregue"
+   ],
+   "give": {
+    "tonico_criatura": 2
+   }
+  },
+  {
+   "if": "cervo_morto",
+   "lines": [
+    "Pipo: Meus pais voltaram! Agora quero ser Vinculador também!",
+    "Pipo: Dizem que depois da ravina do Bosque das Lanternas tem uma clareira onde as criaturas formam vínculos mais fortes. Precisa da Raiz Viva."
+   ],
+   "set": [
+    "quest_vinculo"
+   ]
+  },
+  {
+   "lines": [
+    "Pipo: Quando eu crescer vou ter um Lumipim só meu!"
+   ]
+  }
+ ],
+ "mae": [
+  {
+   "lines": [
+    "Dona Corvelo: Voltamos! Passamos meses presos entre as raízes, ouvindo vozes. Obrigada, de coração."
+   ]
+  }
+ ],
+ "ferreiro": [
+  {
+   "lines": [
+    "Tobi: As Minas da Brasa ficam ao norte, depois do desfiladeiro. Dizem que a forja de lá ainda aquece sozinha.",
+    "Tobi: Quando a ponte estiver pronta, eu aviso o pessoal da Forja de Cobre."
+   ]
+  }
+ ],
+ "treino": [
+  {
+   "lines": [
+    "Placa: CAMPO DE TREINO — J / clique esquerdo: golpe (combo de 3). K / clique direito: defender. Espaço: esquivar."
+   ]
+  }
+ ],
+ "placa_vila": [
+  {
+   "lines": [
+    "Placa: VILA LÚMEN — Leste: Bosque das Lanternas. Sul: Clareira das Raízes. Norte: raízes fecham a passagem."
+   ]
+  }
+ ],
+ "placa_bosque": [
+  {
+   "lines": [
+    "Placa: Os portões do santuário só abrem com a luz das flores-lanterna. Acenda as três (E)."
+   ]
+  }
+ ],
+ "placa_clareira": [
+  {
+   "lines": [
+    "Placa: Placas pesadas abrem as raízes. Empurre as caixas (E) ou peça a um bicho de pedra."
+   ]
+  }
+ ],
+ "placa_canais": [
+  {
+   "lines": [
+    "Inscrição: A seiva só sobe quando as três alavancas estiverem erguidas.",
+    "Inscrição: A primeira move a primeira e a segunda; a segunda, a segunda e a terceira; a terceira, só ela."
+   ]
+  }
+ ],
+ "placa_pesos": [
+  {
+   "lines": [
+    "Inscrição: Duas placas, dois pesos. Empurre pesos para as placas (E)."
+   ]
+  }
+ ],
+ "placa_cervo": [
+  {
+   "lines": [
+    "Inscrição: O Cervo de Ossos raspa o chão antes de investir. Pilares o fazem tropeçar e expõem o núcleo.",
+    "Inscrição: Descanse no santuário antes de entrar. O combate reinicia por inteiro se você cair."
+   ]
+  }
+ ],
+ "placa_minas": [
+  {
+   "lines": [
+    "Placa: FORJA DE COBRE — Minas da Brasa. (Capítulo 2: em desenvolvimento nesta versão.)"
+   ]
+  }
+ ],
+ "placa_atalho": [
+  {
+   "lines": [
+    "Inscrição: Uma passagem de raízes leva de volta à vila. Os que vierem depois não precisarão repetir o caminho."
+   ]
+  }
+ ],
+ "placa_ravina": [
+  {
+   "lines": [
+    "Placa: DESFILADEIRO DO ECO — Só as raízes de um guardião vencem a ravina. (Raiz Viva: aperte E no suporte marcado.)"
+   ]
+  }
+ ]
+}

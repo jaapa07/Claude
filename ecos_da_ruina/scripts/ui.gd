@@ -1,0 +1,578 @@
+extends CanvasLayer
+## Camada de interface: HUD, diálogos e todas as telas (título, pausa, equipe, santuário, bestiário, inventário, loja, opções).
+## A UI só lê o estado e envia comandos ao Game/World; não calcula dano nem altera flags de chefes.
+
+var world: Node
+var hud: Hud
+var font: FontFile
+var stack: Array = []
+var modal := 0
+var _fade_tw: Tween
+var instant := false        # testes: sem animações de fade
+
+func _ready() -> void:
+	layer = 10
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	font = FontFile.new()
+	font.data = FileAccess.get_file_as_bytes("res://assets/fonts/PixelifySans.ttf")
+	font.antialiasing = TextServer.FONT_ANTIALIASING_NONE
+	font.hinting = TextServer.HINTING_NONE
+	font.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_DISABLED
+	hud = Hud.new()
+	hud.ui = self
+	hud.font = font
+	add_child(hud)
+
+func bind(w: Node) -> void:
+	world = w
+	hud.world = w
+	w.ui = self
+
+# =============================================================== BÁSICO
+func banner(t: String) -> void:
+	hud.show_banner(t)
+
+func toast(t: String) -> void:
+	hud.add_toast(t)
+
+func fade(a: float, dur: float) -> Signal:
+	if _fade_tw:
+		_fade_tw.kill()
+	if instant:
+		hud.fade_a = a
+		return get_tree().process_frame
+	_fade_tw = create_tween()
+	_fade_tw.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	_fade_tw.tween_property(hud, "fade_a", a, dur)
+	return _fade_tw.finished
+
+func boss_bar(b: Node) -> void:
+	hud.boss = b
+
+func _modal(on: bool) -> void:
+	modal += 1 if on else -1
+	modal = max(0, modal)
+	get_tree().paused = modal > 0
+
+func dialog(lines: Array, cb: Callable) -> void:
+	_modal(true)
+	hud.start_dialog(lines, cb)
+
+func dialog_closed() -> void:
+	_modal(false)
+
+func is_modal() -> bool:
+	return modal > 0
+
+func has_screen() -> bool:
+	for s in stack:
+		if is_instance_valid(s):
+			return true
+	return false
+
+func _push(title: String, items: Array, info := "") -> MenuScreen:
+	var s := MenuScreen.new()
+	s.ui = self
+	add_child(s)
+	s.setup(title, items, info)
+	stack.append(s)
+	_modal(true)
+	s.closed.connect(func():
+		stack.erase(s)
+		_modal(false)
+		if stack.is_empty():
+			screens_closed())
+	return s
+
+func screens_closed() -> void:
+	if world and world.player and world.player.state == Player.S.INTERACT and not hud.dlg_active:
+		world.player.set_busy(false)
+
+func close_all() -> void:
+	for s in stack.duplicate():
+		if is_instance_valid(s):
+			s.active = false
+			s.queue_free()
+			_modal(false)
+	stack.clear()
+	screens_closed()
+
+func _top() -> MenuScreen:
+	for i in range(stack.size() - 1, -1, -1):
+		if is_instance_valid(stack[i]):
+			return stack[i]
+	return null
+
+func _refresh(s: MenuScreen, items: Array) -> void:
+	if is_instance_valid(s):
+		s.set_items(items)
+
+func _it(t: String, fn: Callable, info = "", en := true) -> Dictionary:
+	return {"t": t, "fn": fn, "info": info, "en": en}
+
+func _hdr(t: String) -> Dictionary:
+	return {"t": t, "hdr": true}
+
+func _confirm(title: String, msg: String, yes: Callable) -> void:
+	var s: MenuScreen
+	s = _push(title, [], msg)
+	s.setup(title, [_it("Confirmar", func():
+		s.close()
+		yes.call(), msg), _it("Cancelar", func(): s.close(), msg)], msg)
+
+# =============================================================== TÍTULO
+func open_title(main: Node) -> void:
+	var s: MenuScreen
+	s = _push("ECOS DA RUÍNA", [], "")
+	s.can_cancel = false
+	s.title_mode = true
+	s.dim = 0.25
+	s.footer = "Capítulo 1: Floresta dos Esquecidos  •  ↑↓ navegar, E confirmar"
+	var items := [
+		_it("Continuar", func(): _slot_menu(main, false, true), "Retoma o último save disponível.", SaveSys.has_any_save()),
+		_it("Novo jogo", func(): _new_game_slots(main), "Começa uma nova aventura em um dos 3 slots."),
+		_it("Carregar", func(): _slot_menu(main, false, false), "Escolha um slot salvo.", SaveSys.has_any_save()),
+		_it("Opções", func(): open_options(), "Volume, acessibilidade, controles e dificuldade."),
+		_it("Sair", func(): get_tree().quit(), "Fecha o jogo."),
+	]
+	s.setup("ECOS DA RUÍNA", items, "Explore Auralis, forme vínculos com criaturas e enfrente os guardiões corrompidos.\n\nControles: WASD mover, J atacar, K defender, Espaço esquivar, F capturar, Q habilidade, Tab trocar, E interagir, I menu.")
+
+func _slot_label(i: int) -> String:
+	var inf := SaveSys.slot_info(i)
+	var nm := "Autosave" if i == 0 else "Slot %d" % i
+	if inf.is_empty():
+		return "%s — vazio" % nm
+	return "%s — Nv.%d  %s  %dmin%s" % [nm, inf["nivel"], inf["mapa"], int(inf["tempo"] / 60.0), " (backup)" if inf["recuperado"] else ""]
+
+func _slot_menu(main: Node, saving: bool, continue_best: bool) -> void:
+	if continue_best:
+		var best := -1
+		var bt := -1.0
+		for i in [0, 1, 2, 3]:
+			var inf := SaveSys.slot_info(i)
+			if not inf.is_empty() and float(inf["tempo"]) >= bt:
+				bt = float(inf["tempo"]); best = i
+		if best >= 0:
+			main.continue_from_slot(best)
+		return
+	var s := _push("Carregar jogo", [], "")
+	var items: Array = []
+	for i in [0, 1, 2, 3]:
+		var idx: int = i
+		items.append(_it(_slot_label(idx), func(): main.continue_from_slot(idx), "Carrega este slot.", not SaveSys.slot_info(idx).is_empty()))
+	s.setup("Carregar jogo", items, "O autosave é gravado ao chegar em cada área e nos santuários.")
+
+func _new_game_slots(main: Node) -> void:
+	var s := _push("Novo jogo", [], "")
+	var items: Array = []
+	for i in [1, 2, 3]:
+		var idx: int = i
+		items.append(_it(_slot_label(idx), func():
+			if SaveSys.slot_info(idx).is_empty():
+				main.start_new_game(idx)
+			else:
+				_confirm("Sobrescrever slot %d?" % idx, "Já existe um jogo salvo neste slot. Ele será substituído ao salvar.", func(): main.start_new_game(idx)), "Inicia uma nova aventura neste slot."))
+	s.setup("Novo jogo", items, "Escolha o slot.")
+
+# =============================================================== PAUSA
+func open_pause() -> void:
+	if has_screen() or hud.dlg_active:
+		return
+	var s := _push("Pausa", [], "")
+	_fill_pause(s)
+
+func _fill_pause(s: MenuScreen) -> void:
+	var items := [
+		_it("Continuar", func(): s.close(), "Volta ao jogo."),
+		_it("Equipe e criaturas", func(): open_team(), "Veja, ordene e evolua suas criaturas."),
+		_it("Inventário e herói", func(): open_inventory(), "Itens, equipamentos, talentos."),
+		_it("Bestiário", func(): open_bestiary(), "Criaturas vistas e capturadas."),
+		_it("Diário", func(): open_diary(), "Missões ativas."),
+		_it("Mapa", func(): open_map(), "Áreas visitadas e bloqueios."),
+		_it("Salvar jogo", func(): open_save_slots(), "Grava o progresso em um slot."),
+		_it("Reiniciar enigmas da sala", func():
+			if world.in_combat():
+				toast("Não é possível durante o combate.")
+			else:
+				world.reset_room_puzzles(); s.close(); toast("Enigmas da sala reiniciados."), "Recoloca caixas e alavancas se algo ficou preso. Enigmas resolvidos continuam resolvidos."),
+		_it("Opções", func(): open_options(), "Volume, acessibilidade, controles."),
+		_it("Voltar ao título", func(): _confirm("Voltar ao título?", "O progresso não salvo desde o último autosave será perdido.", func(): get_tree().root.get_node("Main").back_to_title()), "Sai da partida."),
+	]
+	s.setup("Pausa — " + world.map.get("name", ""), items, "Pausa — a simulação está parada.")
+
+# =============================================================== EQUIPE
+func creature_info(ind: Dictionary, compare: Dictionary = {}) -> String:
+	var sp := Game.sp_of(ind)
+	var sk: Dictionary = Data.skills[sp["skill"]]
+	var ev := Game.evolution_status(ind)
+	var t := "%s  (%s)\nNível %d   XP %d/%d\nVida %d/%d   Ataque %.0f\nAfinidade: %s   Papel: %s\n\nHabilidade (Q): %s\n  %s\nPassiva: %s\nAção ambiental: %s\n\nVínculo: %d/3 atividades\n" % [
+		Game.creature_name(ind), sp["nome"], ind["nivel"], int(ind["xp"]), Game.creature_xp_to_next(int(ind["nivel"])),
+		int(ind["hp"]), int(Game.creature_hp_max(ind)), Game.creature_atk(ind), sp["afinidade"], sp["papel"],
+		sk["nome"], sk["descricao"], sp["passiva"], sp["acao_ambiental"], Game.bond_count(ind)]
+	if sp.get("evolucao") != null:
+		t += "Evolui para %s no nível %d. %s" % [Data.sp(sp["evolucao"]["para"])["nome"], sp["evolucao"]["nivel"], "PRONTA!" if ev["possivel"] else ev["motivo"]]
+	else:
+		t += "Forma final."
+	if ind.get("exausta", false):
+		t += "\n[EXAUSTA — recupere no santuário]"
+	if not compare.is_empty():
+		t += "\n\nAtiva: %s Nv.%d  Vida %d  Atq %.0f" % [Game.creature_name(compare), compare["nivel"], int(Game.creature_hp_max(compare)), Game.creature_atk(compare)]
+	return t
+
+func open_team() -> void:
+	var s := _push("Equipe", [], "")
+	_fill_team(s)
+
+func _fill_team(s: MenuScreen) -> void:
+	var items: Array = []
+	items.append(_hdr("Equipe (%d/3)" % Game.team.size()))
+	for i in Game.team.size():
+		var uuid: String = Game.team[i]
+		var ind: Dictionary = Game.individuals[uuid]
+		var lab := "%s%s Nv.%d  %d/%d%s" % ["★ " if i == Game.active_idx else "  ", Game.creature_name(ind), ind["nivel"], int(ind["hp"]), int(Game.creature_hp_max(ind)), " [exausta]" if ind.get("exausta", false) else ""]
+		items.append(_it(lab, func(): _creature_menu(uuid, s), func(): return creature_info(ind)))
+	items.append(_hdr("Gerenciar"))
+	items.append(_it("Santuário (%d/%d)" % [Game.sanctuary.size(), Game.SANCTUARY_CAP], func(): open_storage(), "Armazenamento: leve criaturas para a equipe, dê apelidos, ordene e compare."))
+	items.append(_it("Comportamento: %s" % hud._beh_name(), func():
+		world.cycle_behavior(); _fill_team(s), "Acompanhar, Atacar alvo, Proteger ou Preservar (poupa criaturas selvagens com ≤20% de vida). Tecla C no jogo.",))
+	items.append(_it("Voltar", func(): s.close()))
+	s.setup("Equipe", items, "Selecione uma criatura.")
+	s.sel = 1
+	s.list_w = 200.0
+
+func _creature_menu(uuid: String, parent: MenuScreen) -> void:
+	var ind: Dictionary = Game.individuals[uuid]
+	var s := _push(Game.creature_name(ind), [], "")
+	var build := func():
+		pass
+	var items: Array = []
+	items.append(_it("Tornar ativa", func():
+		if ind.get("exausta", false):
+			toast("Criatura exausta: recupere no santuário.")
+		else:
+			Game.set_active(uuid); world.refresh_companion(true); s.close(); _fill_team(parent), "Define esta criatura como a ativa no mapa."))
+	items.append(_it("Apelido…", func(): _rename(ind, func(): s.close(); _fill_team(parent)), "Dá um apelido (até 12 letras)."))
+	var ev := Game.evolution_status(ind)
+	items.append(_it("Evoluir" + ("" if ev["possivel"] else " (indisponível)"), func(): _evolve_confirm(ind, func(): s.close(); _fill_team(parent)), ev.get("motivo", "") if not ev["possivel"] else "Confirme a evolução fora de combate.", ev["possivel"] and not world.in_combat()))
+	items.append(_it("Enviar ao santuário", func():
+		if Game.move_to_sanctuary(uuid):
+			world.refresh_companion(true); s.close(); _fill_team(parent)
+		else:
+			toast("Precisa manter ao menos uma criatura na equipe."), "Guarda no armazenamento (não recebe XP).", Game.team.size() > 1))
+	items.append(_it("Voltar", func(): s.close()))
+	s.setup(Game.creature_name(ind), items, creature_info(ind))
+	for it in items:
+		if not (it["info"] is Callable) and it["t"] != "Evoluir (indisponível)":
+			pass
+
+func _rename(ind: Dictionary, done: Callable) -> void:
+	var le := LineEdit.new()
+	le.process_mode = Node.PROCESS_MODE_ALWAYS
+	le.position = Vector2(140, 110)
+	le.size = Vector2(200, 24)
+	le.max_length = 12
+	le.text = ind.get("apelido", "")
+	le.placeholder_text = "Apelido"
+	le.add_theme_font_override("font", font)
+	le.add_theme_font_size_override("font_size", 10)
+	add_child(le)
+	le.grab_focus()
+	le.text_submitted.connect(func(t):
+		ind["apelido"] = t.strip_edges()
+		Game.team_changed.emit()
+		le.queue_free()
+		done.call())
+	le.gui_input.connect(func(e):
+		if e is InputEventKey and e.pressed and e.keycode == KEY_ESCAPE:
+			le.queue_free())
+
+func _evolve_confirm(ind: Dictionary, done: Callable) -> void:
+	var ev := Game.evolution_status(ind)
+	var to: Dictionary = Data.sp(ev["para"])
+	var cur_hp := Game.creature_hp_max(ind)
+	var cur_atk := Game.creature_atk(ind)
+	var tmp := ind.duplicate(true)
+	tmp["species_id"] = ev["para"]
+	var msg := "%s evoluirá para %s.\n\nVida máx.: %d → %d\nAtaque: %.0f → %.0f\n\nMantém: identidade, apelido, vínculo, papel e ação ambiental.\nA habilidade ganha potência (×1.4)." % [Game.creature_name(ind), to["nome"], int(cur_hp), int(Game.creature_hp_max(tmp)), cur_atk, Game.creature_atk(tmp)]
+	_confirm("Evoluir criatura?", msg, func():
+		if Game.evolve(ind["uuid"]):
+			Audio.play("evolve")
+			world.refresh_companion(true)
+			if world.companion != null:
+				world.companion.queue_free()
+				world.companion = null
+				world.refresh_companion(true)
+		done.call())
+
+func open_storage() -> void:
+	var s := _push("Santuário", [], "")
+	var mode := ["nome"]
+	var fill: Callable
+	fill = func():
+		var items: Array = []
+		items.append(_it("Ordenar por: %s" % mode[0], func():
+			mode[0] = {"nome": "nivel", "nivel": "especie", "especie": "nome"}[mode[0]]
+			Game.sort_sanctuary(mode[0]); fill.call(), "Alterna ordenação: nome, nível, espécie."))
+		if Game.sanctuary.is_empty():
+			items.append(_it("(santuário vazio)", Callable(), "Criaturas capturadas com a equipe cheia vêm para cá."))
+		for u in Game.sanctuary:
+			var ind: Dictionary = Game.individuals[u]
+			var uu: String = u
+			items.append(_it("%s Nv.%d  %s" % [Game.creature_name(ind), ind["nivel"], Game.sp_of(ind)["nome"]], func(): _storage_menu(uu, fill), func(): return creature_info(ind, Game.active_ind())))
+		items.append(_it("Voltar", func(): s.close()))
+		s.set_items(items)
+	s.setup("Santuário (%d/%d)" % [Game.sanctuary.size(), Game.SANCTUARY_CAP], [], "Selecione uma criatura.")
+	s.list_w = 200.0
+	fill.call()
+
+func _storage_menu(uuid: String, refill: Callable) -> void:
+	var ind: Dictionary = Game.individuals[uuid]
+	var s := _push(Game.creature_name(ind), [], "")
+	var items: Array = []
+	items.append(_it("Levar à equipe", func():
+		if Game.move_to_team(uuid):
+			s.close(); refill.call()
+		else:
+			toast("Equipe cheia (3)."), "", Game.team.size() < 3))
+	items.append(_it("Apelido…", func(): _rename(ind, func(): s.close(); refill.call())))
+	items.append(_it("Liberar…", func():
+		var why := Game.can_release(uuid)
+		if why != "":
+			toast(why)
+		else:
+			_confirm("Liberar %s?" % Game.creature_name(ind), "Esta criatura será liberada para sempre. Isso não pode ser desfeito.", func():
+				Game.release(uuid); s.close(); refill.call()), "Liberta a criatura (pede confirmação)."))
+	items.append(_it("Voltar", func(): s.close()))
+	s.setup(Game.creature_name(ind), items, creature_info(ind, Game.active_ind()))
+
+# =============================================================== INVENTÁRIO / HERÓI
+func open_inventory() -> void:
+	var s := _push("Inventário", [], "")
+	_fill_inventory(s)
+
+func _fill_inventory(s: MenuScreen) -> void:
+	var items: Array = []
+	items.append(_hdr("Herói Nv.%d  XP %d/%d" % [Game.hero_level(), int(Game.hero["xp"]), Game.xp_to_next(Game.hero_level())]))
+	items.append(_it("Vida %d/%d  Ataque %.0f  Redução %d%%" % [int(Game.hero["hp"]), int(Game.hero_max_hp()), Game.hero_atk(), int(Game.hero_reduction() * 100)], Callable(), "Fragmentos: %d" % Game.fragments))
+	items.append(_hdr("Talentos (%d pontos)" % int(Game.hero["talent_points"])))
+	for k in ["espada", "resistencia", "vinculo"]:
+		var kk: String = k
+		var desc = {"espada": "+2 de dano de espada por ponto.", "resistencia": "+6 vida e +2% de redução de dano por ponto.", "vinculo": "+2% de chance de captura por ponto."}[kk]
+		items.append(_it("%s: %d" % [kk.capitalize(), int(Game.hero["talents"][kk])], func():
+			if Game.spend_talent(kk):
+				Audio.play("levelup"); _fill_inventory(s)
+			else:
+				toast("Sem pontos de talento (1 a cada 3 níveis)."), desc + "\nGasta 1 ponto.", int(Game.hero["talent_points"]) > 0))
+	items.append(_it("Reespecializar (50 fragmentos)", func():
+		if Game.respec(50):
+			toast("Talentos redistribuídos."); _fill_inventory(s)
+		else:
+			toast("Fragmentos insuficientes."), "Devolve todos os pontos gastos."))
+	items.append(_hdr("Equipamento"))
+	for id in Data.items:
+		var it: Dictionary = Data.items[id]
+		var idd: String = id
+		if it["tipo"] in ["arma", "protecao", "amuleto"] and Game.item_count(idd) > 0:
+			var eq: bool = Game.equipment.get(it["tipo"], "") == idd
+			items.append(_it("%s%s" % ["● " if eq else "  ", it["nome"]], func(): Game.equip(idd); _fill_inventory(s), it["desc"]))
+	items.append(_hdr("Itens"))
+	for id2 in Data.items:
+		var it2: Dictionary = Data.items[id2]
+		var id2c: String = id2
+		if it2["tipo"] in ["selo", "consumivel", "consumivel_criatura"] and Game.item_count(id2c) > 0:
+			items.append(_it("%s x%d" % [it2["nome"], Game.item_count(id2c)], func(): _use_item(id2c, s), it2["desc"] + "\nAção: usar", it2["tipo"] != "selo"))
+	items.append(_hdr("Ecos"))
+	for e in Game.ecos:
+		items.append(_it(Data.skills[e]["nome"], Callable(), Data.skills[e]["descricao"] + "\nTravessia contextual (E) não gasta energia."))
+	if Game.ecos.is_empty():
+		items.append(_it("(nenhum ainda)", Callable(), "Guardiões concedem Ecos permanentes."))
+	items.append(_it("Voltar", func(): s.close()))
+	s.setup("Inventário e herói", items, "")
+	s.list_w = 220.0
+	s.sel = 1
+
+func _use_item(id: String, s: MenuScreen) -> void:
+	if world.in_combat():
+		toast("Não é possível usar agora.")
+		return
+	var it: Dictionary = Data.items[id]
+	if it["tipo"] == "consumivel":
+		if float(Game.hero["hp"]) >= Game.hero_max_hp():
+			toast("Vida cheia.")
+			return
+		if Game.take_item(id, 1):
+			world.player.heal(float(it["cura"])); Audio.play("heal")
+	elif it["tipo"] == "consumivel_criatura":
+		var ex: Array = []
+		for u in Game.team:
+			if Game.individuals[u].get("exausta", false):
+				ex.append(u)
+		if ex.is_empty():
+			toast("Nenhuma criatura exausta.")
+			return
+		if Game.take_item(id, 1):
+			Game.revive_creature(ex[0]); Audio.play("heal")
+			world.refresh_companion(true)
+	_fill_inventory(s)
+
+# =============================================================== BESTIÁRIO / DIÁRIO / MAPA
+func open_bestiary() -> void:
+	var s := _push("Bestiário", [], "")
+	var items: Array = []
+	var seen := 0; var cap := 0
+	var order: Array = []
+	for id in Data.species:
+		order.append(id)
+	order.sort_custom(func(a, b): return int(Data.species[a]["regiao"]) < int(Data.species[b]["regiao"]) or (int(Data.species[a]["regiao"]) == int(Data.species[b]["regiao"]) and false))
+	var base_ids: Array = []
+	for id in order:
+		if not str(Data.species[id]["habitat"]).begins_with("Evolução"):
+			base_ids.append(id)
+	for id in base_ids:
+		var sp: Dictionary = Data.species[id]
+		var b: Dictionary = Game.bestiary.get(id, {})
+		var idd: String = id
+		var vis: bool = b.get("visto", false)
+		if vis: seen += 1
+		if b.get("capturado", false): cap += 1
+		var evo_id: String = sp["evolucao"]["para"] if sp.get("evolucao") != null else ""
+		var evo_found: bool = evo_id != "" and Game.bestiary.get(evo_id, {}).get("evoluiu", false)
+		items.append(_it("%s %s" % [("✔" if b.get("capturado", false) else ("•" if vis else "?")), sp["nome"] if vis else "???"], Callable(), func():
+			if not vis:
+				return "Ainda não encontrada.\nRegião %d — %s" % [sp["regiao"], "jogável" if sp["status"] == "jogavel" else "em desenvolvimento nesta versão"]
+			var skn: Dictionary = Data.skills[sp["skill"]]
+			return "%s\nAfinidade: %s   Raridade: %s   Papel: %s\nHabitat: %s\n%s\n\nHabilidade: %s — %s\nPassiva: %s\nAção ambiental: %s\n\nVisto: sim   Capturado: %s\nEvolução: %s" % [
+				sp["nome"], sp["afinidade"], sp["raridade"], sp["papel"], sp["habitat"], sp["descricao"], skn["nome"], skn["descricao"], sp["passiva"], sp["acao_ambiental"],
+				"sim" if b.get("capturado", false) else "não",
+				("descoberta: %s (nv.%d)" % [Data.sp(evo_id)["nome"], sp["evolucao"]["nivel"]]) if evo_found else ("%s no nv.%d (não vista)" % ["???", sp["evolucao"]["nivel"]] if evo_id != "" else "—")]))
+	items.append(_it("Voltar", func(): s.close()))
+	s.setup("Bestiário  vistas %d • capturadas %d / %d" % [seen, cap, base_ids.size()], items, "")
+	s.list_w = 200.0
+
+func open_diary() -> void:
+	var s := _push("Diário", [], "")
+	var lines := Game.diary_lines()
+	var items: Array = []
+	for l in lines:
+		items.append(_it(l, Callable(), "\n".join(lines)))
+	items.append(_it("Voltar", func(): s.close(), "\n".join(lines)))
+	s.setup("Diário de missões", items, "\n".join(lines))
+	s.list_w = 250.0
+
+func open_map() -> void:
+	var s := _push("Mapa", [], "")
+	var items: Array = []
+	for rid in Data.regions:
+		var r: Dictionary = Data.regions[rid]
+		items.append(_hdr("%s  (%s)" % [r["nome"], r["status"]]))
+		for mid in r["mapas"]:
+			var m: Dictionary = Data.maps[mid]
+			var visited: bool = Game.has_flag("visitou_" + mid)
+			var note := ""
+			match mid:
+				"vila_lumen": note = "" if Game.has_flag("cervo_morto") else "  ⚠ raízes ao norte"
+				"desfiladeiro": note = "" if Game.has_flag("ponte_minas") else "  ⚠ ponte (Raiz Viva)"
+				"bosque_lanternas": note = "" if Game.has_flag("bosque_flores") else "  ⚠ portão de flores"
+				"clareira_raizes": note = "" if Game.has_flag("clareira_placas") else "  ⚠ raízes/placas"
+			items.append(_it("%s %s%s" % ["✔" if visited else "·", m["name"] if visited else "???", note], Callable(), "Bloqueios marcados com ⚠ mostram o que ainda impede a passagem."))
+	items.append(_it("Voltar", func(): s.close()))
+	s.setup("Mapa do continente de Auralis", items, "✔ visitada   · ainda não visitada   ⚠ bloqueio.")
+	s.list_w = 250.0
+
+# =============================================================== SALVAR
+func open_save_slots() -> void:
+	var s := _push("Salvar jogo", [], "")
+	var items: Array = []
+	for i in [1, 2, 3]:
+		var idx: int = i
+		items.append(_it(_slot_label(idx), func():
+			if world.save_now(idx):
+				toast("Jogo salvo no slot %d." % idx)
+				s.close()
+			else:
+				toast("Não é possível salvar agora (combate/captura)." if not Game.can_save() or world.in_combat() else SaveSys.last_error), "Grava neste slot. Só em estado estável."))
+	s.setup("Salvar jogo", items, "Fora de combate e de capturas. Posição insegura usa o santuário associado.")
+
+# =============================================================== SANTUÁRIO (MENU)
+func open_shrine_menu() -> void:
+	var s := _push("Santuário", [], "")
+	s.can_cancel = true
+	var items := [
+		_it("Descansar (curar tudo)", func(): world.rest_at_shrine(); toast("Descansou. Criaturas e herói recuperados."), "Restaura herói e criaturas (inclusive exaustas). Inimigos comuns reaparecem."),
+		_it("Salvar jogo", func(): open_save_slots(), "Grava o progresso."),
+		_it("Equipe e criaturas", func(): open_team(), "Troque criaturas com o armazenamento do santuário."),
+		_it("Reespecializar talentos (50)", func(): if Game.respec(50): toast("Talentos redistribuídos.") else: toast("Fragmentos insuficientes."), "Redistribui pontos de talento."),
+		_it("Sair", func(): s.close()),
+	]
+	s.setup("Santuário", items, "Um ponto de retorno: você volta aqui se cair em combate.")
+	s.closed.connect(func(): if world.player.state == Player.S.INTERACT and not has_screen(): world.player.set_busy(false))
+
+# =============================================================== LOJA
+func open_shop() -> void:
+	world.player.set_busy(true)
+	var s := _push("Loja da Ysa", [], "")
+	var items: Array = []
+	for id in ["selo_basico", "selo_refinado", "pocao", "tonico_criatura"]:
+		var idd: String = id
+		var it: Dictionary = Data.items[idd]
+		items.append(_it("%s  — %d" % [it["nome"], int(it["preco"])], func():
+			var err := Game.buy(idd)
+			if err != "":
+				toast(err)
+			else:
+				Audio.play("pickup"); toast("Comprou %s." % it["nome"]); s.footer = "Fragmentos: %d" % Game.fragments, it["desc"] + "\nPreço: %d fragmentos." % int(it["preco"])))
+	items.append(_it("Sair", func(): s.close()))
+	s.setup("Loja da Ysa", items, "Fragmentos: %d" % Game.fragments)
+	s.footer = "Fragmentos: %d" % Game.fragments
+	s.closed.connect(func(): world.player.set_busy(false))
+
+# =============================================================== OPÇÕES
+func open_options() -> void:
+	var s := _push("Opções", [], "")
+	_fill_options(s)
+
+func _fill_options(s: MenuScreen) -> void:
+	var p: Dictionary = Game.prefs
+	var pct := func(v: float) -> String: return "%d%%" % int(round(v * 100.0))
+	var slider := func(label: String, key: String, info: String) -> Dictionary:
+		return {"t": "%s: %s" % [label, pct.call(p[key])], "info": info,
+			"l": func(): p[key] = max(0.0, snappedf(float(p[key]) - 0.1, 0.1)); Audio.apply_volumes(); Game.save_prefs(); _fill_options(s),
+			"r": func(): p[key] = min(1.0, snappedf(float(p[key]) + 0.1, 0.1)); Audio.apply_volumes(); Game.save_prefs(); _fill_options(s)}
+	var toggle := func(label: String, key: String, info: String) -> Dictionary:
+		return {"t": "%s: %s" % [label, "sim" if p[key] else "não"], "info": info,
+			"fn": func(): p[key] = not p[key]; Game.save_prefs(); _fill_options(s)}
+	var items: Array = []
+	items.append(_hdr("Áudio"))
+	items.append(slider.call("Volume geral", "master", "← → ajustam."))
+	items.append(slider.call("Música", "musica", ""))
+	items.append(slider.call("Efeitos", "efeitos", ""))
+	items.append(_hdr("Acessibilidade"))
+	items.append(toggle.call("Reduzir tremor de tela", "reduz_tremor", "Desliga o tremor de câmera."))
+	items.append(toggle.call("Reduzir flashes/impacto", "reduz_flash", "Desliga o congelamento de impacto."))
+	items.append(toggle.call("Perigo por forma e cor", "formas_perigo", "Avisos de ataque sempre usam símbolo + contorno além da cor."))
+	items.append({"t": "Escala de texto: %d%%" % int(round(p["texto"] * 100.0)), "info": "Afeta diálogos e menus nesta versão (mínimo 100%).",
+		"l": func(): p["texto"] = max(1.0, snappedf(float(p["texto"]) - 0.1, 0.1)); Game.save_prefs(); _fill_options(s),
+		"r": func(): p["texto"] = min(1.4, snappedf(float(p["texto"]) + 0.1, 0.1)); Game.save_prefs(); _fill_options(s)})
+	items.append(_hdr("Jogo"))
+	items.append({"t": "Dificuldade: %s" % ("Aventura" if Game.difficulty == "aventura" else "Desafio"),
+		"info": "Aventura: -25% de dano inimigo e avisos 20% mais longos. Desafio: valores-base. Só fora de combate.",
+		"fn": func():
+			if world != null and world.map != null and world.in_combat():
+				toast("Só fora de combate.")
+			else:
+				Game.difficulty = "desafio" if Game.difficulty == "aventura" else "aventura"; _fill_options(s)})
+	items.append(_hdr("Controles (Enter/E para remapear)"))
+	for a in Game.ACTION_NAMES:
+		var aa: String = a
+		var keys: Array = p["keys"].get(aa, Game.DEFAULT_KEYS[aa])
+		var names: Array = []
+		for k in keys:
+			names.append(OS.get_keycode_string(int(k)))
+		items.append({"t": "%s: %s" % [Game.ACTION_NAMES[aa], " / ".join(names)], "info": "Pressione E e depois a nova tecla. Mouse: botão esquerdo ataca, direito defende.",
+			"fn": func(): s.key_capture = aa; s.on_key = func(): _fill_options(s)})
+	items.append(_it("Restaurar controles padrão", func(): Game.reset_keys(); _fill_options(s), ""))
+	items.append(_it("Voltar", func(): s.close()))
+	var keep := s.sel
+	s.setup("Opções", items, "")
+	s.sel = keep
+	s.list_w = 250.0

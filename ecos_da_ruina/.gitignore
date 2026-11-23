@@ -1,0 +1,4 @@
+.godot/
+*.import
+/build/
+tests/last_result.txt

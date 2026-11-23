@@ -1,0 +1,4 @@
+{
+ "cervo": {"nome":"Cervo de Ossos","hp":420,"fases":[1.0,0.6,0.3],"recompensa":{"eco":"raiz_viva","xp":300,"frag":120},"flag_morte":"cervo_morto","dano_investida":24,"dano_raizes":18,"dano_contato":10},
+ "lenhador": {"nome":"Lenhador Oco","hp":190,"fases":[1.0],"recompensa":{"xp":90,"frag":40},"flag_morte":"lenhador_morto"}
+}

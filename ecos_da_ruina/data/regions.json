@@ -1,0 +1,7 @@
+{
+ "floresta": {"nome":"Floresta dos Esquecidos","nivel":[1,6],"nucleo":"vila_lumen","mapas":["vila_lumen","bosque_lanternas","clareira_raizes","santuario_a","santuario_b","santuario_c","desfiladeiro"],"guardiao":"cervo","eco":"raiz_viva","status":"jogavel"},
+ "minas": {"nome":"Minas da Brasa","nivel":[7,12],"nucleo":"forja_cobre","mapas":["minas_entrada"],"guardiao":"ferreiro","eco":"ruptura_ignea","status":"em desenvolvimento"},
+ "pantano": {"nome":"Pântano dos Sussurros","nivel":[13,18],"nucleo":"porto_lanternas","mapas":[],"guardiao":"bruxa","eco":"olhar_velado","status":"não implementada"},
+ "fortaleza": {"nome":"Fortaleza do Eclipse","nivel":[19,24],"nucleo":"refugio_muralha","mapas":[],"guardiao":"cavaleiro","eco":"passo_umbral","status":"não implementada"},
+ "catedral": {"nome":"Catedral do Vazio","nivel":[25,30],"nucleo":"acampamento_aurora","mapas":[],"guardiao":"rei_ecos","eco":"harmonia","status":"não implementada"}
+}

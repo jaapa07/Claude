@@ -1,0 +1,17 @@
+{
+ "principal": {"nome":"Vozes na Floresta","tipo":"principal","etapas":[
+   {"texto":"Fale com a Anciã Maru, no centro da vila.","flag":"falou_maru"},
+   {"texto":"Aprenda os controles no campo de treino.","flag":"tutorial_ok"},
+   {"texto":"Capture o Brotisco do cercado com um Selo de Vínculo.","flag":"primeira_captura"},
+   {"texto":"Descanse no santuário da vila e siga por uma das rotas.","flag":"viu_santuario_seiva"},
+   {"texto":"Atravesse o Santuário da Seiva e derrote o Lenhador Oco.","flag":"lenhador_morto"},
+   {"texto":"Enfrente o Cervo de Ossos.","flag":"cervo_morto"},
+   {"texto":"Volte à Vila Lúmen e veja o que mudou.","flag":"voltou_vila"},
+   {"texto":"Use a Raiz Viva para abrir a passagem às Minas da Brasa.","flag":"ponte_minas"}]},
+ "esporos": {"nome":"Esporos Incômodos","tipo":"secundaria","etapas":[
+   {"texto":"Derrote 3 Cogumelos Esporíferos para a mercadora Ysa.","contador":"cogumelo","alvo":3,"flag":"esporos_ok"},
+   {"texto":"Volte à Ysa para receber a recompensa.","flag":"esporos_entregue"}]},
+ "vinculo": {"nome":"A Clareira de Vínculo","tipo":"secundaria","etapas":[
+   {"texto":"Pipo ouviu falar de uma clareira secreta além da ravina, no Bosque das Lanternas.","flag":"clareira_vinculo"},
+   {"texto":"Fale com Pipo.","flag":"vinculo_entregue"}]}
+}
