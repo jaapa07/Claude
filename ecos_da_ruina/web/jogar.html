@@ -61,7 +61,7 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
 <div class="wrap">
   <header>
     <h1>ECOS DA RUÍNA</h1>
-    <p class="sub">Floresta, Minas, Pântano e Fortaleza — rumo à Catedral do Vazio. Versão para navegador e iPhone.</p>
+    <p class="sub">As cinco regiões de Auralis — do Bosque à Catedral do Vazio. Versão para navegador e iPhone.</p>
   </header>
 
   <div class="screen">
@@ -69,7 +69,7 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
     <div class="overlay" id="start">
       <div class="t">Pronto para jogar</div>
       <button id="play" type="button">Jogar</button>
-      <div class="msg">O jogo tem cerca de 43 MB e carrega uma vez.</div>
+      <div class="msg">O jogo tem cerca de 46 MB e carrega uma vez.</div>
     </div>
     <div class="overlay" id="loading" hidden>
       <div class="t">Carregando…</div>
@@ -115,9 +115,9 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
 <script>
 // O motor (WebAssembly) é publicado em 3 partes; aqui elas são baixadas e remontadas antes de iniciar.
 (function () {
-  const VERSAO = "202611232258";   // muda a cada publicação: o celular baixa a versão nova em vez de usar o cache
+  const VERSAO = "202611232317";   // muda a cada publicação: o celular baixa a versão nova em vez de usar o cache
   const PARTS = ["w/motor0.wasm", "w/motor1.wasm", "w/motor2.wasm"].map(function (u) { return u + "?v=" + VERSAO; });
-  const TOTAL = 35376909 + 4776784;
+  const TOTAL = 35376909 + 5856928;
   let loaded = 0;
   const fill = document.getElementById("fill");
   const status = document.getElementById("status");
@@ -167,7 +167,7 @@ kbd { font-family: var(--display); font-size: 10px; color: var(--accent); white-
       try {
         const engine = new Engine({
           args: [], canvasResizePolicy: 0, executable: "index", experimentalVK: false,
-          fileSizes: { "index.pck": 4776784, "index.wasm": 35376909 },
+          fileSizes: { "index.pck": 5856928, "index.wasm": 35376909 },
           focusCanvas: true, gdextensionLibs: [], ensureCrossOriginIsolationHeaders: false
         });
         engine.startGame({
