@@ -1,0 +1,86 @@
+# Matriz de desbloqueios — Ecos da Ruína
+
+Formato: **região → obstáculo → habilidade necessária → quando se obtém → solução alternativa → recompensa**.
+Status: ✅ implementado e testado • 🔶 em implementação • 📐 especificado (não implementado).
+
+Regra global: um Eco só é exigido **depois** do guardião que o concede e **nunca** para vencer esse guardião. Antes do desbloqueio, todo enigma obrigatório se resolve com ferramenta do herói, mecanismo local ou observação. Criaturas oferecem alternativas, atalhos e vantagens; nenhuma criatura rara, evolução, consumível finito ou sorte bloqueia a campanha.
+
+## Ordem de progressão (sem ciclos)
+```
+Floresta (recursos básicos) ── Cervo de Ossos ──► Raiz Viva
+Raiz Viva ──► entrada das Minas ── Ferreiro Devorador ──► Ruptura Ígnea
+Ruptura Ígnea ──► entrada do Pântano ── Bruxa Afogada ──► Olhar Velado
+Olhar Velado ──► entrada da Fortaleza ── Cavaleiro Sem Rosto ──► Passo Umbral
+Passo Umbral ──► entrada da Catedral ── Rei dos Ecos ──► Harmonia dos Ecos (pós-jogo)
+```
+Cada Rito pré-guardião usa só mecanismos locais; cada Rito avançado (opcional) exige o Eco recém-obtido e nunca bloqueia nada.
+
+## 1. Floresta dos Esquecidos
+| Obstáculo | Habilidade necessária | Quando | Alternativa | Recompensa | Status |
+|---|---|---|---|---|---|
+| Portão de flores-lanterna (Bosque) | Acender 3 flores (E) | início | Pulso do Lumipim acende à distância | rota A ao Santuário | ✅ |
+| Portão de raízes da Clareira | 2 placas de peso | início (caixas) | Cascalito segura uma placa | rota B ao Santuário | ✅ |
+| Salão das Flores (Santuário) | acender flores | início | Lumipim | acesso à Galeria | ✅ |
+| Galeria dos Lobos (portas fecham) | combate | início | companheiro ajuda; Raízes prendem pequenos | saída para os Canais | ✅ |
+| Canais de Seiva | alavancas + inscrição | início | dica após 3 tentativas | Tesouro + atalho | ✅ |
+| Câmara dos Pesos | empurrar caixas | início | Cascalito segura placa | preparação do minichefe | ✅ |
+| **Rito da Seiva** (antes do Cervo) | canais, pesos, plataformas conectadas | início (mecanismos locais) | Brotisco/Cascalito facilitam; dica opcional | técnica **Golpe Enraizado** + 1 vínculo (1ª vez) | 📐 |
+| Fenda do atalho norte (Bosque) — opcional | cipó | Brotisco (capturável no início, habitat garantido) | trilha principal contorna | baú com tônicos | ✅ |
+| Atalho Santuário → Vila | porta de raízes de mão única | após o Tesouro | — | retorno rápido | ✅ |
+| Segredo atual: parede rachada musgosa no Santuário | observação + ataque carregado | início | Lumipim ilumina a inscrição que aponta a parede | **Diário da expedição I** + Selo Refinado | 📐 |
+| Descoberta de criatura: anel de flores incomum no Bosque | observar Lumipins circulando à noite/brilhando | início | — | Lumipim de nível maior + história | 📐 |
+| Raízes ao norte da Vila | — (recuam) | após o Cervo | — | Desfiladeiro | ✅ |
+| Ravina da Clareira de Vínculo (revisita) | **Raiz Viva** | após o Cervo | — (opcional) | Pedra de Vínculo (+1 vínculo para a equipe) + baú | ✅ |
+| Desfiladeiro do Eco | **Raiz Viva** | após o Cervo | — (desbloqueio regional) | entrada das Minas | ✅ |
+| **Rito da Seiva avançado** (opcional) | Raiz Viva em sequência com canais | após o Cervo | — | Amuleto de Seiva Viva (regenera vigor mais rápido) | 📐 |
+| Mudança explorável pós-Cervo | — | após o Cervo | — | vila transformada, família volta, passagem norte, Clareira de Vínculo | ✅ (parcial: falta nova área explorável dentro da floresta) |
+
+## 2. Minas da Brasa
+| Obstáculo | Habilidade necessária | Quando | Alternativa | Recompensa | Status |
+|---|---|---|---|---|---|
+| Ravina do Desfiladeiro (entrada) | Raiz Viva | após o Cervo | — | Forja de Cobre | ✅ |
+| Pisos quentes | válvulas de resfriamento locais | chegada | Luvas Térmicas reduzem dano; Goturim (região 3) facilita na revisita | rotas internas | 🔶 |
+| Fornalhas apagadas | tochas/brasas locais | chegada | Faisquito acende à distância | portas da Fundição | 🔶 |
+| Trilhos e carrinhos | alavancas de desvio | chegada | Ferrunho move trilho marcado | atalhos internos | 🔶 |
+| **Rito da Forja** (antes do Ferreiro) | calor, resfriamento, sincronização | chegada | dica opcional; Faisquito acelera | técnica + 1 vínculo (1ª vez) | 🔶 |
+| Rochas fissuradas (opcionais antes do Ferreiro) | **Ruptura Ígnea** | após o Ferreiro | — | segredos e baús | 🔶 |
+| Elevador Forja ↔ Pedreira (atalho) | ativar no fundo da pedreira | durante a região | — | retorno rápido | 🔶 |
+| Segredo atual | observação (vapor/fumaça vazando) | chegada | Fuligin revela corrente de ar | história/equipamento | 🔶 |
+| Segredo de revisita | **Olhar Velado** | após a Bruxa (região 3) | — | inscrição oculta | 🔶 (marcado) |
+| **Rito da Forja avançado** (opcional) | Ruptura Ígnea | após o Ferreiro | — | recompensa secundária | 🔶 |
+
+## 3. Pântano dos Sussurros 📐
+| Obstáculo | Habilidade necessária | Quando | Alternativa | Recompensa |
+|---|---|---|---|---|
+| Bloqueio de pedra na passagem sul | Ruptura Ígnea | após o Ferreiro | — | Porto das Lanternas |
+| Níveis de água | comportas e rodas locais | chegada | Goturim gira rodas d'água | rotas do lago |
+| Reflexos falsos | observação (reflexo consistente) | chegada | Nimbelo (raro) revela mais rápido — nunca obrigatório | caminho correto |
+| Plataformas de lodo | estacas locais | chegada | Brejugo estabiliza | atalhos |
+| **Rito dos Reflexos** | observação da água e ilusões | chegada | dica opcional | técnica + vínculo |
+| Plataformas/inscrições espirituais | **Olhar Velado** | após a Bruxa | — | segredos das Minas e da Floresta (revisita) |
+
+## 4. Fortaleza do Eclipse 📐
+| Obstáculo | Habilidade necessária | Quando | Alternativa | Recompensa |
+|---|---|---|---|---|
+| Ponte espiritual nas montanhas | Olhar Velado | após a Bruxa | — | Refúgio da Muralha |
+| Luz e sombra | espelhos e persianas locais | chegada | Lumipim/Cristil iluminam | salas da torre |
+| Hélices e névoa | manivelas locais | chegada | Ventisco move hélices e dispersa névoa | rotas alternadas |
+| Receptores em frestas | alavancas locais | chegada | Umbrel aciona por dentro | atalhos |
+| **Rito do Eclipse** | luz, sombra, posicionamento, rotas alternadas | chegada | dica opcional | técnica + vínculo |
+| Fissuras e portais marcados | **Passo Umbral** | após o Cavaleiro | — | segredos de todas as regiões |
+
+## 5. Catedral do Vazio 📐
+| Obstáculo | Habilidade necessária | Quando | Alternativa | Recompensa |
+|---|---|---|---|---|
+| Selo externo | Passo Umbral | após o Cavaleiro | — | Acampamento da Aurora |
+| Salas combinadas | Raiz Viva + Ruptura Ígnea + Olhar Velado + Passo Umbral (todos já obtidos) | antes do Rei | criaturas de cada região facilitam | caminho ao Rei |
+| Prismas | espelhos locais | chegada | Cristil redireciona feixes | — |
+| Âncoras gravitacionais | contrapesos locais | chegada | Gravito mantém âncoras | — |
+| **Rito da Convergência** | os quatro Ecos combinados | antes do Rei (opcional avançado após) | dica opcional | técnica final + vínculo |
+| Desafios pós-jogo | Harmonia dos Ecos | após o Rei | — | bestiário expandido (nunca exigida antes do final) |
+
+## Verificações automáticas (tests/e2e_bot.gd)
+- Ordem sem ciclos: cada Eco só aparece como requisito em regiões posteriores ao seu guardião — checado nos dados de mapa (`requires_eco`).
+- Campanha sem raras: o percurso do teste usa só Brotisco/Lumipim/Cascalito (nenhuma rara).
+- Caminho com exaustas: trecho obrigatório concluído com a criatura ativa exausta (Galeria dos Lobos).
+- Recompensas únicas: baús, chefões e Ecos não duplicam após salvar/carregar.

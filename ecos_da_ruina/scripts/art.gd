@@ -41,7 +41,7 @@ static func creature_frames(sprite: String, fw: int, fh: int) -> SpriteFrames:
 	return sf
 
 ## Herói 24x32: linhas baixo/esquerda/direita/cima; 15 colunas
-## idle0 idle1 walk0-3 atk0-2 guard roll0 roll1 hurt capture dead
+## idle0-3 | walk0-5 | atk0-2 | guard | roll0-3 | hurt | capture | dead (21 colunas)
 static func human_frames(sprite: String) -> SpriteFrames:
 	var key := "hf:%s" % sprite
 	if _cache.has(key):
@@ -59,16 +59,16 @@ static func human_frames(sprite: String) -> SpriteFrames:
 			sf.set_animation_loop(name, loop)
 			for c in cols:
 				sf.add_frame(name, atlas(t, c * 24, di * 32, 24, 32))
-		add.call("idle", [0, 0, 0, 1], 3.0, true)
-		add.call("walk", [2, 3, 4, 5], 9.0, true)
-		add.call("atk0", [6], 1.0, false)
-		add.call("atk1", [7], 1.0, false)
-		add.call("atk2", [8], 1.0, false)
-		add.call("guard", [9], 1.0, true)
-		add.call("dodge", [10, 11], 12.0, true)
-		add.call("hurt", [12], 1.0, false)
-		add.call("capture", [13], 1.0, true)
-		add.call("dead", [14], 1.0, false)
+		add.call("idle", [0, 0, 0, 1, 1, 0, 0, 3], 4.0, true)
+		add.call("walk", [4, 5, 6, 7, 8, 9], 11.0, true)
+		add.call("atk0", [10], 1.0, false)
+		add.call("atk1", [11], 1.0, false)
+		add.call("atk2", [12], 1.0, false)
+		add.call("guard", [13], 1.0, true)
+		add.call("dodge", [14, 15, 16, 17], 13.0, false)
+		add.call("hurt", [18], 1.0, false)
+		add.call("capture", [19], 1.0, true)
+		add.call("dead", [20], 1.0, false)
 	_cache[key] = sf
 	return sf
 
@@ -104,6 +104,22 @@ static func fx_frames(sheet: String, fw: int, fh: int, n: int, fps: float, loop 
 	sf.set_animation_loop("a", loop)
 	for i in n:
 		sf.add_frame("a", atlas(t, i * fw, 0, fw, fh))
+	_cache[key] = sf
+	return sf
+
+## Efeito a partir de uma coluna inicial da folha (ex.: vapor em minas_props.png)
+static func fx_frames_at(sheet: String, fw: int, fh: int, start: int, n: int, fps: float, loop := false) -> SpriteFrames:
+	var key := "fxa:%s:%d:%d" % [sheet, start, n]
+	if _cache.has(key):
+		return _cache[key]
+	var t := sprite_tex(sheet)
+	var sf := SpriteFrames.new()
+	sf.remove_animation("default")
+	sf.add_animation("a")
+	sf.set_animation_speed("a", fps)
+	sf.set_animation_loop("a", loop)
+	for i in n:
+		sf.add_frame("a", atlas(t, (start + i) * fw, 0, fw, fh))
 	_cache[key] = sf
 	return sf
 
