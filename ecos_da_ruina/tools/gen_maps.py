@@ -131,7 +131,7 @@ def vila():
         m.set(x, y, "b")
     for x, y in ((26, 24), (12, 8), (38, 20)):
         m.set(x, y, "o")
-    m.spawns = {"from_casa_maru": [8, 9], "from_loja_ysa": [35, 8], "from_casa_corvelo": [10, 30], "from_casa_tobi": [36, 26], "default": [21, 16], "from_bosque": [41, 15], "from_clareira": [21, 29], "from_desfiladeiro": [21, 3],
+    m.spawns = {"from_casa_maru": [8, 9], "from_loja_ysa": [35, 8], "from_casa_corvelo": [10, 29], "from_casa_tobi": [36, 26], "default": [21, 16], "from_bosque": [41, 15], "from_clareira": [21, 29], "from_desfiladeiro": [21, 3],
                 "from_atalho": [3, 23], "from_santuario": [21, 15]}
     m.ent(type="shrine", id="vila", x=22, y=14)
     m.ent(type="npc", id="anciao", sprite="npc_elder", dialog="anciao", x=19, y=14, nome="Anciã Maru")

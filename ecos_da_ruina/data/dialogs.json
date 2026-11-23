@@ -594,12 +594,13 @@
    ]
   },
   {
-   "if": "brinquedo_achado",
    "lines": [
     "Dona Corvelo: É o cervinho do Pipo! Ele chorou noites por isso.",
     "Dona Corvelo: Fique com estes selos. E... as criaturas parecem confiar mais em você agora."
    ],
    "set": [
+    "quest_brinquedo",
+    "brinquedo_achado",
     "brinquedo_entregue"
    ],
    "take": {
@@ -609,7 +610,9 @@
     "selo_refinado": 2,
     "essencia_azul": 2
    },
-   "bond": "missao:brinquedo"
+   "bond": "missao:brinquedo",
+   "if_item": "brinquedo_madeira",
+   "unless": "brinquedo_entregue"
   },
   {
    "if": "quest_brinquedo",

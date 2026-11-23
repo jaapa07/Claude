@@ -918,6 +918,8 @@ func pick_variant(did: String) -> Dictionary:
 			continue
 		if v.has("unless") and Game.has_flag(v["unless"]):
 			continue
+		if v.has("if_item") and Game.item_count(v["if_item"]) <= 0:
+			continue
 		return v
 	return {"lines": ["..."]}
 

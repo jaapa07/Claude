@@ -2414,10 +2414,13 @@ func enter_house(door: Vector2i, map_id: String) -> bool:
 	await goto(Vector2(door.x * 16 + 8, (door.y + 2) * 16 + 8), 4.0, 60.0)
 	steer(Vector2.UP)
 	var t := 0
-	while W.map_id != map_id and t < 120:
-		await frames(2)
+	while W.map_id != map_id and not W.transition_busy and t < 120:
+		await frames(1)
 		t += 1
 	release_moves()
+	while W.map_id != map_id and t < 240:
+		await frames(2)
+		t += 1
 	await frames(20)
 	return W.map_id == map_id
 
@@ -2426,7 +2429,8 @@ func leave_house() -> bool:
 	for e in W.ent_defs:
 		if e["type"] == "exit":
 			d = e
-	return await exit_to("vila_lumen", float(d["x"]) * 16 + 16, float(d["y"]) * 16 + 8)
+	var r: bool = await exit_to("vila_lumen", float(d["x"]) * 16 + 16, float(d["y"]) * 16 + 8)
+	return r
 
 func run_casas() -> void:
 	for i in [3]:
@@ -2453,7 +2457,7 @@ func run_casas() -> void:
 	check("Loja da Ysa tem interior", ok)
 	await shot("loja_ysa")
 	await leave_house()
-	ok = await enter_house(Vector2i(10, 28), "casa_corvelo")
+	ok = await enter_house(Vector2i(10, 27), "casa_corvelo")
 	check("Casa dos Corvelo abandonada antes do chefão", ok and W.cur_tiles[3][8] == "6")
 	await shot("casa_corvelo_antes")
 	await leave_house()
@@ -2485,7 +2489,7 @@ func run_casas() -> void:
 	await leave_house()
 	# casa dos Corvelo depois do chefão
 	Game.set_flag("cervo_morto")
-	await enter_house(Vector2i(10, 28), "casa_corvelo")
+	await enter_house(Vector2i(10, 27), "casa_corvelo")
 	check("Casa dos Corvelo renovada após o chefão", W.cur_tiles[3][8] == "5" and ent_by_id("corvelo_casa") != null)
 	await shot("casa_corvelo_depois")
 	await talk("corvelo_casa")

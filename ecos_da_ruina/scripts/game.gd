@@ -233,7 +233,10 @@ func set_flag(name: String, value: bool = true) -> void:
 			tmp_flags.erase(name)
 	else:
 		if value:
+			var novo: bool = not flags.has(name)
 			flags[name] = true
+			if novo and name.begins_with("quest_"):
+				check_item_steps.call_deferred()   # item achado antes de a missão começar
 		else:
 			flags.erase(name)
 	flag_changed.emit(name, value)
