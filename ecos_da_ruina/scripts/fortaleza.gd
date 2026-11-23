@@ -83,8 +83,8 @@ static func add_source(ts: TileSet) -> void:
 			src.set_tile_animation_frame_duration(c, 1, 0.6)
 		elif NAMES[i] == "f_banner" and src.texture.get_height() >= 144:
 			# estandarte ao vento: quadros extras nas linhas 5 e 8 da mesma coluna (82_fortaleza.pxl)
+			src.set_tile_animation_separation(c, Vector2i(0, 2))   # em células do atlas
 			src.set_tile_animation_columns(c, 1)
-			src.set_tile_animation_separation(c, Vector2i(0, 32))
 			src.set_tile_animation_frames_count(c, 3)
 			for k in 3:
 				src.set_tile_animation_frame_duration(c, k, 0.22)

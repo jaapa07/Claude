@@ -225,8 +225,8 @@ func _sway_tiles(src: TileSetAtlasSource, names: Array) -> void:
 		if i < 0:
 			continue
 		var c := Vector2i(i % 16, i / 16)
+		src.set_tile_animation_separation(c, Vector2i(0, 3))   # em células do atlas
 		src.set_tile_animation_columns(c, 1)
-		src.set_tile_animation_separation(c, Vector2i(0, TILE * 3))
 		src.set_tile_animation_frames_count(c, 4)
 		for k in 4:
 			src.set_tile_animation_frame_duration(c, k, 0.55 if k % 2 == 0 else 0.4)

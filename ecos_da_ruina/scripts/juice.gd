@@ -212,7 +212,7 @@ func disintegrate(w: Node, dur: float, big := false) -> void:
 	flash_for(0.06, 1.0)
 	var c := color_of(str(host.get("affinity")))
 	mat.set_shader_parameter("dissolve_col", Color(0.6, 0.95, 1.0).lerp(c, 0.35))
-	var tw := spr.create_tween()
+	var tw := create_tween()
 	tw.tween_interval(0.07)
 	tw.tween_method(func(v: float): mat.set_shader_parameter("dissolve", v), 0.0, 1.0, max(0.1, dur - 0.07))
 	if w != null:
