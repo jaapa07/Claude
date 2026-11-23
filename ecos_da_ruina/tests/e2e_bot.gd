@@ -5044,16 +5044,20 @@ func r5_entrada() -> void:
 	check("R5: portão norte da Catedral fechado (abre por dentro)", W.is_solid_char(r5_tile(23, 1)))
 
 # ---------------------------------------------------------------- 2. Jardim Invertido (rota 2)
-func r5_fight_area(kinds: Array, timeout := 120.0) -> int:
+var r5_seals := 0
+
+func r5_fight_area(kinds: Array, timeout := 120.0, radius := 9999.0) -> int:
 	var seals := 0
 	var t := 0.0
+	var c0: Vector2 = P.global_position
 	while t < timeout and P.state != Player.S.DEAD:
-		var es := hostile().filter(func(e): return e.kind in kinds)
+		var es := hostile().filter(func(e): return e.kind in kinds and e.global_position.distance_to(c0) < radius and not find_path(tile_of(P.global_position), tile_of(e.global_position)).is_empty())
 		if es.is_empty():
 			break
 		for h in get_tree().get_nodes_in_group("selos"):
 			if not h.fired:
 				seals += 1
+				r5_seals += 1
 				if h.global_position.distance_to(P.global_position) < 30.0:
 					steer(P.global_position - h.global_position)
 					await frames(12)
@@ -5094,8 +5098,7 @@ func r5_jardim() -> void:
 	await frames(10)
 	check("R5: o anel de marcas revela o Velúnio (raro)", Game.has_flag("jardim_circulo") and ent_by_id("jard_velunio") != null)
 	await r4_use(["brasejante"])
-	var seals := await r5_fight_area(["escriba", "sentinela_prisma"])
-	check("R5: escribas escrevem selos no chão (círculo que fecha)", seals > 0)
+	await r5_fight_area(["escriba", "sentinela_prisma"])
 	check("R5: escribas e sentinela do Jardim derrotados", hostile().filter(func(e): return e.kind in ["escriba", "sentinela_prisma"]).is_empty())
 	r4_heal()
 	ok = await exit_to("acampamento_aurora", 8.0, 19 * 16.0 + 8.0)
@@ -5106,7 +5109,7 @@ func r5_escadaria() -> void:
 	var ok := await exit_to("escadaria_fragmentos", 8.0, 15 * 16.0 + 8.0)
 	check("R5: o Acampamento leva à Escadaria dos Fragmentos", ok and W.map_id == "escadaria_fragmentos")
 	await shot("r5_05_escadaria")
-	await r5_fight_area(["fragmento"], 40.0)
+	await r5_fight_area(["fragmento"], 40.0, 220.0)
 	var n0 := Game.individuals.size()
 	var cap := await capture_species("e_gravito1", 0.3)
 	check("R5: Gravito capturável no patamar da âncora", cap and Game.individuals.size() > n0)
@@ -5162,6 +5165,7 @@ func r5_nave() -> void:
 	await r5_fight_area(["escriba", "fragmento"], 150.0)
 	await secs(1.0)
 	check("R5: encontro da Galeria vencido", Game.has_flag("enc_galeria_c_ok"))
+	check("R5: escribas escrevem selos no chão (círculo que fecha)", r5_seals > 0)
 	check("R5: caçada aos escribas concluída", Game.has_flag("caca_escribas_ok"))
 	await use_ent("eco_perdido3", Vector2(0, -14), Vector2.DOWN)
 	check("R5: três Ecos Perdidos (missão do Caio)", Game.has_flag("vozes_ok"))

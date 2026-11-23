@@ -107,22 +107,22 @@ pppppppppppppppp
 end
 
 frame c5_wall_top
-cccccccpcccccccp
-cbbbbbbpcbbbbbbp
-cbbbbbbpcbbabbbp
-cbbabbbpcbbbbbbp
-cbbbbbbpcbbbbbbp
-cbbbbbbpcbbbbabp
-cbbbbbbpcbbbbbbp
-pppppppppppppppp
-cccpcccccccpcccc
-bbbpcbbbbbbpcbbb
-babpcbbbbbbpcbbb
-bbbpcbbbabbpcbbb
-bbbpcbbbbbbpcbab
-bbbpcbbbbbbpcbbb
-bbbpcbbbbbbpcbbb
-pppppppppppppppp
+qqqqqqqoqqqqqqqo
+qppppppoqppppppo
+qppppppoqppnpppo
+qppnpppoqppppppo
+qppppppoqppppppo
+qppppppoqppppnpo
+qppppppoqppppppo
+oooooooooooooooo
+qqqoqqqqqqqoqqqq
+pppoqppppppoqppp
+pnpoqppppppoqppp
+pppoqpppnppoqppp
+pppoqppppppoqpnp
+pppoqppppppoqppp
+pppoqppppppoqppp
+oooooooooooooooo
 end
 
 frame c5_wall_glass
@@ -328,21 +328,21 @@ end
 # ------------------------------------------------ 16-19 piso de runas, ponte de raiz (detalhe), rocha de cristal, caminho espiritual (detalhe)
 frame c5_rune_floor
 eeeeeeedeeeeeeeb
-edddddRRRRddddcb
-eddddRdddcRdddcb
-edddRddddddRdddb
-eddRddxRRddcRddb
-eddRdxddddxdRdcb
-edRddRdyydRddRdb
-edRddRdyydRddRdb
-edRddRdddcRddRdb
-eddRdxddddxdRdcb
-eddRddxRRddcRddb
-edddRddddddRdddb
-eddddRdddcRdddcb
-edddddRRRRddddcb
-cccccccbcccccccb
-bbbbbbbbbbbbbbbb
+eddddddrdddddddb
+edcdddmrmdddcddb
+eddddddrdddddddb
+edddddmrmddddddb
+eddddddrdddddcdb
+edcddddrddddddcb
+drrrmrRxRrmrrrrb
+eddddddrddcddddb
+edddcddrdddddddb
+edddddmrmddddddb
+eddddddrdddcdddb
+edcdddmrmddddddb
+eddddddrdddddddb
+ccccccbrcccccccb
+bbbbbbbrbbbbbbbb
 end
 
 frame c5_root_bridge
@@ -636,19 +636,19 @@ end
 
 frame c5_glass_light
 eeeeeeedeeeeeeeb
-edddduutttddddcb
-eddduuuttttdddcb
-edduuutttXXXdddb
-edduuttXXXyyXdcb
-eddututXXyyyXXdb
-ccututXXyyyXXXbb
-bbuttXXXyXXXXbbb
-eeettXXXXXXttdee
-dddbeXXXXttubddd
-dcdbetXXttuubddd
-dddbettttuubedcd
-ddcbeduuuuucbddd
-dddbedduuddbeddd
+eddddddbeddddddb
+edddudtbedddddcb
+eddduutbeddcdddb
+edduutdbeddddddb
+edutdddbedddddcb
+ccccccbbccccccbb
+bbbbbbbbbbbbbbbb
+eeedeeeeeeedeeee
+dddbeddddXybeddd
+dcdbedddXyybeddd
+dddbeddXyydbedcd
+ddcbedXyddcbeddd
+dddbeddddddbeddd
 cccbbccccccbbccc
 bbbbbbbbbbbbbbbb
 end
