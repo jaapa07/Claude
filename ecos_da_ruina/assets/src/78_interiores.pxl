@@ -1,0 +1,345 @@
+# Interiores das casas — desenho autoral pixel a pixel.
+# tiles_interior.png (16x16, 16 colunas), moveis.png (células 32x32, alinhados na base), itens_missao.png (16x16).
+# Cores herdadas do tileset externo (parede creme, madeira, telhado terracota) + tapete, fogo e teia.
+
+palette inter from tile
+  2 = #b04050
+  3 = #7a2a3a
+  4 = #e8c870
+  5 = #f0f0f8aa
+  6 = #3a3448
+  7 = #2a2230
+  8 = #d8c8b0
+  9 = #8a7a68
+  F = #ffd060
+  H = #ff9a40
+  J = #e85030
+  Z = #fff4d0
+end
+pal inter
+
+# ================================================================ PISOS
+frame wood_floor0
+pppppppNpppppppp
+ooooOooNoooooOoo
+oooooooNoooooooo
+NNNNNNNNNNNNNNNN
+ppppppppppppNppp
+ooOoooooooooNooo
+ooooooooOoooNooo
+NNNNNNNNNNNNNNNN
+pppNpppppppppppp
+oooNooooooOooooo
+oOoNoooooooooOoo
+NNNNNNNNNNNNNNNN
+ppppppppppNppppp
+ooooOoooooNooooo
+oooooooOooNoooOo
+NNNNNNNNNNNNNNNN
+end
+
+frame wood_floor1
+ppppNppppppppppp
+ooooNoooooOooooo
+oOooNoooooooooOo
+NNNNNNNNNNNNNNNN
+pppppppppppppNpp
+oooooonOoooooNoo
+ooooooOOooooONoo
+NNNNNNNNNNNNNNNN
+pppppppNpppppppp
+ooOooooNoooooooo
+oooooooNooooOooo
+NNNNNNNNNNNNNNNN
+pNpppppppppppppp
+oNoooooooOoooooo
+oNooOoooooooooOo
+NNNNNNNNNNNNNNNN
+end
+
+frame wood_floor_dark
+OOOOOOONOOOOOOOO
+nnnnNnnNnnnnnNnn
+nnnnnnnNnnnnnnnn
+kNNNNNNNNNNNNNkN
+OOOOOOOOOOOONOOO
+nnNnnnnnnnnnNnnn
+nnnnnnnnNnnnNnnn
+NNNNkNNNNNNNNNNN
+OOONOOOOOOOOOOOO
+nnnNnnnnnnNnnnnn
+nNnNnnnnnnnnnNnn
+NNNNNNNNNNkNNNNN
+OOOOOOOOOONOOOOO
+nnnnNnnnnnNnnnnn
+nnnnnnnNnnNnnnNn
+NNNNNNNNNNNNNNNN
+end
+
+frame stone_floor
+rrrrrrrSrrrrrRrS
+rRrrrrrSrrrrrrrS
+rrrrrRrSrrRrrrrS
+rrrrrrrSrrrrrrrS
+SSSSSSSSSrrrrrrS
+rrrrSrrrSSSSSSSS
+rrRrSrrrrrrrSrrr
+rrrrSrrrrRrrSrrr
+rrrrSrrRrrrrSrRr
+SSSSSrrrrrrrSrrr
+rrrrSSSSSSSSSSSS
+rRrrrrrrSrrrrrrS
+rrrrrRrrSrrrRrrS
+rrrrrrrrSrrrrrrS
+rrrRrrrrSrRrrrrS
+SSSSSSSSSSSSSSSS
+end
+
+# ================================================================ TAPETE (centro + bordas com franja)
+frame rug_center
+3222422232224222
+2322222323222223
+2232223222322232
+2223232222232322
+4222322242223222
+2223232222232322
+2232223222322232
+2322222323222223
+3222422232224222
+2322222323222223
+2232223222322232
+2223232222232322
+4222322242223222
+2223232222232322
+2232223222322232
+2322222323222223
+end
+
+frame rug_edge_n
+pppppppNpppppppp
+ooooOooNoooooOoo
+oooooooNoooooooo
+fNfNfNfNfNfNfNfN
+3333333333333333
+4444444444444444
+4344434443444344
+3333333333333333
+3222422232224222
+2322222323222223
+2232223222322232
+2223232222232322
+4222322242223222
+2223232222232322
+2232223222322232
+2322222323222223
+end
+
+frame rug_edge_s
+3222422232224222
+2322222323222223
+2232223222322232
+2223232222232322
+4222322242223222
+2223232222232322
+2232223222322232
+2322222323222223
+3333333333333333
+4344434443444344
+4444444444444444
+3333333333333333
+fNfNfNfNfNfNfNfN
+ppppppppppNppppp
+ooooOoooooNooooo
+NNNNNNNNNNNNNNNN
+end
+
+frame rug_edge_w
+pppf344332224222
+oooN343323222223
+ooof344322322232
+NNNN344322232322
+pppf344342223222
+ooON343322232322
+ooof344322322232
+NNNN344323222223
+pppf344332224222
+oooN343323222223
+oOof344322322232
+NNNN344322232322
+pppf344342223222
+oooN343322232322
+ooof344322322232
+NNNN344323222223
+end
+
+frame rug_edge_e
+322242223443fppp
+232222233343NOoo
+223222323443fooo
+222323223443NNNN
+422232223443fppp
+222323223343Nooo
+223222323443fooo
+232222233443NNNN
+322242223443fppp
+232222233343Nooo
+223222323443fOoo
+222323223443NNNN
+422232223443fppp
+222323223343Nooo
+223222323443foOo
+232222233443NNNN
+end
+
+# ================================================================ PAREDES (vistas de dentro)
+frame iwall_top
+NNNNNNNNNNNNNNNN
+NnnnnnnNnnnnnnnN
+NnOnnnnNnnnnOnnN
+NnnnnnnNnnnnnnnN
+NNNNNNNNNNNNNNNN
+nnnnnnnnNnnnnnnn
+nnnOnnnnNnnnnnOn
+nnnnnnnnNnnnnnnn
+NNNNNNNNNNNNNNNN
+NnnnnnnNnnnnnnnN
+NnnnnOnNnnnOnnnN
+NnnnnnnNnnnnnnnN
+NNNNNNNNNNNNNNNN
+nnnnnnnnNnnnnnnn
+nnOnnnnnNnnnnOnn
+NNNNNNNNNNNNNNNN
+end
+
+frame iwall_front
+NNNNNNNNNNNNNNNN
+ooooooooOooooooo
+OOOOOOOOOOOOOOOO
+vvvvvvvvvvvvvvvv
+vvvvVvvvvvvvvvvv
+vvvvvvvvvvvVvvvv
+vvvvvvvvvvvvvvvv
+vvVvvvvvvvvvvvvv
+vvvvvvvvVvvvvvvv
+vvvvvvvvvvvvvvVv
+vvvvvvvvvvvvvvvv
+VVVVVVVVVVVVVVVV
+pppppppppppppppp
+oooooooooooooooo
+OOOOOOOOOOOOOOOO
+KKKKKKKKKKKKKKKK
+end
+
+frame iwall_window
+NNNNNNNNNNNNNNNN
+ooooooooOooooooo
+OOOOOOOOOOOOOOOO
+vvzKKKKKKKKKKzvv
+vzzKIIIqKIIqKzzv
+vzzKIIqqKIqqKzzv
+vzzKqqqiKqqiKzzv
+vzzKKKKKKKKKKzzv
+vzzKIIqqKIqqKzzv
+vzzKqqiiKqiiKzzv
+vzzKppppppppKzzv
+VVzKOOOOOOOOKzVV
+ppzpppppppppppzp
+oooooooooooooooo
+OOOOOOOOOOOOOOOO
+KKKKKKKKKKKKKKKK
+end
+
+frame iwall_shelf
+NNNNNNNNNNNNNNNN
+ooooooooOooooooo
+OOOOOOOOOOOOOOOO
+vvvvvvvvvvvvvvvv
+vvKKvvvvvvKKKvvv
+vKiiKKKvvKffYKvv
+vKiiKcKKvKfYYKKv
+vKIiKcKyKKYYYKAK
+vKiiKcKyKKffYKAK
+KKKKKKKKKKKKKKKK
+pppppppppppppppp
+OnOOOOOOOOOOOnOO
+vnvvvvvvvvvvvnvv
+pppppppppppppppp
+oooooooooooooooo
+KKKKKKKKKKKKKKKK
+end
+
+frame iwall_painting
+NNNNNNNNNNNNNNNN
+ooooooooOooooooo
+OOOOOOOOOOOOOOOO
+vvvvvvvKvvvvvvvv
+vvvvvvKvKvvvvvvv
+vvKKKKKKKKKKKKvv
+vvK44444444444Kv
+vvK4IIIIIIIIq4Kv
+vvK4IIIFIIqqq4Kv
+vvK4qIIqqqtTq4Kv
+vvK4tTtqqtTtt4Kv
+vvK4gggggGgggKKv
+vvK44444444444Kv
+ppKKKKKKKKKKKKpp
+oooooooooooooooo
+KKKKKKKKKKKKKKKK
+end
+
+frame door_mat
+pppppppNpppppppp
+ooooOooNoooooOoo
+oooooooNoooooooo
+NNNNNNNNNNNNNNNN
+ppKKKKKKKKKKKKpp
+oKDdDdDdDdDdDdKo
+oKdeeeeeeeeeedKo
+oKDeDDDDDDDDeDKo
+NKdeDddddddDedKN
+pKDeDDDDDDDDeDKp
+oKdeeeeeeeeeedKo
+oKDdDdDdDdDdDdKo
+oNKKKKKKKKKKKKNo
+NNNNNNNNNNNNNNNN
+ppppppppppNppppp
+NNNNNNNNNNNNNNNN
+end
+
+frame iwall_front_dark
+NNNNNNNNNNNNNNNN
+5nnnnnnnOnnnnnnn
+O5OOOOOOOOOOOOOO
+5V555VVVVVVVVVVV
+V5VV5V8VVVVVVVVV
+55V5VVVVVVVVSVVV
+VV55VVVVVVVVSVVV
+V5VV5VVVVVVSVVVV
+VVVVVVVV8VVVSVVV
+VVVVVVVVVVVVVSVV
+VVVVVVVVVVVVVVVV
+SSSSSSSSSSSSSSSS
+OOOOOOOOOOOOOOOO
+nnnnnnnnnnnnnnnn
+NNNNNNNNNNNNNNNN
+KKKKKKKKKKKKKKKK
+end
+
+sheet tiles_interior.png 16 16 16
+wood_floor0
+wood_floor1
+wood_floor_dark
+stone_floor
+rug_center
+rug_edge_n
+rug_edge_s
+rug_edge_w
+rug_edge_e
+iwall_top
+iwall_front
+iwall_window
+iwall_shelf
+iwall_painting
+door_mat
+iwall_front_dark
+end

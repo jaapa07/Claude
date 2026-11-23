@@ -123,6 +123,20 @@ func _ready() -> void:
 			sprite.visible = not opened
 		"anvil":
 			_prop("anvil", Vector2(0, -2)); solid = true
+		"prop":
+			# móvel de interior (moveis.png, células 32x32 alinhadas na base)
+			sprite = Sprite2D.new()
+			sprite.texture = Art.region(def.get("sheet", "moveis"), int(def.get("frame", 0)) * 32, 0, 32, 32)
+			sprite.offset = Vector2(0, -8)
+			add_child(sprite)
+			solid = def.get("solid", true)
+			reach = 22.0
+		"pickup":
+			sprite = Sprite2D.new()
+			sprite.texture = Art.region("itens_missao", int(def.get("frame", 0)) * 16, 0, 16, 16)
+			sprite.offset = Vector2(0, -2)
+			add_child(sprite)
+			solid = false
 		"spirit_mark":
 			_spr("fx_sparkle", Vector2(0, -6), true, 16, false)
 			sprite.modulate = Color(0.8, 0.85, 1.0, 0.25)
@@ -225,6 +239,8 @@ func prompt() -> String:
 		"crack": return "" if Game.has_flag(def.get("flag", "")) else "Rocha fissurada"
 		"ore": return "" if opened else "Minerar"
 		"anvil": return "Forja"
+		"prop": return "Examinar" if def.has("dialog") else ("Forja" if def.get("forge", false) else "")
+		"pickup": return "Pegar"
 		"spirit_mark": return "Examinar"
 		"rite_reset": return "Reiniciar rito"
 		"altar": return "" if Game.has_flag(def.get("flag", "")) else "Altar do Rito"
@@ -253,6 +269,12 @@ func interact(player: Node) -> void:
 		"crack": _crack()
 		"ore": _mine()
 		"anvil": world.ui.open_forge()
+		"prop":
+			if def.get("forge", false):
+				world.ui.open_forge()
+			elif def.has("dialog"):
+				world.start_dialog(def["dialog"], self)
+		"pickup": _pickup()
 		"spirit_mark": _spirit()
 		"rite_reset": world.rite_reset(self)
 		"altar": world.rite_altar(self)
@@ -544,3 +566,15 @@ func _process(delta: float) -> void:
 	if kind == "shrine":
 		set_frame(Game.has_flag("shrine_" + eid), 24)
 
+
+
+func _pickup() -> void:
+	var flag: String = def.get("flag", "")
+	if flag != "" and Game.has_flag(flag):
+		return
+	if flag != "":
+		Game.set_flag(flag)
+	Game.give_item(def["item"], int(def.get("qtd", 1)))
+	Audio.play("pickup")
+	world.say("Pegou: %s" % Data.items[def["item"]]["nome"])
+	queue_free()

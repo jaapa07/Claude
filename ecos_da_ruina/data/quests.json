@@ -164,5 +164,37 @@
     "flag": "veio_tesouro"
    }
   ]
+ },
+ "ervas": {
+  "nome": "Chá de Folha-Lanterna",
+  "tipo": "secundaria",
+  "etapas": [
+   {
+    "texto": "Colete 3 Folhas-Lanterna perto das flores do Bosque e da Clareira.",
+    "item": "folha_lanterna",
+    "alvo": 3,
+    "flag": "ervas_ok"
+   },
+   {
+    "texto": "Leve as folhas para Lia, na casa da Anciã Maru.",
+    "flag": "ervas_entregue"
+   }
+  ]
+ },
+ "brinquedo": {
+  "nome": "O Cervinho do Pipo",
+  "tipo": "secundaria",
+  "etapas": [
+   {
+    "texto": "Ache o brinquedo do Pipo no Bosque, onde as flores crescem em anel.",
+    "item": "brinquedo_madeira",
+    "alvo": 1,
+    "flag": "brinquedo_achado"
+   },
+   {
+    "texto": "Devolva o brinquedo à Dona Corvelo, na casa da família.",
+    "flag": "brinquedo_entregue"
+   }
+  ]
  }
 }

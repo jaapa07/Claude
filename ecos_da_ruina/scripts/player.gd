@@ -642,7 +642,11 @@ func _resolve_capture() -> void:
 			return
 		t.captured_by_hero()
 		var nm: String = Data.sp(t.species_id).get("nome", "")
-		world.say("%s capturado! (%s)" % [nm, "equipe" if dest == "equipe" else "santuário"])
+		if dest == "equipe":
+			world.say("%s capturado! Entrou na equipe (%d/3)." % [nm, Game.team.size()])
+		else:
+			world.say("%s capturado! Equipe cheia: guardado no Santuário (%d/%d)." % [nm, Game.sanctuary.size(), Game.SANCTUARY_CAP])
+			world.say("Troque criaturas em qualquer cristal de santuário.")
 		Audio.play("capture_ok")
 		world.refresh_companion(true)
 		_end_capture("", true)

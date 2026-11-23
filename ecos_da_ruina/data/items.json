@@ -283,5 +283,33 @@
   "icone": 14,
   "desc": "Fragmento da galhada do Cervo de Ossos.",
   "folha": "icons_equip"
+ },
+ "folha_lanterna": {
+  "nome": "Folha-Lanterna",
+  "tipo": "missao",
+  "folha": "itens_missao",
+  "icone": 0,
+  "desc": "Erva que brilha fraco perto das flores-lanterna. Lia usa para chás de cura."
+ },
+ "brinquedo_madeira": {
+  "nome": "Cervinho de Madeira",
+  "tipo": "missao",
+  "folha": "itens_missao",
+  "icone": 1,
+  "desc": "Brinquedo entalhado à mão. Pipo perdeu no Bosque quando a família fugiu das raízes."
+ },
+ "carta_corvelo": {
+  "nome": "Carta dos Corvelo",
+  "tipo": "historia",
+  "folha": "itens_missao",
+  "icone": 2,
+  "desc": "\"Se alguém achar esta carta: fomos para o Santuário buscar ajuda. As vozes vêm de lá. — Família Corvelo\""
+ },
+ "livro_guardioes": {
+  "nome": "Livro dos Guardiões",
+  "tipo": "historia",
+  "folha": "itens_missao",
+  "icone": 3,
+  "desc": "\"Cinco guardiões mantinham o Eco em equilíbrio. Quando a Catedral tentou guardá-lo, eles adoeceram. Cada guardião caído devolve à terra um Eco.\""
  }
 }

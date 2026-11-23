@@ -545,5 +545,169 @@
     "Inscrição: RITO AVANÇADO — Mecanismos que só despertam com uma explosão de calor. Três, ao mesmo tempo, em 15 s."
    ]
   }
+ ],
+ "lia": [
+  {
+   "if": "ervas_entregue",
+   "lines": [
+    "Lia: O chá ficou ótimo! A Anciã até sorriu. Volte quando precisar de remédio."
+   ]
+  },
+  {
+   "if": "ervas_ok",
+   "lines": [
+    "Lia: Três Folhas-Lanterna! Perfeitas. Com elas faço tônicos para a sua viagem.",
+    "Lia: Leve estes — e o néctar é para suas criaturas."
+   ],
+   "set": [
+    "ervas_entregue"
+   ],
+   "take": {
+    "folha_lanterna": 3
+   },
+   "give": {
+    "pocao": 3,
+    "tonico_criatura": 1
+   }
+  },
+  {
+   "if": "quest_ervas",
+   "lines": [
+    "Lia: As Folhas-Lanterna brilham fraquinho perto das flores-lanterna. Procure no Bosque e na Clareira."
+   ]
+  },
+  {
+   "lines": [
+    "Lia: Sou aprendiz da Anciã Maru. Desde que as raízes cercaram a vila, os remédios acabaram.",
+    "Lia: Se achar 3 Folhas-Lanterna na floresta, faço tônicos para você."
+   ],
+   "set": [
+    "quest_ervas"
+   ]
+  }
+ ],
+ "corvelo_casa": [
+  {
+   "if": "brinquedo_entregue",
+   "lines": [
+    "Dona Corvelo: O Pipo não larga mais o cervinho. Obrigada por trazer um pedaço da nossa casa de volta."
+   ]
+  },
+  {
+   "if": "brinquedo_achado",
+   "lines": [
+    "Dona Corvelo: É o cervinho do Pipo! Ele chorou noites por isso.",
+    "Dona Corvelo: Fique com estes selos. E... as criaturas parecem confiar mais em você agora."
+   ],
+   "set": [
+    "brinquedo_entregue"
+   ],
+   "take": {
+    "brinquedo_madeira": 1
+   },
+   "give": {
+    "selo_refinado": 2,
+    "essencia_azul": 2
+   },
+   "bond": "missao:brinquedo"
+  },
+  {
+   "if": "quest_brinquedo",
+   "lines": [
+    "Dona Corvelo: Ele perdeu o brinquedo no Bosque, onde as flores crescem em anel. Dizem que um Lumipim gosta de ficar por lá."
+   ]
+  },
+  {
+   "lines": [
+    "Dona Corvelo: Voltamos para casa graças a você. Só falta uma coisa...",
+    "Dona Corvelo: O Pipo perdeu o cervinho de madeira no Bosque, quando fugimos das raízes. Se achar, traga para nós?"
+   ],
+   "set": [
+    "quest_brinquedo"
+   ]
+  }
+ ],
+ "carta_corvelo": [
+  {
+   "if": "cervo_morto",
+   "lines": [
+    "Uma mesinha arrumada. A carta antiga foi guardada numa gaveta."
+   ]
+  },
+  {
+   "lines": [
+    "Uma carta empoeirada sobre a mesa:",
+    "\"Se alguém achar esta carta: fomos para o Santuário buscar ajuda. As vozes vêm de lá. — Família Corvelo\""
+   ],
+   "give": {
+    "carta_corvelo": 1
+   },
+   "set": [
+    "leu_carta_corvelo"
+   ]
+  }
+ ],
+ "estante_maru": [
+  {
+   "if": "leu_livro_guardioes",
+   "lines": [
+    "Estante da Anciã: livros de ervas, mapas antigos e o Livro dos Guardiões, que você já leu."
+   ]
+  },
+  {
+   "lines": [
+    "Um livro gasto se destaca na estante: Livro dos Guardiões.",
+    "\"Cinco guardiões mantinham o Eco em equilíbrio. Quando a Catedral tentou guardá-lo, eles adoeceram.\"",
+    "\"Cada guardião caído devolve à terra um Eco. Quem o carrega pode mudar o mundo — para o bem ou para o mal.\""
+   ],
+   "give": {
+    "livro_guardioes": 1
+   },
+   "set": [
+    "leu_livro_guardioes"
+   ]
+  }
+ ],
+ "caldeirao": [
+  {
+   "lines": [
+    "Um caldeirão com chá de ervas ainda morno. Cheira a menta e terra molhada."
+   ]
+  }
+ ],
+ "dario": [
+  {
+   "if": "cervo_morto",
+   "lines": [
+    "Dario: Com a floresta livre, chegam mercadorias de novo! Dê uma olhada."
+   ],
+   "shop": true
+  },
+  {
+   "lines": [
+    "Dario: Sou o irmão da Ysa. Ela vende lá fora, eu cuido do estoque aqui dentro. Mesmos preços, prometo."
+   ],
+   "shop": true
+  }
+ ],
+ "cama": [
+  {
+   "lines": [
+    "Uma cama arrumada. Não é hora de dormir: a floresta precisa de você."
+   ]
+  }
+ ],
+ "berco": [
+  {
+   "if": "cervo_morto",
+   "lines": [
+    "O berço voltou a ter cobertas limpas."
+   ]
+  },
+  {
+   "lines": [
+    "Um berço vazio, coberto de pó."
+   ]
+  }
  ]
 }

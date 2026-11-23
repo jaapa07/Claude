@@ -114,6 +114,9 @@ def vila():
     m.rect(0, 22, 18, 3, "p"); m.rect(17, 22, 4, 3, "p")  # oeste
     m.rect(0, 22, 2, 3, "x")                        # portao oeste (atalho do santuario)
     house(m, 6, 5, 5); house(m, 32, 4, 6); house(m, 8, 26, 5); house(m, 33, 22, 6)
+    # portas das casas (passagem para os interiores)
+    for (dx, dy) in ((8, 7), (35, 6), (10, 28), (36, 24)):
+        m.set(dx, dy, "d")
     m.rect(31, 9, 6, 3, "~")
     for (x, y) in ((30, 9), (30, 10), (30, 11), (37, 9), (37, 10), (31, 12), (36, 12), (34, 8)):
         m.set(x, y, "b")
@@ -128,7 +131,7 @@ def vila():
         m.set(x, y, "b")
     for x, y in ((26, 24), (12, 8), (38, 20)):
         m.set(x, y, "o")
-    m.spawns = {"default": [21, 16], "from_bosque": [41, 15], "from_clareira": [21, 29], "from_desfiladeiro": [21, 3],
+    m.spawns = {"from_casa_maru": [8, 9], "from_loja_ysa": [35, 8], "from_casa_corvelo": [10, 30], "from_casa_tobi": [36, 26], "default": [21, 16], "from_bosque": [41, 15], "from_clareira": [21, 29], "from_desfiladeiro": [21, 3],
                 "from_atalho": [3, 23], "from_santuario": [21, 15]}
     m.ent(type="shrine", id="vila", x=22, y=14)
     m.ent(type="npc", id="anciao", sprite="npc_elder", dialog="anciao", x=19, y=14, nome="Anciã Maru")
@@ -144,6 +147,10 @@ def vila():
     m.ent(type="wild", id="brotisco_tutorial", species="brotisco", level=1, x=12, y=19, unique=True, garantida=True)
     m.ent(type="chest", id="vila_bau1", x=5, y=11, loot={"fragmentos": 25, "selo_basico": 2})
     m.ent(type="exit", x=42, y=14, w=2, h=4, to="bosque_lanternas", spawn="from_vila")
+    m.ent(type="exit", x=8, y=7, w=1, h=1, to="casa_maru", spawn="entrada")
+    m.ent(type="exit", x=35, y=6, w=1, h=1, to="loja_ysa", spawn="entrada")
+    m.ent(type="exit", x=10, y=28, w=1, h=1, to="casa_corvelo", spawn="entrada")
+    m.ent(type="exit", x=36, y=24, w=1, h=1, to="casa_tobi", spawn="entrada")
     m.ent(type="exit", x=20, y=30, w=4, h=2, to="clareira_raizes", spawn="from_vila")
     m.ent(type="exit", x=20, y=0, w=4, h=1, to="desfiladeiro", spawn="from_vila", if_flag="cervo_morto")
     m.ent(type="exit", x=0, y=22, w=1, h=3, to="santuario_a", spawn="from_atalho", if_flag="atalho_vila_aberto")
@@ -197,6 +204,9 @@ def bosque():
     m.ent(type="enemy", kind="cogumelo", id="b_cog1", x=15, y=22)
     m.ent(type="enemy", kind="cogumelo", id="b_cog2", x=36, y=13)
     m.ent(type="flower", id="b_flor1", group="flores_b", x=22, y=15)
+    m.ent(type="pickup", id="folha1", item="folha_lanterna", frame=0, flag="folha1_pega", x=23, y=16, unless_flag="folha1_pega")
+    m.ent(type="pickup", id="folha2", item="folha_lanterna", frame=0, flag="folha2_pega", x=45, y=11, unless_flag="folha2_pega")
+    m.ent(type="pickup", id="brinquedo", item="brinquedo_madeira", frame=1, flag="brinquedo_pego", x=21, y=31, unless_flag="brinquedo_pego")
     m.ent(type="flower", id="b_flor2", group="flores_b", x=41, y=15)
     m.ent(type="flower", id="b_flor3", group="flores_b", x=46, y=10)
     m.puzzles["flores_b"] = {"type": "flowers", "flag": "bosque_flores"}
@@ -240,6 +250,7 @@ def clareira():
     m.rect(21, 36, 4, 2, "p"); m.rect(21, 0, 4, 2, "p")
     m.spawns = {"from_vila": [23, 3], "from_santuario": [23, 35]}
     m.ent(type="sign", id="placa_clareira", dialog="placa_clareira", x=22, y=23)
+    m.ent(type="pickup", id="folha3", item="folha_lanterna", frame=0, flag="folha3_pega", x=38, y=19, unless_flag="folha3_pega")
     m.ent(type="plate", id="c_placa1", group="placas_c", x=15, y=28)
     m.ent(type="plate", id="c_placa2", group="placas_c", x=30, y=28)
     m.ent(type="crate", id="c_caixa1", x=19, y=26)

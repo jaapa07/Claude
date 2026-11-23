@@ -721,6 +721,8 @@ func give_item(id: String, n: int = 1) -> void:
 	else:
 		inventory[id] = int(inventory.get(id, 0)) + n
 	inventory_changed.emit()
+	if Data.items.get(id, {}).get("tipo", "") == "missao":
+		check_item_steps()
 	hero_changed.emit()
 
 func take_item(id: String, n: int = 1) -> bool:
@@ -832,6 +834,8 @@ func diary_lines() -> Array:
 			var txt: String = step["texto"]
 			if step.has("contador"):
 				txt += " (%d/%d)" % [mini(int(stats["kills"].get(step["contador"], 0)), int(step["alvo"])), int(step["alvo"])]
+			if step.has("item"):
+				txt += " (%d/%d)" % [mini(item_count(step["item"]), int(step["alvo"])), int(step["alvo"])]
 			if step.has("contador_especies"):
 				var c := 0
 				for sp_id in step["contador_especies"]:
@@ -997,3 +1001,15 @@ func item_icon(id: String) -> Texture2D:
 	var it: Dictionary = Data.items.get(id, {})
 	var sheet: String = it.get("folha", "icons")
 	return Art.region(sheet, int(it.get("icone", 0)) * 16, 0, 16, 16)
+
+
+# =============================================================== MISSÕES COM ITENS (coleta)
+## Etapas com "item"/"alvo" concluem sozinhas quando o herói tem itens suficientes.
+func check_item_steps() -> void:
+	for qid in Data.quests:
+		if not quest_active(qid):
+			continue
+		for st in Data.quests[qid]["etapas"]:
+			if st.has("item") and not has_flag(st["flag"]) and item_count(st["item"]) >= int(st["alvo"]):
+				set_flag(st["flag"])
+				toast.emit("Missão: %s (%d/%d) — volte para entregar." % [Data.items[st["item"]]["nome"], int(st["alvo"]), int(st["alvo"])])

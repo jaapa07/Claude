@@ -4,7 +4,7 @@ class_name World
 
 const TILE := 16
 const TILE_ORDER := ".,fpT~rRhHwcxFbSDPoCgGvkeBy"
-const SOLID := "T~RhHcxFbDPoCvMLuJZXOAaI"
+const SOLID := "T~RhHcxFbDPoCvMLuJZXOAaI56"
 const TILESET_PATH := "res://assets/sprites/tiles2.png"
 ## Região 2 (Minas da Brasa): segunda fonte do TileSet (source id 1), ordem do contrato docs/REGIAO2_CONTRATO.md
 const TILESET_MINAS_PATH := "res://assets/sprites/tiles_minas.png"
@@ -17,6 +17,9 @@ const RAILS := "=|"
 const HEAT_TICK := 0.7
 const HEAT_DMG_HERO := 5.0
 const HEAT_DMG_CREATURE := 4.0
+const TILESET_INT_PATH := "res://assets/sprites/tiles_interior.png"
+const INT_NAMES := ["wood_floor0", "wood_floor1", "wood_floor_dark", "stone_floor", "rug_center", "rug_edge_n", "rug_edge_s", "rug_edge_w", "rug_edge_e",
+	"iwall_top", "iwall_front", "iwall_window", "iwall_shelf", "iwall_painting", "door_mat", "iwall_front_dark"]
 const TILE_NAMES := ["grass0", "grass1", "grass2", "grassd0", "flowers0", "lush0", "bloom0", "path0", "path1", "pedge_n", "pedge_s", "pedge_w", "pedge_e",
 	"water0", "water1", "shore_n", "shore_s", "shore_w", "shore_e", "tree_bot0", "tree_top0", "tree_bot1", "tree_top1", "bush", "rock", "fence", "roots",
 	"rfloor0", "rfloor1", "rmoss", "rwall_front", "rwall_top", "pillar", "pillar_top", "door_closed", "door_open", "sap", "roof_l", "roof_m", "roof_r",
@@ -157,6 +160,13 @@ func _make_tileset() -> TileSet:
 				src2.set_tile_animation_frame_duration(c2, 0, 0.55)
 				src2.set_tile_animation_frame_duration(c2, 1, 0.55)
 		ts.add_source(src2, 1)
+	if ResourceLoader.exists(TILESET_INT_PATH):
+		var src3 := TileSetAtlasSource.new()
+		src3.texture = Art.tex(TILESET_INT_PATH)
+		src3.texture_region_size = Vector2i(TILE, TILE)
+		for i in INT_NAMES.size():
+			src3.create_tile(Vector2i(i % 16, i / 16))
+		ts.add_source(src3, 2)
 	_tileset = ts
 	return ts
 
@@ -164,10 +174,14 @@ func _tc(name: String) -> Vector2i:
 	var i := TILE_NAMES.find(name)
 	if i < 0:
 		i = MINAS_NAMES.find(name)
+	if i < 0:
+		i = INT_NAMES.find(name)
 	return Vector2i(i % 16, i / 16)
 
 ## Fonte do atlas: 0 = floresta (tiles2.png), 1 = minas (tiles_minas.png)
 func _src(name: String) -> int:
+	if INT_NAMES.has(name):
+		return 2
 	return 1 if MINAS_NAMES.has(name) else 0
 
 func _ch(x: int, y: int) -> String:
@@ -187,6 +201,25 @@ func _cell_tiles(x: int, y: int) -> Array:
 	match c:
 		".": out[0] = g
 		",": out[0] = "grassd0"
+		"d": out[0] = "hdoor"
+		"1": out[0] = "wood_floor0" if hv % 3 else "wood_floor1"
+		"2": out[0] = "wood_floor_dark"
+		"3": out[0] = "stone_floor"
+		"7": out[0] = "door_mat"
+		"4":
+			out[0] = "rug_center"
+			if _ch(x, y - 1) != "4": out[0] = "rug_edge_n"
+			elif _ch(x, y + 1) != "4": out[0] = "rug_edge_s"
+			elif _ch(x - 1, y) != "4": out[0] = "rug_edge_w"
+			elif _ch(x + 1, y) != "4": out[0] = "rug_edge_e"
+		"5", "6":
+			var below := _ch(x, y + 1)
+			if below in ["5", "6", "v", "#"]:
+				out[0] = "iwall_top"
+			elif c == "6":
+				out[0] = "iwall_front_dark"
+			else:
+				out[0] = ["iwall_front", "iwall_front", "iwall_window", "iwall_front", "iwall_shelf", "iwall_painting"][hv % 6]
 		"f": out[0] = "flowers0"
 		"g": out[0] = "lush0"
 		"G": out[0] = "bloom0"
@@ -485,7 +518,7 @@ func _spawn_def(i: int, player_pos: Vector2 = Vector2(-9999, -9999)) -> void:
 	var node: Node = null
 	match t:
 		"npc", "sign", "chest", "shrine", "flower", "lever", "plate", "crate", "vine", "bridge_spot", "bond_stone", \
-				"valve", "furnace", "brazier", "cart", "rail_lever", "rail_marked", "draft", "crack", "ore", "anvil", "spirit_mark", "rite_reset", "altar":
+				"valve", "furnace", "brazier", "cart", "rail_lever", "rail_marked", "draft", "crack", "ore", "anvil", "spirit_mark", "rite_reset", "altar", "prop", "pickup":
 			var e := Ent.new()
 			e.init(self, d)
 			node = e
@@ -897,6 +930,8 @@ func start_dialog(did: String, speaker: Node = null) -> void:
 	ui.dialog(v["lines"], func():
 		for f in v.get("set", []):
 			Game.set_flag(f)
+		for k in v.get("take", {}):
+			Game.take_item(k, int(v["take"][k]))
 		if v.has("give"):
 			Game.give_loot(v["give"])
 		if v.has("bond"):
