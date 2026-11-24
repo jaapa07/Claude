@@ -105,6 +105,8 @@ func _process(delta: float) -> void:
 	if f > 0.0 and _extra_flash <= 0.0:
 		mat.set_shader_parameter("flash_col", Color.WHITE)   # dano sempre em branco
 	f = max(f, _extra_flash)
+	if Game.prefs.get("reduz_flash", false):
+		f *= 0.4          # opção "Flashes de impacto" desligada: clarão bem mais suave
 	mat.set_shader_parameter("flash", clamp(f, 0.0, 1.0))
 	if not enabled:
 		return

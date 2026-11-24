@@ -1,18 +1,24 @@
 extends Control
 class_name Hud
-## HUD compacto, caixa de diálogo, barra de chefão, avisos e transição — montados com nós e arte autoral.
+## HUD compacto, caixa de diálogo com retrato, barra de chefão, avisos com ícone e transição — montados com nós e arte autoral.
 
 var ui: Node
 var world: Node
 var font: Font
-var toasts: Array = []       # {"t": String, "life": float, "node": Control}
+## Avisos: os visíveis e os que esperam a vez. {"t", "life", "node", "kind", "shown", "out"}
+var toasts: Array = []
+const TOAST_MAX_VIS := 3
+const TOAST_LIFE := 3.2
 var banner_t := 0.0
 var boss: Node = null
 var dlg_lines: Array = []
 var dlg_i := 0
+var dlg_page := 0
+var dlg_pages: Array = []
 var dlg_chars := 0.0
 var dlg_cb: Callable = Callable()
 var dlg_active := false
+var dlg_speaker := ""
 var hud_hidden := false
 var fade_a := 0.0:
 	set(v):
@@ -42,6 +48,8 @@ void fragment() {
 var _mem: ColorRect
 var memory_tint := false
 var _root: Control
+var _top: CanvasLayer
+var _toast_layer: Control
 var _hp: TextureProgressBar
 var _vig: TextureProgressBar
 var _en: TextureProgressBar
@@ -64,21 +72,31 @@ var _eco_lab: Label
 var _boss_panel: NinePatchRect
 var _boss_name: Label
 var _boss_bar: TextureProgressBar
-var _toast_box: VBoxContainer
 var _prompt: NinePatchRect
 var _prompt_lab: Label
 var _obj_lab: Label
 var _hint: NinePatchRect
 var _hint_lab: Label
+var _hint_icon: TextureRect
 var _cap: NinePatchRect
 var _cap_lab: Label
 var _cap_bar: TextureProgressBar
 var _banner: NinePatchRect
 var _banner_lab: Label
+var _banner_y := 94.0
 var _dlg: NinePatchRect
+var _dlg_tab: NinePatchRect
 var _dlg_name: Label
 var _dlg_body: Label
-var _dlg_more: Label
+var _dlg_more: TextureRect
+var _dlg_page_lab: Label
+var _dlg_pt_box: NinePatchRect
+var _dlg_pt: TextureRect
+var _time := 0.0
+
+# ---- geometria do diálogo (normal / texto grande)
+const DLG_X := 8.0
+const DLG_W := 464.0
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -90,76 +108,75 @@ func _ready() -> void:
 	_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_root)
 	# herói
-	var hp_panel := UIKit.panel(Vector2(4, 4), Vector2(150, 38))
+	var hp_panel := UIKit.panel(Vector2(4, 4), Vector2(150, 38), UIKit.FR_HUD)
 	_root.add_child(hp_panel)
-	_hero_lab = Fonts.label("Herói", 8, Color(1, 0.9, 0.6)); _hero_lab.position = Vector2(6, 5); hp_panel.add_child(_hero_lab)
-	_hp_lab = Fonts.label("", 7); _hp_lab.position = Vector2(88, 5); _hp_lab.size = Vector2(56, 10); _hp_lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT; hp_panel.add_child(_hp_lab)
-	_hp = Art.bar(1, 140); _hp.position = Vector2(5, 16); _hp.size = Vector2(140, 6); hp_panel.add_child(_hp)
+	_hero_lab = Fonts.label("Herói", 8, Color(1, 0.9, 0.6)); _hero_lab.position = Vector2(7, 6); hp_panel.add_child(_hero_lab)
+	_hp_lab = Fonts.label("", 7); _hp_lab.position = Vector2(86, 6); _hp_lab.size = Vector2(58, 10); _hp_lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT; hp_panel.add_child(_hp_lab)
+	_hp = Art.bar(1, 140); _hp.position = Vector2(5, 17); _hp.size = Vector2(140, 6); hp_panel.add_child(_hp)
 	_vig = Art.bar(2, 140); _vig.position = Vector2(5, 24); hp_panel.add_child(_vig)
 	_en = Art.bar(3, 140); _en.position = Vector2(5, 29); hp_panel.add_child(_en)
 	# criatura ativa
-	_cr_panel = UIKit.panel(Vector2(4, 44), Vector2(150, 42))
+	_cr_panel = UIKit.panel(Vector2(4, 44), Vector2(150, 42), UIKit.FR_HUD)
 	_root.add_child(_cr_panel)
-	_cr_name = Fonts.label("", 8, Color(0.75, 1.0, 0.8)); _cr_name.position = Vector2(32, 5); _cr_panel.add_child(_cr_name)
+	_cr_name = Fonts.label("", 8, Color(0.75, 1.0, 0.8)); _cr_name.position = Vector2(32, 6); _cr_panel.add_child(_cr_name)
 	_cr_hp = Art.bar(4, 112); _cr_hp.position = Vector2(32, 16); _cr_hp.size = Vector2(112, 5); _cr_panel.add_child(_cr_hp)
 	_cr_skill = Fonts.label("", 7, Color(1, 1, 0.7)); _cr_skill.position = Vector2(32, 23); _cr_panel.add_child(_cr_skill)
-	_cr_cd = Art.bar(3, 112); _cr_cd.position = Vector2(32, 34); _cr_panel.add_child(_cr_cd)
+	_cr_cd = Art.bar(3, 112); _cr_cd.position = Vector2(32, 33); _cr_panel.add_child(_cr_cd)
 	_cr_beh = Fonts.label("", 7, Color(0.8, 0.8, 0.95)); _cr_beh.position = Vector2(6, 88); _root.add_child(_cr_beh)
 	for i in 2:
-		var p := UIKit.panel(Vector2(156 + i * 34, 44), Vector2(32, 30))
+		var p := UIKit.panel(Vector2(156 + i * 34, 44), Vector2(32, 30), UIKit.FR_HUD)
 		p.visible = false
 		_root.add_child(p)
 		var bar := Art.bar(4, 24); bar.position = Vector2(4, 23); p.add_child(bar)
 		_res.append({"panel": p, "bar": bar, "icon": null, "sp": ""})
 	_swap_lab = Fonts.label("", 7, Color(0.7, 0.85, 1)); _swap_lab.position = Vector2(158, 76); _root.add_child(_swap_lab)
 	# recursos (direita)
-	var rp := UIKit.panel(Vector2(358, 4), Vector2(118, 38))
+	var rp := UIKit.panel(Vector2(358, 4), Vector2(118, 38), UIKit.FR_HUD)
 	_root.add_child(rp)
-	var i1 := UIKit.icon(3); i1.position = Vector2(4, 3); rp.add_child(i1)
-	_frag_lab = Fonts.label("0", 8, Color(0.7, 0.95, 1)); _frag_lab.position = Vector2(20, 8); rp.add_child(_frag_lab)
-	var i2 := UIKit.icon(0); i2.position = Vector2(56, 3); rp.add_child(i2)
+	var i1 := UIKit.icon(3); i1.position = Vector2(5, 4); rp.add_child(i1)
+	_frag_lab = Fonts.label("0", 8, Color(0.7, 0.95, 1)); _frag_lab.position = Vector2(21, 8); rp.add_child(_frag_lab)
+	var i2 := UIKit.icon(0); i2.position = Vector2(56, 4); rp.add_child(i2)
 	_seal_lab = Fonts.label("0", 8); _seal_lab.position = Vector2(72, 8); rp.add_child(_seal_lab)
-	var i3 := UIKit.icon(2); i3.position = Vector2(84, 3); rp.add_child(i3)
+	var i3 := UIKit.icon(2); i3.position = Vector2(84, 4); rp.add_child(i3)
 	_ton_lab = Fonts.label("0", 8); _ton_lab.position = Vector2(100, 8); rp.add_child(_ton_lab)
-	var i4 := UIKit.icon(6); i4.position = Vector2(4, 19); rp.add_child(i4)
-	_eco_lab = Fonts.label("—", 7, Color(0.75, 1, 0.65)); _eco_lab.position = Vector2(20, 24); rp.add_child(_eco_lab)
-	# chefão
-	_boss_panel = UIKit.panel(Vector2(156, 4), Vector2(198, 30)); _boss_panel.position = Vector2(156, 4); _boss_panel.size = Vector2(200, 28); _boss_panel.visible = false; _root.add_child(_boss_panel)
-	_boss_name = Fonts.label("", 10, Color(1, 0.85, 0.5)); _boss_name.position = Vector2(4, 5); _boss_name.size = Vector2(192, 10)
-	_boss_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; _boss_panel.add_child(_boss_name)
-	_boss_bar = Art.bar(1, 188); _boss_bar.position = Vector2(6, 17); _boss_bar.size = Vector2(188, 6); _boss_panel.add_child(_boss_bar)
-	# avisos
-	_toast_box = VBoxContainer.new()
-	_toast_box.position = Vector2(20, 120); _toast_box.size = Vector2(440, 64)
-	_toast_box.alignment = BoxContainer.ALIGNMENT_END
-	_toast_box.add_theme_constant_override("separation", 1)
-	_toast_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_root.add_child(_toast_box)
+	var i4 := UIKit.icon(6); i4.position = Vector2(5, 19); rp.add_child(i4)
+	_eco_lab = Fonts.label("—", 7, Color(0.75, 1, 0.65)); _eco_lab.position = Vector2(21, 24); _eco_lab.size = Vector2(92, 10); _eco_lab.clip_text = true; rp.add_child(_eco_lab)
+	# chefão: moldura carmim própria
+	_boss_panel = UIKit.panel(Vector2(156, 3), Vector2(200, 32), UIKit.FR_BOSS); _boss_panel.visible = false; _root.add_child(_boss_panel)
+	_boss_name = Fonts.label("", 10, Color(1, 0.85, 0.5)); _boss_name.position = Vector2(6, 7); _boss_name.size = Vector2(188, 10)
+	_boss_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; _boss_name.clip_text = true; _boss_panel.add_child(_boss_name)
+	_boss_bar = Art.bar(1, 184); _boss_bar.position = Vector2(8, 19); _boss_bar.size = Vector2(184, 6); _boss_panel.add_child(_boss_bar)
 	# dica, captura, prompt, objetivo
-	_hint = UIKit.panel(Vector2(10, 204), Vector2(460, 28)); _root.add_child(_hint)
-	_hint_lab = Fonts.label("", 8, Color(0.85, 1.0, 0.85)); _hint_lab.position = Vector2(6, 5); _hint_lab.size = Vector2(448, 20); _hint_lab.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_hint_lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; _hint.add_child(_hint_lab)
-	_cap = UIKit.panel(Vector2(40, 160), Vector2(400, 40)); _cap.visible = false; _root.add_child(_cap)
+	_hint = UIKit.panel(Vector2(10, 204), Vector2(460, 28), UIKit.FR_HUD); _root.add_child(_hint)
+	_hint_icon = UIKit.toast_icon(UIKit.IC_INFO); _hint_icon.position = Vector2(6, 6); _hint.add_child(_hint_icon)
+	_hint_lab = Fonts.label("", 8, Color(0.85, 1.0, 0.85)); _hint_lab.position = Vector2(24, 5); _hint_lab.size = Vector2(430, 20); _hint_lab.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_hint_lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; _hint_lab.vertical_alignment = VERTICAL_ALIGNMENT_CENTER; _hint.add_child(_hint_lab)
+	_cap = UIKit.panel(Vector2(40, 160), Vector2(400, 40), UIKit.FR_HUD); _cap.visible = false; _root.add_child(_cap)
 	_cap_lab = Fonts.label("", 8, Color(0.75, 1, 1)); _cap_lab.position = Vector2(6, 5); _cap_lab.size = Vector2(388, 24); _cap_lab.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_cap_lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; _cap.add_child(_cap_lab)
 	_cap_bar = Art.bar(3, 300); _cap_bar.position = Vector2(50, 31); _cap.add_child(_cap_bar)
-	_prompt = UIKit.panel(Vector2(190, 234), Vector2(100, 16)); _prompt.visible = false; _root.add_child(_prompt)
-	_prompt_lab = Fonts.label("", 9); _prompt_lab.position = Vector2(4, 4); _prompt_lab.size = Vector2(92, 10)
+	_prompt = UIKit.panel(Vector2(190, 234), Vector2(100, 18), UIKit.FR_MENU); _prompt.visible = false; _root.add_child(_prompt)
+	_prompt_lab = Fonts.label("", 9); _prompt_lab.position = Vector2(4, 5); _prompt_lab.size = Vector2(92, 10)
 	_prompt_lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; _prompt.add_child(_prompt_lab)
-	_obj_lab = Fonts.label("", 7, Color(1, 0.95, 0.75)); _obj_lab.position = Vector2(6, 252); _obj_lab.size = Vector2(468, 18); _obj_lab.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; _root.add_child(_obj_lab)
+	_obj_lab = Fonts.label("", 7, Color(1, 0.95, 0.75)); _obj_lab.position = Vector2(6, 252); _obj_lab.size = Vector2(468, 18); _obj_lab.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_obj_lab.max_lines_visible = 2; _obj_lab.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS; _root.add_child(_obj_lab)
 	# tom de lembrança (sépia), abaixo da faixa e do diálogo: o passado aparece por trás do texto
 	_mem = ColorRect.new(); _mem.size = size; _mem.color = Color(0.32, 0.22, 0.1, 0.0); _mem.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_mem)
-	# faixa com nome do mapa
-	_banner = UIKit.panel(Vector2(110, 92), Vector2(260, 26)); _banner.visible = false; add_child(_banner)
-	_banner_lab = Fonts.label("", 11, Color(1, 0.9, 0.55)); _banner_lab.position = Vector2(4, 9); _banner_lab.size = Vector2(252, 10)
+	# faixa com nome do mapa (desce do alto e some)
+	_banner = UIKit.panel(Vector2(110, _banner_y), Vector2(260, 30), UIKit.FR_TAB); _banner.visible = false; add_child(_banner)
+	_banner_lab = Fonts.label("", 16, Color(1, 0.9, 0.55)); _banner_lab.position = Vector2(4, 8); _banner_lab.size = Vector2(252, 16)
 	_banner_lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; _banner.add_child(_banner_lab)
-	# diálogo
-	_dlg = UIKit.panel(Vector2(10, 180), Vector2(460, 86)); _dlg.visible = false; add_child(_dlg)
-	_dlg_name = Fonts.label("", 10, Color(1, 0.85, 0.4)); _dlg_name.position = Vector2(10, 7); _dlg.add_child(_dlg_name)
-	_dlg_body = Fonts.label("", 10); _dlg_body.position = Vector2(10, 21); _dlg_body.size = Vector2(440, 58)
-	_dlg_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; _dlg.add_child(_dlg_body)
-	_dlg_more = Fonts.label("E >", 8, Color(1, 0.85, 0.4)); _dlg_more.position = Vector2(428, 74); _dlg.add_child(_dlg_more)
+	# diálogo: caixa, aba com o nome, retrato emoldurado, seta "continuar" e contador de páginas
+	_dlg = UIKit.panel(Vector2(DLG_X, 184), Vector2(DLG_W, 82), UIKit.FR_DLG); _dlg.visible = false; add_child(_dlg)
+	_dlg_pt_box = UIKit.panel(Vector2(6, 9), Vector2(42, 42), UIKit.FR_MENU); _dlg.add_child(_dlg_pt_box)
+	_dlg_pt = TextureRect.new(); _dlg_pt.position = Vector2(5, 5); _dlg_pt.size = Vector2(32, 32); _dlg_pt.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_dlg_pt_box.add_child(_dlg_pt)
+	_dlg_body = Fonts.label("", 10); _dlg.add_child(_dlg_body)
+	_dlg_more = TextureRect.new(); _dlg_more.texture = Art.sprite_tex("ui2_more"); _dlg_more.mouse_filter = Control.MOUSE_FILTER_IGNORE; _dlg.add_child(_dlg_more)
+	_dlg_page_lab = Fonts.label("", 7, Color(0.7, 0.78, 1.0)); _dlg.add_child(_dlg_page_lab)
+	_dlg_tab = UIKit.panel(Vector2(DLG_X + 8, 172), Vector2(80, 18), UIKit.FR_TAB); _dlg_tab.visible = false; add_child(_dlg_tab)
+	_dlg_name = Fonts.label("", 10, Color(1, 0.85, 0.4)); _dlg_name.position = Vector2(8, 5); _dlg_tab.add_child(_dlg_name)
 	# transição
 	_fade = ColorRect.new(); _fade.size = size; _fade.color = Color(0, 0, 0, 0); _fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var fsh := Shader.new()
@@ -170,6 +187,9 @@ func _ready() -> void:
 	_fade_mat.set_shader_parameter("level", fade_a)
 	_fade.material = _fade_mat
 	add_child(_fade)
+	# avisos: camada própria acima dos menus (uma compra na loja também avisa)
+	_top = CanvasLayer.new(); _top.layer = 12; _top.process_mode = Node.PROCESS_MODE_ALWAYS; add_child(_top)
+	_toast_layer = Control.new(); _toast_layer.size = size; _toast_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE; _top.add_child(_toast_layer)
 
 ## Lembranças do herói: a tela ganha um tom sépia por trás do diálogo (scripts/historia.gd).
 func set_memory_tint(on: bool) -> void:
@@ -177,80 +197,297 @@ func set_memory_tint(on: bool) -> void:
 	if _mem:
 		_mem.color.a = 0.5 if on else 0.0
 
+# =============================================================== AVISOS (fila com ícone por tipo)
+## Tipo do aviso pelo texto: decide o ícone e a moldura. Ordem importa (um aviso de falha vence "selo").
+static func toast_kind(t: String) -> int:
+	var l := t.to_lower()
+	for w in ["não é possível", "não dá", "insuficiente", "precisa ", "falha", "cheia", "sem vigor", "sem tônico", "sem pontos", "em recarga", "recarrega", "indisponível", "escapou", "exausta", "só fora", "não se move", "termine o", "afaste-se", "cuidado"]:
+		if l.find(w) >= 0:
+			return UIKit.IC_AVISO
+	for w2 in ["capturad", "vínculo formado", "vínculo fortalecido"]:
+		if l.find(w2) >= 0:
+			return UIKit.IC_CAPTURA
+	for w3 in ["nível", "evolu", "nova técnica", "talento", "aprendeu"]:
+		if l.find(w3) >= 0:
+			return UIKit.IC_NIVEL
+	for w4 in ["eco obtido", "lembrança", "memória", "artefato", "ecos dos guardiões"]:
+		if l.find(w4) >= 0:
+			return UIKit.IC_ECO
+	for w5 in ["missão", "contrato", "diário", "objetivo", "caçada", "concluí", "jornada"]:
+		if l.find(w5) >= 0:
+			return UIKit.IC_MISSAO
+	for w6 in ["salvo", "autosave", "retorno gravado", "recuperados", "santuário"]:
+		if l.find(w6) >= 0:
+			return UIKit.IC_CRISTAL
+	if t.begins_with("+") or l.begins_with("pegou") or l.begins_with("comprou") or l.begins_with("obteve") or l.begins_with("recebeu") or l.find("fragmentos") >= 0 or l.find(" x") >= 0 and l.find("material") >= 0 or l.begins_with("você pegou") or l.find("equipou") >= 0:
+		return UIKit.IC_ITEM
+	return UIKit.IC_INFO
+
+func _toast_maxw() -> float:
+	return 330.0 if TouchControls.active else 420.0
+
+func _toast_cx() -> float:
+	return 176.0 if TouchControls.active else 240.0
+
 func add_toast(t: String) -> void:
-	for x in toasts:
-		if x["t"] == t:
-			x["life"] = 3.0
-			return
-	var p := UIKit.panel(Vector2.ZERO, Vector2(10, 16))
 	t = Game.k(t)
-	var l := Fonts.label(t, 8)
-	l.position = Vector2(5, 4)
+	for x in toasts:
+		if x["t"] == t and not x["out"]:
+			x["life"] = TOAST_LIFE
+			return
+	var kind := toast_kind(t)
+	var frame: int = UIKit.FR_WARN if kind == UIKit.IC_AVISO else (UIKit.FR_BOSS if (boss != null and is_instance_valid(boss) and t.ends_with("!")) else UIKit.FR_MENU)
+	var p := UIKit.panel(Vector2.ZERO, Vector2(10, 22), frame)
+	var ic := UIKit.toast_icon(kind)
+	ic.position = Vector2(5, 3)
+	p.add_child(ic)
+	var col: Color = {UIKit.IC_AVISO: Color(1, 0.86, 0.7), UIKit.IC_CAPTURA: Color(0.75, 1, 1), UIKit.IC_NIVEL: Color(1, 0.95, 0.6), UIKit.IC_ECO: Color(0.8, 0.88, 1), UIKit.IC_MISSAO: Color(1, 0.92, 0.78), UIKit.IC_CRISTAL: Color(0.75, 0.95, 1), UIKit.IC_ITEM: Color(1, 0.95, 0.82)}.get(kind, Color.WHITE)
+	var l := Fonts.label(t, 8, col)
+	l.position = Vector2(24, 7)
 	p.add_child(l)
-	var w: float = l.get_minimum_size().x + 10.0
-	var hgt := 16.0
-	var maxw: float = _toast_box.size.x
+	var maxw := _toast_maxw()
+	var w: float = l.get_minimum_size().x + 32.0
+	var hgt := 22.0
 	if w > maxw:
 		# aviso longo: quebra em linhas dentro da área livre (no toque, sem passar sob os botões)
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		l.custom_minimum_size = Vector2(maxw - 14.0, 0)
-		l.size = Vector2(maxw - 14.0, 0)
-		w = maxw - 4.0
-		hgt = l.get_minimum_size().y + 8.0
-	p.custom_minimum_size = Vector2(w, hgt)
-	p.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	_toast_box.add_child(p)
-	toasts.append({"t": t, "life": 3.2, "node": p})
-	while toasts.size() > 4:
+		l.custom_minimum_size = Vector2(maxw - 32.0, 0)
+		l.size = Vector2(maxw - 32.0, 0)
+		w = maxw
+		hgt = max(22.0, l.get_minimum_size().y + 12.0)
+		l.position.y = 6
+		ic.position.y = (hgt - 16.0) / 2.0
+	p.size = Vector2(w, hgt)
+	p.visible = false
+	_toast_layer.add_child(p)
+	toasts.append({"t": t, "life": TOAST_LIFE, "node": p, "kind": kind, "shown": false, "out": false})
+	# fila limitada: os mais antigos saem primeiro
+	while toasts.size() > 8:
 		var old: Dictionary = toasts.pop_front()
 		old["node"].queue_free()
+	_toast_layout()
 
+func _toast_layout() -> void:
+	var vis: Array = []
+	for x in toasts:
+		if x["out"]:
+			continue
+		if not x["shown"] and vis.size() >= TOAST_MAX_VIS:
+			break
+		vis.append(x)
+	# empilha de baixo para cima, acima da caixa de dica/diálogo
+	var bottom := (_dlg.position.y - 16.0) if dlg_active else (_hint.position.y - 4.0 if _hint.visible else 196.0)
+	if TouchControls.active:
+		bottom = min(bottom, 188.0)
+	var y := bottom
+	for k in range(vis.size() - 1, -1, -1):
+		var x: Dictionary = vis[k]
+		var p: NinePatchRect = x["node"]
+		y -= p.size.y + 2.0
+		var target := Vector2(round(_toast_cx() - p.size.x / 2.0), y)
+		if not x["shown"]:
+			x["shown"] = true
+			p.visible = true
+			p.position = target + Vector2(-14, 0)
+			p.modulate.a = 0.0
+			var tw := p.create_tween().set_parallel(true)
+			tw.tween_property(p, "position", target, 0.18).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+			tw.tween_property(p, "modulate:a", 1.0, 0.18)
+			if x["kind"] in [UIKit.IC_NIVEL, UIKit.IC_CAPTURA, UIKit.IC_ECO]:
+				Audio.play("ui_ok", -14.0)
+		elif p.position.distance_to(target) > 0.5:
+			var tw2 := p.create_tween()
+			tw2.tween_property(p, "position", target, 0.15).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+func _toast_tick(delta: float) -> void:
+	var waiting := 0
+	for x in toasts:
+		if not x["shown"]:
+			waiting += 1
+	var changed := false
+	for x in toasts.duplicate():
+		if not x["shown"] or x["out"]:
+			continue
+		x["life"] -= delta * (2.0 if waiting >= 2 else 1.0)
+		if x["life"] <= 0.0:
+			x["out"] = true
+			changed = true
+			var p: NinePatchRect = x["node"]
+			var tw := p.create_tween().set_parallel(true)
+			tw.tween_property(p, "modulate:a", 0.0, 0.22)
+			tw.tween_property(p, "position:y", p.position.y - 6.0, 0.22)
+			tw.chain().tween_callback(func():
+				toasts.erase(x)
+				p.queue_free())
+	if changed or waiting > 0:
+		_toast_layout()
+
+# =============================================================== FAIXA DO MAPA
 func show_banner(t: String) -> void:
 	_banner_lab.text = t
-	banner_t = 2.6
+	var big: bool = t.length() * 16 + 40 <= 440
+	_banner_lab.add_theme_font_size_override("font_size", 16 if big else 8)
+	var w: float = clamp(t.length() * (16.0 if big else 8.0) + 48.0, 160.0, 452.0)
+	_banner.size = Vector2(w, 32 if big else 24)
+	_banner_lab.size = Vector2(w - 8, 16)
+	_banner_lab.position = Vector2(4, 8)
+	_banner.position = Vector2(round(240.0 - w / 2.0), _banner_y)
+	banner_t = 2.8
+
+# =============================================================== DIÁLOGO
+## Falantes de nome composto reconhecidos como "Nome: fala" (os simples são uma palavra só).
+const SPEAKERS_MULTI := ["Dona Corvelo", "Memória do Eco", "Eco de Ione", "Voz antiga", "Inscrição revelada", "Inscrição riscada",
+	"Pedra da dica", "Eco obtido", "Sra. Ruivo", "Capitã Ilse", "Placa gasta", "Placa do Refúgio", "Placa (riscada a faca)",
+	"Estante da Anciã", "Mestra Ione", "Mestra Ilda", "Anciã Maru", "Arquivista Sena", "Eco de Ivar"]
+
+## Separa "Nome: fala" em [nome, fala]; sem falante, nome vazio.
+static func split_speaker(line: String) -> Array:
+	var ci := line.find(":")
+	if ci > 0 and ci <= 24 and ci + 1 < line.length() and line[ci + 1] == " ":
+		var nm := line.substr(0, ci)
+		if nm.find(" ") < 0 or nm in SPEAKERS_MULTI or nm.begins_with("Dona ") or nm.begins_with("Mestra ") or nm.begins_with("Capitã "):
+			if nm.find("\"") < 0 and nm.find("(") < 0 or nm in SPEAKERS_MULTI:
+				return [nm, line.substr(ci + 2)]
+	return ["", line]
+
+## Retrato (coluna em ui2_portraits.png) de quem fala; -1 sem retrato.
+static func speaker_portrait(nm: String) -> int:
+	if nm == "":
+		return -1
+	var m := {"Você": 0, "Maru": 1, "Anciã Maru": 1, "Ione": 2, "Mestra Ione": 2, "Bruna": 3, "Ravi": 4, "Vesna": 5,
+		"Arauto": 6, "Ilda": 7, "Mestra Ilda": 7, "Doran": 8, "Ilse": 9, "Capitã Ilse": 9, "Sena": 10, "Arquivista Sena": 10,
+		"Arão": 11, "Ysa": 12, "Eco de Ione": 15, "Tobi": 16}
+	if m.has(nm):
+		return int(m[nm])
+	for w in ["Placa", "Inscrição", "Pedra", "Estante"]:
+		if nm.begins_with(w):
+			return 13
+	for w2 in ["Memória", "Voz", "Lembrança", "Eco"]:
+		if nm.begins_with(w2):
+			return 14
+	return -1
+
+## Quebra o texto em páginas que cabem na caixa (fonte monoespaçada: cada letra ocupa a mesma largura).
+static func paginate(text: String, cols: int, rows: int, first_n := 0, first_cols := 0) -> Array:
+	var lines := wrap_lines(text, cols, first_n, first_cols)
+	var pages: Array = []
+	var i := 0
+	while i < lines.size():
+		pages.append("\n".join(lines.slice(i, i + rows)))
+		i += rows
+	if pages.is_empty():
+		pages.append("")
+	return pages
+
+## Quebra em linhas de até `cols` letras; as `first_n` primeiras podem ser mais curtas (ícone no canto).
+static func wrap_lines(text: String, cols: int, first_n := 0, first_cols := 0) -> Array:
+	var lines: Array = []
+	for para in text.split("\n"):
+		var cur := ""
+		for word in para.split(" ", false):
+			var wd: String = word
+			var lim: int = first_cols if lines.size() < first_n else cols
+			while wd.length() > lim:
+				# palavra maior que a linha: corta à força
+				if cur != "":
+					lines.append(cur); cur = ""
+				lines.append(wd.substr(0, lim)); wd = wd.substr(lim)
+				lim = first_cols if lines.size() < first_n else cols
+			if cur == "":
+				cur = wd
+			elif cur.length() + 1 + wd.length() <= lim:
+				cur += " " + wd
+			else:
+				lines.append(cur)
+				cur = wd
+		lines.append(cur)
+	return lines
+
+func _dlg_big() -> bool:
+	return bool(Game.pref("texto_grande"))
 
 func start_dialog(lines: Array, cb: Callable) -> void:
 	dlg_lines = lines
 	dlg_i = 0
+	dlg_page = 0
 	dlg_chars = 0.0
 	dlg_cb = cb
 	dlg_active = true
 	_show_line()
 
+## Monta a caixa para a fala atual: nome, retrato, tamanho do texto e páginas.
 func _show_line() -> void:
-	var line: String = Game.k(dlg_lines[dlg_i])
-	var ci := line.find(":")
-	if ci > 0 and ci <= 22 and (line.substr(0, ci).find(" ") < 0 or line.begins_with("Dona")):
-		_dlg_name.text = line.substr(0, ci)
-		_dlg_body.text = line.substr(ci + 2)
-	else:
-		_dlg_name.text = ""
-		_dlg_body.text = line
-	_dlg_body.visible_characters = 0
+	var line: String = Game.k(str(dlg_lines[dlg_i]))
+	var sp := split_speaker(line)
+	dlg_speaker = sp[0]
+	var body: String = sp[1]
+	var big := _dlg_big()
+	var fs := 16 if big else 8
+	var lh := float(fs + 4)
+	var h := 116.0 if big else 88.0
+	var y0 := 270.0 - 4.0 - h
+	_dlg.position = Vector2(DLG_X, y0)
+	_dlg.size = Vector2(DLG_W, h)
+	var pi := speaker_portrait(dlg_speaker)
+	_dlg_pt_box.visible = pi >= 0
+	if pi >= 0:
+		_dlg_pt.texture = Art.region("ui2_portraits", pi * 32, 0, 32, 32)
+	var tx := 56.0 if pi >= 0 else 12.0
+	var right := DLG_W - 12.0
+	if TouchControls.active:
+		right = 418.0 - DLG_X      # o botão OK fica no canto inferior direito
+	var cols := int((right - tx) / float(fs))
+	var rows := int((h - 22.0) / lh)
+	dlg_pages = paginate(body, cols, rows)
+	dlg_page = 0
+	_dlg_body.add_theme_font_size_override("font_size", fs)
+	_dlg_body.add_theme_constant_override("line_spacing", 4)
+	_dlg_body.autowrap_mode = TextServer.AUTOWRAP_OFF
+	_dlg_body.position = Vector2(tx, 10.0)
+	_dlg_body.size = Vector2(right - tx, h - 18.0)
+	_dlg_tab.visible = dlg_speaker != ""
+	_dlg_name.text = dlg_speaker
+	_dlg_name.add_theme_font_size_override("font_size", 16 if big else 8)
+	_dlg_tab.size = Vector2(dlg_speaker.length() * (16 if big else 8) + 18, 26 if big else 18)
+	_dlg_tab.position = Vector2(DLG_X + 8, y0 - _dlg_tab.size.y + 6)
+	_dlg_name.position = Vector2(9, 5)
+	_dlg_more.position = Vector2(right - 6.0, h - 14.0)
+	_dlg_page_lab.position = Vector2(right - 44.0, h - 14.0)
+	_set_page()
+
+func _set_page() -> void:
+	_dlg_body.text = dlg_pages[dlg_page]
+	dlg_chars = 0.0
+	_dlg_body.visible_characters = 0 if Game.text_speed() > 0.0 else -1
+	_dlg_page_lab.text = ("%d/%d" % [dlg_page + 1, dlg_pages.size()]) if dlg_pages.size() > 1 else ""
+
+func _typing_done() -> bool:
+	return _dlg_body.visible_characters < 0 or _dlg_body.visible_characters >= _dlg_body.text.length()
 
 func _process(delta: float) -> void:
-	for t in toasts:
-		t["life"] -= delta
-		t["node"].modulate.a = clamp(t["life"], 0.0, 1.0)
-	for t in toasts.duplicate():
-		if t["life"] <= 0.0:
-			t["node"].queue_free()
-			toasts.erase(t)
+	_time += delta
+	_toast_tick(delta)
 	banner_t = max(0.0, banner_t - delta)
 	_banner.visible = banner_t > 0.0 and Game.in_game
-	_banner.modulate.a = clamp(banner_t / 0.6, 0.0, 1.0)
-	# o letreiro desce com um leve quique ao entrar e sobe ao sair
-	var age := 2.6 - banner_t
-	var e_in: float = clamp(age / 0.35, 0.0, 1.0)
-	var drop: float = -16.0 * pow(1.0 - e_in, 3.0) + 2.0 * sin(e_in * PI) * (1.0 - e_in * 0.5)
-	var rise: float = -8.0 * (1.0 - clamp(banner_t / 0.6, 0.0, 1.0))
-	_banner.position.y = round(92.0 + drop + rise)
+	if _banner.visible:
+		# desce suave do alto e some no fim
+		var age := 2.8 - banner_t
+		_banner.modulate.a = clamp(min(age / 0.3, banner_t / 0.6), 0.0, 1.0)
+		_banner.position.y = _banner_y - 10.0 * (1.0 - clamp(age / 0.3, 0.0, 1.0))
 	_dlg.visible = dlg_active
+	_dlg_tab.visible = dlg_active and dlg_speaker != ""
 	if dlg_active:
-		dlg_chars += delta * 55.0
-		_dlg_body.visible_characters = int(dlg_chars)
-		_dlg_more.visible = _dlg_body.visible_characters >= _dlg_body.text.length()
+		var spd := Game.text_speed()
+		if spd > 0.0 and _dlg_body.visible_characters >= 0:
+			dlg_chars += delta * spd
+			_dlg_body.visible_characters = int(dlg_chars)
+			if _dlg_body.visible_characters >= _dlg_body.text.length():
+				_dlg_body.visible_characters = -1
+		var done := _typing_done()
+		_dlg_more.visible = done
+		_dlg_more.position.y = _dlg.size.y - 14.0 + (1.0 if fmod(_time, 0.8) < 0.4 else 0.0)
 	_root.visible = world != null and Game.in_game and world.player != null and not hud_hidden
+	_obj_lab.visible = not (ui != null and ui.has_screen())
 	if _root.visible:
 		_update_hud()
 
@@ -265,16 +502,21 @@ func _input(event: InputEvent) -> void:
 	if not adv:
 		return
 	get_viewport().set_input_as_handled()
-	if _dlg_body.visible_characters < _dlg_body.text.length():
+	if not _typing_done():
 		dlg_chars = 9999.0
 		_dlg_body.visible_characters = -1
 		return
+	Audio.play("ui_move", -10.0)
+	if dlg_page + 1 < dlg_pages.size():
+		dlg_page += 1
+		_set_page()
+		return
 	dlg_i += 1
 	dlg_chars = 0.0
-	Audio.play("ui_move", -10.0)
 	if dlg_i >= dlg_lines.size():
 		dlg_active = false
 		_dlg.visible = false
+		_dlg_tab.visible = false
 		var cb := dlg_cb
 		ui.dialog_closed()
 		if cb.is_valid():
@@ -286,6 +528,7 @@ func _beh_name() -> String:
 	return {"acompanhar": "Acompanhar", "atacar": "Atacar alvo", "proteger": "Proteger", "preservar": "Preservar"}.get(Game.behavior, "")
 
 func _update_hud() -> void:
+	_touch_layout()
 	var p: Player = world.player
 	var maxhp := Game.hero_max_hp()
 	var hp := float(Game.hero["hp"])
@@ -387,19 +630,26 @@ func _update_hud() -> void:
 	_prompt.visible = world.current_prompt != ""
 	if _prompt.visible:
 		_prompt_lab.text = "E  " + world.current_prompt
-		var w: float = _prompt_lab.get_minimum_size().x + 14.0
+		var w: float = _prompt_lab.get_minimum_size().x + 16.0
 		_prompt.size.x = w
-		_prompt.position.x = (170.0 if TouchControls.active else 240.0) - w / 2.0
+		_prompt.position.x = round((170.0 if TouchControls.active else 240.0) - w / 2.0)
 		_prompt_lab.size.x = w - 8.0
 	var obj := Game.objective_text()
 	var ct := Game.contract_progress_text()
 	if ct != "":
 		obj = "[Contrato] " + ct
 	_obj_lab.text = Game.k(("Objetivo: " + obj) if obj != "" else "")
-	var hint := Game.k(Game.tutorial_hint())
+	var hint := Game.k(Game.tutorial_hint()) if bool(Game.pref("dicas")) else ""
 	_hint.visible = hint != "" and not dlg_active
-	_hint_lab.text = hint
-	_touch_layout()
+	if _hint_lab.text != hint:
+		_hint_lab.text = hint
+		# dica longa: a caixa cresce para cima em vez de cortar o texto
+		var lines: int = maxi(1, ceili(float(hint.length() * 8) / _hint_lab.size.x))
+		var hh: float = max(28.0, lines * 10.0 + 10.0)
+		var bottom: float = 224.0 if TouchControls.active else 232.0
+		_hint.size.y = hh
+		_hint.position.y = bottom - hh
+		_hint_lab.size.y = hh - 10.0
 
 
 ## No toque, os textos de baixo não podem ficar sob os botões da direita.
@@ -411,8 +661,6 @@ func _touch_layout() -> void:
 	_obj_lab.size.x = 330.0
 	_obj_lab.position.y = 242.0
 	_prompt.position.y = 222.0
-	_hint.position = Vector2(6, 196)
+	_hint.position.x = 6.0
 	_hint.size.x = 336.0
-	_hint_lab.size.x = 324.0
-	_toast_box.position.x = 10.0
-	_toast_box.size.x = 336.0
+	_hint_lab.size.x = 306.0

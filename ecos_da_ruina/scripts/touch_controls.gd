@@ -108,6 +108,8 @@ func _ready() -> void:
 		_nav.add_child(t2)
 		_nav_btns.append(t2)
 	_nav.visible = false
+	apply_prefs()
+	Game.prefs_changed.connect(apply_prefs)
 	if DisplayServer.is_touchscreen_available() or OS.has_feature("web_ios") or OS.has_feature("web_android"):
 		_enable()
 	_root.visible = enabled
@@ -120,6 +122,40 @@ func _enable() -> void:
 		for ev in InputMap.action_get_events(act):
 			if ev is InputEventMouseButton:
 				InputMap.action_erase_event(act, ev)
+
+## Tamanho e opacidade dos botões e lado das setas de menu (tela Opções).
+func apply_prefs() -> void:
+	var sz: float = float(Game.pref("toque_tamanho"))
+	var alfa: float = float(Game.pref("toque_alfa"))
+	for i in _buttons.size():
+		var b: Array = LAYOUT[i]
+		var sc: float = float(b[3]) * sz
+		var t: TouchScreenButton = _buttons[i]
+		t.scale = Vector2.ONE * sc
+		t.position = b[2] - Vector2(14, 14) * sc
+		t.modulate = Color(1, 1, 1, alfa)
+	_place_nav(false)
+
+## Centro do botão de navegação k (0 cima, 1 baixo, 2 OK, 3 Voltar) conforme o lado escolhido.
+## Nas falas (só o OK aparece) o OK fica sempre à direita, longe do retrato.
+static func nav_pos(k: int, only_ok := false) -> Vector2:
+	var side := str(Game.pref("setas_lado"))
+	if only_ok and k == 2:
+		return NAV[2][2]
+	match side:
+		"direita":
+			return [Vector2(454, 96), Vector2(454, 140), Vector2(454, 228), Vector2(454, 184)][k]
+		"esquerda":
+			return [Vector2(26, 96), Vector2(26, 140), Vector2(26, 228), Vector2(26, 184)][k]
+	return NAV[k][2]
+
+var _nav_only_ok := false
+func _place_nav(only_ok: bool) -> void:
+	_nav_only_ok = only_ok
+	var alfa: float = clamp(float(Game.pref("toque_alfa")) + 0.1, 0.4, 1.0)
+	for k in _nav_btns.size():
+		_nav_btns[k].position = nav_pos(k, only_ok) - Vector2(14, 14) * NAV_SCALE
+		_nav_btns[k].modulate = Color(1, 1, 1, alfa)
 
 func _empty_button() -> Texture2D:
 	# a moldura do botão sem ícone: recorta a borda de um botão e cobre o ícone com o miolo
@@ -197,6 +233,8 @@ func _process(_delta: float) -> void:
 	var only_ok: bool = main != null and Game.in_game and main.ui.is_modal() and not main.ui.has_screen()
 	for b in _nav_btns:
 		b.visible = (not only_ok) or b.action == "ui_accept"
+	if only_ok != _nav_only_ok:
+		_place_nav(only_ok)
 	var was: bool = _root.visible
 	_root.visible = enabled and not hide
 	if hide and was:
@@ -216,7 +254,7 @@ func _input(event: InputEvent) -> void:
 			var nb: Array = NAV[k]
 			if k < _nav_btns.size() and not _nav_btns[k].visible:
 				continue
-			if event.position.distance_to(nb[2]) <= 15.0 * NAV_SCALE + 2.0:
+			if event.position.distance_to(nav_pos(k, _nav_only_ok)) <= 15.0 * NAV_SCALE + 2.0:
 				get_viewport().set_input_as_handled()
 				return
 	if enabled and _root.visible and event is InputEventMouseButton:
@@ -265,7 +303,7 @@ var _press := {}      # índice -> [posição, tempo] para reconhecer toques rá
 
 func _is_tap_on_button(pos: Vector2) -> bool:
 	for b in LAYOUT:
-		if pos.distance_to(b[2]) <= 16.0 * float(b[3]):
+		if pos.distance_to(b[2]) <= 16.0 * float(b[3]) * float(Game.pref("toque_tamanho")):
 			return true
 	return false
 

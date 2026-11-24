@@ -69,6 +69,10 @@ func has_screen() -> bool:
 func _push(title: String, items: Array, info := "") -> MenuScreen:
 	var s := MenuScreen.new()
 	s.ui = self
+	# só a tela de cima aparece: rodapés e painéis das de baixo não se sobrepõem
+	for o in stack:
+		if is_instance_valid(o):
+			o.visible = false
 	add_child(s)
 	s.setup(title, items, info)
 	stack.append(s)
@@ -76,6 +80,9 @@ func _push(title: String, items: Array, info := "") -> MenuScreen:
 	s.closed.connect(func():
 		stack.erase(s)
 		_modal(false)
+		var t := _top()
+		if t != null:
+			t.visible = true
 		if stack.is_empty():
 			screens_closed())
 	return s
@@ -205,7 +212,7 @@ func creature_info(ind: Dictionary, compare: Dictionary = {}) -> String:
 	var sp := Game.sp_of(ind)
 	var sk: Dictionary = Data.skills[Game.hab_active(ind)]
 	var ev := Game.evolution_status(ind)
-	var t := "%s  (%s)\nNível %d   XP %d/%d\nVida %d/%d   Ataque %.0f\nAfinidade: %s   Papel: %s\n\nHabilidade (Q): %s\n  %s\nPassiva: %s\nAção ambiental: %s\n\nVínculo: %d/3 atividades\n" % [
+	var t := "%s  (%s)\nNível %d   XP %d/%d\nVida %d/%d   Ataque %.0f\nAfinidade: %s   Papel: %s\n\nHabilidade ({habilidade}): %s\n  %s\nPassiva: %s\nAção ambiental: %s\n\nVínculo: %d/3 atividades\n" % [
 		Game.creature_name(ind), sp["nome"], ind["nivel"], int(ind["xp"]), Game.creature_xp_to_next(int(ind["nivel"])),
 		int(ind["hp"]), int(Game.creature_hp_max(ind)), Game.creature_atk(ind), sp["afinidade"], sp["papel"],
 		sk["nome"], sk["descricao"], sp["passiva"], sp["acao_ambiental"], Game.bond_count(ind)]
@@ -524,7 +531,7 @@ func _fill_inventory(s: MenuScreen) -> void:
 				Game.eco_slots[cur] = other
 			Game.eco_changed.emit()
 			toast("%s no atalho %d." % [Data.skills[ee]["nome"], to + 1])
-			_fill_inventory(s), Data.skills[ee]["descricao"] + "\nTravessia contextual (E) não gasta energia.\nConfirme para trocar o atalho (1/2) deste Eco."))
+			_fill_inventory(s), Data.skills[ee]["descricao"] + "\nTravessia contextual ({interagir}) não gasta energia.\nConfirme para trocar o atalho (1/2) deste Eco."))
 	if Game.ecos.is_empty():
 		items.append(_it("(nenhum ainda)", Callable(), "Guardiões concedem Ecos permanentes."))
 	items.append(_it("Voltar", func(): s.close()))
@@ -793,49 +800,93 @@ func open_options() -> void:
 
 func _fill_options(s: MenuScreen) -> void:
 	var p: Dictionary = Game.prefs
+	var save := func():
+		Audio.apply_volumes()
+		Game.save_prefs()
+		_fill_options(s)
 	var pct := func(v: float) -> String: return "%d%%" % int(round(v * 100.0))
-	var slider := func(label: String, key: String, info: String) -> Dictionary:
-		return {"t": "%s: %s" % [label, pct.call(p[key])], "info": info,
-			"l": func(): p[key] = max(0.0, snappedf(float(p[key]) - 0.1, 0.1)); Audio.apply_volumes(); Game.save_prefs(); _fill_options(s),
-			"r": func(): p[key] = min(1.0, snappedf(float(p[key]) + 0.1, 0.1)); Audio.apply_volumes(); Game.save_prefs(); _fill_options(s)}
-	var toggle := func(label: String, key: String, info: String) -> Dictionary:
-		return {"t": "%s: %s" % [label, "sim" if p[key] else "não"], "info": info,
-			"fn": func(): p[key] = not p[key]; Game.save_prefs(); _fill_options(s)}
+	# valor numérico com ← → (e toque nas metades da linha); passo, mínimo e máximo
+	var slider := func(label: String, key: String, info: String, lo := 0.0, hi := 1.0, step := 0.1) -> Dictionary:
+		return {"t": "%s: %s" % [label, pct.call(float(p[key]))], "info": info,
+			"l": func(): p[key] = max(lo, snappedf(float(p[key]) - step, step)); save.call(),
+			"r": func(): p[key] = min(hi, snappedf(float(p[key]) + step, step)); save.call()}
+	# liga/desliga; `inv` para chaves guardadas ao contrário (reduz_tremor = tremor desligado)
+	var toggle := func(label: String, key: String, info: String, inv := false) -> Dictionary:
+		var on: bool = bool(p[key]) != inv
+		return {"t": "%s: %s" % [label, "Ligado" if on else "Desligado"], "info": info,
+			"fn": func(): p[key] = not bool(p[key]); save.call(),
+			"l": func(): p[key] = not bool(p[key]); save.call(),
+			"r": func(): p[key] = not bool(p[key]); save.call()}
+	# escolha entre opções fixas: [valor, nome]
+	var choice := func(label: String, key: String, opts: Array, info: String) -> Dictionary:
+		var idx := 0
+		for k in opts.size():
+			if str(opts[k][0]) == str(p[key]):
+				idx = k
+		var step := func(d: int):
+			var v = opts[(idx + d + opts.size()) % opts.size()][0]
+			p[key] = v
+			save.call()
+		return {"t": "%s: %s" % [label, opts[idx][1]], "info": info,
+			"fn": func(): step.call(1), "l": func(): step.call(-1), "r": func(): step.call(1)}
+	var speeds: Array = []
+	for k in Game.TEXT_SPEEDS.size():
+		speeds.append([k, Game.TEXT_SPEEDS[k][0]])
 	var items: Array = []
-	items.append(_hdr("Áudio"))
-	items.append(slider.call("Volume geral", "master", "← → ajustam."))
-	items.append(slider.call("Música", "musica", ""))
-	items.append(slider.call("Efeitos", "efeitos", ""))
-	items.append(_hdr("Acessibilidade"))
-	items.append(toggle.call("Reduzir tremor de tela", "reduz_tremor", "Desliga o tremor de câmera."))
-	items.append(toggle.call("Reduzir flashes/impacto", "reduz_flash", "Desliga o congelamento de impacto."))
-	items.append(toggle.call("Perigo por forma e cor", "formas_perigo", "Avisos de ataque sempre usam símbolo + contorno além da cor."))
-	items.append({"t": "Escala de texto: %d%%" % int(round(p["texto"] * 100.0)), "info": "Afeta diálogos e menus nesta versão (mínimo 100%).",
-		"l": func(): p["texto"] = max(1.0, snappedf(float(p["texto"]) - 0.1, 0.1)); Game.save_prefs(); _fill_options(s),
-		"r": func(): p["texto"] = min(1.4, snappedf(float(p["texto"]) + 0.1, 0.1)); Game.save_prefs(); _fill_options(s)})
+	items.append(_hdr("Som"))
+	items.append(slider.call("Volume geral", "master", "Volume de tudo.\n\n← → ajustam (no toque: metade esquerda da linha diminui, direita aumenta)."))
+	items.append(slider.call("Música", "musica", "Volume da música."))
+	items.append(slider.call("Efeitos", "efeitos", "Volume dos golpes, passos e avisos."))
+	items.append(_hdr("Texto e diálogos"))
+	items.append(choice.call("Velocidade do texto", "vel_texto", speeds, "Com que rapidez as falas aparecem.\n\nEm qualquer velocidade, {interagir} mostra a fala inteira na hora e, depois, passa para a próxima."))
+	items.append(toggle.call("Texto grande", "texto_grande", "Letras maiores nas falas, para ler de longe ou na tela do celular. Falas longas viram páginas (o contador 1/2 aparece no canto)."))
+	items.append(toggle.call("Mostrar dicas", "dicas", "Caixa de dicas do tutorial na parte de baixo da tela. Os avisos importantes continuam aparecendo."))
+	items.append(_hdr("Tela e acessibilidade"))
+	items.append(toggle.call("Tremor de tela", "reduz_tremor", "Balanço da câmera em golpes fortes e chefões.", true))
+	items.append(toggle.call("Flashes de impacto", "reduz_flash", "Congelamento curto da imagem quando um golpe forte acerta. Desligue se a tela piscando incomodar.", true))
+	items.append(toggle.call("Perigo por forma e cor", "formas_perigo", "Avisos de ataque usam símbolo e contorno, além da cor."))
+	items.append(_hdr("Celular (toque)"))
+	items.append(toggle.call("Vibração", "vibracao", "Vibra ao levar dano e em tremores fortes (só no celular, se o navegador permitir)."))
+	items.append(slider.call("Tamanho dos botões", "toque_tamanho", "Tamanho dos botões de toque (Espada, Escudo, Selo...).", 0.8, 1.4, 0.1))
+	items.append(slider.call("Opacidade dos botões", "toque_alfa", "Quanto os botões de toque cobrem a tela. Menos opaco deixa ver o jogo por trás.", 0.3, 1.0, 0.1))
+	items.append(choice.call("Setas dos menus", "setas_lado", [["laterais", "Nas laterais"], ["direita", "Todas à direita"], ["esquerda", "Todas à esquerda"]],
+		"Onde ficam as setas, o OK e o Voltar nos menus e diálogos do toque."))
 	items.append(_hdr("Jogo"))
+	var dif_step := func(d: int):
+		if world != null and world.map != null and Game.in_game and world.in_combat():
+			toast("Só fora de combate.")
+			return
+		var order: Array = Game.DIFFICULTY_ORDER
+		var i: int = order.find(Game.difficulty)
+		Game.difficulty = str(order[(i + d + order.size()) % order.size()])
+		_fill_options(s)
 	items.append({"t": "Dificuldade: %s" % Game.difficulty_name(),
-		"info": "História: metade do dano inimigo e avisos 35% mais longos. Aventura (padrão): -25% de dano e avisos 20% mais longos. Desafio: valores-base. Só fora de combate.",
-		"fn": func():
-			if world != null and world.map != null and world.in_combat():
-				toast("Só fora de combate.")
-			else:
-				Game.difficulty = Game.next_difficulty(); _fill_options(s)})
-	items.append(_hdr("Controles (Enter/E para remapear)"))
+		"info": "História: metade do dano inimigo e avisos de ataque 35% mais longos.\nAventura (padrão): 25% menos dano e avisos 20% mais longos.\nDesafio: valores originais.\n\nMuda só fora de combate e fica gravada no jogo salvo.",
+		"fn": func(): dif_step.call(1), "l": func(): dif_step.call(-1), "r": func(): dif_step.call(1)})
+	var langs: Array = []
+	for lk in Game.LANGS:
+		langs.append([lk, Game.LANGS[lk]])
+	items.append(choice.call("Idioma", "idioma", langs, "Idioma dos textos. Por enquanto, só português do Brasil."))
+	items.append(_hdr("Teclado (E troca a tecla)"))
 	for a in Game.ACTION_NAMES:
 		var aa: String = a
 		var keys: Array = p["keys"].get(aa, Game.DEFAULT_KEYS[aa])
 		var names: Array = []
 		for k in keys:
 			names.append(OS.get_keycode_string(int(k)))
-		items.append({"t": "%s: %s" % [Game.ACTION_NAMES[aa], " / ".join(names)], "info": "Pressione E e depois a nova tecla. Mouse: botão esquerdo ataca, direito defende.",
+		items.append({"t": "%s: %s" % [Game.ACTION_NAMES[aa], " / ".join(names)], "info": "Aperte E e depois a nova tecla (Esc cancela).\n\nMouse: botão esquerdo ataca, direito defende.",
 			"fn": func(): s.key_capture = aa; s.on_key = func(): _fill_options(s)})
-	items.append(_it("Restaurar controles padrão", func(): Game.reset_keys(); _fill_options(s), ""))
-	items.append(_it("Voltar", func(): s.close()))
+	items.append(_it("Restaurar controles padrão", func(): Game.reset_keys(); toast("Controles restaurados."); _fill_options(s), "Volta todas as teclas ao padrão."))
+	items.append(_it("Restaurar opções padrão", func():
+		_confirm("Restaurar opções?", "Som, texto, acessibilidade e botões de toque voltam ao padrão. As teclas remapeadas ficam como estão.", func():
+			Game.reset_prefs(); Audio.apply_volumes(); toast("Opções restauradas."); _fill_options(s)), "Som, texto, acessibilidade e toque voltam ao padrão (pede confirmação)."))
+	items.append(_it("Voltar", func(): s.close(), "As opções são salvas na hora."))
 	var keep := s.sel
+	s.list_w = 250.0
 	s.setup("Opções", items, "")
 	s.sel = keep
-	s.list_w = 250.0
+	s._fix_sel(1)
+	s._refresh()
 
 # =============================================================== FORJA (melhoria de equipamento)
 ## Lista o equipamento usado; a informação mostra antes → depois e o custo. Confirmar pede uma tela de comparação.

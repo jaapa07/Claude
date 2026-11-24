@@ -62,6 +62,8 @@ func _ready() -> void:
 		await run_equip()
 	elif "--powers" in args:
 		await run_powers()
+	elif "--interface" in args:
+		await run_interface()
 	elif "--demo" in args:
 		await run_demo()
 	elif "--anim" in args:
@@ -101,8 +103,11 @@ func shot(name: String) -> void:
 	await RenderingServer.frame_post_draw
 	var img := get_viewport().get_texture().get_image()
 	if img:
-		DirAccess.make_dir_recursive_absolute(shot_dir)
-		img.save_png("%s/%s.png" % [shot_dir, name])
+		var dir := OS.get_environment("SHOTS_DIR")
+		if dir == "":
+			dir = shot_dir
+		DirAccess.make_dir_recursive_absolute(dir)
+		img.save_png("%s/%s.png" % [dir, name])
 
 # =============================================================== PRIMITIVAS
 func frames(n: int) -> void:
@@ -1616,6 +1621,8 @@ func run_unit() -> void:
 	var old_ind := {"uuid": "velho", "species_id": "ferrunho", "nivel": 8, "xp": 0, "hp": 10.0, "exausta": false, "vinculo": []}
 	Game.hab_sync(old_ind, false)
 	check("Hab: migração de indivíduo antigo (ativa = original)", old_ind["hab_ativa"] == "ima" and old_ind["hab_aprendidas"] == ["ima", "placa_ferro"], str(old_ind))
+	# ---- interface: opções salvas, diálogo paginado, avisos em fila
+	await unit_interface()
 
 ## Captura quadro a quadro do combo de espada (para conferir a animação)
 func run_demo() -> void:
@@ -6507,3 +6514,258 @@ func unit_curva() -> void:
 	var ok_load := Game.from_dict(dd)
 	check("Dificuldade: História é salva e carregada", ok_load and Game.difficulty == "historia" and Game.difficulty_name() == "História")
 	Game.difficulty = dif0
+
+
+# =============================================================== INTERFACE (opções, diálogo paginado, avisos)
+## Verificações rápidas da interface: entram no --unit e no --interface.
+func unit_interface() -> void:
+	var H: Hud = main.ui.hud
+	# ---- quebra de linha e páginas: nada passa da largura e nenhuma palavra se perde
+	var longo := "Ione se ajoelha na sua frente e faz o sinal: palma aberta, dois dedos dobrados. \"Estou aqui.\" A mão dela brilha azul na sua testa. ".repeat(4)
+	var pages: Array = Hud.paginate(longo, 50, 6)
+	var max_len := 0
+	var words: Array = []
+	for pg in pages:
+		var pls: PackedStringArray = str(pg).split("\n")
+		check_dummy(pls.size() <= 6)
+		for l in pls:
+			max_len = maxi(max_len, l.length())
+			for w in l.split(" ", false):
+				words.append(w)
+	check("UI: fala longa vira páginas sem passar da largura (%d páginas)" % pages.size(), pages.size() >= 2 and max_len <= 50, str(max_len))
+	check("UI: paginação não perde palavras", " ".join(words) == " ".join(longo.split(" ", false)))
+	# ---- falante e retrato
+	var a: Array = Hud.split_speaker("Ione: Estou aqui.")
+	var b: Array = Hud.split_speaker("Memória do Eco: A floresta lembra.")
+	var c: Array = Hud.split_speaker("Seu objetivo: reunir os Ecos.")
+	check("UI: falante reconhecido (simples e composto) e frase comum não vira nome", a[0] == "Ione" and a[1] == "Estou aqui." and b[0] == "Memória do Eco" and c[0] == "", "%s %s %s" % [a, b, c])
+	var pt_ok := true
+	for nm in ["Você", "Maru", "Ione", "Bruna", "Ravi", "Vesna", "Arauto", "Ilda", "Doran", "Ilse", "Sena", "Arão", "Inscrição", "Placa", "Memória do Eco", "Eco de Ione"]:
+		var pi := Hud.speaker_portrait(nm)
+		if pi < 0 or pi >= 17:
+			pt_ok = false
+	check("UI: principais falantes têm retrato", pt_ok and Hud.speaker_portrait("Fulano") == -1)
+	# ---- marcadores de botão: nenhum {…} sobra nas falas depois da troca por tecla/botão
+	var sobra: Array = []
+	for did in Data.dialogs:
+		for blk in Data.dialogs[did]:
+			for l2 in blk.get("lines", []):
+				var t: String = Game.k(str(l2))
+				if t.find("{") >= 0 and t.find("}") > t.find("{"):
+					sobra.append(str(did))
+	check("UI: falas sem marcador {…} desconhecido", sobra.is_empty(), str(sobra.slice(0, 5)))
+	# ---- diálogo ao vivo: a fala longa pede mais de um OK por página e fecha no fim
+	Game.prefs["vel_texto"] = 1
+	var closed := [false]
+	main.ui.dialog(["Ione: " + longo, "Você: Entendi."], func(): closed[0] = true)
+	await frames(2)
+	var np: int = H.dlg_pages.size()
+	check("UI: diálogo mostra retrato e nome da Ione", H._dlg_pt_box.visible and H._dlg_name.text == "Ione" and np >= 2, "pág %d" % np)
+	await ui_press("ui_accept")   # completa a página
+	await ui_press("ui_accept")   # vai para a página 2
+	check("UI: OK passa para a próxima página sem pular a fala", H.dlg_active and H.dlg_i == 0 and H.dlg_page == 1)
+	var n := 0
+	while H.dlg_active and n < 20:
+		await ui_press("ui_accept")
+		n += 1
+	check("UI: diálogo paginado termina e chama o retorno", not H.dlg_active and closed[0])
+	# ---- velocidade instantânea e texto grande
+	Game.prefs["vel_texto"] = 3
+	Game.prefs["texto_grande"] = true
+	main.ui.dialog(["Maru: " + longo], Callable())
+	await frames(2)
+	check("UI: texto instantâneo mostra a página inteira de uma vez", H._dlg_body.visible_characters == -1)
+	check("UI: texto grande usa letra de 16 px e caixa mais alta, com mais páginas", H._dlg.size.y > 100.0 and H.dlg_pages.size() > np, "%d" % H.dlg_pages.size())
+	n = 0
+	while H.dlg_active and n < 30:
+		await ui_press("ui_accept")
+		n += 1
+	Game.prefs["vel_texto"] = 1
+	Game.prefs["texto_grande"] = false
+	# ---- avisos: tipo pelo texto e fila sem sobreposição
+	check("UI: aviso de captura, falha e Eco têm ícones próprios", Hud.toast_kind("Lumipim capturado! Entrou na equipe (2/3).") == UIKit.IC_CAPTURA
+		and Hud.toast_kind("Não é possível salvar agora (combate/captura).") == UIKit.IC_AVISO and Hud.toast_kind("Eco obtido: RAIZ VIVA! +30 fragmentos") == UIKit.IC_ECO
+		and Hud.toast_kind("Comprou Tônico.") == UIKit.IC_ITEM and Hud.toast_kind("Nova técnica: Investida!") == UIKit.IC_NIVEL)
+	for i in 6:
+		main.ui.toast("Aviso de teste número %d" % i)
+	await frames(30)
+	var shown := 0
+	var rects: Array = []
+	for t2 in H.toasts:
+		if t2["shown"] and not t2["out"]:
+			shown += 1
+			rects.append(Rect2(t2["node"].position, t2["node"].size))
+	var overlap := false
+	for i in rects.size():
+		for j in range(i + 1, rects.size()):
+			if rects[i].grow(-1).intersects(rects[j].grow(-1)):
+				overlap = true
+	check("UI: no máximo 3 avisos visíveis, os outros esperam na fila, sem sobreposição", shown <= 3 and H.toasts.size() >= 6 and not overlap, "%d vis, %d fila" % [shown, H.toasts.size()])
+	# ---- opções: salvar, carregar, arquivo estranho e restaurar
+	var path: String = Game.prefs_path
+	check("UI: testes gravam opções em arquivo próprio", path.ends_with("prefs_teste.json"))
+	Game.prefs["vel_texto"] = 2
+	Game.prefs["toque_alfa"] = 0.5
+	Game.prefs["setas_lado"] = "direita"
+	Game.prefs["dicas"] = false
+	Game.save_prefs()
+	Game.prefs = Game.PREFS_DEFAULT.duplicate(true)
+	Game.load_prefs()
+	check("UI: opções salvas voltam ao carregar", int(Game.prefs["vel_texto"]) == 2 and is_equal_approx(float(Game.prefs["toque_alfa"]), 0.5) and Game.prefs["setas_lado"] == "direita" and Game.prefs["dicas"] == false)
+	check("UI: setas do toque mudam de lado conforme a opção", TouchControls.nav_pos(0) == Vector2(454, 96) and TouchControls.nav_pos(2, true) == Vector2(454, 228))
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	f.store_string("{\"vel_texto\": \"rapido\", \"lixo\": 1, \"master\": 0.3}")
+	f.close()
+	Game.load_prefs()
+	check("UI: arquivo de opções com valor errado não quebra (ignora o inválido)", int(Game.prefs["vel_texto"]) == 2 and not Game.prefs.has("lixo") and is_equal_approx(float(Game.prefs["master"]), 0.3))
+	Game.prefs["keys"] = {"attack": [KEY_L]}
+	Game.reset_prefs()
+	check("UI: restaurar padrões volta tudo menos as teclas", int(Game.prefs["vel_texto"]) == 1 and Game.prefs["dicas"] == true and Game.prefs["keys"].has("attack"))
+	Game.reset_keys()
+	# ---- tela de opções: tem tudo e ← → ajusta e grava
+	main.ui.open_options()
+	await frames(3)
+	var s: MenuScreen = main.ui._top()
+	var labels: Array = []
+	for it in s.items:
+		labels.append(str(it["t"]))
+	var all_lab := " | ".join(labels)
+	var need := ["Volume geral", "Música", "Efeitos", "Velocidade do texto", "Texto grande", "Mostrar dicas", "Tremor de tela", "Flashes de impacto",
+		"Vibração", "Tamanho dos botões", "Opacidade dos botões", "Setas dos menus", "Dificuldade", "Idioma", "Restaurar opções padrão"]
+	var miss: Array = []
+	for nd in need:
+		if all_lab.find(nd) < 0:
+			miss.append(nd)
+	check("UI: tela de Opções completa", miss.is_empty(), str(miss))
+	for i in s.items.size():
+		if str(s.items[i]["t"]).begins_with("Volume geral"):
+			s.sel = i
+	s._refresh()
+	var m0 := float(Game.prefs["master"])
+	await ui_press("ui_left")
+	var saved = JSON.parse_string(FileAccess.get_file_as_string(path))
+	check("UI: ← no volume diminui e grava na hora", float(Game.prefs["master"]) < m0 and saved is Dictionary and is_equal_approx(float(saved["master"]), float(Game.prefs["master"])))
+	await ui_press("ui_right")
+	for i in s.items.size():
+		if str(s.items[i]["t"]).begins_with("Dificuldade"):
+			s.sel = i
+	s._refresh()
+	var d0: String = Game.difficulty
+	await ui_press("ui_right")
+	var d1: String = Game.difficulty
+	await ui_press("ui_left")
+	check("UI: dificuldade alterna pelos três modos nas Opções", d1 != d0 and Game.difficulty == d0 and d1 in Game.DIFFICULTY_ORDER)
+	await close_menus()
+	Game.reset_prefs()
+
+func check_dummy(_c: bool) -> void:
+	pass
+
+## Passeio visual pela interface (screenshots em $SHOTS_DIR ou /tmp/shots): diálogos com retrato, avisos, menus, opções, toque.
+func run_interface() -> void:
+	await frames(5)
+	await shot("ui_00_titulo")
+	main.start_new_game(3)
+	await frames(10)
+	await frames(80)
+	await shot("ui_01_intro")
+	await advance_dialogs()
+	Game.god_mode = true
+	await unit_interface()
+	var H: Hud = main.ui.hud
+	main.ui.banner("Vila Lúmen")
+	await frames(40)
+	await shot("ui_02_faixa")
+	for t in ["Lumipim capturado! Entrou na equipe (2/3).", "Comprou Tônico.", "Não é possível salvar agora (combate/captura).", "Nova técnica: Investida!"]:
+		main.ui.toast(t)
+	await frames(30)
+	await shot("ui_03_avisos")
+	await secs(4.0)
+	var falas := ["Maru: Brotisco, Lumipim e Cascalito... a floresta inteira confia em você! Juntos eles ficam mais fortes.",
+		"Você: Eu vou trazer a Mestra Ione de volta.", "Bruna: Fica atrás de mim e mira nas pernas.", "Ravi: O vento mudou. Tem algo nos seguindo.",
+		"Vesna: Você chegou longe demais, aprendiz.", "Arauto: Tudo o que foi esquecido volta para mim.", "Ilda: A forja não esfria enquanto eu estiver viva.",
+		"Doran: Martelo leve, mão firme.", "Ilse: A muralha resiste. Sempre resistiu.", "Sena: Os arquivos guardam o que o Rei apagou.",
+		"Arão: A água sobe toda noite. Cuidado no cais.", "Inscrição: Aqui dormem os que guardavam a ponte.", "Memória do Eco: Um menino corre entre as raízes.",
+		"Eco de Ione: Eu ainda estou aqui.", "Uma fala sem ninguém falando, só narração, para conferir a caixa sem retrato."]
+	for i in falas.size():
+		main.ui.dialog([falas[i]], Callable())
+		await frames(90)
+		await shot("ui_1%02d_fala" % i)
+		await advance_dialogs()
+	var longa: String = "Ione: " + "Cada guardião caído devolve uma lembrança, e cada lembrança puxa outra. Se você seguir o fio, vai achar a Catedral do Vazio. ".repeat(3)
+	main.ui.dialog([longa], Callable())
+	await frames(400)
+	await shot("ui_20_fala_pagina1")
+	await ui_press("ui_accept")
+	await frames(400)
+	await shot("ui_21_fala_pagina2")
+	await advance_dialogs()
+	Game.prefs["texto_grande"] = true
+	main.ui.dialog([longa], Callable())
+	await frames(600)
+	await shot("ui_22_texto_grande")
+	await advance_dialogs()
+	Game.prefs["texto_grande"] = false
+	# menus
+	Game.inventory["selo_basico"] = 5
+	Game.inventory["pocao"] = 3
+	for id in Data.items:
+		if Game.is_equipment(id) and Game.rarity_of(id) >= 3:
+			Game.inventory[id] = 1
+			break
+	main.ui.open_pause()
+	await frames(10)
+	await shot("ui_30_pausa")
+	main.ui.open_inventory()
+	await frames(5)
+	var s: MenuScreen = main.ui._top()
+	for i in s.items.size():
+		if s.items[i].has("icol"):
+			s.sel = i
+			break
+	s._clamp_scroll()
+	s._refresh()
+	await frames(20)
+	await shot("ui_31_inventario_raro")
+	await close_menus()
+	main.ui.open_pause()
+	main.ui.open_options()
+	await frames(10)
+	await shot("ui_32_opcoes")
+	var so: MenuScreen = main.ui._top()
+	so.sel = 20
+	so._clamp_scroll()
+	so._refresh()
+	await frames(5)
+	await shot("ui_33_opcoes_toque")
+	await close_menus()
+	main.ui.open_journey()
+	await frames(10)
+	await shot("ui_34_jornada")
+	await close_menus()
+	# toque
+	TouchControls.instance._enable()
+	Game.set_flag("viu_legenda_toque")
+	Game.prefs["toque_tamanho"] = 1.0
+	TouchControls.instance.apply_prefs()
+	await frames(10)
+	await shot("ui_40_toque_hud")
+	main.ui.dialog(["Maru: No toque, o OK fica no canto e a fala nunca passa por baixo dele. " + "Mais texto para encher a caixa e conferir a margem. ".repeat(3)], Callable())
+	await frames(500)
+	await shot("ui_41_toque_fala")
+	await advance_dialogs()
+	main.ui.open_pause()
+	await frames(10)
+	await shot("ui_42_toque_pausa")
+	await close_menus()
+	Game.prefs["setas_lado"] = "direita"
+	Game.prefs["toque_tamanho"] = 1.3
+	Game.prefs["toque_alfa"] = 0.5
+	TouchControls.instance.apply_prefs()
+	main.ui.open_pause()
+	await frames(10)
+	await shot("ui_43_toque_setas_direita")
+	await close_menus()
+	await frames(5)
+	await shot("ui_44_toque_botoes_grandes")
+	Game.reset_prefs()

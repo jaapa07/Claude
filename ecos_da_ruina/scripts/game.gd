@@ -7,6 +7,7 @@ signal hero_changed
 signal team_changed
 signal inventory_changed
 signal toast(text: String)
+signal prefs_changed
 signal quest_changed
 signal creature_captured(ind: Dictionary, destino: String)
 signal eco_changed
@@ -62,8 +63,16 @@ var weather_lock := ""      # testes: força um clima ("sol") em vez do sorteio 
 var weather_neutral := false  # testes: clima sem efeitos de jogo (o e2e completo continua determinístico)
 
 # ---- preferências (arquivo separado)
-var prefs := {"master": 0.8, "musica": 0.6, "efeitos": 0.8, "texto": 1.0, "reduz_tremor": false, "reduz_flash": false,
-	"formas_perigo": true, "keys": {}}
+## Padrões das opções (tela Opções; "Restaurar padrões" volta a estes valores, menos os controles).
+const PREFS_DEFAULT := {"master": 0.8, "musica": 0.6, "efeitos": 0.8, "texto": 1.0, "reduz_tremor": false, "reduz_flash": false,
+	"formas_perigo": true, "vel_texto": 1, "texto_grande": false, "vibracao": true, "dicas": true,
+	"toque_tamanho": 1.0, "toque_alfa": 0.8, "setas_lado": "laterais", "idioma": "pt_BR", "keys": {}}
+var prefs := PREFS_DEFAULT.duplicate(true)
+var prefs_path := "user://prefs.json"
+## Velocidades do texto dos diálogos (caracteres por segundo); "Instantâneo" mostra tudo de uma vez.
+const TEXT_SPEEDS := [["Lenta", 30.0], ["Normal", 55.0], ["Rápida", 110.0], ["Instantânea", 0.0]]
+## Idiomas disponíveis (estrutura pronta para traduções futuras).
+const LANGS := {"pt_BR": "Português (Brasil)"}
 
 const DEFAULT_KEYS := {
 	"move_up": [KEY_W, KEY_UP], "move_down": [KEY_S, KEY_DOWN], "move_left": [KEY_A, KEY_LEFT], "move_right": [KEY_D, KEY_RIGHT],
@@ -80,7 +89,13 @@ const ACTION_NAMES := {
 
 func _ready() -> void:
 	rng.randomize()
-	load_prefs()
+	# testes usam um arquivo próprio e começam dos padrões: as opções do jogador não mudam o fluxo
+	var a := OS.get_cmdline_user_args()
+	if "--e2e" in a or "--unit" in a:
+		prefs_path = "user://prefs_teste.json"
+	else:
+		load_prefs()
+	TranslationServer.set_locale(str(prefs.get("idioma", "pt_BR")))
 	setup_input()
 
 # =============================================================== ENTRADA / PREFERÊNCIAS
@@ -114,16 +129,42 @@ func reset_keys() -> void:
 	save_prefs()
 
 func load_prefs() -> void:
-	if FileAccess.file_exists("user://prefs.json"):
-		var d = JSON.parse_string(FileAccess.get_file_as_string("user://prefs.json"))
+	if FileAccess.file_exists(prefs_path):
+		var d = JSON.parse_string(FileAccess.get_file_as_string(prefs_path))
 		if d is Dictionary:
 			for k in d:
-				prefs[k] = d[k]
+				# só aceita chaves conhecidas e do mesmo tipo (arquivo antigo ou editado à mão não quebra o jogo)
+				if PREFS_DEFAULT.has(k) and (typeof(d[k]) == typeof(PREFS_DEFAULT[k]) or (d[k] is float and PREFS_DEFAULT[k] is int)):
+					prefs[k] = int(d[k]) if PREFS_DEFAULT[k] is int else d[k]
+	prefs_changed.emit()
 
 func save_prefs() -> void:
-	var f := FileAccess.open("user://prefs.json", FileAccess.WRITE)
+	var f := FileAccess.open(prefs_path, FileAccess.WRITE)
 	if f:
-		f.store_string(JSON.stringify(prefs))
+		f.store_string(JSON.stringify(prefs, "\t"))
+	prefs_changed.emit()
+
+## Volta todas as opções ao padrão (os controles remapeados ficam).
+func reset_prefs() -> void:
+	var keys: Dictionary = prefs.get("keys", {})
+	prefs = PREFS_DEFAULT.duplicate(true)
+	prefs["keys"] = keys
+	save_prefs()
+
+func pref(key: String):
+	return prefs.get(key, PREFS_DEFAULT.get(key))
+
+## Caracteres por segundo nos diálogos (0 = instantâneo).
+func text_speed() -> float:
+	var i: int = clampi(int(pref("vel_texto")), 0, TEXT_SPEEDS.size() - 1)
+	return float(TEXT_SPEEDS[i][1])
+
+## Vibração curta no celular (opção "Vibração"); no PC não faz nada.
+func vibrate(ms: int) -> void:
+	if not bool(pref("vibracao")) or not TouchControls.active:
+		return
+	if OS.has_feature("web") or OS.has_feature("mobile"):
+		Input.vibrate_handheld(ms)
 
 # =============================================================== ALEATORIEDADE CONTROLÁVEL
 func rand_f() -> float:

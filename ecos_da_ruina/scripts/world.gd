@@ -1199,6 +1199,8 @@ func _update_camera(delta: float) -> void:
 func shake(amp: float, dur: float) -> void:
 	shake_amp = amp
 	shake_t = dur
+	if amp >= 2.5:
+		Game.vibrate(int(clamp(dur * 150.0, 30.0, 150.0)))
 
 func hitstop(sec: float) -> void:
 	if test_mode or Game.prefs.get("reduz_flash", false):
@@ -1246,6 +1248,8 @@ func impact(pos: Vector2, aff: String, dir := Vector2.ZERO, big := false, col :=
 	var c: Color = col if col.a > 0.0 else Juice.color_of(aff)
 	var f := fx_at("impacto", pos, 0.24, 0.0, 1.3 if big else 1.0)
 	f.modulate = Color.WHITE.lerp(c, 0.5)
+	if Game.prefs.get("reduz_flash", false):
+		f.modulate.a = 0.55       # opção "Flashes de impacto" desligada
 	if deco_ok():
 		var d := dir.normalized() if dir.length() > 0.1 else Vector2.UP
 		burst(pos, "fx_lasca", 4, 9 if big else 6, 0.35, d, 55.0, 50.0, 120.0, Vector2(0, 220), c)
@@ -1767,7 +1771,7 @@ func _update_heat(delta: float) -> void:
 		player.env_damage(HEAT_DMG_HERO * Game.heat_mult() * _water_companion_mult(), "Quente!")
 		if not heat_warned:
 			heat_warned = true
-			say("Piso em brasa! Gire uma válvula azul (E) para resfriá-lo ou atravesse depressa.")
+			say("Piso em brasa! Gire uma válvula azul ({interagir}) para resfriá-lo ou atravesse depressa.")
 	if companion != null and is_instance_valid(companion) and companion.is_alive() and is_hot_at(companion.global_position):
 		companion.env_damage(HEAT_DMG_CREATURE)
 	if player.state != Player.S.DEAD and player.state != Player.S.INTERACT and is_puddle_at(player.global_position):
@@ -1871,7 +1875,7 @@ func furnace_try(f: Ent) -> void:
 		f.light_furnace()
 		say("A chama pegou na fornalha.")
 		return
-	say("A fornalha está fria. Pegue chama num braseiro (E) e traga até aqui — ou peça a um Faisquito.")
+	say("A fornalha está fria. Pegue chama num braseiro ({interagir}) e traga até aqui — ou peça a um Faisquito.")
 	_furnace_fail(f)
 
 func _furnace_fail(f: Ent) -> void:
