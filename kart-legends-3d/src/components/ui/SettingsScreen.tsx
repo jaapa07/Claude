@@ -181,6 +181,20 @@ export function SettingsScreen({ inRace = false, onBack }: SettingsScreenProps):
                 {padConnected ? 'Controle detectado.' : 'Nenhum controle detectado (aperte um botão nele).'}
               </span>
             </div>
+            <div className="toggle-row">
+              <button
+                type="button" role="switch" aria-checked={settings.autoAccelerate} className="toggle" data-testid="btn-toggle-auto-accelerate"
+                data-selected={settings.autoAccelerate}
+                onClick={() => {
+                  uiSfx('ui_select');
+                  settings.setAutoAccelerate(!settings.autoAccelerate);
+                }}
+              >
+                <span className="toggle__knob" />
+                <span className="toggle__label">Aceleração automática {settings.autoAccelerate ? 'ligada' : 'desligada'}</span>
+              </button>
+              <span className="settings__hint">Celular: desligada, aparece o botão Acelerar.</span>
+            </div>
             <details className="pad-help">
               <summary tabIndex={0}>Botões do gamepad</summary>
               <ul>

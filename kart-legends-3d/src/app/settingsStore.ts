@@ -31,6 +31,8 @@ export interface SettingsData {
   sensitivity: number;
   bindings: Bindings;
   gamepadEnabled: boolean;
+  /** Controles de toque: o kart acelera sozinho (desligado = botão Acelerar). */
+  autoAccelerate: boolean;
 }
 
 export interface SettingsState extends SettingsData {
@@ -38,6 +40,7 @@ export interface SettingsState extends SettingsData {
   setVolume: (channel: keyof Volumes, value: number) => void;
   setSensitivity: (value: number) => void;
   setGamepadEnabled: (enabled: boolean) => void;
+  setAutoAccelerate: (enabled: boolean) => void;
   /**
    * Define a tecla do `slot` (0 ou 1) da ação. A mesma tecla nunca fica em duas ações:
    * ela é removida de onde estava antes.
@@ -68,6 +71,7 @@ export function createDefaultSettings(): SettingsData {
     sensitivity: 1,
     bindings: cloneBindings(DEFAULT_BINDINGS),
     gamepadEnabled: true,
+    autoAccelerate: true,
   };
 }
 
@@ -97,6 +101,7 @@ export function parseSettings(text: string | null): SettingsData {
   }
   d.sensitivity = num(r.sensitivity, 1, SENSITIVITY_MIN, SENSITIVITY_MAX);
   if (typeof r.gamepadEnabled === 'boolean') d.gamepadEnabled = r.gamepadEnabled;
+  if (typeof r.autoAccelerate === 'boolean') d.autoAccelerate = r.autoAccelerate;
   if (typeof r.bindings === 'object' && r.bindings !== null) {
     const b = r.bindings as Record<string, unknown>;
     const used = new Set<string>();
@@ -119,8 +124,8 @@ export function parseSettings(text: string | null): SettingsData {
 }
 
 function persist(s: SettingsData): void {
-  const { quality, volumes, sensitivity, bindings, gamepadEnabled } = s;
-  writeKey(SETTINGS_KEY, JSON.stringify({ quality, volumes, sensitivity, bindings, gamepadEnabled }));
+  const { quality, volumes, sensitivity, bindings, gamepadEnabled, autoAccelerate } = s;
+  writeKey(SETTINGS_KEY, JSON.stringify({ quality, volumes, sensitivity, bindings, gamepadEnabled, autoAccelerate }));
 }
 
 export const useSettingsStore = create<SettingsState>()((set, get) => {
@@ -134,6 +139,7 @@ export const useSettingsStore = create<SettingsState>()((set, get) => {
     setVolume: (channel, value) => update({ volumes: { ...get().volumes, [channel]: clamp(value, 0, 1) } }),
     setSensitivity: (value) => update({ sensitivity: clamp(value, SENSITIVITY_MIN, SENSITIVITY_MAX) }),
     setGamepadEnabled: (gamepadEnabled) => update({ gamepadEnabled }),
+    setAutoAccelerate: (autoAccelerate) => update({ autoAccelerate }),
     setBinding: (action, slot, code) => {
       if (!code || slot < 0 || slot >= BINDING_SLOTS) return;
       const bindings = cloneBindings(get().bindings);

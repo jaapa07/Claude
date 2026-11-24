@@ -1,28 +1,79 @@
 import { useEffect, useRef, useState } from 'react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
-import { isTouchDevice } from '@/app/settingsStore';
+import { isTouchDevice, useSettingsStore } from '@/app/settingsStore';
 import { inputManager } from '@/game/input/inputManager';
 
 /** Distância (px) do dedo até o ponto inicial para esterço total. */
 const STEER_RANGE = 70;
 
-type HoldKey = 'brake' | 'drift' | 'item' | 'reset';
+type ButtonKey = 'gas' | 'brake' | 'drift' | 'item' | 'reset';
 
-function HoldButton({ k, label, className, testId }: { k: HoldKey; label: string; className: string; testId: string }): JSX.Element {
-  const [down, setDown] = useState(false);
-  const set = (on: boolean): void => {
-    setDown(on);
-    inputManager.setTouch(k === 'brake' ? { brake: on ? 1 : 0 } : { [k]: on });
+const BUTTONS: ReadonlyArray<{ k: ButtonKey; label: string }> = [
+  { k: 'gas', label: 'Acelerar' }, { k: 'drift', label: 'Drift' }, { k: 'item', label: 'Item' },
+  { k: 'brake', label: 'Freio' }, { k: 'reset', label: '↺' },
+];
+
+/**
+ * Botões da direita como uma zona única: cada dedo vale pelo botão que está embaixo dele,
+ * então dá para deslizar o polegar de Acelerar para Drift sem levantar. No modo manual,
+ * segurar Drift também acelera.
+ */
+function ButtonCluster({ manual }: { manual: boolean }): JSX.Element {
+  const fingers = useRef(new Map<number, ButtonKey | null>());
+  const [held, setHeld] = useState<ReadonlySet<ButtonKey>>(new Set());
+  const apply = (): void => {
+    const on = new Set<ButtonKey>();
+    for (const k of fingers.current.values()) if (k) on.add(k);
+    const drift = on.has('drift');
+    inputManager.setTouch({
+      throttle: manual ? (on.has('gas') || drift ? 1 : 0) : 1,
+      brake: on.has('brake') ? 1 : 0, drift, item: on.has('item'), reset: on.has('reset'),
+    });
+    setHeld(on);
+  };
+  const root = useRef<HTMLDivElement>(null);
+  /** Botão circular sob o dedo (com 8 px de folga), por geometria. */
+  const keyAt = (x: number, y: number): ButtonKey | null => {
+    let best: ButtonKey | null = null;
+    let bestD = Infinity;
+    for (const el of root.current?.querySelectorAll<HTMLElement>('[data-touch-key]') ?? []) {
+      const r = el.getBoundingClientRect();
+      const d = Math.hypot(x - (r.left + r.width / 2), y - (r.top + r.height / 2)) - r.width / 2;
+      if (d < 8 && d < bestD) { bestD = d; best = el.dataset.touchKey as ButtonKey; }
+    }
+    return best;
+  };
+  const end = (e: ReactPointerEvent): void => {
+    if (fingers.current.delete(e.pointerId)) apply();
   };
   return (
-    <button
-      type="button" className={`touch-btn ${className}`} data-testid={testId} data-down={down} aria-label={label}
-      onPointerDown={(e) => { e.preventDefault(); e.currentTarget.setPointerCapture(e.pointerId); set(true); }}
-      onPointerUp={() => set(false)} onPointerCancel={() => set(false)} onLostPointerCapture={() => set(false)}
+    <div
+      ref={root} className="touch-right" data-manual={manual}
+      onPointerDown={(e) => {
+        const k = keyAt(e.clientX, e.clientY);
+        if (!k) return;
+        e.preventDefault();
+        e.currentTarget.setPointerCapture(e.pointerId);
+        fingers.current.set(e.pointerId, k);
+        apply();
+      }}
+      onPointerMove={(e) => {
+        if (!fingers.current.has(e.pointerId)) return;
+        const k = keyAt(e.clientX, e.clientY);
+        if (k !== fingers.current.get(e.pointerId)) { fingers.current.set(e.pointerId, k); apply(); }
+      }}
+      onPointerUp={end} onPointerCancel={end} onLostPointerCapture={end}
       onContextMenu={(e) => e.preventDefault()}
     >
-      {label}
-    </button>
+      {BUTTONS.filter((b) => manual || b.k !== 'gas').map((b) => (
+        <div
+          key={b.k} role="button" aria-label={b.label} className={`touch-btn touch-btn--${b.k}`}
+          data-touch-key={b.k} data-testid={`touch-${b.k}`} data-down={held.has(b.k)}
+        >
+          {b.label}
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -70,26 +121,23 @@ function SteerZone(): JSX.Element {
 }
 
 /**
- * Controles de toque para celular: o kart acelera sozinho; volante à esquerda;
+ * Controles de toque para celular: o kart acelera sozinho (ou pelo botão Acelerar, no modo manual);
+ * volante à esquerda;
  * drift, item, freio/ré e recuperar à direita; pausa no topo.
  */
 export function TouchControls(): JSX.Element | null {
   const [enabled] = useState(isTouchDevice);
+  const manual = !useSettingsStore((s) => s.autoAccelerate);
   useEffect(() => {
     if (!enabled) return undefined;
-    inputManager.setTouch({ throttle: 1 });
+    inputManager.setTouch({ throttle: manual ? 0 : 1 });
     return () => inputManager.clearTouch();
-  }, [enabled]);
+  }, [enabled, manual]);
   if (!enabled) return null;
   return (
     <div className="touch-controls" data-testid="touch-controls">
       <SteerZone />
-      <div className="touch-right">
-        <HoldButton k="item" label="Item" className="touch-btn--item" testId="touch-item" />
-        <HoldButton k="drift" label="Drift" className="touch-btn--drift" testId="touch-drift" />
-        <HoldButton k="brake" label="Freio" className="touch-btn--brake" testId="touch-brake" />
-        <HoldButton k="reset" label="↺" className="touch-btn--reset" testId="touch-reset" />
-      </div>
+      <ButtonCluster manual={manual} />
       <button
         type="button" className="touch-btn touch-btn--pause" data-testid="touch-pause" aria-label="Pausar"
         onPointerDown={(e) => { e.preventDefault(); inputManager.requestPause(); }}
