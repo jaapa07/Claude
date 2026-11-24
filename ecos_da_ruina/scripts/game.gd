@@ -55,6 +55,9 @@ var skill_cd := {}          # uuid -> segundos restantes
 var save_block := 0         # > 0 impede salvar (captura, transição)
 var in_game := false
 var rng := RandomNumberGenerator.new()
+## Sorteios só de aparência (tom dos sons, tremor de câmera, partículas): fora do RNG global, para que o
+## som (cujo fim depende do relógio real) e os efeitos nunca mudem os sorteios de jogo.
+var fx_rng := RandomNumberGenerator.new()
 var rng_override: Callable = Callable()   # testes: func() -> float
 var god_mode := false
 var last_death := {}
@@ -89,6 +92,7 @@ const ACTION_NAMES := {
 
 func _ready() -> void:
 	rng.randomize()
+	fx_rng.randomize()
 	# testes usam um arquivo próprio e começam dos padrões: as opções do jogador não mudam o fluxo
 	var a := OS.get_cmdline_user_args()
 	if "--e2e" in a or "--unit" in a:
@@ -517,6 +521,10 @@ func respec(cost: int = 50) -> bool:
 	fragments -= cost
 	hero_changed.emit(); inventory_changed.emit()
 	return true
+
+## Relógio de jogo em milissegundos, contado em quadros de física (determinístico; não depende do relógio real).
+func clock_ms() -> int:
+	return int(Engine.get_physics_frames() * 1000 / maxi(1, Engine.physics_ticks_per_second))
 
 # =============================================================== CRIATURAS
 func new_uuid() -> String:

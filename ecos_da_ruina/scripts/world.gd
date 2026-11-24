@@ -1189,7 +1189,7 @@ func _checkpoint_location() -> Dictionary:
 func _update_camera(delta: float) -> void:
 	shake_t = max(0.0, shake_t - delta)
 	if shake_t > 0.0 and not Game.prefs.get("reduz_tremor", false):
-		camera.offset = Vector2(randf_range(-1, 1), randf_range(-1, 1)).round() * shake_amp
+		camera.offset = Vector2(Game.fx_rng.randf_range(-1, 1), Game.fx_rng.randf_range(-1, 1)).round() * shake_amp
 	else:
 		camera.offset = Vector2.ZERO
 	# mapas menores que a tela ficam centralizados
@@ -1848,7 +1848,7 @@ func valve_use(v: Ent) -> void:
 		var area: Array = c.get("area", [])
 		if area.size() == 4 and (c.get("if", "") == flag or c.get("unless", "") == flag):
 			for k in 4:
-				steam_at(Vector2((float(area[0]) + randf() * float(area[2])) * TILE, (float(area[1]) + randf() * float(area[3])) * TILE), 1.0)
+				steam_at(Vector2((float(area[0]) + Game.fx_rng.randf() * float(area[2])) * TILE, (float(area[1]) + Game.fx_rng.randf() * float(area[3])) * TILE), 1.0)
 	say("Vapor frio sibila pelas grades." if Game.has_flag(flag) else "A válvula fecha: o piso volta a esquentar.")
 	if companion != null and is_instance_valid(companion):
 		pass
@@ -2076,7 +2076,7 @@ func sluice_use(c: Ent) -> void:
 		var area: Array = cd.get("area", [])
 		if area.size() == 4 and (cd.get("if", "") == flag or cd.get("unless", "") == flag):
 			for k in 5:
-				fx_at("splash", Vector2((float(area[0]) + randf() * float(area[2])) * TILE, (float(area[1]) + randf() * float(area[3])) * TILE), 0.5)
+				fx_at("splash", Vector2((float(area[0]) + Game.fx_rng.randf() * float(area[2])) * TILE, (float(area[1]) + Game.fx_rng.randf() * float(area[3])) * TILE), 0.5)
 	_relocate_from_solid()
 	say(c.def.get("msg_on", "A comporta range: a água muda de lugar.") if Game.has_flag(flag) else c.def.get("msg_off", "A comporta volta: a água retorna ao leito de antes."))
 

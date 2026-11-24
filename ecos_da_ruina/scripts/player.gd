@@ -408,7 +408,8 @@ func _run_tick(delta: float) -> void:
 			world.fx_at("vento", global_position + Vector2(0, -4) - facing * 6.0, 0.25, facing.angle())
 		else:
 			world.dust(global_position)
-	var now := Time.get_ticks_msec()
+	# relógio de jogo (quadros de física), não o relógio real: o mesmo resultado em qualquer velocidade de execução
+	var now := Game.clock_ms()
 	for e in world.enemies():
 		if not e.hittable() or e.kind == "dummy" or (e.kind == "wild" and e.angry_t <= 0.0):
 			continue

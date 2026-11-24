@@ -15,6 +15,7 @@ var frame_count := 0
 var seen_errors := 0
 var exhausted_events := 0
 var all_toasts: Array = []
+var trace := OS.get_environment("QA_TRACE") != ""
 var shot_dir := "/tmp/shots"     # histórico de avisos do jogo (a fila visível do HUD guarda só 4)
 
 func _ready() -> void:
@@ -26,6 +27,9 @@ func _ready() -> void:
 	W = main.world
 	P = W.player
 	W.test_mode = true
+	# começa sempre do zero: saves de execuções anteriores mudariam o título (Continuar) e o fluxo
+	for i in 10:
+		SaveSys.delete_slot(i)
 	# aleatoriedade com semente fixa: o mesmo fluxo a cada execução (sorteios de captura, flanqueio, passeio)
 	var sd := 20261123
 	for a in args:
@@ -33,6 +37,7 @@ func _ready() -> void:
 			sd = int(a.substr(7))
 	seed(sd)
 	Game.rng.seed = sd
+	Game.fx_rng.seed = sd + 1
 	Game.toast.connect(func(t): if "exausta" in t: exhausted_events += 1)
 	Game.toast.connect(func(t): all_toasts.append(t))
 	main.ui.instant = true
@@ -96,6 +101,9 @@ func check(name: String, cond: bool, detail := "") -> void:
 		fails += 1
 		results.append("[FAIL] %s  %s" % [name, detail])
 	print(results[-1])
+	if trace:
+		# rastro para comparar execuções: a primeira linha diferente entre duas rodadas mostra onde o fluxo divergiu
+		print("  [trace] f=%d rng=%d pos=%s hp=%d map=%s" % [frame_count, Game.rng.state, str(P.global_position.round()) if P else "-", int(Game.hero.get("hp", 0)), W.map_id if W else "-"])
 
 func shot(name: String) -> void:
 	if DisplayServer.get_name() == "headless":
@@ -114,6 +122,17 @@ func frames(n: int) -> void:
 	for i in n:
 		await get_tree().physics_frame
 		frame_count += 1
+		if trace_frames:
+			_trace_frame()
+
+var trace_frames := OS.get_environment("QA_TRACE") == "2"
+func _trace_frame() -> void:
+	var parts: Array = ["f=%d ef=%d" % [frame_count, Engine.get_physics_frames()], str(P.global_position), str(P.velocity)]
+	for e in W.enemies():
+		parts.append("%s%s%.1f" % [e.name, str(e.global_position.round()), float(e.hp)])
+	if W.companion and is_instance_valid(W.companion):
+		parts.append("c" + str(W.companion.global_position.round()))
+	print("  [tf] ", " ".join(parts))
 
 func secs(s: float) -> void:
 	await frames(int(s * 60.0))

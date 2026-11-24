@@ -491,5 +491,5 @@ func _visuals() -> void:
 			var r: Rect2 = sr[i]
 			sp2.position = r.position
 			sp2.region_rect = Rect2(Vector2.ZERO, r.size)
-			sp2.modulate = Color(1, 1, 1, 0.35 + 0.3 * sin(Time.get_ticks_msec() * 0.012))
+			sp2.modulate = Color(1, 1, 1, 0.35 + 0.3 * sin(Game.clock_ms() * 0.012))
 	_mark.visible = alive_flag and real_mark_t > 0.0 and not copies.is_empty()

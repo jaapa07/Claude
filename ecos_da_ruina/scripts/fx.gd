@@ -55,7 +55,7 @@ func _ready() -> void:
 			z_index = 0
 			var pts := [Vector2.ZERO]
 			for i in 5:
-				pts.append(Vector2.from_angle(TAU * i / 5.0 + randf() * 0.5) * radius * randf_range(0.45, 0.85))
+				pts.append(Vector2.from_angle(TAU * i / 5.0 + Game.fx_rng.randf() * 0.5) * radius * Game.fx_rng.randf_range(0.45, 0.85))
 			for p in pts:
 				var s := _anim("roots", false)
 				s.position = p + Vector2(0, -8)

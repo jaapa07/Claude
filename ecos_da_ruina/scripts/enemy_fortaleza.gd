@@ -192,7 +192,7 @@ func take_damage(amount: float, from_pos: Vector2, opts: Dictionary = {}) -> flo
 			hp_bar_t = 3.0
 			return super.take_damage(amount * 0.2, from_pos, opts)
 		if str(opts.get("src", "")) == "heroi" and not countering and st != St.STAGGER:
-			var now := Time.get_ticks_msec() / 1000.0
+			var now := Game.clock_ms() / 1000.0
 			hit_times.append(now)
 			while hit_times.size() > 0 and now - float(hit_times[0]) > 1.7:
 				hit_times.pop_front()

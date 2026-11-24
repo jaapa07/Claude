@@ -87,7 +87,7 @@ func play(name: String, vol_db: float = 0.0, pitch_var: float = 0.05) -> void:
 		if not pl.playing:
 			pl.stream = _sfx[name]
 			pl.volume_db = vol_db
-			pl.pitch_scale = 1.0 + randf_range(-pitch_var, pitch_var)
+			pl.pitch_scale = 1.0 + Game.fx_rng.randf_range(-pitch_var, pitch_var)
 			pl.play()
 			return
 
