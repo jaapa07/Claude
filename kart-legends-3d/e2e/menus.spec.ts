@@ -3,7 +3,8 @@ import { boot, trackErrors } from './helpers';
 
 const CHARACTERS = ['nilo', 'boro', 'lumi', 'kora', 'tiko', 'mavi', 'runi', 'zera'];
 const KARTS = ['flecha', 'engrenagem', 'cometa', 'broto', 'faisca', 'mare', 'duna', 'geada'];
-const TRACKS = ['porto-lanternas', 'bosque-cristal', 'vale-moinhos', 'canion-solar', 'cidade-neon', 'pico-boreal', 'jardim-celeste', 'fortaleza-tempestade'];
+const TRACKS = ['porto-lanternas', 'bosque-cristal', 'vale-moinhos', 'canion-solar', 'cidade-neon', 'pico-boreal', 'jardim-celeste', 'fortaleza-tempestade',
+  'recife-coral', 'templo-esmeralda', 'vulcao-rubro', 'estacao-lunar'];
 
 test('inicialização: carrega todos os assets e chega ao menu sem erros', async ({ page }) => {
   const errors = trackErrors(page);
@@ -38,10 +39,11 @@ test('menus: todos os modos, copas, pistas, personagens e karts aparecem e a nav
   await expect(page.getByTestId('screen-cup')).toBeVisible();
   await expect(page.getByTestId('card-cup-aurora')).toHaveAttribute('data-locked', 'false');
   await expect(page.getByTestId('card-cup-eclipse')).toHaveAttribute('data-locked', 'true');
+  await expect(page.getByTestId('card-cup-meteoro')).toHaveAttribute('data-locked', 'true');
   await page.getByTestId('btn-back').click();
   await expect(page.getByTestId('screen-mode')).toBeVisible();
 
-  // corrida rápida → 8 pistas → dificuldade → 8 personagens → 8 karts
+  // corrida rápida → 12 pistas → dificuldade → 8 personagens → 8 karts
   await page.getByTestId('card-mode-quick').click();
   await page.getByTestId('btn-confirm').click();
   await expect(page.getByTestId('screen-track')).toBeVisible();
@@ -111,6 +113,7 @@ test('configurações e progressão: volumes, qualidade, remapeamento e abas fun
   await page.getByTestId('btn-progress').click();
   await expect(page.getByTestId('screen-progress')).toBeVisible();
   await expect(page.getByTestId('trophy-aurora')).toBeVisible();
+  await expect(page.getByTestId('trophy-meteoro')).toBeVisible();
   await page.getByTestId('btn-tab-times').click();
   await expect(page.getByTestId('times-row-porto-lanternas')).toBeVisible();
   await page.getByTestId('btn-tab-unlocks').click();

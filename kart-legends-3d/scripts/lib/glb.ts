@@ -64,6 +64,7 @@ export class GlbBuilder {
       }
     }
     if (def.map) m.setBaseColorTexture(this.texture(def.map));
+    if (def.emissiveMap) m.setEmissiveTexture(this.texture(def.emissiveMap));
     this.mats.set(name, m);
     return m;
   }

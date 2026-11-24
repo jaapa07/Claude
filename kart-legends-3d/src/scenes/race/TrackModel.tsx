@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import type { TrackId } from '@/data/ids';
 import { useModel } from '../assets';
 
-/** Malha da pista (GLB em setores): configura sombras e anima água/cachoeiras por deslocamento de UV. */
+/** Malha da pista (GLB em setores): configura sombras e anima água, lava e cachoeiras por deslocamento de UV. */
 export function TrackModel({ trackId, shadows }: { trackId: TrackId; shadows: boolean }): JSX.Element {
   const gltf = useModel(`tracks/${trackId}.glb`);
   const flowing = useMemo(() => {
@@ -15,7 +15,7 @@ export function TrackModel({ trackId, shadows }: { trackId: TrackId; shadows: bo
       if (!m.isMesh) return;
       const mat = m.material as THREE.MeshStandardMaterial;
       const isProps = o.name.includes('props') || o.parent?.name.includes('props');
-      const isWater = mat.name === 'water' || mat.name === 'water_fall';
+      const isWater = mat.name === 'water' || mat.name === 'water_fall' || mat.name === 'lava' || mat.name === 'lava_fall';
       m.receiveShadow = !isWater;
       m.castShadow = shadows && !!isProps && !mat.transparent;
       if (seen.has(mat)) return;
@@ -23,7 +23,8 @@ export function TrackModel({ trackId, shadows }: { trackId: TrackId; shadows: bo
       mat.envMapIntensity = mat.name === 'road_wet' || mat.name === 'road_ice' ? 1.6 : 0.7;
       if (isWater && mat.map) {
         mat.map.wrapS = mat.map.wrapT = THREE.RepeatWrapping;
-        maps.push({ map: mat.map, speed: mat.name === 'water' ? [0.012, 0.02] : [0, -0.9] });
+        const speed: [number, number] = mat.name === 'water' ? [0.012, 0.02] : mat.name === 'lava' ? [0.006, 0.01] : mat.name === 'lava_fall' ? [0, -0.35] : [0, -0.9];
+        maps.push({ map: mat.map, speed });
       }
     });
     return maps;

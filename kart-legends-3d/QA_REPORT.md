@@ -13,10 +13,10 @@ estão listados em "O que falta" e nada abaixo deve ser lido como se cobrisse es
 |---|---|
 | `npm run typecheck` | saiu com 0 — TypeScript strict no jogo e nos scripts, sem erros |
 | `npm run lint` | saiu com 0 — ESLint sem erros nem avisos |
-| `npm run validate:assets` | `OK: 246 recursos validados (109.0 MB, ~3840 mil triângulos em modelos)` |
-| `npm run test` | **10 arquivos, 177 testes, 177 passaram** (78,6 s) |
-| `npm run build` | saiu com 0 — `dist/` gerado (JS 3,44 MB / 1,16 MB gzip + 109 MB de assets) |
-| `npm run test:e2e` | **8 testes, 8 passaram** (5,7 min), contra a build de produção |
+| `npm run validate:assets` | `OK: 273 recursos validados (132.5 MB, ~4741 mil triângulos em modelos)` |
+| `npm run test` | **10 arquivos, 205 testes, 205 passaram** (~105 s) |
+| `npm run build` | saiu com 0 — `dist/` gerado (JS 3,45 MB / 1,16 MB gzip + 132 MB de assets) |
+| `npm run test:e2e` | **8 testes, 8 passaram** (5,7 min), contra a build de produção — execução anterior à Copa Meteoro; não reexecutado depois dela |
 
 Ambiente: Linux, Node 22.23, Chromium headless do Playwright 1.63 com **WebGL por software (SwiftShader), sem GPU**.
 
@@ -30,8 +30,8 @@ Testes unitários e de simulação (Vitest — a simulação roda sem navegador,
 | `src/tests/drift.test.ts` | 8 | entrada em drift, três níveis em ordem, soltar cedo, duração crescente do miniturbo, turbo acima da máxima, eficiência por kart, placas de turbo |
 | `src/tests/race.test.ts` | 10 | checkpoints em ordem, voltas, largada não conta volta, corte de caminho, contramão, chegada, classificação, pontuação, HUD, contrarrelógio e treino |
 | `src/tests/items.test.ts` | 12 | caixas e reaparecimento, distribuição por posição, os 6 itens, defesa contra a Faísca, giro e invulnerabilidade, cooldown |
-| `src/tests/ai.test.ts` | 24 | 8 pilotos de IA completam 3 voltas em **cada uma das 8 pistas**, sem teletransporte, dentro do limite de velocidade; usam drift, turbo, itens e atalhos; desviam de obstáculos; ritmo cresce Fácil → Normal → Difícil |
-| `src/tests/tracks.test.ts` | 44 | conteúdo (8/8/8/2/6), integridade dos dados de cada pista, variedade de superfícies e elementos |
+| `src/tests/ai.test.ts` | 32 | 8 pilotos de IA completam 3 voltas em **cada uma das 12 pistas**, sem teletransporte, dentro do limite de velocidade; usam drift, turbo, itens e atalhos; desviam de obstáculos; ritmo cresce Fácil → Normal → Difícil |
+| `src/tests/tracks.test.ts` | 64 | conteúdo (8/8/12/3/6), integridade dos dados de cada pista, variedade de superfícies e elementos |
 | `src/app/gameStore.test.ts` | 13 | fluxo: corrida rápida, campeonato de 4 corridas com pontos e troféu, contrarrelógio, treino |
 | `src/game/save/saveStore.test.ts` | 15 | persistência, versão, migração, save corrompido, desbloqueios, melhores tempos |
 | `src/game/input/inputManager.test.ts` | 22 | bindings, remapeamento, teclado, gamepad (simulado), sensibilidade |
@@ -56,10 +56,16 @@ exercitados com teclas reais, mas **nenhuma corrida inteira foi pilotada por uma
   batida, vitória, derrota, pódio) com a cabeça acompanhando a curva.
 - **8 karts** com silhuetas próprias, rodas independentes que giram e esterçam, volante, suspensão visual,
   inclinação, chamas de turbo. Oito atributos que alteram a física; soma de pontos igual para todos.
-- **8 pistas em 2 copas**, cada uma com malha própria, terreno, cenário, muros, pontes, atalho, rampas, placas
+- **12 pistas em 3 copas**, cada uma com malha própria, terreno, cenário, muros, pontes, atalho, rampas, placas
   de turbo, zonas de itens, 12 checkpoints, linha de corrida para a IA, minimapa, iluminação, clima e câmera de
-  apresentação. Saltos sobre vãos (Jardim Celeste), viaduto que cruza a pista (Cidade Neon), gelo (Pico
-  Boreal), obstáculos móveis (Cidade Neon, Pico Boreal, Fortaleza Tempestade), relâmpagos (Fortaleza).
+  apresentação. Saltos sobre vãos (Jardim Celeste, Recife de Coral, Vulcão Rubro, Estação Lunar), viaduto que
+  cruza a pista (Cidade Neon), gelo (Pico Boreal, Estação Lunar), obstáculos móveis (Cidade Neon, Pico Boreal,
+  Fortaleza Tempestade e as quatro pistas da Copa Meteoro), relâmpagos (Fortaleza), mar de lava (Vulcão Rubro).
+- **Copa Meteoro** (abre com qualquer troféu da Copa Eclipse): Recife de Coral (ilha tropical, passarelas sobre
+  a lagoa, arcos de coral, caranguejos gigantes), Templo Esmeralda (selva, pirâmides, pontes de corda, troncos
+  pendulares e pedra rolante), Vulcão Rubro (basalto sobre lava, pontes de ferro, bolas de magma, brasas no ar) e
+  Estação Lunar (cúpulas, tubo pressurizado, cratera para saltar, lago congelado, robôs de carga). Reaproveitam
+  músicas e ambiências existentes; o cenário novo está em `scripts/props/{recife,templo,vulcao,lunar}.ts`.
 - **Física arcade em passo fixo** sobre Rapier: 5 superfícies, saltos, colisões, recuperação.
 - **Drift com três níveis** de miniturbo, com efeitos e sons distintos por nível.
 - **7 adversários com IA** e três dificuldades, usando a mesma física do jogador.
@@ -83,7 +89,7 @@ exercitados com teclas reais, mas **nenhuma corrida inteira foi pilotada por uma
 | Oito personagens disponíveis | Atendido | validação de assets; 4 começam liberados, 4 por progressão |
 | Oito karts com modelos definitivos | **Com ressalva** | 8 GLB distintos de 14–18 mil triângulos, mas modelados por script (ver "O que falta" 1) |
 | Oito pistas finalizadas | **Com ressalva** | todas correm e têm os elementos pedidos; acabamento de arte desigual (ver 1 e 6) |
-| Adversários funcionam | Atendido | `ai.test.ts`: 8 pilotos × 8 pistas |
+| Adversários funcionam | Atendido | `ai.test.ts`: 8 pilotos × 12 pistas |
 | Física operacional | Atendido | `physics.test.ts` |
 | Drift | Atendido | `drift.test.ts`, e2e |
 | Turbo | Atendido | `drift.test.ts`, e2e |

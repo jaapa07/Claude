@@ -9,12 +9,12 @@ import { SURFACES } from '@/game/tracks/trackTypes';
 import { loadTrack } from './simHarness';
 
 describe('conteúdo do jogo', () => {
-  it('tem 8 pilotos, 8 karts, 8 pistas, 2 copas de 4 pistas e 6 itens', () => {
+  it('tem 8 pilotos, 8 karts, 12 pistas, 3 copas de 4 pistas e 6 itens', () => {
     expect(CHARACTERS).toHaveLength(8);
     expect(KARTS).toHaveLength(8);
     expect(new Set(CHARACTERS.map((c) => c.kartId)).size).toBe(8);
-    expect(TRACKS).toHaveLength(8);
-    expect(CUPS).toHaveLength(2);
+    expect(TRACKS).toHaveLength(12);
+    expect(CUPS).toHaveLength(3);
     for (const cup of CUPS) expect(cup.tracks).toHaveLength(4);
     expect(new Set(CUPS.flatMap((c) => c.tracks))).toEqual(new Set(TRACK_IDS));
     expect(ITEM_IDS).toHaveLength(6);
@@ -23,7 +23,7 @@ describe('conteúdo do jogo', () => {
 
   it('cada pista tem ambiente (céu, luz, clima) próprio', () => {
     const skies = TRACK_IDS.map((t) => `${ENVIRONMENTS[t].skyTop}${ENVIRONMENTS[t].skyHorizon}${ENVIRONMENTS[t].weather}`);
-    expect(new Set(skies).size).toBe(8);
+    expect(new Set(skies).size).toBe(TRACK_IDS.length);
   });
 });
 
@@ -88,11 +88,12 @@ describe('variedade de superfícies e de elementos entre as pistas', () => {
     for (const t of all) { for (const s of t.main.surface) used.add(s); for (const sc of t.shortcuts) for (const s of sc.samples.surface) used.add(s); used.add(t.offroad); }
     expect(used).toEqual(new Set([0, 1, 2, 3, 4]));
   });
-  it('há saltos sobre vãos, obstáculos móveis, água e pistas sem chão fora da estrada', () => {
+  it('há saltos sobre vãos, obstáculos móveis, água, lava e pistas sem chão fora da estrada', () => {
+    expect(all.some((t) => t.liquid === 'lava' && t.waterY !== null)).toBe(true);
     expect(all.some((t) => t.main.gap.includes(1))).toBe(true);
     expect(all.filter((t) => t.obstacles.length > 0).length).toBeGreaterThanOrEqual(3);
     expect(all.some((t) => t.waterY !== null)).toBe(true);
     expect(all.some((t) => t.terrain === null)).toBe(true);
-    expect(all.filter((t) => t.animatedProps.length > 0).length).toBe(8);
+    expect(all.filter((t) => t.animatedProps.length > 0).length).toBe(TRACK_IDS.length);
   });
 });

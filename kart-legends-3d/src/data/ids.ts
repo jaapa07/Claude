@@ -8,10 +8,11 @@ export type KartId = (typeof KART_IDS)[number];
 export const TRACK_IDS = [
   'porto-lanternas', 'bosque-cristal', 'vale-moinhos', 'canion-solar',
   'cidade-neon', 'pico-boreal', 'jardim-celeste', 'fortaleza-tempestade',
+  'recife-coral', 'templo-esmeralda', 'vulcao-rubro', 'estacao-lunar',
 ] as const;
 export type TrackId = (typeof TRACK_IDS)[number];
 
-export const CUP_IDS = ['aurora', 'eclipse'] as const;
+export const CUP_IDS = ['aurora', 'eclipse', 'meteoro'] as const;
 export type CupId = (typeof CUP_IDS)[number];
 
 export const ITEM_IDS = [

@@ -1,6 +1,6 @@
 import type { TrackId } from '@/data/ids';
 
-export type Weather = 'none' | 'snow' | 'sand' | 'leaves' | 'rain' | 'petals' | 'fireflies';
+export type Weather = 'none' | 'snow' | 'sand' | 'leaves' | 'rain' | 'petals' | 'fireflies' | 'embers';
 
 /** Iluminação, céu e clima de cada pista (somente renderização). */
 export interface Environment {
@@ -72,6 +72,26 @@ export const ENVIRONMENTS: Record<TrackId, Environment> = {
     ...base, skyTop: '#0b0d1c', skyHorizon: '#2c2f52', skyBottom: '#4a4470', sunDir: [0.3, 0.7, -0.6], sunColor: '#b9c4f8', sunIntensity: 1.9,
     ambientSky: '#99a0e0', ambientGround: '#5b5078', ambientIntensity: 1.5, fogColor: '#2a2c48', fogNear: 60, fogFar: 400, stars: 0, clouds: 1,
     weather: 'rain', lightning: true, bloom: 0.7, exposure: 1.1, dust: '#6f7080',
+  },
+  'recife-coral': {
+    ...base, skyTop: '#1d7fe0', skyHorizon: '#9ff0ff', skyBottom: '#e6fbff', sunDir: [0.45, 0.85, -0.3], sunColor: '#fff6e0', sunIntensity: 3.0,
+    ambientSky: '#c8f4ff', ambientGround: '#e8d2a0', ambientIntensity: 1.0, fogColor: '#bdeefa', fogNear: 170, fogFar: 720, clouds: 0.6,
+    bloom: 0.35, dust: '#f0dca8',
+  },
+  'templo-esmeralda': {
+    ...base, skyTop: '#2b6f8a', skyHorizon: '#c9e8a8', skyBottom: '#e8f4c8', sunDir: [-0.4, 0.78, 0.48], sunColor: '#fff0c0', sunIntensity: 2.4,
+    ambientSky: '#b8e8a0', ambientGround: '#3a5a2a', ambientIntensity: 1.05, fogColor: '#9cc79a', fogNear: 70, fogFar: 420, clouds: 0.7,
+    weather: 'leaves', bloom: 0.45, dust: '#8a6a40',
+  },
+  'vulcao-rubro': {
+    ...base, skyTop: '#1a0a12', skyHorizon: '#a8341c', skyBottom: '#ff7a2a', sunDir: [0.35, 0.55, -0.75], sunColor: '#ffb070', sunIntensity: 1.8,
+    ambientSky: '#ff9a6a', ambientGround: '#ff4a1a', ambientIntensity: 1.1, fogColor: '#5a1e16', fogNear: 70, fogFar: 460, stars: 0.2, clouds: 0.9,
+    weather: 'embers', bloom: 0.9, exposure: 1.05, dust: '#5a4a48',
+  },
+  'estacao-lunar': {
+    ...base, skyTop: '#000004', skyHorizon: '#0d1230', skyBottom: '#1a2040', sunDir: [-0.55, 0.62, 0.55], sunColor: '#f4f6ff', sunIntensity: 2.7,
+    ambientSky: '#8a9cff', ambientGround: '#6a6a78', ambientIntensity: 0.9, fogColor: '#0b0f24', fogNear: 160, fogFar: 760, stars: 1, clouds: 0,
+    bloom: 0.8, dust: '#b8b8c0',
   },
 };
 

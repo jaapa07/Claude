@@ -3,6 +3,7 @@
  * A malha é dividida em setores para frustum culling; o cenário estático é fundido por material.
  */
 import * as THREE from 'three';
+import { existsSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { GlbBuilder } from '../lib/glb';
@@ -16,7 +17,7 @@ import type { CP, TrackDef } from './types';
 
 const SECTOR = 48;
 /** Tamanho (m) de uma repetição da textura do piso, por estilo. */
-const TILE: Record<string, number> = { cobble: 5, flagstone: 4.5, marble: 8, wood: 6, asphalt: 12, wet: 12, dirt: 10, sand: 10, snow: 12, ice: 14, grass: 10 };
+const TILE: Record<string, number> = { cobble: 5, flagstone: 4.5, marble: 8, wood: 6, asphalt: 12, wet: 12, dirt: 10, sand: 10, snow: 12, ice: 14, grass: 10, basalt: 6, plate: 6, temple: 5, regolith: 10 };
 
 /** Acumulador de quadriláteros com normais e cores explícitas. */
 class Acc {
@@ -70,7 +71,8 @@ function strip(acc: Acc, s: Sampled, i: number, j: number, a: Stop, b: Stop, v0:
   acc.quad(pts, n, [[a.u, v0], [b.u, v0], [b.u, v1], [a.u, v1]], [ca, cb, cb, ca]);
 }
 
-export interface BuildOptions { props: PropLibrary | null; outDir?: string }
+/** `keepExistingAnimated`: não regrava modelos animados que já existem (eles são compartilhados entre pistas). */
+export interface BuildOptions { props: PropLibrary | null; outDir?: string; keepExistingAnimated?: boolean }
 export interface BuildReport { id: string; length: number; samples: number; triangles: number; glbBytes: number; jsonBytes: number; props: number; animated: number; colliders: number; warnings: string[] }
 
 export async function buildTrack(def: TrackDef, opts: BuildOptions): Promise<BuildReport> {
@@ -111,7 +113,7 @@ export async function buildTrack(def: TrackDef, opts: BuildOptions): Promise<Bui
 
   const white = col('#ffffff');
   const styleOf = (surface: string): string => def.roadStyle[surface as keyof typeof def.roadStyle] ?? surface;
-  const paved = (surface: string): boolean => ['asphalt', 'wet', 'marble', 'flagstone', 'cobble'].includes(styleOf(surface));
+  const paved = (surface: string): boolean => ['asphalt', 'wet', 'marble', 'flagstone', 'cobble', 'basalt', 'plate', 'temple'].includes(styleOf(surface));
   const voidTrack = def.terrain === null;
 
   const pillarColliders: number[] = [];
@@ -368,6 +370,7 @@ export async function buildTrack(def: TrackDef, opts: BuildOptions): Promise<Bui
     propColliders: propColliders.map((x) => Math.round(x * 100) / 100),
     animatedProps,
     waterY: def.waterY ?? null,
+    ...(def.liquid === 'lava' ? { liquid: 'lava' as const } : {}),
     introCamera: def.intro.map((c) => {
       const i = at(main, c.at), j = at(main, c.lookAt);
       const pos = main.pos[i]!.clone().addScaledVector(main.side[i]!, c.offset[0]).add(new THREE.Vector3(0, c.offset[1], 0)).addScaledVector(main.tan[i]!, c.offset[2]);
@@ -401,7 +404,7 @@ export async function buildTrack(def: TrackDef, opts: BuildOptions): Promise<Bui
       [new THREE.Vector3(cx - m, y, cz - m), new THREE.Vector3(cx - m, y, cz + m), new THREE.Vector3(cx + m, y, cz + m), new THREE.Vector3(cx + m, y, cz - m)],
       new THREE.Vector3(0, 1, 0), [[0, 0], [0, m / 10], [m / 10, m / 10], [m / 10, 0]], col(c));
     const wm = new Model();
-    wm.parts.push({ geo: acc.geometry(), mat: 'water' });
+    wm.parts.push({ geo: acc.geometry(), mat: def.liquid === 'lava' ? 'lava' : 'water' });
     b.node('water', { mesh: b.mesh('water', wm) });
   }
   const outDir = opts.outDir ?? path.join(ASSETS_DIR, 'tracks');
@@ -409,6 +412,7 @@ export async function buildTrack(def: TrackDef, opts: BuildOptions): Promise<Bui
   const json = JSON.stringify(data);
   await writeFile(path.join(outDir, `${def.id}.json`), json);
   for (const [id, model] of animatedModels) {
+    if (opts.keepExistingAnimated && existsSync(path.join(ASSETS_DIR, 'props', `${id}.glb`))) continue;
     const ab = new GlbBuilder();
     ab.node(id, { mesh: ab.mesh(id, model) });
     await ab.save(path.join(ASSETS_DIR, 'props', `${id}.glb`));

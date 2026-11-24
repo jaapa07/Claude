@@ -2,7 +2,7 @@
  * Gera retratos, ícones e miniaturas da interface a partir de CAPTURAS REAIS do jogo (modo estúdio):
  * ui/portraits/<personagem>.webp (512), ui/icons/<personagem>.webp (128), ui/karts/<kart>.webp (512),
  * ui/tracks/<pista>.webp (640×360). Requer o jogo servido (padrão http://localhost:5173).
- * Uso: npx tsx scripts/capture-ui.ts [--url=...] [--only=character|kart|track]
+ * Uso: npx tsx scripts/capture-ui.ts [--url=...] [--only=character|kart|track] [--ids=id1,id2] (--ids limita aos itens listados)
  */
 import { chromium } from 'playwright';
 import { mkdir } from 'node:fs/promises';
@@ -14,6 +14,8 @@ import { ASSETS_DIR } from './lib/textures';
 const flags = Object.fromEntries(process.argv.slice(2).map((a) => { const [k, v] = a.replace(/^--/, '').split('='); return [k, v ?? 'true']; }));
 const url = String(flags.url ?? 'http://localhost:5173');
 const only = flags.only as string | undefined;
+const ids = flags.ids ? String(flags.ids).split(',') : null;
+const wanted = (id: string): boolean => !ids || ids.includes(id);
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
 
 async function capture(studio: string, width: number, height: number, transparent: boolean): Promise<Buffer> {
@@ -40,7 +42,7 @@ const save = async (rel: string, img: ReturnType<typeof sharp>): Promise<void> =
 
 try {
   if (!only || only === 'character') {
-    for (const id of CHARACTER_IDS) {
+    for (const id of CHARACTER_IDS.filter(wanted)) {
       const png = await capture(`character:${id}`, 640, 640, true);
       await save(`ui/portraits/${id}.webp`, sharp(png).resize(512, 512));
       await save(`ui/icons/${id}.webp`, sharp(png).extract({ left: 150, top: 40, width: 340, height: 340 }).resize(128, 128));
@@ -48,13 +50,13 @@ try {
     }
   }
   if (!only || only === 'kart') {
-    for (const id of KART_IDS) {
+    for (const id of KART_IDS.filter(wanted)) {
       await save(`ui/karts/${id}.webp`, sharp(await capture(`kart:${id}`, 640, 640, true)).resize(512, 512));
       console.log('kart', id);
     }
   }
   if (!only || only === 'track') {
-    for (const id of TRACK_IDS) {
+    for (const id of TRACK_IDS.filter(wanted)) {
       await save(`ui/tracks/${id}.webp`, sharp(await capture(`track:${id}`, 960, 540, false)).resize(640, 360));
       console.log('pista', id);
     }

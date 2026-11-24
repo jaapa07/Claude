@@ -179,7 +179,10 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
         if (mine) { audio.sfx('finish'); if (k) vfx.confetti(k.x, k.y, k.z, 140); }
         break;
       case 'respawn':
-        if (e.reason === 'water' && k) { vfx.splash(k.px, data.waterY ?? k.py, k.pz); sfx('splash'); }
+        if (e.reason === 'water' && k) {
+          if (data.liquid === 'lava') { vfx.lavaSplash(k.px, data.waterY ?? k.py, k.pz); sfx('collision_heavy', 0.7); } else vfx.splash(k.px, data.waterY ?? k.py, k.pz);
+          sfx('splash');
+        }
         sfx('respawn', 0.8);
         break;
       case 'wrong_way': if (mine) audio.sfx('ui_error'); break;
