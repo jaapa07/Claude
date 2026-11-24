@@ -7048,6 +7048,11 @@ func qa_map(id: String, overview: bool) -> void:
 	var first: String = "default" if sp.has("default") else str(sp.keys()[0])
 	W.load_map(id, first)
 	await frames(8)
+	await advance_dialogs()
+	for x in main.ui.hud.toasts:
+		x["node"].queue_free()
+	main.ui.hud.toasts.clear()
+	await frames(2)
 	var ss: Array = sp[first]
 	var reach := qa_reach(Vector2i(int(ss[0]), int(ss[1])))
 	for sn in sp:

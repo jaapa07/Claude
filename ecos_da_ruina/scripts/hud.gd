@@ -83,7 +83,7 @@ var _cap_lab: Label
 var _cap_bar: TextureProgressBar
 var _banner: NinePatchRect
 var _banner_lab: Label
-var _banner_y := 94.0
+var _banner_y := 100.0   # abaixo da linha "Modo:" do quadro da criatura (y 88–96)
 var _dlg: NinePatchRect
 var _dlg_tab: NinePatchRect
 var _dlg_name: Label

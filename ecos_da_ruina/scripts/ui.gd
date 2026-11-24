@@ -138,7 +138,7 @@ func open_title(main: Node) -> void:
 		_it("Opções", func(): open_options(), "Volume, acessibilidade, controles e dificuldade."),
 		_it("Sair", func(): get_tree().quit(), "Fecha o jogo."),
 	]
-	s.setup("ECOS DA RUÍNA", items, "Explore Auralis, forme vínculos com criaturas e enfrente os guardiões corrompidos.\n\nControles: WASD mover, J atacar, K defender, Espaço esquivar, F capturar, Q habilidade, Tab trocar, E interagir, I menu.")
+	s.setup("ECOS DA RUÍNA", items, "Explore Auralis, forme vínculos com criaturas e enfrente os guardiões corrompidos.\n\nControles: {andar} mover, {atacar} atacar, {defender} defender, {esquivar} esquivar, {capturar} capturar, {habilidade} habilidade, {trocar} trocar, {interagir} interagir, {menu} menu.")
 
 func _slot_label(i: int) -> String:
 	var inf := SaveSys.slot_info(i)
@@ -583,7 +583,7 @@ func _fill_craft(s: MenuScreen) -> void:
 		row["icon"] = Game.item_icon(r)
 		items.append(row)
 	items.append(_it("Voltar", func(): s.close()))
-	s.setup("Montar — fragmentos: %d" % Game.fragments, items, "")
+	s.setup("Montar (%d frag.)" % Game.fragments, items, "")
 	s.list_w = 230.0
 
 func open_dismantle() -> void:
@@ -666,7 +666,7 @@ func open_bestiary() -> void:
 				"sim" if b.get("capturado", false) else "não",
 				("descoberta: %s (nv.%d)" % [Data.sp(evo_id)["nome"], sp["evolucao"]["nivel"]]) if evo_found else ("%s no nv.%d (não vista)" % ["???", sp["evolucao"]["nivel"]] if evo_id != "" else "—")] + "\n" + Weather.species_note(sp["afinidade"]) + Catedral.harmonia_note(idd)))
 	items.append(_it("Voltar", func(): s.close()))
-	s.setup("Bestiário  vistas %d • capturadas %d / %d" % [seen, cap, base_ids.size()], items, "")
+	s.setup("Bestiário — %d/%d" % [cap, base_ids.size()], items, "Capturadas: %d de %d   Vistas: %d" % [cap, base_ids.size(), seen])
 	s.list_w = 200.0
 
 func open_diary() -> void:
@@ -751,7 +751,7 @@ func open_map() -> void:
 				info = "%s\n\n%s" % [nm, "\n".join(blk)]
 			items.append(_it("%s %s%s" % ["+" if visited else "·", nm, "  ⚠" if note != "" else ""], Callable(), info))
 	items.append(_it("Voltar", func(): s.close()))
-	s.setup("Mapa do continente de Auralis", items, "+ visitada   · ainda não visitada   ⚠ bloqueio.")
+	s.setup("Mapa de Auralis", items, "+ visitada   · ainda não visitada   ⚠ bloqueio.")
 	s.list_w = 250.0
 
 # =============================================================== SALVAR
@@ -947,7 +947,7 @@ func _fill_forge(s: MenuScreen) -> void:
 	for mat in ["minerio_cobre", "brasa_viva", "lingote", "essencia_verde", "essencia_azul", "essencia_roxa", "essencia_laranja", "essencia_rubra", "casca_oca", "osso_ancestral"]:
 		items.append(_it("%s x%d" % [Data.items[mat]["nome"], Game.item_count(mat)], Callable(), Data.items[mat]["desc"]))
 	items.append(_it("Sair", func(): s.close()))
-	s.setup("Forja — fragmentos: %d" % Game.fragments, items, "Escolha o que melhorar.")
+	s.setup("Forja (%d frag.)" % Game.fragments, items, "Escolha o que melhorar.")
 	s.list_w = 230.0
 
 # =============================================================== CONTRATOS EM GRUPO
@@ -1005,7 +1005,7 @@ func _fill_contracts(s: MenuScreen) -> void:
 	items.append(_it("Voltar", func(): s.close()))
 	var keep: int = s.sel if s.sel > 0 else 1
 	s.list_w = 250.0
-	s.setup("Quadro de Contratos — fragmentos: %d" % Game.fragments, items, "")
+	s.setup("Contratos (%d frag.)" % Game.fragments, items, "")
 	s.sel = min(keep, items.size() - 1)
 
 func _contract_pick(idc: String, s: MenuScreen) -> void:

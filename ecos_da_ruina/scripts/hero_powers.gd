@@ -8,16 +8,16 @@ class_name HeroPowers
 
 const TECHS := [
 	{"id": "investida", "curto": "Esquiva + ataque: avança cortando.", "nivel": 2, "nome": "Golpe em Investida", "icone": 0,
-		"como": "Ataque durante a esquiva (Espaço → J; no toque: setas → espada).",
+		"como": "Ataque durante a esquiva ({esquivar} e logo {atacar}).",
 		"desc": "Avança cortando tudo na linha. Ótimo para atravessar lobos que flanqueiam."},
 	{"id": "lamina", "curto": "Segure o ataque: solta uma onda.", "nivel": 3, "nome": "Lâmina de Eco", "icone": 1,
 		"como": "Segure e solte o ataque (golpe carregado).",
 		"desc": "O golpe carregado solta uma onda de Eco que voa à frente e atravessa inimigos."},
 	{"id": "defesa", "curto": "Defenda no instante do golpe.", "nivel": 4, "nome": "Defesa Perfeita", "icone": 2,
-		"como": "Defenda (K / escudo) no instante em que o golpe chega.",
+		"como": "Defenda ({defender}) no instante em que o golpe chega.",
 		"desc": "Anula o dano, atordoa o atacante e o próximo golpe em 1,5 s causa dano dobrado."},
 	{"id": "furia", "curto": "Defesa + habilidade: explosão.", "nivel": 5, "nome": "Fúria do Vínculo", "icone": 3,
-		"como": "Segure a defesa e use a habilidade da criatura (K + Q; no toque: escudo + estrela).",
+		"como": "Segure a defesa e use a habilidade da criatura ({defender} + {habilidade}).",
 		"desc": "Herói e criatura liberam juntos uma explosão de Eco que fere e atordoa ao redor. Custa 40 de energia."},
 ]
 const DASH := {"wind": 0.02, "act": 0.16, "rec": 0.22, "r": 30.0, "arc": 50.0, "mult": 1.35, "knock": 100.0, "lunge": 64.0}
@@ -57,7 +57,7 @@ func _on_level_up(who: String, level: int) -> void:
 		if int(t["nivel"]) == level:
 			Audio.play("evolve")
 			player.world.say("Nova técnica: %s!" % t["nome"])
-			player.world.say(t["curto"] + " (detalhes no menu I)")
+			player.world.say(t["curto"] + " (detalhes: {menu} > Inventário e herói)")
 			player.world.fx_at("sparkle", player.global_position + Vector2(0, -26), 1.2, 0.0, 1.5)
 
 func _physics_process(delta: float) -> void:
