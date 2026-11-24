@@ -437,7 +437,7 @@ def catedral_c():
     m.rect(12, 12, 36, 2, "п")
     for (x, y) in ((16, 5), (43, 5), (16, 20), (43, 20)):
         m.set(x, y, "щ")
-    m.spawns = {"from_rito": [1, 35], "default": [6, 36], "from_vitoria": [29, 26]}
+    m.spawns = {"from_rito": [1, 35], "default": [6, 36], "from_vitoria": [28, 26]}
     m.ent(type="exit", x=0, y=35, w=1, h=2, to="rito_convergencia", spawn="from_c")
     m.ent(type="shrine", id="catedral_coracao", x=6, y=34)
     m.ent(type="chest", id="cc_bau_prep", x=11, y=33, loot={"pocao": 3, "tonico_criatura": 2})

@@ -35,7 +35,7 @@
   {
    "if": "primeira_captura",
    "lines": [
-    "Maru: Seu primeiro vínculo... forte e bonito. Descanse no santuário (E) para curar a equipe.",
+    "Maru: Seu primeiro vínculo... forte e bonito. Descanse no santuário ({interagir}) para curar a equipe.",
     "Maru: Duas rotas levam ao Santuário da Seiva: o Bosque das Lanternas, a leste, e a Clareira das Raízes, ao sul.",
     "Maru: Capture Lumipim e Cascalito pelo caminho — ajudam, mas você pode vencer sem eles."
    ]
@@ -117,7 +117,7 @@
   {
    "lines": [
     "Bram: Lobos de espinhos flanqueiam: circulam e atacam de lado. Use a esquiva quando eles pararem para arrancar.",
-    "Bram: Sentinelas de madeira se protegem pela frente. Contorne-as ou use a habilidade do seu companheiro (Q).",
+    "Bram: Sentinelas de madeira se protegem pela frente. Contorne-as ou use a habilidade do seu companheiro ({habilidade}).",
     "Bram: Há atalhos pela floresta. O Santuário da Seiva tem uma passagem de volta para a vila."
    ]
   }
@@ -200,14 +200,14 @@
  "placa_bosque": [
   {
    "lines": [
-    "Placa: Os portões do santuário só abrem com a luz das flores-lanterna. Acenda as três (E)."
+    "Placa: Os portões do santuário só abrem com a luz das flores-lanterna. Acenda as três ({interagir})."
    ]
   }
  ],
  "placa_clareira": [
   {
    "lines": [
-    "Placa: Placas pesadas abrem as raízes. Empurre as caixas (E) ou peça a um bicho de pedra."
+    "Placa: Placas pesadas abrem as raízes. Empurre as caixas ({interagir}) ou peça a um bicho de pedra."
    ]
   }
  ],
@@ -302,7 +302,7 @@
  "placa_pesos": [
   {
    "lines": [
-    "Inscrição: Duas placas, dois pesos. Empurre pesos para as placas (E)."
+    "Inscrição: Duas placas, dois pesos. Empurre pesos para as placas ({interagir})."
    ]
   }
  ],
@@ -539,7 +539,7 @@
  "placa_trilhos": [
   {
    "lines": [
-    "Placa: TRILHOS FUNDIDOS — Empurre o carrinho (E) até o batente. A alavanca de desvio muda o rumo nos cruzamentos.",
+    "Placa: TRILHOS FUNDIDOS — Empurre o carrinho ({interagir}) até o batente. A alavanca de desvio muda o rumo nos cruzamentos.",
     "Placa: As duas válvulas alternam o resfriamento: quando uma ala esfria, a outra esquenta."
    ]
   }
@@ -547,7 +547,7 @@
  "placa_valvulas": [
   {
    "lines": [
-    "Inscrição: SALA DAS VÁLVULAS — O piso em brasa fere quem pisa. Gire a válvula azul (E) e o vapor frio o apaga."
+    "Inscrição: SALA DAS VÁLVULAS — O piso em brasa fere quem pisa. Gire a válvula azul ({interagir}) e o vapor frio o apaga."
    ]
   }
  ],
@@ -601,7 +601,7 @@
   {
    "lines": [
     "Inscrição: PRIMEIRA LIÇÃO — O piso em brasa fere. Gire a válvula e veja o vapor frio apagá-lo.",
-    "Inscrição: A chama do braseiro passa às suas mãos (E) e acende a fornalha fria ao lado. Cumpra as duas lições e a porta cede.",
+    "Inscrição: A chama do braseiro passa às suas mãos ({interagir}) e acende a fornalha fria ao lado. Cumpra as duas lições e a porta cede.",
     "Inscrição: A saída para trás está sempre aberta."
    ]
   }
@@ -610,7 +610,7 @@
   {
    "lines": [
     "Inscrição: SEGUNDA LIÇÃO — Resfrie a faixa quente e leve o fogo às duas fornalhas do outro lado.",
-    "Inscrição: Errou? A pedra do recomeço (E) reinicia o rito sem tirar nada de você."
+    "Inscrição: Errou? A pedra do recomeço ({interagir}) reinicia o rito sem tirar nada de você."
    ]
   }
  ],
@@ -1056,8 +1056,8 @@
  "placa_helices": [
   {
    "lines": [
-    "Placa: \"Manivela da hélice do Ninho. Gire (E) e o vento empurra a névoa.\"",
-    "(Um Ventisco ativo também sopra hélices e névoa — de perto ou com a Rajada (Q), até de longe.)"
+    "Placa: \"Manivela da hélice do Ninho. Gire ({interagir}) e o vento empurra a névoa.\"",
+    "(Um Ventisco ativo também sopra hélices e névoa — de perto ou com a Rajada ({habilidade}), até de longe.)"
    ]
   }
  ],
@@ -1071,7 +1071,7 @@
  "placa_solar": [
   {
    "lines": [
-    "Placa: \"A ponte levadiça desce com o calor do mecanismo antigo. Leve uma chama do braseiro (E) — ou peça a um Brasardo.\""
+    "Placa: \"A ponte levadiça desce com o calor do mecanismo antigo. Leve uma chama do braseiro ({interagir}) — ou peça a um Brasardo.\""
    ]
   }
  ],
@@ -1086,7 +1086,7 @@
  "placa_balestra": [
   {
    "lines": [
-    "Placa: \"Balestra do bastião. Dispare (E) no receptor do outro lado do fosso para erguer a grade da torre.\""
+    "Placa: \"Balestra do bastião. Dispare ({interagir}) no receptor do outro lado do fosso para erguer a grade da torre.\""
    ]
   }
  ],
@@ -1102,7 +1102,7 @@
   {
    "lines": [
     "Inscrição: A luz entra pelo oeste e procura o cristal ao norte.",
-    "Inscrição: Gire os espelhos (E). A luz sobe pela coluna leste antes de voltar para oeste."
+    "Inscrição: Gire os espelhos ({interagir}). A luz sobe pela coluna leste antes de voltar para oeste."
    ]
   }
  ],
@@ -1341,7 +1341,7 @@
  "placa_estacas": [
   {
    "lines": [
-    "Placa: ESTACAS DOS BARQUEIROS — crave-as (E) no lodo instável para formar chão firme."
+    "Placa: ESTACAS DOS BARQUEIROS — crave-as ({interagir}) no lodo instável para formar chão firme."
    ]
   }
  ],
@@ -1393,7 +1393,7 @@
   {
    "lines": [
     "Inscrição: O Barqueiro Sem Sombra não pode ser tocado enquanto não tiver sombra.",
-    "Inscrição: Acenda uma lanterna da plataforma (E) quando ele estiver perto: a luz prende a sombra dele e os golpes passam a acertar."
+    "Inscrição: Acenda uma lanterna da plataforma ({interagir}) quando ele estiver perto: a luz prende a sombra dele e os golpes passam a acertar."
    ]
   }
  ],
@@ -1541,7 +1541,7 @@
   {
    "if": "quest_lanternas",
    "lines": [
-    "Iara: Três lanternas-guia na Passarela dos Ecos: uma na ilha do meio, uma na plataforma das estacas e uma na ilha norte. Aperte E para acendê-las."
+    "Iara: Três lanternas-guia na Passarela dos Ecos: uma na ilha do meio, uma na plataforma das estacas e uma na ilha norte. Aperte {interagir} para acendê-las."
    ]
   },
   {
@@ -1733,7 +1733,7 @@
   {
    "lines": [
     "Inscrição: \"O OLHO DE CRISTAL VÊ; OS ESPELHOS GUIAM; O CRISTAL DO PORTÃO ESPERA.\"",
-    "Gire os espelhos (E) para levar o feixe até o cristal ao lado do portão. O prisma gira com o canto de um Cristil e leva a luz a outro lugar."
+    "Gire os espelhos ({interagir}) para levar o feixe até o cristal ao lado do portão. O prisma gira com o canto de um Cristil e leva a luz a outro lugar."
    ]
   }
  ],

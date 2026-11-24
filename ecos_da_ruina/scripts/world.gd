@@ -1706,7 +1706,7 @@ func _vila_return_scene() -> void:
 	await get_tree().create_timer(0.8).timeout
 	player.set_busy(true)
 	ui.dialog(["As raízes recuaram da vila e as flores abriram por toda parte. Pela primeira vez em três luas, ninguém ouviu vozes à noite.", "A família Corvelo voltou para casa. Pipo corre para mostrar a todos o que você fez — e a passagem ao norte, para o Desfiladeiro do Eco, está aberta.",
-		"Só a Raiz Viva pode construir uma ponte sobre a ravina: vá até lá e aperte E no suporte marcado."], func():
+		"Só a Raiz Viva pode construir uma ponte sobre a ravina: vá até lá e aperte {interagir} no suporte marcado."], func():
 		player.set_busy(false)
 		autosave())
 

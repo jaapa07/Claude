@@ -246,15 +246,19 @@ func add_toast(t: String) -> void:
 	l.position = Vector2(24, 7)
 	p.add_child(l)
 	var maxw := _toast_maxw()
-	var w: float = l.get_minimum_size().x + 32.0
+	# fonte monoespaçada de 8 px: largura medida por letra (o rótulo ainda está fora da árvore, onde a medida falha)
+	var w: float = t.length() * 8.0 + 34.0
 	var hgt := 22.0
 	if w > maxw:
-		# aviso longo: quebra em linhas dentro da área livre (no toque, sem passar sob os botões)
-		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		l.custom_minimum_size = Vector2(maxw - 32.0, 0)
-		l.size = Vector2(maxw - 32.0, 0)
-		w = maxw
-		hgt = max(22.0, l.get_minimum_size().y + 12.0)
+		# aviso longo: quebra própria em linhas dentro da área livre (no toque, sem passar sob os botões)
+		var cols := int((maxw - 34.0) / 8.0)
+		var lines := wrap_lines(t, cols)
+		var longest := 0
+		for ln in lines:
+			longest = max(longest, str(ln).length())
+		l.text = "\n".join(lines)
+		w = longest * 8.0 + 34.0
+		hgt = max(22.0, lines.size() * 10.0 + 12.0)
 		l.position.y = 6
 		ic.position.y = (hgt - 16.0) / 2.0
 	p.size = Vector2(w, hgt)
@@ -554,10 +558,10 @@ func _update_hud() -> void:
 		_cr_hp.value = float(ac["hp"]) / Game.creature_hp_max(ac) * 1000.0
 		var sk: Dictionary = Data.skills[Game.hab_active(ac)]
 		var cd: float = float(Game.skill_cd.get(ac["uuid"], 0.0))
-		var qk: String = "Estrela" if TouchControls.active else "Q"
-		_cr_skill.text = ("%s pronta" % qk if TouchControls.active else "Q pronto") if cd <= 0.0 else "%s %.0fs" % [qk, cd]
+		var qk: String = "Estrela" if TouchControls.active else Game.key_label("skill")
+		_cr_skill.text = ("%s pronta" % qk if TouchControls.active else "%s pronto" % qk) if cd <= 0.0 else "%s %.0fs" % [qk, cd]
 		_cr_cd.value = (1.0 - cd / float(sk["recarga"])) * 1000.0
-		_cr_beh.text = "Modo: " + _beh_name() + ("" if TouchControls.active else "  (C)")
+		_cr_beh.text = "Modo: " + _beh_name() + ("" if TouchControls.active else "  (%s)" % Game.key_label("behavior"))
 	else:
 		if _cr_icon:
 			_cr_icon.queue_free(); _cr_icon = null; _cr_icon_sp = ""
@@ -566,7 +570,7 @@ func _update_hud() -> void:
 		_cr_hp.visible = false; _cr_cd.visible = false
 		_cr_name.text = "Nenhuma criatura"
 		_cr_hp.value = 0
-		_cr_skill.text = "Capture: Selo" if TouchControls.active else "Capture: tecla F"
+		_cr_skill.text = "Capture: Selo" if TouchControls.active else "Capture: tecla %s" % Game.key_label("capture")
 		_cr_cd.value = 0
 		_cr_beh.text = ""
 	var k := 0

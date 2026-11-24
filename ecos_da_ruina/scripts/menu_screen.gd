@@ -389,6 +389,12 @@ func _refresh() -> void:
 		_info_icon.position = Vector2(iw - 42, 8)
 	# texto do painel: quebra própria (fonte monoespaçada) e páginas quando não cabe — nada passa da moldura
 	var src := _info_text()
+	# linha selecionada cortada (…) na lista: o texto inteiro abre o painel lateral, para nada ficar ilegível
+	var srow := sel - scroll
+	if srow >= 0 and srow < VIS and not cur.is_empty() and not cur.get("hdr", false):
+		var rl: Label = _rows[srow]
+		if Fonts.pixel().get_string_size(str(cur.get("t", "")), HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x > rl.size.x + 1.0:
+			src = str(cur["t"]) + ("\n\n" + src if src.strip_edges() != "" else "")
 	var cols := int(txt_w / 8.0)
 	var rows := 20
 	var key := src + ("#i" if icon != null else "")

@@ -193,11 +193,11 @@ func _fill_pause(s: MenuScreen) -> void:
 		_it("Diário", func(): open_diary(), "Missões ativas."),
 		_it("Mapa", func(): open_map(), "Áreas visitadas e bloqueios."),
 		_it("Salvar jogo", func(): open_save_slots(), "Grava o progresso em um slot."),
-		_it("Reiniciar enigmas da sala", func():
+		_it("Reiniciar enigmas", func():
 			if world.in_combat():
 				toast("Não é possível durante o combate.")
 			else:
-				world.reset_room_puzzles(); s.close(); toast("Enigmas da sala reiniciados."), "Recoloca caixas e alavancas se algo ficou preso. Enigmas resolvidos continuam resolvidos."),
+				world.reset_room_puzzles(); s.close(); toast("Enigmas da sala reiniciados."), "Reinicia os enigmas desta sala: recoloca caixas e alavancas se algo ficou preso. Enigmas resolvidos continuam resolvidos."),
 		_it("Opções", func(): open_options(), "Volume, acessibilidade, controles."),
 		_it("Botões do toque", func(): close_all(); TouchControls.instance.show_legend(), "Mostra o que cada botão da tela faz.", TouchControls.active),
 		_it("Jornada (%d%%)" % Game.conquest_pct(), func(): open_journey(), "O grande objetivo e quanto falta para conquistar tudo."),
@@ -244,7 +244,7 @@ func _fill_team(s: MenuScreen) -> void:
 	items.append(_hdr("Gerenciar"))
 	items.append(_it("Santuário (%d/%d)" % [Game.sanctuary.size(), Game.SANCTUARY_CAP], func(): open_storage(), "Armazenamento: leve criaturas para a equipe, dê apelidos, ordene e compare."))
 	items.append(_it("Comportamento: %s" % hud._beh_name(), func():
-		world.cycle_behavior(); _fill_team(s), "Acompanhar, Atacar alvo, Proteger ou Preservar (poupa criaturas selvagens com ≤20% de vida). Tecla C no jogo.",))
+		world.cycle_behavior(); _fill_team(s), "Acompanhar, Atacar alvo, Proteger ou Preservar (poupa criaturas selvagens com ≤20% de vida). No jogo: {comportamento}.",))
 	items.append(_it("Voltar", func(): s.close()))
 	s.setup("Equipe", items, "Selecione uma criatura.")
 	s.sel = 1
@@ -442,7 +442,8 @@ func open_inventory() -> void:
 func _fill_inventory(s: MenuScreen) -> void:
 	var items: Array = []
 	items.append(_hdr("Herói Nv.%d  XP %d/%d" % [Game.hero_level(), int(Game.hero["xp"]), Game.xp_to_next(Game.hero_level())]))
-	items.append(_it("Vida %d/%d  Ataque %.0f  Redução %d%%" % [int(Game.hero["hp"]), int(Game.hero_max_hp()), Game.hero_atk(), int(Game.hero_reduction() * 100)], Callable(), "Fragmentos: %d" % Game.fragments))
+	items.append(_it("Vida %d/%d Atq %.0f Red %d%%" % [int(Game.hero["hp"]), int(Game.hero_max_hp()), Game.hero_atk(), int(Game.hero_reduction() * 100)], Callable(),
+		"Vida %d/%d\nAtaque %.0f\nRedução de dano %d%%\n\nFragmentos: %d" % [int(Game.hero["hp"]), int(Game.hero_max_hp()), Game.hero_atk(), int(Game.hero_reduction() * 100), Game.fragments]))
 	items.append(_hdr("Talentos (%d pontos)" % int(Game.hero["talent_points"])))
 	for k in ["espada", "resistencia", "vinculo"]:
 		var kk: String = k
@@ -452,12 +453,12 @@ func _fill_inventory(s: MenuScreen) -> void:
 				Audio.play("levelup"); _fill_inventory(s)
 			else:
 				toast("Sem pontos de talento (1 a cada 2 níveis)."), desc + "\nGasta 1 ponto.", int(Game.hero["talent_points"]) > 0))
-	items.append(_it("Reespecializar (50 fragmentos)", func():
+	items.append(_it("Refazer talentos (50)", func():
 		if Game.respec(50):
 			toast("Talentos redistribuídos."); _fill_inventory(s)
 		else:
 			toast("Fragmentos insuficientes."), "Devolve todos os pontos gastos."))
-	items.append(_hdr("Equipamento (cor = raridade)"))
+	items.append(_hdr("Equipamento"))
 	var eqs: Array = []
 	for id in Data.items:
 		if Game.is_equipment(id) and Game.item_count(id) > 0:
@@ -510,7 +511,7 @@ func _fill_inventory(s: MenuScreen) -> void:
 				r3["col"] = Game.rarity_color(id3)
 			mats.append(r3)
 	if not mats.is_empty():
-		items.append(_hdr("Materiais, técnicas e diários"))
+		items.append(_hdr("Materiais e diários"))
 		items.append_array(mats)
 	items.append(_hdr("Técnicas"))
 	for t in HeroPowers.TECHS:
@@ -716,7 +717,8 @@ func open_map() -> void:
 	var items: Array = []
 	for rid in Data.regions:
 		var r: Dictionary = Data.regions[rid]
-		items.append(_hdr("%s  (%s)" % [r["nome"], r["status"]]))
+		var st: String = {"jogavel": "", "em_breve": "  (em breve)"}.get(str(r["status"]), "  (%s)" % r["status"])
+		items.append(_hdr("%s%s" % [r["nome"], st]))
 		for mid in r["mapas"]:
 			var m: Dictionary = Data.maps[mid]
 			var visited: bool = Game.has_flag("visitou_" + mid)
@@ -731,14 +733,23 @@ func open_map() -> void:
 					var n2: Array = []
 					if not Game.has_flag("forja_rocha"): n2.append("⚠ rocha fissurada — Ruptura Ígnea")
 					if not Game.has_flag("ferreiro_morto"): n2.append("⚠ elevador parado")
-					n2.append("⚠ inscrição oculta — Olhar Velado")
-					note = "  " + ", ".join(n2)
+					if not Game.has_eco("olhar_velado"): n2.append("⚠ inscrição oculta — Olhar Velado")
+					note = ("  " + ", ".join(n2)) if not n2.is_empty() else ""
 				"pedreira_oca":
 					note = "  ⚠ veio selado — Ruptura Ígnea" if Game.has_flag("veio_revelado") and not Game.has_flag("veio_rocha") else ("" if Game.has_flag("veio_revelado") else "  ⚠ corrente de ar")
 				"trilhos_fundidos": note = "" if Game.has_flag("trilhos_carrinho") else "  ⚠ portão do carrinho"
-				"fundicao_a": note = "  ⚠ inscrição oculta — Olhar Velado"
+				"fundicao_a": note = "" if Game.has_eco("olhar_velado") else "  ⚠ inscrição oculta — Olhar Velado"
 				"rito_forja": note = "" if Game.has_flag("rito_rocha") else ("  ⚠ rocha fissurada — Ruptura Ígnea (rito avançado)" if Game.has_flag("rito_ok") else "")
-			items.append(_it("%s %s%s" % ["+" if visited else "·", m["name"] if visited else "???", note], Callable(), "Bloqueios marcados com ⚠ mostram o que ainda impede a passagem."))
+			# a linha mostra só o nome e ⚠; a lista completa de bloqueios fica no painel lateral (não cabe na linha)
+			var info := "Bloqueios marcados com ⚠ mostram o que ainda impede a passagem."
+			var nm: String = m["name"] if visited else "???"
+			if note != "":
+				var blk: Array = []
+				for part in note.replace(",", "").split("⚠", false):
+					if part.strip_edges() != "":
+						blk.append("⚠ " + part.strip_edges())
+				info = "%s\n\n%s" % [nm, "\n".join(blk)]
+			items.append(_it("%s %s%s" % ["+" if visited else "·", nm, "  ⚠" if note != "" else ""], Callable(), info))
 	items.append(_it("Voltar", func(): s.close()))
 	s.setup("Mapa do continente de Auralis", items, "+ visitada   · ainda não visitada   ⚠ bloqueio.")
 	s.list_w = 250.0
@@ -766,7 +777,7 @@ func open_shrine_menu() -> void:
 		_it("Salvar jogo", func(): open_save_slots(), "Grava o progresso."),
 		_it("Equipe e criaturas", func(): open_team(), "Troque criaturas com o armazenamento do santuário e evolua as que estiverem prontas."),
 		_it("Armazenamento (%d/%d)" % [Game.sanctuary.size(), Game.SANCTUARY_CAP], func(): open_storage(), "Criaturas guardadas: leve para a equipe (máximo 3), dê apelidos, ordene ou liberte."),
-		_it("Reespecializar talentos (50)", func(): if Game.respec(50): toast("Talentos redistribuídos.") else: toast("Fragmentos insuficientes."), "Redistribui pontos de talento."),
+		_it("Refazer talentos (50)", func(): if Game.respec(50): toast("Talentos redistribuídos.") else: toast("Fragmentos insuficientes."), "Redistribui pontos de talento."),
 		_it("Sair", func(): s.close()),
 	]
 	s.setup("Santuário", items, "Um ponto de retorno: você volta aqui se cair em combate.")
@@ -782,7 +793,7 @@ func open_shop(shop_id := "ysa") -> void:
 	for id in shop["itens"]:
 		var idd: String = id
 		var it: Dictionary = Data.items[idd]
-		items.append(_it("%s  — %d" % [it["nome"], int(it["preco"])], func():
+		items.append(_it("%s — %d" % [it["nome"], int(it["preco"])], func():
 			var err := Game.buy(idd)
 			if err != "":
 				toast(err)

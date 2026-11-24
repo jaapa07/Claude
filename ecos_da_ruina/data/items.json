@@ -21,7 +21,7 @@
   "preco": 25,
   "cura": 60,
   "icone": 2,
-  "desc": "Restaura 60 de vida do herói. Tecla R."
+  "desc": "Restaura 60 de vida do herói. Atalho: {tonico}."
  },
  "tonico_criatura": {
   "nome": "Néctar de Vínculo",
@@ -382,7 +382,7 @@
   "raridade": 3,
   "icone": 5,
   "folha": "icons_chave",
-  "desc": "Aperte E diante de uma pedra solta para erguê-la e arremessá-la. Algumas pedras escondem segredos."
+  "desc": "Aperte {interagir} diante de uma pedra solta para erguê-la e arremessá-la. Algumas pedras escondem segredos."
  },
  "coleira_couro": {
   "nome": "Coleira de Couro",
