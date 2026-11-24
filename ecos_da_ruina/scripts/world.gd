@@ -1681,6 +1681,12 @@ func on_player_died() -> void:
 	Game.stats["mortes"] = int(Game.stats["mortes"]) + 1
 	frozen = true
 	await get_tree().create_timer(1.3).timeout
+	# morte junto com uma fala/menu aberto (ex.: golpe final simultâneo com a queda do chefe): o retorno ao
+	# santuário espera a fala fechar, para o callback dela não rodar já no mapa do santuário
+	var guard := 0
+	while ui and ui.is_modal() and guard < 36000:
+		await get_tree().process_frame
+		guard += 1
 	await ui.fade(1.0, 0.5)
 	var lost := int(floor(Game.fragments * 0.10))
 	Game.last_death = {"antes": Game.fragments, "perdidos": lost, "mapa": map_id}
