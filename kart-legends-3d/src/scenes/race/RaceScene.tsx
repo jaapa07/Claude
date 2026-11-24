@@ -1,3 +1,4 @@
+import { dressPlayer } from '@/game/custom/customStore';
 import { CHARACTER_BY_ID } from '@/data/characters';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Physics, useRapier } from '@react-three/rapier';
@@ -74,9 +75,11 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
     const model = new KartModel(kartGltfs[i]!, charGltfs[i]!, shieldGltf);
     // Kart repetido na corrida (há mais pilotos que karts): quem não é o "dono" do kart ganha a cor do próprio piloto.
     const r = config.racers[i]!;
+    // Jogador: roupa e kart personalizados.
+    const customPaint = r.isPlayer && dressPlayer(model, r.characterId, r.kartId);
     const same = config.racers.filter((o) => o.kartId === r.kartId);
     const keeper = same.find((o) => CHARACTER_BY_ID[o.characterId].kartId === r.kartId) ?? same[0]!;
-    if (same.length > 1 && keeper !== r) model.repaint(CHARACTER_BY_ID[r.characterId].color);
+    if (same.length > 1 && keeper !== r && !customPaint) model.repaint(CHARACTER_BY_ID[r.characterId].color);
     return model;
   }), [sim, kartGltfs, charGltfs, shieldGltf, config.racers]);
   const vfx = useMemo(() => new RaceVfx(atlas, env, quality.particles), [atlas, env, quality.particles]);

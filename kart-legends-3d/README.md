@@ -50,6 +50,14 @@ servidor de arquivos estáticos.
 Tudo é remapeável em **Configurações**, onde também ficam a sensibilidade da direção, os volumes
 (música, efeitos, ambiente) e a qualidade gráfica (Baixa, Média, Alta).
 
+## Personalização
+
+- **Roupas:** na escolha do piloto, 6 roupas para cada um (Clássico, Tropical, Oceano, Noturno, Neve e Ouro).
+- **Oficina:** na escolha do kart, aba **Oficina** com pintura (12 cores, incluindo preto, branco e dourado),
+  metais e rodas (cromado, grafite, cobre, ouro), cor da chama do turbo e neon embaixo do kart.
+- Parte das opções começa liberada; as outras se ganham jogando (corridas, vitórias, miniturbos, troféus).
+  A escolha fica salva no navegador e aparece na corrida e no pódio.
+
 ## Celular (iPhone / Android)
 
 Em telas de toque aparecem controles na tela e, por padrão, o kart **acelera sozinho**. Para acelerar

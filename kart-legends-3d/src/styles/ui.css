@@ -268,3 +268,36 @@ input[type="range"]:focus-visible { outline: 0.16rem solid var(--amber); outline
 .card[data-selected="true"]::after { box-shadow: inset 0 0 0 0.2rem var(--amber); }
 .card:focus-visible::after { box-shadow: inset 0 0 0 0.24rem #fff; }
 .card[data-selected="true"] .card__caption { background: linear-gradient(0deg, rgba(120, 50, 10, 0.95), rgba(8, 5, 20, 0)); }
+
+/* ---------- Personalização: roupas e oficina ---------- */
+.swatches { margin-top: 0.6rem; }
+.swatches__head { display: flex; justify-content: space-between; align-items: baseline; gap: 0.6rem; }
+.swatches__label { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.swatches__value { font-size: 0.82rem; font-weight: 800; color: var(--ink); }
+.swatches__row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.3rem; }
+.swatch {
+  position: relative; width: 2rem; height: 2rem; border-radius: 50%; background: var(--swatch);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.25), 0 0.15rem 0.4rem rgba(0, 0, 0, 0.4);
+  display: grid; place-items: center; transition: transform 120ms var(--ease);
+}
+.swatch[data-selected="true"] { box-shadow: 0 0 0 3px var(--bg-0), 0 0 0 5px var(--amber), 0 0.15rem 0.5rem rgba(0, 0, 0, 0.5); transform: scale(1.08); }
+.swatch[data-locked="true"] { filter: grayscale(0.85) brightness(0.55); }
+.swatch[data-locked="true"] .lock-badge { position: static; font-size: 0.85rem; color: #fff; filter: none; }
+.swatch:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
+/* "Nenhum" (neon desligado): círculo riscado */
+.swatch[style*="transparent"] { background: linear-gradient(135deg, transparent 45%, var(--danger) 45%, var(--danger) 55%, transparent 55%), rgba(255, 255, 255, 0.06); }
+.swatches__lock { margin-top: 0.3rem; font-size: 0.78rem; font-weight: 700; color: var(--warn); }
+.tabs { display: flex; gap: 0.3rem; margin-top: 0.6rem; }
+.tab { flex: 1; padding: 0.35rem 0.6rem; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); background: rgba(255, 255, 255, 0.05); clip-path: var(--cut-shape); --cut: 0.45rem; }
+.tab[aria-selected="true"] { color: var(--bg-0); background: var(--aurora); }
+.workshop { display: grid; grid-template-columns: 1fr 1fr; column-gap: 1rem; }
+@media (pointer: coarse) and (max-height: 600px) {
+  /* Celular deitado: cada grupo numa linha só, com rolagem lateral, para o painel não empurrar a grade. */
+  .swatch { flex: none; width: 1.7rem; height: 1.7rem; }
+  .swatches__row { flex-wrap: nowrap; overflow-x: auto; padding: 6px 7px; margin: 0 -7px; scrollbar-width: none; }
+  .detail:has(.workshop) .detail__text { display: none; }
+  .card-grid--roster .card--portrait { aspect-ratio: 1 / 0.6; }
+  .swatches__row::-webkit-scrollbar { display: none; }
+  .workshop { column-gap: 0.7rem; }
+  .swatches { margin-top: 0.2rem; min-width: 0; }
+}

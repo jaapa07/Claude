@@ -1,3 +1,5 @@
+import { useCustomStore } from '@/game/custom/customStore';
+import { DEFAULT_KART_LOOK, outfitById } from '@/data/customization';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
@@ -30,6 +32,14 @@ export function ShowcaseScene({ screen, characterId, kartId, studio }: { screen:
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   const model = useMemo(() => new KartModel(kart, studio === 'kart' ? null : character, null), [kart, character, studio]);
   useEffect(() => () => model.dispose(), [model]);
+  // Personalização ao vivo (roupa e oficina); as capturas de interface (studio) usam o visual original.
+  const outfit = useCustomStore((s) => s.outfits[characterId]);
+  const kartLook = useCustomStore((s) => s.karts[kartId]);
+  useEffect(() => {
+    if (studio) return;
+    model.applyOutfit(outfitById(outfit));
+    model.applyLook(kartLook ?? DEFAULT_KART_LOOK);
+  }, [model, outfit, kartLook, studio]);
   const turn = useRef(0.6);
   const look = useRef(new THREE.Vector3(-1.5, 0.8, 0));
   const first = useRef(true);

@@ -7,6 +7,7 @@ import { KART_BY_ID } from '@/data/karts';
 import { describeUnlock } from '@/data/unlocks';
 import { assetUrl } from '@/game/core/assets';
 import { useSaveStore } from '@/game/save/saveStore';
+import { OutfitPicker } from './Customizer';
 import { AssetImg, Btn, LockBadge, ScreenShell, useCardPick } from './common';
 
 export function CharacterSelect(): JSX.Element {
@@ -55,6 +56,7 @@ export function CharacterSelect(): JSX.Element {
         {focusLocked
           ? <p className="detail__lock" data-testid="lock-condition"><LockBadge /> {describeUnlock(focus.unlock)}</p>
           : <p className="detail__meta">Kart preferido: {KART_BY_ID[focus.kartId].name}</p>}
+        {!focusLocked && <OutfitPicker characterId={focus.id} />}
       </div>
     </ScreenShell>
   );

@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { KartWorkshop } from './Customizer';
 import type { CSSProperties } from 'react';
 import { prevScreen } from '@/app/flow';
 import { useGameStore } from '@/app/gameStore';
@@ -25,6 +27,7 @@ export function KartSelect(): JSX.Element {
     onConfirm: startRace,
   });
   const focus = KART_BY_ID[pick.focusId];
+  const [tab, setTab] = useState<'stats' | 'shop'>('stats');
   const focusLocked = isLocked(focus.id);
   return (
     <ScreenShell
@@ -51,6 +54,13 @@ export function KartSelect(): JSX.Element {
         <h2 className="detail__title">{focus.name}</h2>
         <p className="detail__text">{focus.description}</p>
         {focusLocked && <p className="detail__lock" data-testid="lock-condition"><LockBadge /> {describeUnlock(focus.unlock)}</p>}
+        {!focusLocked && (
+          <div className="tabs" role="tablist">
+            <button type="button" role="tab" className="tab" aria-selected={tab === 'stats'} data-testid="tab-stats" onClick={() => setTab('stats')}>Atributos</button>
+            <button type="button" role="tab" className="tab" aria-selected={tab === 'shop'} data-testid="tab-workshop" onClick={() => setTab('shop')}>Oficina</button>
+          </div>
+        )}
+        {!focusLocked && tab === 'shop' ? <KartWorkshop kartId={focus.id} /> : (
         <dl className="stats" data-testid="kart-stats">
           {STAT_KEYS.map((key) => (
             <div className="stats__row" key={key} data-testid={`stat-${key}`}>
@@ -63,6 +73,7 @@ export function KartSelect(): JSX.Element {
             </div>
           ))}
         </dl>
+        )}
       </div>
     </ScreenShell>
   );

@@ -1,3 +1,4 @@
+import { dressPlayer } from '@/game/custom/customStore';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
@@ -26,7 +27,11 @@ export function PodiumScene({ entries, trophy }: { entries: PodiumEntry[]; troph
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   const size = useThree((s) => s.size);
   const stage = useMemo(() => { const s = cloneScene(podium); setShadows(s, true, true); return s; }, [podium]);
-  const models = useMemo(() => top.map((_, i) => new KartModel(karts[i]!, chars[i]!, null)), [karts, chars]);
+  const models = useMemo(() => top.map((e, i) => {
+    const m = new KartModel(karts[i]!, chars[i]!, null);
+    if (e.isPlayer) dressPlayer(m, e.characterId, e.kartId);
+    return m;
+  }), [karts, chars]);
   const vfx = useMemo(() => new RaceVfx(atlas, ENV, 1500), [atlas]);
   const cup = useMemo(() => { const c = cloneScene(trophyGltf); c.scale.setScalar(1.6); return c; }, [trophyGltf]);
   const t = useRef(0);

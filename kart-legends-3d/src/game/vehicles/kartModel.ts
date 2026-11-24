@@ -2,6 +2,51 @@ import * as THREE from 'three';
 import type { GLTF } from 'three-stdlib';
 import { SkeletonUtils } from 'three-stdlib';
 import { CharacterAnimator, type DriverMood } from '@/game/characters/characterAnimator';
+import { flameById, metalById, neonById, paintById, type ColorRecipe, type Finish, type KartLook, type OutfitDef } from '@/data/customization';
+
+/** Materiais recoloridos pela personalização. */
+const OUTFIT_MATERIALS = ['cloth', 'chars_cloth_ds'];
+const PAINT_MATERIALS = ['paint'];
+const METAL_MATERIALS = ['kart_metal'];
+const DEFAULT_FLAME = '#ffb347';
+
+const tmpColor = new THREE.Color();
+const tmpHsl = { h: 0, s: 0, l: 0 };
+
+/** Aplica uma receita de cor a uma cor linear (in-place). */
+export function applyRecipe(c: THREE.Color, r: ColorRecipe): THREE.Color {
+  c.getHSL(tmpHsl);
+  let { h, s, l } = tmpHsl;
+  if (r.mode === 'shift') {
+    h = (h + r.hue) % 1;
+    s = Math.min(1, s * (r.sat ?? 1));
+    l = Math.min(1, l * (r.light ?? 1));
+  } else if (r.mode === 'set') {
+    if (s < 0.12 && r.keepGrays !== false) return c;
+    h = r.hue;
+    s = r.sat;
+    if (r.light) l = r.light[0] + (r.light[1] - r.light[0]) * l;
+  } else {
+    s *= 0.08;
+    l = r.light[0] + (r.light[1] - r.light[0]) * l;
+  }
+  return c.setHSL(h, s, l);
+}
+
+/** Textura radial (centro claro, borda transparente) para o neon embaixo do kart. */
+function glowTexture(): THREE.DataTexture {
+  const n = 64, data = new Uint8Array(n * n * 4);
+  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+    const dx = (x + 0.5) / n * 2 - 1, dy = (y + 0.5) / n * 2 - 1;
+    const d = Math.min(1, Math.hypot(dx * 0.8, dy * 0.62));
+    const a = Math.pow(1 - d, 1.6);
+    const i = (y * n + x) * 4;
+    data[i] = data[i + 1] = data[i + 2] = 255; data[i + 3] = Math.round(a * 255);
+  }
+  const t = new THREE.DataTexture(data, n, n);
+  t.needsUpdate = true;
+  return t;
+}
 
 /** O que a camada visual precisa saber sobre um kart em um quadro. */
 export interface KartVisualState {
@@ -56,33 +101,105 @@ export class KartModel {
   private wasGrounded = true;
   private time = Math.random() * 10;
   private readonly owned: THREE.Material[] = [];
+  private readonly kartScene: THREE.Object3D;
+  private charScene: THREE.Object3D | null = null;
+  /** Geometrias clonadas para recolorir (a original é compartilhada pelo cache do loader). */
+  private readonly ownedGeometry: THREE.BufferGeometry[] = [];
+  private readonly baseColors = new Map<THREE.Mesh, Float32Array>();
+  private readonly baseMaterials = new Map<THREE.Mesh, THREE.Material>();
+  private flameColor = DEFAULT_FLAME;
+  private neon: THREE.Mesh | null = null;
+  private neonTexture: THREE.DataTexture | null = null;
   private readonly tmpQ = new THREE.Quaternion();
   private readonly axisX = new THREE.Vector3(1, 0, 0);
   private readonly axisZ = new THREE.Vector3(0, 0, 1);
 
-  private readonly kartScene: THREE.Object3D;
+  /**
+   * Recolore as cores de vértice dos materiais `names` dentro de `root` segundo a receita (null = cores originais)
+   * e aplica o acabamento (metal/rugosidade) num material próprio.
+   */
+  private recolor(root: THREE.Object3D, names: readonly string[], recipe: ColorRecipe | null, finish?: Finish): void {
+    const materials = new Map<THREE.Material, THREE.Material>();
+    root.traverse((o) => {
+      const m = o as THREE.Mesh;
+      if (!m.isMesh || Array.isArray(m.material)) return;
+      const baseMat = this.baseMaterials.get(m) ?? m.material;
+      if (!names.includes(baseMat.name)) return;
+      this.baseMaterials.set(m, baseMat);
+      let base = this.baseColors.get(m);
+      if (!base) {
+        const attr = m.geometry.getAttribute('color');
+        if (!attr) return;
+        m.geometry = m.geometry.clone();
+        this.ownedGeometry.push(m.geometry);
+        const a = m.geometry.getAttribute('color') as THREE.BufferAttribute;
+        base = new Float32Array(a.count * 3);
+        for (let i = 0; i < a.count; i++) { base[i * 3] = a.getX(i); base[i * 3 + 1] = a.getY(i); base[i * 3 + 2] = a.getZ(i); }
+        // Atributo novo em ponto flutuante (o original pode estar quantizado).
+        const fresh = new THREE.BufferAttribute(new Float32Array(a.count * a.itemSize), a.itemSize);
+        for (let i = 0; i < a.count; i++) for (let c = 0; c < a.itemSize; c++) fresh.setComponent(i, c, a.getComponent(i, c));
+        m.geometry.setAttribute('color', fresh);
+        this.baseColors.set(m, base);
+      }
+      const attr = m.geometry.getAttribute('color') as THREE.BufferAttribute;
+      for (let i = 0; i < attr.count; i++) {
+        tmpColor.setRGB(base[i * 3]!, base[i * 3 + 1]!, base[i * 3 + 2]!);
+        if (recipe) applyRecipe(tmpColor, recipe);
+        attr.setXYZ(i, tmpColor.r, tmpColor.g, tmpColor.b);
+      }
+      attr.needsUpdate = true;
+      if (finish) {
+        let mat = materials.get(baseMat);
+        if (!mat) {
+          const c = (baseMat as THREE.MeshStandardMaterial).clone();
+          c.metalness = finish.metalness; c.roughness = finish.roughness;
+          this.owned.push(c);
+          materials.set(baseMat, c);
+          mat = c;
+        }
+        m.material = mat;
+      } else m.material = baseMat;
+    });
+  }
+
+  /** Roupa do piloto. */
+  applyOutfit(outfit: OutfitDef): void {
+    if (this.charScene) this.recolor(this.charScene, OUTFIT_MATERIALS, outfit.recipe, outfit.finish);
+  }
+
+  /** Modificações do kart: pintura, metais, chama do turbo e neon. */
+  applyLook(look: KartLook): void {
+    const paint = paintById(look.paint), metal = metalById(look.metal);
+    this.recolor(this.kartScene, PAINT_MATERIALS, paint.recipe, paint.finish);
+    this.recolor(this.kartScene, METAL_MATERIALS, metal.recipe, metal.finish);
+    this.flameColor = flameById(look.flame).color ?? DEFAULT_FLAME;
+    this.flameMaterial.color.set(this.flameColor);
+    const neon = neonById(look.neon).color;
+    if (neon && !this.neon) {
+      this.neonTexture = glowTexture();
+      const mat = new THREE.MeshBasicMaterial({ map: this.neonTexture, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false });
+      this.owned.push(mat);
+      const geo = new THREE.PlaneGeometry(2.3, 3.1);
+      geo.rotateX(-Math.PI / 2);
+      this.ownedGeometry.push(geo);
+      this.neon = new THREE.Mesh(geo, mat);
+      this.neon.position.y = 0.04;
+      this.neon.renderOrder = 2;
+      this.yaw.add(this.neon);
+    }
+    if (this.neon) {
+      this.neon.visible = !!neon;
+      if (neon) (this.neon.material as THREE.MeshBasicMaterial).color.set(neon).multiplyScalar(1.6);
+    }
+  }
 
   /**
-   * Repinta a carroceria (material "paint") com outra cor — usado quando dois pilotos da mesma corrida têm o
-   * mesmo kart, para não haver dois karts idênticos na pista.
+   * Repinta a carroceria com a cor de um piloto — usado quando dois pilotos da mesma corrida têm o mesmo kart,
+   * para não haver dois karts idênticos na pista.
    */
   repaint(color: string): void {
-    const tinted = new Map<THREE.Material, THREE.Material>();
-    const target = new THREE.Color(color);
-    this.kartScene.traverse((o) => {
-      const m = o as THREE.Mesh;
-      if (!m.isMesh || Array.isArray(m.material) || m.material.name !== 'paint') return;
-      let mat = tinted.get(m.material);
-      if (!mat) {
-        const c = (m.material as THREE.MeshStandardMaterial).clone();
-        // A cor final é cor de vértice × fator: clareia o fator na direção da cor nova.
-        c.color.copy(target).lerp(new THREE.Color(1, 1, 1), 0.15);
-        this.owned.push(c);
-        tinted.set(m.material, c);
-        mat = c;
-      }
-      m.material = mat;
-    });
+    new THREE.Color(color).getHSL(tmpHsl);
+    this.recolor(this.kartScene, PAINT_MATERIALS, { mode: 'set', hue: tmpHsl.h, sat: Math.max(0.55, tmpHsl.s) });
   }
 
   constructor(kart: GLTF, character: GLTF | null, shield: GLTF | null) {
@@ -143,6 +260,7 @@ export class KartModel {
       const seat = kartScene.getObjectByName('seat');
       if (!seat) throw new Error('Kart sem o nó obrigatório "seat"');
       const charScene = SkeletonUtils.clone(character.scene);
+      this.charScene = charScene;
       seat.add(charScene);
       this.animator = new CharacterAnimator(charScene, character.animations);
     } else this.animator = null;
@@ -213,7 +331,7 @@ export class KartModel {
         f.scale.set(1 + s.boost * 0.8, 1 + s.boost * 0.8, (0.7 + s.boost * 1.3) * flick);
       }
     }
-    if (on) this.flameMaterial.color.set(s.driftLevel > 0 ? c : '#ffb347');
+    if (on) this.flameMaterial.color.set(s.driftLevel > 0 ? c : this.flameColor);
 
     if (this.shieldMesh) {
       this.shieldMesh.visible = s.shield;
@@ -237,6 +355,8 @@ export class KartModel {
   dispose(): void {
     this.animator?.dispose();
     for (const m of this.owned) m.dispose();
+    this.neonTexture?.dispose();
+    for (const g of this.ownedGeometry) g.dispose();
     this.group.removeFromParent();
   }
 }
