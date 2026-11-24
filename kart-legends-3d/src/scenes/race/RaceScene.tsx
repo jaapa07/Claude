@@ -327,7 +327,7 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
 
   return (
     <>
-      <SkyAndLights env={env} follow={focus} shadows={quality.shadows} shadowSize={quality.shadowSize} handle={sky} />
+      <SkyAndLights env={env} follow={focus} shadows={quality.shadows} shadowSize={quality.shadowSize} handle={sky} drawDistance={quality.drawDistance} />
       <TrackModel trackId={config.trackId} shadows={quality.shadows} />
       <RaceObjects view={view} />
       {data.animatedProps.length > 0 && <AnimatedProps list={data.animatedProps} view={view} />}

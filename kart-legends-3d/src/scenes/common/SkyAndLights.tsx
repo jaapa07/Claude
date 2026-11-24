@@ -14,11 +14,13 @@ interface Props {
   shadows: boolean;
   shadowSize?: number;
   handle?: React.MutableRefObject<SkyHandle>;
+  /** Distância máxima de desenho (qualidade gráfica): encurta a neblina e o plano de corte da câmera. */
+  drawDistance?: number;
 }
 
 /** Céu em shader, neblina, luz hemisférica, sol com sombra que segue o jogador e mapa de ambiente para reflexos. */
-export function SkyAndLights({ env, follow, shadows, shadowSize = 2048, handle }: Props): JSX.Element {
-  const { scene, gl } = useThree();
+export function SkyAndLights({ env, follow, shadows, shadowSize = 2048, handle, drawDistance = Infinity }: Props): JSX.Element {
+  const { scene, gl, camera } = useThree();
   const sun = useRef<THREE.DirectionalLight>(null);
   const hemi = useRef<THREE.HemisphereLight>(null);
   const dir = useMemo(() => new THREE.Vector3(...env.sunDir).normalize(), [env]);
@@ -33,10 +35,18 @@ export function SkyAndLights({ env, follow, shadows, shadowSize = 2048, handle }
   useEffect(() => () => material.dispose(), [material]);
 
   useEffect(() => {
-    scene.fog = new THREE.Fog(env.fogColor, env.fogNear, env.fogFar);
+    const far = Math.min(env.fogFar, drawDistance);
+    scene.fog = new THREE.Fog(env.fogColor, Math.min(env.fogNear, far * 0.45), far);
     gl.toneMappingExposure = env.exposure;
-    return () => { scene.fog = null; };
-  }, [scene, gl, env]);
+    // Nada além da neblina precisa ser desenhado (menos trabalho para a GPU do celular).
+    const cam = camera as THREE.PerspectiveCamera;
+    const prevFar = cam.far;
+    if (Number.isFinite(drawDistance)) { cam.far = Math.min(prevFar, far + 40); cam.updateProjectionMatrix(); }
+    return () => {
+      scene.fog = null;
+      if (cam.far !== prevFar) { cam.far = prevFar; cam.updateProjectionMatrix(); }
+    };
+  }, [scene, gl, camera, env, drawDistance]);
 
   useFrame((state, dt) => {
     material.uniforms.uTime!.value += dt;
