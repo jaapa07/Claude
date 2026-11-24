@@ -9,6 +9,10 @@ var e2e: Node = null
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	# celular pelo navegador: a escala inteira deixava o jogo em 480x270 pontos numa tela de ~750x340 (iPhone deitado),
+	# com faixas pretas largas; a escala fracionária ocupa a altura toda (a tela de 3x densidade esconde a diferença de pixel)
+	if OS.has_feature("web") and (OS.has_feature("web_ios") or OS.has_feature("web_android") or DisplayServer.is_touchscreen_available()):
+		get_tree().root.content_scale_stretch = Window.CONTENT_SCALE_STRETCH_FRACTIONAL
 	if not Data.errors.is_empty():
 		push_error("Dados inválidos: %s" % str(Data.errors))
 	ui = preload("res://scripts/ui.gd").new()
