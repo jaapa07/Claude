@@ -1,3 +1,4 @@
+import { CHARACTER_BY_ID } from '@/data/characters';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Physics, useRapier } from '@react-three/rapier';
 import { useEffect, useMemo, useRef } from 'react';
@@ -69,7 +70,15 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
   const sim = simRef.current;
   const view = useRef<RaceView>({ sim, alpha: 0, time: 0 });
 
-  const models = useMemo(() => sim.karts.map((_, i) => new KartModel(kartGltfs[i]!, charGltfs[i]!, shieldGltf)), [sim, kartGltfs, charGltfs, shieldGltf]);
+  const models = useMemo(() => sim.karts.map((_, i) => {
+    const model = new KartModel(kartGltfs[i]!, charGltfs[i]!, shieldGltf);
+    // Kart repetido na corrida (há mais pilotos que karts): quem não é o "dono" do kart ganha a cor do próprio piloto.
+    const r = config.racers[i]!;
+    const same = config.racers.filter((o) => o.kartId === r.kartId);
+    const keeper = same.find((o) => CHARACTER_BY_ID[o.characterId].kartId === r.kartId) ?? same[0]!;
+    if (same.length > 1 && keeper !== r) model.repaint(CHARACTER_BY_ID[r.characterId].color);
+    return model;
+  }), [sim, kartGltfs, charGltfs, shieldGltf, config.racers]);
   const vfx = useMemo(() => new RaceVfx(atlas, env, quality.particles), [atlas, env, quality.particles]);
   const cam = useMemo(() => new ChaseCamera(camera, rapier as unknown as Rapier, world, data.introCamera), [camera, rapier, world, data]);
   const speedLines = useMemo(() => new THREE.ShaderMaterial({

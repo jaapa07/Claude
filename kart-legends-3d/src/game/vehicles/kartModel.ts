@@ -60,8 +60,34 @@ export class KartModel {
   private readonly axisX = new THREE.Vector3(1, 0, 0);
   private readonly axisZ = new THREE.Vector3(0, 0, 1);
 
+  private readonly kartScene: THREE.Object3D;
+
+  /**
+   * Repinta a carroceria (material "paint") com outra cor — usado quando dois pilotos da mesma corrida têm o
+   * mesmo kart, para não haver dois karts idênticos na pista.
+   */
+  repaint(color: string): void {
+    const tinted = new Map<THREE.Material, THREE.Material>();
+    const target = new THREE.Color(color);
+    this.kartScene.traverse((o) => {
+      const m = o as THREE.Mesh;
+      if (!m.isMesh || Array.isArray(m.material) || m.material.name !== 'paint') return;
+      let mat = tinted.get(m.material);
+      if (!mat) {
+        const c = (m.material as THREE.MeshStandardMaterial).clone();
+        // A cor final é cor de vértice × fator: clareia o fator na direção da cor nova.
+        c.color.copy(target).lerp(new THREE.Color(1, 1, 1), 0.15);
+        this.owned.push(c);
+        tinted.set(m.material, c);
+        mat = c;
+      }
+      m.material = mat;
+    });
+  }
+
   constructor(kart: GLTF, character: GLTF | null, shield: GLTF | null) {
     const kartScene = SkeletonUtils.clone(kart.scene);
+    this.kartScene = kartScene;
     this.group.add(this.yaw);
     this.yaw.add(this.chassis);
     this.chassis.add(kartScene);
