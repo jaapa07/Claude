@@ -1,3 +1,4 @@
+import { isTouchDevice } from '@/app/settingsStore';
 import { useGameStore } from '@/app/gameStore';
 import { useSaveStore } from '@/game/save/saveStore';
 import { Btn, ScreenShell } from './common';
@@ -26,7 +27,7 @@ export function MainMenu(): JSX.Element {
       )}
       <p className="menu__hint">
         {stats.races > 0 ? `${stats.races} corridas · ${stats.wins} vitórias · ` : ''}
-        Setas e Enter navegam · Esc volta · Gamepad compatível
+        {isTouchDevice() ? 'Toque para escolher · Celular na horizontal · Controle Bluetooth compatível' : 'Setas e Enter navegam · Esc volta · Gamepad compatível'}
       </p>
     </ScreenShell>
   );

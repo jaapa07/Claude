@@ -104,7 +104,7 @@ function SteerZone(): JSX.Element {
         // Passou do limite: a origem acompanha o dedo, para inverter o sentido sem atraso.
         if (dx > STEER_RANGE) { o.x = e.clientX - STEER_RANGE; dx = STEER_RANGE; }
         else if (dx < -STEER_RANGE) { o.x = e.clientX + STEER_RANGE; dx = -STEER_RANGE; }
-        inputManager.setTouch({ steer: dx / STEER_RANGE });
+        inputManager.setTouch({ steer: Math.max(-1, Math.min(1, (dx / STEER_RANGE) * useSettingsStore.getState().sensitivity)) });
         setKnob((k) => (k ? { ...k, x: o.x, dx } : k));
       }}
       onPointerUp={end} onPointerCancel={end} onLostPointerCapture={end}

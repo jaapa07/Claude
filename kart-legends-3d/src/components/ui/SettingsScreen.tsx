@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useGameStore } from '@/app/gameStore';
 import { DEFAULT_SELECTION } from '@/app/gameStore';
 import {
-  ACTION_IDS, ACTION_LABELS, BINDING_SLOTS, SENSITIVITY_MAX, SENSITIVITY_MIN, useSettingsStore,
+  ACTION_IDS, ACTION_LABELS, BINDING_SLOTS, SENSITIVITY_MAX, SENSITIVITY_MIN, isTouchDevice, useSettingsStore,
 } from '@/app/settingsStore';
 import type { ActionId, Quality, Volumes } from '@/app/settingsStore';
 import { CaptureCancelledError, PAD_HELP, inputManager } from '@/game/input/inputManager';
@@ -37,6 +37,7 @@ export function SettingsScreen({ inRace = false, onBack }: SettingsScreenProps):
   const [capture, setCapture] = useState<Capture | null>(null);
   const [confirmErase, setConfirmErase] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [touch] = useState(isTouchDevice);
   const [padConnected, setPadConnected] = useState(() => inputManager.isGamepadConnected());
 
   useEffect(() => {
@@ -202,6 +203,8 @@ export function SettingsScreen({ inRace = false, onBack }: SettingsScreenProps):
               </ul>
             </details>
 
+            {!touch && (
+              <>
             <table className="bindings" data-testid="bindings">
               <thead>
                 <tr><th scope="col">Ação</th><th scope="col">Tecla 1</th><th scope="col">Tecla 2</th></tr>
@@ -243,6 +246,9 @@ export function SettingsScreen({ inRace = false, onBack }: SettingsScreenProps):
               </Btn>
               <span className="settings__hint">Clique numa tecla e pressione a nova. Esc cancela.</span>
             </div>
+              </>
+            )}
+            {touch && <p className="settings__hint">Celular: arraste o polegar na metade esquerda para virar; a sensibilidade acima também vale para o toque.</p>}
           </section>
         </div>
       </div>
