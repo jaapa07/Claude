@@ -1,0 +1,59 @@
+# Ícone do jogo (tela de início do celular, favicon, app iOS) — emblema autoral 32x32.
+palette icone
+  K = #1b1626
+  b = #2e2350
+  B = #221a3c
+  g = #f0cc6a
+  G = #a07a30
+  v = #7a6ad0
+  s = #e8eef8
+  S = #8f9cb2
+  y = #e8c060
+  Y = #a07a30
+  h = #8e4e24
+  H = #5c3620
+  c = #c8f6ff
+  C = #6fd8f4
+  D = #2a7fb0
+  w = #ffffff
+  l = #8ad870
+  L = #3f8a3a
+end
+pal icone
+frame app_icon
+..gggggggggggggggggggggggggggg..
+.gGGGGGGGGGGGGGGGGGGGGGGGGGGGGg.
+gGbbbbbbbbbbbbbbbbbbbbbbbbbbbbGg
+gGbbbbbbbbbbbbbbbbbbbbbbbbsSbbGg
+gGbbbbbbbbbbbbbKKbbbbbbbbsSbbbGg
+gGbbbbbvbbbbbbKcCKbbbbbbsSbbbbGg
+gGbbbbvwvbbbbbKcCKbbbbbsSbbbbbGg
+gGbbbbbvbbbbbKwcCCKbbbsSbbbbbbGg
+gGbbbbbbbbbbbKwcCCKbbsSbbbbbbbGg
+gGbbbbbbbbbbKcwcCCDKsSbbbbbbbbGg
+gGbbbbbbbbbbKcwcCCDKSbbbbbbbbbGg
+gGbbbbbbbbbKccwcCCCDKbbbbbbbbbGg
+gGbbbbbbbbbKccwcCCCDKbbbbbbbbbGg
+gGbbbbbbbbKcccwcCCCCDKbbbvbbbbGg
+gGbbbbbbbbKcccccCCCCDKbbbbbbbbGg
+gGBBBBBBBBKcccccCCCCDKBBBBBBBBGg
+gGBBBBBBBBKCCCCCDDDDDKBBBBBBBBGg
+gGBBBBvBBBBKCCCCDDDDKBBBBBBBBBGg
+gGBBBBBBBBBKCCCCDDDDKBBBBBBBBBGg
+gGBBBBgBBBsSKCCCDDDKBBBBBBBBBBGg
+gGBBBBBgBsSBKCCCDDDKBBBBBBBBBBGg
+gGBBBBBGyBBBBKCCDDKBBBBBBBBBBBGg
+gGBBBBBhGgBBBKCCDDKBBBBBBBBBBBGg
+gGBBBBhBHGYBBBKCDKBBBBBBBBBBBBGg
+gGBBBhBHBBBBBBKCDKBBBBBBBBBBBBGg
+gGBBygHBBBBBLllKKllLBBBBvBBBBBGg
+gGBBYYBBBBBBBLBLLBLBBBBBBBBBBBGg
+gGBBBBBBBBBBBBBLBBBBBBBBBBBBBBGg
+gGBBBBBBBBBBBBBBBBBBBBBBBBBBBBGg
+gGBBBBBBBBBBBBBBBBBBBBBBBBBBBBGg
+.gGGGGGGGGGGGGGGGGGGGGGGGGGGGGg.
+..gggggggggggggggggggggggggggg..
+end
+sheet app_icon.png 32 32 1
+app_icon
+end

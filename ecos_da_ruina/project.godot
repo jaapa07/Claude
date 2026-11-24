@@ -7,7 +7,7 @@ config/name="Ecos da Ruína"
 config/description="RPG de ação e captura de criaturas - Capítulo 1: Floresta dos Esquecidos"
 run/main_scene="res://scenes/main.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
-config/icon="res://assets/sprites/icon.png"
+config/icon="res://assets/sprites/app_icon.png"
 
 [autoload]
 
