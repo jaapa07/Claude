@@ -2,21 +2,21 @@ extends Node
 class_name HeroPowers
 ## Técnicas especiais do herói, liberadas por nível. Usam os mesmos botões do teclado e do toque.
 ##   Nv 2  Golpe em Investida — atacar durante a esquiva
-##   Nv 4  Lâmina de Eco      — o golpe carregado solta uma onda que atravessa inimigos
-##   Nv 6  Defesa Perfeita    — defender no instante do golpe: anula, atordoa e dobra o próximo golpe
-##   Nv 8  Fúria do Vínculo   — defender + habilidade da criatura: explosão conjunta (custa energia)
+##   Nv 3  Lâmina de Eco      — o golpe carregado solta uma onda que atravessa inimigos
+##   Nv 4  Defesa Perfeita    — defender no instante do golpe: anula, atordoa e dobra o próximo golpe
+##   Nv 5  Fúria do Vínculo   — defender + habilidade da criatura: explosão conjunta (custa energia)
 
 const TECHS := [
 	{"id": "investida", "curto": "Esquiva + ataque: avança cortando.", "nivel": 2, "nome": "Golpe em Investida", "icone": 0,
 		"como": "Ataque durante a esquiva (Espaço → J; no toque: setas → espada).",
 		"desc": "Avança cortando tudo na linha. Ótimo para atravessar lobos que flanqueiam."},
-	{"id": "lamina", "curto": "Segure o ataque: solta uma onda.", "nivel": 4, "nome": "Lâmina de Eco", "icone": 1,
+	{"id": "lamina", "curto": "Segure o ataque: solta uma onda.", "nivel": 3, "nome": "Lâmina de Eco", "icone": 1,
 		"como": "Segure e solte o ataque (golpe carregado).",
 		"desc": "O golpe carregado solta uma onda de Eco que voa à frente e atravessa inimigos."},
-	{"id": "defesa", "curto": "Defenda no instante do golpe.", "nivel": 6, "nome": "Defesa Perfeita", "icone": 2,
+	{"id": "defesa", "curto": "Defenda no instante do golpe.", "nivel": 4, "nome": "Defesa Perfeita", "icone": 2,
 		"como": "Defenda (K / escudo) no instante em que o golpe chega.",
 		"desc": "Anula o dano, atordoa o atacante e o próximo golpe em 1,5 s causa dano dobrado."},
-	{"id": "furia", "curto": "Defesa + habilidade: explosão.", "nivel": 8, "nome": "Fúria do Vínculo", "icone": 3,
+	{"id": "furia", "curto": "Defesa + habilidade: explosão.", "nivel": 5, "nome": "Fúria do Vínculo", "icone": 3,
 		"como": "Segure a defesa e use a habilidade da criatura (K + Q; no toque: escudo + estrela).",
 		"desc": "Herói e criatura liberam juntos uma explosão de Eco que fere e atordoa ao redor. Custa 40 de energia."},
 ]

@@ -451,7 +451,7 @@ func _fill_inventory(s: MenuScreen) -> void:
 			if Game.spend_talent(kk):
 				Audio.play("levelup"); _fill_inventory(s)
 			else:
-				toast("Sem pontos de talento (1 a cada 3 níveis)."), desc + "\nGasta 1 ponto.", int(Game.hero["talent_points"]) > 0))
+				toast("Sem pontos de talento (1 a cada 2 níveis)."), desc + "\nGasta 1 ponto.", int(Game.hero["talent_points"]) > 0))
 	items.append(_it("Reespecializar (50 fragmentos)", func():
 		if Game.respec(50):
 			toast("Talentos redistribuídos."); _fill_inventory(s)

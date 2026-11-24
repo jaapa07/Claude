@@ -358,6 +358,8 @@ func clear_hostiles(timeout := 90.0, radius := 9999.0) -> bool:
 		es.sort_custom(func(a, b): return a.global_position.distance_to(P.global_position) < b.global_position.distance_to(P.global_position))
 		var before := frame_count
 		await combat_step(es[0])
+		if frame_count == before:
+			await frames(1)    # um passo que não andou nenhum quadro não pode prender a luta
 		t += float(frame_count - before) / 60.0
 	return false
 
@@ -374,6 +376,8 @@ func engage_area(center: Vector2, radius := 140.0, timeout := 90.0) -> void:
 		if P.global_position.distance_to(tgt.global_position) > 90.0:
 			await goto(tgt.global_position, 70.0, 12.0)
 		await combat_step(tgt)
+		if frame_count == before:
+			await frames(1)    # um passo que não andou nenhum quadro não pode prender a luta
 		t += float(frame_count - before) / 60.0
 
 # =============================================================== CAPTURA
@@ -688,6 +692,10 @@ func stage5_clareira() -> void:
 	check("Habilidade comandada (Q) usa recarga própria", float(Game.skill_cd.get(bro["uuid"], 0.0)) > 0.0)
 	# ---- Cascalito: falha controlada e depois sucesso
 	var cas := ent_by_id("c_casc1")
+	# lobos que sobraram por perto interrompem a contenção (e batem forte): limpa a área antes de capturar
+	await engage_area(cas.global_position, 200.0, 40.0)
+	if float(Game.hero["hp"]) < Game.hero_max_hp() * 0.6:
+		Game.heal_team()                      # recuperação no santuário (atalho do teste)
 	await goto(cas.global_position + Vector2(18, 0), 14.0, 30.0)
 	await weaken(cas)
 	check("Cascalito enfraquecido para captura", cas.alive_flag and cas.hp / cas.max_hp <= 0.35)
@@ -754,6 +762,18 @@ func stage5_clareira() -> void:
 	await goto(cx1.global_position + Vector2(24, 0), 3.0, 30.0)
 	await push_crate(cx1, Vector2.LEFT, 4)
 	await push_crate(cx1, Vector2.DOWN, 2)
+	var pl1 := ent_by_id("c_placa1")
+	for tent in 2:
+		# um golpe no meio do empurrão (lobo que sobrou) deixa a caixa no caminho: termina de levar até a placa
+		if pl1.pressed_by_crate:
+			break
+		await engage_area(Vector2(22 * 16.0, 26 * 16.0), 150.0, 30.0)
+		var dx := int(round((pl1.global_position.x - cx1.global_position.x) / 16.0))
+		var dy := int(round((pl1.global_position.y - cx1.global_position.y) / 16.0))
+		if dx != 0:
+			await push_crate(cx1, Vector2(sign(dx), 0), abs(dx))
+		if dy != 0:
+			await push_crate(cx1, Vector2(0, sign(dy)), abs(dy))
 	check("Caixa empurrada para a placa 1", ent_by_id("c_placa1").pressed_by_crate, str(cx1.global_position))
 	check("Porta ainda fechada com uma placa", not Game.has_flag("clareira_placas"))
 	Game.set_active(cas_id)
@@ -868,6 +888,8 @@ func stage7_bosque() -> void:
 	await goto(Vector2(24 * 16.0, 29 * 16.0), 20.0, 60.0)
 	await engage_area(Vector2(20 * 16.0, 24 * 16.0), 130.0, 60.0)
 	var lum := ent_by_id("b_lumipim1")
+	if lum == null:
+		lum = ent_by_id("b_lumipim2")    # o habitat tem dois; um pode ter caído no combate com os lobos
 	check("Lumipim existe no habitat do bosque", lum != null and lum.capturable)
 	await goto(lum.global_position + Vector2(18, 0), 14.0, 40.0)
 	await weaken(lum)
@@ -939,6 +961,8 @@ func fight_boss(b: Node, timeout := 240.0) -> String:
 			if b.exposed:
 				seen["exposto"] = true
 		await combat_step(b)
+		if frame_count == before:
+			await frames(1)    # um passo que não andou nenhum quadro não pode prender a luta
 		t += float(frame_count - before) / 60.0
 	last_seen = seen
 	return _fim_luta(b, t)
@@ -1114,6 +1138,8 @@ func fight_cervo(b: Node, timeout := 420.0) -> String:
 		if W.dark_on:
 			seen["escuro"] = true
 		await cervo_step(b)
+		if frame_count == before:
+			await frames(1)    # um passo que não andou nenhum quadro não pode prender a luta
 		t += float(frame_count - before) / 60.0
 		if int(t) % 15 == 0 and frame_count % 30 == 0:
 			var c: Node = W.companion
@@ -1445,7 +1471,7 @@ func run_unit() -> void:
 	var pc := Game.capture_chance("brotisco", 1, 0.5, false, "selo_basico")
 	check("Fórmula: comum a 50% de vida = 0,25 - 0,12 + 0,30", is_equal_approx(pc, 0.43), str(pc))
 	var pl := Game.capture_chance("brotisco", 6, 0.5, false, "selo_basico")
-	check("Penalidade de nível L = 0,02 x diferença", is_equal_approx(pc - pl, 0.10), str(pc - pl))
+	check("Penalidade de nível L = 0,025 x diferença", is_equal_approx(pc - pl, 0.125), str(pc - pl))
 	Game.rng_override = func(): return 0.5
 	check("Fonte aleatória controlável em testes", Game.rand_f() == 0.5)
 	Game.rng_override = Callable()
@@ -1522,9 +1548,9 @@ func run_unit() -> void:
 	var ok_sp := true
 	for sid in r2_sp:
 		var sp: Dictionary = Data.species[sid]
-		if sp["status"] != "jogavel" or sp["raridade"] == "rara" or int(sp["evolucao"]["nivel"]) > 11 or Data.species[sp["evolucao"]["para"]]["status"] != "jogavel":
+		if sp["status"] != "jogavel" or sp["raridade"] == "rara" or int(sp["evolucao"]["nivel"]) > 8 or Data.species[sp["evolucao"]["para"]]["status"] != "jogavel":
 			ok_sp = false
-	check("R2: espécies das minas jogáveis, não raras, evolução até o nível 11", ok_sp)
+	check("R2: espécies das minas jogáveis, não raras, evolução até o nível 8", ok_sp)
 	# nenhum portão obrigatório depende de criatura, de Eco ou de flag que só se obtém depois dele
 	var creature_flags := {}
 	var eco_flags := {}
@@ -1574,9 +1600,9 @@ func run_unit() -> void:
 	for sid in ["goturim", "brejugo", "nimbelo"]:
 		var sp3: Dictionary = Data.species[sid]
 		var evo3: Dictionary = Data.species.get(sp3["evolucao"]["para"], {})
-		if sp3["status"] != "jogavel" or evo3.get("status", "") != "jogavel" or int(sp3["evolucao"]["nivel"]) < 17 or sp3.get("acao_id", "") == "":
+		if sp3["status"] != "jogavel" or evo3.get("status", "") != "jogavel" or int(sp3["evolucao"]["nivel"]) < 12 or sp3.get("acao_id", "") == "":
 			r3_ok = false
-	check("R3: Goturim, Brejugo e Nimbelo jogáveis, com evolução (17/18) e ação ambiental", r3_ok and Data.species["nimbelo"]["raridade"] == "rara")
+	check("R3: Goturim, Brejugo e Nimbelo jogáveis, com evolução (12/13) e ação ambiental", r3_ok and Data.species["nimbelo"]["raridade"] == "rara")
 	var r3_creature := {}
 	var r3_eco := {}
 	for mid in Data.regions["pantano"]["mapas"]:
@@ -1616,9 +1642,9 @@ func run_unit() -> void:
 			if not str(Data.skills[h["id"]].get("exec", "")) in execs:
 				bad_h.append("%s:%s" % [sid, h["id"]])
 	check("Hab: espécies jogáveis têm lista de habilidades (1ª = original) com execução conhecida", bad_h.is_empty(), str(bad_h))
-	var hi := Game.new_individual("faisquito", 9)
+	var hi := Game.new_individual("faisquito", 6)
 	check("Hab: indivíduo novo aprende o que o nível permite", hi["hab_aprendidas"] == ["cone_fogo", "fagulhas", "estouro_brasa"] and hi["hab_ativa"] == "cone_fogo", str(hi["hab_aprendidas"]))
-	var old_ind := {"uuid": "velho", "species_id": "ferrunho", "nivel": 8, "xp": 0, "hp": 10.0, "exausta": false, "vinculo": []}
+	var old_ind := {"uuid": "velho", "species_id": "ferrunho", "nivel": 5, "xp": 0, "hp": 10.0, "exausta": false, "vinculo": []}
 	Game.hab_sync(old_ind, false)
 	check("Hab: migração de indivíduo antigo (ativa = original)", old_ind["hab_ativa"] == "ima" and old_ind["hab_aprendidas"] == ["ima", "placa_ferro"], str(old_ind))
 	# ---- interface: opções salvas, diálogo paginado, avisos em fila
@@ -2027,6 +2053,8 @@ func fight_vigia(b: Node, timeout := 240.0) -> String:
 					await frames(4)
 				else:
 					await frames(3)
+		if frame_count == before:
+			await frames(1)    # um passo que não andou nenhum quadro não pode prender a luta
 		t += float(frame_count - before) / 60.0
 	return _fim_luta(b, t)
 
@@ -2238,6 +2266,8 @@ func fight_ferreiro(b: Node, timeout := 420.0) -> String:
 		if b.bst == b.B.TELE_BIG:
 			last_seen["grande_anunciada"] = true
 		await ferreiro_step(b)
+		if frame_count == before:
+			await frames(1)    # um passo que não andou nenhum quadro não pode prender a luta
 		t += float(frame_count - before) / 60.0
 	return _fim_luta(b, t)
 
@@ -2245,7 +2275,7 @@ func r2_ferreiro() -> void:
 	await rest_at("fc_prep")
 	check("R2: santuário de preparação do Ferreiro", Game.checkpoint.get("shrine", "") == "fc_prep")
 	await use_ent("fc_bau_prep", Vector2(0, 14), Vector2.UP)
-	# evolução de uma espécie das minas antes do chefão (nível 10–11 + 3 vínculos, sem atalhos de XP)
+	# evolução de uma espécie das minas antes do chefão (nível 6 + 3 vínculos, sem atalhos de XP)
 	for u in Game.team:
 		var ind: Dictionary = Game.individuals[u]
 		print("  [info] %s nível %d, vínculo %d/3 %s" % [ind["species_id"], ind["nivel"], Game.bond_count(ind), str(ind["vinculo"])])
@@ -2443,9 +2473,9 @@ func run_powers() -> void:
 	await tap("attack", 2)
 	check("Nv.1: Golpe em Investida ainda bloqueado", not P.atk_def.get("tecnica", "") == "investida")
 	await secs(1.0)
-	while Game.hero_level() < 8:
+	while Game.hero_level() < 5:
 		Game.add_hero_xp(Game.xp_to_next(Game.hero_level()))
-	check("Nível 8 libera as quatro técnicas", pw.unlocked().size() == 4)
+	check("Nível 5 libera as quatro técnicas", pw.unlocked().size() == 4)
 	# 1) Golpe em Investida
 	P.vigor = 100.0
 	var x0: float = P.global_position.x
@@ -2826,7 +2856,7 @@ func run_grupo() -> void:
 	main.start_new_game(4)
 	await frames(10)
 	await advance_dialogs()
-	Game.hero["level"] = 6
+	Game.hero["level"] = 4
 	Game.hero["hp"] = Game.hero_max_hp()
 	Game.give_item("pocao", 6)
 	Game.set_flag("visitou_bosque_lanternas")
@@ -2896,7 +2926,7 @@ func run_grupo() -> void:
 	await frames(5)
 	# trio
 	Game.set_flag("visitou_clareira_raizes")
-	Game.hero["level"] = 8
+	Game.hero["level"] = 5
 	Game.hero["hp"] = Game.hero_max_hp()
 	check("Contrato em trio libera após a dupla", Game.contract_state("emboscada") == "disponivel")
 	Game.accept_contract("emboscada")
@@ -3027,9 +3057,9 @@ func run_habilidades() -> void:
 	await frames(3)
 	check("Hab: Brotisco Nv.1 conhece só Raízes (ativa)", bro["hab_aprendidas"] == ["raizes"] and Game.hab_active(bro) == "raizes", str(bro["hab_aprendidas"]))
 	hab_toasts.clear()
-	while int(bro["nivel"]) < 4:
+	while int(bro["nivel"]) < 2:
 		Game.add_creature_xp(bro, Game.creature_xp_to_next(int(bro["nivel"])))
-	check("Hab: ao subir de nível aprende Sementes (Nv.3) e Chicote (Nv.4)", bro["hab_aprendidas"].has("sementes") and bro["hab_aprendidas"].has("chicote_cipo") and bro["hab_aprendidas"].size() == 3, str(bro["hab_aprendidas"]))
+	check("Hab: ao subir de nível aprende Sementes e Chicote (Nv.2)", bro["hab_aprendidas"].has("sementes") and bro["hab_aprendidas"].has("chicote_cipo") and bro["hab_aprendidas"].size() == 3, str(bro["hab_aprendidas"]))
 	var seen: bool = hab_toasts.any(func(t): return "aprendeu Sementes Curativas! Escolha no menu" in t)
 	check("Hab: toast 'X aprendeu Y! Escolha no menu'", seen, str(hab_toasts))
 	check("Hab: aprender não troca a ativa sozinho", Game.hab_active(bro) == "raizes")
@@ -3073,7 +3103,7 @@ func run_habilidades() -> void:
 	wolf.queue_free()
 	await frames(2)
 	# ---- novas execuções: escudo, cadeia, investida em cadeia
-	var cas := _hab_add("cascalito", 3)
+	var cas := _hab_add("cascalito", 2)
 	await _hab_fire(cas, "casca")
 	check("Hab: Escudo de Casca reduz dano (30%)", is_equal_approx(Game.hab_shield_mult(), 0.7), str(Game.hab_shield_mult()))
 	Game.hero["hp"] = 100.0
@@ -3103,14 +3133,14 @@ func run_habilidades() -> void:
 		w.queue_free()
 	await frames(2)
 	Game.move_to_sanctuary(cas["uuid"])
-	var roc := _hab_add("rocantor", 6)
+	var roc := _hab_add("rocantor", 4)
 	Game.set_active(roc["uuid"])
 	W.refresh_companion(false)
 	await frames(3)
 	cp = W.companion.global_position
 	var ws2: Array = [_spawn_wolf(cp + Vector2(30, 0)), _spawn_wolf(cp + Vector2(60, 24))]
 	var hp2: Array = ws2.map(func(w): return w.hp)
-	check("Hab: Rocantor (evoluída) já conhece Avalanche no Nv.6", roc["hab_aprendidas"].has("avalanche") and not roc["hab_aprendidas"].has("muralha"))
+	check("Hab: Rocantor (evoluída) já conhece Avalanche no Nv.4", roc["hab_aprendidas"].has("avalanche") and not roc["hab_aprendidas"].has("muralha"))
 	await _hab_fire(roc, "avalanche")
 	await secs(1.2)
 	var hit2 := 0
@@ -3126,7 +3156,7 @@ func run_habilidades() -> void:
 	# ---- evolução: aprende a exclusiva e oferece a escolha
 	Game.set_active(bro["uuid"])
 	W.refresh_companion(false)
-	while int(bro["nivel"]) < 5:
+	while int(bro["nivel"]) < 3:
 		Game.add_creature_xp(bro, Game.creature_xp_to_next(int(bro["nivel"])))
 	bro["vinculo"] = ["a", "b", "c"]
 	W.combat_t = 0.0
@@ -3182,7 +3212,7 @@ func run_habilidades() -> void:
 		d["individuals"][u].erase("hab_ativa")
 		d["individuals"][u].erase("hab_aprendidas")
 	d["individuals"][bro["uuid"]]["species_id"] = "brotisco"
-	d["individuals"][bro["uuid"]]["nivel"] = 4
+	d["individuals"][bro["uuid"]]["nivel"] = 2
 	hab_toasts.clear()
 	var ok_m := Game.from_dict(d)
 	var b3: Dictionary = Game.individuals[bro["uuid"]]
@@ -3209,10 +3239,10 @@ func run_r3_dev() -> void:
 	Game.grant_eco("raiz_viva")
 	Game.grant_eco("ruptura_ignea")
 	Game.add_hero_xp(9000)
-	while Game.hero_level() > 12:
-		Game.hero["level"] = 12
+	while Game.hero_level() > 8:
+		Game.hero["level"] = 8
 	Game.hero["hp"] = Game.hero_max_hp()
-	for sp in [["brasejante", 11], ["cinzaveu", 11], ["ferrunho", 11]]:
+	for sp in [["brasejante", 8], ["cinzaveu", 8], ["ferrunho", 8]]:
 		var ind := Game.new_individual(sp[0], sp[1])
 		ind["vinculo"] = ["a", "b", "c"]
 		Game.register_capture(ind)
@@ -3229,13 +3259,13 @@ func run_r3_dev() -> void:
 		for f in ["pantano_passagem", "visitou_porto_lanternas", "falou_arao", "visitou_passarela_ecos", "visitou_lago_reflexos", "visitou_templo_a",
 				"lago_c1", "lago_c2", "ta_canal", "ta_espelhos", "enc_sapos_ok", "tb_lodo", "atalho_porto_aberto", "lanternas_entregue"]:
 			Game.set_flag(f)
-		for sp in [["goturim", 14], ["brejugo", 14], ["nimbelo", 14]]:
+		for sp in [["goturim", 10], ["brejugo", 10], ["nimbelo", 10]]:
 			Game.register_capture(Game.new_individual(sp[0], sp[1]))
 		await ensure_in_team(["nimbelo"])
 		await ensure_in_team(["goturim"])
 		Game.give_item("remo_barqueiro", 1)
 		Game.equip("remo_barqueiro")
-		Game.add_hero_xp(4000)
+		Game.add_hero_xp(2600)
 		Game.hero["hp"] = Game.hero_max_hp()
 		Game.checkpoint = {"map": "templo_b", "spawn": "", "pos": [22 * 16.0 + 8.0, 8 * 16.0], "shrine": "tb_tesouro"}
 		W.load_map("templo_b", "from_porto")
@@ -3629,6 +3659,8 @@ func fight_barqueiro(b: Node, timeout := 300.0) -> String:
 			await frames(1)
 		if int(t / 2.0) != int((t + float(frame_count - before) / 60.0) / 2.0) and "--dbg" in args:
 			print("  [dbg] t=%.0f hp=%.0f/%.0f boss=%.0f bst=%d sombra=%s pos=%s boss=%s pocao=%d" % [t, float(Game.hero["hp"]), Game.hero_max_hp(), b.hp, b.bst, b.has_shadow(), str(tile_of(P.global_position)), str(tile_of(b.global_position)), Game.item_count("pocao")])
+		if frame_count == before:
+			await frames(1)    # um passo que não andou nenhum quadro não pode prender a luta
 		t += float(frame_count - before) / 60.0
 	return _fim_luta(b, t)
 
@@ -3815,6 +3847,8 @@ func fight_bruxa(b: Node, timeout := 420.0) -> String:
 		await bruxa_step(b)
 		if frame_count == before:
 			await frames(1)
+		if frame_count == before:
+			await frames(1)    # um passo que não andou nenhum quadro não pode prender a luta
 		t += float(frame_count - before) / 60.0
 	return _fim_luta(b, t)
 
@@ -4137,7 +4171,7 @@ func r4_setup(slot: int) -> void:
 	main.start_new_game(slot)
 	await frames(10)
 	await advance_dialogs()
-	Game.hero["level"] = 19
+	Game.hero["level"] = 14
 	Game.hero["xp"] = 0
 	Game.hero["talents"] = {"espada": 3, "resistencia": 2, "vinculo": 1}
 	for it in {"pocao": 12, "selo_refinado": 14, "selo_basico": 10, "tonico_criatura": 4, "galhada_ossea": 1, "couraca_ossos": 1,
@@ -4153,7 +4187,7 @@ func r4_setup(slot: int) -> void:
 	Game.grant_eco("ruptura_ignea")
 	Game.ecos["olhar_velado"] = true      # placeholder do Eco da Região 3 (fora das teclas até a Região 3 cadastrar a habilidade)
 	Game.team = []
-	for pair in [["brasejante", 20], ["cinzaveu", 19], ["rocantor", 19]]:
+	for pair in [["brasejante", 15], ["cinzaveu", 14], ["rocantor", 14]]:
 		var ind := r4_ind(pair[0], pair[1])
 		Game.team.append(ind["uuid"])
 	Game.active_idx = 0
@@ -4235,6 +4269,8 @@ func r4_engage(center: Vector2, radius := 160.0, timeout := 120.0) -> void:
 		if P.global_position.distance_to(tgt.global_position) > 90.0:
 			await goto(tgt.global_position, 60.0, 12.0)
 		await r4_step(tgt)
+		if frame_count == before:
+			await frames(1)    # um passo que não andou nenhum quadro não pode prender a luta
 		t += float(frame_count - before) / 60.0
 
 func r4_tile(tx: int, ty: int) -> String:
@@ -4603,6 +4639,8 @@ func r4_gemeos() -> void:
 				await frames(8)
 		else:
 			await frames(5)
+		if frame_count == before:
+			await frames(1)    # um passo que não andou nenhum quadro não pode prender a luta
 		t += float(frame_count - before) / 60.0
 	print("  [info] duração da luta (gemeos): %.0f s, vida do herói %d/%d, nível %d" % [t, int(Game.hero["hp"]), int(Game.hero_max_hp()), Game.hero_level()])
 	await secs(1.0)
@@ -4773,6 +4811,8 @@ func r4_cavaleiro() -> void:
 				if bl != null and abs(b.global_position.y - bl.global_position.y) < 14.0:
 					bl.fire_balestra()
 		await r4_cav_step(b)
+		if frame_count == before:
+			await frames(1)    # um passo que não andou nenhum quadro não pode prender a luta
 		t += float(frame_count - before) / 60.0
 	print("  [info] duração da luta (cavaleiro): %.0f s, vida do herói %d/%d, nível %d, mortes %d" % [t, int(Game.hero["hp"]), int(Game.hero_max_hp()), Game.hero_level(), int(Game.stats["mortes"]) - deaths0])
 	await secs(2.0)
@@ -4854,10 +4894,10 @@ func r4_revisitas() -> void:
 	var u := uuid_of(["umbrel"])
 	if u != "":
 		var ind: Dictionary = Game.individuals[u]
-		ind["nivel"] = 22
+		ind["nivel"] = 16
 		for k in ["vitoria:a", "acao:b", "missao:c"]:
 			Game.bond_activity(u, k)
-		check("R4: Umbrel evolui para Umbrafel (nv. 22 + vínculo)", Game.evolve(u) and Game.individuals[u]["species_id"] == "umbrafel")
+		check("R4: Umbrel evolui para Umbrafel (nv. 16 + vínculo)", Game.evolve(u) and Game.individuals[u]["species_id"] == "umbrafel")
 		check("R4: Umbrafel mantém a ação de fresta e ganha habilidades novas", Data.species["umbrafel"]["acao_id"] == "fresta" and Game.hab_list("umbrafel").size() >= 5)
 
 func r4_save_load() -> void:
@@ -4875,10 +4915,10 @@ func r4_jump(n: int) -> void:
 			"visitou_muralha_partida", "visitou_jardins_suspensos", "visitou_torre_a", "muralha_ponte", "muralha_portao", "muralha_receptor", "salao_luz",
 			"enc_galeria_t_ok", "torre_atalho", "jardins_vento", "caca_lanceiros_ok", "domadores_eclipse_ok", "shrine_refugio"]:
 		Game.set_flag(f)
-	for pair in [["umbrel", 21], ["ventisco", 21], ["brasardo", 21]]:
+	for pair in [["umbrel", 16], ["ventisco", 16], ["brasardo", 16]]:
 		var ind := r4_ind(pair[0], pair[1])
 		Game.sanctuary.append(ind["uuid"])
-	Game.hero["level"] = 22
+	Game.hero["level"] = 16
 	r4_heal()
 	if n >= 9:
 		for f in ["visitou_torre_b", "torre_vento", "torre_receptores", "gemeos_morto"]:
@@ -4974,7 +5014,7 @@ func run_historia() -> void:
 	check("Diário lista as memórias para reler a história", has_row)
 	await close_menus()
 	# criatura ativa: reage às memórias e lembranças (linha com o nome da espécie/apelido)
-	var bro: Dictionary = Game.new_individual("brotisco", 5)
+	var bro: Dictionary = Game.new_individual("brotisco", 3)
 	Game.individuals[bro["uuid"]] = bro
 	Game.team.append(bro["uuid"])
 	Game.team_changed.emit()
@@ -5125,7 +5165,7 @@ func historia_amnesia() -> void:
 	Game.set_flag("emboscada_ok")
 	Game.set_flag("visitou_passarela_ecos")
 	check("Contrato pessoal do Ravi disponível", Game.contract_state("mestre_ravi") == "disponivel")
-	Game.hero["level"] = 12
+	Game.hero["level"] = 8
 	Game.hero["hp"] = Game.hero_max_hp()
 	check("Aceitar o contrato pessoal da Bruna", Game.accept_contract("irmao_bruna"))
 	W.load_map("trilhos_fundidos", "from_forja")
@@ -5160,7 +5200,7 @@ func fl_setup(slot: int) -> void:
 	main.start_new_game(slot)
 	await frames(10)
 	await advance_dialogs()
-	Game.hero["level"] = 6
+	Game.hero["level"] = 4
 	Game.hero["xp"] = 0
 	for f in ["falou_maru", "tutorial_ok", "primeira_captura", "tut_move", "tut_attack", "tut_dodge", "tut_guard", "tut_command", "tut_rest",
 			"lenhador_morto", "viu_santuario_seiva", "salao_flores", "enc_galeria_ok", "canais_ok", "pesos_ok"]:
@@ -5168,7 +5208,7 @@ func fl_setup(slot: int) -> void:
 	Game.give_item("pocao", 6)
 	Game.give_item("selo_refinado", 6)
 	Game.team = []
-	for pair in [["brotisco", 6], ["lumipim", 6], ["cascalito", 6]]:
+	for pair in [["brotisco", 4], ["lumipim", 4], ["cascalito", 4]]:
 		var ind := r4_ind(pair[0], pair[1])
 		Game.team.append(ind["uuid"])
 	Game.active_idx = 0
@@ -5276,7 +5316,7 @@ func fl_anel() -> void:
 		await capture_wild(w, 10)
 	var got := false
 	for u in Game.individuals:
-		if Game.individuals[u]["species_id"] == "lumipim" and int(Game.individuals[u]["nivel"]) >= 8:
+		if Game.individuals[u]["species_id"] == "lumipim" and int(Game.individuals[u]["nivel"]) > lv_max:
 			got = true
 	check("FL: Lumipim do anel capturado", Game.individuals.size() > n0 and got)
 	# alternativa: o próprio Lumipim chama os da mata (sem depender do clima)
@@ -5540,7 +5580,7 @@ func r5_setup(slot: int) -> void:
 	main.start_new_game(slot)
 	await frames(10)
 	await advance_dialogs()
-	Game.hero["level"] = 26
+	Game.hero["level"] = 20
 	Game.hero["xp"] = 0
 	Game.hero["talents"] = {"espada": 4, "resistencia": 3, "vinculo": 2}
 	var its := {"pocao": 16, "selo_refinado": 16, "selo_basico": 10, "tonico_criatura": 6, "galhada_ossea": 1, "couraca_ossos": 1,
@@ -5566,7 +5606,7 @@ func r5_setup(slot: int) -> void:
 		Game.grant_eco(e)
 	Game.eco_slots = ["olhar_velado", "passo_umbral"]
 	Game.team = []
-	for pair in [["brasejante", 27], ["rocantor", 26], ["cinzaveu", 26]]:
+	for pair in [["brasejante", 20], ["rocantor", 20], ["cinzaveu", 20]]:
 		var ind := r4_ind(pair[0], pair[1])
 		Game.team.append(ind["uuid"])
 	Game.active_idx = 0
@@ -5860,6 +5900,8 @@ func r5_arauto() -> void:
 		if b.bst == b.B.TELE_ROOTS and not shot_done:
 			shot_done = true
 			await shot("r5_09_arauto")
+		if frame_count == before:
+			await frames(1)    # um passo que não andou nenhum quadro não pode prender a luta
 		t += float(frame_count - before) / 60.0
 	release_moves()
 	await secs(2.0)
@@ -6083,6 +6125,8 @@ func r5_rei() -> void:
 			shots[key] = true
 			await shot("r5_13_rei_%s" % key)
 		await r5_rei_step(b)
+		if frame_count == before:
+			await frames(1)    # um passo que não andou nenhum quadro não pode prender a luta
 		t += float(frame_count - before) / 60.0
 	release_moves()
 	check("R5: fase 1 — os quatro ecos dos guardiões, um de cada vez", is_instance_valid(b) and b.echoes_seen.size() == 4)
@@ -6181,14 +6225,14 @@ func r5_criaturas() -> void:
 	var u := uuid_of(["cristil"])
 	if u != "":
 		var ind: Dictionary = Game.individuals[u]
-		ind["nivel"] = 26
+		ind["nivel"] = 20
 		for k in ["vitoria:a", "acao:b", "missao:c"]:
 			Game.bond_activity(u, k)
-		check("R5: Cristil evolui para Prismal (nv. 26 + vínculo)", Game.evolve(u) and Game.individuals[u]["species_id"] == "prismal")
+		check("R5: Cristil evolui para Prismal (nv. 20 + vínculo)", Game.evolve(u) and Game.individuals[u]["species_id"] == "prismal")
 	var g := uuid_of(["gravito"])
 	if g != "":
 		var ig: Dictionary = Game.individuals[g]
-		ig["nivel"] = 26
+		ig["nivel"] = 20
 		for k in ["vitoria:a", "acao:b", "missao:c"]:
 			Game.bond_activity(g, k)
 		check("R5: Gravito evolui para Monolito e mantém a ação de âncora", Game.evolve(g) and Data.species["monolito"]["acao_id"] == "ancora")
@@ -6210,8 +6254,8 @@ func r5_jump(n: int) -> void:
 			"arauto_nave_partiu", "catedral_atalho", "eco_ione_2_visto", "catedral_luz", "enc_galeria_c_ok", "catedral_raiz", "catedral_calor",
 			"visitou_catedral_b", "anc_a", "anc_b", "coro_marca"]:
 		Game.set_flag(f)
-	Game.hero["level"] = 28
-	for pair in [["cristil", 26], ["gravito", 26]]:
+	Game.hero["level"] = 21
+	for pair in [["cristil", 20], ["gravito", 20]]:
 		var ind := r4_ind(pair[0], pair[1])
 		Game.sanctuary.append(ind["uuid"])
 	if n >= 7:

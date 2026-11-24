@@ -290,7 +290,7 @@ func _give_rewards(_src: String) -> void:
 	Game.set_flag("tmp_ferreiro_ativo", false)
 	Game.set_flag("tmp_ferreiro_piso", false)
 	var r: Dictionary = bdef["recompensa"]
-	Game.award_encounter_xp(int(r["xp"]), int(def.get("nivel", 12)))
+	Game.award_encounter_xp(int(r["xp"]), int(def.get("nivel", 8)))
 	Game.fragments += int(r["frag"])
 	Game.inventory_changed.emit()
 	Game.register_kill("ferreiro")

@@ -515,7 +515,7 @@ func _give_rewards(_src: String) -> void:
 	Game.set_flag("tmp_rei_ativo", false)
 	_restore_floor()
 	var r: Dictionary = bdef["recompensa"]
-	Game.award_encounter_xp(int(r["xp"]), int(def.get("nivel", 30)))
+	Game.award_encounter_xp(int(r["xp"]), int(def.get("nivel", 23)))
 	Game.fragments += int(r["frag"])
 	Game.inventory_changed.emit()
 	Game.register_kill("rei")

@@ -41,7 +41,8 @@ F = {
     "hero_atk_base": 12.0, "hero_atk_nivel": 1.4, "hero_atk_espada": 2.0,
     "reduc_resist": 0.02, "reduc_max": 0.5,
     "xp_nivel": 20, "cri_xp_nivel": 18,
-    "talento_cada": 3,
+    "talento_cada": 3, "xp_base": 0, "esc_hp": 0.14, "esc_dano": 0.1, "cap_nivel": 0.02,
+    "base_nivel": {"lobo": 3, "cogumelo": 2, "sentinela": 4, "lenhador": 6, "cervo": 8},
 }
 # Dificuldades (Game.enemy_damage_mult / Game.warning_mult): lidas de Game.DIFFICULTY quando existir
 DIFICULDADES = {"aventura": (0.75, 1.2), "desafio": (1.0, 1.0)}
@@ -133,8 +134,8 @@ class Dados:
 
 # ------------------------------------------------------------------ fórmulas
 def xp_para_nivel(nivel):
-    """XP acumulado para chegar ao nível (xp_to_next = 20 * nível)."""
-    return sum(F["xp_nivel"] * n for n in range(1, nivel))
+    """XP acumulado para chegar ao nível (Game.xp_to_next = xp_base + xp_nivel * nível)."""
+    return sum(F["xp_base"] + F["xp_nivel"] * n for n in range(1, nivel))
 
 
 def nivel_por_xp(xp):
@@ -201,12 +202,12 @@ def inimigo_stats(D, kind, nivel_mapa=None):
     e = D.enemies[kind]
     hp = float(e["hp"])
     dano = float(e["dano"])
-    base = int(e.get("nivel", {"lobo": 3, "cogumelo": 2, "sentinela": 4, "lenhador": 6, "cervo": 8}.get(kind, 1)))
+    base = int(e.get("nivel", F["base_nivel"].get(kind, 1)))
     nv = base
     if nivel_mapa is not None:
         dl = int(nivel_mapa) - base
-        hp = math.floor(hp * (1.0 + 0.14 * dl))
-        dano = dano * (1.0 + 0.1 * dl)
+        hp = math.floor(hp * (1.0 + F["esc_hp"] * dl))
+        dano = dano * (1.0 + F["esc_dano"] * dl)
         nv = int(nivel_mapa)
     return hp, dano, nv
 
@@ -253,6 +254,25 @@ def ler_formulas(D):
             DIFICULDADES[nome] = (float(dano), float(aviso))
     else:
         DIFICULDADES = {"aventura": (0.75, 1.2), "desafio": (1.0, 1.0)}
+    m = re.search(r"func xp_to_next\(level: int\) -> int:\s*return (?:(\d+) \+ )?(\d+) \* level", g)
+    if m:
+        F["xp_base"], F["xp_nivel"] = int(m.group(1) or 0), int(m.group(2))
+    m = re.search(r"hero_level\(\) % (\d+) == 0", g)
+    if m:
+        F["talento_cada"] = int(m.group(1))
+    m = re.search(r"min\(0.20, ([\d.]+) \* max\(0, wild_level - hero_level\(\)\)\)", g)
+    if m:
+        F["cap_nivel"] = float(m.group(1))
+    en = D._ler("scripts/enemy.gd")
+    m = re.search(r"max_hp \* \(1.0 \+ ([\d.]+) \* dl\)", en)
+    if m:
+        F["esc_hp"] = float(m.group(1))
+    m = re.search(r"damage \* \(1.0 \+ ([\d.]+) \* dl\)", en)
+    if m:
+        F["esc_dano"] = float(m.group(1))
+    m = re.search(r'\.get\("nivel", (\{[^}]*\})', en)
+    if m:
+        F["base_nivel"] = json.loads(m.group(1))
     for nome in ("COMPANION_DAMAGE_TAKEN", "ALLY_DAMAGE_TAKEN"):
         m = re.search(r"const %s := ([\d.]+)" % nome, g)
         RECEBE[nome] = float(m.group(1)) if m else 1.0
@@ -266,7 +286,7 @@ def captura(D, sp, nivel_selv, nivel_heroi, hp_ratio, selo="selo_basico", bonus=
     rar = D.species[sp].get("raridade", "comum")
     b = 0.25 if rar == "comum" else (0.15 if rar == "incomum" else 0.05)
     t = float(D.items.get(selo, {}).get("bonus", 0.0)) + bonus
-    l = min(0.20, 0.02 * max(0, nivel_selv - nivel_heroi))
+    l = min(0.20, F["cap_nivel"] * max(0, nivel_selv - nivel_heroi))
     return max(0.08, min(0.95, b - 0.12 + 0.6 * (1.0 - hp_ratio) + t - l))
 
 
@@ -513,7 +533,7 @@ def analisar(D, dif=DIF_PADRAO):
             contratos.append({"id": c, "nome": cd["nome"], "tipo": cd["tipo"], "nivel": cd["nivel"],
                               "xp": rec.get("xp", 0), "frag": rec.get("fragmentos", 0),
                               "itens": ", ".join("%s x%d" % (D.items.get(i, {}).get("nome", i), n) for i, n in rec.get("itens", {}).items()),
-                              "xp_pct": 100.0 * rec.get("xp", 0) / max(1, F["xp_nivel"] * int(cd["nivel"]))})
+                              "xp_pct": 100.0 * rec.get("xp", 0) / max(1, F["xp_base"] + F["xp_nivel"] * int(cd["nivel"]))})
         selv = {}
         for (_m, sp, lv) in R[r]["selvagens"]:
             if sp not in selv:
@@ -606,6 +626,25 @@ def relatorio(D, A, antes=None, A_antes=None):
     md.append("- Chefe de região: **%g–%g s** para quem aprende o padrão (minichefes 35–100 s).\n" % META_CHEFE_S)
     md.append("- Aliados (Bruna/Ravi e criaturas) fazem **20–30%** do dano do grupo nos contratos.\n")
     md.append("- Frasco de Seiva e Sementes de Vida contam, mas sem acumular demais; fragmentos sem sobra excessiva.\n")
+    # ritmo de nível
+    md.append("\n## Ritmo de nível\n")
+    md.append("XP para o próximo nível: **%d + %d x nível** (herói; criaturas 0,9x). Antes era 20 x nível: o 1→2 saía com "
+              "1–2 inimigos e o herói chegava ao Cervo no nível 8. Os ganhos por nível (vida, ataque, criaturas, aliados, "
+              "escala de inimigos por nível do mapa) foram multiplicados por ~1,27 e todos os níveis de conteúdo (evolução, "
+              "habilidades, inimigos, contratos, selvagens, técnicas) foram convertidos pela mesma XP acumulada "
+              "(`tools/reescala_niveis.py`), então o poder em cada ponto da campanha ficou igual.\n\n" % (F["xp_base"], F["xp_nivel"]))
+    rows = []
+    comum = {"floresta": ("lobo", 2), "minas": ("mineiro", 6), "pantano": ("sapo", 10), "fortaleza": ("lanceiro", 15), "catedral": ("escriba", 19)}
+    for r in REGIOES:
+        k, n0 = comum[r]
+        xp_k = float(D.enemies[k].get("xp", 1))
+        g = A["regioes"][r]
+        for n in sorted({g["entrada"], g["nv_chefe"]}):
+            need = F["xp_base"] + F["xp_nivel"] * n
+            rows.append([g["nome"], "%d→%d" % (n, n + 1), need, "%s (%d XP)" % (D.enemies[k]["nome"], xp_k), "%.1f" % (need / xp_k)])
+    md.append(tabela(["Região", "Nível", "XP", "Inimigo típico", "Inimigos por nível"], rows))
+    md.append("\nNo começo: o 1→2 custa %d XP = %.0f Lobos de Espinhos (antes 20 XP, pouco mais de 1 lobo).\n" % (
+        F["xp_base"] + F["xp_nivel"], (F["xp_base"] + F["xp_nivel"]) / float(D.enemies["lobo"]["xp"])))
     md.append("\n## Hipóteses do modelo\n")
     md.append("- Nível esperado (jogador típico): XP de %.1f passadas pelos inimigos dos mapas da região (ida e volta, atalhos; "
               "comuns reaparecem ao descansar) + minichefes + %d%% do XP dos contratos da faixa de nível (recompensa e inimigos). "

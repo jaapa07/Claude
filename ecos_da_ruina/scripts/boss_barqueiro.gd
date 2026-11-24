@@ -223,7 +223,7 @@ func _give_rewards(_src: String) -> void:
 	Game.set_flag(bdef["flag_morte"])
 	Game.set_flag("tmp_barqueiro_ativo", false)
 	var r: Dictionary = bdef["recompensa"]
-	Game.award_encounter_xp(int(r["xp"]), int(def.get("nivel", 15)))
+	Game.award_encounter_xp(int(r["xp"]), int(def.get("nivel", 11)))
 	Game.fragments += int(r["frag"])
 	Game.give_loot(r.get("itens", {}))
 	Game.inventory_changed.emit()

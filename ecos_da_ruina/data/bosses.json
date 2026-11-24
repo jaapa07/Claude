@@ -99,7 +99,7 @@
  },
  "cavaleiro": {
   "nome": "Cavaleiro Sem Rosto",
-  "hp": 3200,
+  "hp": 3700,
   "fases": [
    1.0,
    0.6,
@@ -132,7 +132,7 @@
  },
  "barqueiro": {
   "nome": "Barqueiro Sem Sombra",
-  "hp": 1100,
+  "hp": 1250,
   "fases": [
    1.0
   ],

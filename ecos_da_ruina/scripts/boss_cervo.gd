@@ -253,7 +253,7 @@ func _give_rewards(_src: String) -> void:
 	Game.set_flag("tmp_cervo_ativo", false)
 	world.set_darkness(false)
 	var r: Dictionary = bdef["recompensa"]
-	Game.award_encounter_xp(int(r["xp"]), 8)
+	Game.award_encounter_xp(int(r["xp"]), 5)
 	Game.fragments += int(r["frag"])
 	Game.give_item("osso_ancestral", 3)
 	world.say("Material de chefão: Osso Ancestral x3 (monte equipamento na forja).")

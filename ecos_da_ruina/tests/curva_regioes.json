@@ -20,7 +20,7 @@
  },
  "regioes": {
   "floresta": {
-   "nivel": 4,
+   "nivel": 3,
    "arma": "espada_viajante",
    "protecao": "",
    "amuleto": "",
@@ -28,67 +28,65 @@
    "sementes": 0,
    "comuns": [
     "cogumelo:2",
-    "lobo:3",
-    "sentinela:4"
+    "lobo:2",
+    "sentinela:2"
    ]
   },
   "minas": {
-   "nivel": 11,
+   "nivel": 8,
    "arma": "laminas_ocas",
    "protecao": "manto_lenhador",
    "amuleto": "amuleto_seiva_viva",
    "forja": 0,
    "sementes": 6,
    "comuns": [
-    "automato:10",
-    "lesma:7",
-    "mineiro:8"
+    "automato:7",
+    "lesma:4",
+    "mineiro:5"
    ]
   },
   "pantano": {
-   "nivel": 16,
+   "nivel": 13,
    "arma": "galhada_ossea",
    "protecao": "couraca_ossos",
    "amuleto": "amuleto_galhada",
    "forja": 2,
-   "sementes": 7,
+   "sementes": 8,
    "comuns": [
-    "espectro:14",
-    "planta:13",
-    "sapo:13"
+    "espectro:10",
+    "planta:9",
+    "sapo:9"
    ]
   },
   "fortaleza": {
-   "nivel": 21,
+   "nivel": 16,
    "arma": "galhada_ossea",
    "protecao": "couraca_ossos",
    "amuleto": "amuleto_galhada",
    "forja": 3,
    "sementes": 10,
    "comuns": [
-    "armadura:21",
-    "arqueiro:19",
-    "arqueiro:20",
-    "arqueiro:21",
-    "lanceiro:20",
-    "lanceiro:21"
+    "armadura:16",
+    "arqueiro:14",
+    "arqueiro:15",
+    "arqueiro:16",
+    "lanceiro:15",
+    "lanceiro:16"
    ]
   },
   "catedral": {
-   "nivel": 25,
+   "nivel": 20,
    "arma": "galhada_ossea",
    "protecao": "couraca_ossos",
    "amuleto": "amuleto_galhada",
    "forja": 3,
    "sementes": 16,
    "comuns": [
-    "escriba:25",
-    "escriba:26",
-    "escriba:27",
-    "fragmento:25",
-    "fragmento:26",
-    "sentinela_prisma:26",
-    "sentinela_prisma:27"
+    "escriba:19",
+    "escriba:20",
+    "fragmento:19",
+    "fragmento:20",
+    "sentinela_prisma:20"
    ]
   }
  }

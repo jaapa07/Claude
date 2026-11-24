@@ -5,7 +5,7 @@
   "aliados": [
    "bruna"
   ],
-  "nivel": 3,
+  "nivel": 2,
   "requer": [
    "visitou_bosque_lanternas"
   ],
@@ -29,7 +29,7 @@
     "kind": "fera",
     "dono": "sq_d1",
     "species": "brotisco",
-    "level": 4,
+    "level": 2,
     "x": 39,
     "y": 12
    },
@@ -37,7 +37,7 @@
     "kind": "fera",
     "dono": "sq_d2",
     "species": "cascalito",
-    "level": 4,
+    "level": 2,
     "x": 43,
     "y": 11
    }
@@ -59,7 +59,7 @@
    "bruna",
    "ravi"
   ],
-  "nivel": 5,
+  "nivel": 3,
   "requer": [
    "saqueadores_ok",
    "visitou_clareira_raizes"
@@ -90,7 +90,7 @@
     "kind": "fera",
     "dono": "em_d1",
     "species": "lumipim",
-    "level": 5,
+    "level": 3,
     "x": 19,
     "y": 28
    },
@@ -98,7 +98,7 @@
     "kind": "fera",
     "dono": "em_d2",
     "species": "brotisco",
-    "level": 5,
+    "level": 3,
     "x": 25,
     "y": 28
    },
@@ -106,7 +106,7 @@
     "kind": "fera",
     "dono": "em_d3",
     "species": "cascalito",
-    "level": 6,
+    "level": 4,
     "x": 22,
     "y": 25
    }
@@ -126,7 +126,7 @@
   "aliados": [
    "ravi"
   ],
-  "nivel": 9,
+  "nivel": 6,
   "requer": [
    "visitou_pedreira_oca"
   ],
@@ -139,20 +139,20 @@
     "id": "ni_d1",
     "x": 36,
     "y": 15,
-    "nivel": 9
+    "nivel": 6
    },
    {
     "kind": "domadora",
     "id": "ni_d2",
     "x": 42,
     "y": 25,
-    "nivel": 9
+    "nivel": 6
    },
    {
     "kind": "fera",
     "dono": "ni_d1",
     "species": "faisquito",
-    "level": 9,
+    "level": 6,
     "x": 38,
     "y": 17
    },
@@ -160,7 +160,7 @@
     "kind": "fera",
     "dono": "ni_d2",
     "species": "fuligin",
-    "level": 9,
+    "level": 6,
     "x": 40,
     "y": 27
    }
@@ -182,7 +182,7 @@
    "bruna",
    "ravi"
   ],
-  "nivel": 10,
+  "nivel": 7,
   "requer": [
    "emboscada_ok",
    "visitou_desfiladeiro"
@@ -202,20 +202,20 @@
     "id": "vs_d1",
     "x": 16,
     "y": 18,
-    "nivel": 10
+    "nivel": 7
    },
    {
     "kind": "domadora",
     "id": "vs_d2",
     "x": 24,
     "y": 18,
-    "nivel": 10
+    "nivel": 7
    },
    {
     "kind": "fera",
     "dono": "vs_chefe",
     "species": "galhardo",
-    "level": 10,
+    "level": 7,
     "x": 18,
     "y": 14
    },
@@ -223,7 +223,7 @@
     "kind": "fera",
     "dono": "vs_chefe",
     "species": "auripim",
-    "level": 10,
+    "level": 7,
     "x": 22,
     "y": 14
    },
@@ -231,7 +231,7 @@
     "kind": "fera",
     "dono": "vs_d1",
     "species": "cascalito",
-    "level": 9,
+    "level": 6,
     "x": 15,
     "y": 16
    }
@@ -250,7 +250,7 @@
   "nome": "Praga de Cogumelos",
   "tipo": "caca",
   "aliados": [],
-  "nivel": 2,
+  "nivel": 1,
   "requer": [
    "visitou_clareira_raizes"
   ],
@@ -273,7 +273,7 @@
   "nome": "Matilha de Espinhos",
   "tipo": "caca",
   "aliados": [],
-  "nivel": 3,
+  "nivel": 2,
   "requer": [
    "visitou_bosque_lanternas"
   ],
@@ -296,7 +296,7 @@
   "nome": "Sentinelas Despertas",
   "tipo": "caca",
   "aliados": [],
-  "nivel": 5,
+  "nivel": 3,
   "requer": [
    "visitou_santuario_a"
   ],
@@ -319,7 +319,7 @@
   "nome": "Rastro de Escória",
   "tipo": "caca",
   "aliados": [],
-  "nivel": 8,
+  "nivel": 5,
   "requer": [
    "visitou_pedreira_oca"
   ],
@@ -341,7 +341,7 @@
   "nome": "Autômatos Rebeldes",
   "tipo": "caca",
   "aliados": [],
-  "nivel": 10,
+  "nivel": 7,
   "requer": [
    "visitou_fundicao_a"
   ],
@@ -364,7 +364,7 @@
   "nome": "Corredores Livres",
   "tipo": "caca",
   "aliados": [],
-  "nivel": 20,
+  "nivel": 15,
   "requer": [
    "visitou_muralha_partida"
   ],
@@ -390,7 +390,7 @@
    "bruna",
    "ravi"
   ],
-  "nivel": 21,
+  "nivel": 16,
   "requer": [
    "visitou_jardins_suspensos"
   ],
@@ -403,20 +403,20 @@
     "id": "de_d1",
     "x": 30,
     "y": 26,
-    "nivel": 21
+    "nivel": 16
    },
    {
     "kind": "domadora",
     "id": "de_d2",
     "x": 37,
     "y": 27,
-    "nivel": 21
+    "nivel": 16
    },
    {
     "kind": "fera",
     "dono": "de_d1",
     "species": "umbrel",
-    "level": 20,
+    "level": 15,
     "x": 31,
     "y": 28
    },
@@ -424,7 +424,7 @@
     "kind": "fera",
     "dono": "de_d2",
     "species": "brasardo",
-    "level": 20,
+    "level": 15,
     "x": 36,
     "y": 25
    }
@@ -442,7 +442,7 @@
   "nome": "Coaxar Sem Fim",
   "tipo": "caca",
   "aliados": [],
-  "nivel": 13,
+  "nivel": 9,
   "requer": [
    "visitou_passarela_ecos"
   ],
@@ -467,7 +467,7 @@
   "aliados": [
    "ravi"
   ],
-  "nivel": 14,
+  "nivel": 10,
   "requer": [
    "visitou_lago_reflexos"
   ],
@@ -480,20 +480,20 @@
     "id": "cb_d1",
     "x": 5,
     "y": 21,
-    "nivel": 14
+    "nivel": 10
    },
    {
     "kind": "domadora",
     "id": "cb_d2",
     "x": 8,
     "y": 23,
-    "nivel": 14
+    "nivel": 10
    },
    {
     "kind": "fera",
     "dono": "cb_d1",
     "species": "goturim",
-    "level": 14,
+    "level": 10,
     "x": 4,
     "y": 23
    },
@@ -501,7 +501,7 @@
     "kind": "fera",
     "dono": "cb_d2",
     "species": "brejugo",
-    "level": 14,
+    "level": 10,
     "x": 7,
     "y": 24
    }
@@ -523,7 +523,7 @@
   "aliados": [
    "bruna"
   ],
-  "nivel": 9,
+  "nivel": 6,
   "requer": [
    "saqueadores_ok",
    "visitou_trilhos_fundidos"
@@ -548,20 +548,20 @@
     "id": "ir_caio",
     "x": 9,
     "y": 30,
-    "nivel": 9
+    "nivel": 6
    },
    {
     "kind": "domadora",
     "id": "ir_d2",
     "x": 13,
     "y": 33,
-    "nivel": 9
+    "nivel": 6
    },
    {
     "kind": "fera",
     "dono": "ir_caio",
     "species": "faisquito",
-    "level": 9,
+    "level": 6,
     "x": 7,
     "y": 32
    },
@@ -569,7 +569,7 @@
     "kind": "fera",
     "dono": "ir_d2",
     "species": "fuligin",
-    "level": 9,
+    "level": 6,
     "x": 11,
     "y": 31
    }
@@ -590,7 +590,7 @@
   "aliados": [
    "ravi"
   ],
-  "nivel": 15,
+  "nivel": 11,
   "requer": [
    "emboscada_ok",
    "visitou_passarela_ecos"
@@ -615,20 +615,20 @@
     "id": "jr_d1",
     "x": 48,
     "y": 21,
-    "nivel": 15
+    "nivel": 11
    },
    {
     "kind": "domadora",
     "id": "jr_d2",
     "x": 51,
     "y": 27,
-    "nivel": 15
+    "nivel": 11
    },
    {
     "kind": "fera",
     "dono": "jr_d1",
     "species": "goturim",
-    "level": 15,
+    "level": 11,
     "x": 46,
     "y": 23
    },
@@ -636,7 +636,7 @@
     "kind": "fera",
     "dono": "jr_d2",
     "species": "brejugo",
-    "level": 15,
+    "level": 11,
     "x": 50,
     "y": 24
    }
@@ -655,7 +655,7 @@
   "nome": "Silêncio no Jardim",
   "tipo": "caca",
   "aliados": [],
-  "nivel": 25,
+  "nivel": 19,
   "requer": [
    "visitou_jardim_invertido"
   ],
@@ -681,7 +681,7 @@
    "bruna",
    "ravi"
   ],
-  "nivel": 26,
+  "nivel": 20,
   "requer": [
    "visitou_escadaria_fragmentos"
   ],
@@ -694,20 +694,20 @@
     "id": "uc_d1",
     "x": 12,
     "y": 22,
-    "nivel": 26
+    "nivel": 20
    },
    {
     "kind": "domadora",
     "id": "uc_d2",
     "x": 19,
     "y": 25,
-    "nivel": 26
+    "nivel": 20
    },
    {
     "kind": "fera",
     "dono": "uc_d1",
     "species": "gravito",
-    "level": 25,
+    "level": 19,
     "x": 13,
     "y": 24
    },
@@ -715,7 +715,7 @@
     "kind": "fera",
     "dono": "uc_d2",
     "species": "cristil",
-    "level": 25,
+    "level": 19,
     "x": 20,
     "y": 22
    }

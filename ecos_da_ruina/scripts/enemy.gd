@@ -104,13 +104,13 @@ func init(p_world: Node, p_kind: String, e: Dictionary) -> void:
 		radius = float(def.get("raio", 9))
 		small = bool(def.get("pequeno", false))
 		guard_front = float(def.get("guarda_frontal", 0.0))
-		xp_level = int(def.get("nivel", {"lobo": 3, "cogumelo": 2, "sentinela": 4, "lenhador": 6, "cervo": 8}.get(kind, 1)))
+		xp_level = int(def.get("nivel", {"lobo": 2, "cogumelo": 2, "sentinela": 2, "lenhador": 4, "cervo": 5}.get(kind, 1)))
 		shown_name = def.get("nome", kind)
 		human = bool(def.get("humano", false))
 		if e.has("nivel"):
 			var dl: int = int(e["nivel"]) - xp_level
-			max_hp = floor(max_hp * (1.0 + 0.14 * dl))
-			damage = damage * (1.0 + 0.1 * dl)
+			max_hp = floor(max_hp * (1.0 + 0.18 * dl))
+			damage = damage * (1.0 + 0.127 * dl)
 			xp_level = int(e["nivel"])
 	speed = float(def.get("vel", 40))
 	hp = max_hp

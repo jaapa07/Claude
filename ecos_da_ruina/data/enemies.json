@@ -170,7 +170,7 @@
   "relevante": true,
   "pequeno": false,
   "capturavel": false,
-  "nivel": 8,
+  "nivel": 5,
   "drops": {
    "minerio_cobre": [
     0.5,
@@ -181,7 +181,7 @@
  "lesma": {
   "nome": "Lesma de Escória",
   "hp": 120,
-  "dano": 36,
+  "dano": 40,
   "vel": 16,
   "xp": 22,
   "frag": [
@@ -199,7 +199,7 @@
   "relevante": true,
   "pequeno": true,
   "capturavel": false,
-  "nivel": 7,
+  "nivel": 4,
   "imune_calor": true,
   "drops": {
    "brasa_viva": [
@@ -229,7 +229,7 @@
   "relevante": true,
   "pequeno": false,
   "capturavel": false,
-  "nivel": 10,
+  "nivel": 7,
   "imune_calor": true,
   "drops": {
    "lingote": [
@@ -264,7 +264,7 @@
   "pequeno": false,
   "capturavel": false,
   "miniboss": true,
-  "nivel": 11,
+  "nivel": 8,
   "imune_calor": true
  },
  "ferreiro": {
@@ -289,7 +289,7 @@
   "pequeno": false,
   "capturavel": false,
   "miniboss": false,
-  "nivel": 12,
+  "nivel": 8,
   "imune_calor": true
  },
  "domador": {
@@ -314,7 +314,7 @@
   "relevante": true,
   "pequeno": false,
   "capturavel": false,
-  "nivel": 4,
+  "nivel": 2,
   "drops": {
    "selo_basico": [
     0.5,
@@ -344,7 +344,7 @@
   "relevante": true,
   "pequeno": false,
   "capturavel": false,
-  "nivel": 4,
+  "nivel": 2,
   "drops": {
    "pocao": [
     0.4,
@@ -374,7 +374,7 @@
   "relevante": true,
   "pequeno": false,
   "capturavel": false,
-  "nivel": 10,
+  "nivel": 7,
   "guarda_frontal": 0.5,
   "drops": {
    "essencia_roxa": [
@@ -421,7 +421,7 @@
   "relevante": true,
   "pequeno": false,
   "capturavel": false,
-  "nivel": 20,
+  "nivel": 15,
   "guarda_frontal": 0.2,
   "drops": {
    "lasca_umbral": [
@@ -451,7 +451,7 @@
   "relevante": true,
   "pequeno": false,
   "capturavel": false,
-  "nivel": 20,
+  "nivel": 15,
   "drops": {
    "pluma_vento": [
     0.25,
@@ -480,7 +480,7 @@
   "relevante": true,
   "pequeno": false,
   "capturavel": false,
-  "nivel": 21,
+  "nivel": 16,
   "drops": {
    "lasca_umbral": [
     0.5,
@@ -510,11 +510,11 @@
   "pequeno": false,
   "capturavel": false,
   "miniboss": true,
-  "nivel": 21
+  "nivel": 16
  },
  "cavaleiro": {
   "nome": "Cavaleiro Sem Rosto",
-  "hp": 3200,
+  "hp": 3700,
   "dano": 144,
   "vel": 46,
   "xp": 0,
@@ -534,7 +534,7 @@
   "pequeno": false,
   "capturavel": false,
   "miniboss": false,
-  "nivel": 24
+  "nivel": 18
  },
  "sapo": {
   "nome": "Sapo de Lodo",
@@ -557,7 +557,7 @@
   "relevante": true,
   "pequeno": true,
   "capturavel": false,
-  "nivel": 13,
+  "nivel": 9,
   "drops": {
    "perola_brejo": [
     0.3,
@@ -567,8 +567,8 @@
  },
  "espectro": {
   "nome": "Espectro Refletido",
-  "hp": 130,
-  "dano": 58,
+  "hp": 150,
+  "dano": 64,
   "vel": 54,
   "xp": 44,
   "frag": [
@@ -586,13 +586,13 @@
   "relevante": true,
   "pequeno": false,
   "capturavel": false,
-  "nivel": 14,
+  "nivel": 10,
   "espiritual": true
  },
  "planta": {
   "nome": "Planta Sementeira",
   "hp": 165,
-  "dano": 57,
+  "dano": 62,
   "vel": 0,
   "xp": 36,
   "frag": [
@@ -610,7 +610,7 @@
   "relevante": true,
   "pequeno": true,
   "capturavel": false,
-  "nivel": 13,
+  "nivel": 9,
   "drops": {
    "junco_trancado": [
     0.5,
@@ -620,7 +620,7 @@
  },
  "barqueiro": {
   "nome": "Barqueiro Sem Sombra",
-  "hp": 1100,
+  "hp": 1250,
   "dano": 36,
   "vel": 64,
   "xp": 0,
@@ -640,7 +640,7 @@
   "pequeno": false,
   "capturavel": false,
   "miniboss": true,
-  "nivel": 15
+  "nivel": 11
  },
  "bruxa": {
   "nome": "Bruxa Afogada",
@@ -664,7 +664,7 @@
   "pequeno": false,
   "capturavel": false,
   "miniboss": false,
-  "nivel": 17
+  "nivel": 12
  },
  "copia": {
   "nome": "Reflexo da Bruxa",
@@ -687,7 +687,7 @@
   "relevante": false,
   "pequeno": false,
   "capturavel": false,
-  "nivel": 17
+  "nivel": 12
  },
  "escriba": {
   "nome": "Escriba do Vazio",
@@ -710,7 +710,7 @@
   "relevante": true,
   "pequeno": false,
   "capturavel": false,
-  "nivel": 25,
+  "nivel": 19,
   "drops": {
    "fragmento_prisma": [
     0.35,
@@ -721,7 +721,7 @@
  "sentinela_prisma": {
   "nome": "Sentinela Prismática",
   "hp": 320,
-  "dano": 128,
+  "dano": 140,
   "vel": 22,
   "xp": 52,
   "frag": [
@@ -739,7 +739,7 @@
   "relevante": true,
   "pequeno": false,
   "capturavel": false,
-  "nivel": 26,
+  "nivel": 20,
   "guarda_frontal": 0.3,
   "drops": {
    "fragmento_prisma": [
@@ -751,7 +751,7 @@
  "fragmento": {
   "nome": "Fragmento Errante",
   "hp": 210,
-  "dano": 92,
+  "dano": 100,
   "vel": 58,
   "xp": 40,
   "frag": [
@@ -769,7 +769,7 @@
   "relevante": true,
   "pequeno": true,
   "capturavel": false,
-  "nivel": 25,
+  "nivel": 19,
   "drops": {
    "fragmento_prisma": [
     0.3,
@@ -795,7 +795,7 @@
   "ataque": "arauto",
   "raio": 14,
   "percepcao": 600,
-  "nivel": 27
+  "nivel": 20
  },
  "rei": {
   "nome": "Rei dos Ecos",
@@ -815,7 +815,7 @@
   "ataque": "rei",
   "raio": 18,
   "percepcao": 800,
-  "nivel": 30
+  "nivel": 23
  },
  "foco_rei": {
   "nome": "Foco do Rei",
@@ -837,6 +837,6 @@
   "percepcao": 0,
   "pequeno": false,
   "capturavel": false,
-  "nivel": 30
+  "nivel": 23
  }
 }

@@ -315,14 +315,14 @@ func hero_level() -> int:
 	return int(hero.get("level", 1))
 
 func hero_max_hp() -> float:
-	var hp = 100.0 + 6.0 * (hero_level() - 1) + 6.0 * hero["talents"].get("resistencia", 0) + 10.0 * item_count("semente_vida")
+	var hp = 100.0 + 8.0 * (hero_level() - 1) + 6.0 * hero["talents"].get("resistencia", 0) + 10.0 * item_count("semente_vida")
 	var am: String = equipment.get("amuleto", "")
 	if am != "" and Data.items.has(am):
 		hp += float(Data.items[am].get("hp", 0)) + float(forge_bonus("amuleto", "hp")) * upgrade_level(am)
 	return hp
 
 func hero_atk() -> float:
-	var a = 12.0 + 1.4 * (hero_level() - 1) + 2.0 * hero["talents"].get("espada", 0)
+	var a = 12.0 + 1.9 * (hero_level() - 1) + 2.0 * hero["talents"].get("espada", 0)
 	var w: String = equipment.get("arma", "")
 	if w != "" and Data.items.has(w):
 		a += float(Data.items[w].get("dano", 0)) + float(forge_bonus("arma", "dano")) * upgrade_level(w)
@@ -479,8 +479,10 @@ func next_difficulty() -> String:
 	var i := DIFFICULTY_ORDER.find(difficulty)
 	return str(DIFFICULTY_ORDER[(i + 1) % DIFFICULTY_ORDER.size()])
 
+## XP para o próximo nível: o 1→2 custa ~5 inimigos comuns e cada nível custa mais (docs/BALANCO.md).
+## (Antes: 20 * nível — o herói chegava ao Cervo no nível 8.)
 func xp_to_next(level: int) -> int:
-	return 20 * level
+	return 50 + 28 * level
 
 func add_hero_xp(amount: int) -> void:
 	if hero_level() >= HERO_MAX_LEVEL:
@@ -489,7 +491,7 @@ func add_hero_xp(amount: int) -> void:
 	while hero_level() < HERO_MAX_LEVEL and int(hero["xp"]) >= xp_to_next(hero_level()):
 		hero["xp"] = int(hero["xp"]) - xp_to_next(hero_level())
 		hero["level"] = hero_level() + 1
-		if hero_level() % 3 == 0:
+		if hero_level() % 2 == 0:
 			hero["talent_points"] = int(hero["talent_points"]) + 1
 		hero["hp"] = hero_max_hp()
 		toast.emit("Herói chegou ao nível %d!" % hero_level())
@@ -579,7 +581,7 @@ func creature_name(ind: Dictionary) -> String:
 	return sp_of(ind).get("nome", "?")
 
 func creature_xp_to_next(level: int) -> int:
-	return 18 * level
+	return 45 + 25 * level
 
 func mark_seen(species_id: String) -> void:
 	var b: Dictionary = bestiary.get(species_id, {"visto": false, "capturado": false, "evoluiu": false})
@@ -728,7 +730,7 @@ func award_encounter_xp(enemy_xp: int, enemy_level: int) -> void:
 	for u in team:
 		var ind: Dictionary = individuals[u]
 		var f := 1.0
-		if int(ind["nivel"]) - enemy_level >= 5:
+		if int(ind["nivel"]) - enemy_level >= 4:
 			f = 0.5
 		add_creature_xp(ind, float(enemy_xp) * f)
 
@@ -955,7 +957,7 @@ func capture_chance(species_id: String, wild_level: int, hp_ratio: float, contro
 	var b := 0.25 if rar == "comum" else (0.15 if rar == "incomum" else 0.05)
 	var s := 0.10 if controlled else 0.0
 	var t := float(Data.items.get(seal_id, {}).get("bonus", 0.0)) + capture_bonus()
-	var l: float = min(0.20, 0.02 * max(0, wild_level - hero_level()))
+	var l: float = min(0.20, 0.025 * max(0, wild_level - hero_level()))
 	return clamp(b - 0.12 + 0.6 * (1.0 - hp_ratio) + s + t - l, 0.08, 0.95)
 
 # =============================================================== INVENTÁRIO

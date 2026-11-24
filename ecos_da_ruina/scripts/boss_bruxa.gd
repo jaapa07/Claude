@@ -371,7 +371,7 @@ func _give_rewards(_src: String) -> void:
 		Game.set_flag("tmp_bruxa_p%d" % i, false)
 	Game.set_flag("tmp_bruxa_cheia", false)
 	var r: Dictionary = bdef["recompensa"]
-	Game.award_encounter_xp(int(r["xp"]), int(def.get("nivel", 17)))
+	Game.award_encounter_xp(int(r["xp"]), int(def.get("nivel", 12)))
 	Game.fragments += int(r["frag"])
 	Game.inventory_changed.emit()
 	Game.register_kill("bruxa")

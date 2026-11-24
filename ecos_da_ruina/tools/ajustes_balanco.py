@@ -30,28 +30,28 @@ EN = {
     "sentinela": {"hp": 88, "dano": 25, "xp": 30},
     # Minas (7–12)
     "mineiro":   {"hp": 110, "dano": 37},
-    "lesma":     {"hp": 120, "dano": 36},
+    "lesma":     {"hp": 120, "dano": 40},
     "automato":  {"hp": 150, "dano": 48},
     # Pântano (13–18)
     "sapo":      {"hp": 180, "dano": 62},
-    "espectro":  {"hp": 130, "dano": 58},
-    "planta":    {"hp": 165, "dano": 57},
+    "espectro":  {"hp": 150, "dano": 64},
+    "planta":    {"hp": 165, "dano": 62},
     # Fortaleza (19–24)
     "arqueiro":  {"hp": 220, "dano": 95},
     "lanceiro":  {"hp": 270, "dano": 120},
     "armadura":  {"hp": 320, "dano": 115},
     # Catedral (25–30)
     "escriba":   {"hp": 250, "dano": 100},
-    "sentinela_prisma": {"hp": 320, "dano": 128},
-    "fragmento": {"hp": 210, "dano": 92},
+    "sentinela_prisma": {"hp": 320, "dano": 140},
+    "fragmento": {"hp": 210, "dano": 100},
     # Domadores (contratos; escalam pelo nível do contrato)
     "domador":   {"hp": 76, "dano": 20, "xp": 15},
     "domadora":  {"hp": 66, "dano": 18, "xp": 15},
     "vesna":     {"hp": 520, "dano": 32, "xp": 60},
 }
 # ---------------------------------------------------------------- chefes
-BOSS_HP = {"lenhador": 700, "cervo": 1700, "vigia": 1200, "ferreiro": 2400, "barqueiro": 1100, "bruxa": 2800,
-           "gemeos": 1150, "cavaleiro": 3200, "arauto": 2200, "rei": 5000}
+BOSS_HP = {"lenhador": 700, "cervo": 1700, "vigia": 1200, "ferreiro": 2400, "barqueiro": 1250, "bruxa": 2800,
+           "gemeos": 1150, "cavaleiro": 3700, "arauto": 2200, "rei": 5000}
 BOSS_DANO_MULT = {"lenhador": 1.8, "cervo": 2.2, "vigia": 3.0, "ferreiro": 2.0, "barqueiro": 1.8, "bruxa": 3.5,
                   "gemeos": 5.0, "cavaleiro": 4.8, "arauto": 4.0, "rei": 4.0}
 BOSS_DANO_BASE = {  # valores originais

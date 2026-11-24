@@ -3,7 +3,7 @@
   "nome": "Floresta dos Esquecidos",
   "nivel": [
    1,
-   6
+   5
   ],
   "nucleo": "vila_lumen",
   "mapas": [
@@ -28,8 +28,8 @@
  "minas": {
   "nome": "Minas da Brasa",
   "nivel": [
-   7,
-   12
+   5,
+   9
   ],
   "nucleo": "forja_cobre",
   "mapas": [
@@ -49,8 +49,8 @@
  "pantano": {
   "nome": "Pântano dos Sussurros",
   "nivel": [
-   13,
-   18
+   9,
+   13
   ],
   "nucleo": "porto_lanternas",
   "mapas": [
@@ -69,8 +69,8 @@
  "fortaleza": {
   "nome": "Fortaleza do Eclipse",
   "nivel": [
-   19,
-   24
+   14,
+   17
   ],
   "nucleo": "refugio_muralha",
   "mapas": [
@@ -91,8 +91,8 @@
  "catedral": {
   "nome": "Catedral do Vazio",
   "nivel": [
-   25,
-   30
+   18,
+   22
   ],
   "nucleo": "acampamento_aurora",
   "mapas": [

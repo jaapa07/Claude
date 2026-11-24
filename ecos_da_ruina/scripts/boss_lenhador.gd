@@ -66,7 +66,7 @@ func _give_rewards(_src: String) -> void:
 	Game.set_flag(bdef["flag_morte"])
 	Game.set_flag("tmp_lenhador_ativo", false)
 	var r: Dictionary = bdef["recompensa"]
-	Game.award_encounter_xp(int(r["xp"]), 6)
+	Game.award_encounter_xp(int(r["xp"]), 4)
 	Game.fragments += int(r["frag"])
 	Game.give_item("casca_oca", 2)
 	world.say("Material de chefão: Casca Oca x2 (monte equipamento na forja).")
