@@ -14,13 +14,20 @@ func _wrap(data: Dictionary) -> String:
 	var body := JSON.stringify(data)
 	return JSON.stringify({"v": Game.SAVE_VERSION, "hash": body.md5_text(), "body": body})
 
+## Lê JSON sem imprimir erro no console: arquivo corrompido é um caso esperado (o backup é usado).
+static func _parse_quiet(text: String) -> Variant:
+	var j := JSON.new()
+	if j.parse(text) != OK:
+		return null
+	return j.data
+
 func _unwrap(text: String) -> Dictionary:
-	var w = JSON.parse_string(text)
+	var w = _parse_quiet(text)
 	if not (w is Dictionary) or not w.has("body") or not w.has("hash"):
 		return {}
 	if str(w["body"]).md5_text() != w["hash"]:
 		return {}
-	var d = JSON.parse_string(w["body"])
+	var d = _parse_quiet(str(w["body"]))
 	return d if d is Dictionary else {}
 
 ## Salva o estado atual (somente em estado estável). Retorna true se gravou.

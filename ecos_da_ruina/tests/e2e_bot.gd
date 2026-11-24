@@ -92,6 +92,14 @@ func finish() -> void:
 	var f := FileAccess.open("res://tests/last_result.txt", FileAccess.WRITE)
 	if f:
 		f.store_string("\n".join(results) + "\nTOTAL: %d verificações, %d aprovadas, %d falhas\n" % [results.size(), passed, fails])
+	# encerramento limpo: sem sons tocando nem temporizadores pendentes (evita avisos de vazamento do motor na saída)
+	get_tree().paused = false
+	for n in get_tree().root.find_children("*", "AudioStreamPlayer", true, false) + get_tree().root.find_children("*", "AudioStreamPlayer2D", true, false):
+		n.stop()
+		n.stream = null
+	await get_tree().create_timer(2.5).timeout
+	OS.delay_msec(300)       # dá tempo à thread de mixagem de soltar as reproduções paradas
+	await frames(3)
 	get_tree().quit(1 if fails > 0 else 0)
 
 func check(name: String, cond: bool, detail := "") -> void:
@@ -242,7 +250,8 @@ func goto(target: Vector2, tol := 4.0, timeout := 40.0, extra_block := {}) -> bo
 			replan = 1.5
 			if path.is_empty():
 				release_moves()
-				push_warning("sem caminho de %s para %s" % [str(here), str(target)])
+				# alvo inalcançável é esperado em lutas (ponto sobre água ou parede): registro informativo, não aviso do motor
+				print("  [info] sem caminho de %s para %s" % [str(here), str(target)])
 				return false
 		var goal: Vector2
 		if pi < path.size():

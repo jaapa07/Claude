@@ -205,9 +205,12 @@ func _basic_attack() -> void:
 	if basic["tipo"] == "ranged":
 		sprite.play("windup")
 		var col := Color(1.0, 0.95, 0.5)
+		# referência fraca: se o alvo sumir enquanto o disparo voa, o golpe só se perde (sem captura de objeto liberado)
+		var tref: WeakRef = weakref(tgt)
 		world.bolt(global_position + Vector2(0, -8), tgt.global_position + Vector2(0, -6), col, func():
-			if is_instance_valid(tgt) and tgt.hittable():
-				tgt.take_damage(dmg, global_position, {"src": "companion", "uuid": uuid(), "aff": aff, "knock": 20.0}))
+			var t = tref.get_ref()
+			if t != null and t.hittable():
+				t.take_damage(dmg, global_position, {"src": "companion", "uuid": uuid(), "aff": aff, "knock": 20.0}))
 	else:
 		sprite.play("attack")
 		var dir = (tgt.global_position - global_position).normalized()

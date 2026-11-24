@@ -9,7 +9,8 @@ var _spr: Sprite2D
 
 func _ready() -> void:
 	_spr = Sprite2D.new()
-	_spr.texture = Art.sprite_tex("seal")
+	# o selo em voo usa o primeiro quadro do efeito de selo (fx_seal.png; o antigo seal.png não existe mais)
+	_spr.texture = Art.region("fx_seal", 0, 0, 10, 10)
 	add_child(_spr)
 	z_index = 20
 
