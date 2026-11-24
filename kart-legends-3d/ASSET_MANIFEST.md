@@ -4,7 +4,7 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 (id, nome, tipo, caminho, formato, origem, autor, licença, tamanho, status de validação e local de uso), está em
 `public/assets/manifest.json`. A validação automática é `npm run validate:assets`.
 
-- **Total:** 295 arquivos, 115.9 MB
+- **Total:** 303 arquivos, 116.8 MB
 - **Autor de todos os recursos:** Equipe Kart Legends 3D
 - **Licença:** Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)
 - **Recursos de terceiros:** nenhum
@@ -12,13 +12,13 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | Pasta | Arquivos | Tamanho | Origem | Onde é usado |
 |---|---:|---:|---|---|
 | `audio/` | 99 | 13868 kB | scripts/build-audio.ts (síntese procedural própria) | Música, efeitos e ambiência |
-| `characters/` | 9 | 2977 kB | scripts/build-characters.ts (modelagem, rig e animação por script) | Pilotos na corrida, vitrine e pódio |
+| `characters/` | 11 | 3669 kB | scripts/build-characters.ts (modelagem, rig e animação por script) | Pilotos na corrida, vitrine e pódio |
 | `items/` | 15 | 655 kB | scripts/build-items.ts (modelagem por script) | Itens, placas de turbo, rampas, pórtico, troféus e pódio |
 | `karts/` | 9 | 1693 kB | scripts/build-karts.ts (modelagem por script) | Veículos na corrida, vitrine e pódio |
 | `props/` | 19 | 485 kB | scripts/build-tracks.ts (partes móveis de cenário e obstáculos) | Cenário animado e obstáculos dinâmicos |
-| `textures/` | 88 | 1020 kB | scripts (texturas procedurais e arte vetorial próprias) | Materiais dos modelos (também embutidas nos GLB) |
+| `textures/` | 90 | 1145 kB | scripts (texturas procedurais e arte vetorial próprias) | Materiais dos modelos (também embutidas nos GLB) |
 | `tracks/` | 17 | 96981 kB | scripts/build-tracks.ts (traçado autorado + cenário) | Pistas e dados de corrida |
-| `ui/` | 38 | 976 kB | scripts/build-items.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo) | Interface (retratos, ícones, miniaturas) |
+| `ui/` | 42 | 1045 kB | scripts/build-items.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo) | Interface (retratos, ícones, miniaturas) |
 | `vfx/` | 1 | 25 kB | scripts/build-vfx.ts (arte vetorial própria) | Sistema de partículas |
 
 ## characters/
@@ -26,13 +26,15 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | Arquivo | Tipo | Tamanho |
 |---|---|---:|
 | `characters/boro.glb` | model | 357 kB |
-| `characters/characters-manifest.json` | data | 14 kB |
+| `characters/capi.glb` | model | 335 kB |
+| `characters/characters-manifest.json` | data | 16 kB |
 | `characters/kora.glb` | model | 360 kB |
 | `characters/lumi.glb` | model | 353 kB |
 | `characters/mavi.glb` | model | 370 kB |
 | `characters/nilo.glb` | model | 379 kB |
 | `characters/runi.glb` | model | 381 kB |
 | `characters/tiko.glb` | model | 355 kB |
+| `characters/tuca.glb` | model | 354 kB |
 | `characters/zera.glb` | model | 408 kB |
 
 ## items/
@@ -120,12 +122,14 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | Arquivo | Tipo | Tamanho |
 |---|---|---:|
 | `ui/icons/boro.webp` | image | 5 kB |
+| `ui/icons/capi.webp` | image | 4 kB |
 | `ui/icons/kora.webp` | image | 7 kB |
 | `ui/icons/lumi.webp` | image | 5 kB |
 | `ui/icons/mavi.webp` | image | 6 kB |
 | `ui/icons/nilo.webp` | image | 6 kB |
 | `ui/icons/runi.webp` | image | 8 kB |
 | `ui/icons/tiko.webp` | image | 5 kB |
+| `ui/icons/tuca.webp` | image | 4 kB |
 | `ui/icons/zera.webp` | image | 5 kB |
 | `ui/items/bolha-guardia.webp` | image | 11 kB |
 | `ui/items/cristal-salto.webp` | image | 7 kB |
@@ -142,12 +146,14 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | `ui/karts/geada.webp` | image | 35 kB |
 | `ui/karts/mare.webp` | image | 39 kB |
 | `ui/portraits/boro.webp` | image | 37 kB |
+| `ui/portraits/capi.webp` | image | 35 kB |
 | `ui/portraits/kora.webp` | image | 41 kB |
 | `ui/portraits/lumi.webp` | image | 37 kB |
 | `ui/portraits/mavi.webp` | image | 40 kB |
 | `ui/portraits/nilo.webp` | image | 37 kB |
 | `ui/portraits/runi.webp` | image | 40 kB |
 | `ui/portraits/tiko.webp` | image | 32 kB |
+| `ui/portraits/tuca.webp` | image | 28 kB |
 | `ui/portraits/zera.webp` | image | 35 kB |
 | `ui/tracks/bosque-cristal.webp` | image | 45 kB |
 | `ui/tracks/canion-solar.webp` | image | 39 kB |
@@ -166,4 +172,4 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 
 ## audio/ e textures/
 
-99 arquivos de áudio (lista e durações em `public/assets/audio/audio-manifest.json` e `docs/AUDIO.md`) e 88 texturas (todas também embutidas nos GLB que as usam).
+99 arquivos de áudio (lista e durações em `public/assets/audio/audio-manifest.json` e `docs/AUDIO.md`) e 90 texturas (todas também embutidas nos GLB que as usam).

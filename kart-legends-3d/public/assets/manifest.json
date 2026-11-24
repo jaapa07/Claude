@@ -1303,6 +1303,19 @@
    "usedIn": "Pilotos na corrida, vitrine e pódio"
   },
   {
+   "id": "characters:capi",
+   "name": "capi",
+   "type": "model",
+   "path": "characters/capi.glb",
+   "format": "glb",
+   "origin": "scripts/build-characters.ts (modelagem, rig e animação por script)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 342876,
+   "status": "validado",
+   "usedIn": "Pilotos na corrida, vitrine e pódio"
+  },
+  {
    "id": "characters:characters-manifest",
    "name": "characters-manifest",
    "type": "data",
@@ -1311,7 +1324,7 @@
    "origin": "scripts/build-characters.ts (modelagem, rig e animação por script)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 13877,
+   "bytes": 16876,
    "status": "validado",
    "usedIn": "Pilotos na corrida, vitrine e pódio"
   },
@@ -1390,6 +1403,19 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 363320,
+   "status": "validado",
+   "usedIn": "Pilotos na corrida, vitrine e pódio"
+  },
+  {
+   "id": "characters:tuca",
+   "name": "tuca",
+   "type": "model",
+   "path": "characters/tuca.glb",
+   "format": "glb",
+   "origin": "scripts/build-characters.ts (modelagem, rig e animação por script)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 362652,
    "status": "validado",
    "usedIn": "Pilotos na corrida, vitrine e pódio"
   },
@@ -2525,6 +2551,19 @@
    "usedIn": "Materiais dos modelos (também embutidas nos GLB)"
   },
   {
+   "id": "textures:face_capi",
+   "name": "face_capi",
+   "type": "texture",
+   "path": "textures/face_capi.webp",
+   "format": "webp",
+   "origin": "scripts (texturas procedurais e arte vetorial próprias)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 48052,
+   "status": "validado",
+   "usedIn": "Materiais dos modelos (também embutidas nos GLB)"
+  },
+  {
    "id": "textures:face_kora",
    "name": "face_kora",
    "type": "texture",
@@ -2599,6 +2638,19 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 71758,
+   "status": "validado",
+   "usedIn": "Materiais dos modelos (também embutidas nos GLB)"
+  },
+  {
+   "id": "textures:face_tuca",
+   "name": "face_tuca",
+   "type": "texture",
+   "path": "textures/face_tuca.webp",
+   "format": "webp",
+   "origin": "scripts (texturas procedurais e arte vetorial próprias)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 79596,
    "status": "validado",
    "usedIn": "Materiais dos modelos (também embutidas nos GLB)"
   },
@@ -3344,6 +3396,19 @@
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
   {
+   "id": "ui:icons:capi",
+   "name": "capi",
+   "type": "image",
+   "path": "ui/icons/capi.webp",
+   "format": "webp",
+   "origin": "scripts/build-items.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 4170,
+   "status": "validado",
+   "usedIn": "Interface (retratos, ícones, miniaturas)"
+  },
+  {
    "id": "ui:icons:kora",
    "name": "kora",
    "type": "image",
@@ -3418,6 +3483,19 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 4872,
+   "status": "validado",
+   "usedIn": "Interface (retratos, ícones, miniaturas)"
+  },
+  {
+   "id": "ui:icons:tuca",
+   "name": "tuca",
+   "type": "image",
+   "path": "ui/icons/tuca.webp",
+   "format": "webp",
+   "origin": "scripts/build-items.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 3716,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
@@ -3630,6 +3708,19 @@
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
   {
+   "id": "ui:portraits:capi",
+   "name": "capi",
+   "type": "image",
+   "path": "ui/portraits/capi.webp",
+   "format": "webp",
+   "origin": "scripts/build-items.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 35406,
+   "status": "validado",
+   "usedIn": "Interface (retratos, ícones, miniaturas)"
+  },
+  {
    "id": "ui:portraits:kora",
    "name": "kora",
    "type": "image",
@@ -3704,6 +3795,19 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 32976,
+   "status": "validado",
+   "usedIn": "Interface (retratos, ícones, miniaturas)"
+  },
+  {
+   "id": "ui:portraits:tuca",
+   "name": "tuca",
+   "type": "image",
+   "path": "ui/portraits/tuca.webp",
+   "format": "webp",
+   "origin": "scripts/build-items.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 28256,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },

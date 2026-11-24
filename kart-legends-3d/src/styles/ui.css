@@ -78,6 +78,8 @@
 
 .card-grid { display: grid; gap: 0.55rem; flex: none; }
 .card-grid--roster { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+/* Dez pilotos: 5 × 2. */
+.card-grid--characters { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 .card-grid--tracks { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .card--portrait, .card--track { flex-direction: column; overflow: hidden; }
 .card--portrait { aspect-ratio: 1 / 0.88; }

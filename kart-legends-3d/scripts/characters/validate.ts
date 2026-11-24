@@ -10,8 +10,9 @@ import { createIO } from '../lib/glb';
 import { ASSETS_DIR } from '../lib/textures';
 import { CLIP_NAMES } from './anim';
 import { HAND_TARGET, REQUIRED_BONES } from './rig';
+import { CHARACTER_IDS } from '../../src/data/ids';
 
-const IDS = ['nilo', 'boro', 'lumi', 'kora', 'tiko', 'mavi', 'runi', 'zera'];
+const IDS: readonly string[] = CHARACTER_IDS;
 const io = await createIO();
 let failures = 0;
 const fail = (id: string, msg: string): void => { failures++; console.error(`  ✗ ${id}: ${msg}`); };

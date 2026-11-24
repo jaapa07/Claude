@@ -8,7 +8,7 @@ import { flowSteps, nextScreen, prevScreen } from './flow';
 
 const storage = installMemoryStorage();
 const { useSaveStore } = await import('@/game/save/saveStore');
-const { DEFAULT_SELECTION, TRAINING_LAPS, buildFreshGrid, sortStandings, useGameStore } = await import('./gameStore');
+const { DEFAULT_SELECTION, RACERS_PER_RACE, TRAINING_LAPS, buildFreshGrid, sortStandings, useGameStore } = await import('./gameStore');
 
 const game = () => useGameStore.getState();
 function currentRace(): RaceConfig {
@@ -59,7 +59,9 @@ describe('corrida rápida', () => {
     expect(race.racers).toHaveLength(8);
     expect(race.racers[7]).toEqual({ characterId: 'kora', kartId: 'cometa', isPlayer: true });
     expect(race.racers.filter((r) => r.isPlayer)).toHaveLength(1);
-    expect(new Set(race.racers.map((r) => r.characterId))).toEqual(new Set(CHARACTER_IDS));
+    // Oito pilotos distintos, todos personagens válidos (sete adversários sorteados entre os outros).
+    expect(new Set(race.racers.map((r) => r.characterId)).size).toBe(8);
+    for (const r of race.racers) expect(CHARACTER_IDS).toContain(r.characterId);
     // Adversários (inclusive personagens ainda bloqueados) usam o kart preferido.
     for (const r of race.racers.slice(0, 7)) expect(r.kartId).toBe(CHARACTER_BY_ID[r.characterId].kartId);
     expect(game().raceNonce).toBe(1);
@@ -122,6 +124,19 @@ describe('corrida rápida', () => {
     expect(buildFreshGrid(sel, 1234)).toEqual(buildFreshGrid(sel, 1234));
     const orders = new Set([1, 2, 3, 4, 5, 6].map((seed) => buildFreshGrid(sel, seed).map((r) => r.characterId).join()));
     expect(orders.size).toBeGreaterThan(1);
+  });
+
+  it('com mais personagens que vagas, sorteia sete adversários e todos aparecem em alguma seed', () => {
+    const sel = { characterId: 'nilo', kartId: 'flecha' } as const;
+    const seen = new Set<string>();
+    for (let seed = 1; seed <= 40; seed++) {
+      const grid = buildFreshGrid(sel, seed);
+      expect(grid).toHaveLength(RACERS_PER_RACE);
+      expect(grid[RACERS_PER_RACE - 1]).toEqual({ characterId: 'nilo', kartId: 'flecha', isPlayer: true });
+      expect(new Set(grid.map((r) => r.characterId)).size).toBe(RACERS_PER_RACE);
+      for (const r of grid) seen.add(r.characterId);
+    }
+    expect(seen).toEqual(new Set(CHARACTER_IDS));
   });
 });
 
