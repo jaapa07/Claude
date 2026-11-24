@@ -132,6 +132,20 @@ describe('classificação e resultados', () => {
     expect([...times].sort((x, y) => x - y)).toEqual(times);
   });
 
+  it('quem não cruzou a chegada recebe tempo estimado, depois de quem está à frente', () => {
+    const h = createHarness({ data: ringTrack(40, 12), opponents: 8, laps: 2, player: false });
+    h.start();
+    for (let i = 0; i < 60 * 120 && !h.sim.karts.some((k) => k.finished); i++) h.run(1 / 60);
+    const r = h.sim.result();
+    const real = r.results.filter((x) => !x.estimated);
+    const est = r.results.filter((x) => x.estimated);
+    expect(real.length).toBeGreaterThan(0);
+    expect(est.length).toBeGreaterThan(0);
+    expect(est.every((x) => x.totalTimeMs !== null && x.totalTimeMs > h.sim.raceTime * 1000)).toBe(true);
+    const times = r.results.map((x) => x.totalTimeMs!);
+    expect([...times].sort((x, y) => x - y)).toEqual(times);
+  });
+
   it('o HUD publica posição, volta, tempo, velocidade e minimapa', () => {
     const h = createHarness({ opponents: 7 });
     h.follow = true;

@@ -35,8 +35,10 @@ export interface RacerResult {
   isPlayer: boolean;
   /** 1 a N. */
   position: number;
-  /** null = não completou (classificado pelo progresso). */
+  /** Tempo final; quem não cruzou a chegada recebe uma estimativa pelo ritmo (`estimated`). null = sem ritmo medido. */
   totalTimeMs: number | null;
+  /** O tempo é estimado (não cruzou a chegada antes dos resultados). */
+  estimated?: boolean;
   bestLapMs: number | null;
   lapTimesMs: number[];
   points: number;

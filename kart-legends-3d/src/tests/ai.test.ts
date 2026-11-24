@@ -32,8 +32,8 @@ async function aiRace(track: TrackId, difficulty: Difficulty, seed = 11): Promis
   }
   const res = sim.result();
   return {
-    finished: res.results.filter((r) => r.totalTimeMs !== null).length,
-    times: res.results.map((r) => r.totalTimeMs ?? Infinity), events: h.events, maxStep, maxSpeedRatio, shortcutSteps, raceTime: sim.raceTime,
+    finished: res.results.filter((r) => r.totalTimeMs !== null && !r.estimated).length,
+    times: res.results.map((r) => r.estimated ? Infinity : r.totalTimeMs ?? Infinity), events: h.events, maxStep, maxSpeedRatio, shortcutSteps, raceTime: sim.raceTime,
   };
 }
 

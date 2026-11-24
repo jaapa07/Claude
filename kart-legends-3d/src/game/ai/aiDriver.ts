@@ -113,16 +113,25 @@ export class AiDriver {
       const ti = main.wrap(k.mainIndex + lookSamples);
       const sc = this.plannedShortcut >= 0 ? track.shortcuts[this.plannedShortcut]! : null;
       const toEntry = sc ? (sc.data.from - k.mainIndex + n) % n : Infinity;
-      if (sc && toEntry < lookSamples + 2) {
-        sc.path.point(Math.min(sc.path.n - 1, lookSamples - toEntry + 1), 0, this.tmp);
+      const pastEntry = sc ? (k.mainIndex - sc.data.from + n) % n : Infinity;
+      if (sc && (toEntry < lookSamples + 2 || pastEntry < 14)) {
+        // Mira no atalho; depois de passar da boca continua mirando nele (senão fica entre os dois caminhos).
+        const si = toEntry < lookSamples + 2 ? lookSamples - toEntry + 1 : sc.path.nearest(2, 2, 14, k.x, k.y, k.z) + lookSamples;
+        sc.path.point(Math.min(sc.path.n - 1, si), 0, this.tmp);
         tx = this.tmp.x; tz = this.tmp.z;
-        targetHint = 0.8;
+        // Bifurcação fechada: freia o bastante para fazer a curva de entrada.
+        targetHint = Math.min(0.8, 0.45 + 0.4 * this.forkAlignment(sc, track));
       } else {
         const hw = main.halfWidth[ti]!;
         const wander = Math.sin(w.time * 0.35 + this.wanderPhase) * p.wander;
         lateralTarget = track.jumpZone[ti] ? 0 : track.racingLine[ti]! * p.line + wander + this.avoidance(k, w, dt);
         lateralTarget = this.dodgeObstacles(k, w, lateralTarget, v);
-        lateralTarget = clamp(lateralTarget, -(hw - 1.6), hw - 1.6);
+        // Muro começando logo à frente (depois de trecho aberto): fica mais longe da borda para não passar por fora dele.
+        const walls = track.data.wall;
+        let wallStart = 0;
+        for (let j = 0; j <= lookSamples + 6; j += 2) wallStart |= walls[main.wrap(k.mainIndex + j)]! & ~walls[k.mainIndex]!;
+        const margin = wallStart ? 3.4 : 1.6;
+        lateralTarget = clamp(lateralTarget, -(hw - margin), hw - margin);
         main.point(ti, lateralTarget, this.tmp);
         tx = this.tmp.x; tz = this.tmp.z;
         const brakeLook = main.wrap(k.mainIndex + Math.round((v * 0.3) / track.data.spacing));
@@ -177,6 +186,13 @@ export class AiDriver {
   }
 
   /** Desvia de karts mais lentos logo à frente (ultrapassagem pelo lado livre). */
+  /** Alinhamento (cosseno, 0..1) entre a pista principal e o início do atalho: 1 = segue reto, 0 = curva de 90°. */
+  private forkAlignment(sc: TrackRuntime['shortcuts'][number], track: TrackRuntime): number {
+    const m = track.main, a = sc.data.from * 3, b = Math.min(sc.path.n - 1, 6) * 3;
+    const dot = m.tan[a]! * sc.path.tan[b]! + m.tan[a + 2]! * sc.path.tan[b + 2]!;
+    return clamp(dot, 0, 1);
+  }
+
   private avoidance(k: KartState, w: AiWorld, dt: number): number {
     const n = w.track.n;
     let want = 0;

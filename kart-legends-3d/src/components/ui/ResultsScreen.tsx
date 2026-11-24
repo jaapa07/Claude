@@ -58,7 +58,7 @@ export function ResultsScreen(): JSX.Element | null {
                         <span className="racer__kart">{KART_BY_ID[r.kartId].name}</span>
                       </span>
                     </td>
-                    <td className="table__num">{r.totalTimeMs !== null ? formatTime(r.totalTimeMs) : 'Não concluiu'}</td>
+                    <td className="table__num">{r.totalTimeMs === null ? 'Não concluiu' : r.estimated ? <span title="Estimado: ainda não tinha cruzado a chegada">≈ {formatTime(r.totalTimeMs)}</span> : formatTime(r.totalTimeMs)}</td>
                     <td className="table__num" data-best={r.bestLapMs !== null && r.bestLapMs === fastestLap}>{formatTime(r.bestLapMs)}</td>
                     {!solo && <td className="table__num">+{pointsForPosition(r.position)}</td>}
                   </tr>

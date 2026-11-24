@@ -84,6 +84,24 @@ export function createTrackColliders(R: Rapier, world: RAPIER.World, track: Trac
         }
         idx.push(base, base + 1, base + 3, base, base + 3, base + 2);
       }
+      // Começo de muro depois de trecho aberto: guia inclinada (invisível) que abre 5 m para fora em 4 amostras,
+      // para quem vem pela borda ser desviado para dentro em vez de passar por trás do muro.
+      for (let i = 0; i < m.n; i++) {
+        const prev = (i - 1 + m.n) % m.n;
+        if (!(data.wall[i]! & bit) || (data.wall[prev]! & bit)) continue;
+        const LEAD = 4;
+        for (let t = 0; t < LEAD; t++) {
+          const a = (i - LEAD + t + m.n) % m.n, b = (i - LEAD + t + 1 + m.n) % m.n;
+          const base = verts.length / 3;
+          for (const [s2, f] of [[a, (LEAD - t) / LEAD], [b, (LEAD - t - 1) / LEAD]] as const) {
+            const k = s2 * 3;
+            const w = (m.halfWidth[s2]! + 0.55 + 5 * f) * sgn;
+            const x = m.pos[k]! + m.side[k]! * w, y = m.pos[k + 1]! + m.side[k + 1]! * w, z = m.pos[k + 2]! + m.side[k + 2]! * w;
+            verts.push(x, y - 0.6, z, x, y + H, z);
+          }
+          idx.push(base, base + 1, base + 3, base, base + 3, base + 2);
+        }
+      }
     }
     if (idx.length) add(R.ColliderDesc.trimesh(new Float32Array(verts), new Uint32Array(idx)));
   }

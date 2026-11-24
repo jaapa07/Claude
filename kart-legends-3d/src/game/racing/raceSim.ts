@@ -50,7 +50,7 @@ export class RaceSim {
   private finishedCount = 0;
   private resetCooldown = 0;
   private readonly aiWorld: AiWorld;
-  private readonly watch: { progress: number; time: number }[] = [];
+  private readonly watch: { progress: number; time: number; outside: number }[] = [];
 
   constructor(
     R: Rapier,
@@ -86,7 +86,7 @@ export class RaceSim {
       k.pathIndex = k.mainIndex = this.track.main.nearest(0, 40, 4, k.x, k.y, k.z);
       k.lastSafeIndex = k.mainIndex;
       this.karts.push(k);
-      this.watch.push({ progress: 0, time: 0 });
+      this.watch.push({ progress: 0, time: 0, outside: 0 });
       this.drivers.push(r.isPlayer ? null : new AiDriver(AI_PROFILES[config.difficulty], createRng(config.seed + 31 * (i + 1))));
     });
     this.autopilot = new AiDriver(AI_PROFILES.normal, createRng(config.seed + 999));
@@ -215,13 +215,18 @@ export class RaceSim {
     const far = k.pathId < 0 && Math.abs(k.lateral) > main.halfWidth[k.mainIndex]! + 34;
     k.offTrackTime = far ? k.offTrackTime + dt : 0;
     if (k.y < data.killY || (!k.grounded && k.y < roadY - 16)) return this.respawn(k, 'fall');
+    // Caiu de um viaduto/ponte: apoiado no chão bem abaixo do trecho de pista em que está (Cidade Neon).
+    if (k.grounded && k.pathId < 0 && k.y < roadY - 5 && Math.abs(k.lateral) < main.halfWidth[k.mainIndex]! + 4) return this.respawn(k, 'fall');
     if (data.waterY !== null && k.y - PHYS.rideHeight < data.waterY - 0.8) return this.respawn(k, 'water');
     if (k.offTrackTime > 2.5) return this.respawn(k, 'offtrack');
     if (k.ai && !k.finished) {
       // cão de guarda da IA: sem avanço real por 6 s = preso
       const w = this.watch[k.index]!;
       if (k.progress > w.progress + 8) { w.progress = k.progress; w.time = 0; } else w.time += dt;
-      if (w.time > 6) { w.time = 0; w.progress = k.progress - 20; (this.drivers[k.index] ?? this.autopilot).resetStuck(); return this.respawn(k, 'stuck'); }
+      // Do lado de fora do muro e quase parado (entrou numa fresta, ex.: boca de atalho): recupera em 2 s, não em 6.
+      const outside = k.pathId < 0 && Math.abs(k.lateral) > main.halfWidth[k.mainIndex]! + 1 && Math.abs(k.speed) < 4;
+      w.outside = outside ? w.outside + dt : 0;
+      if (w.time > 6 || w.outside > 2) { w.time = 0; w.outside = 0; w.progress = k.progress - 20; (this.drivers[k.index] ?? this.autopilot).resetStuck(); return this.respawn(k, 'stuck'); }
     }
     if (k.isPlayer && !k.ai) {
       if (k.input.reset && !k.resetHeld && this.resetCooldown <= 0) { this.resetCooldown = 3; this.respawn(k, 'manual'); }
@@ -284,17 +289,32 @@ export class RaceSim {
   /** Classificação final. Quem não cruzou a chegada é ordenado pelo progresso (tempo nulo). */
   result(): RaceResult {
     rankKarts(this.karts);
-    const results: RacerResult[] = [...this.karts].sort((a, b) => a.position - b.position).map((k) => ({
+    const total = this.config.laps * this.track.n;
+    const nowMs = this.raceTime * 1000;
+    let lastMs = 0;
+    const results: RacerResult[] = [...this.karts].sort((a, b) => a.position - b.position).map((k) => {
+      // Quem ainda não chegou: tempo estimado pelo ritmo médio até agora, sempre depois de quem está à frente.
+      let time: number | null = k.finished ? Math.round(k.finishTime) : null;
+      let estimated = false;
+      if (time === null && k.progress > 0 && nowMs > 0) {
+        const rate = k.progress / nowMs;
+        time = Math.round(Math.max(nowMs + Math.max(0, total - k.progress) / rate, lastMs + 100));
+        estimated = true;
+      }
+      if (time !== null) lastMs = time;
+      return {
       racerIndex: k.index,
       characterId: k.characterId,
       kartId: k.kartId,
       isPlayer: k.isPlayer,
       position: k.position,
-      totalTimeMs: k.finished ? Math.round(k.finishTime) : null,
+      totalTimeMs: time,
+      estimated,
       bestLapMs: k.lapTimes.length ? Math.round(Math.min(...k.lapTimes)) : null,
       lapTimesMs: k.lapTimes.map((t) => Math.round(t)),
       points: POINTS_BY_POSITION[k.position - 1] ?? 0,
-    }));
+      };
+    });
     const p = this.player ?? this.karts[0]!;
     const pr = results.find((r) => r.racerIndex === p.index)!;
     return {
@@ -303,7 +323,8 @@ export class RaceSim {
       difficulty: this.config.difficulty,
       results,
       playerPosition: pr.position,
-      playerTimeMs: pr.totalTimeMs,
+      // Recordes e melhores tempos só com tempo real de chegada.
+      playerTimeMs: pr.estimated ? null : pr.totalTimeMs,
       playerBestLapMs: pr.bestLapMs,
       stats: { turbos: [...p.turbos], itemsUsed: p.itemsUsed, hitsTaken: p.hitsTaken, topSpeedKmh: Math.round(p.topSpeed * KMH) },
     };

@@ -52,7 +52,10 @@ export function updateProgress(k: KartState, track: TrackRuntime, timeMs: number
       const si = sc.path.nearest(2, 2, 12, k.x, k.y, k.z);
       if (si < 2) continue;
       const lat = sc.path.lateral(si, k.x, k.y, k.z);
-      if (Math.abs(lat) <= sc.path.halfWidth[si]! + 0.5 && sc.path.dist2(si, k.x, k.y, k.z) + 4 < main.dist2(i, k.x, k.y, k.z)
+      // Já fora da pista principal (passou do muro na boca do atalho): tolerância maior para "entrar" no atalho,
+      // senão o kart fica na fresta entre os dois, sem pertencer a nenhum, empurrando o muro.
+      const tol = Math.abs(k.lateral) > main.halfWidth[i]! + 0.5 ? 3.5 : 0.5;
+      if (Math.abs(lat) <= sc.path.halfWidth[si]! + tol && sc.path.dist2(si, k.x, k.y, k.z) + 4 < main.dist2(i, k.x, k.y, k.z)
         && Math.abs(k.lateral) > main.halfWidth[i]! - 1) {
         k.pathId = s; k.pathIndex = si;
         k.lateral = lat; k.surface = sc.path.surface[si]!; k.onRoad = true;
