@@ -11,7 +11,7 @@ const steps: [string, string][] = [
   ['Karts', 'scripts/build-karts.ts'],
   ['Itens e objetos de corrida', 'scripts/build-items.ts'],
   ['Pistas e cenário', 'scripts/build-tracks.ts'],
-  ...(process.argv.includes('--skip-audio') ? [] : [['Áudio', 'scripts/build-audio.ts'] as [string, string]]),
+  ...(process.argv.includes('--skip-audio') ? [] : [['Áudio', 'scripts/build-audio.ts'] as [string, string], ['Áudio AAC (Safari)', 'scripts/build-audio-aac.ts'] as [string, string]]),
   ['Manifesto', 'scripts/build-manifest.ts'],
 ];
 for (const [label, script] of steps) {

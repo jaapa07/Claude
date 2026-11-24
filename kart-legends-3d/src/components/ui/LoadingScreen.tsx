@@ -90,7 +90,7 @@ export function LoadingScreen(): JSX.Element {
           <div className="progress__fill" style={{ width: `${percent}%` }} />
         </div>
         <p className="loading__status" data-testid="loading-status" aria-live="polite">
-          {status === 'loading' && `Carregando pistas, karts e sons… ${percent}%`}
+          {status === 'loading' && `Carregando pilotos, karts e sons… ${percent}%`}
           {status === 'ready' && 'Tudo pronto. Clique em Iniciar para ligar os motores.'}
           {status === 'error' && 'O carregamento terminou com erros:'}
         </p>

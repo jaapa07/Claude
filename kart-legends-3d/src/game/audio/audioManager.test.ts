@@ -294,8 +294,16 @@ describe('audioManager com AudioContext falso', () => {
     expect(ctx.playing()).toHaveLength(0);
   });
 
+  it('sem o Ogg (Safari), usa a cópia AAC e passa a pedir AAC primeiro', async () => {
+    const fetchMock = installFetch(['audio/music/menu.ogg']);
+    const m = new AudioManager();
+    await m.preload();
+    const urls = fetchMock.mock.calls.map((c) => String(c[0]));
+    expect(urls.some((u) => u.endsWith('audio/aac/music/menu.m4a'))).toBe(true);
+  });
+
   it('preload rejeita listando os arquivos ausentes', async () => {
-    installFetch(['audio/sfx/collision.ogg', 'audio/music/menu.ogg']);
+    installFetch(['audio/sfx/collision.ogg', 'audio/music/menu.ogg', 'audio/aac/sfx/collision.m4a', 'audio/aac/music/menu.m4a']);
     const m = new AudioManager();
     const err = await m.preload().then(
       () => null,

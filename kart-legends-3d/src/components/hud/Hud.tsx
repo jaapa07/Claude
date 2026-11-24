@@ -6,6 +6,7 @@ import { assetUrl } from '@/game/core/assets';
 import { useHudStore } from '@/game/core/hudStore';
 import { AssetImg } from '@/components/ui/common';
 import { formatTime } from '@/components/ui/format';
+import { useSceneStore } from '@/scenes/sceneStore';
 import { Minimap } from './Minimap';
 import { TouchControls } from './TouchControls';
 
@@ -155,10 +156,11 @@ function Alerts(): JSX.Element {
 
 export function Hud(): JSX.Element | null {
   const race = useGameStore((s) => s.race);
+  const sceneLoading = useSceneStore((s) => s.loading);
   if (!race) return null;
   const solo = race.mode === 'timetrial' || race.mode === 'training';
   return (
-    <div className="hud" data-testid="hud" data-mode={race.mode}>
+    <div className="hud" data-testid="hud" data-mode={race.mode} data-scene-loading={sceneLoading} style={sceneLoading ? { visibility: 'hidden' } : undefined}>
       <div className="hud__top-left">
         {!solo && <Position />}
         <LapAndTime training={race.mode === 'training'} />

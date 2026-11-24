@@ -509,23 +509,41 @@ export class AudioManager implements EngineHost {
     const g = this.ensureGraph();
     if (!g) throw new Error(`${file} (Web Audio indisponível)`);
     if (typeof fetch !== 'function') throw new Error(`${file} (fetch indisponível)`);
-    let data: ArrayBuffer;
-    try {
-      const res = await fetch(assetUrl(file));
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      data = await res.arrayBuffer();
-    } catch (err) {
-      throw new Error(`${file} (${errorText(err)})`);
+    // Ogg primeiro; se o navegador não decodificar (Safari antigo/iPhone), a cópia AAC em audio/aac/.
+    const aac = file.endsWith('.ogg') ? file.replace(/^audio\//, 'audio/aac/').replace(/\.ogg$/, '.m4a') : null;
+    const order = aac && this.preferAac ? [aac, file] : aac ? [file, aac] : [file];
+    const reasons: string[] = [];
+    for (const candidate of order) {
+      const label = candidate === aac ? 'cópia AAC: ' : '';
+      let data: ArrayBuffer;
+      try {
+        const res = await fetch(assetUrl(candidate));
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        data = await res.arrayBuffer();
+      } catch (err) {
+        reasons.push(`${label}${errorText(err)}`);
+        continue;
+      }
+      try {
+        const buffer = await decode(g.ctx, data);
+        if (candidate === aac) this.preferAac = true;
+        this.buffers.set(file, buffer);
+        return buffer;
+      } catch (err) {
+        reasons.push(`${label}falha ao decodificar: ${errorText(err) || 'formato não suportado'}`);
+      }
     }
-    let buffer: AudioBuffer;
-    try {
-      buffer = await decode(g.ctx, data);
-    } catch (err) {
-      throw new Error(`${file} (falha ao decodificar: ${errorText(err) || 'formato não suportado'})`);
-    }
-    this.buffers.set(file, buffer);
-    return buffer;
+    throw new Error(`${file} (${reasons.join('; ')})`);
   }
+
+  /** Depois que um Ogg falha e o AAC funciona, os próximos arquivos vão direto ao AAC. */
+  private preferAac = (() => {
+    try {
+      return typeof Audio !== 'undefined' && new Audio().canPlayType('audio/ogg; codecs="vorbis"') === '';
+    } catch {
+      return false;
+    }
+  })();
 
   private loadInBackground(file: string, then?: () => void): void {
     this.load(file).then(

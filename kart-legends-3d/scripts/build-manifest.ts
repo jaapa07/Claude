@@ -31,7 +31,7 @@ const RULES: { dir: string; origin: string; usedIn: string }[] = [
   { dir: 'ui', origin: 'scripts/build-items.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)', usedIn: 'Interface (retratos, ícones, miniaturas)' },
   { dir: 'audio', origin: 'scripts/build-audio.ts (síntese procedural própria)', usedIn: 'Música, efeitos e ambiência' },
 ];
-const TYPES: Record<string, ManifestEntry['type']> = { '.glb': 'model', '.webp': 'image', '.png': 'image', '.ogg': 'audio', '.json': 'data' };
+const TYPES: Record<string, ManifestEntry['type']> = { '.glb': 'model', '.webp': 'image', '.png': 'image', '.ogg': 'audio', '.m4a': 'audio', '.json': 'data' };
 
 async function walk(dir: string): Promise<string[]> {
   const out: string[] = [];

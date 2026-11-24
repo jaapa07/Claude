@@ -68,7 +68,9 @@ for (const a of manifest.assets.filter((x) => x.format === 'webp' || x.format ==
 // 4. áudio: cabeçalho Ogg e tamanho mínimo
 for (const a of manifest.assets.filter((x) => x.type === 'audio')) {
   const buf = await readFile(file(a.path));
-  if (buf.subarray(0, 4).toString('latin1') !== 'OggS') fail(`áudio sem cabeçalho Ogg: ${a.path}`);
+  if (a.format === 'm4a') {
+    if (buf.subarray(4, 8).toString('latin1') !== 'ftyp') fail(`áudio sem cabeçalho MP4: ${a.path}`);
+  } else if (buf.subarray(0, 4).toString('latin1') !== 'OggS') fail(`áudio sem cabeçalho Ogg: ${a.path}`);
   if (buf.length < 2000) fail(`áudio suspeito (muito pequeno): ${a.path}`);
 }
 
