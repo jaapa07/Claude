@@ -35,6 +35,7 @@ var _legend_layer: CanvasLayer
 var _nav: Node2D
 const NAV_SCALE := 1.3
 var _nav_btns: Array = []
+var _resume_t := 0.0
 ## Navegação de menus pelo toque (título, saves, pausa, diálogos): [coluna em touch_nav.png, ação, centro]
 const NAV := [
 	[0, "ui_up", Vector2(26, 184)],
@@ -236,6 +237,13 @@ func _process(_delta: float) -> void:
 	if only_ok != _nav_only_ok:
 		_place_nav(only_ok)
 	var was: bool = _root.visible
+	# depois de fechar uma fala/menu, os botões de jogo voltam só após um instante:
+	# toques a mais no OK (que fica sobre a Espada) não viram golpes
+	if hide:
+		_resume_t = 0.35
+	elif _resume_t > 0.0:
+		_resume_t -= _delta
+		hide = true
 	_root.visible = enabled and not hide
 	if hide and was:
 		_release_all()
