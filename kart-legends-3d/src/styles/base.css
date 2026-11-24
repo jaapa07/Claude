@@ -177,3 +177,15 @@ table { border-collapse: collapse; width: 100%; }
   padding: 0.6rem 1.4rem; border-radius: 999px; background: rgba(12, 8, 30, 0.78); color: #fff;
   font-style: italic; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
 }
+
+/* ---------- Celular ---------- */
+html, body { touch-action: manipulation; -webkit-text-size-adjust: 100%; overscroll-behavior: none; }
+@media (pointer: coarse) and (max-height: 600px) {
+  /* Telas baixas (celular deitado): tudo em rem fica proporcional à altura. */
+  html { font-size: clamp(8px, 2.1vh, 14px); }
+}
+.rotate-hint { display: none; }
+@media (pointer: coarse) and (orientation: portrait) {
+  .rotate-hint { display: grid; place-items: center; position: fixed; inset: 0; z-index: 1000; background: var(--bg-0); color: var(--ink); text-align: center; padding: 2rem; font-size: 18px; font-weight: 800; }
+  .rotate-hint span { display: block; font-size: 56px; margin-bottom: 12px; }
+}

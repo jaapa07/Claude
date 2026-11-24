@@ -50,6 +50,23 @@ servidor de arquivos estáticos.
 Tudo é remapeável em **Configurações**, onde também ficam a sensibilidade da direção, os volumes
 (música, efeitos, ambiente) e a qualidade gráfica (Baixa, Média, Alta).
 
+## Celular (iPhone / Android)
+
+Em telas de toque aparecem controles na tela e o kart **acelera sozinho**:
+
+| Ação | Toque |
+|---|---|
+| Virar | arraste o polegar para os lados na metade esquerda da tela |
+| Drift (segure e solte para o miniturbo) | botão **Drift** |
+| Usar item | botão **Item** |
+| Frear / ré | botão **Freio** |
+| Recuperar o kart | botão **↺** |
+| Pausar | botão **❚❚** no topo |
+
+Jogue com o celular na horizontal; a qualidade gráfica começa em **Baixa**. Para abrir no celular, rode
+`npm run dev -- --host` no computador e acesse o endereço "Network" mostrado no terminal, com o celular
+no mesmo Wi‑Fi, ou publique a pasta `dist/` em qualquer hospedagem estática (GitHub Pages, Netlify, Vercel).
+
 ## Modos
 
 - **Corrida Rápida** — escolha pista e dificuldade, 8 pilotos, 3 voltas.

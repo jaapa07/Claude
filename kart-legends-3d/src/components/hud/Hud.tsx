@@ -7,6 +7,7 @@ import { useHudStore } from '@/game/core/hudStore';
 import { AssetImg } from '@/components/ui/common';
 import { formatTime } from '@/components/ui/format';
 import { Minimap } from './Minimap';
+import { TouchControls } from './TouchControls';
 
 /** Velocidade em que o arco do velocímetro fica cheio. */
 const SPEEDO_MAX_KMH = 160;
@@ -173,6 +174,7 @@ export function Hud(): JSX.Element | null {
       </div>
       {race.mode === 'training' && <p className="hud__hint">Treino livre · pause para sair</p>}
       <Countdown />
+      <TouchControls />
     </div>
   );
 }

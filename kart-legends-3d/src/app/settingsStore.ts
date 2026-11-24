@@ -54,9 +54,16 @@ function cloneBindings(b: Readonly<Bindings>): Bindings {
   return Object.fromEntries(ACTION_IDS.map((a) => [a, [...b[a]]])) as Bindings;
 }
 
+/** Celular/tablet: tela de toque sem mouse. */
+export function isTouchDevice(): boolean {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
+  return window.matchMedia('(pointer: coarse)').matches && !window.matchMedia('(pointer: fine)').matches;
+}
+
 export function createDefaultSettings(): SettingsData {
   return {
-    quality: 'high',
+    // No celular a qualidade padrão é baixa (GPU e bateria).
+    quality: isTouchDevice() ? 'low' : 'high',
     volumes: { music: 0.7, sfx: 0.9, ambient: 0.6 },
     sensitivity: 1,
     bindings: cloneBindings(DEFAULT_BINDINGS),

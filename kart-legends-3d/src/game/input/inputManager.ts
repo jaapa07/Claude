@@ -88,6 +88,8 @@ class InputManager {
   private gameplayActive = false;
   private keySteer = 0;
   private lastReadAt = -1;
+  /** Controles de toque (celular): valores escritos pela camada `TouchControls`. */
+  private readonly touch = { throttle: 0, brake: 0, steer: 0, drift: false, item: false, reset: false };
   private readonly state: InputState = { throttle: 0, brake: 0, steer: 0, drift: false, item: false, reset: false };
   private capture: { resolve: (code: string) => void; reject: (err: Error) => void } | null = null;
 
@@ -207,6 +209,15 @@ class InputManager {
     let item = a.item > 0;
     let reset = a.reset > 0;
 
+    const t = this.touch;
+    if (t.brake > 0) throttle = 0;
+    else throttle = Math.max(throttle, t.throttle);
+    brake = Math.max(brake, t.brake);
+    if (Math.abs(t.steer) > Math.abs(steer)) steer = t.steer;
+    drift = drift || t.drift;
+    item = item || t.item;
+    reset = reset || t.reset;
+
     const pad = this.activePad();
     if (pad) {
       throttle = Math.max(throttle, pressed(pad, PAD.A) ? 1 : 0, analog(pad, PAD.RT));
@@ -234,6 +245,21 @@ class InputManager {
     s.item = item;
     s.reset = reset;
     return s;
+  }
+
+  /** Atualiza os comandos de toque (só os campos informados). */
+  setTouch(values: Partial<{ throttle: number; brake: number; steer: number; drift: boolean; item: boolean; reset: boolean }>): void {
+    Object.assign(this.touch, values);
+  }
+
+  /** Solta todos os comandos de toque. */
+  clearTouch(): void {
+    Object.assign(this.touch, { throttle: 0, brake: 0, steer: 0, drift: false, item: false, reset: false });
+  }
+
+  /** Botão de pausa na tela (toque). */
+  requestPause(): void {
+    this.pausePressed = true;
   }
 
   /** `true` uma única vez por toque na tecla de pausa ou no Start do gamepad. */
