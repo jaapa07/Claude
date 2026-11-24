@@ -1477,7 +1477,7 @@ func run_unit() -> void:
 	# ---- movimento: diagonal não é mais rápida
 	P.global_position = Vector2(21 * 16 + 8, 16 * 16 + 8)
 	await frames(3)
-	var p0 := P.global_position
+	var p0: Vector2 = P.global_position
 	Input.action_press("move_right"); await frames(30); Input.action_release("move_right")
 	var d_axis := P.global_position.distance_to(p0)
 	P.global_position = Vector2(21 * 16 + 8, 16 * 16 + 8)
@@ -7104,8 +7104,46 @@ func qa_map(id: String, overview: bool) -> void:
 		W.camera.position = Vector2.ZERO
 		main.ui.hud.hud_hidden = false
 
+## Estados presos: fechar a fala com a mesma tecla de interagir não reabre a conversa; tocar num objeto e
+## ser interrompido por uma fala não deixa o herói andando sozinho depois.
+func qa_states() -> void:
+	SaveSys.delete_slot(6)
+	main.start_new_game(6)
+	await frames(10)
+	await advance_dialogs()
+	var maru := ent_by_id("anciao")
+	await goto(maru.global_position + Vector2(0, 16), 6.0)
+	await face(Vector2.UP)
+	await frames(3)
+	await ui_press("interact")
+	await frames(3)
+	var opened: bool = main.ui.hud.dlg_active
+	var n := 0
+	while main.ui.hud.dlg_active and n < 40:
+		await frames(70)
+		await ui_press("interact")
+		n += 1
+	await frames(6)
+	check("QA: fechar a fala com {interagir} não reabre a conversa", opened and not main.ui.hud.dlg_active and P.state == Player.S.FREE, "aberta=%s dlg=%s estado=%d" % [opened, main.ui.hud.dlg_active, P.state])
+	# toque num objeto distante + fala no caminho: depois da fala o herói fica parado
+	var placa := ent_by_id("placa_vila")
+	if placa == null:
+		for e in get_tree().get_nodes_in_group("ents"):
+			if e.kind == "sign":
+				placa = e
+				break
+	P.go_interact(placa)
+	await frames(4)
+	main.ui.dialog(["Teste: fala que interrompe a caminhada."], func(): pass)
+	await frames(3)
+	await advance_dialogs()
+	var p0: Vector2 = P.global_position
+	await frames(30)
+	check("QA: fala no meio da caminhada por toque cancela a caminhada", P.auto_ent == null and P.global_position.distance_to(p0) < 2.0, "%s -> %s" % [p0, P.global_position])
+
 func run_qa() -> void:
 	Game.god_mode = true
+	await qa_states()
 	await qa_setup()
 	if not "--so-mapas" in args:
 		for touch in [false, true]:

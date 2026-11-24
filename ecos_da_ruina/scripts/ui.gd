@@ -45,10 +45,22 @@ func fade(a: float, dur: float) -> Signal:
 func boss_bar(b: Node) -> void:
 	hud.boss = b
 
+## Quadro de física em que o último diálogo/menu fechou: a tecla que fechou (ex.: {interagir}) não pode,
+## no mesmo instante, acionar o herói de novo (antes, fechar a fala da Maru com E reabria a conversa sem fim).
+var unpaused_frame := -100
+
 func _modal(on: bool) -> void:
+	var was := modal
 	modal += 1 if on else -1
 	modal = max(0, modal)
 	get_tree().paused = modal > 0
+	if was > 0 and modal == 0:
+		unpaused_frame = Engine.get_physics_frames()
+	if on and world != null and world.player != null:
+		world.player.auto_ent = null     # fala/menu no meio de uma caminhada por toque: o herói não segue sozinho depois
+
+func input_guarded() -> bool:
+	return Engine.get_physics_frames() - unpaused_frame <= 2
 
 func dialog(lines: Array, cb: Callable) -> void:
 	_modal(true)

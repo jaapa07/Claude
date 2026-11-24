@@ -168,6 +168,10 @@ func _physics_process(delta: float) -> void:
 	Game.play_time += delta
 	_tick_timers(delta)
 	move_input = Input.get_vector("move_left", "move_right", "move_up", "move_down")
+	# toque num objeto: a caminhada automática só vale enquanto o herói está livre; diálogo, cena, golpe ou
+	# esquiva cancelam (antes, depois de uma fala o herói voltava a andar sozinho até o objeto tocado)
+	if state != S.FREE:
+		auto_ent = null
 	match state:
 		S.FREE: _state_free(delta)
 		S.ATTACK: _state_attack(delta)
@@ -225,6 +229,9 @@ func _state_free(delta: float) -> void:
 	move_and_slide()
 	if running:
 		_run_tick(delta)
+	# logo depois de fechar uma fala ou menu, a tecla que fechou não vira comando do herói
+	if world.ui != null and world.ui.input_guarded():
+		return
 	# ordem de prioridade dos comandos
 	if Input.is_action_just_pressed("dodge"):
 		_try_dodge()
@@ -434,6 +441,7 @@ func _state_hurt(delta: float) -> void:
 		state = S.FREE
 
 func set_busy(b: bool) -> void:
+	auto_ent = null
 	if b and state != S.DEAD:
 		state = S.INTERACT
 		velocity = Vector2.ZERO
