@@ -4,3 +4,4 @@
 tests/last_result.txt
 
 .claude/
+__pycache__/
