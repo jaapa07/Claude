@@ -1,0 +1,702 @@
+{
+  "generator": "scripts/build-characters.ts",
+  "units": "metros; origem na base do quadril; frente = +Z; L = esquerda do personagem = +X",
+  "requiredBones": [
+    "root",
+    "hips",
+    "spine",
+    "chest",
+    "neck",
+    "head",
+    "armL",
+    "forearmL",
+    "handL",
+    "armR",
+    "forearmR",
+    "handR",
+    "legL",
+    "shinL",
+    "legR",
+    "shinR"
+  ],
+  "bindPose": "pose de direção sentada; todos os ossos têm rotação de repouso identidade; mãos em (±0.14, 0.52, 0.38)",
+  "face": {
+    "mesh": "face",
+    "material": "face_<id>",
+    "atlas": "4 colunas × 2 linhas",
+    "expressions": [
+      "neutral",
+      "happy",
+      "focus",
+      "hurt",
+      "sad",
+      "blink",
+      "wow",
+      "grit"
+    ],
+    "uvConvention": "TEXCOORD_0 da malha `face` cobre a célula 0 (neutral): u de 0 a 0.25, v de 0 a 0.5, com v=0 no TOPO da imagem (convenção glTF; no three.js a textura do GLTFLoader vem com flipY=false). u cresce da direita do personagem (−X) para a esquerda (+X), ou seja, a imagem não fica espelhada vista de frente. Para a expressão i (0..7): map.offset.set(0.25 * (i % 4), 0.5 * Math.floor(i / 4)), mantendo map.repeat = (1, 1) e wrap padrão.",
+    "atlasPixels": "1024×1024 (conteúdo 1024×512 esticado 2× na vertical, pois scripts/lib/textures.ts só rasteriza quadrado; as UVs são as mesmas de um atlas 1024×512)"
+  },
+  "animation": {
+    "fps": 30,
+    "once": [
+      "hit",
+      "victory",
+      "defeat"
+    ],
+    "note": "turn_right/drift_right são o espelho exato da pose de turn_left/drift_left"
+  },
+  "characters": [
+    {
+      "id": "nilo",
+      "file": "assets/characters/nilo.glb",
+      "bytes": 388276,
+      "triangles": 12899,
+      "bones": 22,
+      "extraBones": [
+        "earL",
+        "earR",
+        "scarf",
+        "tail1",
+        "tail2",
+        "tail3"
+      ],
+      "handL": [
+        0.14,
+        0.52,
+        0.38
+      ],
+      "handR": [
+        -0.14,
+        0.52,
+        0.38
+      ],
+      "seatedHeight": 1.0685,
+      "facePatch": {
+        "widthM": 0.4437,
+        "heightM": 0.2641
+      },
+      "clips": [
+        {
+          "name": "idle",
+          "duration": 3,
+          "loop": true
+        },
+        {
+          "name": "drive",
+          "duration": 1.2,
+          "loop": true
+        },
+        {
+          "name": "turn_left",
+          "duration": 1,
+          "loop": true
+        },
+        {
+          "name": "turn_right",
+          "duration": 1,
+          "loop": true
+        },
+        {
+          "name": "drift_left",
+          "duration": 0.8,
+          "loop": true
+        },
+        {
+          "name": "drift_right",
+          "duration": 0.8,
+          "loop": true
+        },
+        {
+          "name": "hit",
+          "duration": 0.9,
+          "loop": false
+        },
+        {
+          "name": "victory",
+          "duration": 2.4,
+          "loop": false
+        },
+        {
+          "name": "defeat",
+          "duration": 2.4,
+          "loop": false
+        },
+        {
+          "name": "podium",
+          "duration": 2,
+          "loop": true
+        }
+      ]
+    },
+    {
+      "id": "boro",
+      "file": "assets/characters/boro.glb",
+      "bytes": 365720,
+      "triangles": 13280,
+      "bones": 17,
+      "extraBones": [
+        "hair"
+      ],
+      "handL": [
+        0.14,
+        0.52,
+        0.38
+      ],
+      "handR": [
+        -0.14,
+        0.52,
+        0.38
+      ],
+      "seatedHeight": 1.032,
+      "facePatch": {
+        "widthM": 0.4076,
+        "heightM": 0.2687
+      },
+      "clips": [
+        {
+          "name": "idle",
+          "duration": 3,
+          "loop": true
+        },
+        {
+          "name": "drive",
+          "duration": 1.2,
+          "loop": true
+        },
+        {
+          "name": "turn_left",
+          "duration": 1,
+          "loop": true
+        },
+        {
+          "name": "turn_right",
+          "duration": 1,
+          "loop": true
+        },
+        {
+          "name": "drift_left",
+          "duration": 0.8,
+          "loop": true
+        },
+        {
+          "name": "drift_right",
+          "duration": 0.8,
+          "loop": true
+        },
+        {
+          "name": "hit",
+          "duration": 0.9,
+          "loop": false
+        },
+        {
+          "name": "victory",
+          "duration": 2.4,
+          "loop": false
+        },
+        {
+          "name": "defeat",
+          "duration": 2.4,
+          "loop": false
+        },
+        {
+          "name": "podium",
+          "duration": 2,
+          "loop": true
+        }
+      ]
+    },
+    {
+      "id": "lumi",
+      "file": "assets/characters/lumi.glb",
+      "bytes": 361552,
+      "triangles": 11346,
+      "bones": 22,
+      "extraBones": [
+        "antenna1",
+        "antenna2",
+        "scarf1",
+        "scarf2",
+        "scarf3",
+        "scarf4"
+      ],
+      "handL": [
+        0.14,
+        0.52,
+        0.38
+      ],
+      "handR": [
+        -0.14,
+        0.52,
+        0.38
+      ],
+      "seatedHeight": 0.99,
+      "facePatch": {
+        "widthM": 0.3467,
+        "heightM": 0.2599
+      },
+      "clips": [
+        {
+          "name": "idle",
+          "duration": 3,
+          "loop": true
+        },
+        {
+          "name": "drive",
+          "duration": 1.2,
+          "loop": true
+        },
+        {
+          "name": "turn_left",
+          "duration": 1,
+          "loop": true
+        },
+        {
+          "name": "turn_right",
+          "duration": 1,
+          "loop": true
+        },
+        {
+          "name": "drift_left",
+          "duration": 0.8,
+          "loop": true
+        },
+        {
+          "name": "drift_right",
+          "duration": 0.8,
+          "loop": true
+        },
+        {
+          "name": "hit",
+          "duration": 0.9,
+          "loop": false
+        },
+        {
+          "name": "victory",
+          "duration": 2.4,
+          "loop": false
+        },
+        {
+          "name": "defeat",
+          "duration": 2.4,
+          "loop": false
+        },
+        {
+          "name": "podium",
+          "duration": 2,
+          "loop": true
+        }
+      ]
+    },
+    {
+      "id": "kora",
+      "file": "assets/characters/kora.glb",
+      "bytes": 368664,
+      "triangles": 13768,
+      "bones": 19,
+      "extraBones": [
+        "hair1",
+        "hair2",
+        "cape"
+      ],
+      "handL": [
+        0.14,
+        0.52,
+        0.38
+      ],
+      "handR": [
+        -0.14,
+        0.52,
+        0.38
+      ],
+      "seatedHeight": 1.032,
+      "facePatch": {
+        "widthM": 0.3647,
+        "heightM": 0.2415
+      },
+      "clips": [
+        {
+          "name": "idle",
+          "duration": 3,
+          "loop": true
+        },
+        {
+          "name": "drive",
+          "duration": 1.2,
+          "loop": true
+        },
+        {
+          "name": "turn_left",
+          "duration": 1,
+          "loop": true
+        },
+        {
+          "name": "turn_right",
+          "duration": 1,
+          "loop": true
+        },
+        {
+          "name": "drift_left",
+          "duration": 0.8,
+          "loop": true
+        },
+        {
+          "name": "drift_right",
+          "duration": 0.8,
+          "loop": true
+        },
+        {
+          "name": "hit",
+          "duration": 0.9,
+          "loop": false
+        },
+        {
+          "name": "victory",
+          "duration": 2.4,
+          "loop": false
+        },
+        {
+          "name": "defeat",
+          "duration": 2.4,
+          "loop": false
+        },
+        {
+          "name": "podium",
+          "duration": 2,
+          "loop": true
+        }
+      ]
+    },
+    {
+      "id": "tiko",
+      "file": "assets/characters/tiko.glb",
+      "bytes": 363320,
+      "triangles": 10848,
+      "bones": 22,
+      "extraBones": [
+        "earL",
+        "earR",
+        "tail1",
+        "tail2",
+        "tail3",
+        "tail4"
+      ],
+      "handL": [
+        0.14,
+        0.52,
+        0.38
+      ],
+      "handR": [
+        -0.14,
+        0.52,
+        0.38
+      ],
+      "seatedHeight": 1.0236,
+      "facePatch": {
+        "widthM": 0.4097,
+        "heightM": 0.2633
+      },
+      "clips": [
+        {
+          "name": "idle",
+          "duration": 3,
+          "loop": true
+        },
+        {
+          "name": "drive",
+          "duration": 1.2,
+          "loop": true
+        },
+        {
+          "name": "turn_left",
+          "duration": 1,
+          "loop": true
+        },
+        {
+          "name": "turn_right",
+          "duration": 1,
+          "loop": true
+        },
+        {
+          "name": "drift_left",
+          "duration": 0.8,
+          "loop": true
+        },
+        {
+          "name": "drift_right",
+          "duration": 0.8,
+          "loop": true
+        },
+        {
+          "name": "hit",
+          "duration": 0.9,
+          "loop": false
+        },
+        {
+          "name": "victory",
+          "duration": 2.4,
+          "loop": false
+        },
+        {
+          "name": "defeat",
+          "duration": 2.4,
+          "loop": false
+        },
+        {
+          "name": "podium",
+          "duration": 2,
+          "loop": true
+        }
+      ]
+    },
+    {
+      "id": "mavi",
+      "file": "assets/characters/mavi.glb",
+      "bytes": 378768,
+      "triangles": 13624,
+      "bones": 22,
+      "extraBones": [
+        "braid1",
+        "braid2",
+        "braid3",
+        "braid4",
+        "feather1",
+        "feather2"
+      ],
+      "handL": [
+        0.14,
+        0.52,
+        0.38
+      ],
+      "handR": [
+        -0.14,
+        0.52,
+        0.38
+      ],
+      "seatedHeight": 1.032,
+      "facePatch": {
+        "widthM": 0.3647,
+        "heightM": 0.2415
+      },
+      "clips": [
+        {
+          "name": "idle",
+          "duration": 3,
+          "loop": true
+        },
+        {
+          "name": "drive",
+          "duration": 1.2,
+          "loop": true
+        },
+        {
+          "name": "turn_left",
+          "duration": 1,
+          "loop": true
+        },
+        {
+          "name": "turn_right",
+          "duration": 1,
+          "loop": true
+        },
+        {
+          "name": "drift_left",
+          "duration": 0.8,
+          "loop": true
+        },
+        {
+          "name": "drift_right",
+          "duration": 0.8,
+          "loop": true
+        },
+        {
+          "name": "hit",
+          "duration": 0.9,
+          "loop": false
+        },
+        {
+          "name": "victory",
+          "duration": 2.4,
+          "loop": false
+        },
+        {
+          "name": "defeat",
+          "duration": 2.4,
+          "loop": false
+        },
+        {
+          "name": "podium",
+          "duration": 2,
+          "loop": true
+        }
+      ]
+    },
+    {
+      "id": "runi",
+      "file": "assets/characters/runi.glb",
+      "bytes": 390464,
+      "triangles": 12834,
+      "bones": 23,
+      "extraBones": [
+        "cloth1",
+        "cloth2",
+        "cloth3",
+        "cape",
+        "tail1",
+        "tail2",
+        "tail3"
+      ],
+      "handL": [
+        0.14,
+        0.52,
+        0.38
+      ],
+      "handR": [
+        -0.14,
+        0.52,
+        0.38
+      ],
+      "seatedHeight": 1.014,
+      "facePatch": {
+        "widthM": 0.4423,
+        "heightM": 0.2505
+      },
+      "clips": [
+        {
+          "name": "idle",
+          "duration": 3,
+          "loop": true
+        },
+        {
+          "name": "drive",
+          "duration": 1.2,
+          "loop": true
+        },
+        {
+          "name": "turn_left",
+          "duration": 1,
+          "loop": true
+        },
+        {
+          "name": "turn_right",
+          "duration": 1,
+          "loop": true
+        },
+        {
+          "name": "drift_left",
+          "duration": 0.8,
+          "loop": true
+        },
+        {
+          "name": "drift_right",
+          "duration": 0.8,
+          "loop": true
+        },
+        {
+          "name": "hit",
+          "duration": 0.9,
+          "loop": false
+        },
+        {
+          "name": "victory",
+          "duration": 2.4,
+          "loop": false
+        },
+        {
+          "name": "defeat",
+          "duration": 2.4,
+          "loop": false
+        },
+        {
+          "name": "podium",
+          "duration": 2,
+          "loop": true
+        }
+      ]
+    },
+    {
+      "id": "zera",
+      "file": "assets/characters/zera.glb",
+      "bytes": 417868,
+      "triangles": 13456,
+      "bones": 24,
+      "extraBones": [
+        "earL",
+        "earR",
+        "scarf1",
+        "scarf2",
+        "scarf3",
+        "tail1",
+        "tail2",
+        "tail3"
+      ],
+      "handL": [
+        0.14,
+        0.52,
+        0.38
+      ],
+      "handR": [
+        -0.14,
+        0.52,
+        0.38
+      ],
+      "seatedHeight": 1.0402,
+      "facePatch": {
+        "widthM": 0.4128,
+        "heightM": 0.2712
+      },
+      "clips": [
+        {
+          "name": "idle",
+          "duration": 3,
+          "loop": true
+        },
+        {
+          "name": "drive",
+          "duration": 1.2,
+          "loop": true
+        },
+        {
+          "name": "turn_left",
+          "duration": 1,
+          "loop": true
+        },
+        {
+          "name": "turn_right",
+          "duration": 1,
+          "loop": true
+        },
+        {
+          "name": "drift_left",
+          "duration": 0.8,
+          "loop": true
+        },
+        {
+          "name": "drift_right",
+          "duration": 0.8,
+          "loop": true
+        },
+        {
+          "name": "hit",
+          "duration": 0.9,
+          "loop": false
+        },
+        {
+          "name": "victory",
+          "duration": 2.4,
+          "loop": false
+        },
+        {
+          "name": "defeat",
+          "duration": 2.4,
+          "loop": false
+        },
+        {
+          "name": "podium",
+          "duration": 2,
+          "loop": true
+        }
+      ]
+    }
+  ]
+}
