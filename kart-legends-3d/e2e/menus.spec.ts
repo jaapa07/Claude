@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { boot, trackErrors } from './helpers';
 
-const CHARACTERS = ['nilo', 'boro', 'lumi', 'kora', 'tiko', 'mavi', 'runi', 'zera'];
+const CHARACTERS = ['nilo', 'boro', 'lumi', 'kora', 'tiko', 'mavi', 'runi', 'zera', 'capi', 'tuca'];
 const KARTS = ['flecha', 'engrenagem', 'cometa', 'broto', 'faisca', 'mare', 'duna', 'geada'];
 const TRACKS = ['porto-lanternas', 'bosque-cristal', 'vale-moinhos', 'canion-solar', 'cidade-neon', 'pico-boreal', 'jardim-celeste', 'fortaleza-tempestade'];
 

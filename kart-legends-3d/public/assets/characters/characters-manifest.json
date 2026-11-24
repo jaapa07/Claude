@@ -697,6 +697,165 @@
           "loop": true
         }
       ]
+    },
+    {
+      "id": "capi",
+      "file": "assets/characters/capi.glb",
+      "bytes": 342876,
+      "triangles": 11662,
+      "bones": 19,
+      "extraBones": [
+        "earL",
+        "earR",
+        "fruit"
+      ],
+      "handL": [
+        0.14,
+        0.52,
+        0.38
+      ],
+      "handR": [
+        -0.14,
+        0.52,
+        0.38
+      ],
+      "seatedHeight": 0.996,
+      "facePatch": {
+        "widthM": 0.3732,
+        "heightM": 0.2994
+      },
+      "clips": [
+        {
+          "name": "idle",
+          "duration": 3,
+          "loop": true
+        },
+        {
+          "name": "drive",
+          "duration": 1.2,
+          "loop": true
+        },
+        {
+          "name": "turn_left",
+          "duration": 1,
+          "loop": true
+        },
+        {
+          "name": "turn_right",
+          "duration": 1,
+          "loop": true
+        },
+        {
+          "name": "drift_left",
+          "duration": 0.8,
+          "loop": true
+        },
+        {
+          "name": "drift_right",
+          "duration": 0.8,
+          "loop": true
+        },
+        {
+          "name": "hit",
+          "duration": 0.9,
+          "loop": false
+        },
+        {
+          "name": "victory",
+          "duration": 2.4,
+          "loop": false
+        },
+        {
+          "name": "defeat",
+          "duration": 2.4,
+          "loop": false
+        },
+        {
+          "name": "podium",
+          "duration": 2,
+          "loop": true
+        }
+      ]
+    },
+    {
+      "id": "tuca",
+      "file": "assets/characters/tuca.glb",
+      "bytes": 362652,
+      "triangles": 11170,
+      "bones": 20,
+      "extraBones": [
+        "band",
+        "tail1",
+        "tail2",
+        "tail3"
+      ],
+      "handL": [
+        0.14,
+        0.52,
+        0.38
+      ],
+      "handR": [
+        -0.14,
+        0.52,
+        0.38
+      ],
+      "seatedHeight": 1.0362,
+      "facePatch": {
+        "widthM": 0.3879,
+        "heightM": 0.3115
+      },
+      "clips": [
+        {
+          "name": "idle",
+          "duration": 3,
+          "loop": true
+        },
+        {
+          "name": "drive",
+          "duration": 1.2,
+          "loop": true
+        },
+        {
+          "name": "turn_left",
+          "duration": 1,
+          "loop": true
+        },
+        {
+          "name": "turn_right",
+          "duration": 1,
+          "loop": true
+        },
+        {
+          "name": "drift_left",
+          "duration": 0.8,
+          "loop": true
+        },
+        {
+          "name": "drift_right",
+          "duration": 0.8,
+          "loop": true
+        },
+        {
+          "name": "hit",
+          "duration": 0.9,
+          "loop": false
+        },
+        {
+          "name": "victory",
+          "duration": 2.4,
+          "loop": false
+        },
+        {
+          "name": "defeat",
+          "duration": 2.4,
+          "loop": false
+        },
+        {
+          "name": "podium",
+          "duration": 2,
+          "loop": true
+        }
+      ]
     }
   ]
 }

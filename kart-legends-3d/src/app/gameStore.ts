@@ -54,9 +54,13 @@ function mulberry32(seed: number): () => number {
   };
 }
 
+/** Pilotos por corrida (as pistas têm oito posições de largada). */
+export const RACERS_PER_RACE = 8;
+
 /**
- * Grid da Corrida Rápida e da 1ª corrida de uma copa: os outros sete personagens (inclusive os ainda
- * bloqueados, cada um com seu kart preferido) em ordem embaralhada pela seed, e o jogador em 8º.
+ * Grid da Corrida Rápida e da 1ª corrida de uma copa: sete adversários sorteados pela seed entre os outros
+ * personagens (inclusive os ainda bloqueados, cada um com seu kart preferido), em ordem embaralhada, e o
+ * jogador em 8º.
  */
 export function buildFreshGrid(selection: Pick<Selection, 'characterId' | 'kartId'>, seed: number): RacerSetup[] {
   const rivals = CHARACTERS.filter((c) => c.id !== selection.characterId).map<RacerSetup>((c) => ({ characterId: c.id, kartId: c.kartId, isPlayer: false }));
@@ -65,7 +69,7 @@ export function buildFreshGrid(selection: Pick<Selection, 'characterId' | 'kartI
     const j = Math.floor(rand() * (i + 1));
     [rivals[i], rivals[j]] = [rivals[j], rivals[i]];
   }
-  return [...rivals, { characterId: selection.characterId, kartId: selection.kartId, isPlayer: true }];
+  return [...rivals.slice(0, RACERS_PER_RACE - 1), { characterId: selection.characterId, kartId: selection.kartId, isPlayer: true }];
 }
 
 /**
@@ -132,8 +136,11 @@ export const useGameStore = create<GameStoreState>()((set, get) => ({
 
     if (selection.mode === 'championship') {
       if (championship && !championship.finished) {
-        // Copa em andamento: mesmos oito pilotos, grid pela classificação invertida.
-        racers = championship.raceIndex === 0 ? buildFreshGrid(selection, seed) : buildStandingsGrid(championship.standings);
+        // Copa em andamento: mesmos oito pilotos (o sorteio de adversários é feito uma vez só, ao criar a copa),
+        // grid pela classificação invertida a partir da 2ª corrida.
+        racers = championship.raceIndex === 0
+          ? championship.standings.map(({ characterId, kartId, isPlayer }) => ({ characterId, kartId, isPlayer }))
+          : buildStandingsGrid(championship.standings);
       } else {
         racers = buildFreshGrid(selection, seed);
         championship = {

@@ -33,7 +33,7 @@ export function CharacterSelect(): JSX.Element {
       onBack={() => goTo(prevScreen('character', selection.mode))}
       footer={<Btn testId="btn-confirm" variant="primary" sound="none" disabled={isLocked(selection.characterId)} onClick={pick.confirm}>Confirmar</Btn>}
     >
-      <div className="card-grid card-grid--roster">
+      <div className="card-grid card-grid--roster card-grid--characters">
         {CHARACTERS.map((c) => {
           const locked = isLocked(c.id);
           return (

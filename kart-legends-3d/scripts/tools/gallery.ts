@@ -22,7 +22,7 @@ for (const track of tracks) {
   await page.addInitScript((q) => {
     localStorage.setItem('kl3d.settings.v1', JSON.stringify({ quality: q }));
     // save com tudo liberado só para a galeria (as pistas da Copa Eclipse começam bloqueadas)
-    localStorage.setItem('kl3d.save', JSON.stringify({ version: 1, unlocked: { characters: ['nilo', 'boro', 'lumi', 'kora', 'tiko', 'mavi', 'runi', 'zera'], karts: ['flecha', 'engrenagem', 'cometa', 'broto', 'faisca', 'mare', 'duna', 'geada'], cups: ['aurora', 'eclipse'] }, trophies: { aurora: 'gold', eclipse: null }, records: {}, stats: {} }));
+    localStorage.setItem('kl3d.save', JSON.stringify({ version: 1, unlocked: { characters: ['nilo', 'boro', 'lumi', 'kora', 'tiko', 'mavi', 'runi', 'zera', 'capi', 'tuca'], karts: ['flecha', 'engrenagem', 'cometa', 'broto', 'faisca', 'mare', 'duna', 'geada'], cups: ['aurora', 'eclipse'] }, trophies: { aurora: 'gold', eclipse: null }, records: {}, stats: {} }));
   }, quality);
   await page.goto(`${url}/?fast=1&e2e=1`);
   await page.getByTestId('btn-start').click({ timeout: 180000 });
@@ -30,7 +30,7 @@ for (const track of tracks) {
   await page.getByTestId('card-mode-quick').click(); await page.getByTestId('btn-confirm').click();
   await page.getByTestId(`card-track-${track}`).click(); await page.getByTestId('btn-confirm').click();
   await page.getByTestId('card-difficulty-normal').click(); await page.getByTestId('btn-confirm').click();
-  const who = ['nilo', 'boro', 'lumi', 'kora', 'tiko', 'mavi', 'runi', 'zera'][tracks.indexOf(track) % 8]!;
+  const who = ['nilo', 'boro', 'lumi', 'kora', 'tiko', 'mavi', 'runi', 'zera', 'capi', 'tuca'][tracks.indexOf(track) % 10]!;
   await page.getByTestId(`card-character-${who}`).click(); await page.getByTestId('btn-confirm').click();
   await page.getByTestId('btn-confirm').click();
   await page.waitForFunction(() => !!(window as unknown as { __kl3d?: unknown }).__kl3d, undefined, { timeout: 180000 });

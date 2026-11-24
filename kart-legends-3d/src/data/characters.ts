@@ -23,6 +23,8 @@ export const CHARACTERS: readonly CharacterDef[] = [
   { id: 'mavi', name: 'Mavi', title: 'Navegadora aventureira', bio: 'Lê o vento como quem lê uma carta náutica.', color: '#1f8fc4', accent: '#ffb24d', kartId: 'mare', unlock: { type: 'trophy', cup: 'aurora', min: 'bronze' } },
   { id: 'runi', name: 'Runi', title: 'Corredor das dunas', bio: 'Aprendeu a derrapar em areia antes de aprender a andar.', color: '#d9a441', accent: '#7a3b1e', kartId: 'duna', unlock: { type: 'trophy', cup: 'aurora', min: 'gold' } },
   { id: 'zera', name: 'Zera', title: 'Exploradora do gelo', bio: 'Fria nas retas, implacável nas curvas congeladas.', color: '#58c7e8', accent: '#f4fbff', kartId: 'geada', unlock: { type: 'trophy', cup: 'eclipse', min: 'bronze' } },
+  { id: 'capi', name: 'Capi', title: 'Capivara sossegada', bio: 'Nunca tem pressa, mas sempre chega: a tangerina na cabeça nunca caiu.', color: '#ff5fa2', accent: '#ffb547', kartId: 'mare', unlock: { type: 'wins', count: 3 } },
+  { id: 'tuca', name: 'Tuca', title: 'Tucano acrobata', bio: 'Pilota de bico erguido e faz cada miniturbo parecer um voo rasante.', color: '#9bd43a', accent: '#ff9a1f', kartId: 'faisca', unlock: { type: 'turbo3', count: 40 } },
 ];
 
 export const CHARACTER_BY_ID = Object.fromEntries(CHARACTERS.map((c) => [c.id, c])) as Record<CharacterId, CharacterDef>;

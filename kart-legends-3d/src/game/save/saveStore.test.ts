@@ -4,7 +4,7 @@ import { TRACK_IDS } from '@/data/ids';
 import { installMemoryStorage, makeResult } from './testUtils';
 
 const storage = installMemoryStorage();
-const { SAVE_CORRUPT_KEY, SAVE_KEY, SAVE_VERSION, createDefaultSave, parseSave, trophyForPosition, useSaveStore } = await import('./saveStore');
+const { SAVE_CORRUPT_KEY, SAVE_KEY, SAVE_VERSION, computeUnlocks, createDefaultSave, parseSave, trophyForPosition, useSaveStore } = await import('./saveStore');
 
 function race(partial: Partial<RaceConfig> = {}): RaceConfig {
   return {
@@ -153,6 +153,20 @@ describe('save: desbloqueios pelas regras dos dados', () => {
     const eclipse = s.applyRaceResult(makeResult(race({ mode: 'championship', trackId: 'fortaleza-tempestade' })), { cupId: 'eclipse', position: 2 });
     expect(eclipse.map((u) => u.id)).toEqual(expect.arrayContaining(['zera', 'geada']));
     expect(useSaveStore.getState().stats.championships).toBe(4);
+  });
+
+  it('Capi sai com 3 vitórias e Tuca com 40 miniturbos de nível 3', () => {
+    const d = createDefaultSave();
+    expect(d.unlocked.characters).not.toContain('capi');
+    expect(d.unlocked.characters).not.toContain('tuca');
+    d.stats.wins = 2;
+    expect(computeUnlocks(d).characters).not.toContain('capi');
+    d.stats.wins = 3;
+    expect(computeUnlocks(d).characters).toContain('capi');
+    d.stats.turbos = [0, 0, 39];
+    expect(computeUnlocks(d).characters).not.toContain('tuca');
+    d.stats.turbos = [0, 0, 40];
+    expect(computeUnlocks(d).characters).toContain('tuca');
   });
 
   it('trophyForPosition: ouro, prata, bronze e nada', () => {
