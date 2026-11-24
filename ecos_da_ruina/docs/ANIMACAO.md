@@ -20,7 +20,6 @@ tinge e espalha esses sprites (tween, shader de cor e `CPUParticles2D`).
 | **Subida de nível** (herói e criatura ativa) | Nada no mundo | Divisas douradas subindo (`fx_nivel.png`), pulso dourado, clarão e pulinho. |
 | **Evolução** | Faísca ao trocar o sprite | Clarão branco longo, dois pulsos de luz e rajada de fragmentos ao redor da forma nova. |
 | **Transição de mapa** (e descanso no santuário) | Fade preto liso | **Cortina em pontilhado** (blocos de 2x2 px seguindo a matriz `fx_bayer.png`) varrendo a tela na diagonal, na cor do fundo do jogo. `fade_a` continua com o mesmo significado. |
-| **Letreiro da região** | Aparecia e esmaecia | Desce com um leve quique ao entrar e sobe ao sair. |
 | **Flores** (Floresta) | Estáticas | Tiles `flowers0` e `bloom0` **balançam ao vento** (base → direita → base → esquerda), quadros extras desenhados à mão; cada célula começa num instante sorteado pelo próprio TileSet (`RANDOM_START_TIMES`), então o campo não balança em uníssono. |
 | **Estandartes** (Fortaleza) | Estáticos | Tile `f_banner` com **ondulação descendo pelo pano** (3 quadros). |
 | **Ambiente por região** | Só o clima | Poucas partículas leves por mapa (`scripts/ambient.gd`): **folhas secas caindo** na Floresta, **brasas** subindo nas Minas, **vagalumes** piscando no Pântano, **poeira dourada** na Fortaleza, **partículas do vazio** na Catedral, poeira no ar dos interiores e **brilhos na água** em qualquer mapa com água (pontos de emissão nas próprias células de água). As partículas ficam no mundo (não grudam na tela ao andar). |
@@ -38,7 +37,9 @@ tinge e espalha esses sprites (tween, shader de cor e `CPUParticles2D`).
 - `scripts/world.gd`: `impact()`, `burst()`, `step_fx()`, `heal_fx()`, `levelup_fx()`, `evolve_fx()`,
   `_sway_tiles()`; `deco_ok()` desliga as partículas decorativas nos testes automáticos (elas sorteiam números e
   mudariam a sequência com semente fixa dos testes) — a vitrine `--anim` liga de volta.
-- `scripts/hud.gd`: shader da cortina em pontilhado e movimento do letreiro.
+- `scripts/hud.gd`: shader da cortina em pontilhado (o letreiro da região segue a animação da interface nova).
+- Opção **Flashes de impacto** (`Game.prefs.reduz_flash`): quando desligada, o clarão branco cai para 40% e a estrela de
+  impacto fica translúcida; o **Tremor de tela** continua controlado só pela câmera (`world.shake`).
 - Animações de tile com quadros na **mesma coluna, linhas abaixo** (`animation_columns = 1`, separação em células),
   para não mexer na ordem/índice de nenhum tile existente.
 
