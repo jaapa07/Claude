@@ -22,7 +22,7 @@ export type MatchOpts = {
   home: TeamData; away: TeamData; homeKit: 'home' | 'away'; awayKit: 'home' | 'away'; arena: string;
   homeDevices: DeviceId[]; awayDevices: DeviceId[]; mode: MatchMode; label?: string; noDraw?: boolean; mini?: MiniKind;
 };
-export type MatchResult = { home: Team; away: Team; winner: Team | null; pens: boolean; mom: Player };
+export type MatchResult = { home: Team; away: Team; winner: Team | null; pens: boolean; extra: boolean; mom: Player };
 
 type State = 'intro' | 'kickoff' | 'play' | 'setpiece' | 'goal' | 'replay' | 'periodEnd' | 'halftime' | 'fulltime' | 'penalties' | 'done';
 type SetPiece = { kind: 'throw_in' | 'corner' | 'goal_kick' | 'free_kick' | 'penalty' | 'kickoff'; team: Team; taker: Player; spot: THREE.Vector3; t: number };
@@ -1165,7 +1165,7 @@ export class Match {
     if (winner?.human || (!winner && h.human)) { audio.playMusic('victory', 600); }
     audio.crowdReact('applause', 1);
     this.fx.confettiBurst(new THREE.Vector3(0, 0, 0), 300, 30);
-    this.later(3.2, () => this.onEnd?.({ home: h, away: a, winner, pens: !!this.pens, mom }));
+    this.later(3.2, () => this.onEnd?.({ home: h, away: a, winner, pens: !!this.pens, extra: this.extra, mom }));
   }
 
   manOfMatch() {

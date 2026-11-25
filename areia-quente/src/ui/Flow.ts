@@ -12,6 +12,7 @@ import TEAMS from '../data/teams.json';
 import CREDITS from '../data/credits.json';
 import { progress, ACH, BALLS, type AchId } from '../core/Progress';
 import type { MiniKind, MiniResult } from '../match/MiniGames';
+import { careerStore, newCareer, myFixture, recordMyResult, advance, table, teamById, boostedTeam, upgrade, nextSeason, objectiveLabel, ATTRS, MAX_ATTR, type CareerState, type Attr } from '../core/Career';
 
 type TeamData = (typeof TEAMS.teams)[number];
 const teams = TEAMS.teams;
@@ -55,9 +56,10 @@ export class Flow {
   tick?: (dt: number) => void;
   setup = {
     home: teams[0] as TeamData, away: teams[1] as TeamData, homeKit: 'home' as 'home' | 'away', awayKit: 'home' as 'home' | 'away',
-    arena: 'copacabana', homeDevices: ['kb'] as DeviceId[], awayDevices: [] as DeviceId[], mode: 'friendly' as 'friendly' | 'cup' | 'training' | 'mini', mini: 'pk' as MiniKind,
+    arena: 'copacabana', homeDevices: ['kb'] as DeviceId[], awayDevices: [] as DeviceId[], mode: 'friendly' as 'friendly' | 'cup' | 'training' | 'mini' | 'career', mini: 'pk' as MiniKind,
   };
   cup: CupState | null = cupStore.load();
+  career: CareerState | null = careerStore.load();
   private busy = false;
 
   constructor(world: World) { this.world = world; }
@@ -141,6 +143,7 @@ export class Flow {
     const opts: [string, string, () => void][] = [
       [t('menu_friendly'), 'Partida rápida contra a CPU ou um amigo.', () => { this.setup.mode = 'friendly'; this.fade(() => this.controlSelect()); }],
       [this.cup && !this.cup.done ? t('menu_continue_cup') : t('menu_cup'), '8 seleções, mata-mata até a grande final.', () => this.fade(() => (this.cup && !this.cup.done ? this.cupScreen() : this.cupNew()))],
+      [this.career ? 'Modo Carreira (continuar)' : 'Modo Carreira', 'Temporadas com liga, playoffs, evolução do elenco e convites de outras seleções.', () => this.fade(() => (this.career ? this.careerHub() : this.teamSelect(false, false, true)))],
       [t('menu_training'), 'Bicicletas, chapéus e voleios sem pressão.', () => { this.setup.mode = 'training'; this.fade(() => this.teamSelect(true)); }],
       ['Desafios da Praia', 'Pênaltis de Ouro, Embaixadinhas e Tiro ao Alvo. Bata seus recordes!', () => this.fade(() => this.challenges())],
       [`Conquistas (${progress.count()}/${Object.keys(ACH).length})`, 'Conquistas, estatísticas de carreira e bolas desbloqueáveis.', () => this.fade(() => this.achievements())],
@@ -217,7 +220,8 @@ export class Flow {
   }
 
   // ------------------------------------------------------------------ seleção de times
-  teamSelect(training: boolean, cupMode = false) {
+  teamSelect(training: boolean, cupMode = false, careerMode = false) {
+    if (careerMode) cupMode = true;
     this.scene = 'teams';
     audio.playMusic('select');
     this.clearShow();
@@ -228,7 +232,7 @@ export class Flow {
     const card = (side: 'l' | 'r') => `<div class="tcard panel ${side}"><div class="side">${side === 'l' ? t('home') : t('away')}</div>
       <div class="row"><span class="arrow" data-d="-1">◀</span><img class="em"><span class="arrow" data-d="1">▶</span></div>
       <div class="name"></div><div class="nick"></div><img class="flag"><div class="stats"></div><div class="kit"><div class="sw" data-k="home"></div><div class="sw" data-k="away"></div></div></div>`;
-    const el = html(`<div class="screen teamsel"><h1 class="title">${training ? t('training_title') : t('team_select')}</h1>${card('l')}${training || cupMode ? '' : card('r')}
+    const el = html(`<div class="screen teamsel"><h1 class="title">${training ? t('training_title') : careerMode ? 'Carreira: escolha sua seleção' : t('team_select')}</h1>${card('l')}${training || cupMode ? '' : card('r')}
       <div class="arena-pick">${arenaDefs.map((a) => `<div class="a" data-a="${a.id}">${a.name}</div>`).join('')}</div>
       <div class="hint"><img src="${A('ui/input/key_arrows.png')}">times/uniformes · <img src="${A('ui/input/key_enter.png')}">${t('start_match')} · <img src="${A('ui/input/key_escape.png')}">${t('back')}</div></div>`);
     this.mount(el);
@@ -298,6 +302,7 @@ export class Flow {
       el.querySelector('.arena-pick')!.setAttribute('style', row === 2 ? 'filter:drop-shadow(0 0 10px #ffb81f)' : '');
       if (M.ok || M.start) {
         audio.play('ui_ok'); this.tick = undefined;
+        if (careerMode) { this.career = newCareer(this.setup.home.id, this.setup.homeKit); careerStore.save(this.career); this.fade(() => this.careerHub()); return; }
         if (cupMode) { this.fade(() => this.cupStart()); return; }
         if (training) { this.setup.mode = 'training'; this.setup.homeDevices = ['kb', ...input.devices().filter((d) => d !== 'kb')]; this.setup.awayDevices = []; }
         this.fade(() => { void this.loading(); });
@@ -356,7 +361,7 @@ export class Flow {
     this.world.setArena(s.arena);
     const solo = s.mode === 'training' || s.mode === 'mini';
     const opts: MatchOpts = { home: s.home, away: solo ? teams[(teams.indexOf(s.home) + 1) % teams.length] : s.away,
-      homeKit: s.homeKit, awayKit: solo ? 'home' : s.awayKit, arena: s.arena, homeDevices: s.homeDevices, awayDevices: s.awayDevices, mode: s.mode, noDraw: s.mode === 'cup',
+      homeKit: s.homeKit, awayKit: solo ? 'home' : s.awayKit, arena: s.arena, homeDevices: s.homeDevices, awayDevices: s.awayDevices, mode: s.mode === 'career' ? 'cup' : s.mode, noDraw: s.mode === 'cup' || s.mode === 'career',
       mini: s.mode === 'mini' ? s.mini : undefined };
     const m = new Match(this.world, opts);
     this.match = m;
@@ -464,7 +469,7 @@ export class Flow {
     const tot = h.possT + a.possT || 1;
     const row = (k: string, x: string | number, y: string | number) => `<tr><td>${x}</td><td class="k">${k}</td><td>${y}</td></tr>`;
     const inCup = this.setup.mode === 'cup';
-    const btns: [string, () => void][] = inCup ? [[t('next_match'), () => this.fade(() => this.cupAfter(r))]]
+    const btns: [string, () => void][] = this.setup.mode === 'career' ? [['Continuar carreira', () => this.fade(() => this.careerAfter(r))]] : inCup ? [[t('next_match'), () => this.fade(() => this.cupAfter(r))]]
       : [[t('restart'), () => this.fade(() => { this.endMatch(); void this.loading(); })], [t('back_menu'), () => this.fade(() => this.mainMenu())]];
     const el = html(`<div class="screen results"><div class="col panel" style="padding:26px 30px;margin-left:4vw">
       <div class="verdict">${verdict}</div>
@@ -663,6 +668,131 @@ export class Flow {
       if (r.pens) progress.add('sangue_frio');
     } else if (!r.winner) st.draws++; else st.losses++;
     progress.save();
+  }
+
+  // ------------------------------------------------------------------ modo carreira
+  private flagImg(id: string, h = 18) { return `<img src="${A(`ui/flags/${id}.png`)}" style="height:${h}px;border:1px solid #fff;border-radius:3px;vertical-align:middle">`; }
+  private stageLabel(st: CareerState) {
+    const s = st.season;
+    return s.phase === 'league' ? `Rodada ${Math.min(7, s.round + 1)}/7` : s.phase === 'semis' ? 'Semifinal' : s.phase === 'final' ? 'Final' : 'Temporada encerrada';
+  }
+  careerHub(msg?: string) {
+    this.scene = 'career';
+    this.endMatch();
+    this.clearShow();
+    audio.playMusic('select');
+    const st = this.career!;
+    const s = st.season;
+    const me = teamById(st.team);
+    const f = myFixture(st);
+    const opp = f ? (f.a === st.team ? f.b : f.a) : null;
+    const rows = table(s);
+    const tbl = `<table class="ctable"><tr><th>#</th><th></th><th>J</th><th>V</th><th>VP</th><th>D</th><th>GP</th><th>GC</th><th>SG</th><th>Pts</th></tr>${rows.map((r, i) =>
+      `<tr class="${r.id === st.team ? 'me' : ''} ${i < 4 ? 'top' : ''}"><td>${i + 1}</td><td style="text-align:left">${this.flagImg(r.id)} ${teamById(r.id).name}</td><td>${r.j}</td><td>${r.v}</td><td>${r.vp}</td><td>${r.d}</td><td>${r.gp}</td><td>${r.gc}</td><td>${r.gp - r.gc}</td><td><b>${r.pts}</b></td></tr>`).join('')}</table>`;
+    const fx = (x: any) => x ? `<div class="cfx">${this.flagImg(x.a)} ${x.a} <b>${x.played ? `${x.ga} × ${x.gb}${x.pa !== undefined ? ` (${x.pa}–${x.pb} pên.)` : x.extra ? ' (prorr.)' : ''}` : '×'}</b> ${x.b} ${this.flagImg(x.b)}</div>` : '';
+    const playoffs = s.phase !== 'league' ? `<h3 class="title">Playoffs</h3>${s.semis.map(fx).join('')}${s.final ? `<div class="title" style="font-size:14px;margin-top:6px">Final</div>${fx(s.final)}` : ''}${s.champion ? `<div class="title" style="color:#ffb81f;margin-top:6px">Campeão: ${teamById(s.champion).name}</div>` : ''}` : '';
+    const lastRound = s.phase === 'league' && s.round > 0 ? `<h3 class="title">Rodada ${s.round}</h3>${s.rounds[s.round - 1].map(fx).join('')}` : '';
+    const topScorers = Object.entries(s.scorers).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([id, g]) => { const tm = teamById(id.replace(/\d+$/, '')); const p = tm?.players.find((x) => x.id === id); return p ? `${this.flagImg(tm.id, 14)} ${p.short} <b>${g}</b>` : ''; }).join(' · ');
+    const done = s.phase === 'done';
+    const last = st.history[st.history.length - 1];
+    const actions: [string, () => void][] = [];
+    if (done) {
+      actions.push([`Temporada ${s.n + 1} com ${me.name}`, () => { nextSeason(st); careerStore.save(st); this.fade(() => this.careerHub()); }]);
+      for (const o of st.offers) actions.push([`Aceitar convite: ${teamById(o).name}`, () => { nextSeason(st, o); careerStore.save(st); this.fade(() => this.careerHub(`Bem-vindo à seleção de ${teamById(o).name}!`)); }]);
+    } else if (f) actions.push([`Jogar: ${this.stageLabel(st)} × ${teamById(opp!).name}`, () => this.careerPlay()]);
+    else actions.push([`Simular ${this.stageLabel(st)}`, () => { advance(st); careerStore.save(st); this.fade(() => this.careerHub()); }]);
+    actions.push([`Elenco (${st.points} pts de evolução)`, () => this.fade(() => this.careerSquad())], ['Histórico e troféus', () => this.fade(() => this.careerHistory())],
+      ['Abandonar carreira', () => { if (confirm('Abandonar a carreira? O progresso será perdido.')) { careerStore.save(null); this.career = null; this.fade(() => this.mainMenu()); } }], [t('back_menu'), () => this.fade(() => this.mainMenu())]);
+    const el = html(`<div class="screen careerhub"><div class="cl panel">
+      <div class="chead"><img src="${A(`ui/emblems/${st.team}.png`)}"><div><div class="title" style="font-size:28px">${me.name}</div><div>Temporada ${s.n} · ${this.stageLabel(st)}</div></div></div>
+      <div class="cobj">Meta da diretoria: <b>${objectiveLabel(s.objective)}</b></div>
+      <div class="crep">Reputação <i><u style="width:${st.reputation}%"></u></i> ${st.reputation}</div>
+      ${done && last ? `<div class="csum">${last.champion ? '🏆 CAMPEÃO! ' : ''}${last.pos}º na liga · meta ${last.objective ? 'cumprida ✔' : 'não cumprida ✘'}${st.offers.length ? ' · convites recebidos!' : ''}</div>` : ''}
+      ${f ? `<div class="cnext">${this.flagImg(st.team, 30)} <b>${st.team}</b> × <b>${opp}</b> ${this.flagImg(opp!, 30)}<div style="font-size:14px;opacity:.85">${teamById(opp!).nick}</div></div>` : ''}
+      ${msg ? `<div class="cmsg">${msg}</div>` : ''}
+      ${actions.map(([n]) => `<button class="btn small"><span>${n}</span></button>`).join('')}</div>
+      <div class="cr panel"><h3 class="title">Liga de Praia</h3>${tbl}${playoffs || lastRound}${topScorers ? `<div class="cscor">Artilheiros: ${topScorers}</div>` : ''}</div></div>`);
+    this.mount(el);
+    const bs = [...el.querySelectorAll('.btn')] as HTMLElement[];
+    bs.forEach((b, i) => b.addEventListener('click', actions[i][1]));
+    this.nav = new Nav(bs, () => this.fade(() => this.mainMenu()));
+    let ang = 0;
+    this.tick = (dt) => { ang += dt * 0.05; const c = this.world.camera; c.position.set(Math.sin(ang) * 40, 22, Math.cos(ang) * 40); c.lookAt(0, 0, 0); };
+  }
+  careerPlay() {
+    const st = this.career!;
+    const f = myFixture(st)!;
+    const opp = teamById(f.a === st.team ? f.b : f.a);
+    this.setup.home = boostedTeam(st);
+    this.setup.away = opp;
+    this.setup.homeKit = st.kit;
+    this.setup.awayKit = opp.home.shirt === this.setup.home[st.kit].shirt ? 'away' : 'home';
+    this.setup.mode = 'career';
+    this.setup.homeDevices = ['kb', ...input.devices().filter((d) => d !== 'kb')].slice(0, 2) as DeviceId[];
+    this.setup.awayDevices = [];
+    const s = st.season;
+    this.setup.arena = s.phase === 'final' ? 'lagoa' : arenaDefs[(s.round + s.n) % 3].id;
+    this.tick = undefined;
+    this.fade(() => { void this.loading(`CARREIRA · ${this.stageLabel(st).toUpperCase()}`); });
+  }
+  careerAfter(r: MatchResult) {
+    const st = this.career!;
+    const me = r.home.id === st.team ? r.home : r.away, opp = me === r.home ? r.away : r.home;
+    const scorers: Record<string, number> = {};
+    for (const p of [...me.players, ...me.bench]) if (p.goals) scorers[p.data.id] = (scorers[p.data.id] ?? 0) + p.goals;
+    const before = st.season.phase;
+    const pts = recordMyResult(st, { myGoals: me.score, oppGoals: opp.score, myPens: r.pens ? me.penScore : undefined, oppPens: r.pens ? opp.penScore : undefined, extra: r.extra || r.pens, scorers, style: me.stylePts });
+    if (st.season.phase === 'done') {
+      if (st.season.leagueChampion === st.team) progress.add('dono_liga');
+      progress.add('lenda');
+      if (st.season.champion === st.team) progress.add('campeao');
+    }
+    careerStore.save(st);
+    void before;
+    this.careerHub(`+${pts} pontos de evolução`);
+  }
+  careerSquad() {
+    this.scene = 'careersquad';
+    const st = this.career!;
+    const team = teamById(st.team);
+    let row = 0, col = 0;
+    const labels: Record<Attr, string> = { chute: 'Chute', passe: 'Passe', tecnica: 'Técnica', velocidade: 'Veloc.', defesa: 'Defesa', folego: 'Fôlego' };
+    const render = () => {
+      const el = html(`<div class="screen careersquad"><div class="box panel"><h1 class="title">Elenco · ${team.name} <small>${st.points} pts</small></h1>
+        <div style="opacity:.85;margin-bottom:8px">Gaste pontos de evolução (ganhos nas partidas) para melhorar os atributos. Máximo ${MAX_ATTR}. Setas + ENTER ou clique.</div>
+        <table class="squad"><tr><th>Jogador</th><th>Pos.</th>${ATTRS.map((a) => `<th>${labels[a]}</th>`).join('')}</tr>
+        ${team.players.map((p, i) => `<tr class="${i === row ? 'sel' : ''}"><td style="text-align:left">${p.number} ${p.name}</td><td>${p.pos}</td>${ATTRS.map((a, k) => {
+          const b = st.bonus[p.id]?.[a] ?? 0, v = (p.stats as any)[a] + b;
+          return `<td class="at ${i === row && k === col ? 'cur' : ''}" data-p="${i}" data-a="${k}">${v}${b ? `<sup>+${b}</sup>` : ''}${v < MAX_ATTR ? ' <span>＋</span>' : ''}</td>`;
+        }).join('')}</tr>`).join('')}</table>
+        <button class="btn small"><span>${t('back')}</span></button></div></div>`);
+      this.mount(el);
+      el.querySelectorAll('.at').forEach((c) => c.addEventListener('click', () => { row = +(c as HTMLElement).dataset.p!; col = +(c as HTMLElement).dataset.a!; buy(); }));
+      el.querySelector('.btn')!.addEventListener('click', () => { this.tick = undefined; careerStore.save(st); this.fade(() => this.careerHub()); });
+    };
+    const buy = () => { if (upgrade(st, team.players[row].id, ATTRS[col])) { audio.play('combo', 0.6); careerStore.save(st); } else audio.play('ui_error', 0.6); render(); };
+    render();
+    this.nav = undefined;
+    this.tick = () => {
+      const M = input.menu;
+      if (M.up || M.down) { row = (row + (M.up ? -1 : 1) + 10) % 10; render(); }
+      if (M.left || M.right) { col = (col + (M.left ? -1 : 1) + ATTRS.length) % ATTRS.length; render(); }
+      if (M.ok) buy();
+      if (M.back) { this.tick = undefined; careerStore.save(st); this.fade(() => this.careerHub()); }
+    };
+  }
+  careerHistory() {
+    this.scene = 'careerhistory';
+    const st = this.career!;
+    const el = html(`<div class="screen careersquad"><div class="box panel"><h1 class="title">Histórico · ${st.coach}</h1>
+      <div class="title" style="font-size:22px;color:#ffb81f">🏆 Playoffs: ${st.titles.playoff} · Liga: ${st.titles.league} · Reputação ${st.reputation}</div>
+      <table class="squad"><tr><th>Temporada</th><th>Seleção</th><th>Liga</th><th>Título</th><th>Meta</th><th>Gols</th></tr>
+      ${st.history.map((h) => `<tr><td>${h.n}</td><td style="text-align:left">${this.flagImg(h.team)} ${teamById(h.team).name}</td><td>${h.pos}º${h.leagueChampion ? ' 🥇' : ''}</td><td>${h.champion ? 'CAMPEÃO' : '—'}</td><td>${h.objective ? '✔' : '✘'}</td><td>${h.goals}</td></tr>`).join('') || '<tr><td colspan="6">Nenhuma temporada concluída ainda.</td></tr>'}
+      </table><button class="btn small"><span>${t('back')}</span></button></div></div>`);
+    this.mount(el);
+    const b = el.querySelector('.btn') as HTMLElement;
+    b.addEventListener('click', () => this.fade(() => this.careerHub()));
+    this.nav = new Nav([b], () => this.fade(() => this.careerHub()));
   }
 
   // ------------------------------------------------------------------ desafios da praia (minijogos)

@@ -12,6 +12,11 @@ Jogadas de efeito (chapéu, bicicleta, tesoura, voleio, peixinho) geram **pontos
 
 Todas as capturas estão em [`docs/screenshots/`](docs/screenshots).
 
+## Jogar online
+
+**https://jaapa07.github.io/beach_soccer/** — publicado pelo GitHub Actions (`.github/workflows/deploy.yml`) a cada push na `main`.
+Para ativar (uma única vez): no repositório, *Settings → Pages → Build and deployment → Source: **GitHub Actions***.
+
 ## Como rodar
 
 ```bash
@@ -55,6 +60,10 @@ Na tela "Quem joga com quem?" cada teclado/controle é movido para CASA, CPU ou 
   (sobrevoo, aquecimento com nome na tela, times perfilados) → partida → intervalo com dançarinas e estatísticas → replay de gol
   (3 ângulos, câmera lenta, rastro) → resultado com craque da partida → Copa (mata-mata de 8, salva no navegador) → troféu.
   Mais Treino (3 desafios), Opções (volumes, duração, dificuldade, qualidade, remapeamento) e Créditos.
+- **Modo Carreira**: temporadas com liga de pontos corridos (8 seleções, 7 rodadas, vitória no tempo normal = 3 pts, na prorrogação/pênaltis = 2),
+  semifinal e final, pontos de evolução para melhorar o elenco, metas da diretoria, reputação, convites de outras seleções e histórico de títulos.
+- **16 seleções** (Brasil, Argentina, Portugal, Espanha, Itália, França, Japão, Senegal, Uruguai, Paraguai, México, Taiti, Irã, Suíça, EUA e Egito),
+  todas com jogadores fictícios, uniformes casa/fora/goleiro, bandeira e brasão.
 - **Desafios da Praia** (minijogos com recorde e 1–3 estrelas): **Pênaltis de Ouro** (5 cobranças contra um goleiro cada vez melhor),
   **Embaixadinhas** (aperte [I] no tempo certo; "PERFEITO" vale bônus) e **Tiro ao Alvo** (10 bolas, alvos nos cantos e um alvo móvel).
 - **18 conquistas** com avisos na tela, estatísticas de carreira e **4 bolas desbloqueáveis** (Clássica, Dourada, Neon, Retrô).

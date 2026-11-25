@@ -101,6 +101,46 @@ def flags():
     im = Image.new('RGB', (W, H)); d = ImageDraw.Draw(im)
     for i, c in enumerate(['#00853F', '#FDEF42', '#E31B23']): d.rectangle((i * W / 3, 0, (i + 1) * W / 3, H), fill=c)
     star(d, W / 2, H / 2, 30, '#00853F'); save(im, 'SEN')
+    # Uruguai: 9 listras + sol
+    im = Image.new('RGB', (W, H), '#FFFFFF'); d = ImageDraw.Draw(im)
+    for i in range(1, 9, 2): d.rectangle((0, i * H / 9, W, (i + 1) * H / 9), fill='#0038A8')
+    d.rectangle((0, 0, W * 0.38, H * 5 / 9), fill='#FFFFFF')
+    cx, cy = W * 0.19, H * 2.5 / 9
+    for i in range(16):
+        a = i * math.pi / 8; d.line((cx, cy, cx + math.cos(a) * 34, cy + math.sin(a) * 34), fill='#FCD116', width=5)
+    d.ellipse((cx - 18, cy - 18, cx + 18, cy + 18), fill='#FCD116'); save(im, 'URU')
+    # Paraguai
+    im = Image.new('RGB', (W, H)); d = ImageDraw.Draw(im)
+    for i, c in enumerate(['#D52B1E', '#FFFFFF', '#0038A8']): d.rectangle((0, i * H / 3, W, (i + 1) * H / 3), fill=c)
+    d.ellipse((W / 2 - 24, H / 2 - 24, W / 2 + 24, H / 2 + 24), outline='#0038A8', width=4); star(d, W / 2, H / 2, 10, '#FCD116'); save(im, 'PAR')
+    # México
+    im = Image.new('RGB', (W, H)); d = ImageDraw.Draw(im)
+    for i, c in enumerate(['#006847', '#FFFFFF', '#CE1126']): d.rectangle((i * W / 3, 0, (i + 1) * W / 3, H), fill=c)
+    d.ellipse((W / 2 - 26, H / 2 - 26, W / 2 + 26, H / 2 + 26), fill='#8C5A2B'); d.ellipse((W / 2 - 14, H / 2 - 20, W / 2 + 14, H / 2 + 6), fill='#5C3A1A')
+    d.arc((W / 2 - 30, H / 2 - 10, W / 2 + 30, H / 2 + 34), 20, 160, fill='#006847', width=5); save(im, 'MEX')
+    # Taiti
+    im = Image.new('RGB', (W, H), '#FFFFFF'); d = ImageDraw.Draw(im)
+    d.rectangle((0, 0, W, H / 4), fill='#CE1126'); d.rectangle((0, 3 * H / 4, W, H), fill='#CE1126')
+    d.ellipse((W / 2 - 30, H / 2 - 30, W / 2 + 30, H / 2 + 30), fill='#FFC400'); d.rectangle((W / 2 - 30, H / 2 + 4, W / 2 + 30, H / 2 + 30), fill='#1A6FB4')
+    d.polygon([(W / 2 - 22, H / 2 + 2), (W / 2 + 22, H / 2 + 2), (W / 2 + 12, H / 2 + 12), (W / 2 - 12, H / 2 + 12)], fill='#CE1126'); save(im, 'TAH')
+    # Irã
+    im = Image.new('RGB', (W, H)); d = ImageDraw.Draw(im)
+    for i, c in enumerate(['#239F40', '#FFFFFF', '#DA0000']): d.rectangle((0, i * H / 3, W, (i + 1) * H / 3), fill=c)
+    d.ellipse((W / 2 - 16, H / 2 - 22, W / 2 + 16, H / 2 + 22), outline='#DA0000', width=5); d.line((W / 2, H / 2 - 26, W / 2, H / 2 + 26), fill='#DA0000', width=5); save(im, 'IRN')
+    # Suíça
+    im = Image.new('RGB', (W, H), '#DA291C'); d = ImageDraw.Draw(im)
+    d.rectangle((W / 2 - 15, H / 2 - 55, W / 2 + 15, H / 2 + 55), fill='#FFFFFF'); d.rectangle((W / 2 - 55, H / 2 - 15, W / 2 + 55, H / 2 + 15), fill='#FFFFFF'); save(im, 'SUI')
+    # EUA
+    im = Image.new('RGB', (W, H), '#FFFFFF'); d = ImageDraw.Draw(im)
+    for i in range(0, 13, 2): d.rectangle((0, i * H / 13, W, (i + 1) * H / 13), fill='#B31942')
+    d.rectangle((0, 0, W * 0.42, H * 7 / 13), fill='#0A3161')
+    for r in range(5):
+        for c in range(6): star(d, 12 + c * 20 + (r % 2) * 10, 10 + r * 19, 5, '#FFFFFF')
+    save(im, 'USA')
+    # Egito
+    im = Image.new('RGB', (W, H)); d = ImageDraw.Draw(im)
+    for i, c in enumerate(['#CE1126', '#FFFFFF', '#111111']): d.rectangle((0, i * H / 3, W, (i + 1) * H / 3), fill=c)
+    d.polygon([(W / 2, H / 2 - 26), (W / 2 + 22, H / 2 + 20), (W / 2, H / 2 + 10), (W / 2 - 22, H / 2 + 20)], fill='#C09300'); save(im, 'EGY')
 
 
 def star(d, cx, cy, r, col, rot=-math.pi / 2):

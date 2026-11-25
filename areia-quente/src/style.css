@@ -260,3 +260,29 @@ body { font-family: var(--body); color: var(--white); user-select: none; -webkit
   .tcard { width: 46vw; min-width: 0; padding: 8px; } .tcard .stats { width: 100%; font-size: 12px; } .tcard img.em { width: 80px; } .tcard .name { font-size: 20px; }
   .overlay .box { min-width: 0; width: 92vw; }
 }
+
+/* ---------- modo carreira ---------- */
+.careerhub { display: grid; grid-template-columns: minmax(340px, 0.9fr) 1.1fr; gap: 2vw; padding: 3vh 3vw; background: rgba(5,12,30,0.7); align-items: start; overflow: auto; }
+.careerhub .cl, .careerhub .cr { padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; }
+.chead { display: flex; gap: 14px; align-items: center; } .chead img { width: 90px; }
+.cobj b { color: var(--gold); }
+.crep { display: flex; align-items: center; gap: 8px; } .crep i { flex: 1; height: 10px; background: rgba(0,0,0,0.4); border-radius: 6px; overflow: hidden; } .crep u { display: block; height: 100%; background: linear-gradient(90deg, #2ee6a0, #ffb81f); }
+.cnext { font-family: var(--title); font-size: 22px; padding: 12px; background: rgba(255,184,31,0.15); border: 2px solid var(--gold); border-radius: 12px; text-align: center; }
+.cmsg { color: var(--green); font-weight: 800; } .csum { font-family: var(--title); color: var(--gold); }
+.careerhub .btn.small { text-align: left; }
+.ctable { width: 100%; border-collapse: collapse; font-weight: 600; font-size: 15px; }
+.ctable th { font-size: 12px; opacity: 0.7; } .ctable td, .ctable th { padding: 5px 6px; text-align: center; }
+.ctable tr.top td:first-child { color: var(--gold); } .ctable tr.me { background: rgba(255,184,31,0.22); }
+.ctable tr:nth-child(even) { background-color: rgba(255,255,255,0.04); }
+.careerhub h3 { margin: 8px 0 2px; font-size: 16px; color: var(--gold); }
+.cfx { display: flex; gap: 8px; align-items: center; justify-content: center; font-weight: 600; padding: 3px 0; }
+.cscor { margin-top: 8px; font-size: 14px; }
+.careersquad { display: flex; align-items: center; justify-content: center; background: rgba(5,12,30,0.78); }
+.careersquad .box { padding: 20px 24px; width: min(1100px, 96vw); max-height: 94vh; overflow: auto; display: flex; flex-direction: column; gap: 10px; }
+.careersquad h1 { margin: 0; font-size: 32px; } .careersquad h1 small { color: var(--gold); font-size: 20px; }
+.squad { width: 100%; border-collapse: collapse; font-weight: 600; }
+.squad th { font-size: 12px; opacity: 0.75; } .squad td, .squad th { padding: 6px 8px; text-align: center; }
+.squad tr.sel { background: rgba(255,255,255,0.07); }
+.squad td.at { cursor: pointer; } .squad td.at span { color: var(--green); font-size: 12px; } .squad td.at sup { color: var(--gold); }
+.squad td.cur { outline: 3px solid var(--gold); border-radius: 6px; }
+@media (max-width: 720px) { .careerhub { grid-template-columns: 1fr; } }

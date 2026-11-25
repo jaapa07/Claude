@@ -63,8 +63,8 @@ describe('bola na areia', () => {
 });
 
 describe('conteúdo', () => {
-  it('8 seleções com 10 jogadores fictícios e números únicos', () => {
-    expect(TEAMS.teams).toHaveLength(8);
+  it('16 seleções com 10 jogadores fictícios e números únicos', () => {
+    expect(TEAMS.teams).toHaveLength(16);
     for (const t of TEAMS.teams) {
       expect(t.players).toHaveLength(10);
       expect(new Set(t.players.map((p) => p.number)).size).toBe(10);

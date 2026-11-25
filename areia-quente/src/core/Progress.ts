@@ -22,6 +22,8 @@ export const ACH = {
   pk_ouro: { name: 'Pênaltis de Ouro', desc: 'Converta 5 de 5 no minijogo de pênaltis.', goal: 1 },
   embaixadinha: { name: 'Rei da Embaixadinha', desc: 'Faça 25 embaixadinhas seguidas.', goal: 1 },
   mira: { name: 'Mira Laser', desc: 'Faça 500 pontos no Tiro ao Alvo.', goal: 1 },
+  dono_liga: { name: 'Dono da Liga', desc: 'Vença a liga no Modo Carreira.', goal: 1 },
+  lenda: { name: 'Lenda da Areia', desc: 'Complete 3 temporadas no Modo Carreira.', goal: 3 },
 } as const;
 
 export const BALLS = [

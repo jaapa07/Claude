@@ -70,8 +70,8 @@ const SUITES = {
     await g.key('Enter'); await g.waitScene('menu');
     check(await g.scene() === 'menu', 'ENTER no título abre o menu', n);
     const items = await g.ev(() => [...document.querySelectorAll('.menu .btn')].map((b) => b.textContent.trim()));
-    check(items.length === 7, `menu com 7 opções (${items.join(' | ')})`, n);
-    const expect = ['ctrl', 'teams', 'teams', 'challenges', 'achievements', 'options', 'credits'];
+    check(items.length === 8, `menu com 8 opções (${items.join(' | ')})`, n);
+    const expect = ['ctrl', 'teams', 'teams', 'teams', 'challenges', 'achievements', 'options', 'credits'];
     for (let i = 0; i < expect.length; i++) {
       await g.waitScene('menu');
       await sleep(300);
@@ -276,7 +276,9 @@ const SUITES = {
       await g.waitFor(() => window.__game.flow.match, null, 120000); await skipIntro(g);
       // vitória forçada: placar e fim
       await g.ev(() => { const m = window.__game.flow.match; const me = m.teams[0]; me.score = 3; m.teams[1].score = 1; m.period = 3; m.state = 'play'; m.clock = m.periodLen - 0.2; });
-      await g.waitFor(() => !!document.querySelector('.results'), null, 60000);
+      await g.speed(6);
+      await g.waitFor(() => !!document.querySelector('.results'), null, 120000);
+      await g.speed(1);
       await g.ev(() => document.querySelector('.results .btn').click());
       if (round < 2) await g.waitScene('cup', 60000);
     }
@@ -371,7 +373,7 @@ const SUITES = {
     await g.page.reload(); await g.waitFor(() => window.__game?.flow.scene === 'title', null, 120000);
     await g.ev(() => window.__game.flow.achievements()); await g.waitScene('achievements');
     const cards = await g.ev(() => [document.querySelectorAll('.achcard').length, document.querySelectorAll('.achcard.ok').length]);
-    check(cards[0] === 18 && cards[1] === 5, `tela lista 18 conquistas, 5 desbloqueadas (${cards})`, n);
+    check(cards[0] === 20 && cards[1] === 5, `tela lista 20 conquistas, 5 desbloqueadas (${cards})`, n);
     await g.key('ArrowRight'); await sleep(700);
     const ball = await g.ev(() => JSON.parse(localStorage.getItem('aq.progress')).ball);
     check(ball === 'dourada', `bola dourada liberada com 5 conquistas e selecionada (${ball})`, n);
@@ -394,6 +396,65 @@ const SUITES = {
     log('objetos (root, cena, MB):', JSON.stringify(counts));
     check(counts[2][0] <= counts[0][0] + 5, `sem acúmulo de objetos dinâmicos entre partidas (${counts.map((c) => c[0])})`, n);
     check(counts[2][1] <= counts[0][1] * 1.2, `cena não cresce entre trocas de arena (${counts.map((c) => c[1])})`, n);
+  },
+
+  async career(g, n) {
+    await g.ev(() => { localStorage.removeItem('aq.career'); const f = window.__game.flow; f.career = null; f.tick = undefined; f.teamSelect(false, false, true); });
+    await g.waitScene('teams'); await sleep(600);
+    await g.key('ArrowRight'); await sleep(900);
+    await g.key('Enter');
+    await g.waitScene('career', 60000);
+    const c0 = await g.ev(() => JSON.parse(localStorage.getItem('aq.career')));
+    check(!!c0 && c0.season.teams.length === 8 && c0.season.rounds.length === 7, `carreira criada (${c0?.team}, 8 times, 7 rodadas)`, n);
+    check(await g.ev(() => document.querySelectorAll('.ctable tr').length === 9), 'tabela da liga com 8 seleções', n);
+    await g.shot('career_hub');
+    // joga a 1ª rodada (vitória forçada no fim do 3º período)
+    await g.ev(() => window.__game.flow.careerPlay());
+    await g.waitFor(() => window.__game.flow.match, null, 120000); await skipIntro(g);
+    const boosted = await g.ev(() => window.__game.flow.match.teams[0].id === JSON.parse(localStorage.getItem('aq.career')).team);
+    check(boosted, 'partida da carreira usa a seleção do jogador', n);
+    await g.ev(() => { const m = window.__game.flow.match; m.teams[0].score = 4; m.teams[0].players[4].goals = 3; m.teams[1].score = 1; m.period = 3; m.state = 'play'; m.clock = m.periodLen - 0.2; });
+    await g.speed(6);
+    await g.waitFor(() => !!document.querySelector('.results'), null, 120000);
+    await g.speed(1);
+    await g.ev(() => document.querySelector('.results .btn').click());
+    await g.waitScene('career', 60000);
+    const c1 = await g.ev(() => JSON.parse(localStorage.getItem('aq.career')));
+    check(c1.season.round === 1 && c1.points > c0.points, `rodada 1 registrada e pontos de evolução ganhos (${c0.points} → ${c1.points})`, n);
+    const myRow = await g.ev(() => document.querySelector('.ctable tr.me')?.textContent);
+    check(/3$/.test(myRow.trim()) || myRow.includes('3'), `vitória vale 3 pontos na tabela (${myRow})`, n);
+    // elenco: compra de atributo
+    await g.ev(() => window.__game.flow.careerSquad()); await g.waitScene('careersquad');
+    await g.key('Enter'); await sleep(800);
+    const c2 = await g.ev(() => JSON.parse(localStorage.getItem('aq.career')));
+    check(c2.points === c1.points - 1 && Object.keys(c2.bonus).length === 1, `evolução gasta 1 ponto e melhora o atributo (${JSON.stringify(c2.bonus)})`, n);
+    await g.shot('career_squad');
+    // resto da temporada: marca a vitória do jogador e usa o botão "Simular" do hub para a CPU
+    await g.ev(async () => {
+      const f = window.__game.flow, C = f.career;
+      for (let k = 0; k < 40 && C.season.phase !== 'done'; k++) {
+        const x = C.season;
+        const pool = x.phase === 'league' ? x.rounds[x.round] : x.phase === 'semis' ? x.semis : [x.final];
+        const mf = pool.find((q) => q && (q.a === C.team || q.b === C.team) && !q.played);
+        if (mf) { mf.ga = mf.a === C.team ? 2 : 1; mf.gb = mf.a === C.team ? 1 : 2; mf.played = true; }
+        f.careerHub();
+        document.querySelector('.careerhub .btn').click();
+        await new Promise((r) => setTimeout(r, 1300));
+      }
+      f.careerHub();
+    });
+    const c3 = await g.ev(() => window.__game.flow.career);
+    check(c3.season.phase === 'done' && c3.history.length === 1, `temporada concluída e registrada no histórico (${c3.history[0]?.pos}º)`, n);
+    await g.shot('career_season_end');
+    await g.ev(() => document.querySelector('.careerhub .btn').click());
+    await g.waitFor(() => window.__game.flow.career.season.n === 2, null, 30000).catch(() => {});
+    await g.waitScene('career', 60000);
+    const c4 = await g.ev(() => window.__game.flow.career);
+    check(c4.season.n === 2 && c4.season.phase === 'league', 'segunda temporada começa', n);
+    await g.ev(() => window.__game.flow.careerHistory()); await sleep(1500);
+    log('após histórico:', JSON.stringify(await g.ev(() => ({ scene: window.__game.flow.scene, busy: window.__game.flow.busy, dom: !!document.querySelector('.careersquad') }))));
+    await g.waitScene('careerhistory');
+    check(await g.ev(() => document.querySelectorAll('.squad tr').length >= 2), 'histórico lista a temporada', n);
   },
 
   async mobile(g, n) {

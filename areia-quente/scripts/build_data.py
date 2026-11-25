@@ -54,15 +54,65 @@ TEAMS = [
          away=dict(shirt='#00853F', shirt2='#FDEF42', pattern='chevron', shorts='#00853F', trim='#E31B23', num='#FDEF42'),
          gk=dict(shirt='#E31B23', shirt2='#1A1A1A', pattern='shoulders', shorts='#1A1A1A', trim='#FDEF42', num='#FDEF42'),
          players=['Mamadou Ndour', 'Ousmane Faye', 'Cheikh Diallo', 'Ibou Sarr', 'Pape Gueye', 'Abdou Seck', 'Lamine Sow', 'Modou Cissé', 'Babacar Niang', 'Saliou Mbaye']),
+    dict(id='URU', name='Uruguai', nick='Celeste Praiana', flag='UY', style='raça', colors=['#6CACE4', '#FFFFFF'],
+         stats=dict(ataque=4, defesa=5, tecnica=3, velocidade=3),
+         home=dict(shirt='#6CACE4', shirt2='#FFFFFF', pattern='shoulders', shorts='#111111', trim='#111111', num='#111111'),
+         away=dict(shirt='#FFFFFF', shirt2='#6CACE4', pattern='sash', shorts='#6CACE4', trim='#111111', num='#111111'),
+         gk=dict(shirt='#F2C300', shirt2='#111111', pattern='shoulders', shorts='#111111', trim='#111111', num='#111111'),
+         players=['Nacho Olivera', 'Pelado Suárez', 'Chino Recoba', 'Toto Larrañaga', 'Gaucho Pereyra', 'Bocha Rivas', 'Cacho Viera', 'Lucho Acosta', 'Manco Silveira', 'Tata Godoy']),
+    dict(id='PAR', name='Paraguai', nick='Guaranis da Areia', flag='PY', style='raça', colors=['#D52B1E', '#0038A8'],
+         stats=dict(ataque=4, defesa=4, tecnica=4, velocidade=4),
+         home=dict(shirt='#FFFFFF', shirt2='#D52B1E', pattern='stripes', shorts='#0038A8', trim='#0038A8', num='#0038A8'),
+         away=dict(shirt='#0038A8', shirt2='#D52B1E', pattern='hoop', shorts='#0038A8', trim='#FFFFFF', num='#FFFFFF'),
+         gk=dict(shirt='#2BB673', shirt2='#111111', pattern='shoulders', shorts='#111111', trim='#111111', num='#111111'),
+         players=['Chiqui Benítez', 'Pato Ayala', 'Lalo Cáceres', 'Rubén Ozuna', 'Tito Villalba', 'Pipo Duarte', 'Nene Ortigoza', 'Pelusa Garay', 'Cuchu Riveros', 'Teté Bareiro']),
+    dict(id='MEX', name='México', nick='Tri do Pacífico', flag='MX', style='velocidade', colors=['#006847', '#CE1126'],
+         stats=dict(ataque=4, defesa=3, tecnica=4, velocidade=5),
+         home=dict(shirt='#006847', shirt2='#CE1126', pattern='chevron', shorts='#FFFFFF', trim='#FFFFFF', num='#FFFFFF'),
+         away=dict(shirt='#FFFFFF', shirt2='#006847', pattern='side', shorts='#CE1126', trim='#006847', num='#006847'),
+         gk=dict(shirt='#FF5FA2', shirt2='#111111', pattern='shoulders', shorts='#111111', trim='#111111', num='#111111'),
+         players=['Memo Ruvalcaba', 'Chucho Ibarra', 'Pollo Zamudio', 'Chicharo Lozano', 'Güero Cuéllar', 'Toño Barragán', 'Paco Medrano', 'Lalo Garza', 'Neto Quintana', 'Chepe Robles']),
+    dict(id='TAH', name='Taiti', nick='Guerreiros do Pacífico', flag='PF', style='firula', colors=['#CE1126', '#FFFFFF'],
+         stats=dict(ataque=5, defesa=3, tecnica=5, velocidade=4),
+         home=dict(shirt='#FFFFFF', shirt2='#CE1126', pattern='hoop', shorts='#CE1126', trim='#CE1126', num='#CE1126'),
+         away=dict(shirt='#CE1126', shirt2='#FFFFFF', pattern='chevron', shorts='#FFFFFF', trim='#FFC400', num='#FFFFFF'),
+         gk=dict(shirt='#1A1A6E', shirt2='#FFC400', pattern='shoulders', shorts='#1A1A6E', trim='#FFC400', num='#FFC400'),
+         players=['Teva Tehei', 'Manu Tapuni', 'Heiarii Vahine', 'Ravahere Moana', 'Tumata Hiro', 'Raimana Teai', 'Hotu Maraea', 'Vaiarii Pito', 'Teiki Faraire', 'Mahana Toa']),
+    dict(id='IRN', name='Irã', nick='Guardiões Persas', flag='IR', style='coletivo', colors=['#239F40', '#DA0000'],
+         stats=dict(ataque=4, defesa=5, tecnica=4, velocidade=3),
+         home=dict(shirt='#FFFFFF', shirt2='#239F40', pattern='side', shorts='#FFFFFF', trim='#DA0000', num='#239F40'),
+         away=dict(shirt='#DA0000', shirt2='#239F40', pattern='shoulders', shorts='#DA0000', trim='#FFFFFF', num='#FFFFFF'),
+         gk=dict(shirt='#3A3A3A', shirt2='#239F40', pattern='shoulders', shorts='#3A3A3A', trim='#239F40', num='#239F40'),
+         players=['Arash Zand', 'Babak Rostami', 'Kian Farahani', 'Dariush Ebadi', 'Navid Sadri', 'Omid Kaveh', 'Parsa Golshan', 'Reza Moradi', 'Saman Dehghan', 'Yasin Afshar']),
+    dict(id='SUI', name='Suíça', nick='Cruz da Areia', flag='CH', style='posse', colors=['#DA291C', '#FFFFFF'],
+         stats=dict(ataque=3, defesa=4, tecnica=4, velocidade=4),
+         home=dict(shirt='#DA291C', shirt2='#FFFFFF', pattern='hoop', shorts='#FFFFFF', trim='#FFFFFF', num='#FFFFFF'),
+         away=dict(shirt='#FFFFFF', shirt2='#DA291C', pattern='sleeves', shorts='#DA291C', trim='#DA291C', num='#DA291C'),
+         gk=dict(shirt='#111111', shirt2='#DA291C', pattern='shoulders', shorts='#111111', trim='#DA291C', num='#DA291C'),
+         players=['Urs Brunner', 'Fabio Kessler', 'Luca Zürcher', 'Reto Imhof', 'Noah Lüthi', 'Jonas Graber', 'Marco Steiner', 'Dario Frei', 'Sven Gerber', 'Timo Wyss']),
+    dict(id='USA', name='EUA', nick='Estrelas da Costa', flag='US', style='força', colors=['#0A3161', '#B31942'],
+         stats=dict(ataque=4, defesa=4, tecnica=3, velocidade=5),
+         home=dict(shirt='#FFFFFF', shirt2='#0A3161', pattern='sash', shorts='#0A3161', trim='#B31942', num='#0A3161'),
+         away=dict(shirt='#0A3161', shirt2='#B31942', pattern='hoop', shorts='#0A3161', trim='#FFFFFF', num='#FFFFFF'),
+         gk=dict(shirt='#7DE34B', shirt2='#0A3161', pattern='shoulders', shorts='#0A3161', trim='#0A3161', num='#0A3161'),
+         players=['Cody Walker', 'Tyler Brooks', 'Jake Monroe', 'Mason Reid', 'Dylan Carter', 'Ethan Rhodes', 'Logan Pierce', 'Ryan Holt', 'Austin Clay', 'Noah Sutton']),
+    dict(id='EGY', name='Egito', nick='Faraós da Praia', flag='EG', style='toque', colors=['#CE1126', '#C09300'],
+         stats=dict(ataque=4, defesa=3, tecnica=5, velocidade=4),
+         home=dict(shirt='#CE1126', shirt2='#C09300', pattern='shoulders', shorts='#FFFFFF', trim='#C09300', num='#FFFFFF'),
+         away=dict(shirt='#FFFFFF', shirt2='#CE1126', pattern='chevron', shorts='#111111', trim='#C09300', num='#CE1126'),
+         gk=dict(shirt='#00A3E0', shirt2='#111111', pattern='shoulders', shorts='#111111', trim='#111111', num='#111111'),
+         players=['Hossam Fathy', 'Karim Saber', 'Amr Nabil', 'Tarek Mansour', 'Omar Fawzy', 'Sherif Galal', 'Mido Ashour', 'Ahmed Zaki', 'Hany Lotfy', 'Yasser Adel']),
 ]
 
 HEADS = ['skaterMaleA', 'criminalMaleA', 'skaterMaleA', 'survivorMaleB']
 # tons de pele (multiplicadores RGB aplicados ao tom original do Kenney) e cores de cabelo
 SKIN = {'BRA': [0, 1, 2, 3, 4], 'ARG': [0, 1, 1, 2], 'POR': [0, 1, 2], 'ESP': [0, 1, 2], 'ITA': [0, 1, 1],
-        'FRA': [0, 1, 3, 4, 2], 'JPN': [0, 1], 'SEN': [4, 5, 5, 4, 3]}
+        'FRA': [0, 1, 3, 4, 2], 'JPN': [0, 1], 'SEN': [4, 5, 5, 4, 3],
+        'URU': [0, 1, 2], 'PAR': [1, 2, 3], 'MEX': [1, 2, 3], 'TAH': [2, 3, 4], 'IRN': [1, 2], 'SUI': [0, 1], 'USA': [0, 1, 3, 4], 'EGY': [2, 3, 4]}
 HAIR = ['#2A1B12', '#140D09', '#5A3A1E', '#8A5A2B', '#B8925A', '#151515', '#8E3A22']
 HAIRS = {'BRA': [0, 1, 2, 4, 5], 'ARG': [0, 1, 2, 3], 'POR': [0, 1, 2], 'ESP': [0, 1, 2, 3], 'ITA': [0, 1, 2],
-         'FRA': [0, 2, 3, 4, 5], 'JPN': [1, 5], 'SEN': [1, 5]}
+         'FRA': [0, 2, 3, 4, 5], 'JPN': [1, 5], 'SEN': [1, 5],
+         'URU': [0, 1, 2], 'PAR': [0, 1, 5], 'MEX': [0, 1, 5], 'TAH': [1, 5], 'IRN': [1, 5], 'SUI': [2, 3, 4], 'USA': [2, 3, 4, 0], 'EGY': [1, 5]}
 POS = ['GOL', 'FIXO', 'ALA', 'ALA', 'PIVÔ', 'GOL', 'FIXO', 'ALA', 'ALA', 'PIVÔ']
 
 
