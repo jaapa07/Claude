@@ -242,8 +242,21 @@ window.runProfile = async (kartIds, xs, ys) => {
       }
       rows.push(row);
     }
+    // teto: altura (y) da primeira superfície acima de (x, 0.75, z), numa grade x × z
+    const roof = [];
+    for (const z of [0.4, 0.3, 0.2, 0.1, 0, -0.1, -0.2, -0.3, -0.4]) {
+      const row = [];
+      for (const x of xs) {
+        const o = probe.localToWorld(new THREE.Vector3(x, 0.75, z));
+        const d = probe.localToWorld(new THREE.Vector3(x, 2, z)).sub(o).normalize();
+        ray.origin.copy(o); ray.direction.copy(d);
+        const hit = k.bvh.raycastFirst(ray, THREE.DoubleSide);
+        row.push(hit && hit.distance < 1.2 ? +probe.worldToLocal(hit.point.clone()).y.toFixed(3) : null);
+      }
+      roof.push(row);
+    }
     probe.removeFromParent();
-    out[kid] = rows;
+    out[kid] = { rows, roof };
   }
   return out;
 };
@@ -275,11 +288,16 @@ try {
 
   if (flags.profile !== undefined) {
     const xs = [-0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3], ys = Array.from({ length: 12 }, (_, i) => +(0.1 + i * 0.1).toFixed(2));
-    const prof = await page.evaluate(async ([k, x, y]) => (window as unknown as { runProfile: (k: string[], x: number[], y: number[]) => Promise<Record<string, (number | null)[][]>> }).runProfile(k, x, y), [karts, xs, ys] as [string[], number[], number[]]);
+    const prof = await page.evaluate(async ([k, x, y]) => (window as unknown as { runProfile: (k: string[], x: number[], y: number[]) => Promise<Record<string, { rows: (number | null)[][]; roof: (number | null)[][] }>> }).runProfile(k, x, y), [karts, xs, ys] as [string[], number[], number[]]);
     console.log('encosto: z da primeira superfície atrás do piloto (espaço do piloto); colunas x = ' + xs.join(' '));
-    for (const [kid, rows] of Object.entries(prof)) {
+    const fmt = (v: number | null): string => (v === null ? '   -  ' : v.toFixed(2).padStart(6));
+    for (const [kid, { rows, roof }] of Object.entries(prof)) {
       console.log(kid);
-      rows.forEach((r, i) => console.log(`  y=${ys[i]!.toFixed(1)}  ` + r.map((z) => (z === null ? '   -  ' : z.toFixed(2).padStart(6))).join(' ')));
+      rows.forEach((r, i) => console.log(`  y=${ys[i]!.toFixed(1)}  ` + r.map(fmt).join(' ')));
+      if (roof.some((r) => r.some((v) => v !== null))) {
+        console.log('  teto (y da primeira superfície acima de y=0.75), linhas z = 0.4 … -0.4:');
+        roof.forEach((r, i) => console.log(`  z=${(0.4 - i * 0.1).toFixed(1).padStart(4)}  ` + r.map(fmt).join(' ')));
+      }
     }
   }
   if (doRender) {

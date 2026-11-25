@@ -105,8 +105,9 @@ function build(c: Ctx): FaceSpec {
   c.rigid('head', box(0.05, 0.026, 0.024, 0.008, 1), METAL, BRASS_D, { p: [0, bp.y, bp.z + 0.03] });
 
   /* ---------- mochila-caldeira (rígida no peito) ---------- */
+  // fundo achatado e mais alto: o fundo abaulado apoiava dentro do topo do encosto dos karts
   const bz = -0.275;
-  c.rigid('chest', lathe([[0.001, 0.44], [0.07, 0.445], [0.112, 0.48], [0.118, 0.52], [0.118, 0.74], [0.1, 0.79], [0.06, 0.82], [0.001, 0.828]], 18), METAL, (p, n) => brassPaint(p, n), { p: [0, 0, bz] });
+  c.rigid('chest', lathe([[0.001, 0.475], [0.07, 0.478], [0.112, 0.5], [0.118, 0.53], [0.118, 0.74], [0.1, 0.79], [0.06, 0.82], [0.001, 0.828]], 18), METAL, (p, n) => brassPaint(p, n), { p: [0, 0, bz] });
   for (const y of [0.515, 0.735]) c.rigid('chest', torus(0.12, 0.011, 5, 18).rotateX(Math.PI / 2), METAL, BRASS_D, { p: [0, y, bz] });
   for (let k = 0; k < 10; k++) { const a = (k / 10) * Math.PI * 2; c.rigid('chest', ico(0.009, 0), METAL, lighten(BRASS, 0.25), { p: [Math.sin(a) * 0.125, 0.625, bz + Math.cos(a) * 0.125] }); }
   // fornalha luminosa com grade

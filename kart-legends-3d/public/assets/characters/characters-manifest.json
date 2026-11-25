@@ -132,7 +132,7 @@
     {
       "id": "boro",
       "file": "assets/characters/boro.glb",
-      "bytes": 365720,
+      "bytes": 365676,
       "triangles": 13280,
       "bones": 17,
       "extraBones": [
@@ -209,7 +209,7 @@
     {
       "id": "lumi",
       "file": "assets/characters/lumi.glb",
-      "bytes": 361580,
+      "bytes": 361484,
       "triangles": 11346,
       "bones": 22,
       "extraBones": [
@@ -291,7 +291,7 @@
     {
       "id": "kora",
       "file": "assets/characters/kora.glb",
-      "bytes": 368664,
+      "bytes": 368644,
       "triangles": 13768,
       "bones": 19,
       "extraBones": [
@@ -534,7 +534,7 @@
     {
       "id": "runi",
       "file": "assets/characters/runi.glb",
-      "bytes": 390600,
+      "bytes": 390556,
       "triangles": 12834,
       "bones": 23,
       "extraBones": [
@@ -617,7 +617,7 @@
     {
       "id": "zera",
       "file": "assets/characters/zera.glb",
-      "bytes": 417912,
+      "bytes": 418204,
       "triangles": 13456,
       "bones": 24,
       "extraBones": [

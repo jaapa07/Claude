@@ -89,14 +89,14 @@ function build(c: Ctx): FaceSpec {
     const p2 = headPoint(head.fn, az * 1.04, vAtY(H, drop)).addScaledVector(o, 0.03);
     c.rigid('head', leafBlade([v3(p0), v3(p1), v3(p2)], 0.115, i % 2 ? LEAF_L : LEAF, i % 2 ? LEAF : LEAF_D, [-o.z, 0, o.x], 5), 'leaf');
   });
-  // rabo de folhas (ossos hair1..2)
+  // rabo de folhas (ossos hair1..2); mais curto, a ponta entrava no encosto dos karts
   const hb = c.chain('hair', 'head', [[0, 0.74, -0.2], [0, 0.62, -0.27]], { roll: 0.35, pitch: 0.25, lag: 0.08, sway: [0.05, 0.06, 0.06], phase: 0.2, wind: [0.45, 0, 0], flutter: [0.1, 0.14, 0.08], bounce: 2.5 });
-  const hw = rig.chainW(hb, { parent: 'head', blend: 0.04, tip: [0, 0.48, -0.3] });
-  c.soft(sweep([[0, 0.76, -0.17], [0, 0.72, -0.22], [0, 0.6, -0.27], [0, 0.5, -0.29]], (t) => 0.035 * (1 - t * 0.7), 8, 8), 'leaf', hw, LEAF_D);
+  const hw = rig.chainW(hb, { parent: 'head', blend: 0.04, tip: [0, 0.53, -0.29] });
+  c.soft(sweep([[0, 0.76, -0.17], [0, 0.72, -0.22], [0, 0.62, -0.265], [0, 0.54, -0.28]], (t) => 0.035 * (1 - t * 0.7), 8, 8), 'leaf', hw, LEAF_D);
   for (let k = 0; k < 9; k++) {
     const y = 0.74 - (k % 5) * 0.05 - (k > 4 ? 0.02 : 0), a = k * 2.4;
     const z = -0.2 - (0.74 - y) * 0.42;
-    c.soft(leafBlade([[0, y, z], [Math.sin(a) * 0.06, y - 0.05, z - 0.03 + Math.cos(a) * 0.03], [Math.sin(a) * 0.09, y - 0.14, z - 0.035 + Math.cos(a) * 0.04]], 0.1, k % 3 === 0 ? LEAF_L : LEAF, LEAF_D, [Math.cos(a), 0, -Math.sin(a) * 0.6], 6), 'leaf', hw);
+    c.soft(leafBlade([[0, y, z], [Math.sin(a) * 0.06, y - 0.05, z - 0.03 + Math.cos(a) * 0.03], [Math.sin(a) * 0.09, y - 0.1, z - 0.03 + Math.cos(a) * 0.04]], 0.1, k % 3 === 0 ? LEAF_L : LEAF, LEAF_D, [Math.cos(a), 0, -Math.sin(a) * 0.6], 6), 'leaf', hw);
   }
   c.soft(sphere(0.03, 8, 6).scale(1.15, 0.6, 1.15), 'std', hw, GOLD, { p: [0, 0.745, -0.205], r: [0.5, 0, 0] });
 
@@ -123,16 +123,18 @@ function build(c: Ctx): FaceSpec {
   c.rigid('head', sphere(0.02, 8, 6), 'glow_white', '#fffbe0', { p: v3(fc.clone().addScaledVector(fo, 0.02)) });
 
   /* ---------- capa de folhas (osso cape) ---------- */
-  c.chain('cape', 'chest', [[0, 0.5, -0.12]], { roll: 0.3, pitch: 0.2, lag: 0.09, sway: [0.04, 0.03, 0.04], wind: [0.35, 0, 0], flutter: [0.12, 0.06, 0.05], bounce: 2 });
+  // vento menor: a barra da capa batia no encosto dos karts
+  c.chain('cape', 'chest', [[0, 0.5, -0.12]], { roll: 0.3, pitch: 0.2, lag: 0.09, sway: [0.04, 0.03, 0.04], wind: [0.15, 0, 0], flutter: [0.12, 0.06, 0.05], bounce: 2 });
   const capeW = (p: THREE.Vector3): [number, number][] => {
     const k = sstep(0.5, 0.36, p.y) * sstep(-0.08, -0.16, p.z);
     return [[rig.i('chest'), 1 - k], [rig.i('cape'), k]];
   };
-  const rows: [number, number, number, number][] = [[0.53, 5, 0.2, 0.15], [0.47, 4, 0.2, 0.16]];
+  // folhas mais curtas e rentes às costas: as pontas entravam no encosto dos karts
+  const rows: [number, number, number, number][] = [[0.53, 5, 0.17, 0.15], [0.47, 4, 0.15, 0.16]];
   rows.forEach(([y, n, len, w], ri) => {
     for (let k = 0; k < n; k++) {
       const a = Math.PI + (k - (n - 1) / 2) * (ri ? 0.5 : 0.52);
-      const r0 = ri ? 0.13 : 0.1, r1 = ri ? 0.27 : 0.24;
+      const r0 = ri ? 0.13 : 0.1, r1 = ri ? 0.25 : 0.23;
       const pts: V3[] = [[Math.sin(a) * r0, y, Math.cos(a) * r0 * 0.8], [Math.sin(a) * (r0 + r1) * 0.55, y - len * 0.3, Math.cos(a) * (r0 + r1) * 0.5], [Math.sin(a) * r1, y - len, Math.cos(a) * r1 * 0.85]];
       c.soft(leafBlade(pts, w, (k + ri) % 2 ? LEAF : MOSS, ri ? LEAF_D : darken(LEAF_D, 0.2), [Math.cos(a), 0, -Math.sin(a)], 7), 'leaf', capeW);
     }

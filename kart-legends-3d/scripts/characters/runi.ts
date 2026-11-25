@@ -129,9 +129,11 @@ function build(c: Ctx): FaceSpec {
   c.rigid('head', box(0.04, 0.022, 0.02, 0.006, 1), METAL, BRASS, { p: [0, gb.y, gb.z + 0.055] });
 
   /* ---------- capa curta rasgada (osso cape) ---------- */
-  c.chain('cape', 'chest', [[0, 0.5, -0.13]], { roll: 0.3, pitch: 0.2, lag: 0.09, sway: [0.04, 0.03, 0.04], wind: [0.4, 0, 0], flutter: [0.14, 0.06, 0.06], bounce: 2 });
+  // curta: a barra entrava no encosto dos karts
+  // vento menor: a barra da capa batia no encosto dos karts
+  c.chain('cape', 'chest', [[0, 0.5, -0.13]], { roll: 0.3, pitch: 0.2, lag: 0.09, sway: [0.04, 0.03, 0.04], wind: [0.15, 0, 0], flutter: [0.14, 0.06, 0.06], bounce: 2 });
   const tri = (x: number): number => Math.abs(((x % 1) + 1) % 1 - 0.5) * 2;
-  const capeG = cape(T, { yTop: 0.54, len: 0.2, A: 2.05, grow: (v) => 0.02 + 0.075 * sstep(0, 0.4, v) + 0.03 * v, zig: (u) => 0.5 * tri(u * 6.5 + 0.2) - 0.1, nu: 26, nv: 8, back: (v) => 0.03 * v });
+  const capeG = cape(T, { yTop: 0.54, len: 0.16, A: 2.05, grow: (v) => 0.02 + 0.075 * sstep(0, 0.4, v) + 0.03 * v, zig: (u) => 0.5 * tri(u * 6.5 + 0.2) - 0.1, nu: 26, nv: 8, back: (v) => 0.03 * v });
   c.soft(paintUV(capeG, (u, v) => mix(mix(RUST, darken(RUST, 0.3), v * 0.6), '#d9a441', v > 0.1 && v < 0.17 ? 0.8 : 0)), CLOTH2, (p) => {
     const k = sstep(0.47, 0.34, p.y) * sstep(-0.05, -0.14, p.z);
     return [...rig.torsoW(p).map(([b, w]) => [b, w * (1 - k)] as [number, number]), [rig.i('cape'), k]];

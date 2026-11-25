@@ -74,24 +74,26 @@ function build(c: Ctx): FaceSpec {
   }
   // antena com estrela luminosa
   const top = helmet.fn(0, 1).y;
-  const aPts: V3[] = [[0.0, top - 0.01, -0.02], [0.0, top + 0.07, -0.035], [0.0, top + 0.14, -0.07], [0.0, top + 0.19, -0.11]];
+  // mais curta e inclinada para trás: no drift (cabeça inclinada) a estrela atravessava a barra da gaiola do Duna
+  const aPts: V3[] = [[0.0, top - 0.01, -0.02], [0.0, top + 0.06, -0.045], [0.0, top + 0.11, -0.095], [0.0, top + 0.145, -0.15]];
   const ab = c.chain('antenna', 'head', [aPts[0]!, aPts[2]!], { roll: 0.5, pitch: 0.35, lag: 0.07, sway: [0.08, 0, 0.1], phase: 0.2, wind: [-0.25, 0, 0], flutter: [0.1, 0, 0.1], bounce: 5 });
   c.soft(sweep(aPts, 0.009, 6, 10), 'glossy', rig.chainW(ab, { parent: 'head', blend: 0.03, tip: aPts[3] }), WHITE);
   c.rigid('head', cyl(0.022, 0.03, 0.02, 10), 'glossy', SUIT, { p: [0, top - 0.002, -0.02] });
-  c.rigid(ab[1]!, extrude(starOutline(0.062, 0.028), 0.022, 0.007), 'glow_warm', GOLD, { p: [0, top + 0.22, -0.125], r: [-0.3, 0, 0] });
+  c.rigid(ab[1]!, extrude(starOutline(0.062, 0.028), 0.022, 0.007), 'glow_warm', GOLD, { p: [0, top + 0.17, -0.17], r: [-0.55, 0, 0] });
 
   /* ---------- cachecol cometa ---------- */
   c.soft(paintUV(band(T, 0.52, 0.595, 0.022, 20), (_u, _v, p) => mix(darken(GOLD, 0.25), GOLD, sstep(0.52, 0.6, p.y))), 'cloth', rig.torsoW);
-  const sPts: V3[] = [[0.02, 0.575, -0.06], [0.03, 0.62, -0.19], [0.01, 0.615, -0.32], [-0.02, 0.58, -0.45], [0.0, 0.54, -0.57]];
-  const sb = c.chain('scarf', 'chest', [sPts[0]!, sPts[1]!, sPts[2]!, sPts[3]!], { roll: 0.3, pitch: 0.25, lag: 0.08, sway: [0.06, 0.1, 0.05], phase: 0.2, wind: [0.07, 0, 0], flutter: [0.1, 0.16, 0.08], bounce: 2 });
+  // ponta erguida, voando quase na horizontal (caída, entrava no bagageiro do Flecha e no santantônio do Faísca)
+  const sPts: V3[] = [[0.02, 0.575, -0.06], [0.03, 0.62, -0.19], [0.01, 0.625, -0.32], [-0.02, 0.61, -0.45], [0.0, 0.59, -0.56]];
+  const sb = c.chain('scarf', 'chest', [sPts[0]!, sPts[1]!, sPts[2]!, sPts[3]!], { roll: 0.3, pitch: 0.25, lag: 0.08, sway: [0.06, 0.1, 0.05], phase: 0.2, wind: [0.12, 0, 0], flutter: [0.1, 0.16, 0.08], bounce: 2 });
   const sw = rig.chainW(sb, { parent: 'chest', blend: 0.05, tip: sPts[4] });
   const cometCol = (t: number): ReturnType<typeof mix> => (t < 0.4 ? mix(GOLD, '#ffab3d', t / 0.4) : t < 0.75 ? mix('#ffab3d', PINK, (t - 0.4) / 0.35) : mix(PINK, SUIT_L, (t - 0.75) / 0.25));
   c.soft(ribbon(sPts, (t) => ramp(t, [[0, 0.08], [0.25, 0.17], [0.7, 0.12], [1, 0.03]]), 0.012, cometCol, { ref: [1, 0, 0], nv: 20 }), 'cloth', sw);
-  c.soft(ribbon([sPts[1]!, [0.11, 0.6, -0.31], [0.13, 0.54, -0.44]], (t) => 0.07 - 0.05 * t, 0.01, (t) => cometCol(0.3 + t * 0.6), { ref: [1, 0, 0], nv: 8 }), 'cloth', sw);
+  c.soft(ribbon([sPts[1]!, [0.11, 0.61, -0.31], [0.13, 0.58, -0.43]], (t) => 0.07 - 0.05 * t, 0.01, (t) => cometCol(0.3 + t * 0.6), { ref: [1, 0, 0], nv: 8 }), 'cloth', sw);
   c.soft(ribbon([sPts[1]!, [-0.09, 0.66, -0.3], [-0.13, 0.64, -0.42]], (t) => 0.065 - 0.045 * t, 0.01, (t) => cometCol(0.3 + t * 0.6), { ref: [1, 0, 0], nv: 8 }), 'cloth', sw);
   // estrelinhas um pouco acima da ponta do cachecol (mais baixas, entravam no bagageiro do Flecha)
-  c.rigid(sb[3]!, extrude(starOutline(0.03, 0.013), 0.01, 0.003), 'glow_warm', GOLD, { p: [0.0, 0.6, -0.63], r: [0.4, 0.3, 0.3] });
-  c.rigid(sb[2]!, extrude(starOutline(0.02, 0.009), 0.008, 0.002), 'glow_warm', GOLD, { p: [0.14, 0.58, -0.48], r: [0.2, 0.5, 0.6] });
+  c.rigid(sb[3]!, extrude(starOutline(0.03, 0.013), 0.01, 0.003), 'glow_warm', GOLD, { p: [0.0, 0.64, -0.62], r: [0.4, 0.3, 0.3] });
+  c.rigid(sb[2]!, extrude(starOutline(0.02, 0.009), 0.008, 0.002), 'glow_warm', GOLD, { p: [0.14, 0.62, -0.47], r: [0.2, 0.5, 0.6] });
 
   return {
     bg: SKIN,
