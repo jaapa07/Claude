@@ -181,7 +181,7 @@ kbd { display: inline-block; min-width: 1.5em; padding: 0 0.35em; margin: 0 0.1e
 .player-turn { display: inline-block; margin: 0 0 0.6rem; padding: 0.15rem 0.9rem; font-family: var(--font-display); font-style: italic; font-weight: 900; font-size: 1.3rem; letter-spacing: 0.04em; text-transform: uppercase; color: #14092a; transform: skewX(-10deg); }
 .player-turn[data-slot="0"] { background: #4fd8e8; }
 .player-turn[data-slot="1"] { background: #ffb347; }
-.card__taken { position: absolute; top: 0.4rem; right: 0.4rem; padding: 0.05rem 0.4rem; font-size: 0.62rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; color: #14092a; background: #4fd8e8; }
+.card__taken { position: absolute; top: 0.4rem; left: 0.4rem; padding: 0.05rem 0.4rem; font-size: 0.62rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; color: #14092a; background: #4fd8e8; }
 .tag--p1 { background: #4fd8e8; color: #14092a; }
 .tag--p2 { background: #ffb347; color: #14092a; }
 .reward__split { margin: 0.3rem 0 0; font-size: 0.85rem; display: flex; gap: 0.8rem; }

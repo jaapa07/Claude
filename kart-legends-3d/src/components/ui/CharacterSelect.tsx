@@ -75,7 +75,7 @@ export function CharacterSelect({ slot = 0 }: { slot?: 0 | 1 }): JSX.Element {
   const focusLocked = !unlocked.characters.includes(focus.id);
   return (
     <ScreenShell
-      id={screen} title={two ? `${playerLabel(slot)} · escolha o piloto` : 'Escolha o piloto'}
+      id={screen} title="Escolha o piloto"
       kicker={two ? `Tela dividida · ${slot === 0 ? 'metade de cima' : 'metade de baixo'}` : `${unlocked.characters.length} de ${CHARACTERS.length} liberados`}
       className={two ? `screen--player screen--p${slot + 1}` : undefined}
       onBack={() => goTo(prevOf(screen, useGameStore.getState().selection))}

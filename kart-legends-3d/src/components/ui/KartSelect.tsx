@@ -42,7 +42,7 @@ export function KartSelect({ slot = 0 }: { slot?: 0 | 1 }): JSX.Element {
   const focusLocked = isLocked(focus.id);
   return (
     <ScreenShell
-      id={screen} title={two ? `${playerLabel(slot)} · escolha o kart` : 'Escolha o kart'}
+      id={screen} title="Escolha o kart"
       kicker={two ? `Tela dividida · ${slot === 0 ? 'metade de cima' : 'metade de baixo'}` : `${unlockedKarts.length} de ${KARTS.length} liberados`}
       className={two ? `screen--player screen--p${slot + 1}` : undefined}
       onBack={() => goTo(prevOf(screen, useGameStore.getState().selection))}
