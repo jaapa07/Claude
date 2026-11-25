@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { assets } from '../core/Assets';
+import { progress } from '../core/Progress';
 import { Trail } from '../vfx/Effects';
 import type { Player } from './Player';
 
@@ -29,7 +30,19 @@ export class Ball {
   constructor() {
     const g = assets.gltf('models/props/ball.glb');
     this.mesh = g.scene.clone(true);
-    this.mesh.traverse((o) => { if ((o as THREE.Mesh).isMesh) { (o as THREE.Mesh).castShadow = true; } });
+    // bola escolhida pelo jogador (desbloqueáveis em Conquistas)
+    const texUrl = progress.ballTex();
+    const gold = texUrl.includes('gold'), neon = texUrl.includes('neon');
+    this.mesh.traverse((o) => {
+      const m = o as THREE.Mesh;
+      if (!m.isMesh) return;
+      m.castShadow = true;
+      const mat = (m.material as THREE.MeshStandardMaterial).clone();
+      m.material = mat;
+      if (texUrl !== 'textures/props/ball.png') assets.texAsync(texUrl).then((t) => { t.flipY = false; t.needsUpdate = true; mat.map = t; mat.needsUpdate = true; });
+      if (gold) { mat.metalness = 0.75; mat.roughness = 0.25; }
+      if (neon) { mat.emissive = new THREE.Color(0x66ffff); mat.emissiveIntensity = 0.35; }
+    });
     this.shadow = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 0.5), new THREE.MeshBasicMaterial({ map: assets.tex('vfx/blob_shadow.png'), transparent: true, depthWrite: false }));
     this.shadow.rotation.x = -Math.PI / 2;
   }

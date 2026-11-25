@@ -53,16 +53,63 @@ for t in me.loop_triangles:
 json.dump({'tris': tris}, open(os.path.join(BUILD, 'athlete_uv.json'), 'w'))
 me.uv_layers.remove(me.uv_layers[orig_name])
 
-# ---- animações
+# ---- animações: captura de movimento livre (Quaternius UAL CC0 + CMU mocap) onde existe; clipes autorais no resto
+from retarget import Source, retarget
+SRCD = os.path.join(ROOT, '.cache', 'src')
+MOCAP = [  # (nome no jogo, tipo, arquivo, action UAL | None, t0, t1, meta extra, loop)
+    ('idle', 'ual', 'Idle_Loop', None, None, {}, True), ('lineup', 'ual', 'Idle_Loop', None, None, {}, True),
+    ('walk', 'ual', 'Walk_Loop', None, None, {}, True), ('jog', 'ual', 'Jog_Fwd_Loop', None, None, {}, True),
+    ('run', 'ual', 'Jog_Fwd_Loop', None, None, {}, True), ('sprint', 'ual', 'Sprint_Loop', None, None, {}, True),
+    ('dance_1', 'ual', 'Dance_Loop', None, None, {}, True), ('argue_ref', 'ual', 'Idle_Talking_Loop', None, None, {}, True),
+    ('fall_hit', 'ual', 'Death01', None, None, {'endsLying': 'back'}, False),
+    ('shot', 'cmu', '011/11_01', 353, 461, {'contact': (407 - 353) / 120}, False),
+    ('pass_short', 'cmu', '010/10_04', 309, 405, {'contact': (357 - 309) / 120}, False),
+    ('pass_lob', 'cmu', '010/10_02', 299, 413, {'contact': (353 - 299) / 120}, False),
+    ('gk_throw', 'cmu', '033/33_01', 230, 360, {'contact': (295 - 230) / 120}, False),
+    ('celebrate_cartwheel', 'cmu', '049/49_07', 40, 340, {}, True),
+    ('warmup_jacks', 'cmu', '013/13_29', 131, 411, {}, True),
+    ('wave', 'cmu', '013/13_26', 811, 1011, {}, False),
+    ('stretch', 'cmu', '042/42_01', 191, 700, {}, False),
+]
 poser = Poser(arm)
 clips, meta = build()
 arm.animation_data_create()
+mocap_acts = {}
+ual = None
+cmu_cache = {}
+for name, kind, src, a, b, extra, loop in MOCAP:
+    try:
+        if kind == 'ual':
+            if ual is None: ual = Source('ual', os.path.join(SRCD, 'ual', 'glTF', 'AnimationLibrary_Godot_Standard.gltf'))
+            act_src = ual.use(src)
+            t0, t1 = 0.0, act_src.frame_range[1] / ual.fps
+            act, dur = retarget(arm, ual, name, t0, t1)
+        else:
+            if src not in cmu_cache:
+                for c in cmu_cache.values(): c.dispose()
+                cmu_cache = {src: Source('cmu', os.path.join(SRCD, 'cmu', 'data', src + '.bvh'))}
+            s = cmu_cache[src]
+            s.use()
+            act, dur = retarget(arm, s, name, (a - 1) / 120, (b - 1) / 120)
+        mocap_acts[name] = (act, dur, extra, loop)
+        print('mocap', name, round(dur, 2))
+    except Exception as e:
+        print('mocap FALHOU', name, e)
+for c in cmu_cache.values(): c.dispose()
+if ual: ual.dispose()
 for name, keys in clips.items():
+    if name in mocap_acts:
+        continue
     act = make_action(arm, poser, name, keys)
     # interpolação: clipes em loop usam bezier; cortes rápidos também
     tr = arm.animation_data.nla_tracks.new()
     tr.name = name
     st = tr.strips.new(name, int(act.frame_range[0]), act)
+    tr.mute = True
+for name, (act, dur, extra, loop) in mocap_acts.items():
+    tr = arm.animation_data.nla_tracks.new()
+    tr.name = name
+    tr.strips.new(name, 0, act)
     tr.mute = True
 arm.animation_data.action = None
 for pb in arm.pose.bones:
@@ -80,5 +127,9 @@ for k in clips:
     meta.setdefault(k, {})
     meta[k]['loop'] = k in LOOPING
     meta[k]['duration'] = clips[k][-1][0]
+for k, (act, dur, extra, loop) in mocap_acts.items():
+    m = {kk: vv for kk, vv in meta.get(k, {}).items() if kk not in ('contact', 'contact2')}
+    m.update(extra); m['loop'] = loop; m['duration'] = round(dur, 4); m['mocap'] = True
+    meta[k] = m
 json.dump(meta, open(os.path.join(ROOT, 'src', 'data', 'clips.json'), 'w'), indent=1)
-print('OK athlete.glb', len(clips), 'clips')
+print('OK athlete.glb', len(meta), 'clips', len(mocap_acts), 'de captura de movimento')

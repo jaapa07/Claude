@@ -10,6 +10,8 @@ import { Match, type MatchOpts, type MatchResult } from '../match/Match';
 import type { Team, Formation } from '../match/Team';
 import TEAMS from '../data/teams.json';
 import CREDITS from '../data/credits.json';
+import { progress, ACH, BALLS, type AchId } from '../core/Progress';
+import type { MiniKind, MiniResult } from '../match/MiniGames';
 
 type TeamData = (typeof TEAMS.teams)[number];
 const teams = TEAMS.teams;
@@ -53,7 +55,7 @@ export class Flow {
   tick?: (dt: number) => void;
   setup = {
     home: teams[0] as TeamData, away: teams[1] as TeamData, homeKit: 'home' as 'home' | 'away', awayKit: 'home' as 'home' | 'away',
-    arena: 'copacabana', homeDevices: ['kb'] as DeviceId[], awayDevices: [] as DeviceId[], mode: 'friendly' as 'friendly' | 'cup' | 'training',
+    arena: 'copacabana', homeDevices: ['kb'] as DeviceId[], awayDevices: [] as DeviceId[], mode: 'friendly' as 'friendly' | 'cup' | 'training' | 'mini', mini: 'pk' as MiniKind,
   };
   cup: CupState | null = cupStore.load();
   private busy = false;
@@ -140,6 +142,8 @@ export class Flow {
       [t('menu_friendly'), 'Partida rápida contra a CPU ou um amigo.', () => { this.setup.mode = 'friendly'; this.fade(() => this.controlSelect()); }],
       [this.cup && !this.cup.done ? t('menu_continue_cup') : t('menu_cup'), '8 seleções, mata-mata até a grande final.', () => this.fade(() => (this.cup && !this.cup.done ? this.cupScreen() : this.cupNew()))],
       [t('menu_training'), 'Bicicletas, chapéus e voleios sem pressão.', () => { this.setup.mode = 'training'; this.fade(() => this.teamSelect(true)); }],
+      ['Desafios da Praia', 'Pênaltis de Ouro, Embaixadinhas e Tiro ao Alvo. Bata seus recordes!', () => this.fade(() => this.challenges())],
+      [`Conquistas (${progress.count()}/${Object.keys(ACH).length})`, 'Conquistas, estatísticas de carreira e bolas desbloqueáveis.', () => this.fade(() => this.achievements())],
       [t('menu_options'), 'Volume, duração, dificuldade, gráficos e controles.', () => this.fade(() => this.options())],
       [t('menu_credits'), 'Quem fez a areia esquentar.', () => this.fade(() => this.credits())],
     ];
@@ -153,7 +157,7 @@ export class Flow {
     const p = new Athlete(this.kit(teams[0], 'home', 4));
     p.root.position.set(1.5, 0, 3); p.root.rotation.y = -0.5; p.play('juggle', 0);
     const p2 = new Athlete(this.kit(teams[7], 'home', 7));
-    p2.root.position.set(4.4, 0, 1.2); p2.root.rotation.y = -0.9; p2.play('celebrate_samba', 0);
+    p2.root.position.set(4.4, 0, 1.2); p2.root.rotation.y = -0.9; p2.play('warmup_jacks', 0);
     this.world.root.add(p.root, p2.root); this.show.push(p, p2);
     const ball = assets.gltf('models/props/ball.glb').scene.clone(true);
     this.world.root.add(ball); this.showBall = ball;
@@ -311,7 +315,7 @@ export class Flow {
     const tip = tips()[(Math.random() * tips().length) | 0];
     const mode = label ?? (s.mode === 'training' ? t('menu_training').toUpperCase() : t('friendly'));
     const el = html(`<div class="screen loading"><div class="stripe"></div><div class="mode">${mode}</div><div class="city">${arena.name.toUpperCase()} · ${arena.city}</div>
-      <div class="vs"><div><img src="${A(`ui/flags/${s.home.id}.png`)}"><b>${s.home.id}</b></div>${s.mode === 'training' ? '' : `<div class="x">VS</div><div><img src="${A(`ui/flags/${s.away.id}.png`)}"><b>${s.away.id}</b></div>`}</div>
+      <div class="vs"><div><img src="${A(`ui/flags/${s.home.id}.png`)}"><b>${s.home.id}</b></div>${s.mode === 'training' || s.mode === 'mini' ? '' : `<div class="x">VS</div><div><img src="${A(`ui/flags/${s.away.id}.png`)}"><b>${s.away.id}</b></div>`}</div>
       <div class="tipbox panel"><b>${t('tip')}</b>${tip}</div><div class="bar"><i></i></div></div>`);
     this.mount(el);
     this.nav = undefined;
@@ -329,7 +333,7 @@ export class Flow {
     const bar = el.querySelector('.bar i') as HTMLElement;
     const items: Item[] = [...World.arenaItems(s.arena)];
     const kitUrls: string[] = [];
-    for (let i = 0; i < 10; i++) { kitUrls.push(this.kit(s.home, s.homeKit, i)); if (s.mode !== 'training') kitUrls.push(this.kit(s.away, s.awayKit, i)); }
+    for (let i = 0; i < 10; i++) { kitUrls.push(this.kit(s.home, s.homeKit, i)); if (s.mode !== 'training' && s.mode !== 'mini') kitUrls.push(this.kit(s.away, s.awayKit, i)); }
     kitUrls.push('textures/kits/referee_0.webp', 'textures/kits/referee_1.webp', ...[0, 1, 2, 3].map((i) => `textures/kits/dancer_${i}.webp`));
     items.push(...kitUrls.map((url) => ({ kind: 'tex' as const, url })));
     const t0 = performance.now();
@@ -350,20 +354,27 @@ export class Flow {
     this.clearShow();
     this.screen?.remove(); this.screen = undefined; this.nav = undefined;
     this.world.setArena(s.arena);
-    const opts: MatchOpts = { home: s.home, away: s.mode === 'training' ? teams[(teams.indexOf(s.home) + 1) % teams.length] : s.away,
-      homeKit: s.homeKit, awayKit: s.awayKit, arena: s.arena, homeDevices: s.homeDevices, awayDevices: s.awayDevices, mode: s.mode, noDraw: s.mode === 'cup' };
+    const solo = s.mode === 'training' || s.mode === 'mini';
+    const opts: MatchOpts = { home: s.home, away: solo ? teams[(teams.indexOf(s.home) + 1) % teams.length] : s.away,
+      homeKit: s.homeKit, awayKit: solo ? 'home' : s.awayKit, arena: s.arena, homeDevices: s.homeDevices, awayDevices: s.awayDevices, mode: s.mode, noDraw: s.mode === 'cup',
+      mini: s.mode === 'mini' ? s.mini : undefined };
     const m = new Match(this.world, opts);
     this.match = m;
     m.onEnd = (r) => this.results(r);
     m.onHalftime = (on) => this.halftimePanel(on);
-    if (s.mode === 'training') {
+    if (s.mode !== 'mini') progress.visitArena(s.arena);
+    m.onEvent = (e, p, x) => this.achEvent(m, e, p, x);
+    if (m.mini) {
+      m.mini.onEnd = (r) => this.miniResult(r);
+      m.start(false);
+    } else if (s.mode === 'training') {
       const upd = (tr: typeof m.training) => {
         const lines = [{ text: `${t('ch_bicycle')} (${Math.min(5, tr.bicycle)}/5)`, ok: tr.bicycle >= 5 }, { text: `${t('ch_sombrero')} (${Math.min(3, tr.sombrero)}/3)`, ok: tr.sombrero >= 3 },
           { text: `${t('ch_volley')} (${Math.min(5, tr.volley)}/5)`, ok: tr.volley >= 5 }];
         m.hud.challenge([...lines, { text: '[L] sem bola: treinador cruza · [ESC] menu', ok: false }]);
         if (lines.every((l) => l.ok) && !tr.done) { tr.done = true; m.hud.big(t('ch_done'), true); m.fx.confettiBurst(new THREE.Vector3(0, 0, 0), 300, 20); audio.playMusic('victory'); }
       };
-      m.onEvent = (e, _p, x) => { if (e === 'training') upd(x); };
+      m.onEvent = (e, p, x) => { if (e === 'training') { upd(x); if (x.done) progress.add('aluno'); } this.achEvent(m, e, p, x); };
       m.start(false);
       upd(m.training);
     } else m.start(true);
@@ -379,7 +390,7 @@ export class Flow {
     const m = this.match!;
     m.paused = true;
     audio.play('ui_pop');
-    const training = m.opts.mode === 'training';
+    const training = m.opts.mode === 'training' || m.opts.mode === 'mini';
     const opts: [string, () => void][] = training
       ? [[t('resume'), () => this.unpause()], [t('quit'), () => { this.unpause(); this.fade(() => this.mainMenu()); }]]
       : [[t('resume'), () => this.unpause()], [t('tactics'), () => this.tactics()], [t('subs'), () => this.subs()], [t('restart'), () => { this.unpause(); this.fade(() => { this.endMatch(); this.startMatch(); }); }],
@@ -445,6 +456,7 @@ export class Flow {
   // ------------------------------------------------------------------ resultado
   results(r: MatchResult) {
     const m = this.match!;
+    this.achResult(r);
     const [h, a] = [r.home, r.away];
     const humanSide = h.human ? h : a.human ? a : h;
     const won = r.winner === humanSide;
@@ -566,6 +578,7 @@ export class Flow {
       c.champion = c.rounds[2][0].winner;
     } else if (c.round === 2) {
       c.done = true; c.champion = c.team;
+      progress.add('campeao');
       cupStore.save(c);
       void this.trophyScene();
       return;
@@ -591,7 +604,7 @@ export class Flow {
       a.setKit(this.kit(team, c.kit, k));
       a.root.position.set(i === 0 ? 0 : Math.sin(ang) * 2.6, 0, i === 0 ? 2.4 : Math.cos(ang) * 1.3 - 0.6);
       a.root.rotation.y = 0;
-      a.play(i === 0 ? 'celebrate_trophy' : ['celebrate_samba', 'celebrate_fist', 'clap', 'celebrate_point_sky'][i % 4], 0);
+      a.play(i === 0 ? 'celebrate_trophy' : ['celebrate_samba', 'celebrate_fist', 'clap', 'celebrate_point_sky', 'dance_1', 'wave'][i % 6], 0);
       this.world.root.add(a.root); ps.push(a); this.show.push(a);
     }
     const tr = assets.gltf('models/props/trophy.glb').scene.clone(true);
@@ -618,6 +631,143 @@ export class Flow {
       conf -= dt;
       this.world.excitement = 1.2;
       if (conf <= 0) { conf = 0.15; }
+    };
+  }
+
+  // ------------------------------------------------------------------ conquistas (ganchos)
+  private achEvent(m: Match, e: string, p?: any, x?: any) {
+    const human = (tm: any) => !!tm && tm.human;
+    if (m.opts.mode === 'mini') return;
+    if (e === 'goal' && x && !x.own && human(x.team)) {
+      progress.add('primeiro_gol');
+      if (x.kind === 'bicycle_kick') progress.add('bicicleta');
+      if (x.kind === 'scissor_kick') progress.add('tesoura');
+      if (x.kind === 'diving_header') progress.add('peixinho');
+      if (p && p.goals >= 3) progress.add('hat_trick');
+    }
+    if (e === 'sombrero' && p && human(p.team)) progress.add('chapeu');
+    if (e === 'fire' && human(x)) progress.add('fogo');
+    if (e === 'combo' && human(x)) progress.add('combo');
+  }
+  private achResult(r: MatchResult) {
+    const me = r.home.human ? r.home : r.away.human ? r.away : null;
+    if (!me) return;
+    const opp = me === r.home ? r.away : r.home;
+    const st = progress.data.stats;
+    st.matches++; st.goals += me.score; st.conceded += opp.score; st.styleBest = Math.max(st.styleBest, me.stylePts);
+    if (r.winner === me) {
+      st.wins++;
+      progress.add('veterano');
+      if (me.score - opp.score >= 5) progress.add('goleada');
+      if (opp.score === 0) progress.add('muralha');
+      if (r.pens) progress.add('sangue_frio');
+    } else if (!r.winner) st.draws++; else st.losses++;
+    progress.save();
+  }
+
+  // ------------------------------------------------------------------ desafios da praia (minijogos)
+  challenges() {
+    this.scene = 'challenges';
+    this.endMatch();
+    this.clearShow();
+    audio.playMusic('select');
+    const R = progress.data.records;
+    const list: [MiniKind, string, string, string][] = [
+      ['pk', 'Pênaltis de Ouro', '5 cobranças contra um goleiro cada vez melhor.', `Recorde: ${R.pk}/5`],
+      ['juggle', 'Embaixadinhas', 'Mantenha a bola no ar o máximo que puder em 60 s.', `Recorde: ${R.juggle}`],
+      ['target', 'Tiro ao Alvo', '10 bolas, alvos nos cantos do gol e um alvo móvel.', `Recorde: ${R.target} pts`],
+    ];
+    const el = html(`<div class="screen menu"><div class="col"><h1 class="title" style="font-size:40px;margin:0 0 8px">Desafios da Praia</h1>
+      ${list.map(([, n, , r]) => `<button class="btn"><span>${n} <small style="opacity:.7;font-size:16px">· ${r}</small></span></button>`).join('')}
+      <button class="btn"><span>${t('back')}</span></button><div class="desc"></div></div><div></div></div>`);
+    this.mount(el);
+    const btns = [...el.querySelectorAll('.btn')] as HTMLElement[];
+    const desc = el.querySelector('.desc') as HTMLElement;
+    btns.forEach((b, i) => b.addEventListener('click', () => {
+      if (i === list.length) { this.fade(() => this.mainMenu()); return; }
+      this.startMini(list[i][0]);
+    }));
+    this.nav = new Nav(btns, () => this.fade(() => this.mainMenu()));
+    const p = new Athlete(this.kit(this.setup.home, this.setup.homeKit, 4));
+    p.root.position.set(1.8, 0, 3); p.root.rotation.y = -0.6; p.play('juggle', 0);
+    this.world.root.add(p.root); this.show.push(p);
+    this.tick = () => {
+      desc.textContent = this.nav!.i < list.length ? list[this.nav!.i][2] : '';
+      const c = this.world.camera; c.position.set(-1.2, 1.9, 9.5); c.lookAt(2.4, 1.5, 2);
+    };
+  }
+  startMini(kind: MiniKind) {
+    this.setup.mode = 'mini';
+    this.setup.mini = kind;
+    this.setup.homeDevices = ['kb', ...input.devices().filter((d) => d !== 'kb')].slice(0, 1) as DeviceId[];
+    this.setup.awayDevices = [];
+    this.setup.arena = kind === 'pk' ? 'lagoa' : kind === 'juggle' ? 'dunas' : 'copacabana';
+    this.tick = undefined;
+    const names = { pk: 'PÊNALTIS DE OURO', juggle: 'EMBAIXADINHAS', target: 'TIRO AO ALVO' };
+    this.fade(() => { void this.loading(names[kind]); });
+  }
+  miniResult(r: MiniResult) {
+    const stars = [0, 1, 2].map((i) => `<img src="${A(i < r.stars ? 'ui/star.png' : 'ui/star_empty.png')}" style="width:64px">`).join('');
+    const btns: [string, () => void][] = [['Jogar de novo', () => this.fade(() => { this.endMatch(); this.startMini(r.kind); })],
+      ['Desafios da Praia', () => this.fade(() => this.challenges())], [t('back_menu'), () => this.fade(() => this.mainMenu())]];
+    const el = html(`<div class="screen overlay"><div class="box panel" style="align-items:center;text-align:center">
+      <h1 class="title">${{ pk: 'Pênaltis de Ouro', juggle: 'Embaixadinhas', target: 'Tiro ao Alvo' }[r.kind]}</h1>
+      <div>${stars}</div><div class="title" style="font-size:44px;color:#ffb81f">${r.label}</div>
+      ${r.best ? '<div class="title" style="color:#0fc48f">NOVO RECORDE!</div>' : `<div>Recorde: ${r.record}</div>`}
+      ${btns.map(([n]) => `<button class="btn"><span>${n}</span></button>`).join('')}</div></div>`);
+    this.mount(el);
+    const bs = [...el.querySelectorAll('.btn')] as HTMLElement[];
+    bs.forEach((b, i) => b.addEventListener('click', btns[i][1]));
+    this.nav = new Nav(bs);
+    if (r.stars >= 3) audio.playMusic('victory');
+  }
+
+  // ------------------------------------------------------------------ conquistas (tela)
+  achievements() {
+    this.scene = 'achievements';
+    this.endMatch();
+    this.clearShow();
+    const st = progress.data.stats, R = progress.data.records;
+    const ids = Object.keys(ACH) as AchId[];
+    let ballI = Math.max(0, BALLS.findIndex((b) => b.id === progress.data.ball));
+    const render = () => {
+      const b = BALLS[ballI];
+      const el = html(`<div class="screen ach"><div class="box panel">
+        <h1 class="title">Conquistas <small>${progress.count()}/${ids.length}</small></h1>
+        <div class="achgrid">${ids.map((id) => {
+          const a = ACH[id], v = progress.data.ach[id] ?? 0, ok = progress.has(id);
+          return `<div class="achcard ${ok ? 'ok' : ''}"><img src="${A(ok ? 'ui/star.png' : 'ui/star_empty.png')}"><div><b>${a.name}</b><span>${a.desc}</span>${a.goal > 1 ? `<i><u style="width:${(v / a.goal) * 100}%"></u></i>` : ''}</div></div>`;
+        }).join('')}</div>
+        <div class="achfoot"><div class="career"><b class="title">Carreira</b> ${st.matches} jogos · ${st.wins}V ${st.draws}E ${st.losses}D · ${st.goals} gols pró · ${st.conceded} contra ·
+          recordes: pênaltis ${R.pk}/5, embaixadinhas ${R.juggle}, alvo ${R.target}</div>
+          <div class="ballpick"><span class="arrow" data-d="-1">◀</span><div><b class="title">Bola da partida</b><div>${b.name} ${b.unlocked() ? (b.id === progress.data.ball ? '✔' : '') : '🔒 ' + b.need}</div></div><span class="arrow" data-d="1">▶</span></div>
+          <button class="btn small"><span>${t('back')}</span></button></div></div></div>`);
+      this.mount(el);
+      el.querySelectorAll('.arrow').forEach((a) => a.addEventListener('click', () => step(+(a as HTMLElement).dataset.d!)));
+      el.querySelector('.btn')!.addEventListener('click', () => { this.tick = undefined; this.fade(() => this.mainMenu()); });
+      // bola giratória
+      this.showBall?.removeFromParent();
+      const ball = assets.gltf('models/props/ball.glb').scene.clone(true);
+      ball.scale.setScalar(4);
+      ball.traverse((o) => { const m = o as THREE.Mesh; if (m.isMesh) { const mt = (m.material as THREE.MeshStandardMaterial).clone(); m.material = mt;
+        assets.texAsync(b.tex).then((tx) => { tx.flipY = false; tx.needsUpdate = true; mt.map = tx; mt.needsUpdate = true; });
+        if (b.id === 'dourada') { mt.metalness = 0.75; mt.roughness = 0.25; } if (!b.unlocked()) mt.color.set(0x333333); } });
+      ball.position.set(2.6, 1.3, 3); this.world.root.add(ball); this.showBall = ball;
+    };
+    const step = (d: number) => {
+      ballI = (ballI + d + BALLS.length) % BALLS.length;
+      if (BALLS[ballI].unlocked()) { progress.data.ball = BALLS[ballI].id; progress.save(); }
+      audio.play('ui_move', 0.6);
+      render();
+    };
+    render();
+    this.nav = undefined;
+    this.tick = (dt) => {
+      const c = this.world.camera; c.position.set(0, 1.6, 9); c.lookAt(1.6, 1.3, 3);
+      if (this.showBall) this.showBall.rotation.y += dt * 1.2;
+      const M = input.menu;
+      if (M.left || M.right) step(M.left ? -1 : 1);
+      if (M.back || M.ok) { this.tick = undefined; audio.play('ui_back'); this.fade(() => this.mainMenu()); }
     };
   }
 

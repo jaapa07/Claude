@@ -80,4 +80,10 @@ for (const f of OGA) {
   await save(`https://opengameart.org/sites/default/files/${f}`, out);
   if (out.endsWith('.zip')) unzip(out, out.replace(/\.zip$/, ''));
 }
+console.log('Animações livres (Quaternius UAL CC0 + CMU mocap)');
+const git = (args, cwd) => execFileSync('git', args, { cwd, stdio: 'inherit' });
+if (!(await exists(path.join(SRC, 'ual', 'glTF')))) git(['clone', '--depth', '1', 'https://github.com/J-Ponzo/gltf-universal-animation-library.git', 'ual'], SRC);
+if (!(await exists(path.join(SRC, 'cmu')))) git(['clone', '--depth', '1', '--filter=blob:none', '--no-checkout', 'https://github.com/una-dinosauria/cmu-mocap.git', 'cmu'], SRC);
+const CMU = ['010/10_02', '010/10_04', '011/11_01', '013/13_26', '013/13_29', '033/33_01', '042/42_01', '049/49_07'];
+git(['checkout', 'HEAD', '--', 'READMEFIRST.txt', ...CMU.map((c) => `data/${c}.bvh`)], path.join(SRC, 'cmu'));
 console.log('Pronto. Agora: python3 scripts/build_all.py');

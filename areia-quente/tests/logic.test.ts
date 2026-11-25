@@ -7,6 +7,7 @@ vi.mock('../src/core/Assets', () => ({
   assets: {
     gltf: () => ({ scene: new THREE.Group() }),
     tex: () => new THREE.Texture(),
+    texAsync: () => Promise.resolve(new THREE.Texture()),
   },
 }));
 

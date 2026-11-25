@@ -94,10 +94,11 @@ export class Athlete {
     if (this.locked > 0) return;
     let n = gk ? 'gk_idle' : tired ? 'idle_tired' : 'idle';
     let sp = 1;
-    if (speed > 7.2) { n = 'sprint'; sp = speed / 8.2; }
-    else if (speed > 4.2) { n = 'run'; sp = speed / 6.0; }
-    else if (speed > 1.6) { n = 'jog'; sp = speed / 3.8; }
-    else if (speed > 0.35) { n = 'walk'; sp = Math.max(0.6, speed / 1.5); }
+    // taxas calibradas para os ciclos de captura de movimento (pé sem patinar na areia)
+    if (speed > 7.2) { n = 'sprint'; sp = THREE.MathUtils.clamp(speed / 7.4, 0.85, 1.35); }
+    else if (speed > 4.2) { n = 'run'; sp = THREE.MathUtils.clamp(speed / 3.9, 1.0, 1.7); }
+    else if (speed > 1.6) { n = 'jog'; sp = THREE.MathUtils.clamp(speed / 3.3, 0.6, 1.3); }
+    else if (speed > 0.35) { n = 'walk'; sp = THREE.MathUtils.clamp(speed / 1.35, 0.6, 1.3); }
     if (n !== this.current) this.play(n, 0.18, sp);
     else if (this.currentAction) this.currentAction.timeScale = sp;
   }

@@ -178,6 +178,25 @@ def make_textures():
             d.line(pts, fill='#222222', width=4)
     d.rectangle((0, 0, W, 14), fill='#222222'); d.rectangle((0, H - 14, W, H), fill='#222222')
     im.save(os.path.join(TEX, 'ball.png'))
+    # variações desbloqueáveis
+    def swirl(base, cols, line, name, glow=False):
+        v = Image.new('RGB', (W, H), base); dv = ImageDraw.Draw(v)
+        for k in range(4):
+            pts = [(((k / 4 + i / 80 * 0.6) % 1) * W, i / 80 * H) for i in range(81)]
+            for dx in (-W, 0, W):
+                dv.polygon([(x + dx, y) for x, y in pts] + [(x + dx + W * 0.11, y) for x, y in reversed(pts)], fill=cols[k % len(cols)])
+                dv.line([(x + dx, y) for x, y in pts], fill=line, width=6 if glow else 4)
+        dv.rectangle((0, 0, W, 14), fill=line); dv.rectangle((0, H - 14, W, H), fill=line)
+        v.save(os.path.join(TEX, name))
+    swirl('#F7D774', ['#C8901E', '#FFF1B0', '#B07A12', '#FFE27A'], '#7A4E00', 'ball_gold.png')
+    swirl('#101425', ['#00F0FF', '#FF2BD6', '#B6FF00', '#FF8A00'], '#00F0FF', 'ball_neon.png', glow=True)
+    # retrô: couro marrom com gomos e costuras
+    r = Image.new('RGB', (W, H), '#8A5A2E'); dr = ImageDraw.Draw(r)
+    for i in range(0, W, 128):
+        dr.rectangle((i, 0, i + 6, H), fill='#5C3A1A')
+        for y in range(20, H, 24): dr.line((i - 8, y, i + 14, y + 6), fill='#E8D9B8', width=3)
+    for y in (H // 3, 2 * H // 3): dr.rectangle((0, y - 3, W, y + 3), fill='#5C3A1A')
+    r.save(os.path.join(TEX, 'ball_retro.png'))
 
 
 if __name__ == '__main__':

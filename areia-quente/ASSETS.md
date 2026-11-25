@@ -3,7 +3,7 @@
 Todos os arquivos em `public/assets/` listados com origem e licença. Gerado por `scripts/build_credits.py`.
 Fontes baixadas por `scripts/fetch-assets.mjs`; derivados gerados por `scripts/build_all.py`.
 
-Total: **316 arquivos**, 42.9 MB. Nenhuma marca real; patrocinadores e jogadores são fictícios.
+Total: **319 arquivos**, 43.2 MB. Nenhuma marca real; patrocinadores e jogadores são fictícios.
 
 Fontes tipográficas: Bungee (David Jonathan Ross) e Rubik (Hubert & Fischer) via @fontsource — SIL Open Font License 1.1.
 
@@ -115,10 +115,10 @@ Licença: **CC0 1.0** · 6 arquivo(s)
 - `models/arenas/lagoa.glb` (3022 KB)
 - `models/arenas/lagoa_seats.json` (55 KB)
 
-## Malha/rig: Kenney "Animated Characters: Protagonists" (CC0). 50 animações autorais feitas em Blender por scripts/blender/anims.py; novo UV por build_player.py
-Licença: **CC0 1.0** · 1 arquivo(s)
+## Malha/rig: Kenney "Animated Characters: Protagonists" (CC0). 17 clipes de captura de movimento retargetados por scripts/blender/retarget.py — Quaternius "Universal Animation Library" (CC0) e CMU Graphics Lab Motion Capture Database (mocap.cs.cmu.edu, uso livre; sessões 10, 11, 13, 33, 42, 49) — e 35 clipes autorais (scripts/blender/anims.py)
+Licença: **CC0 1.0 / CMU (uso livre)** · 1 arquivo(s)
 
-- `models/players/athlete.glb` (1722 KB)
+- `models/players/athlete.glb` (2019 KB)
 
 ## Modelado em Blender por scripts/blender/build_props.py
 Licença: **Criado para o AREIA QUENTE (scripts deste repositório) — CC0 1.0** · 3 arquivo(s)
@@ -319,9 +319,12 @@ Licença: **CC0 1.0** · 166 arquivo(s)
 </details>
 
 ## Gerado por scripts/blender/build_props.py
-Licença: **Criado para o AREIA QUENTE (scripts deste repositório) — CC0 1.0** · 1 arquivo(s)
+Licença: **Criado para o AREIA QUENTE (scripts deste repositório) — CC0 1.0** · 4 arquivo(s)
 
 - `textures/props/ball.png` (14 KB)
+- `textures/props/ball_gold.png` (14 KB)
+- `textures/props/ball_neon.png` (14 KB)
+- `textures/props/ball_retro.png` (7 KB)
 
 ## ambientCG Ground093C (ambientcg.com)
 Licença: **CC0 1.0** · 3 arquivo(s)

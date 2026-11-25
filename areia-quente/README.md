@@ -55,6 +55,9 @@ Na tela "Quem joga com quem?" cada teclado/controle é movido para CASA, CPU ou 
   (sobrevoo, aquecimento com nome na tela, times perfilados) → partida → intervalo com dançarinas e estatísticas → replay de gol
   (3 ângulos, câmera lenta, rastro) → resultado com craque da partida → Copa (mata-mata de 8, salva no navegador) → troféu.
   Mais Treino (3 desafios), Opções (volumes, duração, dificuldade, qualidade, remapeamento) e Créditos.
+- **Desafios da Praia** (minijogos com recorde e 1–3 estrelas): **Pênaltis de Ouro** (5 cobranças contra um goleiro cada vez melhor),
+  **Embaixadinhas** (aperte [I] no tempo certo; "PERFEITO" vale bônus) e **Tiro ao Alvo** (10 bolas, alvos nos cantos e um alvo móvel).
+- **18 conquistas** com avisos na tela, estatísticas de carreira e **4 bolas desbloqueáveis** (Clássica, Dourada, Neon, Retrô).
 - **Partida**: 3 períodos (duração real configurável: 2/3/5 min), sem impedimento, laterais com a mão, faltas por carrinho,
   cartões (2 amarelos = 2 minutos fora), tiro livre direto sem barreira, pênalti na área, escanteio, bola do goleiro,
   prorrogação com gol de ouro e disputa de pênaltis (3 cobranças + alternadas), substituições e 3 formações.
@@ -64,6 +67,14 @@ Na tela "Quem joga com quem?" cada teclado/controle é movido para CASA, CPU ou 
   areia PBR com pegadas e poeira, torcida instanciada que pula conforme a emoção, redes que balançam, bandeiras ao vento,
   mar animado, céu HDRI, holofotes com bloom à noite, confete, rastro e explosão no Modo Fogo, sombra de contato.
 - **Áudio**: 5 músicas CC0, torcida (ambiente, "uuuh", explosão de gol), ondas e gaivotas, chutes, quiques, trave, rede, apitos.
+
+## Animações
+
+A locomoção e os gestos principais usam **captura de movimento livre**, convertida para o rig do jogo por
+`scripts/blender/retarget.py`: Quaternius *Universal Animation Library* (CC0) para parado, caminhada, trote, corrida, sprint,
+dança, conversa e queda; CMU Motion Capture Database (uso livre) para **chutes reais de futebol**, passe, lançamento, arremesso,
+estrela, polichinelo, aceno e alongamento. Movimentos que não existem nessas bibliotecas (bicicleta, tesoura, peixinho,
+mergulhos do goleiro, carrinho, árbitro) continuam como clipes autorais.
 
 ## Estrutura
 
@@ -96,6 +107,19 @@ BLENDER_PY=/caminho/do/python3.11-com-bpy python3 scripts/build_all.py
 autorais (`scripts/blender/anims.py`), refazer o UV e exportar `athlete.glb`; montar as 3 arenas; modelar bola, troféu e cone;
 congelar a torcida em poses. Os uniformes (166 texturas), placas de patrocinadores fictícios, logo, brasões, bandeiras,
 flipbooks e o áudio são gerados por scripts Python. `scripts/build_credits.py` reescreve o `ASSETS.md`.
+
+## QA ponta a ponta
+
+```bash
+npm run build && node scripts/qa/run.cjs
+```
+
+15 suítes no Chromium headless com um monitor de invariantes injetado no jogo (posições válidas, bola perto do dono,
+controle duplicado, estados presos, bola morta): navegação de todos os menus pelo teclado, opções persistidas e
+remapeamento, partida completa CPU × CPU, partida jogada por um bot no teclado, 2 jogadores com gamepads simulados,
+bolas paradas, faltas/cartões/expulsão, pausa (táticas, substituição, reiniciar), Copa inteira com recarga da página,
+pênaltis, treino, os 3 minijogos, conquistas e bolas, vazamento de memória entre partidas e tela de celular.
+Resultado em [`docs/QA.md`](docs/QA.md).
 
 ## Testes
 
@@ -130,5 +154,4 @@ Jogadores, apelidos, brasões e patrocinadores são fictícios; nenhuma marca re
 - Personagens do Kenney têm "sapatos" na malha; os pés são pintados como pele (descalços) com tornozeleira.
 - Locutor: não havia voz CC0 em português; a narração é feita pela torcida e por textos na tela.
 - Prorrogação usa gol de ouro (regra arcade).
-- Clipes de animação são autorais e feitos por keyframes em script — funcionam bem no ritmo do jogo, mas não têm a
-  sutileza de captura de movimento.
+- Bicicleta, tesoura, peixinho, goleiro e árbitro ainda são animações autorais (não há captura livre desses gestos).

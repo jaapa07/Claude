@@ -120,6 +120,19 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   }
   if (want('options')) { await G(() => { const f = window.__game.flow; f.tick = undefined; f.options(); }); await sleep(800); await shot('23_options'); }
   if (want('credits')) { await G(() => { const f = window.__game.flow; f.tick = undefined; f.credits(); }); await sleep(6000); await shot('24_credits'); }
+  if (want('extras')) {
+    await G(() => { const f = window.__game.flow; f.tick = undefined; f.challenges(); }); await waitScene('challenges'); await sleep(1500); await shot('25_challenges');
+    await G(() => { const f = window.__game.flow; f.tick = undefined; f.achievements(); }); await waitScene('achievements'); await sleep(1500); await shot('26_achievements');
+    for (const [k, name] of [['pk', '27_mini_penalties'], ['juggle', '28_mini_juggle'], ['target', '29_mini_target']]) {
+      await G((k) => window.__game.flow.startMini(k), k);
+      await page.waitForFunction(() => window.__game.flow.match?.mini && window.__game.flow.scene === 'match', null, { timeout: 120000 });
+      await sleep(2500);
+      if (k === 'juggle') { await G(() => { const m = window.__game.flow.match; m.doTrick(m.mini.me); }); await sleep(1200); }
+      if (k === 'target') { await G(() => { const m = window.__game.flow.match; m.mini.shots = 5; }); await sleep(800); }
+      await shot(name);
+    }
+    await G(() => window.__game.flow.mainMenu());
+  }
   console.log('erros:', errors.length);
   fs.writeFileSync(path.join(OUT, 'errors.txt'), errors.join('\n'));
   await b.close();

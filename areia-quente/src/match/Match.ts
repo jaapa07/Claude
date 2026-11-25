@@ -15,11 +15,12 @@ import { Replay } from './Replay';
 import { assets } from '../core/Assets';
 import { teamAI, gkAI } from './AI';
 import MOVES from '../data/moves.json';
+import { makeMini, type MiniGame, type MiniKind } from './MiniGames';
 
-export type MatchMode = 'friendly' | 'cup' | 'training';
+export type MatchMode = 'friendly' | 'cup' | 'training' | 'mini';
 export type MatchOpts = {
   home: TeamData; away: TeamData; homeKit: 'home' | 'away'; awayKit: 'home' | 'away'; arena: string;
-  homeDevices: DeviceId[]; awayDevices: DeviceId[]; mode: MatchMode; label?: string; noDraw?: boolean;
+  homeDevices: DeviceId[]; awayDevices: DeviceId[]; mode: MatchMode; label?: string; noDraw?: boolean; mini?: MiniKind;
 };
 export type MatchResult = { home: Team; away: Team; winner: Team | null; pens: boolean; mom: Player };
 
@@ -67,6 +68,16 @@ export class Match {
   introStep = -1;
   trainingCones: THREE.Object3D[] = [];
   group = new THREE.Group();
+  mini: MiniGame | null = null;
+  /** Temporizadores em tempo de jogo (respeitam pausa, câmera lenta e aceleração). */
+  private timers: { t: number; fn: () => void }[] = [];
+  later(sec: number, fn: () => void) { this.timers.push({ t: sec, fn }); }
+  private runTimers(dt: number) {
+    if (!this.timers.length) return;
+    const due: (() => void)[] = [];
+    this.timers = this.timers.filter((x) => { x.t -= dt; if (x.t <= 0) { due.push(x.fn); return false; } return true; });
+    for (const fn of due) fn();
+  }
   private refT = 0;
   private dancerOn = false;
   private posses: (Team | null) = null;
@@ -94,6 +105,7 @@ export class Match {
     world.root.add(this.group);
     home.dir = 1; away.dir = -1;
     if (opts.mode === 'training') this.setupTraining();
+    if (opts.mode === 'mini' && opts.mini) { this.mini = makeMini(opts.mini); this.mini.attach(this); }
   }
 
   get all(): Player[] { return [...this.teams[0].players, ...this.teams[1].players]; }
@@ -116,6 +128,7 @@ export class Match {
     this.hud.setScore(0, 0);
     audio.crowd(true);
     audio.playMusic(null);
+    if (this.mini) { this.mini.start(); return; }
     if (this.opts.mode === 'training') {
       const me = this.teams[0].players[4];
       me.device = this.teams[0].devices[0] ?? null;
@@ -136,7 +149,7 @@ export class Match {
       const s = p.team.side === 0 ? -1 : 1;
       p.pos.set(s * (3 + (i % 5) * 2.6), 0, -6 + ((i * 7) % 11));
       p.yaw = Math.random() * 6;
-      p.ath.play(i % 3 === 0 ? 'stretch' : i % 3 === 1 ? 'juggle' : 'idle', 0);
+      p.ath.play(['stretch', 'juggle', 'warmup_jacks', 'idle'][i % 4], 0);
       p.sync();
     });
     this.ball.place(-3, 2, 0.6);
@@ -418,7 +431,8 @@ export class Match {
   queueKick(p: Player, kind: KickKind, power: number, aim: THREE.Vector3 | null, target: Player | null) {
     const anim = kind === 'long_throw' ? 'gk_throw' : kind;
     const meta = clipMeta[anim] ?? { contact: 0.25 };
-    const speed = kind === 'shot' ? 1.15 : 1;
+    // clipes de captura de movimento têm preparação longa; acelera para manter a resposta arcade
+    const speed = ({ shot: 1.25, pass_short: 1.45, pass_lob: 1.3, gk_throw: 1.3, long_throw: 1.3 } as Record<string, number>)[kind] ?? 1;
     p.kick = { kind, at: (meta.contact ?? 0.25) / speed, power, aim, target, fire: p.team.fire > 0, done: false };
     // vira para o alvo antes de chutar
     const goal = new THREE.Vector3(this.goalX(p.team), 0, (aim ? aim.z : 0) * 2);
@@ -505,6 +519,11 @@ export class Match {
       }
       case 'juggle': {
         v.set(p.forward.x * 0.6 + p.vel.x * 0.5, 4.4, p.forward.z * 0.6 + p.vel.z * 0.5);
+        if (this.mini?.kind === 'juggle') {
+          // minijogo: a bola volta para os pés do jogador (tempo de voo ~0.9 s)
+          v.x = (p.pos.x + p.forward.x * 0.35 + p.vel.x * 0.9 - b.pos.x) / 0.9;
+          v.z = (p.pos.z + p.forward.z * 0.35 + p.vel.z * 0.9 - b.pos.z) / 0.9;
+        }
         b.pos.y = Math.max(b.pos.y, 0.3);
         p.juggling = 1.4;
         this.addStyle(tm, 'juggle', p);
@@ -553,7 +572,7 @@ export class Match {
         if (label) { this.addStyle(tm, k.kind, p, t(label)); this.hud.worldPop(t(label), p.pos.clone().setY(2.6), this.world.camera); }
         this.shotOnTarget = Math.abs(z) < FIELD.GOAL_W / 2 && y < FIELD.GOAL_H;
         this.cam.shake(power * 0.25 + (fire ? 0.3 : 0));
-        if (k.kind === 'bicycle_kick' || k.kind === 'scissor_kick') { this.slowmo = 0.35; setTimeout(() => (this.slowmo = 1), 380); }
+        if (k.kind === 'bicycle_kick' || k.kind === 'scissor_kick') { this.slowmo = 0.35; this.later(0.38, () => (this.slowmo = 1)); }
         this.world.excitement = 0.8;
       }
     }
@@ -561,6 +580,7 @@ export class Match {
     audio.play(sfx, 0.5 + Math.min(1, v.length() / 30) * 0.5);
     this.fx.kickBurst(b.pos.clone(), v.clone().normalize(), Math.min(1, v.length() / 28), b.fire);
     if (b.fire) { audio.play('fire_on', 0.5); }
+    this.mini?.kicked(p, k.kind);
   }
   pendingSombrero: { p: Player; t: number } | null = null;
   pendingSave: { gk: Player; t: number; speed: number; fire: boolean; pr: THREE.Vector3 } | null = null;
@@ -607,6 +627,7 @@ export class Match {
     if (key !== 'pass' && key !== 'lob' && key !== 'tackle') {
       tm.comboT = 6;
       tm.multiplier = Math.min(MOVES.maxMultiplier, tm.multiplier + 1);
+      if (tm.multiplier >= MOVES.maxMultiplier) this.onEvent?.('combo', p, tm);
       audio.play(tm.multiplier > 2 ? 'combo' : 'style', 0.6);
       if (tm.heat >= 1 && tm.human) this.hud.msg(t('fire_ready'));
     }
@@ -618,6 +639,7 @@ export class Match {
     if (this.paused) { this.world.update(0); return; }
     const dt = Math.min(rawDt, 1 / 20) * this.slowmo;
     this.stateT += rawDt;
+    this.runTimers(Math.min(rawDt, 1 / 20));
     this.fx.update(dt);
     switch (this.state) {
       case 'intro': this.updateIntro(dt); break;
@@ -659,6 +681,7 @@ export class Match {
     if (st === 'periodEnd' && this.stateT > 2.5) this.afterPeriod();
     if (st === 'fulltime') this.updateFulltime(dt);
     if (st === 'penalties') this.updatePens(dt);
+    this.mini?.update(dt);
 
     // controle humano + IA
     const live = st === 'play' || st === 'kickoff' || st === 'setpiece';
@@ -783,14 +806,15 @@ export class Match {
     }
     b.update(dt);
     for (const e of b.events) {
+      if (e.type === 'bounce') this.mini?.bounce(e.speed);
       if (e.type === 'bounce' && e.speed > 2) { audio.play('bounce', Math.min(0.8, e.speed / 10)); this.fx.sandPuff(e.p, 3, Math.min(1.2, e.speed / 6)); }
       if (e.type === 'post') { audio.play('post', 1); audio.crowdReact('ooh', 1); this.hud.big(t('post')); this.cam.shake(0.4); this.world.excitement = 1; }
       if (e.type === 'net') { audio.play('net', 0.8); this.world.netHit(e.p, b.vel.clone().addScalar(0.01).setLength(Math.max(4, e.speed))); }
-      if (e.type === 'goal' && this.state === 'play') this.goal(e.p.x > 0 ? 1 : -1);
+      if (e.type === 'goal' && this.state === 'play') this.goal(e.p.x > 0 ? 1 : -1, e.p);
       if (e.type === 'board') audio.play('body', 0.4);
     }
     if (this.pens && this.shotPen && this.stateT > 0.4 && (b.held || (b.speed < 1.2 && !b.inGoal) || (b.owner && b.owner.isGK))) {
-      this.shotPen = false; this.state = 'penalties'; audio.crowdReact('ooh', 1); setTimeout(() => this.penResult(false), 900); return;
+      this.shotPen = false; this.state = 'penalties'; audio.crowdReact('ooh', 1); this.later(0.9, () => this.penResult(false)); return;
     }
     if (this.state !== 'play') return;
     // sombrero: conta se recuperou depois de passar o adversário
@@ -856,7 +880,7 @@ export class Match {
       card = by.yellow >= 2 ? 'red' : 'yellow';
     }
     if (card) {
-      setTimeout(() => { this.hud.msg(`${t(card!)} · ${by.data.short}`); this.ref.play('ref_card', 0.1); }, 600);
+      this.later(0.6, () => { this.hud.msg(`${t(card!)} · ${by.data.short}`); this.ref.play('ref_card', 0.1); });
       if (card === 'red') { by.sentOff = 120; by.device = null; this.assignDevices(by.team); }
     }
     const spot = victim.pos.clone().setY(0);
@@ -864,18 +888,19 @@ export class Match {
     spot.z = THREE.MathUtils.clamp(spot.z, -FIELD.HW + 0.5, FIELD.HW - 0.5);
     const inArea = Math.abs(spot.x - this.goalX(victim.team)) < FIELD.PEN;
     this.ball.owner = null;
-    setTimeout(() => {
+    this.later(0.9, () => {
       if (this.state !== 'play' && this.state !== 'setpiece') return;
       if (inArea) this.setPiece('penalty', victim.team, new THREE.Vector3(this.goalX(victim.team) - victim.team.dir * FIELD.PEN, 0, 0));
       else this.setPiece('free_kick', victim.team, spot);
-    }, 900);
+    });
     this.state = 'setpiece'; this.stateT = 0; this.sp = null;
     this.onEvent?.('foul', by, card);
   }
 
   private outOfPlay(kind: 'side' | 'end') {
     const b = this.ball;
-    if (this.pens && this.shotPen) { this.shotPen = false; this.state = 'penalties'; setTimeout(() => this.penResult(false), 900); return; }
+    if (this.mini) { this.mini.out(); this.ball.owner = null; return; }
+    if (this.pens && this.shotPen) { this.shotPen = false; this.state = 'penalties'; this.later(0.9, () => this.penResult(false)); return; }
     if (this.opts.mode === 'training') { this.trainingReset(); return; }
     const last = b.lastTouch?.team ?? this.teams[0];
     const other = last.opp;
@@ -919,6 +944,8 @@ export class Match {
     if (kind === 'penalty') {
       for (const p of this.onField) if (p !== taker && !p.isGK) { p.pos.set(spot.x - team.dir * (3 + Math.random() * 3), 0, (Math.random() - 0.5) * 10); p.sync(); }
       const gk = team.opp.gk; gk.pos.set(this.goalX(team) - team.dir * 0.3, 0, 0); gk.yaw = Math.atan2(-team.dir, 0); gk.sync();
+      gk.kick = null; gk.stun = 0; gk.lying = null; gk.vel.set(0, 0, 0); gk.holdT = 0; gk.ath.locked = 0; gk.ath.play('gk_idle', 0.1);
+      this.pendingSave = null; this.saveRolled = false;
       this.cam.mode = 'behind';
     }
     this.hud.msg(t(kind === 'penalty' ? 'penalties' : kind));
@@ -953,8 +980,9 @@ export class Match {
     this.sp = null;
   }
 
-  private goal(side: number) {
-    if (this.pens && this.shotPen) { this.hud.big(t('goal'), true); audio.crowdReact('goal', 0.9); this.shotPen = false; setTimeout(() => this.penResult(true), 1400); this.state = 'penalties'; return; }
+  private goal(side: number, at = this.ball.pos.clone()) {
+    if (this.mini) { this.mini.goal(at); return; }
+    if (this.pens && this.shotPen) { this.hud.big(t('goal'), true); audio.crowdReact('goal', 0.9); this.shotPen = false; this.later(1.4, () => this.penResult(true)); this.state = 'penalties'; return; }
     if (this.opts.mode === 'training') { this.trainingGoal(); return; }
     const scorer = this.teams.find((tm) => tm.dir === side)!;
     const by = this.ball.lastTouch;
@@ -967,7 +995,7 @@ export class Match {
     if (by && !own) { by.goals++; this.addStyle(scorer, 'goal', by); }
     const kindLabel = this.lastGoalKind ? LABEL[this.lastGoalKind] : undefined;
     this.hud.big(own ? t('own_goal') : t('goal'), true);
-    if (kindLabel && !own) setTimeout(() => this.hud.big(t(kindLabel)), 1600);
+    if (kindLabel && !own) this.later(1.6, () => this.hud.big(t(kindLabel)));
     audio.crowdReact('goal', 1);
     audio.play('whistle_short', 0.6);
     this.world.excitement = 1.2;
@@ -978,7 +1006,7 @@ export class Match {
     this.kickoffTeam = scorer.opp;
     this.onEvent?.('goal', by ?? undefined, { own, kind: this.lastGoalKind, team: scorer });
     // comemoração
-    const celeb = ['celebrate_knee_slide', 'celebrate_samba', 'celebrate_point_sky', 'celebrate_fist', 'run_airplane'];
+    const celeb = ['celebrate_knee_slide', 'celebrate_samba', 'celebrate_point_sky', 'celebrate_fist', 'run_airplane', 'celebrate_cartwheel', 'dance_1'];
     const hero = by && !own ? by : scorer.field.find((p) => !p.isGK)!;
     hero.ath.play(celeb[(Math.random() * celeb.length) | 0], 0.15);
     hero.kick = null; hero.stun = 0; hero.vel.set(0, 0, 0);
@@ -1126,12 +1154,12 @@ export class Match {
     const mom = this.manOfMatch();
     this.cam.orbit(mom.pos, 4.5, 1.5, 0, 0.25);
     this.hud.msg(null);
-    setTimeout(() => this.hud.show(false), 2500);
+    this.later(2.5, () => this.hud.show(false));
     this.hud.big(t('full_time'), true);
     if (winner?.human || (!winner && h.human)) { audio.playMusic('victory', 600); }
     audio.crowdReact('applause', 1);
     this.fx.confettiBurst(new THREE.Vector3(0, 0, 0), 300, 30);
-    setTimeout(() => this.onEnd?.({ home: h, away: a, winner, pens: !!this.pens, mom }), 3200);
+    this.later(3.2, () => this.onEnd?.({ home: h, away: a, winner, pens: !!this.pens, mom }));
   }
 
   manOfMatch() {
@@ -1189,7 +1217,7 @@ export class Match {
     pn.turn = pn.turn === 0 ? 1 : 0;
     this.shotPen = false;
     this.state = 'penalties';
-    setTimeout(() => this.setupPenKick(), 800);
+    this.later(0.8, () => this.setupPenKick());
   }
 
   // ------------------------------------------------------------------ árbitro
@@ -1263,7 +1291,7 @@ export class Match {
     this.fx.confettiBurst(new THREE.Vector3(18, 0, 0), 60, 6);
     this.state = 'goal'; this.stateT = 3.2; this.celebHero = null;
     this.onEvent?.('training', undefined, this.training);
-    setTimeout(() => this.trainingReset(), 1200);
+    this.later(1.2, () => this.trainingReset());
   }
   trainingReset() {
     const p = this.teams[0].players[4];

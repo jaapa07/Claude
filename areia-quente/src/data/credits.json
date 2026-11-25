@@ -14,6 +14,14 @@
    ]
   },
   {
+   "title": "Animações",
+   "items": [
+    "Quaternius — Universal Animation Library (CC0): corrida, trote, sprint, caminhada, parado, dança, conversa, queda",
+    "CMU Graphics Lab Motion Capture Database — mocap.cs.cmu.edu (financiado pela NSF EIA-0196217): chutes de futebol, estrela, polichinelo, aceno, alongamento, arremesso",
+    "Retarget e clipes autorais (bicicleta, tesoura, peixinho, goleiro, árbitro) feitos em Blender por script"
+   ]
+  },
+  {
    "title": "Texturas e céus",
    "items": [
     "ambientCG — Ground080, Ground093C — CC0",
