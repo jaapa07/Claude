@@ -272,6 +272,10 @@ export async function buildTrack(def: TrackDef, opts: BuildOptions): Promise<Bui
         const onRoad = Math.abs(sp.offset ?? 0) < main.halfWidth[i]! + 1.5;
         const y = (onRoad || sp.platform ? main.pos[i]!.y : groundY(p.x, p.z, p.y)) + (sp.dy ?? 0);
         const toRoad = Math.atan2(main.pos[i]!.x - p.x, main.pos[i]!.z - p.z);
+        // objeto avulso fora da pista que acabou encostando em outro trecho (traçado sinuoso)
+        if (!sp.platform && !onRoad && (sp.dy ?? 0) > -1 && (sp.dy ?? 0) < 8 && index.edgeDistance(p.x, p.z) < prop.radius * (sp.scale ?? 1) + 0.5) {
+          warnings.push(`objeto ${sp.prop} em ${sp.at} encosta na pista`);
+        }
         place(sp.prop, p.x, y, p.z, sp.rotY !== undefined ? main.heading[i]! + sp.rotY : toRoad, sp.scale ?? 1, undefined, !!sp.platform, !!sp.platform);
         if (sp.platform) {
           propColliders.push(p.x, y - 3, p.z, prop.radius * (sp.scale ?? 1) * 0.9, 3);

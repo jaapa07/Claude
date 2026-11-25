@@ -1,14 +1,14 @@
 [
   {
     "id": "porto-lanternas",
-    "length": 1226,
-    "samples": 613,
-    "triangles": 523736,
-    "glbBytes": 13065020,
-    "jsonBytes": 107386,
-    "props": 217,
+    "length": 1414,
+    "samples": 707,
+    "triangles": 557024,
+    "glbBytes": 13883812,
+    "jsonBytes": 115591,
+    "props": 242,
     "animated": 1,
-    "colliders": 188,
+    "colliders": 221,
     "warnings": []
   },
   {
