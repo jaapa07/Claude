@@ -1,3 +1,4 @@
+import { TIRES } from './shop';
 import type { UnlockRule } from './unlocks';
 
 /**
@@ -92,14 +93,21 @@ export const NEONS: readonly GlowDef[] = [
   { id: 'roxo', name: 'Roxo', swatch: '#9a5cff', color: '#9a5cff', unlock: { type: 'wins', count: 1 } },
 ];
 
-export interface KartLook { paint: string; metal: string; flame: string; neon: string }
-export const DEFAULT_KART_LOOK: Readonly<KartLook> = { paint: 'original', metal: 'original', flame: 'original', neon: 'nenhum' };
+export interface KartLook { paint: string; metal: string; flame: string; neon: string; tire: string }
+export const DEFAULT_KART_LOOK: Readonly<KartLook> = { paint: 'original', metal: 'original', flame: 'original', neon: 'nenhum', tire: 'original' };
+
+/** Pneus: o original de cada kart + os modelos comprados na loja. */
+export const TIRE_OPTIONS: readonly KartOption[] = [
+  { id: 'original', name: 'Original', swatch: 'radial-gradient(circle, #9aa3b5 0 30%, #1d1b24 32% 100%)', unlock: { type: 'initial' } },
+  ...TIRES.map((t) => ({ id: t.id, name: t.name, swatch: `url(assets/ui/tires/${t.id}.webp) center / cover, ${t.color}`, unlock: { type: 'shop' } as const })),
+];
 
 export const KART_PARTS = [
   { key: 'paint', label: 'Pintura', options: PAINTS },
   { key: 'metal', label: 'Metais e rodas', options: METALS },
   { key: 'flame', label: 'Chama do turbo', options: FLAMES },
   { key: 'neon', label: 'Neon', options: NEONS },
+  { key: 'tire', label: 'Pneus', options: TIRE_OPTIONS },
 ] as const satisfies ReadonlyArray<{ key: keyof KartLook; label: string; options: readonly KartOption[] }>;
 
 const byId = <T extends { id: string }>(list: readonly T[], id: string | undefined): T => list.find((o) => o.id === id) ?? list[0]!;

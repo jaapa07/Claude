@@ -4,6 +4,7 @@ import { TRACK_IDS } from '@/data/ids';
 import { installMemoryStorage, makeResult } from './testUtils';
 
 const storage = installMemoryStorage();
+import { START_COINS, coinsForRace } from '@/data/shop';
 const { SAVE_CORRUPT_KEY, SAVE_KEY, SAVE_VERSION, computeUnlocks, createDefaultSave, parseSave, trophyForPosition, useSaveStore } = await import('./saveStore');
 
 function race(partial: Partial<RaceConfig> = {}): RaceConfig {
@@ -230,5 +231,51 @@ describe('save: melhores tempos', () => {
     s.applyRaceResult(makeResult(race(), { playerTimeMs: 61000, turbos: [1, 1, 1], itemsUsed: 2 }));
     s.addPlayTime(9000);
     expect(useSaveStore.getState().stats).toMatchObject({ turbos: [4, 3, 2], itemsUsed: 6, playTimeMs: 130000 });
+  });
+});
+
+describe('save: moedas e loja', () => {
+  it('começa com as moedas iniciais e ganha pela posição e dificuldade', () => {
+    const s = useSaveStore.getState();
+    expect(s.coins).toBe(START_COINS);
+    s.applyRaceResult(makeResult(race({ difficulty: 'easy' }), { playerPosition: 1 }));
+    expect(useSaveStore.getState().coins).toBe(START_COINS + 150);
+    expect(useSaveStore.getState().lastReport?.coins).toBe(150);
+    useSaveStore.getState().applyRaceResult(makeResult(race({ difficulty: 'hard' }), { playerPosition: 2 }));
+    expect(useSaveStore.getState().coins).toBe(START_COINS + 150 + coinsForRace({ mode: 'quick', difficulty: 'hard', position: 2, finished: true, trophy: null, timeTrialRecord: false }));
+  });
+
+  it('troféu de copa dá bônus e treino não dá moedas', () => {
+    expect(coinsForRace({ mode: 'championship', difficulty: 'easy', position: 1, finished: true, trophy: 'gold', timeTrialRecord: false })).toBe(150 + 600);
+    expect(coinsForRace({ mode: 'training', difficulty: 'easy', position: 1, finished: true, trophy: null, timeTrialRecord: false })).toBe(0);
+    expect(coinsForRace({ mode: 'timetrial', difficulty: 'easy', position: 1, finished: true, trophy: null, timeTrialRecord: true })).toBe(80);
+  });
+
+  it('compra piloto, kart e pneu; não compra sem moedas nem duas vezes; persiste', () => {
+    const s = useSaveStore.getState();
+    expect(s.buy('character', 'zera')).toBe(false); // 1800 > 300
+    useSaveStore.setState({ coins: 5000 });
+    expect(useSaveStore.getState().buy('character', 'zera')).toBe(true);
+    expect(useSaveStore.getState().isCharacterUnlocked('zera')).toBe(true);
+    expect(useSaveStore.getState().buy('character', 'zera')).toBe(false);
+    expect(useSaveStore.getState().buy('character', 'nilo')).toBe(false); // sem preço (já é inicial)
+    expect(useSaveStore.getState().buy('kart', 'geada')).toBe(true);
+    expect(useSaveStore.getState().buy('tire', 'neon')).toBe(true);
+    expect(useSaveStore.getState().buy('tire', 'nao-existe')).toBe(false);
+    expect(useSaveStore.getState().coins).toBe(5000 - 1800 - 1800 - 900);
+    useSaveStore.getState().reload();
+    const r = useSaveStore.getState();
+    expect(r.owned).toEqual({ characters: ['zera'], karts: ['geada'], tires: ['neon'] });
+    expect(r.isKartUnlocked('geada')).toBe(true);
+    expect(r.owns('tire', 'neon')).toBe(true);
+  });
+
+  it('save da versão 1 ganha moedas pelo progresso que já tinha', () => {
+    storage.setItem(SAVE_KEY, JSON.stringify({ version: 1, stats: { races: 10, wins: 3 }, trophies: { aurora: 'gold' } }));
+    useSaveStore.getState().reload();
+    const s = useSaveStore.getState();
+    expect(s.loadStatus).toBe('migrated');
+    expect(s.coins).toBe(START_COINS + 10 * 60 + 3 * 80 + 600);
+    expect(s.owned).toEqual({ characters: [], karts: [], tires: [] });
   });
 });

@@ -9,6 +9,7 @@ import { MainMenu } from '@/components/ui/MainMenu';
 import { ModeSelect } from '@/components/ui/ModeSelect';
 import { PauseMenu } from '@/components/ui/PauseMenu';
 import { PodiumScreen } from '@/components/ui/PodiumScreen';
+import { ShopScreen } from '@/components/ui/ShopScreen';
 import { ProgressScreen } from '@/components/ui/ProgressScreen';
 import { ResultsScreen } from '@/components/ui/ResultsScreen';
 import { SettingsScreen } from '@/components/ui/SettingsScreen';
@@ -53,7 +54,7 @@ function handleBack(): void {
   if (FLOW_SCREENS.has(screen)) {
     uiSfx('ui_back');
     game.goTo(prevScreen(screen, game.selection.mode));
-  } else if (screen === 'settings' || screen === 'progress') {
+  } else if (screen === 'settings' || screen === 'progress' || screen === 'shop') {
     uiSfx('ui_back');
     game.goTo(game.previousScreen === screen ? 'menu' : game.previousScreen);
   }
@@ -210,6 +211,7 @@ export function App(): JSX.Element {
         {screen === 'results' && <ResultsScreen />}
         {screen === 'podium' && <PodiumScreen />}
         {screen === 'progress' && <ProgressScreen onBack={backFromAux} />}
+        {screen === 'shop' && <ShopScreen onBack={backFromAux} />}
         {screen === 'settings' && <div className="overlay overlay--settings"><SettingsScreen onBack={backFromAux} /></div>}
       </div>
     </>

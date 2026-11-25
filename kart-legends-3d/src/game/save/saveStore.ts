@@ -6,12 +6,13 @@ import { KARTS } from '@/data/karts';
 import { CUPS, CUP_UNLOCK, TRACK_BY_ID } from '@/data/tracks';
 import type { UnlockRule } from '@/data/unlocks';
 import type { RaceResult } from '@/game/core/types';
+import { COINS_TROPHY, SHOP_PRICES, START_COINS, TIRE_PRICES, coinsForRace, type ShopKind } from '@/data/shop';
 import { readKey, removeKey, writeKey } from './storage';
 
 export const SAVE_KEY = 'kl3d.save';
 /** Cópia do conteúdo ilegível, guardada antes de recomeçar do zero. */
 export const SAVE_CORRUPT_KEY = 'kl3d.save.corrupt';
-export const SAVE_VERSION = 1;
+export const SAVE_VERSION = 2;
 
 export interface TrackRecord {
   /** Melhor tempo total em corrida (Corrida Rápida / Campeonato). */
@@ -40,9 +41,15 @@ export interface SaveStats {
 
 export interface SaveUnlocks { characters: CharacterId[]; karts: KartId[]; cups: CupId[] }
 
+/** Itens comprados na loja (pilotos e karts comprados também entram em `unlocked`). */
+export interface SaveOwned { characters: CharacterId[]; karts: KartId[]; tires: string[] }
+
 export interface SaveData {
   version: number;
   unlocked: SaveUnlocks;
+  /** Moedas para gastar na loja. */
+  coins: number;
+  owned: SaveOwned;
   trophies: Record<CupId, TrophyTier | null>;
   records: Record<TrackId, TrackRecord>;
   stats: SaveStats;
@@ -58,6 +65,8 @@ export interface ApplyReport {
   newRecords: { raceTime: boolean; bestLap: boolean };
   /** Troféu obtido nesta copa (mesmo que não supere o já guardado). */
   trophy: TrophyTier | null;
+  /** Moedas ganhas nesta corrida. */
+  coins: number;
 }
 
 export type SaveLoadStatus = 'fresh' | 'loaded' | 'migrated' | 'recovered';
@@ -76,6 +85,9 @@ export interface SaveState extends SaveData {
   isKartUnlocked: (id: KartId) => boolean;
   isCupUnlocked: (id: CupId) => boolean;
   isTrackUnlocked: (id: TrackId) => boolean;
+  /** Compra um item da loja; devolve false se já tiver, se não houver preço ou se faltar moeda. */
+  buy: (kind: ShopKind, id: string) => boolean;
+  owns: (kind: ShopKind, id: string) => boolean;
 }
 
 const TIER_RANK: Record<TrophyTier, number> = { bronze: 1, silver: 2, gold: 3 };
@@ -96,6 +108,8 @@ export function createDefaultSave(): SaveData {
   const data: SaveData = {
     version: SAVE_VERSION,
     unlocked: { characters: [], karts: [], cups: [] },
+    coins: START_COINS,
+    owned: { characters: [], karts: [], tires: [] },
     trophies: Object.fromEntries(CUP_IDS.map((c) => [c, null])) as Record<CupId, TrophyTier | null>,
     records: Object.fromEntries(TRACK_IDS.map((t) => [t, emptyRecord()])) as Record<TrackId, TrackRecord>,
     stats: { races: 0, wins: 0, podiums: 0, turbos: [0, 0, 0], itemsUsed: 0, timeTrials: 0, championships: 0, playTimeMs: 0 },
@@ -112,14 +126,15 @@ export function isRuleMet(rule: UnlockRule, data: Pick<SaveData, 'trophies' | 'r
     case 'trophy': return trophyRank(data.trophies[rule.cup]) >= TIER_RANK[rule.min];
     case 'timeTrials': return TRACK_IDS.filter((t) => data.records[t].timeTrialMs !== null).length >= rule.count;
     case 'turbo3': return data.stats.turbos[2] >= rule.count;
+    case 'shop': return false;
   }
 }
 
 /** Desbloqueios = o que já estava salvo ∪ tudo cujas regras estão satisfeitas (nunca se perde um desbloqueio). */
-export function computeUnlocks(data: SaveData): SaveUnlocks {
+export function computeUnlocks(data: Pick<SaveData, 'unlocked' | 'owned' | 'trophies' | 'records' | 'stats'>): SaveUnlocks {
   return {
-    characters: CHARACTERS.filter((c) => data.unlocked.characters.includes(c.id) || isRuleMet(c.unlock, data)).map((c) => c.id),
-    karts: KARTS.filter((k) => data.unlocked.karts.includes(k.id) || isRuleMet(k.unlock, data)).map((k) => k.id),
+    characters: CHARACTERS.filter((c) => data.unlocked.characters.includes(c.id) || data.owned.characters.includes(c.id) || isRuleMet(c.unlock, data)).map((c) => c.id),
+    karts: KARTS.filter((k) => data.unlocked.karts.includes(k.id) || data.owned.karts.includes(k.id) || isRuleMet(k.unlock, data)).map((k) => k.id),
     cups: CUPS.filter((c) => data.unlocked.cups.includes(c.id) || isRuleMet(CUP_UNLOCK[c.id], data)).map((c) => c.id),
   };
 }
@@ -155,6 +170,14 @@ const MIGRATIONS: Record<number, (raw: Raw) => Raw> = {
     delete next.bestTimes;
     return next;
   },
+  // 1 → 2: loja e moedas. Quem já jogava recebe moedas pelo progresso que tinha.
+  1: (raw) => {
+    const stats = isObject(raw.stats) ? raw.stats : {};
+    const trophies = isObject(raw.trophies) ? Object.values(raw.trophies) : [];
+    const bonus = count(stats.races) * 60 + count(stats.wins) * 80
+      + trophies.reduce<number>((sum, t) => sum + (t === 'gold' || t === 'silver' || t === 'bronze' ? COINS_TROPHY[t] : 0), 0);
+    return { ...raw, version: 2, coins: START_COINS + bonus, owned: { characters: [], karts: [], tires: [] } };
+  },
 };
 
 /** Constrói um SaveData válido a partir de qualquer objeto, campo a campo. */
@@ -182,6 +205,13 @@ export function sanitizeSave(raw: Raw): SaveData {
       timeTrialMs: timeOrNull(r.timeTrialMs), timeTrialLapMs: timeOrNull(r.timeTrialLapMs),
     };
   }
+  data.coins = typeof raw.coins === 'number' ? count(raw.coins) : START_COINS;
+  const owned = isObject(raw.owned) ? raw.owned : {};
+  data.owned = {
+    characters: idList(owned.characters, CHARACTER_IDS),
+    karts: idList(owned.karts, KART_IDS),
+    tires: Array.isArray(owned.tires) ? owned.tires.filter((t): t is string => typeof t === 'string' && t in TIRE_PRICES) : [],
+  };
   const unlocked = isObject(raw.unlocked) ? raw.unlocked : {};
   data.unlocked = {
     characters: idList(unlocked.characters, CHARACTER_IDS),
@@ -224,8 +254,8 @@ function loadFromStorage(): { data: SaveData; status: SaveLoadStatus } {
 }
 
 function persist(data: SaveData): void {
-  const { version, unlocked, trophies, records, stats } = data;
-  writeKey(SAVE_KEY, JSON.stringify({ version, unlocked, trophies, records, stats }));
+  const { version, unlocked, coins, owned, trophies, records, stats } = data;
+  writeKey(SAVE_KEY, JSON.stringify({ version, unlocked, coins, owned, trophies, records, stats }));
 }
 
 function better(prev: number | null, next: number | null): number | null {
@@ -245,6 +275,8 @@ function snapshot(s: SaveData): SaveData {
   return {
     version: SAVE_VERSION,
     unlocked: { characters: [...s.unlocked.characters], karts: [...s.unlocked.karts], cups: [...s.unlocked.cups] },
+    coins: s.coins,
+    owned: { characters: [...s.owned.characters], karts: [...s.owned.karts], tires: [...s.owned.tires] },
     trophies: { ...s.trophies },
     records: Object.fromEntries(TRACK_IDS.map((t) => [t, { ...s.records[t] }])) as Record<TrackId, TrackRecord>,
     stats: { ...s.stats, turbos: [...s.stats.turbos] as [number, number, number] },
@@ -301,10 +333,16 @@ export const useSaveStore = create<SaveState>()((set, get) => ({
       if (trophyRank(trophy) > trophyRank(data.trophies[championship.cupId])) data.trophies[championship.cupId] = trophy;
     }
 
+    const coins = coinsForRace({
+      mode: result.mode, difficulty: result.difficulty, position: result.playerPosition, finished,
+      trophy, timeTrialRecord: result.mode === 'timetrial' && newRecords.raceTime,
+    });
+    data.coins += coins;
+
     data.unlocked = computeUnlocks(data);
     const unlocks = diffUnlocks(before, data.unlocked);
     persist(data);
-    set({ ...data, lastReport: { unlocks, newRecords, trophy } });
+    set({ ...data, lastReport: { unlocks, newRecords, trophy, coins } });
     return unlocks;
   },
 
@@ -332,4 +370,28 @@ export const useSaveStore = create<SaveState>()((set, get) => ({
   isKartUnlocked: (id) => get().unlocked.karts.includes(id),
   isCupUnlocked: (id) => get().unlocked.cups.includes(id),
   isTrackUnlocked: (id) => get().unlocked.cups.includes(TRACK_BY_ID[id].cup),
+
+  owns: (kind, id) => {
+    const s = get();
+    if (kind === 'tire') return s.owned.tires.includes(id);
+    return kind === 'character' ? s.unlocked.characters.includes(id as CharacterId) : s.unlocked.karts.includes(id as KartId);
+  },
+
+  buy: (kind, id) => {
+    const price = SHOP_PRICES[kind][id];
+    if (price === undefined || get().owns(kind, id) || get().coins < price) return false;
+    const data = snapshot(get());
+    if (kind === 'character') {
+      if (!(CHARACTER_IDS as readonly string[]).includes(id)) return false;
+      data.owned.characters.push(id as CharacterId);
+    } else if (kind === 'kart') {
+      if (!(KART_IDS as readonly string[]).includes(id)) return false;
+      data.owned.karts.push(id as KartId);
+    } else data.owned.tires.push(id);
+    data.coins -= price;
+    data.unlocked = computeUnlocks(data);
+    persist(data);
+    set({ ...data });
+    return true;
+  },
 }));

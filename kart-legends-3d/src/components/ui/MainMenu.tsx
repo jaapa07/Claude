@@ -2,6 +2,7 @@ import { isTouchDevice } from '@/app/settingsStore';
 import { useGameStore } from '@/app/gameStore';
 import { useSaveStore } from '@/game/save/saveStore';
 import { Btn, ScreenShell } from './common';
+import { CoinBadge } from './ShopScreen';
 
 export function MainMenu(): JSX.Element {
   const goTo = useGameStore((s) => s.goTo);
@@ -9,6 +10,7 @@ export function MainMenu(): JSX.Element {
   const stats = useSaveStore((s) => s.stats);
   return (
     <ScreenShell id="menu" layout="side" className="menu">
+      <CoinBadge className="coin-badge--big menu__coins" />
       <div className="menu__brand">
         <p className="screen__kicker">Corrida arcade em 3D</p>
         <h1 className="logo" aria-label="Kart Legends 3D">
@@ -17,6 +19,7 @@ export function MainMenu(): JSX.Element {
       </div>
       <nav className="menu__buttons" aria-label="Menu principal">
         <Btn testId="btn-play" variant="primary" className="btn--xl" autoFocusNav onClick={() => goTo('mode')}>Jogar</Btn>
+        <Btn testId="btn-shop" className="btn--xl" onClick={() => goTo('shop')}>Loja</Btn>
         <Btn testId="btn-progress" className="btn--xl" onClick={() => goTo('progress')}>Progressão</Btn>
         <Btn testId="btn-settings" className="btn--xl" onClick={() => goTo('settings')}>Configurações</Btn>
       </nav>

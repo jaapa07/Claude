@@ -25,6 +25,8 @@ export interface RaceRewards {
   championshipPosition: number | null;
   /** Pontos somados por piloto nesta corrida (Campeonato). */
   pointsThisRace: Partial<Record<CharacterId, number>>;
+  /** Moedas ganhas nesta corrida. */
+  coins: number;
 }
 
 /** `GameState` do contrato + extras usados só pela interface. */
@@ -119,7 +121,7 @@ export const useGameStore = create<GameStoreState>()((set, get) => ({
     const current = get().screen;
     if (screen === current) return;
     // Configurações e Progressão lembram de onde foram abertas para o "Voltar".
-    if (screen === 'settings' || screen === 'progress') set({ screen, previousScreen: current });
+    if (screen === 'settings' || screen === 'progress' || screen === 'shop') set({ screen, previousScreen: current });
     else set({ screen });
   },
 
@@ -243,6 +245,7 @@ export const useGameStore = create<GameStoreState>()((set, get) => ({
         trophy: report ? report.trophy : null,
         championshipPosition,
         pointsThisRace,
+        coins: report ? report.coins : 0,
       },
       paused: false,
       screen: 'results',

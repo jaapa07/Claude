@@ -8,7 +8,9 @@ export type UnlockRule =
   | { type: 'wins'; count: number }
   | { type: 'trophy'; cup: CupId; min: TrophyTier }
   | { type: 'timeTrials'; count: number }
-  | { type: 'turbo3'; count: number };
+  | { type: 'turbo3'; count: number }
+  /** Só comprando na loja. */
+  | { type: 'shop' };
 
 export function describeUnlock(rule: UnlockRule): string {
   switch (rule.type) {
@@ -22,5 +24,6 @@ export function describeUnlock(rule: UnlockRule): string {
     }
     case 'timeTrials': return `Registre tempos no Contrarrelógio em ${rule.count} pistas`;
     case 'turbo3': return `Solte ${rule.count} miniturbos de nível 3`;
+    case 'shop': return 'Disponível na loja';
   }
 }

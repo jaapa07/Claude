@@ -76,6 +76,12 @@ export function ResultsScreen(): JSX.Element | null {
         </div>
 
         <div className="results__side">
+          {rewards && rewards.coins > 0 && (
+            <div className="panel reward reward--coins" data-testid="results-coins">
+              <h2 className="group-title">Moedas</h2>
+              <p className="coin-badge coin-badge--big"><span className="coin-badge__icon" aria-hidden="true" />+{rewards.coins.toLocaleString('pt-BR')}</p>
+            </div>
+          )}
           {rewards && (rewards.newRecords.raceTime || rewards.newRecords.bestLap) && (
             <div className="panel reward reward--record" data-testid="results-records">
               <h2 className="group-title">Novo recorde!</h2>

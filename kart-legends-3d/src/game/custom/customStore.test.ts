@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
-import { FLAMES, KART_PARTS, METALS, NEONS, OUTFITS, PAINTS } from '@/data/customization';
+import { FLAMES, KART_PARTS, METALS, NEONS, OUTFITS, PAINTS, TIRE_OPTIONS } from '@/data/customization';
 import { applyRecipe } from '@/game/vehicles/kartModel';
 import { parseCustom } from './customStore';
 
@@ -11,17 +11,17 @@ describe('personalização', () => {
       karts: { flecha: { paint: 'azul', neon: 'ciano', metal: 'xyz' }, inexistente: { paint: 'azul' } },
     }));
     expect(data.outfits).toEqual({ nilo: 'tropical' });
-    expect(data.karts).toEqual({ flecha: { paint: 'azul', metal: 'original', flame: 'original', neon: 'ciano' } });
+    expect(data.karts).toEqual({ flecha: { paint: 'azul', metal: 'original', flame: 'original', neon: 'ciano', tire: 'original' } });
     expect(parseCustom('{lixo')).toEqual({ outfits: {}, karts: {} });
     expect(parseCustom(null)).toEqual({ outfits: {}, karts: {} });
   });
 
   it('cada lista tem ids únicos, uma opção inicial liberada e a padrão primeiro', () => {
-    for (const list of [OUTFITS, PAINTS, METALS, FLAMES, NEONS]) {
+    for (const list of [OUTFITS, PAINTS, METALS, FLAMES, NEONS, TIRE_OPTIONS]) {
       expect(new Set(list.map((o) => o.id)).size).toBe(list.length);
       expect(list[0]!.unlock.type).toBe('initial');
     }
-    expect(KART_PARTS.map((p) => p.key)).toEqual(['paint', 'metal', 'flame', 'neon']);
+    expect(KART_PARTS.map((p) => p.key)).toEqual(['paint', 'metal', 'flame', 'neon', 'tire']);
   });
 
   it('receitas de cor: troca de matiz, cor fixa preservando cinzas e monocromático', () => {

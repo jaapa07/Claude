@@ -12,7 +12,9 @@ function useUnlocked(): (o: KartOption) => boolean {
   const trophies = useSaveStore((s) => s.trophies);
   const records = useSaveStore((s) => s.records);
   const stats = useSaveStore((s) => s.stats);
-  return (o) => isRuleMet(o.unlock, { trophies, records, stats });
+  const tires = useSaveStore((s) => s.owned.tires);
+  // Itens da loja (pneus): liberados quando comprados.
+  return (o) => (o.unlock.type === 'shop' ? tires.includes(o.id) : isRuleMet(o.unlock, { trophies, records, stats }));
 }
 
 /** Fileira de amostras de cor; as bloqueadas mostram o cadeado e a condição ao passar/tocar. */

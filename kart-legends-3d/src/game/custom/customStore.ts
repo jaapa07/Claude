@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { CHARACTER_IDS, KART_IDS, type CharacterId, type KartId } from '@/data/ids';
-import { DEFAULT_KART_LOOK, FLAMES, KART_PARTS, METALS, NEONS, OUTFITS, PAINTS, outfitById, type KartLook } from '@/data/customization';
+import { DEFAULT_KART_LOOK, FLAMES, KART_PARTS, METALS, NEONS, OUTFITS, PAINTS, TIRE_OPTIONS, outfitById, type KartLook } from '@/data/customization';
 import type { KartModel } from '@/game/vehicles/kartModel';
 import { readKey, writeKey } from '@/game/save/storage';
 
@@ -18,7 +18,7 @@ export interface CustomState extends CustomData {
   setKartPart: (kart: KartId, part: keyof KartLook, option: string) => void;
 }
 
-const VALID: Record<keyof KartLook, readonly { id: string }[]> = { paint: PAINTS, metal: METALS, flame: FLAMES, neon: NEONS };
+const VALID: Record<keyof KartLook, readonly { id: string }[]> = { paint: PAINTS, metal: METALS, flame: FLAMES, neon: NEONS, tire: TIRE_OPTIONS };
 
 /** Lê a personalização salva ignorando ids desconhecidos (dados antigos ou corrompidos). */
 export function parseCustom(text: string | null): CustomData {

@@ -3,7 +3,7 @@ import type { RaceConfig, RaceResult } from '@/game/core/types';
 
 export type Screen =
   | 'loading' | 'menu' | 'character' | 'kart' | 'mode' | 'cup' | 'track' | 'difficulty'
-  | 'race' | 'results' | 'podium' | 'progress' | 'settings';
+  | 'race' | 'results' | 'podium' | 'progress' | 'settings' | 'shop';
 
 export interface Selection {
   characterId: CharacterId;
