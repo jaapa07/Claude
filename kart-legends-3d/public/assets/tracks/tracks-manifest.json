@@ -37,14 +37,14 @@
   },
   {
     "id": "canion-solar",
-    "length": 1132,
-    "samples": 566,
-    "triangles": 337019,
-    "glbBytes": 10138092,
-    "jsonBytes": 93921,
-    "props": 391,
-    "animated": 2,
-    "colliders": 60,
+    "length": 1194,
+    "samples": 597,
+    "triangles": 347149,
+    "glbBytes": 10256048,
+    "jsonBytes": 97280,
+    "props": 402,
+    "animated": 3,
+    "colliders": 61,
     "warnings": []
   },
   {
