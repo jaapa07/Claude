@@ -2,6 +2,7 @@ import { useGLTF, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 import { SkeletonUtils, type GLTF } from 'three-stdlib';
 import { assetUrl } from '@/game/core/assets';
+import { combineParticleAtlases } from '@/game/vfx/particles';
 
 /** Carrega um GLB de public/assets (com suporte a compressão meshopt). Suspende até carregar. */
 export function useModel(path: string): GLTF {
@@ -17,11 +18,17 @@ export function cloneScene(gltf: GLTF): THREE.Object3D {
   return SkeletonUtils.clone(gltf.scene);
 }
 
-/** Atlas próprio de partículas e o atlas de sprites CC0 (Kenney Particle Pack), nesta ordem. */
-export function useParticleAtlas(): [THREE.Texture, THREE.Texture] {
-  const t = useTexture([assetUrl('vfx/particles.webp'), assetUrl('kits/kenney-particles.webp')]);
-  for (const x of t) x.colorSpace = THREE.SRGBColorSpace;
-  return [t[0]!, t[1]!];
+const combined = new WeakMap<THREE.Texture, THREE.Texture>();
+/** Atlas de partículas: o próprio + o de sprites CC0 (Kenney Particle Pack), juntos numa textura 8×4. */
+export function useParticleAtlas(): THREE.Texture {
+  const [own, kenney] = useTexture([assetUrl('vfx/particles.webp'), assetUrl('kits/kenney-particles.webp')]) as THREE.Texture[];
+  let t = combined.get(own!);
+  if (!t || (t.userData as { src?: THREE.Texture }).src !== kenney) {
+    t = combineParticleAtlases(own!, kenney!);
+    t.userData = { src: kenney };
+    combined.set(own!, t);
+  }
+  return t;
 }
 
 export function setShadows(root: THREE.Object3D, cast: boolean, receive: boolean): void {

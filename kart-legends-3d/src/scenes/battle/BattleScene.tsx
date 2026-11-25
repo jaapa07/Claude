@@ -118,7 +118,7 @@ function BattleWorld({ data, config }: { data: ArenaData; config: BattleConfig }
   const quality = useMemo(() => (split ? splitQuality(baseQuality) : baseQuality), [split, baseQuality]);
   const env = ARENA_ENVIRONMENTS[config.arenaId];
   const meta = ARENA_BY_ID[config.arenaId];
-  const [atlasA, atlasB] = useParticleAtlas();
+  const atlas = useParticleAtlas();
   const kartGltfs = useModels(config.racers.map((r) => `karts/${r.kartId}.glb`));
   const charGltfs = useModels(config.racers.map((r) => `characters/${r.characterId}.glb`));
   const shieldGltf = useModel('items/bolha-guardia.glb');
@@ -140,7 +140,7 @@ function BattleWorld({ data, config }: { data: ArenaData; config: BattleConfig }
     if (same.length > 1 && keeper !== r && !customPaint) model.repaint(CHARACTER_BY_ID[r.characterId].color);
     return model;
   }), [sim, kartGltfs, charGltfs, shieldGltf, config.racers]);
-  const vfx = useMemo(() => new RaceVfx([atlasA, atlasB], env, quality.particles), [atlasA, atlasB, env, quality.particles]);
+  const vfx = useMemo(() => new RaceVfx(atlas, env, quality.particles), [atlas, env, quality.particles]);
   // Uma câmera por jogador (tela dividida: a do Jogador 2 é criada aqui).
   const cameras = useMemo(() => (split ? [camera, new THREE.PerspectiveCamera(60, 2, 0.3, 1600)] : [camera]), [split, camera]);
   const cams = useMemo(

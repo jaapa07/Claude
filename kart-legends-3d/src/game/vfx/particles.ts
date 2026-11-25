@@ -30,6 +30,27 @@ export interface EmitOptions {
   flutter?: number;
 }
 
+/**
+ * Junta o atlas próprio (4×4) e o dos sprites da Kenney (4×4) lado a lado numa só textura 8×4, em tempo de
+ * execução (os arquivos continuam separados, cada um com a sua licença): o shader faz uma única leitura.
+ */
+export function combineParticleAtlases(own: THREE.Texture, kenney: THREE.Texture): THREE.Texture {
+  const a = own.image as CanvasImageSource & { width: number; height: number };
+  const b = kenney.image as CanvasImageSource & { width: number; height: number };
+  if (typeof document === 'undefined' || !a || !b) return own;
+  const h = a.height;
+  const canvas = document.createElement('canvas');
+  canvas.width = h * 2;
+  canvas.height = h;
+  const g = canvas.getContext('2d');
+  if (!g) return own;
+  g.drawImage(a, 0, 0, h, h);
+  g.drawImage(b, h, 0, h, h);
+  const t = new THREE.CanvasTexture(canvas);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
 const vertex = /* glsl */ `
 attribute vec4 aColor; attribute float aSize; attribute float aSprite; attribute float aRot;
 varying vec4 vColor; varying float vSprite; varying float vRot;
@@ -44,19 +65,18 @@ void main() {
 const fragment = /* glsl */ `
 precision highp float;
 uniform sampler2D uMap;
-uniform sampler2D uMap2;
 varying vec4 vColor; varying float vSprite; varying float vRot;
 void main() {
   vec2 p = gl_PointCoord - 0.5;
   float c = cos(vRot), s = sin(vRot);
   p = vec2(c * p.x - s * p.y, s * p.x + c * p.y) + 0.5;
   if (p.x < 0.0 || p.x > 1.0 || p.y < 0.0 || p.y > 1.0) discard;
-  bool second = vSprite > 15.5;
-  float sp = second ? vSprite - 16.0 : vSprite;
-  vec2 cell = vec2(mod(sp, 4.0), floor(sp / 4.0));
+  // atlas combinado 8×4: células 0–15 à esquerda (próprio), 16–31 à direita (Kenney); uma única leitura de textura
+  float second = step(15.5, vSprite);
+  float sp = vSprite - 16.0 * second;
+  vec2 cell = vec2(mod(sp, 4.0) + 4.0 * second, floor(sp / 4.0));
   // a textura é carregada com flipY: a linha 0 do atlas fica no topo da imagem
-  vec2 uv = vec2((cell.x + p.x) * 0.25, 1.0 - (cell.y + p.y) * 0.25);
-  vec4 t = second ? texture2D(uMap2, uv) : texture2D(uMap, uv);
+  vec4 t = texture2D(uMap, vec2((cell.x + p.x) * 0.125, 1.0 - (cell.y + p.y) * 0.25));
   float a = t.a * vColor.a;
   if (a < 0.01) discard;
   gl_FragColor = vec4(vColor.rgb * t.rgb, a);
@@ -89,10 +109,11 @@ export class ParticleSystem extends THREE.Points {
   private readonly scalars: Float32Array[];
   private static readonly ATTRS = ['position', 'aColor', 'aSize', 'aSprite', 'aRot'] as const;
 
-  constructor(map: THREE.Texture, max: number, additive: boolean, map2: THREE.Texture = map) {
+  /** `map`: atlas combinado 8×4 (ver `combineParticleAtlases`). */
+  constructor(map: THREE.Texture, max: number, additive: boolean) {
     const geo = new THREE.BufferGeometry();
     const mat = new THREE.ShaderMaterial({
-      uniforms: { uMap: { value: map }, uMap2: { value: map2 }, uScale: { value: 600 } },
+      uniforms: { uMap: { value: map }, uScale: { value: 600 } },
       vertexShader: vertex, fragmentShader: fragment,
       transparent: true, depthWrite: false,
       blending: additive ? THREE.AdditiveBlending : THREE.NormalBlending,
