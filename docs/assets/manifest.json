@@ -3,6 +3,58 @@
  "generatedBy": "scripts/build-manifest.ts",
  "assets": [
   {
+   "id": "arenas:cratera-lunar",
+   "name": "cratera-lunar",
+   "type": "model",
+   "path": "arenas/cratera-lunar.glb",
+   "format": "glb",
+   "origin": "scripts/build-arenas.ts (arena autorada + cenário das bibliotecas)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 383716,
+   "status": "validado",
+   "usedIn": "Arenas do modo Batalha"
+  },
+  {
+   "id": "arenas:cratera-lunar",
+   "name": "cratera-lunar",
+   "type": "data",
+   "path": "arenas/cratera-lunar.json",
+   "format": "json",
+   "origin": "scripts/build-arenas.ts (arena autorada + cenário das bibliotecas)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 28223,
+   "status": "validado",
+   "usedIn": "Arenas do modo Batalha"
+  },
+  {
+   "id": "arenas:praca-coreto",
+   "name": "praca-coreto",
+   "type": "model",
+   "path": "arenas/praca-coreto.glb",
+   "format": "glb",
+   "origin": "scripts/build-arenas.ts (arena autorada + cenário das bibliotecas)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 3839064,
+   "status": "validado",
+   "usedIn": "Arenas do modo Batalha"
+  },
+  {
+   "id": "arenas:praca-coreto",
+   "name": "praca-coreto",
+   "type": "data",
+   "path": "arenas/praca-coreto.json",
+   "format": "json",
+   "origin": "scripts/build-arenas.ts (arena autorada + cenário das bibliotecas)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 15056,
+   "status": "validado",
+   "usedIn": "Arenas do modo Batalha"
+  },
+  {
    "id": "audio:aac:music:defeat",
    "name": "defeat",
    "type": "audio",
@@ -224,6 +276,19 @@
    "usedIn": "Música, efeitos e ambiência"
   },
   {
+   "id": "audio:aac:sfx:comet_ram",
+   "name": "comet_ram",
+   "type": "audio",
+   "path": "audio/aac/sfx/comet_ram.m4a",
+   "format": "m4a",
+   "origin": "scripts/build-audio.ts (síntese procedural própria)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 12581,
+   "status": "validado",
+   "usedIn": "Música, efeitos e ambiência"
+  },
+  {
    "id": "audio:aac:sfx:countdown_beep",
    "name": "countdown_beep",
    "type": "audio",
@@ -315,6 +380,19 @@
    "usedIn": "Música, efeitos e ambiência"
   },
   {
+   "id": "audio:aac:sfx:item_cometa",
+   "name": "item_cometa",
+   "type": "audio",
+   "path": "audio/aac/sfx/item_cometa.m4a",
+   "format": "m4a",
+   "origin": "scripts/build-audio.ts (síntese procedural própria)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 33538,
+   "status": "validado",
+   "usedIn": "Música, efeitos e ambiência"
+  },
+  {
    "id": "audio:aac:sfx:item_cristal",
    "name": "item_cristal",
    "type": "audio",
@@ -389,6 +467,19 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 16262,
+   "status": "validado",
+   "usedIn": "Música, efeitos e ambiência"
+  },
+  {
+   "id": "audio:aac:sfx:item_raio",
+   "name": "item_raio",
+   "type": "audio",
+   "path": "audio/aac/sfx/item_raio.m4a",
+   "format": "m4a",
+   "origin": "scripts/build-audio.ts (síntese procedural própria)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 19257,
    "status": "validado",
    "usedIn": "Música, efeitos e ambiência"
   },
@@ -640,6 +731,19 @@
    "usedIn": "Música, efeitos e ambiência"
   },
   {
+   "id": "audio:aac:sfx:zap",
+   "name": "zap",
+   "type": "audio",
+   "path": "audio/aac/sfx/zap.m4a",
+   "format": "m4a",
+   "origin": "scripts/build-audio.ts (síntese procedural própria)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 17492,
+   "status": "validado",
+   "usedIn": "Música, efeitos e ambiência"
+  },
+  {
    "id": "audio:audio-manifest",
    "name": "audio-manifest",
    "type": "data",
@@ -648,7 +752,7 @@
    "origin": "scripts/build-audio.ts (síntese procedural própria)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 16080,
+   "bytes": 17360,
    "status": "validado",
    "usedIn": "Música, efeitos e ambiência"
   },
@@ -874,6 +978,19 @@
    "usedIn": "Música, efeitos e ambiência"
   },
   {
+   "id": "audio:sfx:comet_ram",
+   "name": "comet_ram",
+   "type": "audio",
+   "path": "audio/sfx/comet_ram.ogg",
+   "format": "ogg",
+   "origin": "scripts/build-audio.ts (síntese procedural própria)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 14098,
+   "status": "validado",
+   "usedIn": "Música, efeitos e ambiência"
+  },
+  {
    "id": "audio:sfx:countdown_beep",
    "name": "countdown_beep",
    "type": "audio",
@@ -965,6 +1082,19 @@
    "usedIn": "Música, efeitos e ambiência"
   },
   {
+   "id": "audio:sfx:item_cometa",
+   "name": "item_cometa",
+   "type": "audio",
+   "path": "audio/sfx/item_cometa.ogg",
+   "format": "ogg",
+   "origin": "scripts/build-audio.ts (síntese procedural própria)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 33670,
+   "status": "validado",
+   "usedIn": "Música, efeitos e ambiência"
+  },
+  {
    "id": "audio:sfx:item_cristal",
    "name": "item_cristal",
    "type": "audio",
@@ -1039,6 +1169,19 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 17001,
+   "status": "validado",
+   "usedIn": "Música, efeitos e ambiência"
+  },
+  {
+   "id": "audio:sfx:item_raio",
+   "name": "item_raio",
+   "type": "audio",
+   "path": "audio/sfx/item_raio.ogg",
+   "format": "ogg",
+   "origin": "scripts/build-audio.ts (síntese procedural própria)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 19795,
    "status": "validado",
    "usedIn": "Música, efeitos e ambiência"
   },
@@ -1290,6 +1433,19 @@
    "usedIn": "Música, efeitos e ambiência"
   },
   {
+   "id": "audio:sfx:zap",
+   "name": "zap",
+   "type": "audio",
+   "path": "audio/sfx/zap.ogg",
+   "format": "ogg",
+   "origin": "scripts/build-audio.ts (síntese procedural própria)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 17829,
+   "status": "validado",
+   "usedIn": "Música, efeitos e ambiência"
+  },
+  {
    "id": "characters:boro",
    "name": "boro",
    "type": "model",
@@ -1511,6 +1667,19 @@
    "usedIn": "Itens, placas de turbo, rampas, pórtico, troféus e pódio"
   },
   {
+   "id": "items:cometa-guia",
+   "name": "cometa-guia",
+   "type": "model",
+   "path": "items/cometa-guia.glb",
+   "format": "glb",
+   "origin": "scripts/build-items.ts (modelagem por script)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 38232,
+   "status": "validado",
+   "usedIn": "Itens, placas de turbo, rampas, pórtico, troféus e pódio"
+  },
+  {
    "id": "items:cristal-salto",
    "name": "cristal-salto",
    "type": "model",
@@ -1571,7 +1740,7 @@
    "origin": "scripts/build-items.ts (modelagem por script)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 5035,
+   "bytes": 5940,
    "status": "validado",
    "usedIn": "Itens, placas de turbo, rampas, pórtico, troféus e pódio"
   },
@@ -1624,6 +1793,19 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 20468,
+   "status": "validado",
+   "usedIn": "Itens, placas de turbo, rampas, pórtico, troféus e pódio"
+  },
+  {
+   "id": "items:raio-corrente",
+   "name": "raio-corrente",
+   "type": "model",
+   "path": "items/raio-corrente.glb",
+   "format": "glb",
+   "origin": "scripts/build-items.ts (modelagem por script)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 20984,
    "status": "validado",
    "usedIn": "Itens, placas de turbo, rampas, pórtico, troféus e pódio"
   },
@@ -3890,6 +4072,32 @@
    "usedIn": "Pistas e dados de corrida"
   },
   {
+   "id": "ui:arenas:cratera-lunar",
+   "name": "cratera-lunar",
+   "type": "image",
+   "path": "ui/arenas/cratera-lunar.webp",
+   "format": "webp",
+   "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 12986,
+   "status": "validado",
+   "usedIn": "Interface (retratos, ícones, miniaturas)"
+  },
+  {
+   "id": "ui:arenas:praca-coreto",
+   "name": "praca-coreto",
+   "type": "image",
+   "path": "ui/arenas/praca-coreto.webp",
+   "format": "webp",
+   "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 37740,
+   "status": "validado",
+   "usedIn": "Interface (retratos, ícones, miniaturas)"
+  },
+  {
    "id": "ui:icons:boro",
    "name": "boro",
    "type": "image",
@@ -4085,6 +4293,19 @@
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
   {
+   "id": "ui:items:cometa-guia",
+   "name": "cometa-guia",
+   "type": "image",
+   "path": "ui/items/cometa-guia.webp",
+   "format": "webp",
+   "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 9818,
+   "status": "validado",
+   "usedIn": "Interface (retratos, ícones, miniaturas)"
+  },
+  {
    "id": "ui:items:cristal-salto",
    "name": "cristal-salto",
    "type": "image",
@@ -4146,6 +4367,19 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 11932,
+   "status": "validado",
+   "usedIn": "Interface (retratos, ícones, miniaturas)"
+  },
+  {
+   "id": "ui:items:raio-corrente",
+   "name": "raio-corrente",
+   "type": "image",
+   "path": "ui/items/raio-corrente.webp",
+   "format": "webp",
+   "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 8020,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
