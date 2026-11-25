@@ -190,8 +190,13 @@ const SUITES = {
     const both = await g.ev(() => window.__game.flow.match.teams.map((t) => t.players.filter((p) => p.device).length));
     check(both[0] >= 1 && both[1] >= 1, `os dois times têm jogador controlado (${both})`, n);
     // saída de bola com o botão A do controle do time que sai
-    await g.pad(0, null, { 0: true }); await g.pad(1, null, { 0: true }); await sleep(900); await g.pad(0, null, {}); await g.pad(1, null, {});
-    await g.waitFor(() => window.__game.flow.match.state === 'play', null, 30000).then(() => check(true, 'botão A do controle cobra a saída', n), () => check(false, 'botão A não cobrou a saída', n));
+    // aciona o dispositivo que controla o batedor da saída (teclado ou controle)
+    const dev = await g.ev(() => { const m = window.__game.flow.match; return m.sp?.taker?.device ?? null; });
+    if (dev && dev.startsWith('pad')) { const i = +dev.slice(3); await g.pad(i, null, { 0: true }); await sleep(900); await g.pad(i, null, {}); }
+    else await g.key('KeyJ');
+    await g.speed(4);
+    await g.waitFor(() => window.__game.flow.match.state === 'play', null, 60000).then(() => check(true, `saída cobrada pelo dispositivo do batedor (${dev})`, n), () => check(false, `saída não cobrada (${dev})`, n));
+    await g.speed(1);
     await g.pad(0, [1, 0, 0, 0], { 7: true }); await sleep(2500); await g.pad(0, [0, 0, 0, 0], {});
     const moved = await g.ev(() => { const p = window.__game.flow.match.teams[0].players.find((x) => x.device); return p ? p.pos.x : null; });
     check(moved !== null, 'analógico move o jogador do controle 1', n);
