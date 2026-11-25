@@ -103,6 +103,10 @@ colisores de cenário, câmeras de apresentação, minimapa).
   quantização e compressão meshopt; texturas WebP.
 - Partículas em dois sistemas com pool fixo (sem alocação por quadro); HUD atualizado a 15 Hz.
 - Karts distantes não são animados; efeitos só perto da câmera.
-- Perfis Baixa/Média/Alta controlam resolução, sombras, densidade de partículas/clima e pós-processamento.
+- Perfis Baixa/Média/Alta controlam resolução, sombras, densidade de partículas/clima, pós-processamento
+  (bloom e gradação por pista, ACES, FXAA, vinheta), resolução do mapa de ambiente (HDRI da pista, 64/128/256) e
+  relevo das superfícies (mapas de normal só na Média/Alta). Mapas de ambiente e de relevo são baixados com a pista.
+- Abertura: depois do pré-carregamento, `src/scenes/AttractScene.tsx` mostra karts reais correndo atrás do logo
+  (só modelos já baixados; 2 karts e sem sombras na Baixa; desligada com "reduzir movimento").
 - Ao sair de uma corrida, modelos, mixers, materiais próprios, partículas e sons são liberados; o mundo físico
   é destruído com o componente `<Physics>`.
