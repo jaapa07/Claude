@@ -188,11 +188,12 @@ function build(c: Ctx): FaceSpec {
   const knot: V3 = [0.03, 0.57, -0.11];
   c.soft(sphere(0.035, 8, 6).scale(1.2, 0.9, 0.8), 'cloth', rig.torsoW, (_p, n) => mix(darken(SCARF, 0.3), SCARF, 0.5 + 0.5 * n.y), { p: knot });
   const tails: { name: string; pts: V3[]; w: number; ph: number }[] = [
-    { name: 'scarfA', pts: [[0.04, 0.575, -0.13], [0.1, 0.61, -0.26], [0.17, 0.595, -0.4], [0.22, 0.55, -0.53], [0.25, 0.51, -0.63]], w: 0.07, ph: 0.3 },
-    { name: 'scarfB', pts: [[0.04, 0.555, -0.13], [0.085, 0.57, -0.25], [0.13, 0.535, -0.37], [0.16, 0.47, -0.47], [0.18, 0.44, -0.53]], w: 0.06, ph: 0.6 },
+    { name: 'scarfA', pts: [[0.04, 0.575, -0.13], [0.1, 0.615, -0.25], [0.16, 0.635, -0.37], [0.2, 0.63, -0.48], [0.225, 0.615, -0.56]], w: 0.07, ph: 0.3 },
+    { name: 'scarfB', pts: [[0.04, 0.555, -0.13], [0.085, 0.585, -0.24], [0.125, 0.59, -0.34], [0.145, 0.595, -0.4], [0.16, 0.59, -0.44]], w: 0.06, ph: 0.6 },
   ];
+  // pontas curtas e erguidas, com o vento levantando e pouco balanço vertical (caídas, entravam no bagageiro/santantônio/encosto dos karts)
   for (const t of tails) {
-    const bones = c.chain(t.name, 'chest', [t.pts[0]!, t.pts[1]!, t.pts[2]!], { roll: 0.3, pitch: 0.22, lag: 0.08, sway: [0.05, 0.09, 0.05], phase: t.ph, wind: [-0.12, 0, 0], flutter: [0.12, 0.16, 0.08], bounce: 2.2 });
+    const bones = c.chain(t.name, 'chest', [t.pts[0]!, t.pts[1]!, t.pts[2]!], { roll: 0.3, pitch: 0.22, lag: 0.08, sway: [0.02, 0.09, 0.05], phase: t.ph, wind: [0.12, 0, 0], flutter: [0.12, 0.16, 0.08], bounce: 2.2 });
     const w = rig.chainW(bones, { parent: 'chest', blend: 0.05, tip: t.pts[4] });
     c.soft(ribbon(t.pts, (s) => t.w * 1.25 * (1 - 0.25 * s), 0.014, (s) => (s > 0.84 ? SILVER : s > 0.79 ? VIOLET_D : SCARF), { ref: [1, 0.35, 0], nv: 12, nu: 6 }), 'cloth', w);
   }
@@ -205,30 +206,32 @@ function build(c: Ctx): FaceSpec {
   moonEmblem(c, 'chest', 0.024, [-0.104, 0.5, pz], aimZ([-1, 0, 0]));
 
   /* ---------- prancha escura na diagonal (ponta alta no ombro direito, espelho da Yuki) ---------- */
-  const bL = 0.5, bW = 0.15;
+  const bL = 0.44, bW = 0.15;
+  // mais curta, mais alta e com a ponta de baixo para a frente (acompanha a inclinação dos encostos dos karts); a ponta de baixo atravessava o encosto
+  const tilt = -0.15;
   const outline = smoothOutline([[-bW / 2, -bL / 2 + 0.05], [-bW / 2 + 0.012, 0], [-bW / 2, bL / 2 - 0.05], [-bW / 2 + 0.03, bL / 2 - 0.005], [0, bL / 2], [bW / 2 - 0.03, bL / 2 - 0.005], [bW / 2, bL / 2 - 0.05], [bW / 2 - 0.012, 0], [bW / 2, -bL / 2 + 0.05], [bW / 2 - 0.03, -bL / 2 + 0.005], [0, -bL / 2], [-bW / 2 + 0.03, -bL / 2 + 0.005]], 26);
   const ang = 0.5;
-  const bc: V3 = [-0.01, 0.58, -0.255];
-  const boardRot = new THREE.Euler(0.08, 0, ang);
+  const bc: V3 = [-0.01, 0.64, -0.255];
+  const boardRot = new THREE.Euler(tilt, 0, ang);
   const onBoard = (x: number, y: number, z: number): V3 => v3(new THREE.Vector3(x, y, z).applyEuler(boardRot).add(new THREE.Vector3(...bc)));
   c.rigid('chest', extrude(outline, 0.018, 0.004), 'glossy', (p, n) => {
     if (n.z > 0.5) return GRAPH_D;                // base (encostada na mochila)
     if (Math.abs(n.z) < 0.5) return SILVER_D;     // borda
     return mix(GRAPH_D, GRAPH, sstep(-0.25, 0.25, p.y));
-  }, { p: bc, r: [0.08, 0, ang] });
+  }, { p: bc, r: [tilt, 0, ang] });
   // decalques em peças próprias (a tampa do extrude só tem vértices no contorno): faixa violeta, pontas e a lua
   const faceDir = v3(new THREE.Vector3(0, 0, -1).applyEuler(boardRot));
-  c.rigid('chest', box(0.13, 0.016, 0.004), 'glossy', VIOLET, { p: onBoard(0, -0.045, -0.0135), r: [0.08, 0, ang] });
-  for (const sy of [1, -1]) c.rigid('chest', box(0.1, 0.022, 0.004), 'glossy', VIOLET_D, { p: onBoard(0, sy * 0.205, -0.0135), r: [0.08, 0, ang] });
+  c.rigid('chest', box(0.13, 0.016, 0.004), 'glossy', VIOLET, { p: onBoard(0, -0.045, -0.0135), r: [tilt, 0, ang] });
+  for (const sy of [1, -1]) c.rigid('chest', box(0.1, 0.022, 0.004), 'glossy', VIOLET_D, { p: onBoard(0, sy * 0.178, -0.0135), r: [tilt, 0, ang] });
   moonEmblem(c, 'chest', 0.03, onBoard(0, 0.03, -0.016), aimZ(faceDir));
   for (const yb of [-0.11, 0.11]) {
-    const local = new THREE.Vector3(0, yb, -0.02).applyEuler(new THREE.Euler(0.08, 0, ang)).add(new THREE.Vector3(...bc));
-    c.rigid('chest', box(0.13, 0.05, 0.02, 0.008, 1), 'std', STRAP, { p: v3(local), r: [0.08, 0, ang] });
-    const strap = new THREE.Vector3(0, yb + 0.012, -0.034).applyEuler(new THREE.Euler(0.08, 0, ang)).add(new THREE.Vector3(...bc));
-    c.rigid('chest', box(0.11, 0.024, 0.014), 'cloth', SILVER_D, { p: v3(strap), r: [0.08, 0, ang] });
+    const local = new THREE.Vector3(0, yb, -0.02).applyEuler(new THREE.Euler(tilt, 0, ang)).add(new THREE.Vector3(...bc));
+    c.rigid('chest', box(0.13, 0.05, 0.02, 0.008, 1), 'std', STRAP, { p: v3(local), r: [tilt, 0, ang] });
+    const strap = new THREE.Vector3(0, yb + 0.012, -0.034).applyEuler(new THREE.Euler(tilt, 0, ang)).add(new THREE.Vector3(...bc));
+    c.rigid('chest', box(0.11, 0.024, 0.014), 'cloth', SILVER_D, { p: v3(strap), r: [tilt, 0, ang] });
   }
-  c.rigid('chest', box(0.2, 0.022, 0.012), 'std', STRAP, { p: [0, 0.54, -0.271], r: [0.08, 0, 0] });
-  c.rigid('chest', box(0.03, 0.03, 0.016), METAL, SILVER, { p: [-0.08, 0.54, -0.279], r: [0.08, 0, 0] });
+  c.rigid('chest', box(0.2, 0.022, 0.012), 'std', STRAP, { p: [0, 0.54, -0.257], r: [tilt, 0, 0] });
+  c.rigid('chest', box(0.03, 0.03, 0.016), METAL, SILVER, { p: [-0.08, 0.54, -0.265], r: [tilt, 0, 0] });
   
 
   const my = -c.fy(0.69);

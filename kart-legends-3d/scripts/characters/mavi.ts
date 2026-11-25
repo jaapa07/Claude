@@ -92,9 +92,9 @@ function build(c: Ctx): FaceSpec {
   for (const sg of [1, -1]) {
     c.rigid('head', tuft([[sg * 0.19, 0.86, 0.09], [sg * 0.215, 0.76, 0.1], [sg * 0.2, 0.66, 0.1], [sg * 0.17, 0.6, 0.105]], [0.022, 0.04], HAIR, HAIR_D, 8, 6, [0, 0, 1]), 'fur');
   }
-  // trança (ossos braid1..4)
-  const bp: V3[] = [[0, 0.72, -0.19], [0.015, 0.62, -0.26], [0.03, 0.52, -0.31], [0.04, 0.42, -0.335], [0.045, 0.33, -0.34], [0.045, 0.27, -0.34]];
-  const bb = c.chain('braid', 'head', [bp[0]!, bp[1]!, bp[2]!, bp[3]!], { roll: 0.3, pitch: 0.2, lag: 0.08, sway: [0.05, 0.03, 0.07], phase: 0.2, wind: [0.3, 0, 0], flutter: [0.08, 0.05, 0.1], bounce: 2.5 });
+  // trança (ossos braid1..4); termina acima do encosto dos karts (mais longa, a ponta entrava no encosto/caldeira ao balançar)
+  const bp: V3[] = [[0, 0.72, -0.19], [0.015, 0.63, -0.27], [0.03, 0.55, -0.32], [0.04, 0.47, -0.345], [0.045, 0.39, -0.35], [0.045, 0.34, -0.35]];
+  const bb = c.chain('braid', 'head', [bp[0]!, bp[1]!, bp[2]!, bp[3]!], { roll: 0.3, pitch: 0.2, lag: 0.08, sway: [0.05, 0.03, 0.07], phase: 0.2, wind: [0.13, 0, 0], flutter: [0.08, 0.05, 0.1], bounce: 2.5 }); // vento menor: a ponta entrava no bagageiro do Flecha
   const bw = rig.chainW(bb, { parent: 'head', blend: 0.04, tip: bp[5] });
   const braid = surf((u, v) => {
     const cen = new THREE.CatmullRomCurve3(bp.map((p) => new THREE.Vector3(...p))).getPoint(Math.min(1, v));
@@ -104,8 +104,8 @@ function build(c: Ctx): FaceSpec {
     return new THREE.Vector3(cen.x + Math.cos(a) * r * lobe, cen.y, cen.z - Math.sin(a) * r * 0.85 * lobe);
   }, 10, 30, { capStart: true, flip: true });
   c.soft(paintUV(braid, (u, v, _p, n) => mix(HAIR_D, HAIR, (0.35 + 0.65 * Math.abs(Math.sin(v * Math.PI * 7))) * (0.75 + 0.25 * n.y))), 'fur', bw);
-  c.rigid(bb[3]!, cyl(0.03, 0.03, 0.022, 10), 'cloth', ORANGE, { p: [0.044, 0.335, -0.34] });
-  c.rigid(bb[3]!, tuft([[0.045, 0.33, -0.34], [0.05, 0.27, -0.345], [0.055, 0.2, -0.35]], 0.036, HAIR, lighten(HAIR, 0.15), 8, 5), 'fur');
+  c.rigid(bb[3]!, cyl(0.03, 0.03, 0.022, 10), 'cloth', ORANGE, { p: [0.044, 0.395, -0.35] });
+  c.rigid(bb[3]!, tuft([[0.045, 0.39, -0.35], [0.05, 0.335, -0.355], [0.055, 0.28, -0.36]], 0.036, HAIR, lighten(HAIR, 0.15), 8, 5), 'fur');
 
   // chapéu de navegadora: copa + aba larga (dobrada do lado esquerdo) + faixa + pena
   const crown = cap(H, 0.895, (t) => 0.022 + 0.012 * Math.sin(Math.PI * t), { nu: 26, nv: 9 });

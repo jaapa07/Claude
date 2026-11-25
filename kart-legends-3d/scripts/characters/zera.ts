@@ -93,19 +93,21 @@ function build(c: Ctx): FaceSpec {
   /* ---------- cachecol comprido (ossos scarf1..3) ---------- */
   const stripes = (t: number): string => (Math.floor(t * 9) % 2 ? SNOW : CORAL);
   c.soft(paintUV(band(T, 0.5, 0.61, 0.034, 22), (u, _v, p, n) => mix(darken(stripes(u * 1.4), 0.25), stripes(u * 1.4), 0.55 + 0.45 * n.y + (p.y > 0.6 ? 0.1 : 0))), 'cloth', rig.torsoW);
-  const sp: V3[] = [[0.07, 0.565, -0.09], [0.11, 0.59, -0.23], [0.115, 0.57, -0.37], [0.1, 0.52, -0.5], [0.09, 0.46, -0.6]];
-  const sb = c.chain('scarf', 'chest', [sp[0]!, sp[1]!, sp[2]!], { roll: 0.3, pitch: 0.22, lag: 0.08, sway: [0.05, 0.08, 0.05], phase: 0.2, wind: [0.1, 0, 0], flutter: [0.1, 0.15, 0.08], bounce: 2 });
+  // ponta erguida e mais curta: mais baixa/longa, entrava no bagageiro do Flecha
+  const sp: V3[] = [[0.07, 0.565, -0.09], [0.11, 0.6, -0.23], [0.115, 0.615, -0.35], [0.1, 0.61, -0.45], [0.09, 0.595, -0.53]];
+  const sb = c.chain('scarf', 'chest', [sp[0]!, sp[1]!, sp[2]!], { roll: 0.3, pitch: 0.22, lag: 0.08, sway: [0.02, 0.08, 0.05], phase: 0.2, wind: [0.14, 0, 0], flutter: [0.1, 0.15, 0.08], bounce: 2 });
   const sw = rig.chainW(sb, { parent: 'chest', blend: 0.05, tip: sp[4] });
   c.soft(ribbon(sp, 0.1, 0.02, (t) => stripes(t), { ref: [1, 0, 0.25], nv: 20 }), 'cloth', sw);
-  for (let k = 0; k < 4; k++) c.soft(tuft([[0.055 + k * 0.024, 0.465, -0.595], [0.052 + k * 0.026, 0.44, -0.625], [0.05 + k * 0.028, 0.41, -0.64]], 0.011, CORAL, CORAL_D, 5, 3), 'cloth', sw);
+  for (let k = 0; k < 4; k++) c.soft(tuft([[0.055 + k * 0.024, 0.6, -0.525], [0.052 + k * 0.026, 0.58, -0.555], [0.05 + k * 0.028, 0.555, -0.57]], 0.011, CORAL, CORAL_D, 5, 3), 'cloth', sw);
   // ponta curta na frente
   c.soft(ribbon([[-0.06, 0.55, 0.1], [-0.075, 0.47, 0.135], [-0.08, 0.38, 0.14]], 0.085, 0.018, (t) => stripes(t * 0.5 + 0.1), { ref: [1, 0, 0], nv: 8 }), 'cloth', rig.torsoW);
 
   /* ---------- mochila de expedição com picareta ---------- */
+  // fundo mais alto: a mochila funda afundava no topo do encosto dos karts
   const pz = -0.3;
-  c.rigid('chest', box(0.25, 0.27, 0.14, 0.045, 1), 'cloth', (p, n) => mix(darken(PACK, 0.35), PACK, 0.5 + 0.5 * n.y), { p: [0, 0.535, pz] });
+  c.rigid('chest', box(0.25, 0.23, 0.14, 0.045, 1), 'cloth', (p, n) => mix(darken(PACK, 0.35), PACK, 0.5 + 0.5 * n.y), { p: [0, 0.555, pz] });
   c.rigid('chest', box(0.255, 0.1, 0.15, 0.04, 1), 'cloth', (p, n) => mix(darken(PACK, 0.2), lighten(PACK, 0.12), 0.5 + 0.5 * n.y), { p: [0, 0.635, pz - 0.004] });
-  c.rigid('chest', box(0.15, 0.1, 0.05, 0.02, 1), 'cloth', darken(PACK, 0.12), { p: [0, 0.48, pz - 0.075] });
+  c.rigid('chest', box(0.15, 0.08, 0.05, 0.02, 1), 'cloth', darken(PACK, 0.12), { p: [0, 0.505, pz - 0.075] });
   for (const dx of [-0.06, 0.06]) {
     c.rigid('chest', box(0.022, 0.13, 0.012, 0.004, 1), 'std', '#e9d9a8', { p: [dx, 0.6, pz - 0.078] });
     c.rigid('chest', box(0.03, 0.022, 0.016, 0.005, 1), METAL, '#c9ced6', { p: [dx, 0.575, pz - 0.082] });
@@ -116,20 +118,21 @@ function build(c: Ctx): FaceSpec {
   for (const sg of [1, -1]) c.rigid('chest', cyl(0.03, 0.03, 0.006, 10).rotateZ(Math.PI / 2), 'cloth', SNOW, { p: [sg * 0.142, 0.735, pz + 0.005] });
   // picareta de gelo (lado direito)
   const ax = -0.15;
-  c.rigid('chest', cyl(0.013, 0.013, 0.36, 8), METAL, (p) => mix('#7a8794', '#dfe6ee', sstep(-0.18, 0.18, p.y)), { p: [ax, 0.56, pz - 0.02], r: [0.12, 0, 0] });
-  c.rigid('chest', cyl(0.017, 0.017, 0.1, 8), 'rubber', CORAL_D, { p: [ax, 0.44, pz - 0.035], r: [0.12, 0, 0] });
+  c.rigid('chest', cyl(0.013, 0.013, 0.36, 8), METAL, (p) => mix('#7a8794', '#dfe6ee', sstep(-0.18, 0.18, p.y)), { p: [ax, 0.6, pz - 0.02], r: [0.12, 0, 0] });
+  c.rigid('chest', cyl(0.017, 0.017, 0.1, 8), 'rubber', CORAL_D, { p: [ax, 0.48, pz - 0.035], r: [0.12, 0, 0] });
   const pick: [number, number][] = [[-0.11, -0.03], [-0.07, 0.004], [-0.02, 0.02], [0.03, 0.02], [0.07, 0.012], [0.075, -0.02], [0.05, -0.008], [0.02, -0.004], [-0.02, -0.006], [-0.06, -0.016]];
-  c.rigid('chest', extrude(pick, 0.012, 0.003), METAL, (p) => mix('#8d98a6', '#eef3f8', sstep(-0.03, 0.02, p.y)), { p: [ax, 0.745, pz - 0.045], r: [0.12, Math.PI / 2, 0] });
+  c.rigid('chest', extrude(pick, 0.012, 0.003), METAL, (p) => mix('#8d98a6', '#eef3f8', sstep(-0.03, 0.02, p.y)), { p: [ax, 0.785, pz - 0.05], r: [0.12, Math.PI / 2, 0] });
   // corda enrolada (lado esquerdo) e alças
-  c.rigid('chest', torus(0.05, 0.014, 6, 16).rotateY(Math.PI / 2), 'cloth', '#e9d9a8', { p: [0.135, 0.52, pz] });
+  c.rigid('chest', torus(0.05, 0.014, 6, 16).rotateY(Math.PI / 2), 'cloth', '#e9d9a8', { p: [0.135, 0.54, pz] });
   c.rigid('chest', torus(0.05, 0.014, 6, 16).rotateY(Math.PI / 2), 'cloth', '#d6c48e', { p: [0.15, 0.52, pz] });
   for (const sg of [1, -1]) {
     c.soft(ribbon([[sg * 0.1, 0.34, 0.145], [sg * 0.108, 0.45, 0.13], [sg * 0.11, 0.53, 0.02], [sg * 0.1, 0.5, -0.13], [sg * 0.09, 0.45, -0.24]], 0.04, 0.014, () => darken(PACK, 0.25), { ref: [1, 0, 0], nv: 12 }), 'cloth', rig.torsoW);
   }
 
   /* ---------- cauda grossa pintada ---------- */
-  const tp: V3[] = [[0.04, 0.13, -0.09], [0.22, 0.17, -0.16], [0.37, 0.25, -0.26], [0.45, 0.38, -0.36], [0.44, 0.54, -0.42], [0.36, 0.66, -0.43]];
-  const tl = c.chain('tail', 'hips', [tp[0]!, [0.3, 0.21, -0.21], [0.44, 0.35, -0.34]], { roll: 0.28, pitch: 0.15, lag: 0.09, sway: [0.03, 0.09, 0.05], phase: 0.2, wind: [-0.06, 0.03, 0], flutter: [0.03, 0.06, 0.03], bounce: 2.2 });
+  // sobe logo depois do quadril para passar por cima da borda lateral e das rodas traseiras dos karts
+  const tp: V3[] = [[0.04, 0.13, -0.09], [0.2, 0.2, -0.14], [0.31, 0.36, -0.21], [0.4, 0.48, -0.31], [0.41, 0.61, -0.38], [0.34, 0.71, -0.41]];
+  const tl = c.chain('tail', 'hips', [tp[0]!, [0.27, 0.29, -0.18], [0.4, 0.46, -0.3]], { roll: 0.28, pitch: 0.15, lag: 0.09, sway: [0.03, 0.09, 0.05], phase: 0.2, wind: [-0.06, 0.03, 0], flutter: [0.03, 0.06, 0.03], bounce: 2.2 });
   c.soft(plume(tp, (t) => ramp(t, [[0, 0.05], [0.2, 0.068], [0.75, 0.072], [0.92, 0.06], [1, 0.0]]) + 0.004, (t, u, n) => {
     const ringK = t > 0.55 && Math.sin(t * 46) > 0.5;
     const sp2 = t <= 0.55 && Math.sin(t * 60) * Math.sin(u * Math.PI * 10 + t * 20) > 0.45;

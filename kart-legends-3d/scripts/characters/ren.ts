@@ -184,11 +184,12 @@ function build(c: Ctx): FaceSpec {
   const knot: V3 = [-0.03, 0.56, -0.11];
   c.soft(sphere(0.034, 8, 6).scale(1.2, 0.9, 0.8), 'cloth', rig.torsoW, (_p, n) => mix(YELLOW_D, YELLOW, 0.5 + 0.5 * n.y), { p: knot });
   const tails: { name: string; pts: V3[]; w: number; ph: number }[] = [
-    { name: 'scarfA', pts: [[-0.04, 0.565, -0.13], [-0.09, 0.59, -0.23], [-0.14, 0.57, -0.33], [-0.17, 0.53, -0.41], [-0.19, 0.5, -0.47]], w: 0.065, ph: 0.2 },
-    { name: 'scarfB', pts: [[-0.04, 0.545, -0.13], [-0.075, 0.55, -0.22], [-0.11, 0.515, -0.3], [-0.13, 0.47, -0.36], [-0.14, 0.45, -0.4]], w: 0.055, ph: 0.5 },
+    { name: 'scarfA', pts: [[-0.04, 0.565, -0.13], [-0.09, 0.6, -0.23], [-0.135, 0.61, -0.32], [-0.165, 0.6, -0.4], [-0.18, 0.585, -0.45]], w: 0.065, ph: 0.2 },
+    { name: 'scarfB', pts: [[-0.04, 0.545, -0.13], [-0.075, 0.565, -0.21], [-0.105, 0.565, -0.29], [-0.125, 0.55, -0.35], [-0.135, 0.535, -0.39]], w: 0.055, ph: 0.5 },
   ];
+  // pontas curtas e erguidas, com o vento levantando e pouco balanço vertical (caídas, entravam no bagageiro/santantônio/encosto dos karts)
   for (const t of tails) {
-    const bones = c.chain(t.name, 'chest', [t.pts[0]!, t.pts[1]!, t.pts[2]!], { roll: 0.3, pitch: 0.22, lag: 0.08, sway: [0.05, 0.09, 0.05], phase: t.ph, wind: [0.12, 0, 0], flutter: [0.14, 0.18, 0.1], bounce: 2.4 });
+    const bones = c.chain(t.name, 'chest', [t.pts[0]!, t.pts[1]!, t.pts[2]!], { roll: 0.3, pitch: 0.22, lag: 0.08, sway: [0.02, 0.09, 0.05], phase: t.ph, wind: [0.12, 0, 0], flutter: [0.14, 0.18, 0.1], bounce: 2.4 });
     const w = rig.chainW(bones, { parent: 'chest', blend: 0.05, tip: t.pts[4] });
     c.soft(ribbon(t.pts, (s) => t.w * 1.25 * (1 - 0.25 * s), 0.014, (s) => (s > 0.84 ? INK : YELLOW), { ref: [1, -0.35, 0], nv: 10, nu: 6 }), 'cloth', w);
   }
@@ -207,32 +208,34 @@ function build(c: Ctx): FaceSpec {
   boltEmblem(c, 'chest', 0.024, [-0.104, 0.5, pz], aimZ([-1, 0, 0]));
 
   /* ---------- prancha roxa com raios amarelos (ponta alta no ombro esquerdo) ---------- */
-  const bL = 0.5, bW = 0.15;
+  const bL = 0.44, bW = 0.15;
+  // mais curta, mais alta e com a ponta de baixo para a frente (acompanha a inclinação dos encostos dos karts); a ponta de baixo atravessava o encosto
+  const tilt = -0.15;
   const outline = smoothOutline([[-bW / 2, -bL / 2 + 0.05], [-bW / 2 + 0.012, 0], [-bW / 2, bL / 2 - 0.05], [-bW / 2 + 0.03, bL / 2 - 0.005], [0, bL / 2], [bW / 2 - 0.03, bL / 2 - 0.005], [bW / 2, bL / 2 - 0.05], [bW / 2 - 0.012, 0], [bW / 2, -bL / 2 + 0.05], [bW / 2 - 0.03, -bL / 2 + 0.005], [0, -bL / 2], [-bW / 2 + 0.03, -bL / 2 + 0.005]], 26);
   const ang = -0.5;
-  const bc: V3 = [0.01, 0.58, -0.262];
-  const boardRot = new THREE.Euler(0.08, 0, ang);
+  const bc: V3 = [0.01, 0.64, -0.262];
+  const boardRot = new THREE.Euler(tilt, 0, ang);
   const onBoard = (x: number, y: number, z: number): V3 => v3(new THREE.Vector3(x, y, z).applyEuler(boardRot).add(new THREE.Vector3(...bc)));
   c.rigid('chest', extrude(outline, 0.018, 0.004), 'glossy', (p, n) => {
     if (n.z > 0.5) return PURPLE_D;
     if (Math.abs(n.z) < 0.5) return INK;
     return mix(PURPLE_D, PURPLE, sstep(-0.25, 0.25, p.y));
-  }, { p: bc, r: [0.08, 0, ang] });
+  }, { p: bc, r: [tilt, 0, ang] });
   // raios amarelos como decalques (a tampa do extrude só tem vértices no contorno)
   const fq = new THREE.Quaternion().setFromEuler(boardRot).multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI));
   const fe = new THREE.Euler().setFromQuaternion(fq, 'XYZ');
   const faceRot: V3 = [fe.x, fe.y, fe.z];
-  for (const [x, y, s] of [[0.01, 0.02, 0.05], [-0.025, 0.19, 0.025], [0.03, -0.19, 0.025]] as [number, number, number][]) {
+  for (const [x, y, s] of [[0.01, 0.02, 0.05], [-0.022, 0.165, 0.025], [0.027, -0.165, 0.025]] as [number, number, number][]) {
     c.rigid('chest', extrude(bolt(s), 0.004), 'glossy', YELLOW, { p: onBoard(x, y, -0.0135), r: faceRot });
   }
   for (const yb of [-0.11, 0.11]) {
     const local = new THREE.Vector3(0, yb, -0.02).applyEuler(boardRot).add(new THREE.Vector3(...bc));
-    c.rigid('chest', box(0.13, 0.05, 0.02, 0.008, 1), 'std', STRAP, { p: v3(local), r: [0.08, 0, ang] });
+    c.rigid('chest', box(0.13, 0.05, 0.02, 0.008, 1), 'std', STRAP, { p: v3(local), r: [tilt, 0, ang] });
     const strap = new THREE.Vector3(0, yb + 0.012, -0.034).applyEuler(boardRot).add(new THREE.Vector3(...bc));
-    c.rigid('chest', box(0.11, 0.024, 0.014), 'cloth', YELLOW_D, { p: v3(strap), r: [0.08, 0, ang] });
+    c.rigid('chest', box(0.11, 0.024, 0.014), 'cloth', YELLOW_D, { p: v3(strap), r: [tilt, 0, ang] });
   }
-  c.rigid('chest', box(0.2, 0.022, 0.012), 'std', STRAP, { p: [0, 0.54, -0.278], r: [0.08, 0, 0] });
-  c.rigid('chest', box(0.03, 0.03, 0.016), METAL, BUCKLE, { p: [0.08, 0.54, -0.286], r: [0.08, 0, 0] });
+  c.rigid('chest', box(0.2, 0.022, 0.012), 'std', STRAP, { p: [0, 0.54, -0.264], r: [tilt, 0, 0] });
+  c.rigid('chest', box(0.03, 0.03, 0.016), METAL, BUCKLE, { p: [0.08, 0.54, -0.272], r: [tilt, 0, 0] });
 
   return {
     bg: SKIN,
