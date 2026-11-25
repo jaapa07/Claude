@@ -2,7 +2,7 @@ import { ITEM_BY_ID } from '@/data/items';
 import { ITEM_IDS, type ItemId } from '@/data/ids';
 import type { Rng } from '@/game/core/rng';
 import type { SimEvent } from '@/game/racing/events';
-import type { TrackRuntime } from '@/game/tracks/trackRuntime';
+import { angleDiff, type TrackRuntime } from '@/game/tracks/trackRuntime';
 import { applyBoost, jump, spinOut } from '@/game/vehicles/kartPhysics';
 import type { KartState } from '@/game/vehicles/kartState';
 
@@ -24,12 +24,34 @@ export interface Projectile {
 
 export interface WindWave { id: number; owner: number; x: number; y: number; z: number; age: number }
 
+/** Um elo do Raio Corrente (só visual): de `from` até `to`, `link` = 0 o mais forte. */
+export interface ChainArc { id: number; from: number; to: number; link: number; age: number }
+
 const ROLL_TIME = 1.4;
 const BOX_RESPAWN = 3.5;
 const BOX_RADIUS = 2.1;
 export const WIND_RADIUS = 14;
 export const HAZARD_RADIUS = 3.2;
 const PROJECTILE_SPEED = 48;
+
+/**
+ * Raio Corrente: cada elo atinge o próximo piloto à frente do anterior, mais fraco.
+ * `factor` = fração da velocidade máxima durante `time` s; `cut` = velocidade mantida no choque.
+ */
+export const CHAIN_LINKS = [
+  { factor: 0.6, time: 1.6, cut: 0.8 },
+  { factor: 0.74, time: 1.05, cut: 0.88 },
+  { factor: 0.86, time: 0.65, cut: 0.94 },
+] as const;
+/** Alcance (m, medido ao longo da pista) do primeiro elo e dos saltos seguintes. */
+export const CHAIN_FIRST_RANGE = 90;
+export const CHAIN_HOP_RANGE = 42;
+export const ARC_LIFE = 0.45;
+/** Cometa Guia: raio do "para-choque" que tira rivais do caminho e força do empurrão lateral. */
+export const RAM_RADIUS = 3.4;
+const RAM_PUSH = 10;
+/** O Cometa Guia só sai para quem está na metade de trás do grid (fração de posição ≥ isto). */
+export const COMET_MIN_RANK = 0.5;
 
 /**
  * Peso de cada item conforme a posição (r = 0 líder … 1 último). Quem está atrás recebe mais
@@ -44,6 +66,10 @@ export function itemWeights(rankFraction: number): Record<ItemId, number> {
     'faisca-rastreadora': 0.35 + 2.1 * r,
     'onda-vento': 1,
     'cristal-salto': 0.8,
+    // ataque em cadeia: inútil para o líder (não há ninguém à frente), melhor no meio/fundo do grid
+    'raio-corrente': 0.15 + 1.4 * r,
+    // recuperação: só para a metade de trás, cada vez mais comum quanto mais atrás
+    'cometa-guia': r < COMET_MIN_RANK ? 0 : 0.4 + 2 * ((r - COMET_MIN_RANK) / (1 - COMET_MIN_RANK)),
   };
 }
 
@@ -63,7 +89,11 @@ export class ItemSystem {
   readonly hazards: Hazard[] = [];
   readonly projectiles: Projectile[] = [];
   readonly waves: WindWave[] = [];
+  readonly arcs: ChainArc[] = [];
   private nextId = 1;
+  /** Por piloto: tempo até poder ser empurrado de novo por um cometa; e se estava em modo cometa. */
+  private ramCooldown: number[] = [];
+  private cometOn: boolean[] = [];
   private readonly tmp = { x: 0, y: 0, z: 0 };
 
   constructor(
@@ -113,6 +143,11 @@ export class ItemSystem {
     }
     this.stepHazards(karts, dt);
     this.stepProjectiles(karts, dt);
+    this.stepComets(karts, dt);
+    for (let i = this.arcs.length - 1; i >= 0; i--) {
+      this.arcs[i]!.age += dt;
+      if (this.arcs[i]!.age > ARC_LIFE) this.arcs.splice(i, 1);
+    }
     for (let i = this.waves.length - 1; i >= 0; i--) {
       this.waves[i]!.age += dt;
       if (this.waves[i]!.age > ITEM_BY_ID['onda-vento'].duration) this.waves.splice(i, 1);
@@ -156,7 +191,8 @@ export class ItemSystem {
           if (o === k) continue;
           const dx = o.x - k.x, dz = o.z - k.z, dy = o.y - k.y;
           const d = Math.hypot(dx, dz);
-          if (d > WIND_RADIUS || Math.abs(dy) > 5) continue;
+          // o cometa é pesado demais para o vento
+          if (d > WIND_RADIUS || Math.abs(dy) > 5 || o.comet > 0) continue;
           if (o.shield > 0) { o.shield = 0; this.emit({ type: 'shield_break', kart: o.index }); continue; }
           if (o.invuln > 0) continue;
           const f = (1 - d / WIND_RADIUS) * 13 + 8;
@@ -181,6 +217,115 @@ export class ItemSystem {
         if (k.grounded) jump(k, this.emit);
         else { k.vy = Math.max(k.vy, 6); k.body.setLinvel({ x: k.vx, y: k.vy, z: k.vz }, true); }
         break;
+      case 'raio-corrente':
+        this.chainLightning(k, karts);
+        break;
+      case 'cometa-guia': {
+        const dur = ITEM_BY_ID[item].duration;
+        k.comet = dur;
+        k.stun = 0;
+        k.drifting = false; k.driftCharge = 0; k.driftLevel = 0;
+        applyBoost(k, dur, 4);
+        this.cometOn[k.index] = true;
+        break;
+      }
+    }
+  }
+
+  /**
+   * Raio Corrente: atinge o piloto mais próximo à frente (até CHAIN_FIRST_RANGE m) e salta para o
+   * próximo à frente dele (até CHAIN_HOP_RANGE m), no máximo 3 elos, cada um mais fraco.
+   * A Bolha Guardiã estoura e aterra o raio; um Cometa Guia o aterra sem sofrer nada; quem está
+   * invulnerável (acabou de rodar ou reaparecer) não sente, mas passa o raio adiante.
+   */
+  private chainLightning(k: KartState, karts: KartState[]): void {
+    const spacing = this.track.data.spacing;
+    const hit = new Set<number>([k.index]);
+    let from = k;
+    for (let link = 0; link < CHAIN_LINKS.length; link++) {
+      const range = link === 0 ? CHAIN_FIRST_RANGE : CHAIN_HOP_RANGE;
+      let next: KartState | null = null, best = Infinity;
+      for (const o of karts) {
+        if (hit.has(o.index) || o.finished) continue;
+        const ahead = (o.progress - from.progress) * spacing;
+        if (ahead <= 0 || ahead > range || ahead >= best) continue;
+        // sem atravessar morros/viadutos: também precisa estar perto em linha reta
+        if (Math.hypot(o.x - from.x, o.y - from.y, o.z - from.z) > range * 1.1) continue;
+        best = ahead; next = o;
+      }
+      if (!next) break;
+      hit.add(next.index);
+      this.arcs.push({ id: this.nextId++, from: from.index, to: next.index, link, age: 0 });
+      if (next.comet > 0) break;
+      if (next.shield > 0) {
+        next.shield = 0;
+        next.invuln = Math.max(next.invuln, 0.8);
+        this.emit({ type: 'shield_break', kart: next.index });
+        break;
+      }
+      if (next.invuln <= 0 && next.spinTime <= 0) {
+        const L = CHAIN_LINKS[link]!;
+        next.slowFactor = next.slowTime > 0 ? Math.min(next.slowFactor, L.factor) : L.factor;
+        next.slowTime = Math.max(next.slowTime, L.time);
+        next.vx *= L.cut; next.vz *= L.cut;
+        next.body.setLinvel({ x: next.vx, y: next.vy, z: next.vz }, true);
+        next.drifting = false; next.driftCharge = 0; next.driftLevel = 0;
+        if (link === 0) next.boostTime = 0;
+        this.emit({ type: 'zapped', kart: next.index, from: from.index, link });
+      }
+      from = next;
+    }
+  }
+
+  /**
+   * Piloto automático do Cometa Guia: segue a linha de corrida (ou o atalho em que já está) com
+   * acelerador cheio, sobrescrevendo os comandos do piloto. Chamado antes da física do kart.
+   */
+  steerComet(k: KartState): void {
+    const track = this.track, main = track.main, inp = k.input;
+    const v = Math.max(k.speed, 8);
+    const look = Math.max(3, Math.round((6 + v * 0.45) / track.data.spacing));
+    if (k.pathId >= 0) {
+      const sc = track.shortcuts[k.pathId]!;
+      const ti = k.pathIndex + look;
+      if (ti < sc.path.n) sc.path.point(ti, 0, this.tmp);
+      else main.point(sc.data.to + ti - sc.path.n, track.racingLine[main.wrap(sc.data.to + ti - sc.path.n)]! * 0.7, this.tmp);
+    } else {
+      const ti = main.wrap(k.mainIndex + look);
+      main.point(ti, track.jumpZone[ti] ? 0 : track.racingLine[ti]! * 0.7, this.tmp);
+    }
+    const diff = angleDiff(Math.atan2(this.tmp.x - k.x, this.tmp.z - k.z), k.heading);
+    inp.steer = Math.max(-1, Math.min(1, -diff * 2.6));
+    inp.throttle = 1; inp.brake = 0; inp.drift = false; inp.reset = false;
+  }
+
+  /** Cometas ativos tiram do caminho quem encostar neles; avisa quando um cometa termina. */
+  private stepComets(karts: KartState[], dt: number): void {
+    for (const o of karts) this.ramCooldown[o.index] = Math.max(0, (this.ramCooldown[o.index] ?? 0) - dt);
+    for (const k of karts) {
+      if (k.comet <= 0) {
+        if (this.cometOn[k.index]) { this.cometOn[k.index] = false; this.emit({ type: 'comet_end', kart: k.index }); }
+        continue;
+      }
+      const fx = Math.sin(k.heading), fz = Math.cos(k.heading);
+      for (const o of karts) {
+        if (o === k || o.comet > 0 || o.finished || this.ramCooldown[o.index]! > 0) continue;
+        const dx = o.x - k.x, dz = o.z - k.z;
+        if (dx * dx + dz * dz > RAM_RADIUS * RAM_RADIUS || Math.abs(o.y - k.y) > 2.5) continue;
+        this.ramCooldown[o.index] = 0.8;
+        if (o.shield > 0) { o.shield = 0; o.invuln = Math.max(o.invuln, 0.8); this.emit({ type: 'shield_break', kart: o.index }); continue; }
+        if (o.invuln > 0) continue;
+        // empurrão para o lado em que o rival já está (perpendicular ao cometa), sem tirar a velocidade dele
+        const side = dx * fz - dz * fx >= 0 ? 1 : -1;
+        o.vx += side * fz * RAM_PUSH; o.vz -= side * fx * RAM_PUSH; o.vy += 2.5;
+        const cap = o.tuning.topSpeed * 1.25, hv = Math.hypot(o.vx, o.vz);
+        if (hv > cap) { o.vx *= cap / hv; o.vz *= cap / hv; }
+        o.body.setLinvel({ x: o.vx, y: o.vy, z: o.vz }, true);
+        o.stun = 0.35 / o.tuning.recovery;
+        o.drifting = false; o.driftCharge = 0; o.driftLevel = 0;
+        o.jumpGrace = 0.15; o.grounded = false;
+        this.emit({ type: 'rammed', kart: o.index, by: k.index });
+      }
     }
   }
 
@@ -193,6 +338,8 @@ export class ItemSystem {
       for (const k of karts) {
         const dx = k.x - h.x, dz = k.z - h.z;
         if (dx * dx + dz * dz > h.radius * h.radius || Math.abs(k.y - h.y) > 3) continue;
+        // o cometa atravessa a névoa e a dissipa
+        if (k.comet > 0) { h.life = Math.min(h.life, 0.3); continue; }
         if (k.invuln > 0 || k.spinTime > 0) continue;
         const shielded = k.shield > 0;
         spinOut(k, this.emit, 'nevoa');

@@ -365,6 +365,58 @@ const SFX: Record<SfxId, SfxBuilder> = {
     addVerb(b, 0.55, 0.5);
     return b;
   },
+  // Raio Corrente: estalo seco e um arco elétrico que "pula" três vezes, cada salto mais agudo e fraco.
+  item_raio: (rng) => {
+    const b = Stereo.seconds(1.1);
+    noise(b, rng, { dur: 0.05, type: 'hp', f0: 4200, vol: 0.9, attack: 0.0005, decay: 0.012 });
+    tone(b, { dur: 0.12, f0: 180, f1: 60, vol: 0.6, decay: 0.04 });
+    [[0, 1, -0.5], [0.12, 0.7, 0.1], [0.22, 0.45, 0.6]].forEach(([t, v, pan], hop) => {
+      for (let k = 0; k < 5; k++) {
+        const tt = t + k * 0.016 + rng() * 0.008;
+        const f = (1100 + hop * 700) * (0.8 + rng() * 0.5);
+        tone(b, { t: tt, dur: 0.03, f0: f, f1: f * 0.6, wave: 'saw', vol: 0.5 * v, decay: 0.012, pan });
+        noise(b, rng, { t: tt, dur: 0.02, type: 'bp', f0: 3500 + hop * 1500, q: 2, vol: 0.7 * v, attack: 0.0005, decay: 0.006, pan });
+      }
+      tone(b, { t, dur: 0.16, f0: 120 + hop * 40, wave: 'square', pw: 0.15, vol: 0.28 * v, decay: 0.06, vib: { hz: 60, cents: 300 }, pan });
+    });
+    addVerb(b, 0.35, 0.35);
+    return b;
+  },
+  // Atingido pelo raio: zumbido que engasga e cai de tom, como um motor perdendo força.
+  zap: (rng) => {
+    const b = Stereo.seconds(1);
+    noise(b, rng, { dur: 0.04, type: 'hp', f0: 5000, vol: 0.8, attack: 0.0005, decay: 0.01 });
+    tone(b, { dur: 0.6, f0: 220, f1: 70, wave: 'saw', vol: 0.45, attack: 0.005, decay: 0.3, vib: { hz: 23, cents: 250 } });
+    tone(b, { dur: 0.5, f0: 440, f1: 120, wave: 'square', pw: 0.2, vol: 0.18, decay: 0.2, vib: { hz: 31, cents: 200 } });
+    for (let k = 0; k < 6; k++) {
+      const t = 0.05 + k * 0.07 + rng() * 0.02;
+      noise(b, rng, { t, dur: 0.025, type: 'bp', f0: 2500 + rng() * 2500, q: 3, vol: 0.4 * (1 - k / 7), attack: 0.0005, decay: 0.008, pan: rng() * 1.2 - 0.6 });
+    }
+    addVerb(b, 0.3, 0.3);
+    return b;
+  },
+  // Cometa Guia: ignição brilhante que sobe e um rugido largo de cauda de fogo.
+  item_cometa: (rng) => {
+    const b = Stereo.seconds(2);
+    tone(b, { dur: 0.5, f0: hz(60), f1: hz(84), wave: 'saw', vol: 0.35, attack: 0.02, decay: 0.3 });
+    tone(b, { dur: 0.5, f0: hz(67), f1: hz(91), wave: 'square', pw: 0.3, vol: 0.18, attack: 0.02, decay: 0.3, pan: 0.3 });
+    noise(b, rng, { dur: 1.5, type: 'bp', f0: 500, f1: 2600, q: 1.1, vol: 0.8, attack: 0.08, decay: 0.7, release: 0.4, pan: -0.3 });
+    noise(b, rng, { t: 0.03, dur: 1.5, type: 'lp', f0: 900, f1: 300, vol: 0.6, attack: 0.05, decay: 0.6, release: 0.4, pan: 0.3 });
+    tone(b, { dur: 0.35, f0: 140, f1: 45, vol: 0.6, decay: 0.12 });
+    [91, 96, 100, 103].forEach((m, k) => ping(b, 0.1 + k * 0.06, hz(m), 0.4, 0.35, (k - 1.5) * 0.4));
+    sparkle(b, rng, 0.2, 0.7, 8, 3500, 9000, 0.12);
+    addVerb(b, 0.5, 0.45);
+    return b;
+  },
+  // Cometa empurrando um rival: baque surdo com rajada de ar.
+  comet_ram: (rng) => {
+    const b = Stereo.seconds(0.7);
+    tone(b, { dur: 0.22, f0: 130, f1: 48, vol: 1, decay: 0.07 });
+    noise(b, rng, { dur: 0.3, type: 'bp', f0: 1800, f1: 500, q: 1.2, vol: 0.7, attack: 0.002, decay: 0.08 });
+    noise(b, rng, { t: 0.02, dur: 0.12, type: 'hp', f0: 3000, vol: 0.35, attack: 0.001, decay: 0.03, pan: 0.4 });
+    addVerb(b, 0.3, 0.3);
+    return b;
+  },
   shield_break: (rng) => {
     const b = Stereo.seconds(1.2);
     noise(b, rng, { dur: 0.3, type: 'hp', f0: 3000, vol: 0.9, attack: 0.001, decay: 0.05 });

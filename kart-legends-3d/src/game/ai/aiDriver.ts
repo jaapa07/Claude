@@ -1,6 +1,6 @@
 import type { Difficulty } from '@/data/ids';
 import type { Rng } from '@/game/core/rng';
-import type { Hazard, Projectile } from '@/game/items/itemSystem';
+import { CHAIN_FIRST_RANGE, type Hazard, type Projectile } from '@/game/items/itemSystem';
 import { obstaclePhase, type ObstacleState } from '@/game/racing/obstacles';
 import { angleDiff, type TrackRuntime } from '@/game/tracks/trackRuntime';
 import type { KartState } from '@/game/vehicles/kartState';
@@ -259,6 +259,15 @@ export class AiDriver {
         return late || w.karts.some((o) => o !== k && Math.hypot(o.x - k.x, o.z - k.z) < 9) || w.projectiles.some((p) => p.target === k.index && Math.hypot(p.x - k.x, p.z - k.z) < 14);
       case 'cristal-salto':
         return this.itemTimer > this.profile.itemDelay + 1.5 && k.grounded && w.track.speedHint[k.mainIndex]! > 0.9 && !w.track.main.gap[w.track.main.wrap(k.mainIndex + 14)];
+      case 'raio-corrente': {
+        // dispara quando há alguém ao alcance à frente (de preferência sem bolha); se ninguém aparece, desiste depois
+        const sp = w.track.data.spacing;
+        const target = w.karts.some((o) => o !== k && !o.finished && (() => { const a = (o.progress - k.progress) * sp; return a > 3 && a < CHAIN_FIRST_RANGE * 0.9 && (o.shield <= 0 || late); })());
+        return target || this.itemTimer > this.profile.itemDelay + 12;
+      }
+      case 'cometa-guia':
+        // recuperação: usa logo, com o kart no chão e na pista principal
+        return (k.grounded && k.pathId < 0 && k.stun <= 0) || late;
     }
   }
 }
