@@ -8,7 +8,7 @@ import { flowSteps, nextScreen, prevScreen } from './flow';
 
 const storage = installMemoryStorage();
 const { useSaveStore } = await import('@/game/save/saveStore');
-const { DEFAULT_SELECTION, RACERS_PER_RACE, TRAINING_LAPS, buildFreshGrid, sortStandings, useGameStore } = await import('./gameStore');
+const { DEFAULT_SELECTION, RACERS_PER_RACE, TRAINING_LAPS, buildFreshGrid, capRacers, sortStandings, useGameStore } = await import('./gameStore');
 
 const game = () => useGameStore.getState();
 function currentRace(): RaceConfig {
@@ -266,5 +266,15 @@ describe('contrarrelógio e treino', () => {
     const stats = useSaveStore.getState().stats;
     expect(stats.races).toBe(0);
     expect(stats.playTimeMs).toBeGreaterThanOrEqual(65000);
+  });
+});
+
+describe('limite de pilotos', () => {
+  it('nunca mais de 8 na pista, e o jogador sempre fica', () => {
+    expect(RACERS_PER_RACE).toBe(8);
+    const many = Array.from({ length: 13 }, (_, i) => ({ characterId: 'boro' as const, kartId: 'flecha' as const, isPlayer: false, n: i }));
+    const capped = capRacers([...many, { characterId: 'nilo', kartId: 'flecha', isPlayer: true }]);
+    expect(capped).toHaveLength(8);
+    expect(capped.at(-1)).toMatchObject({ characterId: 'nilo', isPlayer: true });
   });
 });

@@ -1,3 +1,4 @@
+import { RACERS_PER_RACE } from '@/data/tracks';
 import { create } from 'zustand';
 import { CHARACTERS, CHARACTER_BY_ID } from '@/data/characters';
 import type { CharacterId } from '@/data/ids';
@@ -56,8 +57,15 @@ function mulberry32(seed: number): () => number {
   };
 }
 
-/** Pilotos por corrida (as pistas têm oito posições de largada). */
-export const RACERS_PER_RACE = 8;
+/** Pilotos por corrida: no máximo 8 ao mesmo tempo (as pistas têm oito posições de largada). */
+export { RACERS_PER_RACE };
+
+/** Trava de segurança: nunca mais de 8 na pista; o jogador sempre fica. */
+export function capRacers(racers: RacerSetup[]): RacerSetup[] {
+  if (racers.length <= RACERS_PER_RACE) return racers;
+  const player = racers.filter((r) => r.isPlayer);
+  return [...racers.filter((r) => !r.isPlayer).slice(0, RACERS_PER_RACE - player.length), ...player];
+}
 
 /**
  * Grid da Corrida Rápida e da 1ª corrida de uma copa: sete adversários sorteados pela seed entre os outros
@@ -163,7 +171,7 @@ export const useGameStore = create<GameStoreState>()((set, get) => ({
       }
     }
 
-    const race: RaceConfig = { trackId, mode: selection.mode, difficulty: selection.difficulty, laps, racers, seed };
+    const race: RaceConfig = { trackId, mode: selection.mode, difficulty: selection.difficulty, laps, racers: capRacers(racers), seed };
     set({
       selection: { ...selection, trackId },
       championship,
