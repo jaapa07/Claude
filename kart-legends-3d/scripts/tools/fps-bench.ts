@@ -3,7 +3,8 @@
  * O kart do jogador vai no piloto automático (gancho ?e2e=1) e a contagem de quadros é feita na própria página
  * (requestAnimationFrame) em janelas de alguns segundos, depois da largada.
  * Uso: npx tsx scripts/tools/fps-bench.ts [--url=http://127.0.0.1:4173] [--tracks=a,b] [--quality=low] [--secs=12]
- *      [--shots=<pasta>] (salva uma captura por pista) [--runs=1]
+ *      [--shots=<pasta>] (salva uma captura por pista) [--runs=1] [--arena=<id>]
+ *      [--static] (cenário parado: ms por quadro com a câmera da largada e +8 s, sem variação da corrida)
  */
 import { chromium, devices } from 'playwright';
 import { mkdirSync } from 'node:fs';
@@ -17,6 +18,7 @@ const secs = Number(flags.secs ?? 12);
 const runs = Number(flags.runs ?? 1);
 const shots = flags.shots ? String(flags.shots) : null;
 const arena = flags.arena ? String(flags.arena) : null;
+const stat = !!flags.static;
 if (shots) mkdirSync(shots, { recursive: true });
 
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
@@ -60,6 +62,36 @@ try {
       await page.getByTestId('hud').waitFor({ timeout: 180_000 });
       await page.waitForFunction(() => document.querySelector('[data-testid="game-canvas"]')?.getAttribute('data-loading') === '0', undefined, { timeout: 180_000 });
       await page.waitForFunction(() => (window as unknown as { __kl3d?: { snapshot: () => { phase: string } } }).__kl3d?.snapshot().phase !== 'intro', undefined, { timeout: 180_000 });
+      if (stat) {
+        // cenário parado: mesma câmera da largada (e 8 s de corrida adiantados), laço de quadros desligado; mede o
+        // tempo de N renderizações seguidas com a resolução fixada — sem a variação da corrida e da resolução adaptativa
+        const ms = await page.evaluate(`(async () => {
+          const k = window.__kl3d, f = window.__kl3dFrames, out = [];
+          for (const ahead of [3.4, 8]) {
+            k.fastForward(ahead);
+            await new Promise((r) => setTimeout(r, 1500));
+            f.manual(true);
+            const s = k.snapshot(), c = f.camera();
+            const target = [s.x, c.pos[1] - 2.2, s.z];
+            const gl = document.querySelector('canvas').getContext('webgl2');
+            for (let i = 0; i < 3; i++) f.view(c.pos, target);
+            gl.finish();
+            const t0 = performance.now();
+            for (let i = 0; i < 12; i++) f.view(c.pos, target);
+            gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(4));
+            out.push((performance.now() - t0) / 12);
+            f.manual(false);
+          }
+          return out;
+        })()`) as number[];
+        const size = await page.evaluate('(() => { const c = document.querySelector("canvas"); return c.width + "x" + c.height; })()') as string;
+        const v = ms.reduce((a, b) => a + b, 0) / ms.length;
+        (results[track] ??= []).push(Math.round(v * 10) / 10);
+        console.log(`${track}: ${ms.map((x) => x.toFixed(1)).join(' / ')} ms por quadro (largada / +8 s), canvas ${size}  STATIC`);
+        if (shots && run === 0) await page.screenshot({ path: path.join(shots, `${track}-${quality}-static.png`) });
+        await ctx.close();
+        continue;
+      }
       await page.evaluate(() => { const k = (window as unknown as { __kl3d: { fastForward: (s: number) => void; setAutopilot: (on: boolean) => void } }).__kl3d; k.fastForward(3.4); k.setAutopilot(true); });
       await page.waitForTimeout(3000);
       // texto puro: o tsx injeta auxiliares (__name) em funções nomeadas que não existem na página

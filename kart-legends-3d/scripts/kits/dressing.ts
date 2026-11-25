@@ -82,9 +82,9 @@ const UNDERGROWTH = (count: number, models: string[], tint?: string): Rule[] => 
 
 export const TRACK_DRESSING: Partial<Record<TrackId, Rule[]>> = {
   'porto-lanternas': [
-    { kind: 'along', models: ['n_log_stack'], from: 'cais+5', to: 'cais+70', side: 'right', every: 30, dist: [2, 4], tier: 0, face: 'along' },
-    { kind: 'along', models: ['c_delivery', 'c_van', 'c_truck_flat'], from: 'cais+10', to: 'cais+60', side: 'right', every: 24, dist: [3, 6], tier: 0, face: 'along' },
-    { kind: 'along', models: ['c_delivery', 'c_van', 'c_truck_flat', 'c_sedan'], from: 'cais-10', to: 'cais+90', side: 'right', every: 14, dist: [3, 6], tier: 1, face: 'along' },
+    { kind: 'along', models: ['n_log_stack'], from: 'cais+5', to: 'cais+70', side: 'both', every: 30, dist: [2, 4], tier: 0, face: 'along' },
+    { kind: 'along', models: ['c_delivery', 'c_van', 'c_truck_flat'], from: 'cais+10', to: 'cais+60', side: 'both', every: 24, dist: [3, 6], tier: 0, face: 'along' },
+    { kind: 'along', models: ['c_delivery', 'c_van', 'c_truck_flat', 'c_sedan'], from: 'cais-10', to: 'cais+90', side: 'both', every: 14, dist: [3, 6], tier: 1, face: 'along' },
     { kind: 'along', models: ['c_sedan', 'c_hatch', 'c_van'], from: 'feira-30', to: 'arco-10', side: 'both', every: 24, dist: [3, 7], tier: 2, face: 'along' },
     ...FOREST(30, ['q_tree_1', 'q_tree_3', 'q_tree_5']),
     ...UNDERGROWTH(40, ['q_bush_flowers', 'q_flowers_3', 'q_bush']),
