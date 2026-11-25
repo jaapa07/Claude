@@ -23,7 +23,7 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | `props/` | 27 | 651 kB | scripts/build-tracks.ts (partes móveis de cenário e obstáculos) | Cenário animado e obstáculos dinâmicos |
 | `textures/` | 101 | 1415 kB | scripts (texturas procedurais e arte vetorial próprias) | Materiais dos modelos (também embutidas nos GLB) |
 | `tires/` | 8 | 183 kB | scripts/build-tires.ts (modelagem por script) | Rodas da loja, equipáveis em qualquer kart |
-| `tracks/` | 36 | 122411 kB | scripts/build-tracks.ts (traçado autorado + cenário) | Pistas e dados de corrida |
+| `tracks/` | 36 | 122412 kB | scripts/build-tracks.ts (traçado autorado + cenário) | Pistas e dados de corrida |
 | `ui/` | 65 | 1462 kB | scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo) | Interface (retratos, ícones, miniaturas) |
 | `vfx/` | 1 | 25 kB | scripts/build-vfx.ts (arte vetorial própria) | Sistema de partículas |
 
@@ -207,7 +207,7 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 
 | Arquivo | Tipo | Tamanho |
 |---|---|---:|
-| `tracks/bosque-cristal.dress.json` | data | 5 kB |
+| `tracks/bosque-cristal.dress.json` | data | 6 kB |
 | `tracks/bosque-cristal.glb` | model | 21758 kB |
 | `tracks/bosque-cristal.json` | data | 96 kB |
 | `tracks/canion-solar.dress.json` | data | 6 kB |
@@ -237,7 +237,7 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | `tracks/templo-esmeralda.glb` | model | 8518 kB |
 | `tracks/templo-esmeralda.json` | data | 105 kB |
 | `tracks/tracks-manifest.json` | data | 3 kB |
-| `tracks/vale-moinhos.dress.json` | data | 6 kB |
+| `tracks/vale-moinhos.dress.json` | data | 5 kB |
 | `tracks/vale-moinhos.glb` | model | 11187 kB |
 | `tracks/vale-moinhos.json` | data | 109 kB |
 | `tracks/vulcao-rubro.dress.json` | data | 2 kB |
