@@ -61,14 +61,14 @@
   },
   {
     "id": "pico-boreal",
-    "length": 1126,
-    "samples": 563,
-    "triangles": 447362,
-    "glbBytes": 16413944,
-    "jsonBytes": 102402,
-    "props": 466,
-    "animated": 4,
-    "colliders": 253,
+    "length": 1314,
+    "samples": 657,
+    "triangles": 468120,
+    "glbBytes": 17492336,
+    "jsonBytes": 112053,
+    "props": 498,
+    "animated": 2,
+    "colliders": 283,
     "warnings": []
   },
   {
