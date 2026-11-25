@@ -26,8 +26,13 @@ function weight(name: string): number {
   return 0.25;
 }
 
+let enabled = true;
+/** Liga/desliga a luz de recorte para os modelos montados daqui em diante (desligada na qualidade Baixa). */
+export function setRimEnabled(on: boolean): void { enabled = on; }
+
 /** Aplica a luz de recorte aos materiais da árvore (idempotente: cada material é alterado uma vez). */
 export function applyRimLight(root: THREE.Object3D): void {
+  if (!enabled) return;
   root.traverse((o) => {
     const m = o as THREE.Mesh;
     if (!m.isMesh) return;

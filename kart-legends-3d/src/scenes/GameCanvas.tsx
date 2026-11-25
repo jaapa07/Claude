@@ -7,6 +7,8 @@ import { useGameStore } from '@/app/gameStore';
 import { useSettingsStore } from '@/app/settingsStore';
 import { CHARACTER_BY_ID } from '@/data/characters';
 import { CHARACTER_IDS, KART_IDS, type CharacterId, type KartId, type TrackId } from '@/data/ids';
+import { PerformanceMonitor } from '@react-three/drei';
+import { setRimEnabled } from '@/game/vehicles/rimLight';
 import { AttractScene } from './AttractScene';
 import { PodiumScene, type PodiumEntry } from './PodiumScene';
 import { QUALITY } from './quality';
@@ -105,6 +107,12 @@ export function GameCanvas(): JSX.Element {
   // Tela dividida: a cena é desenhada duas vezes, então a qualidade fica limitada (ver `splitQuality`).
   const split = mode === 'race' && ((race ?? battle)?.racers.filter((r) => r.isPlayer).length ?? 0) >= 2;
   const quality = split ? splitQuality(QUALITY[qualityId]) : QUALITY[qualityId];
+  // Luz de recorte dos pilotos: desligada na Baixa (celulares), antes de os modelos serem montados.
+  setRimEnabled(qualityId !== 'low');
+  // Resolução adaptativa: se o FPS cai, a cena é desenhada com menos pixels (e volta a subir quando sobra folga).
+  const [dprScale, setDprScale] = useState(1);
+  const maxDpr = Math.min(typeof window === 'undefined' ? 1 : window.devicePixelRatio || 1, quality.dpr[1]);
+  const dpr = studio ? quality.dpr : Math.max(0.6, Math.min(maxDpr, Math.max(quality.dpr[0], maxDpr) * dprScale));
 
   return (
     <div className="game-canvas" data-testid="game-canvas" data-mode={mode} data-split={split ? '1' : '0'} data-loading={loading ? '1' : '0'} data-fps={fps}>
@@ -112,12 +120,19 @@ export function GameCanvas(): JSX.Element {
         key={qualityId}
         frameloop={manualFrames ? 'never' : 'always'}
         shadows={quality.shadows ? { type: THREE.PCFSoftShadowMap } : false}
-        dpr={quality.dpr}
+        dpr={dpr}
         camera={{ fov: 60, near: 0.3, far: 1600, position: [3, 2, 6] }}
         gl={{ antialias: quality.antialias, powerPreference: 'high-performance', alpha: !!studio && studio.kind !== 'track', preserveDrawingBuffer: !!studio }}
         onCreated={({ gl }) => { if (studio && studio.kind !== 'track') gl.setClearColor(0x000000, 0); }}
       >
         <FpsProbe />
+        {!studio && (
+          <PerformanceMonitor
+            bounds={() => [42, 58]} flipflops={6}
+            onDecline={() => setDprScale((v) => Math.max(0.55, +(v - 0.15).toFixed(2)))}
+            onIncline={() => setDprScale((v) => Math.min(1, +(v + 0.1).toFixed(2)))}
+          />
+        )}
         <FrameStepHook setManual={setManualFrames} />
         <Suspense fallback={<LoadingSignal />}>
           {mode === 'race' && race && <RaceScene key={raceNonce} config={race} />}
