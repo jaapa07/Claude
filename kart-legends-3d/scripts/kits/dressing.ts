@@ -114,7 +114,7 @@ export const TRACK_DRESSING: Partial<Record<TrackId, Rule[]>> = {
     { kind: 'scatter', models: ['n_stone_small_b', 'n_stone_small_f'], count: 30, dist: [3, 30], tier: 2, face: 'random', tint: '#d39058' },
   ],
   'cidade-neon': [
-    { kind: 'along', models: ['c_sedan', 'c_taxi', 'c_van', 'c_suv', 'c_hatch'], from: 'largada+40', to: 'largada+140', side: 'both', every: 60, dist: [2.6, 4], tier: 0, face: 'along' },
+    { kind: 'along', models: ['c_sedan', 'c_taxi', 'c_van', 'c_suv', 'c_hatch'], from: 'largada+40', to: 'largada+140', side: 'both', every: 60, dist: [2.6, 4], tier: 1, face: 'along' },
     { kind: 'along', models: ['c_sedan', 'c_taxi', 'c_van', 'c_suv', 'c_hatch', 'c_police', 'c_delivery'], from: 'largada+60', to: 'largada-60', side: 'both', every: 70, dist: [2.6, 4], tier: 1, face: 'along' },
     { kind: 'along', models: ['c_sedan', 'c_taxi', 'c_van', 'c_suv', 'c_hatch', 'c_police', 'c_delivery'], from: 'largada+90', to: 'largada-90', side: 'both', every: 34, dist: [2.6, 4], tier: 2, face: 'along' },
     { kind: 'along', models: ['k_light_post'], from: 'largada+20', to: 'largada-20', side: 'both', every: 36, dist: [0.9, 1.2], tier: 2, face: 'away' },
