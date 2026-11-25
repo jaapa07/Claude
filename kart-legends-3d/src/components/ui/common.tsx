@@ -159,3 +159,10 @@ export function LockBadge(): JSX.Element {
     </span>
   );
 }
+
+/** Etiqueta do jogador humano: "Você" (1 jogador) ou "Jogador 1/2" (tela dividida). */
+export function PlayerTag({ slot, two }: { slot?: number; two: boolean }): JSX.Element {
+  if (!two) return <span className="tag">Você</span>;
+  const s = (slot ?? 0) + 1;
+  return <span className={`tag tag--p${s}`} data-testid={`tag-p${s}`}>Jogador {s}</span>;
+}

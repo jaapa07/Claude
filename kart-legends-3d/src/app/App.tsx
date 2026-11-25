@@ -100,7 +100,9 @@ export function App(): JSX.Element {
     let wanted: 'menu' | 'victory' | 'defeat' = 'menu';
     if (screen === 'results') {
       const { lastResult: result, lastBattle } = useGameStore.getState();
-      const place = lastBattle ? lastBattle.playerPosition : result ? result.playerPosition : 99;
+      // tela dividida: a música de vitória vale pela melhor colocação dos dois
+      const best = (list: { position: number }[] | undefined, fallback: number): number => (list && list.length > 1 ? Math.min(...list.map((o) => o.position)) : fallback);
+      const place = lastBattle ? best(lastBattle.players, lastBattle.playerPosition) : result ? best(result.players, result.playerPosition) : 99;
       wanted = place <= 3 ? 'victory' : 'defeat';
       if ((useGameStore.getState().lastRewards?.unlocks.length ?? 0) > 0) uiSfx('unlock');
     }
