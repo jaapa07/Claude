@@ -435,7 +435,8 @@ input[type="range"]:focus-visible { outline: 0.16rem solid var(--amber); outline
 @keyframes intro-float { from { transform: translateY(0) rotate(-4deg); } to { transform: translateY(-0.15em) rotate(4deg); } }
 @keyframes intro-rise { from { opacity: 0; transform: translateY(2rem); } to { opacity: 1; transform: none; } }
 @keyframes intro-flag { from { transform: translateY(-50%) skewY(0deg); } to { transform: translateY(-50%) skewY(-10deg); } }
-@keyframes intro-ready { 0%, 100% { box-shadow: 0 0 0 0 rgba(255, 61, 154, 0.55); transform: scale(1); } 50% { box-shadow: 0 0 0 0.6rem rgba(255, 61, 154, 0); transform: scale(1.05); } }
+/* Só brilho (sem mudar o tamanho): o botão fica parado para o toque e para os testes automáticos. */
+@keyframes intro-ready { 0%, 100% { box-shadow: 0 0 0 0 rgba(255, 61, 154, 0.6); filter: brightness(1); } 50% { box-shadow: 0 0 1.4rem 0.35rem rgba(255, 61, 154, 0.55); filter: brightness(1.18); } }
 @media (pointer: coarse) and (max-height: 600px) {
   .intro__logo { font-size: clamp(2.4rem, 9vh, 3.6rem); }
   .intro .screen__body { gap: 0.9rem; }

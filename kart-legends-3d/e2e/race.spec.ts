@@ -40,11 +40,18 @@ test('corrida rápida completa: controles, drift, turbo, item, pausa, IA, result
   let drifted = drift.drifting;
   for (let attempt = 0; attempt < 4 && level < 1; attempt++) {
     if (attempt > 0) {
+      // Recomeça limpo: solta tudo, recupera o kart na pista (R), acelera em reta e tenta o drift de novo.
       await page.keyboard.up('Space');
+      await page.keyboard.up('KeyA');
+      await hook(page, 'fastForward(3.1)'); // espera do botão de recuperar
+      await page.keyboard.down('KeyR');
       await hook(page, 'fastForward(0.1)');
+      await page.keyboard.up('KeyR');
+      await hook(page, 'fastForward(2.6)');
+      await page.keyboard.down('KeyA');
       await page.keyboard.down('Space');
-      await page.waitForTimeout(200);
-      await hook(page, 'fastForward(0.15)');
+      await page.waitForTimeout(500);
+      await hook(page, 'fastForward(0.3)');
     }
     for (let i = 0; i < 12 && level < 1; i++) {
       const s = await snapshot(page);
