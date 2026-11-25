@@ -1,5 +1,5 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Bloom, EffectComposer, ToneMapping, Vignette } from '@react-three/postprocessing';
+import { Bloom, BrightnessContrast, EffectComposer, FXAA, HueSaturation, ToneMapping, Vignette } from '@react-three/postprocessing';
 import { ToneMappingMode } from 'postprocessing';
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
@@ -85,6 +85,7 @@ export function GameCanvas(): JSX.Element {
   const qualityId = useSettingsStore((s) => s.quality);
   const loading = useSceneStore((s) => s.loading);
   const fps = useSceneStore((s) => s.fps);
+  const look = useSceneStore((s) => s.look);
   const studio = useMemo(studioRequest, []);
   const [manualFrames, setManualFrames] = useState(false);
 
@@ -136,10 +137,15 @@ export function GameCanvas(): JSX.Element {
           )}
         </Suspense>
         {quality.post && (!studio || studio.kind === 'track') && (
+          // FXAA (na Média o MSAA do canvas não vale dentro do pós-processamento; a Alta soma MSAA 4× no buffer).
+          // Gradação leve por pista (saturação/contraste) depois do mapeamento de tons.
           <EffectComposer multisampling={qualityId === 'high' ? 4 : 0}>
-            <Bloom mipmapBlur intensity={0.55} luminanceThreshold={1.05} luminanceSmoothing={0.2} />
-            <Vignette offset={0.25} darkness={0.42} />
+            <Bloom mipmapBlur intensity={look.bloom} luminanceThreshold={1.05} luminanceSmoothing={0.2} />
             <ToneMapping mode={ToneMappingMode.ACES_FILMIC} />
+            <HueSaturation saturation={look.saturation} />
+            <BrightnessContrast contrast={look.contrast} />
+            <Vignette offset={0.28} darkness={0.38} />
+            <FXAA />
           </EffectComposer>
         )}
       </Canvas>

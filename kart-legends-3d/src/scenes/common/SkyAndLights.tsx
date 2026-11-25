@@ -5,6 +5,8 @@ import * as THREE from 'three';
 import type { Environment } from '@/game/tracks/environments';
 import { skyFragment, skyVertex } from '@/shaders/sky';
 import { IblSphere } from './ibl';
+import { setRimLight } from '@/game/vehicles/rimLight';
+import { DEFAULT_LOOK, useSceneStore } from '../sceneStore';
 
 export interface SkyHandle { flash: number }
 
@@ -50,6 +52,14 @@ export function SkyAndLights({ env, follow, shadows, shadowSize = 2048, handle, 
       if (cam.far !== prevFar) { cam.far = prevFar; cam.updateProjectionMatrix(); }
     };
   }, [scene, gl, camera, env, drawDistance]);
+
+  // brilho (bloom) e gradação de cor do pós-processamento acompanham o ambiente da pista
+  useEffect(() => {
+    useSceneStore.getState().setLook({ bloom: 0.4 + env.bloom * 0.35, saturation: env.grade.saturation, contrast: env.grade.contrast });
+    // luz de recorte dos pilotos: mistura do sol com o horizonte (pistas noturnas ganham borda colorida)
+    setRimLight(new THREE.Color(env.sunColor).lerp(new THREE.Color(env.skyHorizon), 0.5), 0.55);
+    return () => useSceneStore.getState().setLook(DEFAULT_LOOK);
+  }, [env]);
 
   useFrame((state, dt) => {
     material.uniforms.uTime!.value += dt;

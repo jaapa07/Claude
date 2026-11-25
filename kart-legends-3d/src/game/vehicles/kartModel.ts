@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 import type { GLTF } from 'three-stdlib';
 import { SkeletonUtils } from 'three-stdlib';
-import { CharacterAnimator, type DriverMood } from '@/game/characters/characterAnimator';
+import { CharacterAnimator, type DriverMood, type Expression } from '@/game/characters/characterAnimator';
 import { applyTires } from './tires';
+import { applyRimLight } from './rimLight';
 import { flameById, metalById, neonById, paintById, type ColorRecipe, type Finish, type KartLook, type OutfitDef } from '@/data/customization';
 
 /** Materiais recoloridos pela personalização. */
@@ -186,6 +187,7 @@ export class KartModel {
         m.material = mat;
       } else m.material = baseMat;
     });
+    if (finish) applyRimLight(root);
   }
 
   /** Roupa do piloto. */
@@ -312,9 +314,13 @@ export class KartModel {
       const m = o as THREE.Mesh;
       if (m.isMesh && m !== this.blob && !this.flames.includes(m)) { m.castShadow = true; m.frustumCulled = !(m as THREE.SkinnedMesh).isSkinnedMesh; }
     });
+    applyRimLight(this.group);
   }
 
   triggerHit(): void { this.animator?.trigger('hit'); }
+
+  /** Expressão momentânea do piloto (ultrapassagem, item...). */
+  emote(e: Expression, seconds: number): void { this.animator?.emote(e, seconds); }
 
   /** Velocidade/aceleração do kart medidas pela própria posição desenhada (filtradas, sem alocação). */
   private measureMotion(dt: number): void {

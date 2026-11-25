@@ -112,6 +112,8 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
     acc: 0, intro: 0, finishTimer: 0, reported: false, hudTick: 0, lightning: 4 + Math.random() * 6, started: false,
     normals: sim.karts.map(() => new THREE.Vector3(0, 1, 0)),
     spinStart: sim.karts.map(() => 0),
+    /** Última colocação vista de cada kart (o rosto comemora a ultrapassagem e fecha a cara quando perde posição). */
+    lastPos: sim.karts.map((k) => k.position),
     vis: sim.karts.map((): KartVisualState => ({
       speed: 0, steer: 0, drifting: false, driftDir: 0, driftLevel: 0, boost: 0, spin: 0, grounded: true, shield: false, invulnerable: false, hop: 0, mood: 'idle',
     })),
@@ -237,9 +239,9 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
         break;
       }
       case 'comet_end': if (k) vfx.sparkle(k.x, k.y + 0.4, k.z, st.color.set('#ff6fae'), 12); break;
-      case 'item_pickup': if (mine) { audio.sfx('item_pickup'); audio.sfx('item_roll', { volume: 0.8 }); } if (k) vfx.sparkle(k.x, k.y + 0.4, k.z, st.color.set('#ffe66b')); break;
+      case 'item_pickup': if (mine) { audio.sfx('item_pickup'); audio.sfx('item_roll', { volume: 0.8 }); } if (k) { vfx.sparkle(k.x, k.y + 0.4, k.z, st.color.set('#ffe66b')); models[k.index]!.emote('wow', 0.5); } break;
       case 'item_ready': break;
-      case 'item_use': sfx(ITEM_SFX[e.item]); vfx.sparkle(e.x, e.y + 0.3, e.z, st.color.set(ITEM_BY_ID[e.item].color), 18); break;
+      case 'item_use': sfx(ITEM_SFX[e.item]); vfx.sparkle(e.x, e.y + 0.3, e.z, st.color.set(ITEM_BY_ID[e.item].color), 18); if (k) models[k.index]!.emote('grit', 0.7); break;
       case 'lap': if (mine) audio.sfx(e.final ? 'final_lap' : 'lap'); break;
       case 'finish':
         if (mine) { audio.sfx('finish'); if (k) vfx.confetti(k.x, k.y, k.z, 140); }
@@ -331,6 +333,12 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
         v.spin = k.spinTime > 0 && spinTotal > 0 ? 1 - k.spinTime / spinTotal : 0;
         v.grounded = k.grounded; v.shield = k.shield > 0; v.invulnerable = k.invuln > 0 && k.spinTime <= 0; v.hop = k.hopTime / 0.22;
         v.mood = k.finished ? (k.position <= 3 ? 'victory' : 'defeat') : sim.phase === 'intro' || sim.phase === 'countdown' ? 'idle' : 'race';
+        // rosto: sorriso ao ultrapassar, cara fechada ao ser ultrapassado (só visual)
+        const lp = st.lastPos[i]!;
+        if (k.position !== lp) {
+          if (sim.phase === 'racing' && !k.finished) m.emote(k.position < lp ? 'happy' : 'grit', k.position < lp ? 1.3 : 0.8);
+          st.lastPos[i] = k.position;
+        }
         m.update(dt, v);
         if (d2 < 90 * 90) {
           const fx = st.fx[i]!;
@@ -421,7 +429,7 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
   return (
     <>
       <SkyAndLights env={env} follow={focus} shadows={quality.shadows} shadowSize={quality.shadowSize} handle={sky} drawDistance={quality.drawDistance} envResolution={quality.envResolution} />
-      <TrackModel trackId={config.trackId} shadows={quality.shadows} />
+      <TrackModel trackId={config.trackId} shadows={quality.shadows} detail={quality.surfaceDetail} />
       <RaceObjects view={view} />
       {data.animatedProps.length > 0 && <AnimatedProps list={data.animatedProps} view={view} />}
       {models.map((m, i) => <primitive key={i} object={m.group} />)}

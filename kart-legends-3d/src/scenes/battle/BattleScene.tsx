@@ -31,6 +31,7 @@ import { QUALITY } from '../quality';
 import { SplitRenderer, nearestCamDist2, splitQuality } from '../split';
 import { AnimatedProps, type RaceView } from '../race/RaceObjects';
 import { BattleObjects, type BattleView } from './BattleObjects';
+import { applySurfaceDetail } from '../common/surfaceDetail';
 
 const ITEM_SFX: Record<string, Parameters<typeof audio.sfx>[0]> = {
   'pulso-solar': 'item_pulso', 'bolha-guardia': 'item_bolha', 'nevoa-prisma': 'item_nevoa',
@@ -71,12 +72,13 @@ const lerpAngle = (a: number, b: number, t: number): number => {
 /** Última arena carregada: ao trocar, a anterior sai da memória (celular). */
 let loadedArena: ArenaId | null = null;
 
-function ArenaModel({ id, shadows }: { id: ArenaId; shadows: boolean }): JSX.Element {
+function ArenaModel({ id, shadows, detail }: { id: ArenaId; shadows: boolean; detail: boolean }): JSX.Element {
   const gltf = useModel(`arenas/${id}.glb`);
   useEffect(() => {
     if (loadedArena && loadedArena !== id) useGLTF.clear(assetUrl(`arenas/${loadedArena}.glb`));
     loadedArena = id;
   }, [id]);
+  useEffect(() => (detail ? applySurfaceDetail(gltf.scene).cancel : undefined), [gltf, detail]);
   const water = useMemo(() => {
     const list: THREE.Texture[] = [];
     gltf.scene.traverse((o) => {
@@ -418,7 +420,7 @@ function BattleWorld({ data, config }: { data: ArenaData; config: BattleConfig }
   return (
     <>
       <SkyAndLights env={env} follow={focus} shadows={quality.shadows} shadowSize={quality.shadowSize} handle={sky} drawDistance={quality.drawDistance} envResolution={quality.envResolution} />
-      <ArenaModel id={config.arenaId} shadows={quality.shadows} />
+      <ArenaModel id={config.arenaId} shadows={quality.shadows} detail={quality.surfaceDetail} />
       <BattleObjects view={view} models={models} />
       {data.animatedProps.length > 0 && <AnimatedProps list={data.animatedProps} view={view as unknown as React.MutableRefObject<RaceView>} />}
       {models.map((m, i) => <primitive key={i} object={m.group} />)}

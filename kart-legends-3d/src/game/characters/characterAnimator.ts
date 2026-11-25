@@ -117,6 +117,8 @@ export class CharacterAnimator {
   private expression: Expression = 'neutral';
   private blinkTimer = 4 + Math.random() * 3;
   private blinking = 0;
+  private emoteFace: Expression = 'neutral';
+  private emoteTime = 0;
   private finalPlayed: 'victory' | 'defeat' | null = null;
   private readonly head: THREE.Object3D | null;
   private readonly neck: THREE.Object3D | null;
@@ -222,6 +224,15 @@ export class CharacterAnimator {
     for (const s of this.secondary) { s.vx += (Math.random() - 0.3) * 6; s.vy += (Math.random() - 0.5) * 5; s.vz += (Math.random() - 0.5) * 6; }
   }
 
+  /**
+   * Expressão por um instante (ultrapassagem, item, susto), por cima da que o estado pede. Não vence a dor da
+   * batida nem as expressões finais (vitória, derrota, pódio).
+   */
+  emote(e: Expression, seconds: number): void {
+    this.emoteFace = e;
+    this.emoteTime = seconds;
+  }
+
   setExpression(e: Expression): void {
     if (!this.faceMap || this.expression === e) return;
     this.expression = e;
@@ -306,10 +317,23 @@ export class CharacterAnimator {
     else if (m.boosting) face = 'happy';
     else if (m.drifting) face = 'grit';
     else if (Math.abs(m.speed) > 12) face = 'focus';
-    // piscar
+    // reação pontual (ultrapassagem, item...) por cima da expressão do estado
+    if (this.emoteTime > 0) {
+      this.emoteTime -= dt;
+      if (this.oneShot !== 'hit' && (m.mood === 'race' || m.mood === 'idle')) face = this.emoteFace;
+    }
+    // piscar: às vezes uma piscada dupla (pausa curta e pisca de novo), como gente de verdade
     this.blinkTimer -= dt;
-    if (this.blinkTimer <= 0) { this.blinking = 0.12; this.blinkTimer = 2.5 + Math.random() * 3.5; }
-    if (this.blinking > 0 && (face === 'neutral' || face === 'focus')) { this.blinking -= dt; face = 'blink'; }
+    if (this.blinkTimer <= 0) {
+      this.blinking = 0.12;
+      const double = Math.random() < 0.22;
+      this.blinkTimer = double ? 0.28 : 2.2 + Math.random() * 3.8;
+    }
+    if (this.blinking > 0) {
+      this.blinking -= dt;
+      // de olhos bem abertos (susto/salto) ou sorrindo também pisca; dor e garra não
+      if (face === 'neutral' || face === 'focus' || face === 'happy' || face === 'wow') face = 'blink';
+    }
     this.setExpression(face);
     this.mixer.update(dt);
 

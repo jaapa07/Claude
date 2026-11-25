@@ -49,7 +49,13 @@ export function ShowcaseScene({ screen, characterId, kartId, studio }: { screen:
   const first = useRef(true);
   /** Tempo desde a troca de kart/piloto: o conjunto novo entra com um "pop" elástico. */
   const pop = useRef(9);
-  useEffect(() => { pop.current = first.current ? 9 : 0; }, [model]);
+  useEffect(() => {
+    pop.current = first.current ? 9 : 0;
+    // o piloto escolhido chega sorrindo
+    if (!studio) model.emote('happy', 1.8);
+  }, [model, studio]);
+  /** Caretas de vez em quando no palco (vida no rosto enquanto o jogador escolhe). */
+  const faceTimer = useRef(4);
   const accent = CHARACTER_BY_ID[characterId].color;
 
   useFrame((_, delta) => {
@@ -62,6 +68,11 @@ export function ShowcaseScene({ screen, characterId, kartId, studio }: { screen:
       const k = t > 1.4 ? 1 : 1 - 0.2 * Math.exp(-6 * t) * Math.cos(11 * t);
       model.group.scale.setScalar(k);
       model.group.position.y = t > 1.4 ? 0 : Math.max(0, 0.35 * Math.exp(-7 * t) * Math.cos(9 * t));
+    }
+    if (!studio && (faceTimer.current -= dt) <= 0) {
+      faceTimer.current = 4.5 + Math.random() * 4;
+      const faces = ['happy', 'wow', 'focus', 'grit'] as const;
+      model.emote(faces[Math.floor(Math.random() * faces.length)]!, 1.1 + Math.random() * 0.8);
     }
     model.update(dt, IDLE);
     const shot = studio === 'character' ? { pos: [0.75, 1.55, 2.55], target: [0, 1.12, 0.05], fov: 30 } as Shot

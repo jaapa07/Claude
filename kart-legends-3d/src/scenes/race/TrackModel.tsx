@@ -6,6 +6,7 @@ import { assetUrl } from '@/game/core/assets';
 import { useGLTF } from '@react-three/drei';
 import type { GLTF } from 'three-stdlib';
 import { useModel } from '../assets';
+import { applySurfaceDetail } from '../common/surfaceDetail';
 
 /** Última pista carregada: ao trocar de pista, a anterior sai da memória (importante no celular). */
 let loaded: { trackId: TrackId; gltf: GLTF } | null = null;
@@ -26,12 +27,14 @@ function releaseTrack(entry: { trackId: TrackId; gltf: GLTF }): void {
 }
 
 /** Malha da pista (GLB em setores): configura sombras e anima água, lava e cachoeiras por deslocamento de UV. */
-export function TrackModel({ trackId, shadows }: { trackId: TrackId; shadows: boolean }): JSX.Element {
+export function TrackModel({ trackId, shadows, detail = false }: { trackId: TrackId; shadows: boolean; detail?: boolean }): JSX.Element {
   const gltf = useModel(`tracks/${trackId}.glb`);
   useEffect(() => {
     if (loaded && loaded.trackId !== trackId) releaseTrack(loaded);
     loaded = { trackId, gltf };
   }, [trackId, gltf]);
+  // relevo dos pisos e rochas (Média/Alta)
+  useEffect(() => (detail ? applySurfaceDetail(gltf.scene).cancel : undefined), [gltf, detail]);
   const flowing = useMemo(() => {
     const maps: { map: THREE.Texture; speed: [number, number]; mat: THREE.MeshStandardMaterial; glow: number }[] = [];
     const seen = new Set<THREE.Material>();
