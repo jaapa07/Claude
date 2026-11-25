@@ -376,8 +376,8 @@
     {
       "id": "duna",
       "file": "karts/duna.glb",
-      "bytes": 201800,
-      "triangles": 16582,
+      "bytes": 200936,
+      "triangles": 16538,
       "wheelRadiusFront": 0.36,
       "wheelRadiusRear": 0.36,
       "wheelWidthFront": 0.34,
@@ -430,7 +430,7 @@
       ],
       "size": [
         1.48,
-        1.692,
+        1.772,
         2.396
       ],
       "minBodyY": 0.14

@@ -1714,7 +1714,7 @@
    "origin": "scripts/build-karts.ts (modelagem por script)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 201800,
+   "bytes": 200936,
    "status": "validado",
    "usedIn": "Veículos na corrida, vitrine e pódio"
   },
@@ -4184,7 +4184,7 @@
    "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 39146,
+   "bytes": 40124,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },

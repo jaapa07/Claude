@@ -51,7 +51,7 @@ export function buildDuna(plate: string): KartParts {
   b.addModel(steeringColumn(steeringCenter(seat), 0.34, STEEL));
 
   /* assento */
-  b.addModel(buildSeat({ seat, col: CANVAS, trim: BROWN, shellCol: DARK, backH: 0.54, mat: 'kart_canvas', width: 0.5, headrest: true }));
+  b.addModel(buildSeat({ seat, col: CANVAS, trim: BROWN, shellCol: DARK, backH: 0.5, lean: 19, mat: 'kart_canvas', width: 0.5 }));
 
   /* motor traseiro exposto */
   b.add(cbox(0.4, 0.22, 0.34, 0.03), 'kart_metal', STEEL, { p: [0, 0.34, -0.78] });
@@ -64,7 +64,7 @@ export function buildDuna(plate: string): KartParts {
   b.add(cbox(0.62, 0.035, 0.5, 0.01), 'kart_metal', BROWN_D, { p: [0, 0.2, -0.8] });
 
   /* gaiola tubular */
-  const top = 1.56;
+  const top = 1.64; // gaiola mais alta: folga para cabeças, orelhas e chapéus
   const hoop: V3[] = [[0.36, 0.56, 0.5], [0.35, 1.02, 0.34], [0.33, top - 0.05, 0.12], [0.33, top, -0.1], [0.33, top - 0.02, -0.46], [0.35, 1.1, -0.82], [0.37, 0.4, -1.04]];
   bar(b, hoop, 0.026, BROWN, 'kart_metal', true, 6, 3);
   for (const [y, z] of [[top - 0.03, 0.1], [top - 0.01, -0.44], [1.12, -0.81], [0.5, -1.02]] as [number, number][]) b.add(rod([-0.34, y, z], [0.34, y, z], 0.024, 0.024, 6), 'kart_metal', BROWN);

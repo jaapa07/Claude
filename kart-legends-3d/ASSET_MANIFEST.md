@@ -14,12 +14,12 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | `audio/` | 99 | 13868 kB | scripts/build-audio.ts (síntese procedural própria) | Música, efeitos e ambiência |
 | `characters/` | 15 | 5233 kB | scripts/build-characters.ts (modelagem, rig e animação por script) | Pilotos na corrida, vitrine e pódio |
 | `items/` | 15 | 655 kB | scripts/build-items.ts (modelagem por script) | Itens, placas de turbo, rampas, pórtico, troféus e pódio |
-| `karts/` | 9 | 1693 kB | scripts/build-karts.ts (modelagem por script) | Veículos na corrida, vitrine e pódio |
+| `karts/` | 9 | 1692 kB | scripts/build-karts.ts (modelagem por script) | Veículos na corrida, vitrine e pódio |
 | `props/` | 27 | 651 kB | scripts/build-tracks.ts (partes móveis de cenário e obstáculos) | Cenário animado e obstáculos dinâmicos |
 | `textures/` | 101 | 1415 kB | scripts (texturas procedurais e arte vetorial próprias) | Materiais dos modelos (também embutidas nos GLB) |
 | `tires/` | 8 | 183 kB | scripts/build-tires.ts (modelagem por script) | Rodas da loja, equipáveis em qualquer kart |
 | `tracks/` | 25 | 120684 kB | scripts/build-tracks.ts (traçado autorado + cenário) | Pistas e dados de corrida |
-| `ui/` | 61 | 1398 kB | scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo) | Interface (retratos, ícones, miniaturas) |
+| `ui/` | 61 | 1399 kB | scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo) | Interface (retratos, ícones, miniaturas) |
 | `vfx/` | 1 | 25 kB | scripts/build-vfx.ts (arte vetorial própria) | Sistema de partículas |
 
 ## characters/
@@ -68,7 +68,7 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 |---|---|---:|
 | `karts/broto.glb` | model | 209 kB |
 | `karts/cometa.glb` | model | 205 kB |
-| `karts/duna.glb` | model | 197 kB |
+| `karts/duna.glb` | model | 196 kB |
 | `karts/engrenagem.glb` | model | 213 kB |
 | `karts/faisca.glb` | model | 205 kB |
 | `karts/flecha.glb` | model | 229 kB |
@@ -177,7 +177,7 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | `ui/items/pulso-solar.webp` | image | 12 kB |
 | `ui/karts/broto.webp` | image | 30 kB |
 | `ui/karts/cometa.webp` | image | 29 kB |
-| `ui/karts/duna.webp` | image | 38 kB |
+| `ui/karts/duna.webp` | image | 39 kB |
 | `ui/karts/engrenagem.webp` | image | 34 kB |
 | `ui/karts/faisca.webp` | image | 30 kB |
 | `ui/karts/flecha.webp` | image | 30 kB |
