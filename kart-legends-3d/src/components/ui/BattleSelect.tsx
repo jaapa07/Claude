@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { nextScreen, prevScreen } from '@/app/flow';
+import { nextOf, prevOf } from '@/app/flow';
 import { useGameStore } from '@/app/gameStore';
 import { ARENAS, ARENA_BY_ID, BATTLE_GAMES, BATTLE_GAME_BY_ID, type ArenaId, type BattleGameId } from '@/data/battle';
 import { assetUrl } from '@/game/core/assets';
@@ -41,12 +41,12 @@ export function BattleGameSelect(): JSX.Element {
   const pick = useCardPick<BattleGameId>({
     selected: selection.battleGame,
     onSelect: (id) => setSelection({ battleGame: id }),
-    onConfirm: () => goTo(nextScreen('battleGame', 'battle') ?? 'arena'),
+    onConfirm: () => goTo(nextOf('battleGame', useGameStore.getState().selection) ?? 'arena'),
   });
   const focus = BATTLE_GAME_BY_ID[pick.focusId];
   return (
     <ScreenShell
-      id="battleGame" title="Minijogo" kicker="Batalha" onBack={() => goTo(prevScreen('battleGame', 'battle'))}
+      id="battleGame" title="Minijogo" kicker="Batalha" onBack={() => goTo(prevOf('battleGame', useGameStore.getState().selection))}
       footer={<Btn testId="btn-confirm" variant="primary" sound="none" onClick={pick.confirm}>Confirmar</Btn>}
     >
       <div className="card-list">
@@ -82,13 +82,13 @@ export function ArenaSelect(): JSX.Element {
   const pick = useCardPick<ArenaId>({
     selected: selection.arenaId,
     onSelect: (id) => setSelection({ arenaId: id }),
-    onConfirm: () => goTo(nextScreen('arena', 'battle') ?? 'difficulty'),
+    onConfirm: () => goTo(nextOf('arena', useGameStore.getState().selection) ?? 'difficulty'),
   });
   const focus = ARENA_BY_ID[pick.focusId];
   const game = BATTLE_GAME_BY_ID[selection.battleGame];
   return (
     <ScreenShell
-      id="arena" title="Escolha a arena" kicker={`Batalha · ${game.name}`} onBack={() => goTo(prevScreen('arena', 'battle'))}
+      id="arena" title="Escolha a arena" kicker={`Batalha · ${game.name}`} onBack={() => goTo(prevOf('arena', useGameStore.getState().selection))}
       footer={<Btn testId="btn-confirm" variant="primary" sound="none" onClick={pick.confirm}>Confirmar</Btn>}
     >
       <div className="card-grid card-grid--tracks card-grid--arenas">

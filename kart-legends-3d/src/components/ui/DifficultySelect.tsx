@@ -1,4 +1,4 @@
-import { DIFFICULTY_INFO, nextScreen, prevScreen } from '@/app/flow';
+import { DIFFICULTY_INFO, nextOf, prevOf } from '@/app/flow';
 import { useGameStore } from '@/app/gameStore';
 import type { Difficulty } from '@/data/ids';
 import { Btn, ScreenShell, useCardPick } from './common';
@@ -10,11 +10,11 @@ export function DifficultySelect(): JSX.Element {
   const pick = useCardPick<Difficulty>({
     selected: selection.difficulty,
     onSelect: (id) => setSelection({ difficulty: id }),
-    onConfirm: () => goTo(nextScreen('difficulty', selection.mode) ?? 'character'),
+    onConfirm: () => goTo(nextOf('difficulty', selection) ?? 'character'),
   });
   return (
     <ScreenShell
-      id="difficulty" title="Dificuldade" kicker="Adversários" onBack={() => goTo(prevScreen('difficulty', selection.mode))}
+      id="difficulty" title="Dificuldade" kicker="Adversários" onBack={() => goTo(prevOf('difficulty', selection))}
       footer={<Btn testId="btn-confirm" variant="primary" sound="none" onClick={pick.confirm}>Confirmar</Btn>}
     >
       <div className="card-list">

@@ -1,11 +1,18 @@
 import { isTouchDevice } from '@/app/settingsStore';
 import { useGameStore } from '@/app/gameStore';
+import { canChoosePlayers, nextOf } from '@/app/flow';
 import { useSaveStore } from '@/game/save/saveStore';
 import { Btn, ScreenShell } from './common';
 import { CoinBadge } from './ShopScreen';
 
 export function MainMenu(): JSX.Element {
   const goTo = useGameStore((s) => s.goTo);
+  const setSelection = useGameStore((s) => s.setSelection);
+  const play = (): void => {
+    // No celular não há tela dividida: sempre 1 jogador, direto para a escolha do modo.
+    if (!canChoosePlayers()) setSelection({ players: 1 });
+    goTo(nextOf('menu', useGameStore.getState().selection) ?? 'mode');
+  };
   const loadStatus = useSaveStore((s) => s.loadStatus);
   const stats = useSaveStore((s) => s.stats);
   return (
@@ -18,7 +25,7 @@ export function MainMenu(): JSX.Element {
         </h1>
       </div>
       <nav className="menu__buttons" aria-label="Menu principal">
-        <Btn testId="btn-play" variant="primary" className="btn--xl" autoFocusNav onClick={() => goTo('mode')}>Jogar</Btn>
+        <Btn testId="btn-play" variant="primary" className="btn--xl" autoFocusNav onClick={play}>Jogar</Btn>
         <Btn testId="btn-shop" className="btn--xl" onClick={() => goTo('shop')}>Loja</Btn>
         <Btn testId="btn-progress" className="btn--xl" onClick={() => goTo('progress')}>Progressão</Btn>
         <Btn testId="btn-settings" className="btn--xl" onClick={() => goTo('settings')}>Configurações</Btn>

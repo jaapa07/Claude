@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { MODE_INFO, nextScreen, prevScreen } from '@/app/flow';
+import { MODE_INFO, nextOf, prevOf } from '@/app/flow';
 import { useGameStore } from '@/app/gameStore';
 import type { TrackId } from '@/data/ids';
 import { CUP_BY_ID, CUP_UNLOCK, TRACKS, TRACK_BY_ID } from '@/data/tracks';
@@ -20,7 +20,7 @@ export function TrackSelect(): JSX.Element {
     selected: selection.trackId,
     isLocked,
     onSelect: (id) => setSelection({ trackId: id, cupId: TRACK_BY_ID[id].cup }),
-    onConfirm: () => goTo(nextScreen('track', selection.mode) ?? 'character'),
+    onConfirm: () => goTo(nextOf('track', selection) ?? 'character'),
   });
   const focus = TRACK_BY_ID[pick.focusId];
   const focusLocked = isLocked(focus.id);
@@ -29,7 +29,7 @@ export function TrackSelect(): JSX.Element {
   const modeName = MODE_INFO.find((m) => m.id === selection.mode)?.name ?? '';
   return (
     <ScreenShell
-      id="track" title="Escolha a pista" kicker={modeName} onBack={() => goTo(prevScreen('track', selection.mode))}
+      id="track" title="Escolha a pista" kicker={modeName} onBack={() => goTo(prevOf('track', selection))}
       footer={<Btn testId="btn-confirm" variant="primary" sound="none" disabled={isLocked(selection.trackId)} onClick={pick.confirm}>Confirmar</Btn>}
     >
       <div className="card-grid card-grid--tracks">

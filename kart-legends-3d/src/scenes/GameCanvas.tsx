@@ -117,7 +117,12 @@ export function GameCanvas(): JSX.Element {
           {mode === 'race' && race && <RaceScene key={raceNonce} config={race} />}
           {mode === 'race' && battle && <BattleScene key={raceNonce} config={battle} />}
           {mode === 'podium' && <PodiumScene entries={podium} trophy={trophy} />}
-          {mode === 'showcase' && <ShowcaseScene screen={screen} characterId={selection.characterId} kartId={selection.kartId} />}
+          {mode === 'showcase' && (
+            // vez do Jogador 2 (tela dividida): o palco mostra a escolha dele
+            screen === 'character2' || screen === 'kart2'
+              ? <ShowcaseScene screen={screen} characterId={selection.p2CharacterId} kartId={selection.p2KartId} />
+              : <ShowcaseScene screen={screen} characterId={selection.characterId} kartId={selection.kartId} />
+          )}
           {mode === 'studio' && studio?.kind === 'track' && <TrackPreviewScene trackId={studio.id as TrackId} />}
           {mode === 'studio' && studio && studio.kind !== 'track' && (
             <ShowcaseScene

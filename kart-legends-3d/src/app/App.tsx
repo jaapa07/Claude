@@ -9,6 +9,7 @@ import { DifficultySelect } from '@/components/ui/DifficultySelect';
 import { KartSelect } from '@/components/ui/KartSelect';
 import { LoadingScreen } from '@/components/ui/LoadingScreen';
 import { MainMenu } from '@/components/ui/MainMenu';
+import { PlayersSelect } from '@/components/ui/PlayersSelect';
 import { ModeSelect } from '@/components/ui/ModeSelect';
 import { PauseMenu } from '@/components/ui/PauseMenu';
 import { PodiumScreen } from '@/components/ui/PodiumScreen';
@@ -24,13 +25,13 @@ import { useUiStore } from '@/components/ui/uiStore';
 import { audio } from '@/game/audio/audioManager';
 import { inputManager } from '@/game/input/inputManager';
 import { GameCanvas } from '@/scenes/GameCanvas';
-import { prevScreen } from './flow';
+import { prevOf } from './flow';
 import { useGameStore } from './gameStore';
 import type { Screen } from './gameTypes';
 import { useSettingsStore } from './settingsStore';
 
 const ARROWS: Record<string, NavDirection> = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' };
-const FLOW_SCREENS: ReadonlySet<Screen> = new Set<Screen>(['mode', 'cup', 'track', 'difficulty', 'character', 'kart', 'battleGame', 'arena']);
+const FLOW_SCREENS: ReadonlySet<Screen> = new Set<Screen>(['players', 'mode', 'cup', 'track', 'difficulty', 'character', 'kart', 'character2', 'kart2', 'battleGame', 'arena']);
 
 /** Chamadas de áudio feitas a partir de efeitos: um erro aqui não pode derrubar a interface. */
 function safeAudio(label: string, fn: () => void): void {
@@ -56,7 +57,7 @@ function handleBack(): void {
   }
   if (FLOW_SCREENS.has(screen)) {
     uiSfx('ui_back');
-    game.goTo(prevScreen(screen, game.selection.mode));
+    game.goTo(prevOf(screen, game.selection));
   } else if (screen === 'settings' || screen === 'progress' || screen === 'shop') {
     uiSfx('ui_back');
     game.goTo(game.previousScreen === screen ? 'menu' : game.previousScreen);
@@ -201,6 +202,7 @@ export function App(): JSX.Element {
       <div className="ui-layer" data-screen={screen} data-quality={quality} data-paused={paused}>
         {screen === 'loading' && <LoadingScreen />}
         {screen === 'menu' && <MainMenu />}
+        {screen === 'players' && <PlayersSelect />}
         {screen === 'mode' && <ModeSelect />}
         {screen === 'cup' && <CupSelect />}
         {screen === 'track' && <TrackSelect />}
@@ -209,6 +211,8 @@ export function App(): JSX.Element {
         {screen === 'difficulty' && <DifficultySelect />}
         {screen === 'character' && <CharacterSelect />}
         {screen === 'kart' && <KartSelect />}
+        {screen === 'character2' && <CharacterSelect slot={1} />}
+        {screen === 'kart2' && <KartSelect slot={1} />}
         {screen === 'race' && (
           <>
             <Hud />

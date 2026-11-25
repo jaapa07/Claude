@@ -1,5 +1,5 @@
-import { useState, type CSSProperties } from 'react';
-import { nextScreen, prevScreen } from '@/app/flow';
+import { useEffect, useState, type CSSProperties } from 'react';
+import { humanCount, nextOf, prevOf } from '@/app/flow';
 import { useGameStore } from '@/app/gameStore';
 import { CHARACTERS, CHARACTER_BY_ID } from '@/data/characters';
 import type { CharacterId } from '@/data/ids';
@@ -30,32 +30,58 @@ function lockText(id: CharacterId): string {
   return c.unlock.type === 'shop' ? `Exclusivo da Loja: ${coins}` : describeUnlock(c.unlock);
 }
 
-export function CharacterSelect(): JSX.Element {
+/** Rótulo de quem está escolhendo (só com dois jogadores). */
+export function playerLabel(slot: number): string {
+  return `Jogador ${slot + 1}`;
+}
+
+/**
+ * Escolha do piloto. `slot` 1 = a vez do Jogador 2 (tela dividida): o piloto do Jogador 1 fica indisponível.
+ */
+export function CharacterSelect({ slot = 0 }: { slot?: 0 | 1 }): JSX.Element {
   const selection = useGameStore((s) => s.selection);
   const setSelection = useGameStore((s) => s.setSelection);
   const goTo = useGameStore((s) => s.goTo);
   const unlocked = useSaveStore((s) => s.unlocked);
-  const isLocked = (id: CharacterId): boolean => !unlocked.characters.includes(id);
+  const two = humanCount(selection) === 2;
+  const screen = slot === 1 ? 'character2' : 'character';
+  const selected = slot === 1 ? selection.p2CharacterId : selection.characterId;
+  const takenBy1 = (id: CharacterId): boolean => slot === 1 && id === selection.characterId;
+  const isLocked = (id: CharacterId): boolean => !unlocked.characters.includes(id) || takenBy1(id);
+  // Vez do Jogador 2: começa num piloto liberado e diferente do Jogador 1.
+  useEffect(() => {
+    if (slot !== 1) return;
+    const s = useGameStore.getState().selection;
+    const ok = (id: CharacterId): boolean => unlocked.characters.includes(id) && id !== s.characterId;
+    if (ok(s.p2CharacterId)) return;
+    const id = CHARACTERS.find((c) => ok(c.id))?.id;
+    if (id) setSelection({ p2CharacterId: id, ...(unlocked.karts.includes(CHARACTER_BY_ID[id].kartId) ? { p2KartId: CHARACTER_BY_ID[id].kartId } : {}) });
+  }, [slot, unlocked, setSelection]);
   const pick = useCardPick<CharacterId>({
-    selected: selection.characterId,
+    selected,
     isLocked,
     onSelect: (id) => {
       // Sugere o kart preferido do personagem, se já estiver liberado.
       const kartId = CHARACTER_BY_ID[id].kartId;
-      setSelection(unlocked.karts.includes(kartId) ? { characterId: id, kartId } : { characterId: id });
+      const kartOk = unlocked.karts.includes(kartId);
+      if (slot === 1) setSelection(kartOk ? { p2CharacterId: id, p2KartId: kartId } : { p2CharacterId: id });
+      else setSelection(kartOk ? { characterId: id, kartId } : { characterId: id });
     },
-    onConfirm: () => goTo(nextScreen('character', selection.mode) ?? 'kart'),
+    onConfirm: () => goTo(nextOf(screen, useGameStore.getState().selection) ?? 'kart'),
   });
   const focus = CHARACTER_BY_ID[pick.focusId];
   // Duas páginas: os pilotos originais e os ninjas da loja (+ vagas "Em breve" para a próxima atualização).
-  const [page, setPage] = useState<PageId>(() => pageOf(selection.characterId));
-  const focusLocked = isLocked(focus.id);
+  const [page, setPage] = useState<PageId>(() => pageOf(selected));
+  const focusLocked = !unlocked.characters.includes(focus.id);
   return (
     <ScreenShell
-      id="character" title="Escolha o piloto" kicker={`${unlocked.characters.length} de ${CHARACTERS.length} liberados`}
-      onBack={() => goTo(prevScreen('character', selection.mode))}
-      footer={<Btn testId="btn-confirm" variant="primary" sound="none" disabled={isLocked(selection.characterId)} onClick={pick.confirm}>Confirmar</Btn>}
+      id={screen} title={two ? `${playerLabel(slot)} · escolha o piloto` : 'Escolha o piloto'}
+      kicker={two ? `Tela dividida · ${slot === 0 ? 'metade de cima' : 'metade de baixo'}` : `${unlocked.characters.length} de ${CHARACTERS.length} liberados`}
+      className={two ? `screen--player screen--p${slot + 1}` : undefined}
+      onBack={() => goTo(prevOf(screen, useGameStore.getState().selection))}
+      footer={<Btn testId="btn-confirm" variant="primary" sound="none" disabled={isLocked(selected)} onClick={pick.confirm}>Confirmar</Btn>}
     >
+      {two && <p className="player-turn" data-testid="player-turn" data-slot={slot}>{playerLabel(slot)}</p>}
       <div className="tabs roster-pages" role="tablist">
         {PAGES.map((pg) => (
           <button
@@ -77,6 +103,7 @@ export function CharacterSelect(): JSX.Element {
               <AssetImg className="card__image" src={assetUrl(`ui/portraits/${c.id}.webp`)} alt="" label={c.name} color={c.color} />
               <span className="card__caption"><span className="card__title">{c.name}</span></span>
               {locked && <LockBadge />}
+              {takenBy1(c.id) && <span className="card__taken" data-testid="card-taken">Jogador 1</span>}
             </button>
           );
         })}
@@ -93,7 +120,9 @@ export function CharacterSelect(): JSX.Element {
         <p className="detail__text">{focus.bio}</p>
         {focusLocked
           ? <p className="detail__lock" data-testid="lock-condition"><LockBadge /> {lockText(focus.id)}</p>
-          : <p className="detail__meta">Kart preferido: {KART_BY_ID[focus.kartId].name}</p>}
+          : takenBy1(focus.id)
+            ? <p className="detail__lock" data-testid="taken-by-p1">Já escolhido pelo Jogador 1.</p>
+            : <p className="detail__meta">Kart preferido: {KART_BY_ID[focus.kartId].name}</p>}
         {!focusLocked && <OutfitPicker characterId={focus.id} />}
       </div>
     </ScreenShell>
