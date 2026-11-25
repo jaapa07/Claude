@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Abduction</title>
+<style>
+  :root { --bg:#05060d; --fg:#e8ecff; --muted:#8a93b8; --accent:#9dffcf; }
+  html,body { margin:0; height:100%; background:var(--bg); color:var(--fg); overflow:hidden;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+  canvas { display:block; }
+  #hud { position:fixed; left:16px; bottom:16px; right:16px; display:flex; gap:12px;
+    align-items:flex-end; justify-content:space-between; pointer-events:none; }
+  #title { letter-spacing:.2em; text-transform:uppercase; font-size:12px; color:var(--muted); }
+  #title b { display:block; color:var(--fg); font-size:20px; letter-spacing:.12em; margin-bottom:4px; }
+  .btns { display:flex; gap:8px; pointer-events:auto; }
+  button { background:rgba(255,255,255,.06); color:var(--fg); border:1px solid rgba(255,255,255,.15);
+    border-radius:999px; padding:8px 14px; font:inherit; font-size:13px; cursor:pointer; backdrop-filter: blur(6px); }
+  button:hover { border-color:var(--accent); color:var(--accent); }
+</style>
+</head>
+<body>
+<div id="hud">
+  <div id="title"><b>The Abduction</b>three.js · arraste para girar</div>
+  <div class="btns">
+    <button id="sound">🔊 Som</button>
+    <button id="replay">↻ Repetir</button>
+  </div>
+</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+// ---------- renderer / scene ----------
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.1;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x05060d);
+scene.fog = new THREE.FogExp2(0x0a0d1f, 0.028);
+
+const camera = new THREE.PerspectiveCamera(42, innerWidth / innerHeight, 0.1, 400);
+camera.position.set(19, 5, 23);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0, 6, 0);
+controls.enableDamping = true;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.35;
+controls.maxPolarAngle = Math.PI * 0.49;
+controls.minDistance = 8; controls.maxDistance = 45;
+
+// ---------- lights ----------
+scene.add(new THREE.HemisphereLight(0x4a5a9a, 0x0b0a10, 0.35));
+const moon = new THREE.DirectionalLight(0x8fa6ff, 0.6);
+moon.position.set(-30, 40, -20);
+moon.castShadow = true;
+moon.shadow.mapSize.set(2048, 2048);
+Object.assign(moon.shadow.camera, { left:-30, right:30, top:30, bottom:-30 });
+scene.add(moon);
+
+const beamLight = new THREE.SpotLight(0x9dffcf, 300, 30, 0.42, 0.6, 1.4);
+beamLight.position.set(0, 11, 0);
+beamLight.castShadow = true;
+beamLight.shadow.mapSize.set(1024, 1024);
+scene.add(beamLight, beamLight.target);
+
+// ---------- sky: stars + moon ----------
+{
+  const n = 2500, pos = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) {
+    const r = 180, th = Math.random() * Math.PI * 2, ph = Math.acos(Math.random() * 0.95);
+    pos.set([r * Math.sin(ph) * Math.cos(th), r * Math.cos(ph), r * Math.sin(ph) * Math.sin(th)], i * 3);
+  }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  scene.add(new THREE.Points(g, new THREE.PointsMaterial({ color: 0xffffff, size: 0.6, sizeAttenuation: true, fog: false })));
+  const m = new THREE.Mesh(new THREE.SphereGeometry(5, 32, 32), new THREE.MeshBasicMaterial({ color: 0xdfe6ff, fog: false }));
+  m.position.set(-70, 60, -110); scene.add(m);
+}
+
+// ---------- ground: rolling field ----------
+const ground = new THREE.Mesh(
+  new THREE.PlaneGeometry(200, 200, 160, 160),
+  new THREE.MeshStandardMaterial({ color: 0x1c2a1c, roughness: 1 })
+);
+ground.rotation.x = -Math.PI / 2;
+{
+  const p = ground.geometry.attributes.position;
+  for (let i = 0; i < p.count; i++) {
+    const x = p.getX(i), y = p.getY(i), d = Math.hypot(x, y);
+    const h = Math.sin(x * 0.08) * Math.cos(y * 0.07) * 1.4 + Math.sin(x * 0.21 + y * 0.13) * 0.3;
+    p.setZ(i, h * THREE.MathUtils.smoothstep(d, 8, 30));
+  }
+  ground.geometry.computeVertexNormals();
+}
+ground.receiveShadow = true;
+scene.add(ground);
+
+// instanced grass tufts
+{
+  const blade = new THREE.ConeGeometry(0.05, 0.6, 3); blade.translate(0, 0.3, 0);
+  const count = 9000;
+  const grass = new THREE.InstancedMesh(blade, new THREE.MeshStandardMaterial({ color: 0x2f4a2a, roughness: 1 }), count);
+  const m = new THREE.Matrix4(), q = new THREE.Quaternion(), s = new THREE.Vector3(), v = new THREE.Vector3();
+  for (let i = 0; i < count; i++) {
+    const r = Math.sqrt(Math.random()) * 28, a = Math.random() * Math.PI * 2;
+    v.set(Math.cos(a) * r, 0, Math.sin(a) * r);
+    v.y = Math.sin(v.x * 0.08) * Math.cos(-v.z * 0.07) * 1.4 * THREE.MathUtils.smoothstep(r, 8, 30);
+    q.setFromEuler(new THREE.Euler((Math.random() - .5) * .5, Math.random() * 6, (Math.random() - .5) * .5));
+    const k = 0.6 + Math.random() * 0.9; s.set(k, k, k);
+    grass.setMatrixAt(i, m.compose(v, q, s));
+  }
+  grass.receiveShadow = true;
+  scene.add(grass);
+}
+
+// ---------- barn + fence (scenery) ----------
+{
+  const barn = new THREE.Group();
+  const wall = new THREE.MeshStandardMaterial({ color: 0x5a1e1a, roughness: .9 });
+  const roof = new THREE.MeshStandardMaterial({ color: 0x1d1d22, roughness: .8 });
+  const body = new THREE.Mesh(new THREE.BoxGeometry(6, 4, 8), wall); body.position.y = 2;
+  const r = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 3.6, 2.4, 4, 1), roof);
+  r.rotation.y = Math.PI / 4; r.scale.z = 2.2 / 1.0; r.position.y = 5.2;
+  const roofShape = new THREE.Mesh(new THREE.ConeGeometry(4.5, 2.6, 4), roof);
+  roofShape.rotation.y = Math.PI / 4; roofShape.scale.set(1, 1, 1.5); roofShape.position.y = 5.3;
+  const win = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ color: 0xffb35c }));
+  win.position.set(0, 2.6, 4.01);
+  barn.add(body, roofShape, win);
+  barn.traverse(o => { if (o.isMesh) { o.castShadow = o.receiveShadow = true; } });
+  barn.position.set(-13, 0, -9); barn.rotation.y = 0.6;
+  scene.add(barn);
+  const glow = new THREE.PointLight(0xffa050, 6, 10); glow.position.set(-11, 2.6, -6); scene.add(glow);
+
+  const wood = new THREE.MeshStandardMaterial({ color: 0x3b2a1e, roughness: 1 });
+  for (let i = -8; i <= 8; i++) {
+    const post = new THREE.Mesh(new THREE.BoxGeometry(.15, 1.2, .15), wood);
+    post.position.set(i * 1.6, .6, 9); post.castShadow = true; scene.add(post);
+  }
+  const rail = new THREE.Mesh(new THREE.BoxGeometry(26, .1, .08), wood);
+  rail.position.set(0, .9, 9); rail.castShadow = true; scene.add(rail);
+  const rail2 = rail.clone(); rail2.position.y = .5; scene.add(rail2);
+}
+
+// ---------- cow (built from primitives) ----------
+function makeCow() {
+  const cow = new THREE.Group();
+  const white = new THREE.MeshStandardMaterial({ color: 0xeeeeea, roughness: .8 });
+  const black = new THREE.MeshStandardMaterial({ color: 0x18181a, roughness: .8 });
+  const pink = new THREE.MeshStandardMaterial({ color: 0xe8a3a8, roughness: .7 });
+  const add = (geo, mat, x, y, z, parent = cow) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = true; parent.add(m); return m; };
+  const body = add(new THREE.CapsuleGeometry(.55, 1.2, 6, 12), white, 0, 1.15, 0); body.rotation.z = Math.PI / 2;
+  // spots
+  [[.3, .4, .35], [-.4, .3, -.4], [.1, .55, -.2], [-.2, .2, .5]].forEach(([x, y, z]) =>
+    add(new THREE.SphereGeometry(.28, 12, 12), black, x, 1.15 + y * .6, z * .9).scale.set(1, .5, 1));
+  const head = new THREE.Group(); head.position.set(1.05, 1.5, 0); cow.add(head);
+  add(new THREE.BoxGeometry(.6, .5, .5), white, .1, 0, 0, head);
+  add(new THREE.BoxGeometry(.25, .35, .52), pink, .45, -.1, 0, head);
+  add(new THREE.ConeGeometry(.06, .25, 6), white, 0, .35, .18, head);
+  add(new THREE.ConeGeometry(.06, .25, 6), white, 0, .35, -.18, head);
+  add(new THREE.BoxGeometry(.1, .08, .3), black, -.05, .15, .3, head).rotation.y = .3;
+  add(new THREE.BoxGeometry(.1, .08, .3), black, -.05, .15, -.3, head).rotation.y = -.3;
+  const legs = [];
+  for (const [x, z] of [[.6, .3], [.6, -.3], [-.6, .3], [-.6, -.3]]) {
+    const leg = new THREE.Group(); leg.position.set(x, .9, z); cow.add(leg);
+    add(new THREE.CylinderGeometry(.1, .09, .85, 8), white, 0, -.42, 0, leg);
+    add(new THREE.CylinderGeometry(.1, .1, .1, 8), black, 0, -.85, 0, leg);
+    legs.push(leg);
+  }
+  const tail = add(new THREE.CylinderGeometry(.03, .03, .7, 6), white, -1.1, 1.2, 0); tail.rotation.z = -.4;
+  cow.userData = { legs, head, tail };
+  return cow;
+}
+const cow = makeCow();
+scene.add(cow);
+
+// ---------- UFO ----------
+const ufo = new THREE.Group();
+{
+  const hull = new THREE.MeshStandardMaterial({ color: 0x9aa3b5, metalness: .95, roughness: .25 });
+  const dark = new THREE.MeshStandardMaterial({ color: 0x2a2f3a, metalness: .9, roughness: .4 });
+  const disc = new THREE.Mesh(new THREE.SphereGeometry(4, 64, 24), hull); disc.scale.set(1, .22, 1);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(4, .18, 16, 96), dark); ring.rotation.x = Math.PI / 2;
+  const belly = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 2.2, .5, 48), dark); belly.position.y = -.75;
+  const dome = new THREE.Mesh(new THREE.SphereGeometry(1.7, 48, 24, 0, Math.PI * 2, 0, Math.PI / 2),
+    new THREE.MeshPhysicalMaterial({ color: 0x9dffcf, transmission: .6, roughness: .05, thickness: .5,
+      emissive: 0x2a8f6a, emissiveIntensity: .6, transparent: true, opacity: .85 }));
+  dome.position.y = .55;
+  const core = new THREE.Mesh(new THREE.CircleGeometry(1.5, 48), new THREE.MeshBasicMaterial({ color: 0xc8ffe6 }));
+  core.rotation.x = Math.PI / 2; core.position.y = -1.01;
+  ufo.add(disc, ring, belly, dome, core);
+  ufo.traverse(o => { if (o.isMesh) o.castShadow = true; });
+  // running lights
+  const lights = new THREE.Group();
+  for (let i = 0; i < 18; i++) {
+    const a = i / 18 * Math.PI * 2;
+    const b = new THREE.Mesh(new THREE.SphereGeometry(.13, 12, 12), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+    b.position.set(Math.cos(a) * 3.5, -.3, Math.sin(a) * 3.5);
+    lights.add(b);
+  }
+  ufo.add(lights);
+  ufo.userData = { lights, core };
+}
+scene.add(ufo);
+
+// ---------- tractor beam (shader cone) ----------
+const beamH = 11;
+const beamGeo = new THREE.CylinderGeometry(1.5, 4.2, beamH, 64, 32, true); beamGeo.translate(0, -beamH / 2, 0);
+const beamMat = new THREE.ShaderMaterial({
+  transparent: true, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending,
+  uniforms: { uTime: { value: 0 }, uPower: { value: 0 }, uColor: { value: new THREE.Color(0x9dffcf) } },
+  vertexShader: `
+    varying vec2 vUv; varying vec3 vN; varying vec3 vView;
+    void main(){ vUv=uv; vec4 mv=modelViewMatrix*vec4(position,1.); vN=normalize(normalMatrix*normal); vView=normalize(-mv.xyz); gl_Position=projectionMatrix*mv; }`,
+  fragmentShader: `
+    uniform float uTime, uPower; uniform vec3 uColor; varying vec2 vUv; varying vec3 vN; varying vec3 vView;
+    void main(){
+      float rim = pow(1.0-abs(dot(vN,vView)), 1.6);
+      float bands = 0.55+0.45*sin(vUv.y*40.0 + uTime*6.0);
+      float streak = 0.6+0.4*sin(vUv.x*60.0 + uTime*1.5)*sin(vUv.x*23.0 - uTime);
+      float fade = smoothstep(0.0,0.15,vUv.y) * (0.35+0.65*vUv.y);
+      float a = (0.15 + rim*0.7) * bands * streak * fade * uPower;
+      gl_FragColor = vec4(uColor*a*1.4, a);
+    }`
+});
+const beam = new THREE.Mesh(beamGeo, beamMat);
+scene.add(beam);
+
+// ground ring where beam hits
+const hitMat = new THREE.ShaderMaterial({
+  transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+  uniforms: { uTime: { value: 0 }, uPower: { value: 0 } },
+  vertexShader: `varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+  fragmentShader: `uniform float uTime,uPower; varying vec2 vUv;
+    void main(){ float d=length(vUv-.5)*2.; float ring=smoothstep(.06,0.,abs(fract(d*3.-uTime*.8)-.5)-.4);
+      float a=(smoothstep(1.,.0,d)*.6 + ring*.5*smoothstep(1.,.6,d))*uPower; gl_FragColor=vec4(vec3(.6,1.,.8)*a,a); }`
+});
+const hit = new THREE.Mesh(new THREE.PlaneGeometry(10, 10), hitMat);
+hit.rotation.x = -Math.PI / 2; hit.position.y = .05; scene.add(hit);
+
+// rising particles
+const PN = 600;
+const pPos = new Float32Array(PN * 3), pSeed = new Float32Array(PN);
+for (let i = 0; i < PN; i++) pSeed[i] = Math.random();
+const pGeo = new THREE.BufferGeometry();
+pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+const particles = new THREE.Points(pGeo, new THREE.PointsMaterial({
+  color: 0xc8ffe6, size: .09, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending }));
+scene.add(particles);
+
+// ---------- post ----------
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.7, 0.5, 0.2);
+composer.addPass(bloom);
+composer.addPass(new OutputPass());
+
+// ---------- sound (WebAudio hum, off until clicked) ----------
+let audio = null;
+function startAudio() {
+  const ctx = new AudioContext();
+  const master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
+  const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 600; lp.connect(master);
+  const oscs = [55, 55.7, 110.3, 165].map((f, i) => {
+    const o = ctx.createOscillator(); o.type = i < 2 ? 'sawtooth' : 'sine'; o.frequency.value = f;
+    const g = ctx.createGain(); g.gain.value = i < 2 ? .12 : .08; o.connect(g); g.connect(lp); o.start(); return o;
+  });
+  const lfo = ctx.createOscillator(); lfo.frequency.value = .3;
+  const lfoG = ctx.createGain(); lfoG.gain.value = 250; lfo.connect(lfoG); lfoG.connect(lp.frequency); lfo.start();
+  // shimmer
+  const sh = ctx.createOscillator(); sh.type = 'sine'; sh.frequency.value = 880;
+  const shG = ctx.createGain(); shG.gain.value = 0; sh.connect(shG); shG.connect(master); sh.start();
+  audio = { ctx, master, lp, shG, sh, oscs };
+}
+document.getElementById('sound').onclick = (e) => {
+  if (!audio) { startAudio(); e.target.textContent = '🔇 Mudo'; return; }
+  if (audio.ctx.state === 'running') { audio.ctx.suspend(); e.target.textContent = '🔊 Som'; }
+  else { audio.ctx.resume(); e.target.textContent = '🔇 Mudo'; }
+};
+
+// ---------- timeline ----------
+// 0-4s: UFO arrives  | 4-6: beam powers up | 6-16: cow rises | 16-19: cow absorbed | 19-23: UFO leaves | loop
+const LOOP = 25;
+let t0 = performance.now() - (parseFloat(new URLSearchParams(location.search).get('t')) || 0) * 1000;
+document.getElementById('replay').onclick = () => { t0 = performance.now(); };
+const ease = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const seg = (t, a, b) => THREE.MathUtils.clamp((t - a) / (b - a), 0, 1);
+const clock = new THREE.Clock();
+
+function animate() {
+  const time = clock.getElapsedTime();
+  const freeze = parseFloat(new URLSearchParams(location.search).get('freeze'));
+  const t = isNaN(freeze) ? ((performance.now() - t0) / 1000) % LOOP : freeze;
+
+  // UFO path
+  const arrive = ease(seg(t, 0, 4)), leave = ease(seg(t, 19, 23));
+  const hover = Math.sin(time * 1.3) * .25;
+  ufo.position.set(
+    THREE.MathUtils.lerp(-60, 0, arrive) + leave * 70,
+    THREE.MathUtils.lerp(30, 12, arrive) + hover + leave * 35,
+    THREE.MathUtils.lerp(-50, 0, arrive) - leave * 40);
+  ufo.rotation.y = time * .6;
+  ufo.rotation.z = (1 - arrive) * .3 + leave * -.35 + Math.sin(time * .9) * .03;
+  ufo.userData.lights.children.forEach((b, i) => {
+    const on = (Math.sin(time * 6 - i * .7) + 1) * .5;
+    b.material.color.setHSL(.42 + .1 * on, 1, .45 + .5 * on);
+  });
+
+  // beam power
+  const power = seg(t, 4, 6) * (1 - seg(t, 17.5, 19)) + (Math.random() - .5) * .04 * seg(t, 4, 6) * (1 - seg(t, 17.5, 19));
+  const pw = Math.max(0, power);
+  beamMat.uniforms.uTime.value = time; beamMat.uniforms.uPower.value = pw;
+  hitMat.uniforms.uTime.value = time; hitMat.uniforms.uPower.value = pw;
+  beam.position.copy(ufo.position).add(new THREE.Vector3(0, -1, 0));
+  beam.scale.set(1, (ufo.position.y - 1) / beamH, 1);
+  beam.visible = pw > .001;
+  beamLight.position.copy(ufo.position); beamLight.position.y -= 1;
+  beamLight.target.position.set(ufo.position.x, 0, ufo.position.z);
+  beamLight.intensity = 140 * pw;
+  ufo.userData.core.material.color.setHSL(.42, 1, .5 + .3 * pw);
+
+  // cow
+  const rise = ease(seg(t, 6, 16));
+  const absorb = seg(t, 16, 18);
+  const wob = seg(t, 5, 7);
+  cow.position.set(Math.sin(time * 1.7) * .15 * rise, rise * 9.2 + Math.sin(time * 2.1) * .2 * rise, 0);
+  cow.rotation.set(Math.sin(time * .8) * .5 * rise, time * .5 * rise + .4, Math.sin(time * 1.1) * .4 * rise + wob * .05 * Math.sin(time * 30));
+  cow.scale.setScalar(Math.max(.0001, 1 - absorb));
+  cow.visible = absorb < 1;
+  cow.userData.legs.forEach((l, i) => l.rotation.z = Math.sin(time * 9 + i) * .6 * rise);
+  cow.userData.head.rotation.z = Math.sin(time * 3) * .25 * rise;
+  cow.userData.tail.rotation.x = Math.sin(time * 4) * .5;
+  if (t < 6) { cow.userData.head.rotation.z = -.35 + Math.sin(time * .7) * .1; } // grazing
+
+  // particles
+  const groundY = 0, topY = ufo.position.y - 1;
+  for (let i = 0; i < PN; i++) {
+    const s = pSeed[i];
+    const k = (s + time * (.08 + s * .06)) % 1;
+    const r = (4 - 2.5 * k) * Math.sqrt((s * 97.13) % 1) * .9;
+    const a = s * 628 + time * (.5 + s);
+    pPos[i * 3] = ufo.position.x + Math.cos(a) * r;
+    pPos[i * 3 + 1] = groundY + k * (topY - groundY);
+    pPos[i * 3 + 2] = ufo.position.z + Math.sin(a) * r;
+  }
+  pGeo.attributes.position.needsUpdate = true;
+  particles.material.opacity = pw * .9;
+
+  // audio follows the scene
+  if (audio && audio.ctx.state === 'running') {
+    const near = 1 - THREE.MathUtils.clamp(ufo.position.distanceTo(new THREE.Vector3(0, 12, 0)) / 60, 0, 1);
+    const now = audio.ctx.currentTime;
+    audio.master.gain.setTargetAtTime(.25 * near + .1 * pw, now, .2);
+    audio.shG.gain.setTargetAtTime(.035 * pw, now, .2);
+    audio.sh.frequency.setTargetAtTime(660 + rise * 700, now, .3);
+    audio.oscs[0].frequency.setTargetAtTime(55 + leave * 80, now, .3);
+    audio.oscs[1].frequency.setTargetAtTime(55.7 + leave * 82, now, .3);
+  }
+
+  controls.update();
+  composer.render();
+  requestAnimationFrame(animate);
+}
+animate();
+
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight); composer.setSize(innerWidth, innerHeight);
+});
+</script>
+</body>
+</html>
