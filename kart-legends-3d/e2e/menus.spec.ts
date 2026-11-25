@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { boot, trackErrors } from './helpers';
+import { boot, play, trackErrors } from './helpers';
 
 const CHARACTERS = ['nilo', 'boro', 'lumi', 'kora', 'tiko', 'mavi', 'runi', 'zera', 'capi', 'tuca'];
 /** Segunda página da seleção: os ninjas exclusivos da loja. */
@@ -31,7 +31,7 @@ test('inicialização: carrega todos os assets e chega ao menu sem erros', async
 test('menus: todos os modos, copas, pistas, personagens e karts aparecem e a navegação volta', async ({ page }) => {
   const errors = trackErrors(page);
   await boot(page);
-  await page.getByTestId('btn-play').click();
+  await play(page);
   await expect(page.getByTestId('screen-mode')).toBeVisible();
   for (const m of ['quick', 'championship', 'timetrial', 'training']) await expect(page.getByTestId(`card-mode-${m}`)).toBeVisible();
 
