@@ -9,11 +9,11 @@ import { SURFACES } from '@/game/tracks/trackTypes';
 import { loadTrack } from './simHarness';
 
 describe('conteúdo do jogo', () => {
-  it('tem 12 pilotos, 8 karts, 12 pistas, 3 copas de 4 pistas e 6 itens', () => {
-    expect(CHARACTERS).toHaveLength(12);
-    expect(new Set(CHARACTERS.map((c) => c.id)).size).toBe(12);
+  it('tem 14 pilotos, 8 karts, 12 pistas, 3 copas de 4 pistas e 6 itens', () => {
+    expect(CHARACTERS).toHaveLength(14);
+    expect(new Set(CHARACTERS.map((c) => c.id)).size).toBe(14);
     expect(KARTS).toHaveLength(8);
-    // Todo kart é o preferido de alguém (com 12 pilotos, alguns karts são compartilhados).
+    // Todo kart é o preferido de alguém (com 14 pilotos, alguns karts são compartilhados).
     expect(new Set(CHARACTERS.map((c) => c.kartId))).toEqual(new Set(KART_IDS));
     expect(TRACKS).toHaveLength(12);
     expect(CUPS).toHaveLength(3);

@@ -1022,6 +1022,175 @@
           "loop": true
         }
       ]
+    },
+    {
+      "id": "ren",
+      "file": "assets/characters/ren.glb",
+      "bytes": 394388,
+      "triangles": 13398,
+      "bones": 23,
+      "extraBones": [
+        "hair",
+        "scarfA1",
+        "scarfA2",
+        "scarfA3",
+        "scarfB1",
+        "scarfB2",
+        "scarfB3"
+      ],
+      "handL": [
+        0.14,
+        0.52,
+        0.38
+      ],
+      "handR": [
+        -0.14,
+        0.52,
+        0.38
+      ],
+      "seatedHeight": 1.032,
+      "facePatch": {
+        "widthM": 0.4064,
+        "heightM": 0.2615
+      },
+      "clips": [
+        {
+          "name": "idle",
+          "duration": 3,
+          "loop": true
+        },
+        {
+          "name": "drive",
+          "duration": 1.2,
+          "loop": true
+        },
+        {
+          "name": "turn_left",
+          "duration": 1,
+          "loop": true
+        },
+        {
+          "name": "turn_right",
+          "duration": 1,
+          "loop": true
+        },
+        {
+          "name": "drift_left",
+          "duration": 0.8,
+          "loop": true
+        },
+        {
+          "name": "drift_right",
+          "duration": 0.8,
+          "loop": true
+        },
+        {
+          "name": "hit",
+          "duration": 0.9,
+          "loop": false
+        },
+        {
+          "name": "victory",
+          "duration": 2.4,
+          "loop": false
+        },
+        {
+          "name": "defeat",
+          "duration": 2.4,
+          "loop": false
+        },
+        {
+          "name": "podium",
+          "duration": 2,
+          "loop": true
+        }
+      ]
+    },
+    {
+      "id": "sora",
+      "file": "assets/characters/sora.glb",
+      "bytes": 427872,
+      "triangles": 13399,
+      "bones": 26,
+      "extraBones": [
+        "braid1",
+        "braid2",
+        "braid3",
+        "braid4",
+        "scarfA1",
+        "scarfA2",
+        "scarfA3",
+        "scarfB1",
+        "scarfB2",
+        "scarfB3"
+      ],
+      "handL": [
+        0.14,
+        0.52,
+        0.38
+      ],
+      "handR": [
+        -0.14,
+        0.52,
+        0.38
+      ],
+      "seatedHeight": 1.032,
+      "facePatch": {
+        "widthM": 0.4064,
+        "heightM": 0.2615
+      },
+      "clips": [
+        {
+          "name": "idle",
+          "duration": 3,
+          "loop": true
+        },
+        {
+          "name": "drive",
+          "duration": 1.2,
+          "loop": true
+        },
+        {
+          "name": "turn_left",
+          "duration": 1,
+          "loop": true
+        },
+        {
+          "name": "turn_right",
+          "duration": 1,
+          "loop": true
+        },
+        {
+          "name": "drift_left",
+          "duration": 0.8,
+          "loop": true
+        },
+        {
+          "name": "drift_right",
+          "duration": 0.8,
+          "loop": true
+        },
+        {
+          "name": "hit",
+          "duration": 0.9,
+          "loop": false
+        },
+        {
+          "name": "victory",
+          "duration": 2.4,
+          "loop": false
+        },
+        {
+          "name": "defeat",
+          "duration": 2.4,
+          "loop": false
+        },
+        {
+          "name": "podium",
+          "duration": 2,
+          "loop": true
+        }
+      ]
     }
   ]
 }

@@ -1324,7 +1324,7 @@
    "origin": "scripts/build-characters.ts (modelagem, rig e animação por script)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 20020,
+   "bytes": 23216,
    "status": "validado",
    "usedIn": "Pilotos na corrida, vitrine e pódio"
   },
@@ -1394,6 +1394,19 @@
    "usedIn": "Pilotos na corrida, vitrine e pódio"
   },
   {
+   "id": "characters:ren",
+   "name": "ren",
+   "type": "model",
+   "path": "characters/ren.glb",
+   "format": "glb",
+   "origin": "scripts/build-characters.ts (modelagem, rig e animação por script)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 394388,
+   "status": "validado",
+   "usedIn": "Pilotos na corrida, vitrine e pódio"
+  },
+  {
    "id": "characters:runi",
    "name": "runi",
    "type": "model",
@@ -1403,6 +1416,19 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 390464,
+   "status": "validado",
+   "usedIn": "Pilotos na corrida, vitrine e pódio"
+  },
+  {
+   "id": "characters:sora",
+   "name": "sora",
+   "type": "model",
+   "path": "characters/sora.glb",
+   "format": "glb",
+   "origin": "scripts/build-characters.ts (modelagem, rig e animação por script)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 427872,
    "status": "validado",
    "usedIn": "Pilotos na corrida, vitrine e pódio"
   },
@@ -2759,6 +2785,19 @@
    "usedIn": "Materiais dos modelos (também embutidas nos GLB)"
   },
   {
+   "id": "textures:face_ren",
+   "name": "face_ren",
+   "type": "texture",
+   "path": "textures/face_ren.webp",
+   "format": "webp",
+   "origin": "scripts (texturas procedurais e arte vetorial próprias)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 51348,
+   "status": "validado",
+   "usedIn": "Materiais dos modelos (também embutidas nos GLB)"
+  },
+  {
    "id": "textures:face_runi",
    "name": "face_runi",
    "type": "texture",
@@ -2768,6 +2807,19 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 73260,
+   "status": "validado",
+   "usedIn": "Materiais dos modelos (também embutidas nos GLB)"
+  },
+  {
+   "id": "textures:face_sora",
+   "name": "face_sora",
+   "type": "texture",
+   "path": "textures/face_sora.webp",
+   "format": "webp",
+   "origin": "scripts (texturas procedurais e arte vetorial próprias)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 52680,
    "status": "validado",
    "usedIn": "Materiais dos modelos (também embutidas nos GLB)"
   },
@@ -3825,6 +3877,19 @@
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
   {
+   "id": "ui:icons:ren",
+   "name": "ren",
+   "type": "image",
+   "path": "ui/icons/ren.webp",
+   "format": "webp",
+   "origin": "scripts/build-items.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 4510,
+   "status": "validado",
+   "usedIn": "Interface (retratos, ícones, miniaturas)"
+  },
+  {
    "id": "ui:icons:runi",
    "name": "runi",
    "type": "image",
@@ -3834,6 +3899,19 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 8396,
+   "status": "validado",
+   "usedIn": "Interface (retratos, ícones, miniaturas)"
+  },
+  {
+   "id": "ui:icons:sora",
+   "name": "sora",
+   "type": "image",
+   "path": "ui/icons/sora.webp",
+   "format": "webp",
+   "origin": "scripts/build-items.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 4372,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
@@ -4163,6 +4241,19 @@
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
   {
+   "id": "ui:portraits:ren",
+   "name": "ren",
+   "type": "image",
+   "path": "ui/portraits/ren.webp",
+   "format": "webp",
+   "origin": "scripts/build-items.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 31816,
+   "status": "validado",
+   "usedIn": "Interface (retratos, ícones, miniaturas)"
+  },
+  {
    "id": "ui:portraits:runi",
    "name": "runi",
    "type": "image",
@@ -4172,6 +4263,19 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 41352,
+   "status": "validado",
+   "usedIn": "Interface (retratos, ícones, miniaturas)"
+  },
+  {
+   "id": "ui:portraits:sora",
+   "name": "sora",
+   "type": "image",
+   "path": "ui/portraits/sora.webp",
+   "format": "webp",
+   "origin": "scripts/build-items.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 36372,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },

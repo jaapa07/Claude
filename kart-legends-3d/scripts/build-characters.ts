@@ -21,8 +21,10 @@ import { capi } from './characters/capi';
 import { tuca } from './characters/tuca';
 import { yuki } from './characters/yuki';
 import { kaito } from './characters/kaito';
+import { ren } from './characters/ren';
+import { sora } from './characters/sora';
 
-const ALL: CharDef[] = [nilo, boro, lumi, kora, tiko, mavi, runi, zera, capi, tuca, yuki, kaito];
+const ALL: CharDef[] = [nilo, boro, lumi, kora, tiko, mavi, runi, zera, capi, tuca, yuki, kaito, ren, sora];
 
 const only = process.argv.slice(2).filter((a) => !a.startsWith('--'));
 const list = only.length ? ALL.filter((d) => only.includes(d.id)) : ALL;

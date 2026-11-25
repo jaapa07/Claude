@@ -78,8 +78,8 @@
 
 .card-grid { display: grid; gap: 0.55rem; flex: none; }
 .card-grid--roster { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-/* Doze pilotos: 6 × 2. */
-.card-grid--characters { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+/* Catorze pilotos: 7 × 2. */
+.card-grid--characters { grid-template-columns: repeat(7, minmax(0, 1fr)); }
 .card-grid--tracks { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .card--portrait, .card--track { flex-direction: column; overflow: hidden; }
 .card--portrait { aspect-ratio: 1 / 0.88; }

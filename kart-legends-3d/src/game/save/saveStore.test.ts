@@ -188,6 +188,15 @@ describe('save: desbloqueios pelas regras dos dados', () => {
     expect(computeUnlocks(d).characters).toContain('kaito');
   });
 
+  it('Ren e Sora saem com 10 vitórias', () => {
+    const d = createDefaultSave();
+    d.stats.wins = 9;
+    expect(computeUnlocks(d).characters).not.toContain('ren');
+    expect(computeUnlocks(d).characters).not.toContain('sora');
+    d.stats.wins = 10;
+    expect(computeUnlocks(d).characters).toEqual(expect.arrayContaining(['ren', 'sora']));
+  });
+
   it('trophyForPosition: ouro, prata, bronze e nada', () => {
     expect([1, 2, 3, 4, 8].map(trophyForPosition)).toEqual(['gold', 'silver', 'bronze', null, null]);
   });
