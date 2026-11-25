@@ -1,5 +1,5 @@
 /** Identificadores canônicos compartilhados por dados, simulação, assets e interface. */
-export const CHARACTER_IDS = ['nilo', 'boro', 'lumi', 'kora', 'tiko', 'mavi', 'runi', 'zera', 'capi', 'tuca'] as const;
+export const CHARACTER_IDS = ['nilo', 'boro', 'lumi', 'kora', 'tiko', 'mavi', 'runi', 'zera', 'capi', 'tuca', 'yuki', 'kaito', 'ren', 'sora'] as const;
 export type CharacterId = (typeof CHARACTER_IDS)[number];
 
 export const KART_IDS = ['flecha', 'engrenagem', 'cometa', 'broto', 'faisca', 'mare', 'duna', 'geada'] as const;

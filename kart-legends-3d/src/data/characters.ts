@@ -25,6 +25,10 @@ export const CHARACTERS: readonly CharacterDef[] = [
   { id: 'zera', name: 'Zera', title: 'Exploradora do gelo', bio: 'Fria nas retas, implacável nas curvas congeladas.', color: '#58c7e8', accent: '#f4fbff', kartId: 'geada', unlock: { type: 'trophy', cup: 'eclipse', min: 'bronze' } },
   { id: 'capi', name: 'Capi', title: 'Capivara sossegada', bio: 'Nunca tem pressa, mas sempre chega: a tangerina na cabeça nunca caiu.', color: '#ff5fa2', accent: '#ffb547', kartId: 'mare', unlock: { type: 'wins', count: 3 } },
   { id: 'tuca', name: 'Tuca', title: 'Tucano acrobata', bio: 'Pilota de bico erguido e faz cada miniturbo parecer um voo rasante.', color: '#9bd43a', accent: '#ff9a1f', kartId: 'faisca', unlock: { type: 'turbo3', count: 40 } },
+  { id: 'yuki', name: 'Yuki', title: 'Ninja da neve', bio: 'Desce a montanha de prancha e sobe ao pódio de kart, sempre com o cachecol ao vento.', color: '#2ec4d6', accent: '#ff7a59', kartId: 'geada', unlock: { type: 'shop' } },
+  { id: 'kaito', name: 'Kaito', title: 'Ninja da lua', bio: 'Rival declarado da Yuki, corre em silêncio sob o luar e só sorri de canto quando cruza a linha primeiro.', color: '#6b5cff', accent: '#c9d2e6', kartId: 'cometa', unlock: { type: 'shop' } },
+  { id: 'ren', name: 'Ren', title: 'Ninja do trovão', bio: 'Chega antes do estrondo: acelera tão rápido que o cabelo nunca mais assentou.', color: '#ffcf2e', accent: '#7a3cff', kartId: 'faisca', unlock: { type: 'shop' } },
+  { id: 'sora', name: 'Sora', title: 'Ninja do vento', bio: 'Lê o vento como quem lê um mapa e guarda uma pipa nas costas para quando a pista acabar.', color: '#3ee0c0', accent: '#ffffff', kartId: 'mare', unlock: { type: 'shop' } },
 ];
 
 export const CHARACTER_BY_ID = Object.fromEntries(CHARACTERS.map((c) => [c.id, c])) as Record<CharacterId, CharacterDef>;

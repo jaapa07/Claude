@@ -171,6 +171,15 @@ describe('save: desbloqueios pelas regras dos dados', () => {
     expect(computeUnlocks(d).characters).toContain('tuca');
   });
 
+  it('Yuki, Kaito, Ren e Sora são exclusivos da loja: nenhum progresso libera, só a compra', () => {
+    const d = createDefaultSave();
+    d.stats.races = 999; d.stats.wins = 999; d.stats.turbos = [999, 999, 999];
+    d.trophies = { aurora: 'gold', eclipse: 'gold', meteoro: 'gold' };
+    for (const id of ['yuki', 'kaito', 'ren', 'sora'] as const) expect(computeUnlocks(d).characters).not.toContain(id);
+    d.owned.characters = ['kaito'];
+    expect(computeUnlocks(d).characters).toContain('kaito');
+  });
+
   it('trophyForPosition: ouro, prata, bronze e nada', () => {
     expect([1, 2, 3, 4, 8].map(trophyForPosition)).toEqual(['gold', 'silver', 'bronze', null, null]);
   });
