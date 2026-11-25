@@ -55,7 +55,11 @@ function monitorSource() {
 
 async function open(opts = {}) {
   const b = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required'] });
-  const ctx = await b.newContext({ viewport: { width: opts.w || 800, height: opts.h || 450 } });
+  // opts.iphone: emula um iPhone deitado (tela de toque, sem teclado) — 844×390 como o iPhone 14
+  const ctx = await b.newContext(opts.iphone
+    ? { viewport: { width: 844, height: 390 }, hasTouch: true, isMobile: true, deviceScaleFactor: 1,
+      userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1' }
+    : { viewport: { width: opts.w || 800, height: opts.h || 450 } });
   const page = await ctx.newPage();
   await page.route('http://game.local/**', (r) => {
     const f = path.join(DIST, decodeURIComponent(new URL(r.request().url()).pathname));
@@ -89,6 +93,12 @@ async function open(opts = {}) {
     speed: (s) => page.evaluate((s) => (window.__game.speed = s), s),
     shot: (name) => page.screenshot({ path: path.join(ROOT, 'docs', 'qa', name + '.png') }),
     close: () => b.close(),
+    /** toques reais via CDP (vários dedos): pts = [{x,y,id}] */
+    touch: async (type, pts) => {
+      api._cdp ??= await ctx.newCDPSession(page);
+      await api._cdp.send('Input.dispatchTouchEvent', { type, touchPoints: pts.map((p) => ({ x: p.x, y: p.y, id: p.id ?? 0, radiusX: 8, radiusY: 8, force: 1 })) });
+    },
+    center: (sel) => page.evaluate((s) => { const e = document.querySelector(s); if (!e) return null; const r = e.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width, h: r.height, vis: r.width > 0 && getComputedStyle(e).display !== 'none' }; }, sel),
   };
   return api;
 }

@@ -5,6 +5,7 @@ import { FIELD } from './Ball';
 import { assets } from '../core/Assets';
 import { audio } from '../core/Audio';
 import { progress } from '../core/Progress';
+import { input } from '../core/Input';
 
 export type MiniKind = 'pk' | 'juggle' | 'target';
 export type MiniResult = { kind: MiniKind; score: number; best: boolean; record: number; stars: number; label: string };
@@ -70,7 +71,7 @@ export class PenaltyGame extends MiniGame {
   }
   private show() {
     const dots = [0, 1, 2, 3, 4].map((i) => (i < this.kicks.length ? (this.kicks[i] ? '●' : '✕') : '○')).join(' ');
-    this.panel([`PÊNALTIS DE OURO · cobrança ${Math.min(5, this.kicks.length + 1)}/5`, dots, `Recorde: ${progress.data.records.pk}/5`, 'Mire com o direcional · segure [K] para a força']);
+    this.panel([`PÊNALTIS DE OURO · cobrança ${Math.min(5, this.kicks.length + 1)}/5`, dots, `Recorde: ${progress.data.records.pk}/5`, input.touch ? 'Mire com o joystick · segure CHUTE para a força' : 'Mire com o direcional · segure [K] para a força']);
   }
   private result(ok: boolean) {
     if (!this.waiting) return;
@@ -119,7 +120,7 @@ export class JuggleGame extends MiniGame {
     this.show();
   }
   private show() {
-    this.panel([`EMBAIXADINHAS: ${this.count}`, `Perfeitas: ${this.perfect} · Recorde: ${progress.data.records.juggle}`, `Tempo: ${Math.ceil(this.time)}s`, 'Aperte [I] quando a bola descer · não deixe cair']);
+    this.panel([`EMBAIXADINHAS: ${this.count}`, `Perfeitas: ${this.perfect} · Recorde: ${progress.data.records.juggle}`, `Tempo: ${Math.ceil(this.time)}s`, input.touch ? 'Toque FIRULA quando a bola descer · não deixe cair' : 'Aperte [I] quando a bola descer · não deixe cair']);
   }
   update(dt: number) {
     if (this.done) return;

@@ -61,7 +61,8 @@ export class World {
 
     this.scene.add(this.sun, this.sun.target, this.hemi, this.root);
     this.sun.castShadow = q > 0;
-    const sz = q === 2 ? 4096 : 2048;
+    const mobile = matchMedia('(pointer: coarse)').matches;
+    const sz = q === 2 ? (mobile ? 2048 : 4096) : mobile ? 1024 : 2048;
     this.sun.shadow.mapSize.set(sz, sz);
     const sc = this.sun.shadow.camera;
     sc.left = -30; sc.right = 30; sc.top = 24; sc.bottom = -24; sc.near = 1; sc.far = 160;

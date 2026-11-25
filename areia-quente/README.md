@@ -53,6 +53,21 @@ Finalizações são contextuais: com a bola no alto, **K** vira cabeçada (bola 
 **tesoura** (gol de lado), **voleio** ou **peixinho** (correndo para uma bola baixa). As teclas podem ser remapeadas em *Opções*.
 Na tela "Quem joga com quem?" cada teclado/controle é movido para CASA, CPU ou FORA (até 2 jogadores locais).
 
+### iPhone / Android (tela de toque)
+
+Abra o link no Safari **com o aparelho deitado**. Para tela cheia (sem a barra do Safari): botão Compartilhar → **Adicionar à Tela de Início**
+e abra pelo ícone.
+
+| Na tela | Faz |
+|---|---|
+| Joystick (toque em qualquer ponto da metade esquerda) | mover · empurrar até a borda = correr |
+| CHUTE (segure para mais força) · PASSE/TROCAR · LENÇOL · FIRULA · CARRINHO · CORRER · FOGO | as mesmas ações do teclado |
+| ❚❚ (canto superior) | pausa |
+| PULAR ▶▶ | pula apresentação, replay e intervalo |
+
+Funciona com vários dedos ao mesmo tempo (joystick + chute). No saque e nas cobranças os botões PASSE/CHUTE piscam.
+As telas que no PC usam ENTER/ESC ganham botões **VOLTAR / COMEÇAR**; com o aparelho em pé aparece "Gire o aparelho".
+
 ## O que tem
 
 - **Telas**: abertura com barra de progresso real → título com sobrevoo da arena → menu → seleção de controles → seleção de seleções

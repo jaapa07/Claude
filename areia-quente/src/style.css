@@ -297,3 +297,78 @@ body { font-family: var(--body); color: var(--white); user-select: none; -webkit
   .btn { font-size: 19px; padding: 7px 20px; box-shadow: 0 4px 0 var(--ink); }
   .menu .desc { margin-top: 4px; min-height: 0; font-size: 14px; }
 }
+
+/* ---------- iPhone / telas de toque ---------- */
+html, body { height: 100dvh; overscroll-behavior: none; -webkit-text-size-adjust: 100%; }
+html.touch, html.touch * { -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
+html.touch #app, html.touch canvas { touch-action: none; }
+html.touch .btn, html.touch .opt, html.touch .k, html.touch .arrow, html.touch .sw, html.touch .a, html.touch .at { touch-action: manipulation; }
+/* áreas seguras (notch / Dynamic Island / barra de início) */
+#ui .screen { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+
+#touch { position: absolute; inset: 0; z-index: 20; pointer-events: none; display: none; }
+#touch.on { display: block; }
+#touch .t-zone { position: absolute; left: 0; top: 18%; bottom: 0; width: 46%; pointer-events: auto; touch-action: none; }
+#touch .t-stick { position: absolute; left: calc(env(safe-area-inset-left) + 13vh + 24px); top: calc(100% - 13vh - 30px); width: 26vh; height: 26vh; min-width: 96px; min-height: 96px;
+  transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.10), rgba(255,255,255,0.04) 60%, rgba(255,255,255,0.18) 61%, rgba(255,255,255,0.05) 70%);
+  border: 3px solid rgba(255,255,255,0.35); opacity: 0.55; transition: opacity 0.15s; pointer-events: none; }
+#touch .t-stick.on { opacity: 0.95; }
+#touch .t-knob { position: absolute; left: 50%; top: 50%; width: 44%; height: 44%; margin: -22% 0 0 -22%; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff8dc, var(--gold) 55%, #b36b00); border: 3px solid var(--ink); box-shadow: 0 4px 0 rgba(0,0,0,0.4); }
+#touch .t-btns { position: absolute; right: calc(env(safe-area-inset-right) + 10px); bottom: calc(env(safe-area-inset-bottom) + 8px); width: 46vh; height: 46vh; min-width: 190px; min-height: 190px; }
+#touch .t-btn { position: absolute; border-radius: 50%; display: flex; align-items: center; justify-content: center; pointer-events: auto; touch-action: none;
+  font-family: var(--title); color: var(--ink); border: 3px solid var(--ink); box-shadow: 0 4px 0 rgba(0,0,0,0.55); opacity: 0.86;
+  font-size: clamp(9px, 2.3vh, 15px); letter-spacing: 0; transition: transform 0.06s; }
+#touch .t-btn span { pointer-events: none; text-shadow: 0 1px 0 rgba(255,255,255,0.5); }
+#touch .t-btn.on { transform: scale(0.9) translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.55); opacity: 1; filter: brightness(1.15); }
+/* arco em volta do polegar: CHUTE grande no canto */
+#touch .b-shoot  { right: 0;   bottom: 0;   width: 40%; height: 40%; background: radial-gradient(circle at 35% 30%, #ffd0c0, #ff5a2a 60%); font-size: clamp(11px, 3vh, 19px); }
+#touch .b-pass   { right: 42%; bottom: 0;   width: 30%; height: 30%; background: radial-gradient(circle at 35% 30%, #e0ffe9, #22c77a 60%); }
+#touch .b-lob    { right: 37%; bottom: 31%; width: 27%; height: 27%; background: radial-gradient(circle at 35% 30%, #e6f5ff, #39a5ff 60%); }
+#touch .b-tackle { right: 4%;  bottom: 42%; width: 30%; height: 30%; background: radial-gradient(circle at 35% 30%, #fff, #c9c9c9 60%); }
+#touch .b-trick  { right: 64%; bottom: 46%; width: 22%; height: 22%; background: radial-gradient(circle at 35% 30%, #ffe6ff, #d64ad6 60%); font-size: clamp(8px, 1.9vh, 12px); }
+#touch .b-sprint { right: 73%; bottom: 3%;  width: 24%; height: 24%; background: radial-gradient(circle at 35% 30%, #fff7d6, var(--gold) 60%); font-size: clamp(8px, 1.9vh, 12px); }
+#touch .b-fire   { right: 34%; bottom: 62%; width: 22%; height: 22%; background: radial-gradient(circle at 35% 30%, #ffe3a0, #ff3e00 60%); font-size: clamp(8px, 1.9vh, 12px); }
+/* com a bola: CARRINHO some; sem a bola: FIRULA some */
+#touch.atk .b-tackle { opacity: 0.25; }
+#touch:not(.atk) .b-trick { opacity: 0.35; }
+#touch .t-top { position: absolute; top: calc(env(safe-area-inset-top) + 8px); right: calc(env(safe-area-inset-right) + 10px); display: flex; gap: 10px; }
+#touch .t-skip, #touch .t-pause { display: none; pointer-events: auto; touch-action: manipulation; font-family: var(--title); color: var(--ink); background: linear-gradient(180deg, #fff2c8, var(--gold));
+  border: 3px solid var(--ink); border-radius: 12px; box-shadow: 0 4px 0 var(--ink); padding: 6px 14px; font-size: 16px; }
+#touch .t-skip.on, #touch .t-pause.on { display: block; }
+#touch .t-pause { padding: 6px 12px; }
+#touch.cine .t-zone, #touch.cine .t-stick, #touch.cine .t-btns { display: none; }
+/* barra de toque das telas que no PC usam ENTER/ESC */
+.tbar { position: absolute; z-index: 5; bottom: calc(env(safe-area-inset-bottom) + 10px); left: 0; right: 0; display: flex; justify-content: space-between; padding: 0 calc(env(safe-area-inset-right) + 14px) 0 calc(env(safe-area-inset-left) + 14px); pointer-events: none; }
+.tbar .btn { pointer-events: auto; min-width: 0; font-size: 18px; padding: 8px 18px; }
+.tbar .btn.go { background: linear-gradient(180deg, #e0ffe9, #22c77a); font-size: 22px; }
+html.touch .hint { display: none; }
+/* aviso para girar o aparelho */
+#rotate { display: none; position: fixed; inset: 0; z-index: 90; background: #08101f url('/assets/ui/sand_wipe.jpg') center/cover; color: #fff; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; font-family: var(--body); }
+#rotate b { font-family: var(--title); font-size: 26px; text-shadow: 0 3px 0 rgba(0,0,0,0.5); }
+#rotate .phone { width: 56px; height: 96px; border: 5px solid #fff; border-radius: 12px; animation: aq-rot 1.6s ease-in-out infinite; }
+@keyframes aq-rot { 0%, 25% { transform: rotate(0); } 60%, 100% { transform: rotate(-90deg); } }
+@media (orientation: portrait) and (pointer: coarse) { #rotate { display: flex; } }
+
+/* telas baixas (iPhone deitado: ~390 px de altura) */
+@media (max-height: 500px) {
+  .hud .score { top: calc(env(safe-area-inset-top) + 4px); transform: translateX(-50%) scale(0.8); transform-origin: top center; }
+  .hud .challenge { font-size: 11px; top: 50px; }
+  .hud .big { font-size: 44px; }
+  .hud .pl { bottom: 6px; } html.touch .hud .pl { display: none; }
+  .hud .mult { top: 44px; font-size: 18px; }
+  .btn { font-size: 16px; padding: 6px 16px; box-shadow: 0 3px 0 var(--ink); border-width: 3px; }
+  .menu img.logo { width: 170px; }
+  .menu .col { gap: 6px; } .menu .desc { display: none; }
+  .title-screen .logo { max-height: 52vh; }
+  .teamsel h1.title { font-size: 22px; margin: 6px 0; }
+  .tcard { padding: 6px 10px; } .tcard img.em { width: 56px; } .tcard .name { font-size: 16px; } .tcard .nick { font-size: 11px; } .tcard .stats { font-size: 11px; } .tcard img.flag { display: none; }
+  .tcard .stats img { width: 11px; }
+  .arena-pick { bottom: 56px !important; } .arena-pick .a { font-size: 12px; padding: 4px 8px; }
+  .overlay .box { padding: 12px 18px; max-height: 94vh; overflow: auto; } .overlay h1.title { font-size: 26px; margin: 0 0 6px; }
+  .options .box, .ach .box, .careersquad .box { max-height: 96vh; padding: 12px 16px; }
+  .careerhub { padding: 2vh 2vw; }
+  .results .col { transform: scale(0.8); transform-origin: left center; }
+}
+#touch.wait .b-pass, #touch.wait .b-shoot { animation: aq-pulse 0.8s ease-in-out infinite; }
+@keyframes aq-pulse { 50% { transform: scale(1.12); filter: brightness(1.3); } }

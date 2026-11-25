@@ -1,8 +1,8 @@
 # QA ponta a ponta
 
-Executado em 2026-11-25 22:35 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
+Executado em 2026-11-25 23:47 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
 
-**17/17 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
+**18/18 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
 bola perto do dono, controle duplicado, time humano sem jogador, estados presos, bola morta sem ninguém ir buscar).
 
 | Suíte | Resultado | Tempo |
@@ -24,6 +24,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 | memory | ✔ OK | 108s |
 | career | ✔ OK | 161s |
 | mobile | ✔ OK | 39s |
+| iphone | ✔ OK | 165s |
 
 ## menus
 
@@ -157,25 +158,32 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔ menu sem rolagem horizontal em 390 px
 - ✔ placar cabe na tela do celular
 
+## iphone
+
+- ✔ detecta tela de toque e cria os controles
+- ✔ título pede "TOQUE PARA COMEÇAR"
+- ✔ toque no título abre o menu
+- ✔ menu sem rolagem da página
+- ✔ Amistoso vai direto para a seleção de times (sem tela de controles)
+- ✔ botão COMEÇAR visível na tela
+- ✔ toque na seta troca a seleção
+- ✔ seleção de times cabe na tela
+- ✔ COMEÇAR inicia a partida
+- ✔ botão PULAR aparece na apresentação
+- ✔ PULAR encerra a apresentação
+- ✔ no saque o botão PASSE pisca
+- ✔ bola em jogo
+- ✔ joystick e botões visíveis durante o jogo
+- ✔ todos os botões dentro da tela e com no mínimo 40 px
+- ✔ jogador controlado pela tela de toque
+- ✔ joystick move para a direita (mx=0.98)
+- ✔ multitoque: joystick + CHUTE ao mesmo tempo
+- ✔ soltar os dedos solta joystick e botão
+- ✔ jogador se moveu com o joystick
+- ✔ rótulo contextual do passe (PASSE)
+- ✔ pausa esconde os controles de toque
+- ✔ continuar devolve os controles
+- ✔ na vertical aparece "Gire o aparelho"
+- ✔ na horizontal o aviso some
+
 Capturas de tela das suítes em `docs/qa/`.
-
-## Bugs encontrados pelo QA e corrigidos
-
-| # | Bug | Como foi achado | Correção |
-|---|---|---|---|
-| 1 | **ESC não pausava o jogo**: o menu de pausa lia a mesma tecla e fechava no mesmo quadro | suíte `pausemenu` | menus ignoram a entrada no quadro em que abrem |
-| 2 | Pausa ignorada durante gol, replay e bolas paradas | suíte `pausemenu` | pausa aceita em qualquer fase da partida |
-| 3 | Chute pendente disparava durante a comemoração e mandava a bola para fora da arena (aparecia no replay) | monitor de invariantes (`fullmatch`) | chutes pendentes cancelados no gol e bloqueados fora do jogo |
-| 4 | Menu com 8 opções cortava as últimas em janelas baixas, sem rolagem | suíte `menus` | menu rolável e compacto em telas baixas |
-| 5 | Placar do HUD estourava a tela no celular | suíte `mobile` | layout compacto abaixo de 720 px |
-| 6 | Na seleção de controles, o analógico de um controle arrastava o teclado de coluna | suíte `twoplayers` | teclado só responde às próprias teclas |
-| 7 | Duplo clique enfileirava transições de tela repetidas | suíte `career` | cliques bloqueados durante a transição |
-| 8 | Erro em uma tela durante a transição podia congelar a navegação para sempre | revisão após `career` | trava liberada com `try/finally` |
-| 9 | Eventos da partida (cobrança após falta, pênaltis, fim de jogo) usavam tempo real: disparavam com o jogo pausado | revisão de código | temporizadores em tempo de jogo |
-| 10 | Disputa de pênaltis simulada (carreira) podia terminar empatada | teste unitário | sorteio de pênaltis sempre com vencedor |
-| 11 | Pênaltis de Ouro demoravam até 2,5 s para marcar a defesa | sonda do QA | defesa decidida assim que o goleiro toca na bola |
-| 12 | Tela de carregamento travava ao começar partida pelo menu (transição esperando a si mesma) | teste de teclado (1ª versão) | carregamento fora da transição |
-| 13 | Toques rápidos de tecla entre dois quadros eram perdidos | teste de teclado (1ª versão) | teclas "travadas" até o próximo quadro |
-| 14 | Goleiro nunca defendia com o jogo acelerado/câmera lenta (defesa agendada em tempo real) | simulação CPU × CPU | defesa em tempo de jogo |
-
-Rodadas: a 1ª rodada completa teve 12/17 (relatório em `docs/qa/QA_rodada1.md`); as 5 suítes com falha foram corrigidas e reexecutadas até 17/17.

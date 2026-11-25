@@ -74,6 +74,17 @@ export class Flow {
     this.screen = el;
     this.ui.appendChild(el);
   }
+  /** Barra de botões para telas que no PC dependem de ENTER/ESC (só aparece em telas de toque). */
+  private touchBar(el: HTMLElement, items: [string, string, string?][]) {
+    if (!input.touch) return;
+    const bar = document.createElement('div');
+    bar.className = 'tbar';
+    bar.innerHTML = items.map(([l, , c]) => `<button class="btn small ${c ?? ''}"><span>${l}</span></button>`).join('');
+    bar.querySelectorAll('button').forEach((b, i) => b.addEventListener('click', (e) => { e.stopPropagation(); input.virtualKey(items[i][1], true); input.virtualKey(items[i][1], false); }));
+    el.appendChild(bar);
+  }
+  /** Só um "controle" (a tela de toque): pula a tela de escolha de lados. */
+  private skipCtrl() { return input.touch && input.devices().length === 1; }
   private async fade<T>(fn: () => T | Promise<T>) {
     // transições em sequência: se outra estiver em andamento, espera em vez de descartar
     while (this.busy) await new Promise((r) => setTimeout(r, 40));
@@ -135,7 +146,7 @@ export class Flow {
   title() {
     this.scene = 'title';
     this.clearShow();
-    this.mount(html(`<div class="screen title-screen"><img class="logo" src="${A('ui/logo.png')}"><div class="press">${t('press_start')}</div>
+    this.mount(html(`<div class="screen title-screen"><img class="logo" src="${A('ui/logo.png')}"><div class="press">${input.touch ? 'TOQUE PARA COMEÇAR' : t('press_start')}</div>
       <div class="copy">Areia Quente · jogo original · assets CC0 (Kenney, Poly Haven, ambientCG, OpenGameArt)</div></div>`));
     this.nav = undefined;
     let ang = 0;
@@ -157,7 +168,8 @@ export class Flow {
     this.world.setArena('copacabana');
     audio.playMusic('menu');
     const opts: [string, string, () => void][] = [
-      [t('menu_friendly'), 'Partida rápida contra a CPU ou um amigo.', () => { this.setup.mode = 'friendly'; this.fade(() => this.controlSelect()); }],
+      [t('menu_friendly'), 'Partida rápida contra a CPU ou um amigo.', () => { this.setup.mode = 'friendly';
+        if (this.skipCtrl()) { this.setup.homeDevices = ['kb']; this.setup.awayDevices = []; this.fade(() => this.teamSelect(false)); } else this.fade(() => this.controlSelect()); }],
       [this.cup && !this.cup.done ? t('menu_continue_cup') : t('menu_cup'), '8 seleções, mata-mata até a grande final.', () => this.fade(() => (this.cup && !this.cup.done ? this.cupScreen() : this.cupNew()))],
       [this.career ? 'Modo Carreira (continuar)' : 'Modo Carreira', 'Temporadas com liga, playoffs, evolução do elenco e convites de outras seleções.', () => this.fade(() => (this.career ? this.careerHub() : this.teamSelect(false, false, true)))],
       [t('menu_training'), 'Bicicletas, chapéus e voleios sem pressão.', () => { this.setup.mode = 'training'; this.fade(() => this.teamSelect(true)); }],
@@ -198,6 +210,7 @@ export class Flow {
       <div><h2>${t('cpu')}</h2><div class="slot" data-s="0"></div></div><div><h2>${t('away')}</h2><div class="slot" data-s="1"></div></div></div>
       <div class="hint">${t('ctrl_hint')} · <img src="${A('ui/input/key_enter.png')}"> ${t('play')} · <img src="${A('ui/input/key_escape.png')}"> ${t('back')}</div></div>`);
     this.mount(el);
+    this.touchBar(el, [[t('back'), 'Escape'], [t('play'), 'Enter', 'go']]);
     this.nav = undefined;
     const pos = new Map<DeviceId, number>();
     for (const d of this.setup.homeDevices) pos.set(d, -1);
@@ -252,6 +265,8 @@ export class Flow {
       <div class="arena-pick">${arenaDefs.map((a) => `<div class="a" data-a="${a.id}">${a.name}</div>`).join('')}</div>
       <div class="hint"><img src="${A('ui/input/key_arrows.png')}">times/uniformes · <img src="${A('ui/input/key_enter.png')}">${t('start_match')} · <img src="${A('ui/input/key_escape.png')}">${t('back')}</div></div>`);
     this.mount(el);
+    this.touchBar(el, [[t('back'), 'Escape'], [careerMode ? 'ESCOLHER' : training ? 'TREINAR' : 'COMEÇAR', 'Enter', 'go']]);
+    el.querySelectorAll('.tcard').forEach((c, i) => c.addEventListener('pointerdown', () => { focus = i; refresh(); }));
     this.nav = undefined;
     const cards = [...el.querySelectorAll('.tcard')] as HTMLElement[];
     const models: Athlete[] = [];
@@ -322,7 +337,7 @@ export class Flow {
         if (cupMode) { this.fade(() => this.cupStart()); return; }
         if (training) { this.setup.mode = 'training'; this.setup.homeDevices = ['kb', ...input.devices().filter((d) => d !== 'kb')]; this.setup.awayDevices = []; }
         this.fade(() => { void this.loading(); });
-      } else if (M.back) { audio.play('ui_back'); this.tick = undefined; this.fade(() => (training || cupMode ? this.mainMenu() : this.controlSelect())); }
+      } else if (M.back) { audio.play('ui_back'); this.tick = undefined; this.fade(() => (training || cupMode || this.skipCtrl() ? this.mainMenu() : this.controlSelect())); }
       void dt;
     };
   }
@@ -392,7 +407,7 @@ export class Flow {
       const upd = (tr: typeof m.training) => {
         const lines = [{ text: `${t('ch_bicycle')} (${Math.min(5, tr.bicycle)}/5)`, ok: tr.bicycle >= 5 }, { text: `${t('ch_sombrero')} (${Math.min(3, tr.sombrero)}/3)`, ok: tr.sombrero >= 3 },
           { text: `${t('ch_volley')} (${Math.min(5, tr.volley)}/5)`, ok: tr.volley >= 5 }];
-        m.hud.challenge([...lines, { text: '[L] sem bola: treinador cruza · [ESC] menu', ok: false }]);
+        m.hud.challenge([...lines, { text: input.touch ? 'CRUZAR sem bola: treinador cruza · ❚❚ menu' : '[L] sem bola: treinador cruza · [ESC] menu', ok: false }]);
         if (lines.every((l) => l.ok) && !tr.done) { tr.done = true; m.hud.big(t('ch_done'), true); m.fx.confettiBurst(new THREE.Vector3(0, 0, 0), 300, 20); audio.playMusic('victory'); }
       };
       m.onEvent = (e, p, x) => { if (e === 'training') { upd(x); if (x.done) progress.add('aluno'); } this.achEvent(m, e, p, x); };
@@ -966,6 +981,7 @@ export class Flow {
     this.mount(el);
     this.nav = undefined;
     audio.playMusic('halftime');
+    this.touchBar(el, [[t('back'), 'Escape']]);
     this.tick = () => { if (input.menu.back || input.menu.ok) { this.tick = undefined; audio.play('ui_back'); this.fade(() => this.mainMenu()); } };
   }
 }

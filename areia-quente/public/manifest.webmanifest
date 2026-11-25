@@ -1,0 +1,22 @@
+{
+  "name": "Areia Quente — Futebol de Praia",
+  "short_name": "Areia Quente",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#08101f",
+  "theme_color": "#08101f",
+  "icons": [
+    {
+      "src": "assets/ui/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/ui/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
