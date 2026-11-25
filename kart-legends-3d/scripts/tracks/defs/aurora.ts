@@ -316,7 +316,7 @@ export const CANION_SOLAR: TrackDef = {
     { x: 178, z: 72, y: 5.6, bank: -5 },
     { x: 190, z: 10, y: 4, bank: 0, surface: 'sand', flat: 46, tag: 'dunas' },
     // esse nas dunas
-    { x: 168, z: -34, y: 3.4, w: 8.5 },
+    { x: 168, z: -34, y: 3.4, w: 8.5, surface: 'dirt' },
     { x: 186, z: -74, y: 3, surface: 'dirt' },
     { x: 150, z: -112, y: 3.4 },
     { x: 110, z: -122, y: 4, flat: 16, tag: 'tempestade' },

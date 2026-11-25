@@ -159,7 +159,7 @@ export class AiDriver {
     const ice = k.surface === 4;
     const sharp = Math.abs(curvature) > 0.0145;
     if (!sharp) { this.cornerDecided = false; this.driftCorner = false; }
-    else if (!this.cornerDecided) { this.cornerDecided = true; this.driftCorner = this.rng() < p.drift; }
+    else if (!this.cornerDecided) { this.cornerDecided = true; this.driftCorner = this.rng() < p.drift && k.pathId < 0 && this.driftable(k, track, curvature); }
     if (this.wantDrift) {
       const done = Math.abs(curvature) < 0.009 || k.driftLevel >= 3 || Math.sign(-curvature) !== k.driftDir || !k.drifting && k.driftHeld;
       if (done) this.wantDrift = false;
@@ -183,6 +183,22 @@ export class AiDriver {
     inp.brake = brake;
     inp.drift = this.wantDrift;
     inp.item = this.decideItem(k, w, dt);
+  }
+
+  /**
+   * Curva boa para derrapar: o drift abre a trajetória, então em esses (curva para o outro lado logo em seguida)
+   * e em trechos estreitos o piloto contorna sem derrapar.
+   */
+  private driftable(k: KartState, track: TrackRuntime, curvature: number): boolean {
+    const main = track.main;
+    const sign = Math.sign(curvature);
+    const span = Math.round(46 / track.data.spacing);
+    for (let j = 2; j <= span; j++) {
+      const i = main.wrap(k.mainIndex + j);
+      if (main.halfWidth[i]! < 6.8) return false;
+      if (Math.sign(main.curvature[i]!) === -sign && Math.abs(main.curvature[i]!) > 0.02) return false;
+    }
+    return true;
   }
 
   /** Desvia de karts mais lentos logo à frente (ultrapassagem pelo lado livre). */
