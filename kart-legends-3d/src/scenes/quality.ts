@@ -10,10 +10,14 @@ export interface QualityProfile {
   post: boolean;
   /** Distância máxima de desenho (m): a neblina fecha antes dela. */
   drawDistance: number;
+  /** Raio (m) em que os pilotos ganham as camadas procedurais (inércia do corpo e acessórios com mola). */
+  animDetail: number;
+  /** Escala do tremor de câmera (impactos, aterrissagens, turbo). */
+  shake: number;
 }
 
 export const QUALITY: Record<'low' | 'medium' | 'high', QualityProfile> = {
-  low: { dpr: [0.75, 1], antialias: false, shadows: false, shadowSize: 512, particles: 1200, weather: 0.35, post: false, drawDistance: 340 },
-  medium: { dpr: [1, 1.5], antialias: true, shadows: true, shadowSize: 1024, particles: 2600, weather: 0.7, post: true, drawDistance: 700 },
-  high: { dpr: [1, 2], antialias: true, shadows: true, shadowSize: 2048, particles: 4200, weather: 1, post: true, drawDistance: 1600 },
+  low: { dpr: [0.75, 1], antialias: false, shadows: false, shadowSize: 512, particles: 1200, weather: 0.35, post: false, drawDistance: 340, animDetail: 22, shake: 0.6 },
+  medium: { dpr: [1, 1.5], antialias: true, shadows: true, shadowSize: 1024, particles: 2600, weather: 0.7, post: true, drawDistance: 700, animDetail: 45, shake: 0.85 },
+  high: { dpr: [1, 2], antialias: true, shadows: true, shadowSize: 2048, particles: 4200, weather: 1, post: true, drawDistance: 1600, animDetail: 70, shake: 1 },
 };

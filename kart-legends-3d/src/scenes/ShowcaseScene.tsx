@@ -43,21 +43,32 @@ export function ShowcaseScene({ screen, characterId, kartId, studio }: { screen:
   }, [model, outfit, kartLook, studio]);
   const turn = useRef(0.6);
   const look = useRef(new THREE.Vector3(-1.5, 0.8, 0));
+  const tmp = useRef(new THREE.Vector3());
   const first = useRef(true);
+  /** Tempo desde a troca de kart/piloto: o conjunto novo entra com um "pop" elástico. */
+  const pop = useRef(9);
+  useEffect(() => { pop.current = first.current ? 9 : 0; }, [model]);
   const accent = CHARACTER_BY_ID[characterId].color;
 
   useFrame((_, delta) => {
     const dt = Math.min(delta, 0.1);
     if (!studio) turn.current += dt * 0.35;
     model.group.rotation.y = studio ? (studio === 'character' ? 0.45 : 0.85) : turn.current;
+    if (!studio) {
+      const t = (pop.current += dt);
+      // mola sub-amortecida analítica: cresce de 0,8 passando um pouco do ponto e assenta
+      const k = t > 1.4 ? 1 : 1 - 0.2 * Math.exp(-6 * t) * Math.cos(11 * t);
+      model.group.scale.setScalar(k);
+      model.group.position.y = t > 1.4 ? 0 : Math.max(0, 0.35 * Math.exp(-7 * t) * Math.cos(9 * t));
+    }
     model.update(dt, IDLE);
     const shot = studio === 'character' ? { pos: [0.75, 1.55, 2.55], target: [0, 1.12, 0.05], fov: 30 } as Shot
       : studio === 'kart' ? { pos: [0.4, 1.7, 5.2], target: [0, 0.5, 0], fov: 30 } as Shot
         : SHOTS[screen] ?? SHOTS.default;
-    const k = first.current ? 1 : Math.min(1, dt * 2.6);
+    const k = first.current ? 1 : 1 - Math.exp(-2.6 * dt);
     first.current = false;
-    camera.position.lerp(new THREE.Vector3(...shot.pos), k);
-    look.current.lerp(new THREE.Vector3(...shot.target), k);
+    camera.position.lerp(tmp.current.set(shot.pos[0], shot.pos[1], shot.pos[2]), k);
+    look.current.lerp(tmp.current.set(shot.target[0], shot.target[1], shot.target[2]), k);
     camera.lookAt(look.current);
     if (Math.abs(camera.fov - shot.fov) > 0.05) { camera.fov += (shot.fov - camera.fov) * k; camera.updateProjectionMatrix(); }
   });

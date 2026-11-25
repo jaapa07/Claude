@@ -69,9 +69,12 @@ export interface KartVisualState {
 }
 
 const WHEELS = ['wheel_fl', 'wheel_fr', 'wheel_rl', 'wheel_rr'] as const;
+/** Passo máximo das molas visuais. */
+const SPRING_DT = 1 / 60;
+const damp = (k: number, dt: number): number => 1 - Math.exp(-k * dt);
 const DRIFT_COLORS = [new THREE.Color('#ffffff'), new THREE.Color('#4fb6ff'), new THREE.Color('#ff9a2e'), new THREE.Color('#ff3fd2')];
 
-interface Wheel { pivot: THREE.Group; mesh: THREE.Object3D; base: THREE.Quaternion; sign: number; radius: number; front: boolean; restY: number }
+interface Wheel { pivot: THREE.Group; mesh: THREE.Object3D; base: THREE.Quaternion; sign: number; radius: number; front: boolean; restY: number; angle: number }
 
 /**
  * Kart + piloto prontos para a cena: rodas independentes que giram e esterçam, volante, suspensão,
@@ -92,14 +95,36 @@ export class KartModel {
   private readonly blob: THREE.Mesh;
   private shieldMesh: THREE.Object3D | null = null;
   readonly animator: CharacterAnimator | null;
-  private wheelAngle = 0;
+  /** Nível de detalhe da animação do piloto (0 = só clipes; 1 = inércia e acessórios com mola). */
+  detail = 1;
+  private wheelSteer = 0;
+  private steerWheel = 0;
   private roll = 0;
+  private rollV = 0;
   private pitch = 0;
+  private pitchV = 0;
   private driftYaw = 0;
   private suspension = 0;
   private suspensionVel = 0;
-  private lastSpeed = 0;
+  private airK = 0;
+  private landVy = 0;
+  private lastHop = 0;
+  private lastSpin = 0;
+  private flameOn = false;
+  private flameK = 0;
+  private flameKick = 0;
   private wasGrounded = true;
+  private hasPrev = false;
+  private readonly prevPos = new THREE.Vector3();
+  private readonly vel = new THREE.Vector3();
+  private readonly prevVel = new THREE.Vector3();
+  private readonly accW = new THREE.Vector3();
+  /** Aceleração filtrada no referencial do kart (x = esquerda, y = cima, z = frente). */
+  private readonly acc = new THREE.Vector3();
+  private readonly tmpV = new THREE.Vector3();
+  private readonly mood: DriverMood = {
+    speed: 0, steer: 0, drifting: false, driftDir: 0, boosting: false, airborne: false, mood: 'idle', ax: 0, ay: 0, az: 0, detail: 1,
+  };
   private time = Math.random() * 10;
   private readonly owned: THREE.Material[] = [];
   private readonly kartScene: THREE.Object3D;
@@ -233,7 +258,7 @@ export class KartModel {
       mesh.position.set(0, 0, 0);
       mesh.quaternion.copy(wq);
       const sign = new THREE.Vector3(1, 0, 0).applyQuaternion(wq).x >= 0 ? 1 : -1;
-      this.wheels.push({ pivot, mesh, base: wq.clone(), sign, radius: Math.max(0.2, wp.y), front: name.endsWith('fl') || name.endsWith('fr'), restY: wp.y });
+      this.wheels.push({ pivot, mesh, base: wq.clone(), sign, radius: Math.max(0.2, wp.y), front: name.endsWith('fl') || name.endsWith('fr'), restY: wp.y, angle: 0 });
     }
     this.steering = kartScene.getObjectByName('steering') ?? null;
     if (this.steering) this.steeringBase.copy(this.steering.quaternion);
@@ -291,55 +316,109 @@ export class KartModel {
 
   triggerHit(): void { this.animator?.trigger('hit'); }
 
+  /** Velocidade/aceleração do kart medidas pela própria posição desenhada (filtradas, sem alocação). */
+  private measureMotion(dt: number): void {
+    const p = this.group.position;
+    if (!this.hasPrev || dt <= 1e-4) {
+      this.prevPos.copy(p); this.hasPrev = true;
+      return;
+    }
+    this.tmpV.subVectors(p, this.prevPos);
+    this.prevPos.copy(p);
+    // teletransporte (renascimento, kart que volta a ser desenhado): zera a medição
+    if (this.tmpV.lengthSq() > 64) { this.vel.set(0, 0, 0); this.prevVel.set(0, 0, 0); this.accW.set(0, 0, 0); this.acc.set(0, 0, 0); return; }
+    this.vel.lerp(this.tmpV.divideScalar(dt), damp(30, dt));
+    this.tmpV.subVectors(this.vel, this.prevVel).divideScalar(dt).clampLength(0, 90);
+    this.prevVel.copy(this.vel);
+    this.accW.lerp(this.tmpV, damp(14, dt));
+    this.acc.copy(this.accW).applyQuaternion(this.tmpQ.copy(this.group.quaternion).invert());
+  }
+
   update(dt: number, s: KartVisualState): void {
     this.time += dt;
-    // rodas
-    this.wheelAngle += (s.speed * dt);
-    const steerAngle = -s.steer * 0.42 + (s.drifting ? s.driftDir * 0.3 : 0);
+    this.measureMotion(dt);
+    const acc = this.acc;
+    const speedK = Math.min(1, Math.abs(s.speed) / 26);
+
+    // direção: a física já suaviza o esterço; aqui só tira o degrau quando o drift trava/solta (contra-esterço)
+    const wantSteer = -s.steer * 0.42 + (s.drifting ? s.driftDir * 0.3 : 0);
+    this.wheelSteer += (wantSteer - this.wheelSteer) * damp(16, dt);
     for (const w of this.wheels) {
-      w.pivot.rotation.y = w.front ? steerAngle : 0;
-      this.tmpQ.setFromAxisAngle(this.axisX, (this.wheelAngle / w.radius) * w.sign);
+      w.pivot.rotation.y = w.front ? this.wheelSteer : 0;
+      // giro = velocidade no chão / raio; no drift as traseiras patinam um pouco mais rápido
+      const slip = !w.front && s.drifting && s.grounded ? 1.18 : 1;
+      w.angle = (w.angle + (s.speed * slip * dt) / w.radius) % (Math.PI * 2);
+      this.tmpQ.setFromAxisAngle(this.axisX, w.angle * w.sign);
       w.mesh.quaternion.copy(w.base).multiply(this.tmpQ);
     }
     if (this.steering) {
-      this.tmpQ.setFromAxisAngle(this.axisZ, s.steer * 1.25);
+      // o volante acompanha as mãos do piloto (clipe), assim as mãos nunca escorregam da coroa
+      const hands = this.animator?.wheelAngle;
+      const want = hands !== null && hands !== undefined ? -hands : s.steer * 1.25;
+      this.steerWheel += (want - this.steerWheel) * damp(hands !== null && hands !== undefined ? 40 : 14, dt);
+      this.tmpQ.setFromAxisAngle(this.axisZ, this.steerWheel);
       this.steering.quaternion.copy(this.steeringBase).multiply(this.tmpQ);
     }
 
-    // suspensão: mola amortecida excitada por aceleração, aterrissagem e irregularidade
-    const accel = (s.speed - this.lastSpeed) / Math.max(dt, 1e-3);
-    this.lastSpeed = s.speed;
-    if (s.grounded && !this.wasGrounded) this.suspensionVel -= 2.4;
+    // impactos: aterrissagem (pela velocidade vertical), fim do pulinho do drift e começo do giro
+    if (s.grounded && !this.wasGrounded) {
+      const impact = THREE.MathUtils.clamp(-this.landVy * 0.16, 0.7, 3.4);
+      this.suspensionVel -= impact;
+      this.pitchV += impact * 0.55;
+    }
+    if (!s.grounded) this.landVy = Math.min(this.landVy, this.vel.y); else this.landVy = 0;
     this.wasGrounded = s.grounded;
-    const bump = s.grounded ? Math.sin(this.time * 31) * Math.min(1, Math.abs(s.speed) / 20) * 0.6 : 0;
-    this.suspensionVel += (-this.suspension * 260 - this.suspensionVel * 18 + bump) * dt;
-    this.suspension = THREE.MathUtils.clamp(this.suspension + this.suspensionVel * dt, -0.12, 0.1);
-    const air = s.grounded ? 0 : 1;
+    const hop = Math.min(1, Math.max(0, s.hop));
+    if (this.lastHop > 0 && hop === 0) this.suspensionVel -= 1.1;
+    this.lastHop = hop;
+    if (s.spin > 0 && this.lastSpin === 0) { this.suspensionVel += 1.6; this.rollV += (Math.random() < 0.5 ? -1 : 1) * 2.2; }
+    this.lastSpin = s.spin;
 
-    // inclinação: rola para fora da curva, mergulha na frenagem, empina no turbo
-    const speedK = Math.min(1, Math.abs(s.speed) / 26);
-    const wantRoll = (s.steer * 0.11 * speedK) + (s.drifting ? s.driftDir * 0.2 : 0);
-    const wantPitch = THREE.MathUtils.clamp(-accel * 0.0035, -0.09, 0.12) - s.boost * 0.07 - air * 0.12;
-    this.roll += (wantRoll - this.roll) * Math.min(1, dt * 8);
-    this.pitch += (wantPitch - this.pitch) * Math.min(1, dt * 7);
-    this.chassis.rotation.set(this.pitch, 0, this.roll);
-    this.chassis.position.y = this.suspension + air * 0.05;
-    for (const w of this.wheels) w.pivot.position.y = w.restY - air * 0.07;
+    // suspensão, arfagem e rolagem: molas amortecidas (passo fixo interno → mesmo resultado em qualquer FPS)
+    this.airK += ((s.grounded ? 0 : 1) - this.airK) * damp(s.grounded ? 18 : 6, dt);
+    const bumpAmp = s.grounded ? Math.min(1, Math.abs(s.speed) / 20) * 0.6 : 0;
+    const wantPitch = THREE.MathUtils.clamp(-acc.z * 0.0032, -0.08, 0.1) - s.boost * 0.06 - this.airK * 0.1;
+    const wantRoll = s.steer * 0.11 * speedK + (s.drifting ? s.driftDir * 0.2 : 0);
+    let left = dt;
+    while (left > 1e-5) {
+      const h = Math.min(SPRING_DT, left);
+      left -= h;
+      const bump = Math.sin((this.time - left) * 31) * bumpAmp;
+      this.suspensionVel += (-this.suspension * 260 - this.suspensionVel * 18 + bump) * h;
+      this.suspension = THREE.MathUtils.clamp(this.suspension + this.suspensionVel * h, -0.13, 0.1);
+      this.pitchV += (130 * (wantPitch - this.pitch) - 13 * this.pitchV) * h;
+      this.pitch += this.pitchV * h;
+      this.rollV += (110 * (wantRoll - this.roll) - 12 * this.rollV) * h;
+      this.roll += this.rollV * h;
+    }
+    // motor em marcha lenta: vibração fininha parado
+    const idle = Math.abs(s.speed) < 1 && s.grounded ? 1 : 0;
+    const hopArc = Math.sin(hop * Math.PI);
+    this.chassis.rotation.set(this.pitch - hopArc * 0.05, 0, this.roll + idle * Math.sin(this.time * 43) * 0.004);
+    this.chassis.position.y = this.suspension + this.airK * 0.05 + idle * Math.sin(this.time * 57) * 0.005;
+    for (const w of this.wheels) w.pivot.position.y = w.restY - this.airK * 0.07;
 
-    // drift: o kart aponta para dentro da curva; atingido: gira
+    // drift: o kart aponta para dentro da curva; atingido: gira (rápido no impacto, freando até parar de frente)
     const wantYaw = s.drifting ? -s.driftDir * 0.42 : 0;
-    this.driftYaw += (wantYaw - this.driftYaw) * Math.min(1, dt * 9);
-    this.yaw.rotation.y = this.driftYaw + s.spin * Math.PI * 4;
-    this.yaw.position.y = Math.sin(Math.min(1, s.hop) * Math.PI) * 0.32;
+    this.driftYaw += (wantYaw - this.driftYaw) * damp(9, dt);
+    const spinEase = 1 - Math.pow(1 - Math.min(1, s.spin), 2.2);
+    this.yaw.rotation.y = this.driftYaw + (s.spin > 0 ? spinEase * Math.PI * 4 : 0);
+    this.yaw.position.y = hopArc * 0.32;
 
-    // chamas de turbo
+    // chamas de turbo: acendem com um estouro, oscilam e apagam encolhendo
     const on = s.boost > 0.02;
+    if (on && !this.flameOn) this.flameKick = 1;
+    this.flameOn = on;
+    this.flameKick *= Math.exp(-5 * dt);
+    this.flameK += ((on ? 1 : 0) - this.flameK) * damp(on ? 28 : 10, dt);
+    const flameVisible = this.flameK > 0.02;
     const c = DRIFT_COLORS[Math.min(3, Math.max(0, s.driftLevel))]!;
     for (const f of this.flames) {
-      f.visible = on;
-      if (on) {
-        const flick = 0.85 + Math.sin(this.time * 60 + f.id) * 0.15;
-        f.scale.set(1 + s.boost * 0.8, 1 + s.boost * 0.8, (0.7 + s.boost * 1.3) * flick);
+      f.visible = flameVisible;
+      if (flameVisible) {
+        const flick = 0.86 + 0.14 * Math.sin(this.time * 53 + f.id) * Math.sin(this.time * 21 + f.id * 2.3);
+        const wid = (1 + s.boost * 0.8 + this.flameKick * 0.35) * (0.55 + 0.45 * this.flameK);
+        f.scale.set(wid, wid, (0.7 + s.boost * 1.3 + this.flameKick * 0.9) * this.flameK * flick);
       }
     }
     if (on) this.flameMaterial.color.set(s.driftLevel > 0 ? c : this.flameColor);
@@ -350,11 +429,16 @@ export class KartModel {
     }
     // pisca enquanto invulnerável
     this.yaw.visible = !s.invulnerable || Math.floor(this.time * 14) % 2 === 0 || s.spin > 0;
-    (this.blob.material as THREE.MeshBasicMaterial).opacity = s.grounded ? 0.32 : 0.14;
+    const blob = this.blob.material as THREE.MeshBasicMaterial;
+    blob.opacity = 0.32 - this.airK * 0.18;
+    this.blob.scale.set(0.9 * (1 - this.airK * 0.15), 1.35 * (1 - this.airK * 0.15), 1);
 
-    this.animator?.update(dt, {
-      speed: s.speed, steer: s.steer, drifting: s.drifting, driftDir: s.driftDir, boosting: on, airborne: !s.grounded, mood: s.mood,
-    });
+    if (this.animator) {
+      const m = this.mood;
+      m.speed = s.speed; m.steer = s.steer; m.drifting = s.drifting; m.driftDir = s.driftDir; m.boosting = on;
+      m.airborne = !s.grounded; m.mood = s.mood; m.ax = acc.x; m.ay = acc.y; m.az = acc.z; m.detail = this.detail;
+      this.animator.update(dt, m);
+    }
   }
 
   /** Posição mundial das rodas traseiras (para fumaça/faíscas). */

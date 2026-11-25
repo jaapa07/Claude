@@ -6,7 +6,7 @@ import * as THREE from 'three';
 import type { CharacterId, KartId, TrophyTier } from '@/data/ids';
 import { audio } from '@/game/audio/audioManager';
 import { STUDIO_ENVIRONMENT, type Environment } from '@/game/tracks/environments';
-import { KartModel } from '@/game/vehicles/kartModel';
+import { KartModel, type KartVisualState } from '@/game/vehicles/kartModel';
 import { RaceVfx } from '@/game/vfx/raceVfx';
 import { cloneScene, setShadows, useModel, useModels, useParticleAtlas } from './assets';
 import { SkyAndLights } from './common/SkyAndLights';
@@ -15,7 +15,10 @@ export interface PodiumEntry { characterId: CharacterId; kartId: KartId; isPlaye
 
 const SPOTS: [number, number, number][] = [[0, 1.0, 0], [-4.2, 0.6, 0], [4.2, 0.3, 0]];
 const ENV: Environment = { ...STUDIO_ENVIRONMENT, skyTop: '#1a1450', skyHorizon: '#ff7a59', skyBottom: '#ffd08a', fogNear: 60, fogFar: 300, stars: 0.8, bloom: 0.7 };
-const POSE = { speed: 0, steer: 0, drifting: false, driftDir: 0, driftLevel: 0, boost: 0, spin: 0, grounded: true, shield: false, invulnerable: false, hop: 0 };
+/** Entrada no pódio: 3º, 2º e por último o campeão caem nos degraus (s). */
+const DROP_DELAY = [1.0, 0.55, 0.15];
+const DROP_TIME = 0.5;
+const DROP_HEIGHT = 3.2;
 
 /** Cerimônia do pódio: os três primeiros nos degraus, comemorando, com confetes e troféu. */
 export function PodiumScene({ entries, trophy }: { entries: PodiumEntry[]; trophy: TrophyTier | null }): JSX.Element {
@@ -36,6 +39,10 @@ export function PodiumScene({ entries, trophy }: { entries: PodiumEntry[]; troph
   const vfx = useMemo(() => new RaceVfx(atlas, ENV, 1500), [atlas]);
   const cup = useMemo(() => { const c = cloneScene(trophyGltf); c.scale.setScalar(1.6); return c; }, [trophyGltf]);
   const t = useRef(0);
+  const poses = useMemo(() => models.map((_, i): KartVisualState => ({
+    speed: 0, steer: 0, drifting: false, driftDir: 0, driftLevel: 0, boost: 0, spin: 0, grounded: false, shield: false, invulnerable: false, hop: 0,
+    mood: i === 0 ? 'victory' : 'podium',
+  })), [models]);
   const burst = useRef(0);
   useEffect(() => {
     audio.sfx('finish', { volume: 0.7 });
@@ -47,9 +54,15 @@ export function PodiumScene({ entries, trophy }: { entries: PodiumEntry[]; troph
     t.current += dt;
     models.forEach((m, i) => {
       const s = SPOTS[i]!;
-      m.group.position.set(s[0], s[1], s[2] + 0.2);
-      m.group.rotation.y = i === 0 ? 0 : i === 1 ? 0.35 : -0.35;
-      m.update(dt, { ...POSE, mood: 'podium' });
+      // queda com aceleração (a suspensão e o piloto reagem à aterrissagem); o campeão comemora ao pousar
+      const u = Math.min(1, Math.max(0, (t.current - DROP_DELAY[i]!) / DROP_TIME));
+      const pose = poses[i]!;
+      pose.grounded = u >= 1;
+      pose.mood = u >= 1 && i === 0 ? 'victory' : 'podium';
+      m.group.visible = t.current > DROP_DELAY[i]! - 0.05;
+      m.group.position.set(s[0], s[1] + (1 - u * u) * DROP_HEIGHT, s[2] + 0.2);
+      m.group.rotation.y = (i === 0 ? 0 : i === 1 ? 0.35 : -0.35) + (1 - u) * (1 - u) * (i === 2 ? -1.2 : 1.2);
+      m.update(dt, pose);
     });
     cup.rotation.y = t.current * 1.2;
     cup.position.set(0, 3.1 + Math.sin(t.current * 2) * 0.08, 1.2);
