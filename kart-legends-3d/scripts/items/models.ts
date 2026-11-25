@@ -1,5 +1,5 @@
 /** Modelos dos itens e objetos de corrida. Cada função devolve a entrada do manifesto. */
-import { Model, box, cone, cyl, flat, ico, lathe, mix, sphere, torus, tube, THREE, type V3 } from '../lib/geo';
+import { Model, box, cone, cyl, flat, ico, lathe, mix, rng, sphere, torus, tube, THREE, type V3 } from '../lib/geo';
 import { bolt, cbox, gear, leafBlade, plateXY, plateXZ, profileX, quads, rod, shell, type P2 } from '../karts/common';
 import { ItemBuilder, quat, sampled, spin, texPlane, wave, type ItemEntry } from './util';
 
@@ -255,6 +255,86 @@ export async function cristalSalto(): Promise<ItemEntry> {
   );
   it.clip('loop', dur);
   return it.save('Cristal alado sobre mola (≈1,0 m de altura), origem na base.');
+}
+
+/**
+ * Raio Corrente: um segmento de raio unitário ao longo de +Z (z = 0 → 1), em zigue-zague, com núcleo
+ * branco e halo verde-limão. O runtime estica em Z até o alvo e gira em torno do eixo para tremeluzir.
+ */
+export async function raioCorrente(): Promise<ItemEntry> {
+  const it = new ItemBuilder('raio-corrente');
+  const r = rng(0x5a17);
+  const path = (amp: number, seed: number): V3[] => {
+    const pts: V3[] = [[0, 0, 0]];
+    for (let i = 1; i < 9; i++) {
+      const a = (i * 2.399 + seed) % (Math.PI * 2);
+      const k = amp * (0.55 + 0.45 * r());
+      pts.push([Math.cos(a) * k, Math.sin(a) * k, i / 9]);
+    }
+    pts.push([0, 0, 1]);
+    return pts;
+  };
+  /** Varre cada trecho reto do zigue-zague com um bastão (cantos vivos, como um raio). */
+  const zigzag = (m: Model, pts: V3[], rad: number, mat: string, c: string): void => {
+    for (let i = 1; i < pts.length; i++) m.add(rod(pts[i - 1]!, pts[i]!, rad, rad, 5), mat, c);
+  };
+  const main = new Model();
+  const mainPts = path(0.12, 0);
+  zigzag(main, mainPts, 0.045, 'item_bolt', '#d4ff3a');
+  zigzag(main, mainPts, 0.022, 'glow_white', '#ffffff');
+  const nMain = it.part('bolt', main);
+  const fork = new Model();
+  zigzag(fork, path(0.18, 1.3), 0.02, 'item_bolt', '#efff9a');
+  const nFork = it.part('fork', fork);
+  // faíscas nas pontas (o runtime as deixa sobre o kart de origem e o atingido)
+  const ends = new Model();
+  for (const z of [0, 1]) {
+    ends.add(flat(ico(0.1, 0)), 'glow_white', '#ffffff', { p: [0, 0, z] });
+    ends.add(torus(0.13, 0.015, 4, 14), 'item_bolt', '#d4ff3a', { p: [0, 0, z] });
+  }
+  it.part('ends', ends);
+  it.add(spin(nMain, [0, 0, 1], 0.4, 1), spin(nFork, [0, 0, 1], 0.4, -2));
+  it.clip('loop', 0.4);
+  return it.save('Segmento de raio unitário de z = 0 a z = 1 (≈0,3 m de espessura); o runtime estica entre os karts.');
+}
+
+/**
+ * Cometa Guia: casca brilhante em volta do kart (nariz arredondado à frente) e cauda de fogo
+ * rosa → laranja para trás (−Z), com fitas em espiral e uma estrela-guia na ponta.
+ */
+export async function cometaGuia(): Promise<ItemEntry> {
+  const it = new ItemBuilder('cometa-guia');
+  const shellM = new Model();
+  const nose = sphere(1, 24, 14);
+  nose.scale(1.15, 0.85, 1.45);
+  shellM.add(nose, 'item_comet', (p) => mix('#ffd0ea', '#ff6fae', 0.5 - p.z * 0.35), { p: [0, 0.55, 0.2] });
+  const nShell = it.part('shell', shellM);
+  const tail = new Model();
+  tail.add(cone(1.05, 4.6, 18).rotateX(-Math.PI / 2), 'item_comet_tail', (p) => mix('#ff6fae', '#ffb22e', (-p.z - 0.6) / 4.6), { p: [0, 0.55, -2.9] });
+  tail.add(cone(0.55, 3.2, 12).rotateX(-Math.PI / 2), 'glow_white', (p) => mix('#fff3c0', '#ffc46a', (-p.z - 0.6) / 3.2), { p: [0, 0.55, -2.2] });
+  const nTail = it.part('tail', tail);
+  const ribbons = new Model();
+  for (let i = 0; i < 3; i++) {
+    const pts: V3[] = [];
+    for (let j = 0; j <= 16; j++) {
+      const t = j / 16, a = (i / 3) * Math.PI * 2 + t * Math.PI * 2.2, rr = 1.05 * (1 - t) + 0.1;
+      pts.push([Math.cos(a) * rr, 0.55 + Math.sin(a) * rr * 0.8, 0.4 - t * 5]);
+    }
+    ribbons.add(tube(pts, (t) => 0.06 * (1 - t) + 0.01, 32, 5), 'glow_magenta', '#ffc4ee');
+  }
+  const nRib = it.part('ribbons', ribbons);
+  const star = new Model();
+  star.add(compassStar(0.32, 0.08), 'item_glow_yellow', '#ffe36a');
+  star.add(sphere(0.08, 10, 6), 'glow_white', '#ffffff');
+  const nStar = it.part('star', star, { t: [0, 0.75, 1.75] });
+  it.add(
+    spin(nRib, [0, 0, 1], 0.6, -1),
+    spin(nStar, [0, 0, 1], 0.6, 1),
+    sampled(nTail, 'scale', 0.6, (ph) => [1 + 0.06 * wave(ph, 2), 1 + 0.06 * wave(ph, 2), 1 + 0.1 * wave(ph, 3)]),
+    sampled(nShell, 'scale', 0.6, (ph) => { const k = 1 + 0.03 * wave(ph, 2); return [k, k, k]; }),
+  );
+  it.clip('loop', 0.6);
+  return it.save('Aura do kart em modo cometa: casca de ≈2,3 m em volta do kart e cauda de ≈5 m para −Z; origem no chão sob o kart.');
 }
 
 export async function boostPad(): Promise<ItemEntry> {

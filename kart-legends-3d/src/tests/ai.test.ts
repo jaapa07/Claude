@@ -80,7 +80,7 @@ describe('adversários: usam os mesmos sistemas que o jogador', () => {
     expect(count('boost_pad')).toBeGreaterThan(100);
     expect(all.reduce((s, r) => s + r.shortcutSteps, 0)).toBeGreaterThan(2000);
     const items = new Set(all.flatMap((r) => r.events.filter((e) => e.type === 'item_use').map((e) => (e.type === 'item_use' ? e.item : ''))));
-    expect(items.size).toBe(6);
+    expect(items.size).toBe(8);
   });
 
   it('desviam de obstáculos móveis na maior parte das vezes', async () => {

@@ -1,6 +1,7 @@
 import { ITEM_BY_ID } from '@/data/items';
 import { ITEM_IDS, type ItemId } from '@/data/ids';
 import type { Rng } from '@/game/core/rng';
+import { GROUP_KART, GROUP_OBSTACLE, GROUP_STATIC, groups } from '@/game/physics/trackColliders';
 import type { SimEvent } from '@/game/racing/events';
 import { angleDiff, type TrackRuntime } from '@/game/tracks/trackRuntime';
 import { applyBoost, jump, spinOut } from '@/game/vehicles/kartPhysics';
@@ -52,6 +53,8 @@ export const RAM_RADIUS = 3.4;
 const RAM_PUSH = 10;
 /** O Cometa Guia só sai para quem está na metade de trás do grid (fração de posição ≥ isto). */
 export const COMET_MIN_RANK = 0.5;
+/** Velocidade (m/s) que o piloto automático aceita numa curva com dica de velocidade 1 (a IA usa ≈31). */
+const COMET_CORNER_SPEED = 38;
 
 /**
  * Peso de cada item conforme a posição (r = 0 líder … 1 último). Quem está atrás recebe mais
@@ -227,6 +230,8 @@ export class ItemSystem {
         k.drifting = false; k.driftCharge = 0; k.driftLevel = 0;
         applyBoost(k, dur, 4);
         this.cometOn[k.index] = true;
+        // atravessa os obstáculos móveis (sem colidir com eles) enquanto dura
+        k.collider.setCollisionGroups(groups(GROUP_KART, GROUP_STATIC | GROUP_KART));
         break;
       }
     }
@@ -296,7 +301,11 @@ export class ItemSystem {
     }
     const diff = angleDiff(Math.atan2(this.tmp.x - k.x, this.tmp.z - k.z), k.heading);
     inp.steer = Math.max(-1, Math.min(1, -diff * 2.6));
-    inp.throttle = 1; inp.brake = 0; inp.drift = false; inp.reset = false;
+    // curva fechada logo à frente: segura um pouco (ainda bem acima do ritmo normal dela)
+    const brakeLook = main.wrap(k.mainIndex + Math.round((v * 0.35) / track.data.spacing));
+    const hint = k.pathId >= 0 ? 1 : Math.min(track.speedHint[k.mainIndex]!, track.speedHint[brakeLook]!);
+    const tight = hint < 0.85 && k.speed > hint * COMET_CORNER_SPEED;
+    inp.throttle = tight ? 0 : 1; inp.brake = tight ? 1 : 0; inp.drift = false; inp.reset = false;
   }
 
   /** Cometas ativos tiram do caminho quem encostar neles; avisa quando um cometa termina. */
@@ -304,7 +313,11 @@ export class ItemSystem {
     for (const o of karts) this.ramCooldown[o.index] = Math.max(0, (this.ramCooldown[o.index] ?? 0) - dt);
     for (const k of karts) {
       if (k.comet <= 0) {
-        if (this.cometOn[k.index]) { this.cometOn[k.index] = false; this.emit({ type: 'comet_end', kart: k.index }); }
+        if (this.cometOn[k.index]) {
+          this.cometOn[k.index] = false;
+          k.collider.setCollisionGroups(groups(GROUP_KART, GROUP_STATIC | GROUP_KART | GROUP_OBSTACLE));
+          this.emit({ type: 'comet_end', kart: k.index });
+        }
         continue;
       }
       const fx = Math.sin(k.heading), fz = Math.cos(k.heading);

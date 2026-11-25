@@ -2,7 +2,8 @@ import { useFrame } from '@react-three/fiber';
 import { useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import type { RaceSim } from '@/game/racing/raceSim';
-import { WIND_RADIUS } from '@/game/items/itemSystem';
+import { ARC_LIFE, WIND_RADIUS } from '@/game/items/itemSystem';
+import { ITEM_BY_ID } from '@/data/items';
 import { PHYS } from '@/game/vehicles/kartTuning';
 import type { AnimatedPropData } from '@/game/tracks/trackTypes';
 import { cloneScene, setShadows, useModels } from '../assets';
@@ -34,9 +35,10 @@ function fitToBox(obj: THREE.Object3D, w: number, h: number, l: number): THREE.G
 export function RaceObjects({ view }: { view: React.MutableRefObject<RaceView> }): JSX.Element {
   const sim = view.current.sim;
   const data = sim.track.data;
-  const [box, pad, ramp, arch, mist, spark, wave] = useModels([
+  const [box, pad, ramp, arch, mist, spark, wave, bolt, comet] = useModels([
     'items/item-box.glb', 'items/boost-pad.glb', 'items/ramp.glb', 'items/finish-arch.glb',
     'items/nevoa-prisma.glb', 'items/faisca-rastreadora.glb', 'items/onda-vento.glb',
+    'items/raio-corrente.glb', 'items/cometa-guia.glb',
   ]);
   const obstacleIds = useMemo(() => [...new Set(data.obstacles.map((o) => o.model))], [data]);
   const obstacleModels = useModels(obstacleIds.map((id) => `props/${id}.glb`));
@@ -83,6 +85,15 @@ export function RaceObjects({ view }: { view: React.MutableRefObject<RaceView> }
     const mists = pool(mist!.scene, 8);
     const sparks = pool(spark!.scene, 8);
     const waves = pool(wave!.scene, 6);
+    // raios (dois segmentos por elo, girados entre si) e auras de cometa, com a animação do GLB
+    const mixers: THREE.AnimationMixer[] = [];
+    const animated = (src: typeof bolt, n: number): THREE.Object3D[] => pool(src!.scene, n).map((o) => {
+      const clip = src!.animations[0];
+      if (clip) { const m = new THREE.AnimationMixer(o); m.clipAction(clip).play(); mixers.push(m); }
+      return o;
+    });
+    const bolts = animated(bolt, 12);
+    const comets = animated(comet, sim.karts.length);
     const obstacles = sim.obstacles.map((o) => {
       const g = new THREE.Group();
       const spin = new THREE.Group();
@@ -98,8 +109,8 @@ export function RaceObjects({ view }: { view: React.MutableRefObject<RaceView> }
       const style: SliderStyle = /drone|balao|nave/.test(m) ? 'hover' : /robo|caranguejo/.test(m) ? 'walk' : /carrinho|vagonete/.test(m) ? 'roll' : 'rigid';
       return { g, spin, style, lean: 0 };
     });
-    return { root, boxes, boxPop, mists, sparks, waves, obstacles };
-  }, [sim, data, box, pad, ramp, arch, mist, spark, wave, obstacleModels, obstacleIds]);
+    return { root, boxes, boxPop, mists, sparks, waves, bolts, comets, mixers, obstacles };
+  }, [sim, data, box, pad, ramp, arch, mist, spark, wave, bolt, comet, obstacleModels, obstacleIds]);
   useEffect(() => () => { built.root.removeFromParent(); }, [built]);
 
   useFrame((_, delta) => {
@@ -135,6 +146,34 @@ export function RaceObjects({ view }: { view: React.MutableRefObject<RaceView> }
       const w = sim.items.waves[i];
       o.visible = !!w;
       if (w) { o.position.set(w.x, w.y - 0.4, w.z); o.scale.setScalar(1 + (w.age / 0.6) * WIND_RADIUS); o.rotation.y = time * 6; }
+    });
+    for (const m of built.mixers) m.update(dt);
+    // Raio Corrente: segmento esticado do kart de origem até o atingido, tremeluzindo e sumindo
+    built.bolts.forEach((o, j) => {
+      const arc = sim.items.arcs[j >> 1];
+      o.visible = !!arc && Math.random() > 0.12;
+      if (!arc) return;
+      const a = sim.karts[arc.from]!, b = sim.karts[arc.to]!;
+      const ax = a.px + (a.x - a.px) * alpha, ay = a.py + (a.y - a.py) * alpha + 0.4, az = a.pz + (a.z - a.pz) * alpha;
+      const bx = b.px + (b.x - b.px) * alpha, by = b.py + (b.y - b.py) * alpha + 0.4, bz = b.pz + (b.z - b.pz) * alpha;
+      const len = Math.hypot(bx - ax, by - ay, bz - az);
+      const fade = 1 - arc.age / ARC_LIFE;
+      const w = (2.6 - arc.link * 0.6) * (0.4 + 0.6 * fade) * (j & 1 ? 0.7 : 1);
+      o.position.set(ax, ay, az);
+      o.lookAt(bx, by, bz);
+      o.rotateZ(Math.random() * Math.PI * 2);
+      o.scale.set(w, w, len);
+    });
+    // Cometa Guia: aura em volta do kart, crescendo ao ativar e encolhendo no fim
+    const cometDur = ITEM_BY_ID['cometa-guia'].duration;
+    built.comets.forEach((o, i) => {
+      const k = sim.karts[i]!;
+      o.visible = k.comet > 0;
+      if (!o.visible) return;
+      const grow = Math.min(1, (cometDur - k.comet) * 6, k.comet * 4);
+      o.position.set(k.px + (k.x - k.px) * alpha, k.py + (k.y - k.py) * alpha - PHYS.rideHeight, k.pz + (k.z - k.pz) * alpha);
+      o.rotation.set(0, k.pHeading + (k.heading - k.pHeading) * alpha, 0);
+      o.scale.set(grow, grow, grow * (0.8 + 0.2 * Math.min(1, k.speed / k.tuning.topSpeed)));
     });
     sim.obstacles.forEach((o, i) => {
       const v = built.obstacles[i]!;
