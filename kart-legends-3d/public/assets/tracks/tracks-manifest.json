@@ -25,14 +25,14 @@
   },
   {
     "id": "vale-moinhos",
-    "length": 1206,
-    "samples": 603,
-    "triangles": 367190,
-    "glbBytes": 11126948,
-    "jsonBytes": 106114,
-    "props": 465,
-    "animated": 8,
-    "colliders": 196,
+    "length": 1350,
+    "samples": 675,
+    "triangles": 369102,
+    "glbBytes": 11455192,
+    "jsonBytes": 111826,
+    "props": 485,
+    "animated": 9,
+    "colliders": 211,
     "warnings": []
   },
   {
