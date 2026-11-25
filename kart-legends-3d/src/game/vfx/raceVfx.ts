@@ -36,9 +36,10 @@ export class RaceVfx {
   private weatherAcc = 0;
   private readonly dust = new THREE.Color();
 
-  constructor(atlas: THREE.Texture, private readonly env: Environment, budget: number) {
-    this.solid = new ParticleSystem(atlas, budget, false);
-    this.glow = new ParticleSystem(atlas, Math.round(budget * 0.7), true);
+  /** `atlas`: [atlas próprio, atlas de sprites CC0 da Kenney] (índices 0–15 e 16–31 de SPRITE). */
+  constructor(atlas: readonly [THREE.Texture, THREE.Texture], private readonly env: Environment, budget: number) {
+    this.solid = new ParticleSystem(atlas[0], budget, false, atlas[1]);
+    this.glow = new ParticleSystem(atlas[0], Math.round(budget * 0.7), true, atlas[1]);
     this.dust.set(env.dust);
   }
 
@@ -57,11 +58,11 @@ export class RaceVfx {
       const c = DRIFT_RGB[k.driftLevel] ?? DRIFT_RGB[0]!;
       for (const w of [k.wheelL, k.wheelR]) {
         for (let i = this.rate(index * 16 + 1, 34, dt); i > 0; i--) {
-          this.solid.emit({ x: w.x, y: w.y + 0.12, z: w.z, vx: bx * 1.5, vy: 0.9, vz: bz * 1.5, spread: 1.4, life: 0.55, size: 0.7, grow: 2.6, sprite: SPRITE.smoke, r: 0.92, g: 0.92, b: 0.95, alpha: 0.4, drag: 2, spin: 2 });
+          this.solid.emit({ x: w.x, y: w.y + 0.12, z: w.z, vx: bx * 1.5, vy: 0.9, vz: bz * 1.5, spread: 1.4, life: 0.55, size: 0.75, grow: 2.6, sprite: SPRITE.kSmoke, r: 0.95, g: 0.95, b: 0.98, alpha: 0.5, drag: 2, spin: 2 });
         }
         if (k.driftLevel > 0) {
           for (let i = this.rate(index * 16 + 2, 26 + k.driftLevel * 16, dt); i > 0; i--) {
-            this.glow.emit({ x: w.x, y: w.y + 0.08, z: w.z, vx: bx * 5, vy: 2.6, vz: bz * 5, spread: 5, life: 0.32, size: 0.22 + k.driftLevel * 0.07, sprite: SPRITE.spark, r: c[0], g: c[1], b: c[2], gravity: 12, spin: 6 });
+            this.glow.emit({ x: w.x, y: w.y + 0.08, z: w.z, vx: bx * 5, vy: 2.6, vz: bz * 5, spread: 5, life: 0.32, size: i % 3 === 0 ? 0.42 + k.driftLevel * 0.1 : 0.3 + k.driftLevel * 0.09, sprite: i % 3 === 0 ? SPRITE.kTrace : SPRITE.kSpark, r: c[0], g: c[1], b: c[2], gravity: 12, spin: 6 });
           }
         }
       }
@@ -69,7 +70,7 @@ export class RaceVfx {
     if (k.grounded && moving && (k.braking || k.spinning)) {
       for (let i = this.rate(index * 16 + 3, 26, dt); i > 0; i--) {
         const w = Math.random() < 0.5 ? k.wheelL : k.wheelR;
-        this.solid.emit({ x: w.x, y: w.y + 0.1, z: w.z, vy: 0.8, spread: 1.6, life: 0.6, size: 0.8, grow: 2.4, sprite: SPRITE.smoke, r: 0.85, g: 0.85, b: 0.88, alpha: 0.35, drag: 2, spin: 2 });
+        this.solid.emit({ x: w.x, y: w.y + 0.1, z: w.z, vy: 0.8, spread: 1.6, life: 0.6, size: 0.8, grow: 2.4, sprite: SPRITE.kSmoke, r: 0.88, g: 0.88, b: 0.9, alpha: 0.42, drag: 2, spin: 2 });
       }
     }
     // poeira/neve/areia: fora da pista ou em pisos soltos
@@ -79,7 +80,8 @@ export class RaceVfx {
       const amount = (k.onRoad ? 14 : 30) * Math.min(1, Math.abs(k.speed) / 18);
       for (let i = this.rate(index * 16 + 4, amount, dt); i > 0; i--) {
         const w = Math.random() < 0.5 ? k.wheelL : k.wheelR;
-        this.solid.emit({ x: w.x, y: w.y + 0.15, z: w.z, vx: bx * 2.5, vy: 1.6, vz: bz * 2.5, spread: 2.2, life: 0.8, size: 0.9, grow: 3, sprite: SPRITE.dust, r: d.r, g: d.g, b: d.b, alpha: 0.5, drag: 1.6 });
+        const gravel = i % 4 === 0;
+        this.solid.emit({ x: w.x, y: w.y + 0.15, z: w.z, vx: bx * 2.5, vy: gravel ? 3 : 1.6, vz: bz * 2.5, spread: 2.2, life: gravel ? 0.5 : 0.8, size: gravel ? 0.6 : 0.9, grow: gravel ? 1.2 : 3, sprite: gravel ? SPRITE.kGravel : SPRITE.kPuff, r: d.r, g: d.g, b: d.b, alpha: gravel ? 0.85 : 0.5, drag: 1.6, gravity: gravel ? 9 : 0, spin: 2 });
       }
     }
     if (k.grounded && moving && k.surface === 4 && k.onRoad) {
@@ -92,7 +94,7 @@ export class RaceVfx {
       const c = k.boostKind >= 1 && k.boostKind <= 3 ? DRIFT_RGB[k.boostKind]! : [1, 0.62, 0.2] as [number, number, number];
       for (const e of k.exhausts) {
         for (let i = this.rate(index * 16 + 6, 70, dt); i > 0; i--) {
-          this.glow.emit({ x: e.x, y: e.y, z: e.z, vx: bx * 7, vy: 0.4, vz: bz * 7, spread: 1.6, life: 0.26, size: 0.5, grow: 0.3, sprite: SPRITE.flame, r: c[0], g: c[1], b: c[2], alpha: 0.9, spin: 3 });
+          this.glow.emit({ x: e.x, y: e.y, z: e.z, vx: bx * 7, vy: 0.4, vz: bz * 7, spread: 1.6, life: 0.26, size: i % 2 ? 0.62 : 0.5, grow: 0.3, sprite: i % 2 ? SPRITE.kMuzzle : SPRITE.kFlame, r: c[0], g: c[1], b: c[2], alpha: 0.9, spin: 3 });
         }
       }
       for (let i = this.rate(index * 16 + 7, 30, dt); i > 0; i--) {
@@ -104,22 +106,23 @@ export class RaceVfx {
   /** Rajada ao soltar o miniturbo (anel + faíscas na cor do nível). */
   turbo(x: number, y: number, z: number, level: number): void {
     const c = DRIFT_RGB[Math.min(3, level)] ?? [1, 0.7, 0.3];
-    this.glow.emit({ x, y: y + 0.4, z, life: 0.4, size: 1.2, grow: 5, sprite: SPRITE.ring, r: c[0]!, g: c[1]!, b: c[2]!, alpha: 0.9 });
-    for (let i = 0; i < 14 + level * 6; i++) this.glow.emit({ x, y: y + 0.4, z, vy: 2, spread: 12, life: 0.5, size: 0.3, sprite: SPRITE.spark, r: c[0]!, g: c[1]!, b: c[2]!, gravity: 8, spin: 6 });
+    this.glow.emit({ x, y: y + 0.4, z, life: 0.4, size: 1.3, grow: 5, sprite: SPRITE.kRing, r: c[0]!, g: c[1]!, b: c[2]!, alpha: 0.9 });
+    for (let i = 0; i < 14 + level * 6; i++) this.glow.emit({ x, y: y + 0.4, z, vy: 2, spread: 12, life: 0.5, size: 0.42, sprite: i % 2 ? SPRITE.kSpark : SPRITE.kTrace, r: c[0]!, g: c[1]!, b: c[2]!, gravity: 8, spin: 6 });
   }
 
   impact(x: number, y: number, z: number, strength: number): void {
     const n = Math.min(26, 6 + Math.round(strength * 1.6));
-    for (let i = 0; i < n; i++) this.glow.emit({ x, y, z, vy: 2.5, spread: 9 + strength * 0.5, life: 0.4, size: 0.24, sprite: SPRITE.spark, r: 1, g: 0.85, b: 0.4, gravity: 14, spin: 6 });
-    this.solid.emit({ x, y, z, life: 0.35, size: 1.4, grow: 2.2, sprite: SPRITE.smoke, r: 1, g: 1, b: 1, alpha: 0.45 });
+    for (let i = 0; i < n; i++) this.glow.emit({ x, y, z, vy: 2.5, spread: 9 + strength * 0.5, life: 0.4, size: 0.34, sprite: i % 2 ? SPRITE.kSpark : SPRITE.kTrace, r: 1, g: 0.85, b: 0.4, gravity: 14, spin: 6 });
+    this.glow.emit({ x, y, z, life: 0.18, size: 1 + strength * 0.08, grow: 1.6, sprite: SPRITE.kCross, r: 1, g: 0.9, b: 0.6, alpha: 0.9, spin: 2 });
+    this.solid.emit({ x, y, z, life: 0.35, size: 1.4, grow: 2.2, sprite: SPRITE.kSmoke, r: 1, g: 1, b: 1, alpha: 0.5 });
   }
 
   /** Explosão estilizada quando um piloto é atingido (estrelas + clarão). */
   burst(x: number, y: number, z: number, r: number, g: number, b: number): void {
-    this.glow.emit({ x, y: y + 0.6, z, life: 0.3, size: 3.2, grow: 2.4, sprite: SPRITE.glow, r, g, b, alpha: 0.9 });
-    this.glow.emit({ x, y: y + 0.6, z, life: 0.45, size: 1.5, grow: 4.5, sprite: SPRITE.ring, r: 1, g: 1, b: 1, alpha: 0.8 });
+    this.glow.emit({ x, y: y + 0.6, z, life: 0.3, size: 3.2, grow: 2.4, sprite: SPRITE.kFire, r, g, b, alpha: 0.95, spin: 2 });
+    this.glow.emit({ x, y: y + 0.6, z, life: 0.45, size: 1.6, grow: 4.5, sprite: SPRITE.kTwirl, r: 1, g: 1, b: 1, alpha: 0.8, spin: 5 });
     for (let i = 0; i < 16; i++) this.glow.emit({ x, y: y + 0.6, z, vy: 5, spread: 13, life: 0.75, size: 0.5, sprite: SPRITE.star, r: 1, g: 0.9, b: 0.35, gravity: 11, spin: 8 });
-    for (let i = 0; i < 8; i++) this.solid.emit({ x, y: y + 0.5, z, vy: 2, spread: 6, life: 0.7, size: 1.2, grow: 2.6, sprite: SPRITE.smoke, r: 0.9, g: 0.9, b: 0.9, alpha: 0.5, drag: 2, spin: 2 });
+    for (let i = 0; i < 8; i++) this.solid.emit({ x, y: y + 0.5, z, vy: 2, spread: 6, life: 0.7, size: 1.2, grow: 2.6, sprite: SPRITE.kPuff, r: 0.9, g: 0.9, b: 0.9, alpha: 0.55, drag: 2, spin: 2 });
   }
 
   landing(x: number, y: number, z: number, impact: number): void {
@@ -127,7 +130,7 @@ export class RaceVfx {
     const n = Math.min(22, 6 + Math.round(impact * 1.5));
     for (let i = 0; i < n; i++) {
       const a = Math.random() * Math.PI * 2;
-      this.solid.emit({ x, y: y + 0.1, z, vx: Math.cos(a) * 5, vy: 1.2, vz: Math.sin(a) * 5, life: 0.6, size: 0.9, grow: 2.8, sprite: SPRITE.dust, r: d.r, g: d.g, b: d.b, alpha: 0.5, drag: 3 });
+      this.solid.emit({ x, y: y + 0.1, z, vx: Math.cos(a) * 5, vy: 1.2, vz: Math.sin(a) * 5, life: 0.6, size: 0.9, grow: 2.8, sprite: SPRITE.kPuff, r: d.r, g: d.g, b: d.b, alpha: 0.55, drag: 3, spin: 2 });
     }
   }
 
@@ -146,13 +149,13 @@ export class RaceVfx {
       const a = Math.random() * Math.PI * 2, s = 2 + Math.random() * 5;
       this.glow.emit({ x, y, z, vx: Math.cos(a) * s, vy: 5 + Math.random() * 6, vz: Math.sin(a) * s, life: 0.9, size: 0.32, sprite: SPRITE.spark, r: 1, g: 0.5 + Math.random() * 0.3, b: 0.1, gravity: 18, spin: 5 });
     }
-    for (let i = 0; i < 10; i++) this.solid.emit({ x, y: y + 0.6, z, vy: 2.5, spread: 3, life: 1.4, size: 1.6, grow: 3, sprite: SPRITE.smoke, r: 0.25, g: 0.22, b: 0.22, alpha: 0.55, drag: 1.5, spin: 1.5 });
+    for (let i = 0; i < 10; i++) this.solid.emit({ x, y: y + 0.6, z, vy: 2.5, spread: 3, life: 1.4, size: 1.6, grow: 3, sprite: SPRITE.kPuff, r: 0.25, g: 0.22, b: 0.22, alpha: 0.6, drag: 1.5, spin: 1.5 });
   }
 
   /** Brilho de coleta de item / uso de item. */
   sparkle(x: number, y: number, z: number, color: THREE.Color, count = 14): void {
-    this.glow.emit({ x, y, z, life: 0.35, size: 2, grow: 2, sprite: SPRITE.glow, r: color.r, g: color.g, b: color.b, alpha: 0.8 });
-    for (let i = 0; i < count; i++) this.glow.emit({ x, y, z, vy: 3, spread: 9, life: 0.6, size: 0.3, sprite: SPRITE.star, r: color.r, g: color.g, b: color.b, gravity: 6, spin: 6 });
+    this.glow.emit({ x, y, z, life: 0.35, size: 2.2, grow: 2, sprite: SPRITE.kMagic, r: color.r, g: color.g, b: color.b, alpha: 0.85, spin: 3 });
+    for (let i = 0; i < count; i++) this.glow.emit({ x, y, z, vy: 3, spread: 9, life: 0.6, size: i % 2 ? 0.3 : 0.45, sprite: i % 2 ? SPRITE.star : SPRITE.kFlare, r: color.r, g: color.g, b: color.b, gravity: 6, spin: 6 });
   }
 
   /** Névoa prisma: lóbulos coloridos subindo devagar. */
@@ -186,7 +189,7 @@ export class RaceVfx {
   zapped(index: number, x: number, y: number, z: number, dt: number): void {
     for (let i = this.rate(5002 + index * 4, 26, dt); i > 0; i--) {
       const a = Math.random() * Math.PI * 2;
-      this.glow.emit({ x: x + Math.cos(a) * 0.9, y: y + 0.3 + Math.random() * 0.9, z: z + Math.sin(a) * 0.9, spread: 1.5, life: 0.18, size: 0.9, sprite: SPRITE.bolt, r: 0.85, g: 1, b: 0.3, alpha: 1, spin: 12 });
+      this.glow.emit({ x: x + Math.cos(a) * 0.9, y: y + 0.3 + Math.random() * 0.9, z: z + Math.sin(a) * 0.9, spread: 1.5, life: 0.18, size: 1, sprite: i % 2 ? SPRITE.bolt : SPRITE.kElectric, r: 0.85, g: 1, b: 0.3, alpha: 1, spin: 12 });
     }
   }
 
@@ -194,7 +197,7 @@ export class RaceVfx {
   zap(x: number, y: number, z: number, strength: number): void {
     this.glow.emit({ x, y: y + 0.5, z, life: 0.3, size: 3 * strength, grow: 1.8, sprite: SPRITE.glow, r: 0.85, g: 1, b: 0.35, alpha: 0.9 });
     this.glow.emit({ x, y: y + 0.2, z, life: 0.35, size: 1.5, grow: 3 * strength, sprite: SPRITE.ring, r: 0.9, g: 1, b: 0.5, alpha: 0.9 });
-    for (let i = 0; i < Math.round(14 * strength); i++) this.glow.emit({ x, y: y + 0.5, z, vy: 2, spread: 8, life: 0.3, size: 0.7, sprite: SPRITE.bolt, r: 0.9, g: 1, b: 0.4, alpha: 1, spin: 10 });
+    for (let i = 0; i < Math.round(14 * strength); i++) this.glow.emit({ x, y: y + 0.5, z, vy: 2, spread: 8, life: 0.3, size: 0.8, sprite: i % 2 ? SPRITE.bolt : SPRITE.kElectric, r: 0.9, g: 1, b: 0.4, alpha: 1, spin: 10 });
   }
 
   confetti(x: number, y: number, z: number, count = 90): void {

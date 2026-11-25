@@ -3,6 +3,19 @@
  "generatedBy": "scripts/build-manifest.ts",
  "assets": [
   {
+   "id": "arenas:cratera-lunar.dress",
+   "name": "cratera-lunar.dress",
+   "type": "data",
+   "path": "arenas/cratera-lunar.dress.json",
+   "format": "json",
+   "origin": "scripts/build-arenas.ts (arena autorada + cenário das bibliotecas)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 1170,
+   "status": "validado",
+   "usedIn": "Arenas do modo Batalha"
+  },
+  {
    "id": "arenas:cratera-lunar",
    "name": "cratera-lunar",
    "type": "model",
@@ -25,6 +38,19 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 28223,
+   "status": "validado",
+   "usedIn": "Arenas do modo Batalha"
+  },
+  {
+   "id": "arenas:praca-coreto.dress",
+   "name": "praca-coreto.dress",
+   "type": "data",
+   "path": "arenas/praca-coreto.dress.json",
+   "format": "json",
+   "origin": "scripts/build-arenas.ts (arena autorada + cenário das bibliotecas)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 1774,
    "status": "validado",
    "usedIn": "Arenas do modo Batalha"
   },
@@ -3040,7 +3066,7 @@
    "origin": "Kenney — Racing Kit 2.0 (https://kenney.nl/assets, CC0 1.0): grandStandCovered.glb, grandStand.glb, bannerTowerRed.glb, bannerTowerGreen.glb, flagRed.glb, flagGreen.glb, barrierRed.glb, barrierWhite.glb, lightPostModern.glb, lightPostLarge.glb, pitsGarage.glb, pitsOffice.glb, tent.glb, tentRoof.glb, camera_exclusive.glb, radarEquipment.glb, pylon.glb; cores de material e paleta colormap.png convertidas em cor de vértice, escala em metros | Kenney — Car Kit 3.1 (https://kenney.nl/assets, CC0 1.0): sedan.glb, taxi.glb, van.glb, suv.glb, hatchback-sports.glb, police.glb, delivery.glb, truck-flat.glb, debris-tire.glb; cores de material e paleta colormap.png convertidas em cor de vértice, escala em metros | Kenney — Nature Kit 2.1 (https://kenney.nl/assets, CC0 1.0): stone_largeA.glb, stone_largeC.glb, stone_tallB.glb, stone_tallG.glb, stone_smallB.glb, stone_smallF.glb, cliff_large_stone.glb, stump_roundDetailed.glb, log_stackLarge.glb, cactus_tall.glb, cactus_short.glb; cores de material e paleta colormap.png convertidas em cor de vértice, escala em metros — scripts/build-kits.ts",
    "author": "Kenney",
    "license": "CC0-1.0",
-   "bytes": 449460,
+   "bytes": 460544,
    "status": "validado",
    "usedIn": "Cenário extra das pistas e arenas (arquibancadas, barreiras, carros, árvores, pedras) e sprites de partículas"
   },
@@ -4839,6 +4865,19 @@
    "usedIn": "Rodas da loja, equipáveis em qualquer kart"
   },
   {
+   "id": "tracks:bosque-cristal.dress",
+   "name": "bosque-cristal.dress",
+   "type": "data",
+   "path": "tracks/bosque-cristal.dress.json",
+   "format": "json",
+   "origin": "scripts/build-tracks.ts (traçado autorado + cenário)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 5569,
+   "status": "validado",
+   "usedIn": "Pistas e dados de corrida"
+  },
+  {
    "id": "tracks:bosque-cristal",
    "name": "bosque-cristal",
    "type": "model",
@@ -4861,6 +4900,19 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 98414,
+   "status": "validado",
+   "usedIn": "Pistas e dados de corrida"
+  },
+  {
+   "id": "tracks:canion-solar.dress",
+   "name": "canion-solar.dress",
+   "type": "data",
+   "path": "tracks/canion-solar.dress.json",
+   "format": "json",
+   "origin": "scripts/build-tracks.ts (traçado autorado + cenário)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 5995,
    "status": "validado",
    "usedIn": "Pistas e dados de corrida"
   },
@@ -4891,6 +4943,19 @@
    "usedIn": "Pistas e dados de corrida"
   },
   {
+   "id": "tracks:cidade-neon.dress",
+   "name": "cidade-neon.dress",
+   "type": "data",
+   "path": "tracks/cidade-neon.dress.json",
+   "format": "json",
+   "origin": "scripts/build-tracks.ts (traçado autorado + cenário)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 5764,
+   "status": "validado",
+   "usedIn": "Pistas e dados de corrida"
+  },
+  {
    "id": "tracks:cidade-neon",
    "name": "cidade-neon",
    "type": "model",
@@ -4917,6 +4982,19 @@
    "usedIn": "Pistas e dados de corrida"
   },
   {
+   "id": "tracks:estacao-lunar.dress",
+   "name": "estacao-lunar.dress",
+   "type": "data",
+   "path": "tracks/estacao-lunar.dress.json",
+   "format": "json",
+   "origin": "scripts/build-tracks.ts (traçado autorado + cenário)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 1587,
+   "status": "validado",
+   "usedIn": "Pistas e dados de corrida"
+  },
+  {
    "id": "tracks:estacao-lunar",
    "name": "estacao-lunar",
    "type": "model",
@@ -4939,6 +5017,19 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 110935,
+   "status": "validado",
+   "usedIn": "Pistas e dados de corrida"
+  },
+  {
+   "id": "tracks:fortaleza-tempestade.dress",
+   "name": "fortaleza-tempestade.dress",
+   "type": "data",
+   "path": "tracks/fortaleza-tempestade.dress.json",
+   "format": "json",
+   "origin": "scripts/build-tracks.ts (traçado autorado + cenário)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 1838,
    "status": "validado",
    "usedIn": "Pistas e dados de corrida"
   },
@@ -4995,6 +5086,19 @@
    "usedIn": "Pistas e dados de corrida"
   },
   {
+   "id": "tracks:pico-boreal.dress",
+   "name": "pico-boreal.dress",
+   "type": "data",
+   "path": "tracks/pico-boreal.dress.json",
+   "format": "json",
+   "origin": "scripts/build-tracks.ts (traçado autorado + cenário)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 4331,
+   "status": "validado",
+   "usedIn": "Pistas e dados de corrida"
+  },
+  {
    "id": "tracks:pico-boreal",
    "name": "pico-boreal",
    "type": "model",
@@ -5017,6 +5121,19 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 110874,
+   "status": "validado",
+   "usedIn": "Pistas e dados de corrida"
+  },
+  {
+   "id": "tracks:porto-lanternas.dress",
+   "name": "porto-lanternas.dress",
+   "type": "data",
+   "path": "tracks/porto-lanternas.dress.json",
+   "format": "json",
+   "origin": "scripts/build-tracks.ts (traçado autorado + cenário)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 2625,
    "status": "validado",
    "usedIn": "Pistas e dados de corrida"
   },
@@ -5047,6 +5164,19 @@
    "usedIn": "Pistas e dados de corrida"
   },
   {
+   "id": "tracks:recife-coral.dress",
+   "name": "recife-coral.dress",
+   "type": "data",
+   "path": "tracks/recife-coral.dress.json",
+   "format": "json",
+   "origin": "scripts/build-tracks.ts (traçado autorado + cenário)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 2027,
+   "status": "validado",
+   "usedIn": "Pistas e dados de corrida"
+  },
+  {
    "id": "tracks:recife-coral",
    "name": "recife-coral",
    "type": "model",
@@ -5069,6 +5199,19 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 111151,
+   "status": "validado",
+   "usedIn": "Pistas e dados de corrida"
+  },
+  {
+   "id": "tracks:templo-esmeralda.dress",
+   "name": "templo-esmeralda.dress",
+   "type": "data",
+   "path": "tracks/templo-esmeralda.dress.json",
+   "format": "json",
+   "origin": "scripts/build-tracks.ts (traçado autorado + cenário)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 4875,
    "status": "validado",
    "usedIn": "Pistas e dados de corrida"
   },
@@ -5112,6 +5255,19 @@
    "usedIn": "Pistas e dados de corrida"
   },
   {
+   "id": "tracks:vale-moinhos.dress",
+   "name": "vale-moinhos.dress",
+   "type": "data",
+   "path": "tracks/vale-moinhos.dress.json",
+   "format": "json",
+   "origin": "scripts/build-tracks.ts (traçado autorado + cenário)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 5743,
+   "status": "validado",
+   "usedIn": "Pistas e dados de corrida"
+  },
+  {
    "id": "tracks:vale-moinhos",
    "name": "vale-moinhos",
    "type": "model",
@@ -5134,6 +5290,19 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 111826,
+   "status": "validado",
+   "usedIn": "Pistas e dados de corrida"
+  },
+  {
+   "id": "tracks:vulcao-rubro.dress",
+   "name": "vulcao-rubro.dress",
+   "type": "data",
+   "path": "tracks/vulcao-rubro.dress.json",
+   "format": "json",
+   "origin": "scripts/build-tracks.ts (traçado autorado + cenário)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 1832,
    "status": "validado",
    "usedIn": "Pistas e dados de corrida"
   },

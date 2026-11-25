@@ -20,7 +20,7 @@ import { existsSync } from 'node:fs';
 import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { EXTTextureWebP } from '@gltf-transform/extensions';
-import sharp from 'sharp';
+import sharp, { type OverlayOptions } from 'sharp';
 import { SAMPLE_SFX } from '../src/game/audio/audioIds';
 import { KENNEY_MODELS, QUATERNIUS_MODELS } from './kits/catalog';
 import { foliageAtlas, loadKenney, loadQuaternius } from './kits/load';
@@ -121,7 +121,7 @@ async function buildModels(): Promise<Record<string, Source>> {
 
 async function buildParticles(): Promise<Record<string, Source>> {
   const C = 128;
-  const layers: sharp.OverlayOptions[] = [];
+  const layers: OverlayOptions[] = [];
   for (const [i, name] of KENNEY_SPRITES.entries()) {
     const img = await sharp(path.join(KENNEY, 'particle-pack', 'png', `${name}.png`)).ensureAlpha().resize(C, C, { kernel: 'lanczos3' }).png().toBuffer();
     layers.push({ input: img, left: (i % 4) * C, top: Math.floor(i / 4) * C });

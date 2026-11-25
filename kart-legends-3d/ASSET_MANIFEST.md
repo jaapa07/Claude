@@ -4,14 +4,14 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 (id, nome, tipo, caminho, formato, origem, autor, licença, tamanho, status de validação e local de uso), está em
 `public/assets/manifest.json`. A validação automática é `npm run validate:assets`.
 
-- **Total:** 463 arquivos, 151.2 MB
+- **Total:** 476 arquivos, 151.3 MB
 - **Autor dos recursos próprios:** Equipe Kart Legends 3D
 - **Licença dos recursos próprios:** Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)
 - **Recursos de terceiros:** 67 arquivos (CC0-1.0, OFL-1.1), listados abaixo com autor e origem
 
 | Pasta | Arquivos | Tamanho | Origem | Onde é usado |
 |---|---:|---:|---|---|
-| `arenas/` | 4 | 4166 kB | scripts/build-arenas.ts (arena autorada + cenário das bibliotecas) | Arenas do modo Batalha |
+| `arenas/` | 6 | 4169 kB | scripts/build-arenas.ts (arena autorada + cenário das bibliotecas) | Arenas do modo Batalha |
 | `audio/` | 147 | 14301 kB | Kenney — Interface Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): back_002.ogg; nível ajustado em 0.0 dB (RMS casado com o efeito "ui_back" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts | Música, efeitos e ambiência |
 | `characters/` | 15 | 5233 kB | scripts/build-characters.ts (modelagem, rig e animação por script) | Pilotos na corrida, vitrine e pódio |
 | `detail/` | 22 | 1290 kB | Poly Haven — textura "Asphalt 02" (https://polyhaven.com/a/asphalt_02), mapa de normal (OpenGL) 1k reduzido por scripts/build-env.ts | Relevo dos pisos, rochas, madeira e metal (qualidade Média/Alta) |
@@ -19,11 +19,11 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | `fonts/` | 3 | 15 kB | Texto da licença SIL Open Font License 1.1 da fonte Lilita One (@fontsource/lilita-one@5.3.0), distribuído junto com a fonte como a licença exige | Logotipo e títulos da interface |
 | `items/` | 17 | 714 kB | scripts/build-items.ts (modelagem por script) | Itens, placas de turbo, rampas, pórtico, troféus e pódio |
 | `karts/` | 9 | 1692 kB | scripts/build-karts.ts (modelagem por script) | Veículos na corrida, vitrine e pódio |
-| `kits/` | 4 | 1060 kB | Kenney — Particle Pack 1.1 (https://kenney.nl/assets, CC0 1.0): smoke_04.png, smoke_07.png, dirt_02.png, fire_01.png, flame_05.png, muzzle_02.png, star_06.png, star_08.png, star_09.png, circle_02.png, light_01.png, spark_02.png, scorch_02.png, trace_04.png, twirl_01.png, magic_03.png; reduzidos a 128 px e montados num atlas 4×4 — scripts/build-kits.ts | Cenário extra das pistas e arenas (arquibancadas, barreiras, carros, árvores, pedras) e sprites de partículas |
+| `kits/` | 4 | 1070 kB | Kenney — Particle Pack 1.1 (https://kenney.nl/assets, CC0 1.0): smoke_04.png, smoke_07.png, dirt_02.png, fire_01.png, flame_05.png, muzzle_02.png, star_06.png, star_08.png, star_09.png, circle_02.png, light_01.png, spark_02.png, scorch_02.png, trace_04.png, twirl_01.png, magic_03.png; reduzidos a 128 px e montados num atlas 4×4 — scripts/build-kits.ts | Cenário extra das pistas e arenas (arquibancadas, barreiras, carros, árvores, pedras) e sprites de partículas |
 | `props/` | 27 | 651 kB | scripts/build-tracks.ts (partes móveis de cenário e obstáculos) | Cenário animado e obstáculos dinâmicos |
 | `textures/` | 101 | 1415 kB | scripts (texturas procedurais e arte vetorial próprias) | Materiais dos modelos (também embutidas nos GLB) |
 | `tires/` | 8 | 183 kB | scripts/build-tires.ts (modelagem por script) | Rodas da loja, equipáveis em qualquer kart |
-| `tracks/` | 25 | 122370 kB | scripts/build-tracks.ts (traçado autorado + cenário) | Pistas e dados de corrida |
+| `tracks/` | 36 | 122411 kB | scripts/build-tracks.ts (traçado autorado + cenário) | Pistas e dados de corrida |
 | `ui/` | 65 | 1462 kB | scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo) | Interface (retratos, ícones, miniaturas) |
 | `vfx/` | 1 | 25 kB | scripts/build-vfx.ts (arte vetorial própria) | Sistema de partículas |
 
@@ -31,8 +31,10 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 
 | Arquivo | Tipo | Tamanho |
 |---|---|---:|
+| `arenas/cratera-lunar.dress.json` | data | 1 kB |
 | `arenas/cratera-lunar.glb` | model | 375 kB |
 | `arenas/cratera-lunar.json` | data | 28 kB |
+| `arenas/praca-coreto.dress.json` | data | 2 kB |
 | `arenas/praca-coreto.glb` | model | 3749 kB |
 | `arenas/praca-coreto.json` | data | 15 kB |
 
@@ -152,7 +154,7 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | Arquivo | Tipo | Tamanho |
 |---|---|---:|
 | `kits/kenney-particles.webp` | image | 79 kB |
-| `kits/kenney-scenery.glb` | model | 439 kB |
+| `kits/kenney-scenery.glb` | model | 450 kB |
 | `kits/quaternius-nature.glb` | model | 539 kB |
 | `kits/sources.json` | data | 3 kB |
 
@@ -205,29 +207,40 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 
 | Arquivo | Tipo | Tamanho |
 |---|---|---:|
+| `tracks/bosque-cristal.dress.json` | data | 5 kB |
 | `tracks/bosque-cristal.glb` | model | 21758 kB |
 | `tracks/bosque-cristal.json` | data | 96 kB |
+| `tracks/canion-solar.dress.json` | data | 6 kB |
 | `tracks/canion-solar.glb` | model | 10014 kB |
 | `tracks/canion-solar.json` | data | 95 kB |
+| `tracks/cidade-neon.dress.json` | data | 6 kB |
 | `tracks/cidade-neon.glb` | model | 8120 kB |
 | `tracks/cidade-neon.json` | data | 121 kB |
+| `tracks/estacao-lunar.dress.json` | data | 2 kB |
 | `tracks/estacao-lunar.glb` | model | 4139 kB |
 | `tracks/estacao-lunar.json` | data | 108 kB |
+| `tracks/fortaleza-tempestade.dress.json` | data | 2 kB |
 | `tracks/fortaleza-tempestade.glb` | model | 8877 kB |
 | `tracks/fortaleza-tempestade.json` | data | 106 kB |
 | `tracks/jardim-celeste.glb` | model | 9000 kB |
 | `tracks/jardim-celeste.json` | data | 63 kB |
+| `tracks/pico-boreal.dress.json` | data | 4 kB |
 | `tracks/pico-boreal.glb` | model | 15245 kB |
 | `tracks/pico-boreal.json` | data | 108 kB |
+| `tracks/porto-lanternas.dress.json` | data | 3 kB |
 | `tracks/porto-lanternas.glb` | model | 13477 kB |
 | `tracks/porto-lanternas.json` | data | 112 kB |
+| `tracks/recife-coral.dress.json` | data | 2 kB |
 | `tracks/recife-coral.glb` | model | 6946 kB |
 | `tracks/recife-coral.json` | data | 109 kB |
+| `tracks/templo-esmeralda.dress.json` | data | 5 kB |
 | `tracks/templo-esmeralda.glb` | model | 8518 kB |
 | `tracks/templo-esmeralda.json` | data | 105 kB |
 | `tracks/tracks-manifest.json` | data | 3 kB |
+| `tracks/vale-moinhos.dress.json` | data | 6 kB |
 | `tracks/vale-moinhos.glb` | model | 11187 kB |
 | `tracks/vale-moinhos.json` | data | 109 kB |
+| `tracks/vulcao-rubro.dress.json` | data | 2 kB |
 | `tracks/vulcao-rubro.glb` | model | 3854 kB |
 | `tracks/vulcao-rubro.json` | data | 101 kB |
 

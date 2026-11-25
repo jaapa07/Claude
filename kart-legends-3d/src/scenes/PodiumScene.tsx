@@ -27,7 +27,7 @@ export function PodiumScene({ entries, trophy }: { entries: PodiumEntry[]; troph
   const karts = useModels(top.map((e) => `karts/${e.kartId}.glb`));
   const chars = useModels(top.map((e) => `characters/${e.characterId}.glb`));
   const trophyGltf = useModel(`items/trophy-${trophy ?? 'gold'}.glb`);
-  const atlas = useParticleAtlas();
+  const [atlasA, atlasB] = useParticleAtlas();
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   const size = useThree((s) => s.size);
   const stage = useMemo(() => { const s = cloneScene(podium); setShadows(s, true, true); return s; }, [podium]);
@@ -36,7 +36,7 @@ export function PodiumScene({ entries, trophy }: { entries: PodiumEntry[]; troph
     if (e.isPlayer) dressPlayer(m, e.characterId, e.kartId);
     return m;
   }), [karts, chars]);
-  const vfx = useMemo(() => new RaceVfx(atlas, ENV, 1500), [atlas]);
+  const vfx = useMemo(() => new RaceVfx([atlasA, atlasB], ENV, 1500), [atlasA, atlasB]);
   const cup = useMemo(() => { const c = cloneScene(trophyGltf); c.scale.setScalar(1.6); return c; }, [trophyGltf]);
   const t = useRef(0);
   const poses = useMemo(() => models.map((_, i): KartVisualState => ({

@@ -47,7 +47,9 @@ export async function preloadCoreAssets(onProgress: (p: number) => void): Promis
   // Mapas de ambiente e de relevo também são por pista (baixados na hora da corrida; o relevo nem existe na
   // qualidade Baixa); só o ambiente do menu e os metadados entram aqui.
   const lazy = (p: string): boolean => (p.startsWith('tracks/') && p.endsWith('.glb')) || p.startsWith('detail/')
-    || (p.startsWith('env/') && !EARLY_ENV.has(p)) || p.endsWith('sources.json') || p.endsWith('.txt');
+    || (p.startsWith('env/') && !EARLY_ENV.has(p)) || p.endsWith('sources.json') || p.endsWith('.txt')
+    // decoração CC0 (kits) e a lista dela por pista: baixadas com a primeira corrida que as usa
+    || p.startsWith('kits/') || p.endsWith('.dress.json');
   const list = manifest.assets.filter((a) => a.type !== 'audio' && !lazy(a.path));
   const missing: string[] = [];
   let done = 0;

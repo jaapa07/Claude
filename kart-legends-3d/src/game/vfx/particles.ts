@@ -1,9 +1,14 @@
 import * as THREE from 'three';
 
-/** Índices das células do atlas (4×4) em assets/vfx/particles.webp. */
+/**
+ * Índices das células: 0–15 no atlas próprio (assets/vfx/particles.webp, 4×4) e 16–31 no atlas de sprites CC0
+ * do Particle Pack da Kenney (assets/kits/kenney-particles.webp, mesma grade; ordem em scripts/kits/sprites.ts).
+ */
 export const SPRITE = {
   smoke: 0, spark: 1, dust: 2, flame: 3, snow: 4, leaf: 5, confetti: 6, drop: 7, ring: 8, petal: 9, glow: 10, star: 11,
   rain: 12, grain: 13, bolt: 14, mist: 15,
+  kSmoke: 16, kPuff: 17, kGravel: 18, kFire: 19, kFlame: 20, kMuzzle: 21, kSpark: 22, kCross: 23,
+  kFlare: 24, kRing: 25, kLight: 26, kElectric: 27, kScorch: 28, kTrace: 29, kTwirl: 30, kMagic: 31,
 } as const;
 
 export interface EmitOptions {
@@ -39,15 +44,19 @@ void main() {
 const fragment = /* glsl */ `
 precision highp float;
 uniform sampler2D uMap;
+uniform sampler2D uMap2;
 varying vec4 vColor; varying float vSprite; varying float vRot;
 void main() {
   vec2 p = gl_PointCoord - 0.5;
   float c = cos(vRot), s = sin(vRot);
   p = vec2(c * p.x - s * p.y, s * p.x + c * p.y) + 0.5;
   if (p.x < 0.0 || p.x > 1.0 || p.y < 0.0 || p.y > 1.0) discard;
-  vec2 cell = vec2(mod(vSprite, 4.0), floor(vSprite / 4.0));
+  bool second = vSprite > 15.5;
+  float sp = second ? vSprite - 16.0 : vSprite;
+  vec2 cell = vec2(mod(sp, 4.0), floor(sp / 4.0));
   // a textura é carregada com flipY: a linha 0 do atlas fica no topo da imagem
-  vec4 t = texture2D(uMap, vec2((cell.x + p.x) * 0.25, 1.0 - (cell.y + p.y) * 0.25));
+  vec2 uv = vec2((cell.x + p.x) * 0.25, 1.0 - (cell.y + p.y) * 0.25);
+  vec4 t = second ? texture2D(uMap2, uv) : texture2D(uMap, uv);
   float a = t.a * vColor.a;
   if (a < 0.01) discard;
   gl_FragColor = vec4(vColor.rgb * t.rgb, a);
@@ -80,10 +89,10 @@ export class ParticleSystem extends THREE.Points {
   private readonly scalars: Float32Array[];
   private static readonly ATTRS = ['position', 'aColor', 'aSize', 'aSprite', 'aRot'] as const;
 
-  constructor(map: THREE.Texture, max: number, additive: boolean) {
+  constructor(map: THREE.Texture, max: number, additive: boolean, map2: THREE.Texture = map) {
     const geo = new THREE.BufferGeometry();
     const mat = new THREE.ShaderMaterial({
-      uniforms: { uMap: { value: map }, uScale: { value: 600 } },
+      uniforms: { uMap: { value: map }, uMap2: { value: map2 }, uScale: { value: 600 } },
       vertexShader: vertex, fragmentShader: fragment,
       transparent: true, depthWrite: false,
       blending: additive ? THREE.AdditiveBlending : THREE.NormalBlending,

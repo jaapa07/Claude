@@ -6,9 +6,10 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { NodeIO, type Primitive } from '@gltf-transform/core';
 import { MeshoptSimplifier } from 'meshoptimizer';
-import sharp from 'sharp';
+import sharp, { type OverlayOptions } from 'sharp';
 import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { ATLAS_COLS, ATLAS_ROWS, ATLAS_SIZE, FOLIAGE_ATLAS, QUATERNIUS_TEXTURES, type KitModel } from './catalog';
 
 export interface KitGeometry {
@@ -94,6 +95,7 @@ export async function loadKenney(file: string, m: KitModel): Promise<KitGeometry
   }
   let solid = soup.geometry();
   if (solid && m.simplify) solid = simplify(solid, m.simplify, true);
+  if (solid && m.stack) solid = stack(solid, m.stack);
   ground([solid], !!m.center);
   return { solid, foliage: null };
 }
@@ -120,6 +122,16 @@ async function primitive(prim: Primitive, world: THREE.Matrix4, nmat: THREE.Matr
     }
     soup.push(ids.map(v), ids.map(n), c);
   }
+}
+
+/** Pilha de N cópias deitadas (pneus), cada uma levemente girada. */
+function stack(g: THREE.BufferGeometry, count: number): THREE.BufferGeometry {
+  g.rotateZ(Math.PI / 2);
+  g.computeBoundingBox();
+  const h = g.boundingBox!.max.y - g.boundingBox!.min.y;
+  g.translate(0, -g.boundingBox!.min.y, 0);
+  const parts = Array.from({ length: count }, (_, k) => g.clone().rotateY(k * 0.7).translate(Math.sin(k * 2.1) * 0.05, k * h * 0.98, Math.cos(k * 1.7) * 0.05));
+  return mergeGeometries(parts)!;
 }
 
 /** Simplifica uma malha de triângulos soltos (soldando antes) mantendo a fração pedida. */
@@ -151,7 +163,7 @@ function simplify(g: THREE.BufferGeometry, ratio: number, keepColors = false): T
   const sc = flat.getAttribute('color').array as Float32Array;
   const kOf = (i: number): string => `${sp[i * 3]!.toFixed(4)},${sp[i * 3 + 1]!.toFixed(4)},${sp[i * 3 + 2]!.toFixed(4)}${keepColors ? `|${sc[i * 3]!.toFixed(3)}` : ''}`;
   for (let i = 0; i < sp.length / 3; i++) { const k = kOf(i); (sum.get(k) ?? sum.set(k, new THREE.Vector3()).get(k)!).add(new THREE.Vector3(fn[i * 3], fn[i * 3 + 1], fn[i * 3 + 2])); }
-  for (let i = 0; i < sp.length / 3; i++) { const n = sum.get(kOf(i))!.clone().normalize(); fn[i * 3] = n.x; fn[i * 3 + 1] = n.y; fn[i * 3 + 2] = n.z; }
+  for (let i = 0; i < sp.length / 3; i++) { const s0 = sum.get(kOf(i))!; const n = s0.lengthSq() > 1e-12 ? s0.clone().normalize() : new THREE.Vector3(0, 1, 0); fn[i * 3] = n.x; fn[i * 3 + 1] = n.y; fn[i * 3 + 2] = n.z; }
   flat.setAttribute('uv', new THREE.Float32BufferAttribute(new Float32Array((sp.length / 3) * 2), 2));
   return flat;
 }
@@ -225,7 +237,7 @@ function sphericalNormals(g: THREE.BufferGeometry): void {
 /** Atlas de folhagem 512×512 (WebP com alfa) a partir das texturas de folhas e flores. */
 export async function foliageAtlas(dir: string): Promise<Buffer> {
   const cw = Math.floor(ATLAS_SIZE / ATLAS_COLS), ch = Math.floor(ATLAS_SIZE / ATLAS_ROWS);
-  const layers: sharp.OverlayOptions[] = [];
+  const layers: OverlayOptions[] = [];
   for (const [name, [cx, cy]] of Object.entries(FOLIAGE_ATLAS)) {
     const file = path.join(dir, 'textures_unnamed', QUATERNIUS_TEXTURES[name]!.file);
     const x0 = Math.round(cx * (ATLAS_SIZE / ATLAS_COLS)), y0 = Math.round(cy * (ATLAS_SIZE / ATLAS_ROWS));

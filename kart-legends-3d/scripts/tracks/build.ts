@@ -71,8 +71,22 @@ function strip(acc: Acc, s: Sampled, i: number, j: number, a: Stop, b: Stop, v0:
   acc.quad(pts, n, [[a.u, v0], [b.u, v0], [b.u, v1], [a.u, v1]], [ca, cb, cb, ca]);
 }
 
-/** `keepExistingAnimated`: não regrava modelos animados que já existem (eles são compartilhados entre pistas). */
-export interface BuildOptions { props: PropLibrary | null; outDir?: string; keepExistingAnimated?: boolean }
+/** Estado da construção exposto a quem decora a pista depois (scripts/build-dressing.ts), sem alterar a saída. */
+export interface TrackContext {
+  def: TrackDef;
+  main: Sampled;
+  index: RoadIndex;
+  groundY: (x: number, z: number, fallback: number) => number;
+  /** Objetos de cenário já colocados (x, z, raio de ocupação). */
+  placed: readonly { x: number; z: number; r: number }[];
+  voidTrack: boolean;
+}
+
+/**
+ * `keepExistingAnimated`: não regrava modelos animados que já existem (eles são compartilhados entre pistas).
+ * `onContext`: chamado depois do cenário e antes da exportação (só leitura).
+ */
+export interface BuildOptions { props: PropLibrary | null; outDir?: string; keepExistingAnimated?: boolean; onContext?: (ctx: TrackContext) => void }
 export interface BuildReport { id: string; length: number; samples: number; triangles: number; glbBytes: number; jsonBytes: number; props: number; animated: number; colliders: number; warnings: string[] }
 
 export async function buildTrack(def: TrackDef, opts: BuildOptions): Promise<BuildReport> {
@@ -352,6 +366,8 @@ export async function buildTrack(def: TrackDef, opts: BuildOptions): Promise<Bui
       if (done < rule.count) warnings.push(`scatter ${String(rule.prop)}: ${done}/${rule.count} colocados`);
     }
   }
+
+  opts.onContext?.({ def, main, index, groundY, placed, voidTrack });
 
   /* ---------- dados de corrida ---------- */
   const { line, speed } = racingLine(main);

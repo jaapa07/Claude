@@ -22,6 +22,8 @@ export function splitQuality(q: QualityProfile): QualityProfile {
     shake: q.shake * 0.8,
     envResolution: Math.min(q.envResolution, 128),
     surfaceDetail: false,
+    // duas câmeras desenham a cena duas vezes: só os marcos leves da decoração extra
+    dressing: Math.min(q.dressing, 0),
   };
 }
 

@@ -25,6 +25,7 @@ import type { KartState } from '@/game/vehicles/kartState';
 import { PHYS } from '@/game/vehicles/kartTuning';
 import { RaceVfx, type KartFx } from '@/game/vfx/raceVfx';
 import { useModel, useModels, useParticleAtlas } from '../assets';
+import { KitDressing } from '../common/KitDressing';
 import { SkyAndLights, type SkyHandle } from '../common/SkyAndLights';
 import { TireFitting } from '../common/TireFitting';
 import { QUALITY } from '../quality';
@@ -117,7 +118,7 @@ function BattleWorld({ data, config }: { data: ArenaData; config: BattleConfig }
   const quality = useMemo(() => (split ? splitQuality(baseQuality) : baseQuality), [split, baseQuality]);
   const env = ARENA_ENVIRONMENTS[config.arenaId];
   const meta = ARENA_BY_ID[config.arenaId];
-  const atlas = useParticleAtlas();
+  const [atlasA, atlasB] = useParticleAtlas();
   const kartGltfs = useModels(config.racers.map((r) => `karts/${r.kartId}.glb`));
   const charGltfs = useModels(config.racers.map((r) => `characters/${r.characterId}.glb`));
   const shieldGltf = useModel('items/bolha-guardia.glb');
@@ -139,7 +140,7 @@ function BattleWorld({ data, config }: { data: ArenaData; config: BattleConfig }
     if (same.length > 1 && keeper !== r && !customPaint) model.repaint(CHARACTER_BY_ID[r.characterId].color);
     return model;
   }), [sim, kartGltfs, charGltfs, shieldGltf, config.racers]);
-  const vfx = useMemo(() => new RaceVfx(atlas, env, quality.particles), [atlas, env, quality.particles]);
+  const vfx = useMemo(() => new RaceVfx([atlasA, atlasB], env, quality.particles), [atlasA, atlasB, env, quality.particles]);
   // Uma câmera por jogador (tela dividida: a do Jogador 2 é criada aqui).
   const cameras = useMemo(() => (split ? [camera, new THREE.PerspectiveCamera(60, 2, 0.3, 1600)] : [camera]), [split, camera]);
   const cams = useMemo(
@@ -421,6 +422,7 @@ function BattleWorld({ data, config }: { data: ArenaData; config: BattleConfig }
     <>
       <SkyAndLights env={env} follow={focus} shadows={quality.shadows} shadowSize={quality.shadowSize} handle={sky} drawDistance={quality.drawDistance} envResolution={quality.envResolution} />
       <ArenaModel id={config.arenaId} shadows={quality.shadows} detail={quality.surfaceDetail} />
+      <KitDressing file={`arenas/${config.arenaId}.dress.json`} maxTier={quality.dressing} shadows={quality.shadows} />
       <BattleObjects view={view} models={models} />
       {data.animatedProps.length > 0 && <AnimatedProps list={data.animatedProps} view={view as unknown as React.MutableRefObject<RaceView>} />}
       {models.map((m, i) => <primitive key={i} object={m.group} />)}

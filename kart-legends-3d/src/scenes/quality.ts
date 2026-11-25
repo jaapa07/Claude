@@ -18,10 +18,12 @@ export interface QualityProfile {
   envResolution: number;
   /** Relevo (mapas de normal/rugosidade) nos pisos, rochas, madeira e metal das pistas e arenas. */
   surfaceDetail: boolean;
+  /** Camada máxima da decoração extra (modelos CC0 dos kits): 0 = só marcos leves, 1 = média, 2 = cheia. */
+  dressing: number;
 }
 
 export const QUALITY: Record<'low' | 'medium' | 'high', QualityProfile> = {
-  low: { dpr: [0.75, 1], antialias: false, shadows: false, shadowSize: 512, particles: 1200, weather: 0.35, post: false, drawDistance: 340, animDetail: 22, shake: 0.6, envResolution: 64, surfaceDetail: false },
-  medium: { dpr: [1, 1.5], antialias: true, shadows: true, shadowSize: 1024, particles: 2600, weather: 0.7, post: true, drawDistance: 700, animDetail: 45, shake: 0.85, envResolution: 128, surfaceDetail: true },
-  high: { dpr: [1, 2], antialias: true, shadows: true, shadowSize: 2048, particles: 4200, weather: 1, post: true, drawDistance: 1600, animDetail: 70, shake: 1, envResolution: 256, surfaceDetail: true },
+  low: { dpr: [0.75, 1], antialias: false, shadows: false, shadowSize: 512, particles: 1200, weather: 0.35, post: false, drawDistance: 340, animDetail: 22, shake: 0.6, envResolution: 64, surfaceDetail: false, dressing: 0 },
+  medium: { dpr: [1, 1.5], antialias: true, shadows: true, shadowSize: 1024, particles: 2600, weather: 0.7, post: true, drawDistance: 700, animDetail: 45, shake: 0.85, envResolution: 128, surfaceDetail: true, dressing: 1 },
+  high: { dpr: [1, 2], antialias: true, shadows: true, shadowSize: 2048, particles: 4200, weather: 1, post: true, drawDistance: 1600, animDetail: 70, shake: 1, envResolution: 256, surfaceDetail: true, dressing: 2 },
 };

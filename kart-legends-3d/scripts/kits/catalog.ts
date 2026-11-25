@@ -23,6 +23,8 @@ export interface KitModel {
   radius: number;
   /** Centraliza a base no eixo (Kenney Racing Kit tem a origem num canto). */
   center?: boolean;
+  /** Pilha de N cópias deitadas (pilha de pneus a partir de um pneu solto). */
+  stack?: number;
 }
 
 export const KENNEY_MODELS: KitModel[] = [
@@ -53,7 +55,7 @@ export const KENNEY_MODELS: KitModel[] = [
   { id: 'c_police', pack: 'car', file: 'police', scale: 1.8, simplify: 0.45, radius: 2.7 },
   { id: 'c_delivery', pack: 'car', file: 'delivery', scale: 1.8, simplify: 0.45, radius: 3.2 },
   { id: 'c_truck_flat', pack: 'car', file: 'truck-flat', scale: 1.8, simplify: 0.45, radius: 3.4 },
-  { id: 'c_tire', pack: 'car', file: 'debris-tire', scale: 1.7, radius: 0.6 },
+  { id: 'c_tire_stack', pack: 'car', file: 'debris-tire', scale: 1.7, radius: 1, stack: 3, center: true },
   // Nature Kit — pedras, penhascos, tocos, troncos
   { id: 'n_stone_large_a', pack: 'nature', file: 'stone_largeA', scale: 7, radius: 3 },
   { id: 'n_stone_large_c', pack: 'nature', file: 'stone_largeC', scale: 7, radius: 3 },

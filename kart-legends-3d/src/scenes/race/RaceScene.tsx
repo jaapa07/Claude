@@ -32,6 +32,7 @@ import { QUALITY } from '../quality';
 import { SplitRenderer, nearestCamDist2, splitQuality } from '../split';
 import { AnimatedProps, RaceObjects, type RaceView } from './RaceObjects';
 import { TrackModel } from './TrackModel';
+import { KitDressing } from '../common/KitDressing';
 
 const ITEM_SFX = {
   'pulso-solar': 'item_pulso', 'bolha-guardia': 'item_bolha', 'nevoa-prisma': 'item_nevoa',
@@ -67,7 +68,7 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
   const quality = useMemo(() => (split ? splitQuality(baseQuality) : baseQuality), [split, baseQuality]);
   const env = ENVIRONMENTS[config.trackId];
   const meta = TRACK_BY_ID[config.trackId];
-  const atlas = useParticleAtlas();
+  const [atlasA, atlasB] = useParticleAtlas();
   const kartGltfs = useModels(config.racers.map((r) => `karts/${r.kartId}.glb`));
   const charGltfs = useModels(config.racers.map((r) => `characters/${r.characterId}.glb`));
   const shieldGltf = useModel('items/bolha-guardia.glb');
@@ -92,7 +93,7 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
     if (same.length > 1 && keeper !== r && !customPaint) model.repaint(CHARACTER_BY_ID[r.characterId].color);
     return model;
   }), [sim, kartGltfs, charGltfs, shieldGltf, config.racers]);
-  const vfx = useMemo(() => new RaceVfx(atlas, env, quality.particles), [atlas, env, quality.particles]);
+  const vfx = useMemo(() => new RaceVfx([atlasA, atlasB], env, quality.particles), [atlasA, atlasB, env, quality.particles]);
   // Uma câmera por jogador: a do Jogador 1 é a câmera do Canvas; a do Jogador 2 é criada aqui (tela dividida).
   const cameras = useMemo(() => (split ? [camera, new THREE.PerspectiveCamera(60, 2, 0.3, 1600)] : [camera]), [split, camera]);
   const cams = useMemo(
@@ -430,6 +431,7 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
     <>
       <SkyAndLights env={env} follow={focus} shadows={quality.shadows} shadowSize={quality.shadowSize} handle={sky} drawDistance={quality.drawDistance} envResolution={quality.envResolution} />
       <TrackModel trackId={config.trackId} shadows={quality.shadows} detail={quality.surfaceDetail} />
+      <KitDressing file={`tracks/${config.trackId}.dress.json`} maxTier={quality.dressing} shadows={quality.shadows} />
       <RaceObjects view={view} />
       {data.animatedProps.length > 0 && <AnimatedProps list={data.animatedProps} view={view} />}
       {models.map((m, i) => <primitive key={i} object={m.group} />)}

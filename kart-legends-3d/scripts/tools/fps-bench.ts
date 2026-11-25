@@ -26,7 +26,7 @@ try {
     for (const track of arena ? [arena] : tracks) {
       const ctx = await browser.newContext({ ...devices['iPhone 14 landscape'] });
       const page = await ctx.newPage();
-      await page.addInitScript((q) => { localStorage.setItem('kl3d.settings.v1', JSON.stringify({ quality: q })); }, quality);
+      await page.addInitScript((q) => { localStorage.setItem('kl3d.settings.v1', JSON.stringify({ quality: q })); localStorage.setItem('kl3d.save', JSON.stringify({ version: 2, unlocked: { characters: [], karts: [], cups: ['aurora', 'eclipse', 'meteoro'] }, coins: 0, owned: { characters: [], karts: [], tires: [], cosmetics: [] }, trophies: {}, records: {}, stats: {} })); }, quality);
       await page.goto(`${url}/?fast=1&e2e=1`);
       await page.getByTestId('btn-start').click({ timeout: 180_000 });
       await page.getByTestId('screen-menu').waitFor();
@@ -39,7 +39,11 @@ try {
       if (arena) {
         await page.getByTestId('card-mode-battle').click();
         await page.getByTestId('btn-confirm').click();
+        await page.getByTestId('card-battle-estoura-balao').click();
+        await page.getByTestId('btn-confirm').click();
         await page.getByTestId(`card-arena-${arena}`).click();
+        await page.getByTestId('btn-confirm').click();
+        await page.getByTestId('card-difficulty-easy').click();
         await page.getByTestId('btn-confirm').click();
       } else {
         await page.getByTestId('card-mode-quick').click();

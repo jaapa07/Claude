@@ -17,10 +17,11 @@ export function cloneScene(gltf: GLTF): THREE.Object3D {
   return SkeletonUtils.clone(gltf.scene);
 }
 
-export function useParticleAtlas(): THREE.Texture {
-  const t = useTexture(assetUrl('vfx/particles.webp'));
-  t.colorSpace = THREE.SRGBColorSpace;
-  return t;
+/** Atlas próprio de partículas e o atlas de sprites CC0 (Kenney Particle Pack), nesta ordem. */
+export function useParticleAtlas(): [THREE.Texture, THREE.Texture] {
+  const t = useTexture([assetUrl('vfx/particles.webp'), assetUrl('kits/kenney-particles.webp')]);
+  for (const x of t) x.colorSpace = THREE.SRGBColorSpace;
+  return [t[0]!, t[1]!];
 }
 
 export function setShadows(root: THREE.Object3D, cast: boolean, receive: boolean): void {
