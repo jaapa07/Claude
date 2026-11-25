@@ -33,7 +33,7 @@ export function TrackModel({ trackId, shadows }: { trackId: TrackId; shadows: bo
     loaded = { trackId, gltf };
   }, [trackId, gltf]);
   const flowing = useMemo(() => {
-    const maps: { map: THREE.Texture; speed: [number, number] }[] = [];
+    const maps: { map: THREE.Texture; speed: [number, number]; mat: THREE.MeshStandardMaterial; glow: number }[] = [];
     const seen = new Set<THREE.Material>();
     gltf.scene.traverse((o) => {
       const m = o as THREE.Mesh;
@@ -48,15 +48,29 @@ export function TrackModel({ trackId, shadows }: { trackId: TrackId; shadows: bo
       mat.envMapIntensity = mat.name === 'road_wet' || mat.name === 'road_ice' ? 1.6 : 0.7;
       if (isWater && mat.map) {
         mat.map.wrapS = mat.map.wrapT = THREE.RepeatWrapping;
+        if (mat.emissiveMap && mat.emissiveMap !== mat.map) { mat.emissiveMap.wrapS = mat.emissiveMap.wrapT = THREE.RepeatWrapping; mat.emissiveMap.needsUpdate = true; }
         const speed: [number, number] = mat.name === 'water' ? [0.012, 0.02] : mat.name === 'lava' ? [0.006, 0.01] : mat.name === 'lava_fall' ? [0, -0.35] : [0, -0.9];
-        maps.push({ map: mat.map, speed });
+        // a lava "respira": o brilho pulsa devagar (só um uniforme, custo zero)
+        maps.push({ map: mat.map, speed, mat, glow: mat.name.startsWith('lava') ? mat.emissiveIntensity : 0 });
       }
     });
     return maps;
   }, [gltf, shadows]);
-  useEffect(() => () => { for (const f of flowing) f.map.offset.set(0, 0); }, [flowing]);
-  useFrame((_, dt) => {
-    for (const f of flowing) { f.map.offset.x += f.speed[0] * dt; f.map.offset.y += f.speed[1] * dt; }
+  useEffect(() => () => { for (const f of flowing) { f.map.offset.set(0, 0); f.mat.emissiveMap?.offset.set(0, 0); if (f.glow > 0) f.mat.emissiveIntensity = f.glow; } }, [flowing]);
+  const clock = useMemo(() => ({ t: 0 }), []);
+  useFrame((_, delta) => {
+    const dt = Math.min(delta, 0.1);
+    clock.t += dt;
+    for (const f of flowing) {
+      // a água oscila de leve na direção da correnteza (marola); o deslocamento fica em [0, 1) para não perder precisão
+      const surge = f.speed[0] !== 0 ? 1 + Math.sin(clock.t * 0.9 + f.speed[1] * 40) * 0.25 : 1;
+      f.map.offset.x = (f.map.offset.x + f.speed[0] * surge * dt) % 1;
+      f.map.offset.y = (f.map.offset.y + f.speed[1] * surge * dt) % 1;
+      // o mapa de brilho da lava acompanha a cor (senão o brilho fica parado sob o fluxo)
+      const em = f.mat.emissiveMap;
+      if (em && em !== f.map) em.offset.copy(f.map.offset);
+      if (f.glow > 0) f.mat.emissiveIntensity = f.glow * (0.86 + 0.14 * Math.sin(clock.t * 1.4) * Math.sin(clock.t * 0.53 + 1));
+    }
   });
   return <primitive object={gltf.scene} />;
 }

@@ -21,6 +21,8 @@ export interface EmitOptions {
   gravity?: number;
   drag?: number;
   spin?: number;
+  /** Balanço lateral (m/s) de quem cai flutuando: folhas, pétalas, neve. */
+  flutter?: number;
 }
 
 const vertex = /* glsl */ `
@@ -73,6 +75,10 @@ export class ParticleSystem extends THREE.Points {
   private readonly gravity: Float32Array;
   private readonly drag: Float32Array;
   private readonly spin: Float32Array;
+  private readonly flutter: Float32Array;
+  /** Atributos escalares (cópia na remoção) e nomes dos atributos de GPU: listas fixas, sem alocação por quadro. */
+  private readonly scalars: Float32Array[];
+  private static readonly ATTRS = ['position', 'aColor', 'aSize', 'aSprite', 'aRot'] as const;
 
   constructor(map: THREE.Texture, max: number, additive: boolean) {
     const geo = new THREE.BufferGeometry();
@@ -98,6 +104,8 @@ export class ParticleSystem extends THREE.Points {
     this.gravity = new Float32Array(max);
     this.drag = new Float32Array(max);
     this.spin = new Float32Array(max);
+    this.flutter = new Float32Array(max);
+    this.scalars = [this.size, this.sprite, this.rot, this.life, this.maxLife, this.size0, this.grow, this.alpha0, this.gravity, this.drag, this.spin, this.flutter];
     const dyn = (arr: Float32Array, n: number): THREE.BufferAttribute => new THREE.BufferAttribute(arr, n).setUsage(THREE.DynamicDrawUsage);
     geo.setAttribute('position', dyn(this.pos, 3));
     geo.setAttribute('aColor', dyn(this.col, 4));
@@ -129,7 +137,8 @@ export class ParticleSystem extends THREE.Points {
     this.gravity[i] = o.gravity ?? 0; this.drag[i] = o.drag ?? 0;
     this.spin[i] = (o.spin ?? 0) * (Math.random() - 0.5) * 2;
     this.sprite[i] = o.sprite;
-    this.rot[i] = o.spin ? Math.random() * 6.283 : 0;
+    this.rot[i] = o.spin || o.flutter ? Math.random() * 6.283 : 0;
+    this.flutter[i] = o.flutter ?? 0;
     this.col[i * 4] = o.r; this.col[i * 4 + 1] = o.g; this.col[i * 4 + 2] = o.b; this.col[i * 4 + 3] = this.alpha0[i]!;
     this.size[i] = o.size;
   }
@@ -139,7 +148,7 @@ export class ParticleSystem extends THREE.Points {
     if (i === j) return;
     for (let k = 0; k < 3; k++) { this.pos[i * 3 + k] = this.pos[j * 3 + k]!; this.vel[i * 3 + k] = this.vel[j * 3 + k]!; }
     for (let k = 0; k < 4; k++) this.col[i * 4 + k] = this.col[j * 4 + k]!;
-    for (const a of [this.size, this.sprite, this.rot, this.life, this.maxLife, this.size0, this.grow, this.alpha0, this.gravity, this.drag, this.spin]) a[i] = a[j]!;
+    for (const a of this.scalars) a[i] = a[j]!;
   }
 
   update(dt: number): void {
@@ -147,13 +156,21 @@ export class ParticleSystem extends THREE.Points {
       this.life[i]! -= dt;
       if (this.life[i]! <= 0) { this.kill(i); continue; }
       const t = 1 - this.life[i]! / this.maxLife[i]!;
-      const d = Math.max(0, 1 - this.drag[i]! * dt);
+      const d = Math.exp(-this.drag[i]! * dt);
       this.vel[i * 3] = this.vel[i * 3]! * d;
       this.vel[i * 3 + 1] = this.vel[i * 3 + 1]! * d - this.gravity[i]! * dt;
       this.vel[i * 3 + 2] = this.vel[i * 3 + 2]! * d;
       this.pos[i * 3] = this.pos[i * 3]! + this.vel[i * 3]! * dt;
       this.pos[i * 3 + 1] = this.pos[i * 3 + 1]! + this.vel[i * 3 + 1]! * dt;
       this.pos[i * 3 + 2] = this.pos[i * 3 + 2]! + this.vel[i * 3 + 2]! * dt;
+      const fl = this.flutter[i]!;
+      if (fl !== 0) {
+        // folha caindo: zigue-zague guiado pela própria rotação do sprite (fase diferente para cada uma)
+        const r = this.rot[i]!;
+        this.pos[i * 3] = this.pos[i * 3]! + Math.sin(r * 1.3) * fl * dt;
+        this.pos[i * 3 + 2] = this.pos[i * 3 + 2]! + Math.cos(r * 0.9) * fl * dt;
+        this.pos[i * 3 + 1] = this.pos[i * 3 + 1]! + Math.abs(Math.sin(r * 1.3)) * fl * 0.35 * dt;
+      }
       this.size[i] = this.size0[i]! * (1 + (this.grow[i]! - 1) * t);
       this.rot[i] = this.rot[i]! + this.spin[i]! * dt;
       const fadeIn = Math.min(1, t * 8);
@@ -161,7 +178,7 @@ export class ParticleSystem extends THREE.Points {
     }
     const g = this.geometry;
     g.setDrawRange(0, this.count);
-    for (const name of ['position', 'aColor', 'aSize', 'aSprite', 'aRot']) {
+    for (const name of ParticleSystem.ATTRS) {
       const a = g.getAttribute(name) as THREE.BufferAttribute;
       a.clearUpdateRanges();
       a.addUpdateRange(0, this.count * a.itemSize);

@@ -21,7 +21,7 @@ import { RaceSim } from '@/game/racing/raceSim';
 import { ENVIRONMENTS } from '@/game/tracks/environments';
 import { loadTrackData } from '@/game/tracks/trackData';
 import type { TrackData } from '@/game/tracks/trackTypes';
-import { KartModel } from '@/game/vehicles/kartModel';
+import { KartModel, type KartVisualState } from '@/game/vehicles/kartModel';
 import type { KartState } from '@/game/vehicles/kartState';
 import { PHYS } from '@/game/vehicles/kartTuning';
 import { RaceVfx, type KartFx } from '@/game/vfx/raceVfx';
@@ -84,7 +84,7 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
     return model;
   }), [sim, kartGltfs, charGltfs, shieldGltf, config.racers]);
   const vfx = useMemo(() => new RaceVfx(atlas, env, quality.particles), [atlas, env, quality.particles]);
-  const cam = useMemo(() => new ChaseCamera(camera, rapier as unknown as Rapier, world, data.introCamera), [camera, rapier, world, data]);
+  const cam = useMemo(() => new ChaseCamera(camera, rapier as unknown as Rapier, world, data.introCamera, quality.shake), [camera, rapier, world, data, quality.shake]);
   const speedLines = useMemo(() => new THREE.ShaderMaterial({
     vertexShader: speedLinesVertex, fragmentShader: speedLinesFragment, transparent: true, depthTest: false, depthWrite: false,
     blending: THREE.AdditiveBlending, uniforms: { uIntensity: { value: 0 }, uTime: { value: 0 }, uColor: { value: new THREE.Color('#ffffff') } },
@@ -96,6 +96,9 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
     acc: 0, intro: 0, finishTimer: 0, reported: false, hudTick: 0, lightning: 4 + Math.random() * 6, started: false,
     normals: sim.karts.map(() => new THREE.Vector3(0, 1, 0)),
     spinStart: sim.karts.map(() => 0),
+    vis: sim.karts.map((): KartVisualState => ({
+      speed: 0, steer: 0, drifting: false, driftDir: 0, driftLevel: 0, boost: 0, spin: 0, grounded: true, shield: false, invulnerable: false, hop: 0, mood: 'idle',
+    })),
     tmpA: new THREE.Vector3(), tmpB: new THREE.Vector3(), tmpC: new THREE.Vector3(), basis: new THREE.Matrix4(),
     fx: sim.karts.map((): KartFx => ({
       x: 0, y: 0, z: 0, wheelL: new THREE.Vector3(), wheelR: new THREE.Vector3(), exhausts: [new THREE.Vector3(), new THREE.Vector3()], heading: 0, speed: 0,
@@ -131,6 +134,8 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
         },
         setAutopilot: (on: boolean) => { if (sim.player) sim.player.ai = on; },
         giveItem: (item: KartState['item']) => { if (sim.player) sim.player.item = item; },
+        /** Acesso direto à simulação (ferramentas de captura de animação). */
+        sim,
       };
     }
     return () => {
@@ -167,11 +172,11 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
       case 'turbo':
         sfx(`turbo_${Math.min(3, e.level)}` as 'turbo_1');
         if (k) vfx.turbo(k.x, k.y - PHYS.rideHeight, k.z, e.level);
-        if (mine) cam.addShake(0.12 + e.level * 0.05);
+        if (mine) { cam.addShake(0.08 + e.level * 0.04); cam.kick(2.5 + e.level * 1.5); }
         break;
-      case 'boost_pad': sfx('boost_pad'); if (k) vfx.turbo(k.x, k.y - PHYS.rideHeight, k.z, 2); if (mine) cam.addShake(0.15); break;
+      case 'boost_pad': sfx('boost_pad'); if (k) vfx.turbo(k.x, k.y - PHYS.rideHeight, k.z, 2); if (mine) { cam.addShake(0.1); cam.kick(5); } break;
       case 'jump': sfx('jump'); break;
-      case 'land': sfx('land', Math.min(1, 0.4 + e.impact / 14)); if (k) vfx.landing(k.x, k.y - PHYS.rideHeight, k.z, e.impact); if (mine) cam.addShake(Math.min(0.3, e.impact / 40)); break;
+      case 'land': sfx('land', Math.min(1, 0.4 + e.impact / 14)); if (k) vfx.landing(k.x, k.y - PHYS.rideHeight, k.z, e.impact); if (mine) { cam.addShake(Math.min(0.25, e.impact / 45)); cam.landing(e.impact); } break;
       case 'collision':
         sfx(e.strength > 9 ? 'collision_heavy' : 'collision', Math.min(1, 0.35 + e.strength / 16));
         vfx.impact(e.x, e.y - 0.2, e.z, e.strength);
@@ -239,7 +244,6 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
     }
     const alpha = st.acc / PHYS.dt;
     view.current.alpha = alpha;
-    const time = view.current.time;
 
     // karts
     const camPos = camera.position;
@@ -248,7 +252,7 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
       const x = k.px + (k.x - k.px) * alpha, y = k.py + (k.y - k.py) * alpha - PHYS.rideHeight, z = k.pz + (k.z - k.pz) * alpha;
       const heading = lerpAngle(k.pHeading, k.heading, alpha);
       const n = st.normals[i]!;
-      n.lerp(st.tmpA.set(k.nx, k.ny, k.nz), Math.min(1, dt * 10)).normalize();
+      n.lerp(st.tmpA.set(k.nx, k.ny, k.nz), 1 - Math.exp(-10 * dt)).normalize();
       const f = st.tmpA.set(Math.sin(heading), 0, Math.cos(heading));
       f.addScaledVector(n, -f.dot(n)).normalize();
       const left = st.tmpB.crossVectors(n, f);
@@ -260,13 +264,15 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
       m.group.visible = !far;
       if (far) return;
       if (!paused) {
-        m.update(dt, {
-          speed: k.speed, steer: k.steer, drifting: k.drifting, driftDir: k.driftDir, driftLevel: k.boostTime > 0 ? k.boostKind : k.driftLevel,
-          boost: k.boostTime > 0 ? Math.min(1, k.boostTime / k.boostTotal) : 0,
-          spin: k.spinTime > 0 && spinTotal > 0 ? 1 - k.spinTime / spinTotal : 0,
-          grounded: k.grounded, shield: k.shield > 0, invulnerable: k.invuln > 0 && k.spinTime <= 0, hop: k.hopTime / 0.22,
-          mood: k.finished ? (k.position <= 3 ? 'victory' : 'defeat') : sim.phase === 'intro' || sim.phase === 'countdown' ? 'idle' : 'race',
-        });
+        m.detail = (x - camPos.x) ** 2 + (z - camPos.z) ** 2 < quality.animDetail * quality.animDetail ? 1 : 0;
+        // estado visual reaproveitado (sem alocação por quadro)
+        const v = st.vis[i]!;
+        v.speed = k.speed; v.steer = k.steer; v.drifting = k.drifting; v.driftDir = k.driftDir; v.driftLevel = k.boostTime > 0 ? k.boostKind : k.driftLevel;
+        v.boost = k.boostTime > 0 ? Math.min(1, k.boostTime / k.boostTotal) : 0;
+        v.spin = k.spinTime > 0 && spinTotal > 0 ? 1 - k.spinTime / spinTotal : 0;
+        v.grounded = k.grounded; v.shield = k.shield > 0; v.invulnerable = k.invuln > 0 && k.spinTime <= 0; v.hop = k.hopTime / 0.22;
+        v.mood = k.finished ? (k.position <= 3 ? 'victory' : 'defeat') : sim.phase === 'intro' || sim.phase === 'countdown' ? 'idle' : 'race';
+        m.update(dt, v);
         const near = (x - camPos.x) ** 2 + (z - camPos.z) ** 2 < 90 * 90;
         if (near) {
           const fx = st.fx[i]!;
@@ -295,7 +301,7 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
       cam.update(dt, {
         x: px, y: py, z: pz, heading: lerpAngle(player.pHeading, player.heading, alpha), speed: player.speed, steer: player.steer,
         drifting: player.drifting, driftDir: player.driftDir, boost: boostK, grounded: player.grounded,
-      }, time);
+      });
     }
 
     // clima, relâmpagos, partículas, riscos de velocidade
@@ -313,7 +319,7 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
       vfx.update(dt, frame.size.height, camera.fov);
       const speedK = Math.max(0, (Math.abs(player.speed) - 22) / 12);
       const u = speedLines.uniforms;
-      u.uIntensity!.value += ((sim.phase === 'racing' ? Math.min(1, speedK * 0.35 + boostK * 0.75) : 0) - u.uIntensity!.value) * Math.min(1, dt * 6);
+      u.uIntensity!.value += ((sim.phase === 'racing' ? Math.min(1, speedK * 0.35 + boostK * 0.75) : 0) - u.uIntensity!.value) * (1 - Math.exp(-6 * dt));
       u.uTime!.value += dt;
 
       // áudio do jogador

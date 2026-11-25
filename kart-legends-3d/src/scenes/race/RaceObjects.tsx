@@ -3,6 +3,7 @@ import { useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import type { RaceSim } from '@/game/racing/raceSim';
 import { WIND_RADIUS } from '@/game/items/itemSystem';
+import { PHYS } from '@/game/vehicles/kartTuning';
 import type { AnimatedPropData } from '@/game/tracks/trackTypes';
 import { cloneScene, setShadows, useModels } from '../assets';
 
@@ -12,6 +13,10 @@ export interface RaceView {
   alpha: number;
   time: number;
 }
+
+type SliderStyle = 'hover' | 'walk' | 'roll' | 'rigid';
+/** Inclinação máxima (rad) na direção do movimento; carrinhos "agacham" a traseira ao contrário. */
+const LEAN: Record<SliderStyle, number> = { hover: 0.22, walk: 0.1, roll: -0.035, rigid: 0 };
 
 /** Ajusta um modelo para caber em uma caixa (largura, altura, comprimento) com a base no chão. */
 function fitToBox(obj: THREE.Object3D, w: number, h: number, l: number): THREE.Group {
@@ -67,6 +72,8 @@ export function RaceObjects({ view }: { view: React.MutableRefObject<RaceView> }
       root.add(o);
       return o;
     });
+    /** Tempo desde que cada caixa reapareceu (para o "pop" de entrada). */
+    const boxPop = new Float32Array(boxes.length).fill(9);
     const pool = (src: THREE.Object3D, n: number): THREE.Object3D[] => Array.from({ length: n }, () => {
       const o = src.clone(true);
       o.visible = false;
@@ -85,18 +92,30 @@ export function RaceObjects({ view }: { view: React.MutableRefObject<RaceView> }
       spin.add(model);
       g.add(spin);
       root.add(g);
-      return { g, spin };
+      // estilo do deslizante: drones flutuam, robôs e caranguejos andam (gingado no ritmo da distância
+      // percorrida), carrinhos sobre rodas só trepidam, grades se movem rígidas
+      const m = o.data.model;
+      const style: SliderStyle = /drone|balao|nave/.test(m) ? 'hover' : /robo|caranguejo/.test(m) ? 'walk' : /carrinho|vagonete/.test(m) ? 'roll' : 'rigid';
+      return { g, spin, style, lean: 0 };
     });
-    return { root, boxes, mists, sparks, waves, obstacles };
+    return { root, boxes, boxPop, mists, sparks, waves, obstacles };
   }, [sim, data, box, pad, ramp, arch, mist, spark, wave, obstacleModels, obstacleIds]);
   useEffect(() => () => { built.root.removeFromParent(); }, [built]);
 
-  useFrame(() => {
+  useFrame((_, delta) => {
     const { alpha, time } = view.current;
+    const dt = Math.min(delta, 0.1);
     sim.items.boxes.forEach((b, i) => {
       const o = built.boxes[i]!;
+      if (b.active && !o.visible) built.boxPop[i] = 0;
       o.visible = b.active;
-      if (b.active) { o.rotation.y = time * 1.6 + i; o.position.y = b.y + Math.sin(time * 2.4 + i) * 0.18; }
+      if (b.active) {
+        o.rotation.y = time * 1.6 + i;
+        o.position.y = b.y + Math.sin(time * 2.4 + i) * 0.18;
+        // reaparece crescendo com um leve passo do ponto (mola criticamente sub-amortecida, analítica)
+        const t = (built.boxPop[i]! += dt);
+        o.scale.setScalar(t > 1.2 ? 1 : 1 - Math.exp(-7 * t) * Math.cos(9 * t));
+      }
     });
     built.mists.forEach((o, i) => {
       const h = sim.items.hazards[i];
@@ -136,8 +155,20 @@ export function RaceObjects({ view }: { view: React.MutableRefObject<RaceView> }
         v.g.rotation.set(0, Math.atan2(ax, az), 0);
         v.spin.rotation.x = (o.t * len) / d.radius;
       } else {
-        v.g.position.set(x, y + Math.sin(time * 3 + i) * 0.06, z);
+        // deslizante: inclina na direção do movimento (proporcional à velocidade), gingando ou flutuando
+        const vMax = (Math.PI * len) / d.period * PHYS.dt;
+        const along = ((o.x - o.px) * ax + (o.z - o.pz) * az) / len;
+        const wantLean = THREE.MathUtils.clamp(along / (vMax || 1), -1, 1) * LEAN[v.style];
+        v.lean += (wantLean - v.lean) * (1 - Math.exp(-8 * dt));
+        const travel = o.t * len;
+        const speed01 = Math.min(1, Math.abs(along) / (vMax || 1));
+        const bob = v.style === 'hover' ? Math.sin(time * 2.2 + i * 1.3) * 0.18
+          : v.style === 'walk' ? Math.abs(Math.sin(travel * 1.6)) * 0.07
+            : v.style === 'roll' ? Math.sin(time * 37 + i) * 0.012 * speed01 : 0;
+        v.g.position.set(x, y + bob, z);
         v.g.rotation.set(0, Math.atan2(ax, az), 0);
+        v.spin.rotation.x = v.lean;
+        v.spin.rotation.z = v.style === 'hover' ? Math.sin(time * 1.7 + i) * 0.05 : v.style === 'walk' ? Math.sin(travel * 0.8) * 0.04 : 0;
       }
     });
   });
@@ -145,10 +176,22 @@ export function RaceObjects({ view }: { view: React.MutableRefObject<RaceView> }
   return <primitive object={built.root} />;
 }
 
-function motionOf(m: AnimatedPropData['motion'], inner: THREE.Object3D, time: number, phase: number): void {
-  if (m.kind === 'spin') inner.rotation[m.axis] = (time / m.period) * Math.PI * 2 + phase;
-  else if (m.kind === 'sway') inner.rotation[m.axis] = Math.sin((time / m.period) * Math.PI * 2 + phase) * m.angle;
-  else inner.position.y = Math.sin((time / m.period) * Math.PI * 2 + phase) * m.height;
+/**
+ * Movimento de uma peça do cenário. Cada instância tem fase e período levemente diferentes (nada se
+ * move em uníssono); o balanço tem um segundo harmônico e rajadas lentas de vento; o que flutua também
+ * gira e oscila um pouco.
+ */
+function motionOf(m: AnimatedPropData['motion'], inner: THREE.Object3D, time: number, phase: number, rate: number): void {
+  const x = (time / m.period) * rate * Math.PI * 2 + phase;
+  if (m.kind === 'spin') inner.rotation[m.axis] = x;
+  else if (m.kind === 'sway') {
+    const gust = 0.82 + 0.18 * Math.sin(time * 0.41 + phase * 0.7);
+    inner.rotation[m.axis] = (Math.sin(x) * 0.85 + Math.sin(x * 2.03 + phase) * 0.15) * m.angle * gust;
+  } else {
+    inner.position.y = Math.sin(x) * m.height;
+    inner.rotation.y = time * 0.06 * rate + phase;
+    inner.rotation.z = Math.cos(x) * 0.035;
+  }
 }
 
 /** Partes móveis do cenário (pás de moinho, bandeiras, plantas, hologramas), animadas em tempo real. */
@@ -166,14 +209,15 @@ export function AnimatedProps({ list, view }: { list: AnimatedPropData[]; view: 
       setShadows(inner, true, false);
       g.add(inner);
       root.add(g);
-      return { inner, motion: p.motion, phase: i * 1.7 };
+      // período ±8% por instância (determinístico)
+      return { inner, motion: p.motion, phase: i * 1.7, rate: 1 + (((i * 0.618034) % 1) - 0.5) * 0.16 };
     });
     return { root, items };
   }, [list, models, ids]);
   useEffect(() => () => { built.root.removeFromParent(); }, [built]);
   useFrame(() => {
     const t = view.current.time;
-    for (const it of built.items) motionOf(it.motion, it.inner, t, it.phase);
+    for (const it of built.items) motionOf(it.motion, it.inner, t, it.phase, it.rate);
   });
   return <primitive object={built.root} />;
 }
