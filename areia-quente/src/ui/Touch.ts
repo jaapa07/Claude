@@ -29,6 +29,9 @@ export class TouchControls {
   private skip: HTMLElement;
   private pauseBtn: HTMLElement;
   private visible = false;
+  /** layout dos botões: ataque ou defesa */
+  private mode: 'atk' | 'def' = 'atk';
+  private pendingSince = 0;
 
   constructor(private flow: Flow) {
     document.documentElement.classList.add('touch');
@@ -138,9 +141,35 @@ export class TouchControls {
     this.root.classList.toggle('wait', !!me && (st === 'kickoff' || st === 'setpiece') && (hasBall || m.sp?.taker === me));
     if (st !== 'play' && st !== 'kickoff' && st !== 'setpiece') return;
     const label = (a: string, t: string) => { const el = this.btns.find((b) => b.action === a)!.el.firstElementChild as HTMLElement; if (el.textContent !== t) el.textContent = t; };
-    label('pass', hasBall || attacking ? 'PASSE' : 'TROCAR');
-    label('lob', m.opts.mode === 'training' && !hasBall ? 'CRUZAR' : 'LENÇOL');
-    this.root.classList.toggle('atk', hasBall);
+    // ATAQUE: meu time com a bola (ou bola solta depois de um toque nosso, ex.: passe em voo, ou nossa cobrança)
+    // DEFESA: adversário com a bola, bola solta tocada por ele, ou cobrança dele
+    const lt = m.ball.lastTouch;
+    const atkNow = !tm ? true
+      : st !== 'play' ? (m.sp?.team ?? m.kickoffTeam) === tm
+      : owner ? owner.team === tm : lt ? lt.team === tm : true;
+    const want = atkNow ? 'atk' : 'def';
+    const now = performance.now();
+    const holding = this.btns.some((b) => b.ids.size > 0);
+    if (want !== this.mode) {
+      this.pendingSince ||= now;
+      // espera a posse "firmar" (evita piscar em dividida) e não troca botão debaixo do dedo
+      if (now - this.pendingSince > (holding ? 600 : 180)) { this.mode = want; this.pendingSince = 0; this.root.classList.remove('atk', 'def'); void this.root.offsetWidth; this.root.classList.add(want, 'swap'); setTimeout(() => this.root.classList.remove('swap'), 260); }
+    } else this.pendingSince = 0;
+    if (!this.root.classList.contains(this.mode)) this.root.classList.add(this.mode);
+    const gkHold = hasBall && m.ball.held;
+    if (this.mode === 'atk') {
+      label('pass', 'PASSE');
+      label('shoot', gkHold ? 'LANÇAR' : 'CHUTE');
+      label('lob', 'LENÇOL');
+      label('trick', 'FIRULA');
+    } else {
+      label('pass', 'TROCAR');
+      label('shoot', 'CHUTE');
+      label('lob', 'CRUZAR');
+      label('tackle', 'CARRINHO');
+    }
+    this.root.classList.toggle('training', m.opts.mode === 'training');
+    this.root.classList.toggle('hasball', hasBall);
   }
 }
 

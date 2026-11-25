@@ -75,6 +75,9 @@ e abra pelo ícone.
 | ❚❚ (canto superior) | pausa |
 | PULAR ▶▶ | pula apresentação, replay e intervalo |
 
+Os botões **mudam entre ATAQUE e DEFESA**: com a bola do seu time aparecem CHUTE (grande), PASSE, LENÇOL e FIRULA;
+quando o adversário tem a bola o botão grande vira **CARRINHO**, PASSE vira **TROCAR** (pega o jogador mais perto) e CHUTE sobe
+para finalizações de bola alta. Goleiro com a bola na mão: CHUTE vira LANÇAR. Um selo ATAQUE/DEFESA mostra o modo atual.
 Funciona com vários dedos ao mesmo tempo (joystick + chute). No saque e nas cobranças os botões PASSE/CHUTE piscam.
 As telas que no PC usam ENTER/ESC ganham botões **VOLTAR / COMEÇAR**; com o aparelho em pé aparece "Gire o aparelho".
 
