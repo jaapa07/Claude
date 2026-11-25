@@ -8,7 +8,7 @@ export const MODEL_SCALE = 1.8 / 3.77;
 export type ClipName = keyof typeof CLIPS;
 export const clipMeta = CLIPS as Record<string, { contact?: number; contact2?: number; loop: boolean; duration: number; endsLying?: string; reach?: number }>;
 
-const LOCO = new Set(['idle', 'idle_ready', 'idle_tired', 'walk', 'jog', 'run', 'sprint', 'gk_idle']);
+const LOCO = new Set(['idle', 'idle_ready', 'idle_tired', 'walk', 'jog', 'run', 'sprint', 'gk_idle', 'strafe_left', 'strafe_right', 'jog_back', 'gk_side_left', 'gk_side_right']);
 
 /** Personagem animado (rig do Kenney + clipes autorais) com uniforme, sombra e aura do Modo Fogo. */
 export class Athlete {
@@ -89,17 +89,21 @@ export class Athlete {
     this.locked = meta && !meta.loop ? meta.duration / speed : 0;
   }
 
-  /** Locomoção em função da velocidade (m/s). */
-  locomote(speed: number, tired = false, gk = false) {
+  /** Locomoção em função da velocidade (m/s) e da direção do movimento em relação ao corpo
+   *  (fwd = componente para a frente, side = para a esquerda do personagem), com corrida lateral e de costas. */
+  locomote(speed: number, tired = false, gk = false, fwd = 1, side = 0) {
     if (this.locked > 0) return;
     let n = gk ? 'gk_idle' : tired ? 'idle_tired' : 'idle';
     let sp = 1;
+    if (gk && speed > 0.6 && Math.abs(side) > 0.6 && speed < 6) { n = side > 0 ? 'gk_side_left' : 'gk_side_right'; sp = THREE.MathUtils.clamp(speed / 2.6, 0.7, 1.5); }
+    else if (speed > 1.4 && speed < 6.2 && fwd < -0.55) { n = 'jog_back'; sp = THREE.MathUtils.clamp(speed / 2.6, 0.7, 1.5); }
+    else if (speed > 1.4 && speed < 6.2 && Math.abs(side) > 0.75) { n = side > 0 ? 'strafe_left' : 'strafe_right'; sp = THREE.MathUtils.clamp(speed / 3.0, 0.7, 1.5); }
     // taxas calibradas para os ciclos de captura de movimento (pé sem patinar na areia)
-    if (speed > 7.2) { n = 'sprint'; sp = THREE.MathUtils.clamp(speed / 7.4, 0.85, 1.35); }
+    else if (speed > 7.2) { n = 'sprint'; sp = THREE.MathUtils.clamp(speed / 7.4, 0.85, 1.35); }
     else if (speed > 4.2) { n = 'run'; sp = THREE.MathUtils.clamp(speed / 3.9, 1.0, 1.7); }
     else if (speed > 1.6) { n = 'jog'; sp = THREE.MathUtils.clamp(speed / 3.3, 0.6, 1.3); }
     else if (speed > 0.35) { n = 'walk'; sp = THREE.MathUtils.clamp(speed / 1.35, 0.6, 1.3); }
-    if (n !== this.current) this.play(n, 0.18, sp);
+    if (n !== this.current) this.play(n, 0.2, sp);
     else if (this.currentAction) this.currentAction.timeScale = sp;
   }
 

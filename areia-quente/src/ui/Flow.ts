@@ -155,7 +155,7 @@ export class Flow {
     this.nav = new Nav(btns);
     // vitrine 3D: craque fazendo embaixadinhas na areia
     const p = new Athlete(this.kit(teams[0], 'home', 4));
-    p.root.position.set(1.5, 0, 3); p.root.rotation.y = -0.5; p.play('juggle', 0);
+    p.root.position.set(1.5, 0, 3); p.root.rotation.y = -0.5; p.play('freestyle', 0);
     const p2 = new Athlete(this.kit(teams[7], 'home', 7));
     p2.root.position.set(4.4, 0, 1.2); p2.root.rotation.y = -0.9; p2.play('warmup_jacks', 0);
     this.world.root.add(p.root, p2.root); this.show.push(p, p2);

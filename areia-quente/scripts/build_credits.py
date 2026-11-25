@@ -8,7 +8,7 @@ KENNEY = 'Kenney (kenney.nl) — CC0 1.0'
 OWN = 'Criado para o AREIA QUENTE (scripts deste repositório) — CC0 1.0'
 
 RULES = [
-    ('models/players/athlete.glb', 'Malha/rig: Kenney "Animated Characters: Protagonists" (CC0). 17 clipes de captura de movimento retargetados por scripts/blender/retarget.py — Quaternius "Universal Animation Library" (CC0) e CMU Graphics Lab Motion Capture Database (mocap.cs.cmu.edu, uso livre; sessões 10, 11, 13, 33, 42, 49) — e 35 clipes autorais (scripts/blender/anims.py)', 'CC0 1.0 / CMU (uso livre)'),
+    ('models/players/athlete.glb', 'Malha/rig: Kenney "Animated Characters: Protagonists" (CC0). 40 clipes de captura de movimento retargetados por scripts/blender/retarget.py — Mixamo/Adobe (pacote de futebol fornecido pelo dono do projeto, licença Mixamo; os .fbx originais não são redistribuídos), Quaternius "Universal Animation Library" (CC0) e CMU Graphics Lab Motion Capture Database (mocap.cs.cmu.edu, uso livre; sessões 10, 11, 13, 33, 42, 49) — e clipes autorais (scripts/blender/anims.py)', 'CC0 1.0 / CMU (uso livre) / Mixamo (Adobe)'),
     ('textures/kits/', 'Uniformes pintados por scripts/build_skins.py; rostos/cabelos amostrados das skins Kenney "Animated Characters" Protagonists/Survivors (CC0)', 'CC0 1.0'),
     ('models/arenas/', 'Montado em Blender por scripts/blender/build_arena.py com modelos Kenney City Kit Commercial, Nature Kit, Watercraft Kit, Furniture Kit (CC0)', 'CC0 1.0'),
     ('models/props/crowd.glb', 'Kenney "Mini Characters" (CC0), poses congeladas em Blender por build_props.py', 'CC0 1.0'),
@@ -93,7 +93,8 @@ def main():
     credits = {'sections': [
         {'title': 'Jogo', 'items': ['AREIA QUENTE — futebol de praia arcade 3D', 'Design, código, animações e pipeline de assets gerados com Claude Code']},
         {'title': 'Personagens, cenário e interface', 'items': ['Kenney (kenney.nl) — Animated Characters, Mini Characters, City Kit, Nature Kit, Watercraft Kit, Furniture Kit, Particle Pack, Smoke Particles, Input Prompts, Impact & Interface Sounds — CC0']},
-        {'title': 'Animações', 'items': ['Quaternius — Universal Animation Library (CC0): corrida, trote, sprint, caminhada, parado, dança, conversa, queda',
+        {'title': 'Animações', 'items': ['Mixamo (Adobe) — goleiro (mergulhos, encaixe, saída no alto, reposição, chutão), cabeceio, bicicleta, carrinho, queda, pênalti, lateral, corrida lateral e de costas, freestyle',
+                                          'Quaternius — Universal Animation Library (CC0): corrida, trote, sprint, caminhada, parado, dança, conversa, queda',
                                           'CMU Graphics Lab Motion Capture Database — mocap.cs.cmu.edu (financiado pela NSF EIA-0196217): chutes de futebol, estrela, polichinelo, aceno, alongamento, arremesso',
                                           'Retarget e clipes autorais (bicicleta, tesoura, peixinho, goleiro, árbitro) feitos em Blender por script']},
         {'title': 'Texturas e céus', 'items': ['ambientCG — Ground080, Ground093C — CC0', 'Poly Haven — Kloofendal 48d Partly Cloudy, Qwantani Sunset, Qwantani Night (Greg Zaal, Jarod Guest) — CC0']},

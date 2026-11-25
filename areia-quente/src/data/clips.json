@@ -1,14 +1,14 @@
 {
  "shot": {
   "loop": false,
-  "duration": 0.9,
-  "contact": 0.45,
+  "duration": 1.2,
+  "contact": 0.4666666666666667,
   "mocap": true
  },
  "pass_short": {
   "loop": false,
-  "duration": 0.8,
-  "contact": 0.4,
+  "duration": 0.5,
+  "contact": 0.43333333333333335,
   "mocap": true
  },
  "pass_lob": {
@@ -23,9 +23,10 @@
   "duration": 0.8
  },
  "header": {
-  "contact": 0.42,
   "loop": false,
-  "duration": 0.8
+  "duration": 1.5,
+  "contact": 0.6666666666666666,
+  "mocap": true
  },
  "diving_header": {
   "contact": 0.34,
@@ -34,16 +35,18 @@
   "duration": 1.0
  },
  "bicycle_kick": {
-  "contact": 0.46,
   "endsLying": "back",
   "loop": false,
-  "duration": 1.15
+  "duration": 2.6667,
+  "contact": 0.6666666666666666,
+  "mocap": true
  },
  "scissor_kick": {
-  "contact": 0.48,
   "endsLying": "side",
   "loop": false,
-  "duration": 1.1
+  "duration": 2.6667,
+  "contact": 0.6666666666666666,
+  "mocap": true
  },
  "chest_control": {
   "contact": 0.18,
@@ -62,43 +65,48 @@
   "duration": 0.65
  },
  "slide_tackle": {
-  "contact": 0.3,
   "loop": false,
-  "duration": 1.2
+  "duration": 2.3,
+  "contact": 0.8333333333333334,
+  "mocap": true
  },
  "fall_hit": {
-  "endsLying": "back",
+  "endsLying": "front",
   "loop": false,
-  "duration": 2.375,
+  "duration": 1.5,
   "mocap": true
  },
  "gk_dive_left": {
   "endsLying": "side",
-  "reach": 0.38,
+  "reach": 0.6,
   "loop": false,
-  "duration": 1.0
+  "duration": 1.9,
+  "mocap": true
  },
  "gk_dive_right": {
   "endsLying": "side",
-  "reach": 0.38,
+  "reach": 0.6,
   "loop": false,
-  "duration": 1.0
+  "duration": 2.0,
+  "mocap": true
  },
  "gk_punch": {
-  "contact": 0.26,
   "loop": false,
-  "duration": 0.6
+  "duration": 1.4,
+  "contact": 0.7,
+  "mocap": true
  },
  "gk_throw": {
   "loop": false,
-  "duration": 1.0833,
-  "contact": 0.5416666666666666,
+  "duration": 1.7,
+  "contact": 1.1333333333333333,
   "mocap": true
  },
  "throw_in": {
-  "contact": 0.48,
   "loop": false,
-  "duration": 0.8
+  "duration": 1.5,
+  "contact": 1.0,
+  "mocap": true
  },
  "idle": {
   "loop": true,
@@ -107,7 +115,8 @@
  },
  "idle_ready": {
   "loop": true,
-  "duration": 0.8
+  "duration": 4.0,
+  "mocap": true
  },
  "idle_tired": {
   "loop": true,
@@ -143,11 +152,13 @@
  },
  "get_up": {
   "loop": false,
-  "duration": 0.9
+  "duration": 1.6667,
+  "mocap": true
  },
  "get_up_front": {
   "loop": false,
-  "duration": 0.95
+  "duration": 1.6667,
+  "mocap": true
  },
  "celebrate_knee_slide": {
   "loop": true,
@@ -193,11 +204,13 @@
  },
  "gk_idle": {
   "loop": true,
-  "duration": 0.9
+  "duration": 3.3333,
+  "mocap": true
  },
  "gk_catch": {
   "loop": false,
-  "duration": 0.8
+  "duration": 0.9667,
+  "mocap": true
  },
  "gk_hold": {
   "loop": true,
@@ -246,6 +259,58 @@
  "warmup_jacks": {
   "loop": true,
   "duration": 2.3333,
+  "mocap": true
+ },
+ "gk_drop_kick": {
+  "contact": 0.9333333333333333,
+  "loop": false,
+  "duration": 1.9333,
+  "mocap": true
+ },
+ "gk_miss": {
+  "loop": false,
+  "duration": 2.3,
+  "mocap": true
+ },
+ "gk_side_left": {
+  "loop": true,
+  "duration": 0.5333,
+  "mocap": true
+ },
+ "gk_side_right": {
+  "loop": true,
+  "duration": 0.5,
+  "mocap": true
+ },
+ "penalty_kick": {
+  "contact": 0.7333333333333333,
+  "loop": false,
+  "duration": 1.5,
+  "mocap": true
+ },
+ "strafe_left": {
+  "loop": true,
+  "duration": 0.7,
+  "mocap": true
+ },
+ "strafe_right": {
+  "loop": true,
+  "duration": 0.7333,
+  "mocap": true
+ },
+ "jog_back": {
+  "loop": true,
+  "duration": 0.8,
+  "mocap": true
+ },
+ "freestyle": {
+  "loop": true,
+  "duration": 3.2667,
+  "mocap": true
+ },
+ "knee_juggle": {
+  "loop": true,
+  "duration": 0.9,
   "mocap": true
  }
 }

@@ -23,6 +23,12 @@ CMU_MAP = {
     'LeftUpLeg': 'LeftUpLeg', 'LeftLeg': 'LeftLeg', 'LeftFoot': 'LeftFoot', 'LeftToes': 'LeftToeBase',
     'RightUpLeg': 'RightUpLeg', 'RightLeg': 'RightLeg', 'RightFoot': 'RightFoot', 'RightToes': 'RightToeBase',
 }
+MIXAMO_MAP = {k: 'mixamorig:' + v for k, v in {
+    'Hips': 'Hips', 'Spine': 'Spine', 'Chest': 'Spine1', 'UpperChest': 'Spine2', 'Neck': 'Neck', 'Head': 'Head',
+    'LeftShoulder': 'LeftShoulder', 'LeftArm': 'LeftArm', 'LeftForeArm': 'LeftForeArm', 'LeftHand': 'LeftHand',
+    'RightShoulder': 'RightShoulder', 'RightArm': 'RightArm', 'RightForeArm': 'RightForeArm', 'RightHand': 'RightHand',
+    'LeftUpLeg': 'LeftUpLeg', 'LeftLeg': 'LeftLeg', 'LeftFoot': 'LeftFoot', 'LeftToes': 'LeftToeBase',
+    'RightUpLeg': 'RightUpLeg', 'RightLeg': 'RightLeg', 'RightFoot': 'RightFoot', 'RightToes': 'RightToeBase'}.items()}
 # ossos sem comprimento útil (ou raiz): usa alinhamento identidade
 NO_ALIGN = {'Hips', 'UpperChest', 'LeftHand', 'RightHand', 'Neck', 'Head'}
 ORDER = ['Hips', 'Spine', 'Chest', 'UpperChest', 'Neck', 'Head', 'LeftShoulder', 'LeftArm', 'LeftForeArm', 'LeftHand',
@@ -47,6 +53,10 @@ class Source:
             bpy.ops.import_scene.gltf(filepath=path)
             self.fps = bpy.context.scene.render.fps
             self.map = UAL_MAP
+        elif kind == 'mixamo':
+            bpy.ops.import_scene.fbx(filepath=path)
+            self.fps = 30
+            self.map = MIXAMO_MAP
         else:
             bpy.ops.import_anim.bvh(filepath=path, frame_start=1, use_fps_scale=False, update_scene_fps=False, axis_forward='-Z', axis_up='Y')
             self.fps = 120
@@ -61,7 +71,7 @@ class Source:
         bl = self.arm.data.bones
         self.rest_q = {n: (M @ bl[n].matrix_local).to_quaternion() for n in self.map.values()}
         self.rest_dir = {n: (M @ bl[n].tail_local - M @ bl[n].head_local).normalized() for n in self.map.values()}
-        foot = 'DEF-foot.L' if kind == 'ual' else 'LeftFoot'
+        foot = self.map['LeftFoot']
         hips = self.map['Hips']
         self.leg = (M @ bl[hips].head_local).z - (M @ bl[foot].head_local).z
 
@@ -75,7 +85,7 @@ class Source:
         return act
 
     def sample(self, t):
-        f = t * self.fps + (1 if self.kind == 'cmu' else 0)
+        f = t * self.fps + (0 if self.kind == 'ual' else 1)
         bpy.context.scene.frame_set(int(math.floor(f)), subframe=f - math.floor(f))
         M = self.arm.matrix_world
         pb = self.arm.pose.bones

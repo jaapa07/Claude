@@ -3,7 +3,7 @@
 Todos os arquivos em `public/assets/` listados com origem e licença. Gerado por `scripts/build_credits.py`.
 Fontes baixadas por `scripts/fetch-assets.mjs`; derivados gerados por `scripts/build_all.py`.
 
-Total: **319 arquivos**, 43.2 MB. Nenhuma marca real; patrocinadores e jogadores são fictícios.
+Total: **319 arquivos**, 43.9 MB. Nenhuma marca real; patrocinadores e jogadores são fictícios.
 
 Fontes tipográficas: Bungee (David Jonathan Ross) e Rubik (Hubert & Fischer) via @fontsource — SIL Open Font License 1.1.
 
@@ -115,10 +115,10 @@ Licença: **CC0 1.0** · 6 arquivo(s)
 - `models/arenas/lagoa.glb` (3022 KB)
 - `models/arenas/lagoa_seats.json` (55 KB)
 
-## Malha/rig: Kenney "Animated Characters: Protagonists" (CC0). 17 clipes de captura de movimento retargetados por scripts/blender/retarget.py — Quaternius "Universal Animation Library" (CC0) e CMU Graphics Lab Motion Capture Database (mocap.cs.cmu.edu, uso livre; sessões 10, 11, 13, 33, 42, 49) — e 35 clipes autorais (scripts/blender/anims.py)
-Licença: **CC0 1.0 / CMU (uso livre)** · 1 arquivo(s)
+## Malha/rig: Kenney "Animated Characters: Protagonists" (CC0). 40 clipes de captura de movimento retargetados por scripts/blender/retarget.py — Mixamo/Adobe (pacote de futebol fornecido pelo dono do projeto, licença Mixamo; os .fbx originais não são redistribuídos), Quaternius "Universal Animation Library" (CC0) e CMU Graphics Lab Motion Capture Database (mocap.cs.cmu.edu, uso livre; sessões 10, 11, 13, 33, 42, 49) — e clipes autorais (scripts/blender/anims.py)
+Licença: **CC0 1.0 / CMU (uso livre) / Mixamo (Adobe)** · 1 arquivo(s)
 
-- `models/players/athlete.glb` (2019 KB)
+- `models/players/athlete.glb` (2689 KB)
 
 ## Modelado em Blender por scripts/blender/build_props.py
 Licença: **Criado para o AREIA QUENTE (scripts deste repositório) — CC0 1.0** · 3 arquivo(s)

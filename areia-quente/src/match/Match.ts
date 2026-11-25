@@ -149,7 +149,7 @@ export class Match {
       const s = p.team.side === 0 ? -1 : 1;
       p.pos.set(s * (3 + (i % 5) * 2.6), 0, -6 + ((i * 7) % 11));
       p.yaw = Math.random() * 6;
-      p.ath.play(['stretch', 'juggle', 'warmup_jacks', 'idle'][i % 4], 0);
+      p.ath.play(['stretch', 'freestyle', 'warmup_jacks', 'knee_juggle', 'idle'][i % 5], 0);
       p.sync();
     });
     this.ball.place(-3, 2, 0.6);
@@ -409,7 +409,7 @@ export class Match {
       p.slideDir.copy(target.sub(p.pos).setY(0).normalize());
       p.yaw = Math.atan2(p.slideDir.x, p.slideDir.z);
       p.vel.copy(p.slideDir).multiplyScalar(Math.max(7.5, p.vel.length() + 1.5));
-      p.ath.play('slide_tackle', 0.08);
+      p.ath.play('slide_tackle', 0.08, 1.3);
       audio.play('tackle', 0.8);
       this.fx.sandPuff(p.pos, 6, 1.2);
     } else {
@@ -429,10 +429,11 @@ export class Match {
   }
 
   queueKick(p: Player, kind: KickKind, power: number, aim: THREE.Vector3 | null, target: Player | null) {
-    const anim = kind === 'long_throw' ? 'gk_throw' : kind;
+    const setShot = kind === 'shot' && (this.sp?.kind === 'penalty' || this.sp?.kind === 'free_kick' || !!this.pens) && this.sp?.taker === p;
+    const anim = kind === 'long_throw' ? 'gk_drop_kick' : setShot ? 'penalty_kick' : kind;
     const meta = clipMeta[anim] ?? { contact: 0.25 };
     // clipes de captura de movimento têm preparação longa; acelera para manter a resposta arcade
-    const speed = ({ shot: 1.25, pass_short: 1.45, pass_lob: 1.3, gk_throw: 1.3, long_throw: 1.3 } as Record<string, number>)[kind] ?? 1;
+    const speed = setShot ? 1.15 : ({ shot: 1.25, pass_short: 1.3, pass_lob: 1.3, gk_throw: 1.6, long_throw: 1.5, throw_in: 1.5, header: 1.4, bicycle_kick: 1.3, scissor_kick: 1.3, gk_punch: 1.4 } as Record<string, number>)[kind] ?? 1;
     p.kick = { kind, at: (meta.contact ?? 0.25) / speed, power, aim, target, fire: p.team.fire > 0, done: false };
     // vira para o alvo antes de chutar
     const goal = new THREE.Vector3(this.goalX(p.team), 0, (aim ? aim.z : 0) * 2);
@@ -744,7 +745,12 @@ export class Match {
       if (d2 < 0.36 && d2 > 1e-6) { const d = Math.sqrt(d2); p.pos.x += (dx / d) * (0.6 - d) * 0.5; p.pos.z += (dz / d) * (0.6 - d) * 0.5; }
     }
     const sp = Math.hypot(p.vel.x, p.vel.z);
-    if (p.stun <= 0 && p.sliding <= 0 && !(p.kick && !p.kick.done) && !(this.ball.held && this.ball.owner === p)) p.ath.locomote(sp, p.stamina < 0.2, p.isGK && sp < 1.5);
+    if (p.stun <= 0 && p.sliding <= 0 && !(p.kick && !p.kick.done) && !(this.ball.held && this.ball.owner === p)) {
+      const f = p.forward;
+      const fwd = sp > 0.1 ? (p.vel.x * f.x + p.vel.z * f.z) / sp : 1;
+      const side = sp > 0.1 ? (p.vel.x * f.z - p.vel.z * f.x) / sp : 0; // componente para a esquerda do personagem
+      p.ath.locomote(sp, p.stamina < 0.2, p.isGK && sp < 3, fwd, side);
+    }
     if (this.ball.held && this.ball.owner === p && p.ath.locked <= 0 && p.ath.current !== 'gk_hold' && p.isGK) p.ath.play('gk_hold', 0.15);
     // pegadas e poeira
     if (sp > 1.5 && p.stun <= 0) {
@@ -1013,7 +1019,7 @@ export class Match {
     hero.ath.locked = 99;
     this.celebHero = hero;
     for (const p of scorer.field) if (p !== hero && !p.isGK) { p.target.copy(hero.pos).add(new THREE.Vector3((Math.random() - 0.5) * 3, 0, (Math.random() - 0.5) * 3)); }
-    for (const p of scorer.opp.field) { p.ath.play(Math.random() < 0.5 ? 'hands_on_head' : 'sad', 0.2); p.ath.locked = 99; p.vel.set(0, 0, 0); }
+    for (const p of scorer.opp.field) { if (p.isGK && p.stun > 0) continue; p.ath.play(p.isGK ? 'gk_miss' : Math.random() < 0.5 ? 'hands_on_head' : 'sad', 0.2); p.ath.locked = 99; p.vel.set(0, 0, 0); }
     this.cam.orbit(hero.pos, 4.2, 1.4, Math.atan2(this.world.camera.position.x - hero.pos.x, this.world.camera.position.z - hero.pos.z), 0.45);
     this.hud.cinema(true);
   }

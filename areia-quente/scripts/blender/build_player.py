@@ -70,6 +70,35 @@ MOCAP = [  # (nome no jogo, tipo, arquivo, action UAL | None, t0, t1, meta extra
     ('warmup_jacks', 'cmu', '013/13_29', 131, 411, {}, True),
     ('wave', 'cmu', '013/13_26', 811, 1011, {}, False),
     ('stretch', 'cmu', '042/42_01', 191, 700, {}, False),
+    # Mixamo (Adobe) — pacote "Soccer Game Pack" fornecido pelo dono do projeto; os .fbx originais ficam fora do repositório
+    # (quadros a 30 fps; tuplas: nome, 'mx', arquivo, quadro inicial, quadro final, meta, loop). Ausentes = mantém o clipe anterior.
+    ('gk_idle', 'mx', 'goalkeeper idle (2)', 1, 101, {}, True),
+    ('gk_dive_left', 'mx', 'goalkeeper diving save', 13, 70, {'endsLying': 'side', 'reach': (31 - 13) / 30}, False),
+    ('gk_dive_right', 'mx', 'goalkeeper diving save (2)', 10, 70, {'endsLying': 'side', 'reach': (28 - 10) / 30}, False),
+    ('gk_catch', 'mx', 'goalkeeper catch (2)', 1, 30, {}, False),
+    ('gk_punch', 'mx', 'goalkeeper catch (4)', 4, 46, {'contact': (25 - 4) / 30}, False),
+    ('gk_throw', 'mx', 'goalkeeper overhand throw', 13, 64, {'contact': (47 - 13) / 30}, False),
+    ('gk_drop_kick', 'mx', 'goalkeeper drop kick', 37, 95, {'contact': (65 - 37) / 30}, False),
+    ('gk_miss', 'mx', 'goalkeeper miss', 1, 70, {}, False),
+    ('gk_side_left', 'mx', 'goalkeeper sidestep', 1, 17, {}, True),
+    ('gk_side_right', 'mx', 'goalkeeper sidestep (2)', 1, 16, {}, True),
+    ('header', 'mx', 'header soccerball', 10, 55, {'contact': (30 - 10) / 30}, False),
+    ('bicycle_kick', 'mx', 'scissor kick', 4, 84, {'contact': (24 - 4) / 30}, False),
+    ('scissor_kick', 'mx', 'scissor kick', 4, 84, {'contact': (24 - 4) / 30}, False),
+    ('slide_tackle', 'mx', 'soccer tackle (3)', 1, 70, {'contact': 25 / 30}, False),
+    ('fall_hit', 'mx', 'soccer trip', 1, 46, {'endsLying': 'front'}, False),
+    ('get_up', 'mx', 'standing up', 1, 51, {}, False),
+    ('get_up_front', 'mx', 'standing up', 1, 51, {}, False),
+    ('shot', 'mx', 'strike foward jog', 1, 37, {'contact': 14 / 30}, False),
+    ('pass_short', 'mx', 'kick soccerball (2)', 1, 16, {'contact': 13 / 30}, False),
+    ('penalty_kick', 'mx', 'soccer penalty kick', 1, 46, {'contact': 22 / 30}, False),
+    ('throw_in', 'mx', 'throw in', 19, 64, {'contact': (49 - 19) / 30}, False),
+    ('idle_ready', 'mx', 'offensive idle', 1, 121, {}, True),
+    ('strafe_left', 'mx', 'jog strafe left', 1, 22, {}, True),
+    ('strafe_right', 'mx', 'jog strafe right', 1, 23, {}, True),
+    ('jog_back', 'mx', 'jog backward', 1, 25, {}, True),
+    ('freestyle', 'mx', 'stall soccerball', 1, 99, {}, True),
+    ('knee_juggle', 'mx', 'kneeing soccerball', 1, 28, {}, True),
 ]
 poser = Poser(arm)
 clips, meta = build()
@@ -84,6 +113,14 @@ for name, kind, src, a, b, extra, loop in MOCAP:
             act_src = ual.use(src)
             t0, t1 = 0.0, act_src.frame_range[1] / ual.fps
             act, dur = retarget(arm, ual, name, t0, t1)
+        elif kind == 'mx':
+            f = os.path.join(SRCD, 'mixamo', 'pack', src + '.fbx')
+            if not os.path.exists(f):
+                print('mocap ausente (Mixamo)', name); continue
+            sm = Source('mixamo', f)
+            sm.use()
+            act, dur = retarget(arm, sm, name, (a - 1) / 30, (b - 1) / 30)
+            sm.dispose()
         else:
             if src not in cmu_cache:
                 for c in cmu_cache.values(): c.dispose()

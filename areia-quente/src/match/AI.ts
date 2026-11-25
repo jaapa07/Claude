@@ -213,7 +213,7 @@ export function gkAI(m: Match, tm: Team, dt: number) {
           if (Math.abs(dz) > 0.7 || pr.y < 0.5) {
             const left = new THREE.Vector3(Math.cos(gk.yaw), 0, -Math.sin(gk.yaw));
             const dirSign = dz * left.z > 0 ? 1 : -1;
-            gk.ath.play(dirSign > 0 ? 'gk_dive_left' : 'gk_dive_right', 0.05, 1.15);
+            gk.ath.play(dirSign > 0 ? 'gk_dive_left' : 'gk_dive_right', 0.05, 1.6);
             gk.vel.set(0, 0, Math.sign(dz) * Math.min(7, Math.abs(dz) / 0.35));
             gk.lying = 'side'; gk.stun = save ? 1.6 : 1.9;
           } else gk.ath.play(pr.y > 1.6 ? 'gk_punch' : 'gk_catch', 0.05);

@@ -1,39 +1,54 @@
 # QA ponta a ponta
 
-Executado em 2026-11-25 20:23 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
+Executado em 2026-11-25 20:40 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
 
-**1/2 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
+**3/7 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
 bola perto do dono, controle duplicado, time humano sem jogador, estados presos, bola morta sem ninguém ir buscar).
 
 | Suíte | Resultado | Tempo |
 |---|---|---|
-| menus | ✘ FALHOU | 236s |
-| options | ✔ OK | 44s |
+| achievements | ✔ OK | 78s |
+| memory | ✔ OK | 105s |
+| mobile | ✘ FALHOU | 63s |
+| cup | ✔ OK | 311s |
+| pens | ✘ FALHOU | 114s |
+| arenas | ✘ FALHOU | 0s |
+| fullmatch | ✘ FALHOU | 335s |
 
-## menus
+## achievements
 
-- ✔ ENTER no título abre o menu
-- ✔ menu com 7 opções (Amistoso | Copa Areia Quente | Treino | Desafios da Praia | Conquistas (0/18) | Opções | Créditos)
-- ✔ opção 1 → ctrl
-- ✔   ESC volta ao menu
-- ✔ opção 2 → teams
-- ✔   ESC volta ao menu
-- ✔ opção 3 → teams
-- ✔   ESC volta ao menu
-- ✔ opção 4 → challenges
-- ✔   ESC volta ao menu
-- ✔ opção 5 → achievements
-- ✔   ESC volta ao menu
-- ✘ opção 6 deveria abrir options (está em achievements)
-- ✔   ESC volta ao menu
-- ✔ opção 7 → credits
-- ✔   ESC volta ao menu
+- ✔ tela lista 18 conquistas, 5 desbloqueadas (18,5)
+- ✔ bola dourada liberada com 5 conquistas e selecionada (dourada)
+- ✔ bola neon bloqueada não é selecionada (dourada)
+- ✔ partida usa a bola dourada
 
-## options
+## memory
 
-- ✔ volume da música alterado e salvo (0.7 → 0.5)
-- ✔ tecla de passe remapeada para U (KeyU)
-- ✔ opções persistem após recarregar a página
-- ✔ saída de bola com a tecla remapeada (U)
+- ✔ sem acúmulo de objetos dinâmicos entre partidas (131,131,131)
+- ✔ cena não cresce entre trocas de arena (448,448,448)
+
+## mobile
+
+- ✔ menu sem rolagem horizontal em 390 px
+- ✘ placar cabe na tela do celular
+
+## cup
+
+- ✔ copa criada com chaveamento
+- ✔ progresso da copa salvo após recarregar ("Continuar Copa")
+- ✔ vencer a final leva à cena do troféu
+- ✔ conquista "Campeão da Copa" desbloqueada
+
+## pens
+
+- ✘ exceção: page.evaluate: Target page, context or browser has been closed
+
+## arenas
+
+- ✘ exceção: browserType.launch: Target page, context or browser has been closed
+
+## fullmatch
+
+- ✘ exceção: page.evaluate: Target page, context or browser has been closed
 
 Capturas de tela das suítes em `docs/qa/`.
