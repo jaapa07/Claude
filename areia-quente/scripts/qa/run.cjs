@@ -513,6 +513,14 @@ const SUITES = {
     for (const x of notes) console.log('   ', x);
     console.log(notes.failed ? '  ✘ FALHOU' : '  ✔ OK', `(${secs}s)`);
   }
+  // acumula com rodadas anteriores (por suíte) para o relatório final
+  const store = path.join(ROOT, 'docs', 'qa', 'results.json');
+  let prev = {};
+  try { prev = JSON.parse(fs.readFileSync(store, 'utf8')); } catch { /* primeira rodada */ }
+  for (const r of results) prev[r.name] = { ...r, at: new Date().toISOString() };
+  if (!process.env.QA_NO_MERGE) fs.writeFileSync(store, JSON.stringify(prev, null, 1));
+  const order = Object.keys(SUITES);
+  results.splice(0, results.length, ...order.filter((k) => prev[k]).map((k) => prev[k]));
   const ok = results.filter((r) => r.ok).length;
   const md = ['# QA ponta a ponta', '', `Executado em ${new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC com \`node scripts/qa/run.cjs\` (Chromium headless, build de produção).`, '',
     `**${ok}/${results.length} suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,`,

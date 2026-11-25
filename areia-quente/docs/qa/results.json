@@ -1,0 +1,203 @@
+{
+ "menus": {
+  "name": "menus",
+  "ok": false,
+  "notes": [
+   "✔ ENTER no título abre o menu",
+   "✘ exceção: elementHandle.dblclick: Timeout 30000ms exceeded."
+  ],
+  "secs": 56,
+  "at": "rodada 1"
+ },
+ "options": {
+  "name": "options",
+  "ok": true,
+  "notes": [
+   "✔ volume da música alterado e salvo (0.7 → 0.5)",
+   "✔ tecla de passe remapeada para U (KeyU)",
+   "✔ opções persistem após recarregar a página",
+   "✔ saída de bola com a tecla remapeada (U)"
+  ],
+  "secs": 51,
+  "at": "rodada 1"
+ },
+ "fullmatch": {
+  "name": "fullmatch",
+  "ok": false,
+  "notes": [
+   "✔ partida de 3 períodos termina na tela de resultado",
+   "✔ ciclo de estados completo (play, goal, replay, setpiece, halftime, kickoff, periodEnd, fulltime)",
+   "✔ houve chutes (11,8)",
+   "✘ 2 anomalia(s): bola fora do mundo 53.7,1.4,12.9 estado=replay | estado fulltime preso há 30s"
+  ],
+  "secs": 175,
+  "at": "rodada 1"
+ },
+ "arenas": {
+  "name": "arenas",
+  "ok": true,
+  "notes": [
+   "✔ lagoa: o relógio avança (1º 154s)",
+   "✔ dunas: o relógio avança (1º 126s)"
+  ],
+  "secs": 136,
+  "at": "rodada 1"
+ },
+ "human": {
+  "name": "human",
+  "ok": true,
+  "notes": [
+   "✔ jogador humano executou ações pelo teclado (42)",
+   "✔ time humano chutou a gol (5)",
+   "✔ jogador controlado se movimentou"
+  ],
+  "secs": 173,
+  "at": "rodada 1"
+ },
+ "twoplayers": {
+  "name": "twoplayers",
+  "ok": false,
+  "notes": [
+   "✔ controles movidos para CASA e FORA",
+   "✔ teclado não é arrastado pelo analógico dos controles",
+   "✔ os dois times têm jogador controlado (2,1)",
+   "✘ botão A não cobrou a saída",
+   "✔ analógico move o jogador do controle 1"
+  ],
+  "secs": 82,
+  "at": "rodada 1"
+ },
+ "setpieces": {
+  "name": "setpieces",
+  "ok": true,
+  "notes": [
+   "✔ throw_in: CPU cobra e o jogo segue (play sp=- t=-)",
+   "✔ corner: CPU cobra e o jogo segue (play sp=- t=-)",
+   "✔ goal_kick: CPU cobra e o jogo segue (play sp=- t=-)",
+   "✔ free_kick: CPU cobra e o jogo segue (play sp=- t=-)",
+   "✔ penalty: CPU cobra e o jogo segue (play sp=- t=-)"
+  ],
+  "secs": 74,
+  "at": "rodada 1"
+ },
+ "fouls": {
+  "name": "fouls",
+  "ok": true,
+  "notes": [
+   "✔ falta por trás gera cartão amarelo",
+   "✔ segundo amarelo tira o jogador por 2 minutos",
+   "✔ jogo continua (cobrança executada) após a falta",
+   "✔ jogador expulso volta após 2 minutos de jogo"
+  ],
+  "secs": 60,
+  "at": "rodada 1"
+ },
+ "pausemenu": {
+  "name": "pausemenu",
+  "ok": false,
+  "notes": [
+   "✘ ESC pausa a partida",
+   "✘ formação alterada pelo menu de táticas (1-2-1)",
+   "✔ substituição troca o jogador em campo (CAJU → RAIO LASER)",
+   "✔ continuar retoma a partida",
+   "✔ reiniciar começa uma nova partida"
+  ],
+  "secs": 65,
+  "at": "rodada 1"
+ },
+ "cup": {
+  "name": "cup",
+  "ok": true,
+  "notes": [
+   "✔ copa criada com chaveamento",
+   "✔ progresso da copa salvo após recarregar (\"Continuar Copa\")",
+   "✔ vencer a final leva à cena do troféu",
+   "✔ conquista \"Campeão da Copa\" desbloqueada"
+  ],
+  "secs": 164,
+  "at": "rodada 1"
+ },
+ "pens": {
+  "name": "pens",
+  "ok": true,
+  "notes": [
+   "✔ empate → prorrogação → pênaltis",
+   "✔ disputa termina no resultado (pênaltis 2,1)"
+  ],
+  "secs": 86,
+  "at": "rodada 1"
+ },
+ "training": {
+  "name": "training",
+  "ok": true,
+  "notes": [
+   "✔ [L] sem bola: treinador cruza",
+   "✔ desafios do treino completos",
+   "✔ conquista \"Aluno Aplicado\""
+  ],
+  "secs": 32,
+  "at": "rodada 1"
+ },
+ "minigames": {
+  "name": "minigames",
+  "ok": false,
+  "notes": [
+   "✘ Pênaltis de Ouro termina com tela de resultado ([false,false])",
+   "✘ embaixadinhas contadas pelo bot (1)",
+   "✔ Embaixadinhas termina (bola caiu ou tempo)",
+   "✘ Tiro ao Alvo termina após 10 bolas (10,450)",
+   "✔ recordes salvos ({\"pk\":0,\"juggle\":1,\"target\":450})"
+  ],
+  "secs": 928,
+  "at": "rodada 1"
+ },
+ "achievements": {
+  "name": "achievements",
+  "ok": true,
+  "notes": [
+   "✔ tela lista 20 conquistas, 5 desbloqueadas (20,5)",
+   "✔ bola dourada liberada com 5 conquistas e selecionada (dourada)",
+   "✔ bola neon bloqueada não é selecionada (dourada)",
+   "✔ partida usa a bola dourada"
+  ],
+  "secs": 64,
+  "at": "rodada 1"
+ },
+ "memory": {
+  "name": "memory",
+  "ok": true,
+  "notes": [
+   "✔ sem acúmulo de objetos dinâmicos entre partidas (131,131,131)",
+   "✔ cena não cresce entre trocas de arena (448,448,448)"
+  ],
+  "secs": 108,
+  "at": "rodada 1"
+ },
+ "career": {
+  "name": "career",
+  "ok": true,
+  "notes": [
+   "✔ carreira criada (POR, 8 times, 7 rodadas)",
+   "✔ tabela da liga com 8 seleções",
+   "✔ partida da carreira usa a seleção do jogador",
+   "✔ rodada 1 registrada e pontos de evolução ganhos (3 → 9)",
+   "✔ vitória vale 3 pontos na tabela (3 Portugal11004133)",
+   "✔ evolução gasta 1 ponto e melhora o atributo ({\"POR0\":{\"chute\":1}})",
+   "✔ temporada concluída e registrada no histórico (1º)",
+   "✔ segunda temporada começa",
+   "✔ histórico lista a temporada"
+  ],
+  "secs": 161,
+  "at": "rodada 1"
+ },
+ "mobile": {
+  "name": "mobile",
+  "ok": true,
+  "notes": [
+   "✔ menu sem rolagem horizontal em 390 px",
+   "✔ placar cabe na tela do celular"
+  ],
+  "secs": 39,
+  "at": "rodada 1"
+ }
+}
