@@ -3,7 +3,7 @@ import { CHARACTER_BY_ID } from '@/data/characters';
 import { POINTS_BY_POSITION } from '@/data/tracks';
 import { AI_PROFILES, AiDriver, type AiWorld } from '@/game/ai/aiDriver';
 import { createRng, type Rng } from '@/game/core/rng';
-import { NEUTRAL_INPUT, type HudAlert, type HudSnapshot, type InputState, type RaceConfig, type RacePhase, type RaceResult, type RacerResult } from '@/game/core/types';
+import { NEUTRAL_INPUT, playerSlotOf, type HudAlert, type HudSnapshot, type InputState, type PlayerRaceOutcome, type RaceConfig, type RacePhase, type RaceResult, type RacerResult } from '@/game/core/types';
 import { ItemSystem } from '@/game/items/itemSystem';
 import { GROUP_KART, GROUP_OBSTACLE, GROUP_STATIC, createTrackColliders, groups, type Rapier } from '@/game/physics/trackColliders';
 import type { TrackData } from '@/game/tracks/trackTypes';
@@ -18,11 +18,18 @@ import { rankKarts, updateProgress } from './progress';
 /** Conversão de m/s para o velocímetro do HUD. */
 export const KMH = 4.2;
 const COUNTDOWN = 3;
+/**
+ * Tela dividida: depois que o primeiro jogador cruza a chegada, o outro tem este tempo (s) para terminar;
+ * esgotado, a corrida se encerra e quem não chegou é classificado pelo progresso (tempo estimado).
+ */
+export const SECOND_PLAYER_GRACE = 45;
 
 export interface RaceSimOptions {
-  /** Leitura dos comandos do jogador (chamada a cada passo fixo). */
-  playerInput?: () => InputState;
+  /** Leitura dos comandos de um jogador humano (chamada a cada passo fixo). `slot`: 0 = Jogador 1, 1 = Jogador 2. */
+  playerInput?: (slot: number) => InputState;
 }
+
+type TimedAlert = HudAlert & { ttl: number };
 
 /**
  * Simulação determinística de uma corrida. Não depende de renderização: é a mesma classe
@@ -34,7 +41,10 @@ export class RaceSim {
   readonly obstacles: ObstacleState[];
   readonly items: ItemSystem;
   readonly events: SimEvent[] = [];
+  /** Jogador 1 (ou null numa corrida só de IA). */
   readonly player: KartState | null;
+  /** Jogadores humanos na ordem das vagas (0, 1). */
+  readonly players: KartState[];
   phase: RacePhase = 'intro';
   /** Tempo total de simulação (s) e tempo de corrida desde o "VAI!" (s). */
   time = 0;
@@ -42,13 +52,17 @@ export class RaceSim {
   countdown = COUNTDOWN;
   private lastCount = COUNTDOWN + 1;
   private readonly drivers: (AiDriver | null)[] = [];
-  private readonly autopilot: AiDriver;
+  /** Piloto automático de cada humano (depois da chegada, Cometa Guia, ganchos de teste). */
+  private readonly autopilots: AiDriver[] = [];
   private readonly ctx: PhysicsContext;
   private readonly rng: Rng;
-  private readonly alerts: (HudAlert & { ttl: number })[] = [];
+  /** Alertas por jogador (sempre ao menos uma lista). */
+  private readonly alerts: TimedAlert[][] = [[]];
   private alertId = 1;
   private finishedCount = 0;
-  private resetCooldown = 0;
+  private readonly resetCooldown: number[] = [];
+  /** Tempo de corrida (s) em que o primeiro humano chegou (tela dividida). */
+  private firstHumanFinish = -1;
   private readonly aiWorld: AiWorld;
   private readonly watch: { progress: number; time: number; outside: number }[] = [];
 
@@ -67,10 +81,12 @@ export class RaceSim {
     this.obstacles = createObstacles(R, world, data.obstacles);
     const emit = (e: SimEvent): void => {
       this.events.push(e);
-      // avisos de item para o jogador
-      if (!('kart' in e) || e.kart !== this.player?.index) return;
-      if (e.type === 'item_use' && e.item === 'cometa-guia') this.alert('COMETA GUIA!', 'good', 1.6);
-      else if (e.type === 'zapped') this.alert('RAIO! MOTOR ENGASGADO', 'warn', 1.4);
+      // avisos de item para o jogador atingido/usuário
+      if (!('kart' in e)) return;
+      const k = this.karts[e.kart];
+      if (!k || !k.isPlayer) return;
+      if (e.type === 'item_use' && e.item === 'cometa-guia') this.alert('COMETA GUIA!', 'good', 1.6, k.slot);
+      else if (e.type === 'zapped') this.alert('RAIO! MOTOR ENGASGADO', 'warn', 1.4, k.slot);
     };
     this.ctx = { R, world, ray: new R.Ray({ x: 0, y: 0, z: 0 }, { x: 0, y: -1, z: 0 }), emit, controlsEnabled: false };
     this.items = new ItemSystem(this.track, this.rng, emit, config.mode !== 'timetrial');
@@ -87,19 +103,28 @@ export class RaceSim {
           .setCollisionGroups(groups(GROUP_KART, GROUP_STATIC | GROUP_KART | GROUP_OBSTACLE)),
         body,
       );
-      const k = createKartState({ index: i, characterId: r.characterId, kartId: r.kartId, isPlayer: r.isPlayer, ai: !r.isPlayer, tuning, body, collider });
+      const k = createKartState({ index: i, characterId: r.characterId, kartId: r.kartId, isPlayer: r.isPlayer, slot: playerSlotOf(r), ai: !r.isPlayer, tuning, body, collider });
       placeKart(k, slot.pos[0], slot.pos[1] + PHYS.rideHeight, slot.pos[2], slot.heading);
       k.pathIndex = k.mainIndex = this.track.main.nearest(0, 40, 4, k.x, k.y, k.z);
       k.lastSafeIndex = k.mainIndex;
       this.karts.push(k);
       this.watch.push({ progress: 0, time: 0, outside: 0 });
+      this.resetCooldown.push(0);
       this.drivers.push(r.isPlayer ? null : new AiDriver(AI_PROFILES[config.difficulty], createRng(config.seed + 31 * (i + 1))));
     });
-    this.autopilot = new AiDriver(AI_PROFILES.normal, createRng(config.seed + 999));
-    this.player = this.karts.find((k) => k.isPlayer) ?? null;
+    this.players = this.karts.filter((k) => k.isPlayer).sort((a, b) => a.slot - b.slot || a.index - b.index);
+    // vagas contínuas (0, 1) mesmo se a configuração repetir ou pular números
+    this.players.forEach((k, slot) => { k.slot = slot; });
+    this.player = this.players[0] ?? null;
+    for (let i = 1; i < this.players.length; i++) this.alerts.push([]);
+    for (let i = 0; i < Math.max(1, this.players.length); i++) this.autopilots.push(new AiDriver(AI_PROFILES.normal, createRng(config.seed + 999 + i * 7919)));
     this.aiWorld = { track: this.track, karts: this.karts, obstacles: this.obstacles, hazards: this.items.hazards, projectiles: this.items.projectiles, time: 0, raceTime: 0 };
     for (const k of this.karts) updateProgress(k, this.track, 0, { onLap: () => undefined });
     rankKarts(this.karts);
+  }
+
+  private autopilotOf(k: KartState): AiDriver {
+    return this.autopilots[Math.max(0, k.slot)] ?? this.autopilots[0]!;
   }
 
   /** Encerra a apresentação da pista e inicia a contagem regressiva. */
@@ -128,15 +153,15 @@ export class RaceSim {
     this.ctx.controlsEnabled = racing;
     this.aiWorld.time = this.time;
     this.aiWorld.raceTime = this.raceTime;
-    this.resetCooldown = Math.max(0, this.resetCooldown - dt);
+    for (let i = 0; i < this.resetCooldown.length; i++) this.resetCooldown[i] = Math.max(0, this.resetCooldown[i]! - dt);
 
     stepObstacles(this.obstacles, this.time);
 
     for (const k of this.karts) {
       // comandos
       if (!racing) Object.assign(k.input, NEUTRAL_INPUT);
-      else if (k.ai) (this.drivers[k.index] ?? this.autopilot).update(k, this.aiWorld, dt);
-      else if (k.isPlayer && this.opts.playerInput) Object.assign(k.input, this.opts.playerInput());
+      else if (k.ai) (this.drivers[k.index] ?? this.autopilotOf(k)).update(k, this.aiWorld, dt);
+      else if (k.isPlayer && this.opts.playerInput) Object.assign(k.input, this.opts.playerInput(k.slot));
       if (k.finished) k.input.item = false;
       if (racing && k.comet > 0) this.items.steerComet(k);
       stepKart(k, this.ctx, dt);
@@ -156,16 +181,24 @@ export class RaceSim {
     }
     if (racing) this.items.step(this.karts, dt);
     rankKarts(this.karts);
+    // Tela dividida: quem ficou para trás tem um prazo depois da chegada do primeiro jogador.
+    if (this.phase === 'racing' && this.firstHumanFinish >= 0 && this.raceTime - this.firstHumanFinish > SECOND_PLAYER_GRACE) this.phase = 'finished';
 
-    for (let i = this.alerts.length - 1; i >= 0; i--) {
-      this.alerts[i]!.ttl -= dt;
-      if (this.alerts[i]!.ttl <= 0) this.alerts.splice(i, 1);
+    for (const list of this.alerts) {
+      for (let i = list.length - 1; i >= 0; i--) {
+        list[i]!.ttl -= dt;
+        if (list[i]!.ttl <= 0) list.splice(i, 1);
+      }
     }
   }
 
-  private alert(text: string, kind: HudAlert['kind'], ttl = 2.4): void {
-    this.alerts.push({ id: this.alertId++, text, kind, ttl });
-    if (this.alerts.length > 3) this.alerts.shift();
+  /** Alerta no HUD de um jogador (`slot`) ou de todos (`slot` omitido). */
+  private alert(text: string, kind: HudAlert['kind'], ttl = 2.4, slot = -1): void {
+    this.alerts.forEach((list, i) => {
+      if (slot >= 0 && slot !== i) return;
+      list.push({ id: this.alertId++, text, kind, ttl });
+      if (list.length > 3) list.shift();
+    });
   }
 
   private onLap(k: KartState, lapMs: number): void {
@@ -177,10 +210,15 @@ export class RaceSim {
       k.ai = true;
       this.finishedCount++;
       this.events.push({ type: 'finish', kart: k.index, position: this.finishedCount });
-      if (k.isPlayer) { this.phase = 'finished'; this.alert('CHEGADA!', 'good', 4); }
+      if (k.isPlayer) {
+        this.alert('CHEGADA!', 'good', 4, k.slot);
+        if (this.firstHumanFinish < 0) this.firstHumanFinish = this.raceTime;
+        // a corrida acaba quando todos os humanos cruzam a chegada
+        if (this.players.every((p) => p.finished)) this.phase = 'finished';
+      }
     } else if (k.isPlayer) {
-      if (final) this.alert('ÚLTIMA VOLTA!', 'warn', 3);
-      else this.alert(`VOLTA ${k.lap + 1}`, 'info', 2);
+      if (final) this.alert('ÚLTIMA VOLTA!', 'warn', 3, k.slot);
+      else this.alert(`VOLTA ${k.lap + 1}`, 'info', 2, k.slot);
     }
   }
 
@@ -233,10 +271,10 @@ export class RaceSim {
       // Do lado de fora do muro e quase parado (entrou numa fresta, ex.: boca de atalho): recupera em 2 s, não em 6.
       const outside = k.pathId < 0 && Math.abs(k.lateral) > main.halfWidth[k.mainIndex]! + 1 && Math.abs(k.speed) < 4;
       w.outside = outside ? w.outside + dt : 0;
-      if (w.time > 6 || w.outside > 2) { w.time = 0; w.outside = 0; w.progress = k.progress - 20; (this.drivers[k.index] ?? this.autopilot).resetStuck(); return this.respawn(k, 'stuck'); }
+      if (w.time > 6 || w.outside > 2) { w.time = 0; w.outside = 0; w.progress = k.progress - 20; (this.drivers[k.index] ?? this.autopilotOf(k)).resetStuck(); return this.respawn(k, 'stuck'); }
     }
     if (k.isPlayer && !k.ai) {
-      if (k.input.reset && !k.resetHeld && this.resetCooldown <= 0) { this.resetCooldown = 3; this.respawn(k, 'manual'); }
+      if (k.input.reset && !k.resetHeld && this.resetCooldown[k.index]! <= 0) { this.resetCooldown[k.index] = 3; this.respawn(k, 'manual'); }
       k.resetHeld = k.input.reset;
       const hd = Math.sin(k.heading) * main.tan[k.mainIndex * 3]! + Math.cos(k.heading) * main.tan[k.mainIndex * 3 + 2]!;
       if (hd < -0.35 && k.speed > 4 && k.pathId < 0) {
@@ -260,9 +298,9 @@ export class RaceSim {
     this.events.push({ type: 'respawn', kart: k.index, reason });
   }
 
-  /** Estado para o HUD do jogador. */
-  hud(): HudSnapshot {
-    const k = this.player ?? this.karts[0]!;
+  /** Estado para o HUD de um jogador (`slot` 0 = Jogador 1, 1 = Jogador 2). */
+  hud(slot = 0): HudSnapshot {
+    const k = this.players[slot] ?? this.player ?? this.karts[0]!;
     const lapTime = this.phase === 'racing' ? this.raceTime * 1000 - k.lapStart : 0;
     const best = k.lapTimes.length ? Math.min(...k.lapTimes) : null;
     const next = k.driftLevel >= 3 ? 1 : (() => {
@@ -288,8 +326,10 @@ export class RaceSim {
       boost: k.boostTime > 0 ? Math.min(1, k.boostTime / k.boostTotal) : 0,
       shield: k.shield > 0,
       wrongWay: k.wrongWayTime > 1.2,
-      alerts: this.alerts.map(({ id, text, kind }) => ({ id, text, kind })),
-      minimap: this.karts.map((o) => ({ x: o.x, z: o.z, characterId: o.characterId, isPlayer: o.isPlayer, position: o.position })),
+      finished: k.isPlayer ? k.finished : this.phase === 'finished',
+      slot: Math.max(0, k.slot),
+      alerts: (this.alerts[Math.max(0, k.slot)] ?? this.alerts[0]!).map(({ id, text, kind }) => ({ id, text, kind })),
+      minimap: this.karts.map((o) => ({ x: o.x, z: o.z, characterId: o.characterId, isPlayer: o.isPlayer, position: o.position, me: o === k })),
     };
   }
 
@@ -314,6 +354,7 @@ export class RaceSim {
       characterId: k.characterId,
       kartId: k.kartId,
       isPlayer: k.isPlayer,
+      ...(k.isPlayer ? { slot: k.slot } : {}),
       position: k.position,
       totalTimeMs: time,
       estimated,
@@ -324,6 +365,14 @@ export class RaceSim {
     });
     const p = this.player ?? this.karts[0]!;
     const pr = results.find((r) => r.racerIndex === p.index)!;
+    const players: PlayerRaceOutcome[] = this.players.map((k) => {
+      const r = results.find((x) => x.racerIndex === k.index)!;
+      return {
+        slot: k.slot, racerIndex: k.index, characterId: k.characterId, position: r.position,
+        timeMs: r.estimated ? null : r.totalTimeMs, bestLapMs: r.bestLapMs,
+        stats: { turbos: [...k.turbos], itemsUsed: k.itemsUsed, hitsTaken: k.hitsTaken, topSpeedKmh: Math.round(k.topSpeed * KMH) },
+      };
+    });
     return {
       trackId: this.config.trackId,
       mode: this.config.mode,
@@ -334,6 +383,7 @@ export class RaceSim {
       playerTimeMs: pr.estimated ? null : pr.totalTimeMs,
       playerBestLapMs: pr.bestLapMs,
       stats: { turbos: [...p.turbos], itemsUsed: p.itemsUsed, hitsTaken: p.hitsTaken, topSpeedKmh: Math.round(p.topSpeed * KMH) },
+      players,
     };
   }
 

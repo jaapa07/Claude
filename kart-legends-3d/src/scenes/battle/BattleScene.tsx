@@ -9,7 +9,7 @@ import { useSettingsStore } from '@/app/settingsStore';
 import { ARENA_BY_ID, type ArenaId } from '@/data/battle';
 import { CHARACTER_BY_ID } from '@/data/characters';
 import { ITEM_BY_ID } from '@/data/items';
-import { audio } from '@/game/audio/audioManager';
+import { audio, type EngineControl } from '@/game/audio/audioManager';
 import type { ArenaData } from '@/game/battle/arenaTypes';
 import { useBattleHudStore } from '@/game/battle/battleHudStore';
 import { BattleSim, type BattleConfig, type BattleEvent } from '@/game/battle/battleSim';
@@ -28,6 +28,7 @@ import { useModel, useModels, useParticleAtlas } from '../assets';
 import { SkyAndLights, type SkyHandle } from '../common/SkyAndLights';
 import { TireFitting } from '../common/TireFitting';
 import { QUALITY } from '../quality';
+import { SplitRenderer, nearestCamDist2, splitQuality } from '../split';
 import { AnimatedProps, type RaceView } from '../race/RaceObjects';
 import { BattleObjects, type BattleView } from './BattleObjects';
 
@@ -107,7 +108,10 @@ export function BattleScene({ config }: { config: BattleConfig }): JSX.Element {
 function BattleWorld({ data, config }: { data: ArenaData; config: BattleConfig }): JSX.Element {
   const { world, rapier } = useRapier();
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
-  const quality = QUALITY[useSettingsStore((s) => s.quality)];
+  const humans = config.racers.filter((r) => r.isPlayer).length;
+  const split = humans >= 2;
+  const baseQuality = QUALITY[useSettingsStore((s) => s.quality)];
+  const quality = useMemo(() => (split ? splitQuality(baseQuality) : baseQuality), [split, baseQuality]);
   const env = ARENA_ENVIRONMENTS[config.arenaId];
   const meta = ARENA_BY_ID[config.arenaId];
   const atlas = useParticleAtlas();
@@ -117,7 +121,8 @@ function BattleWorld({ data, config }: { data: ArenaData; config: BattleConfig }
 
   const simRef = useRef<BattleSim | null>(null);
   if (!simRef.current) {
-    simRef.current = new BattleSim(rapier as unknown as Rapier, world, data, config, { playerInput: () => inputManager.read() });
+    inputManager.setPlayerCount(humans);
+    simRef.current = new BattleSim(rapier as unknown as Rapier, world, data, config, { playerInput: (slot) => inputManager.readPlayer(slot) });
   }
   const sim = simRef.current;
   const view = useRef<BattleView>({ sim, alpha: 0, time: 0 });
@@ -132,7 +137,14 @@ function BattleWorld({ data, config }: { data: ArenaData; config: BattleConfig }
     return model;
   }), [sim, kartGltfs, charGltfs, shieldGltf, config.racers]);
   const vfx = useMemo(() => new RaceVfx(atlas, env, quality.particles), [atlas, env, quality.particles]);
-  const cam = useMemo(() => new ChaseCamera(camera, rapier as unknown as Rapier, world, data.introCamera, quality.shake), [camera, rapier, world, data, quality.shake]);
+  // Uma câmera por jogador (tela dividida: a do Jogador 2 é criada aqui).
+  const cameras = useMemo(() => (split ? [camera, new THREE.PerspectiveCamera(60, 2, 0.3, 1600)] : [camera]), [split, camera]);
+  const cams = useMemo(
+    () => cameras.map((c) => new ChaseCamera(c, rapier as unknown as Rapier, world, data.introCamera, quality.shake)),
+    [cameras, rapier, world, data, quality.shake],
+  );
+  const cam = cams[0]!;
+  const engines: EngineControl[] = useMemo(() => (split ? [audio.engine, audio.engine2] : [audio.engine]), [split]);
   const sky = useRef<SkyHandle>({ flash: 0 });
   const focus = useRef(new THREE.Vector3());
 
@@ -154,10 +166,15 @@ function BattleWorld({ data, config }: { data: ArenaData; config: BattleConfig }
   });
 
   const publishHud = (): void => {
-    const p = sim.player ?? sim.karts[0]!;
-    const h = sim.hud();
-    useBattleHudStore.getState().setHud(h);
-    useHudStore.getState().setHud({ ...EMPTY_HUD, phase: sim.phase, countdown: h.countdown, item: p.item, itemRolling: p.itemRoll > 0, shield: p.shield > 0, totalRacers: sim.karts.length });
+    // item, escudo e contagem de cada jogador passam pelo HUD de corrida (caixa de item e contagem comuns)
+    const itemHud = (slot: number, countdown: number) => {
+      const p = sim.players[slot] ?? sim.player ?? sim.karts[0]!;
+      return { ...EMPTY_HUD, phase: sim.phase, countdown, item: p.item, itemRolling: p.itemRoll > 0, shield: p.shield > 0, totalRacers: sim.karts.length, slot };
+    };
+    const h = sim.hud(0);
+    const h2 = split ? sim.hud(1) : null;
+    useBattleHudStore.getState().setHud(h, h2);
+    useHudStore.getState().setHud(itemHud(0, h.countdown), h2 ? itemHud(1, h2.countdown) : null);
   };
 
   useEffect(() => {
@@ -166,33 +183,40 @@ function BattleWorld({ data, config }: { data: ArenaData; config: BattleConfig }
     publishHud();
     audio.playAmbience(meta.ambience);
     audio.playMusic(null, { fadeMs: 600 });
+    for (const e of engines) e.setGain(split ? 0.62 : 1);
     const query = new URLSearchParams(window.location.search);
     if (query.has('fast')) state.current.intro = 999;
     const w = window as unknown as { __kl3d?: unknown };
     if (query.has('e2e')) {
+      const snap = (slot: number) => {
+        const p = sim.players[slot] ?? sim.player ?? sim.karts[0]!;
+        const b = sim.battlers[p.index]!;
+        return {
+          phase: sim.phase, raceTime: sim.matchTime, racers: sim.karts.length, lap: 0, position: p.position, speed: p.speed, heading: p.heading,
+          x: p.x, z: p.z, drifting: p.drifting, driftLevel: p.driftLevel, boost: p.boostTime, item: p.item, grounded: p.grounded, progress: 0,
+          finished: sim.battlers.filter((q) => q.out).length, aiMoving: sim.karts.filter((k) => !k.isPlayer && Math.abs(k.speed) > 3).length,
+          players: sim.players.length, slot: Math.max(0, p.slot), characterId: p.characterId,
+          battle: { game: sim.game, score: sim.scoreOf(p.index), timeLeft: sim.timeLeft, out: b.out, balloons: b.balloons, crystals: b.crystals, crown: sim.crown.holder },
+        };
+      };
+      const target = (slot?: number): KartState[] => (slot === undefined ? sim.players : sim.players[slot] ? [sim.players[slot]] : []);
       w.__kl3d = {
-        snapshot: () => {
-          const p = sim.player ?? sim.karts[0]!;
-          const b = sim.battlers[p.index]!;
-          return {
-            phase: sim.phase, raceTime: sim.matchTime, racers: sim.karts.length, lap: 0, position: p.position, speed: p.speed, heading: p.heading,
-            x: p.x, z: p.z, drifting: p.drifting, driftLevel: p.driftLevel, boost: p.boostTime, item: p.item, grounded: p.grounded, progress: 0,
-            finished: sim.battlers.filter((q) => q.out).length, aiMoving: sim.karts.filter((k) => !k.isPlayer && Math.abs(k.speed) > 3).length,
-            battle: { game: sim.game, score: sim.scoreOf(p.index), timeLeft: sim.timeLeft, out: b.out, balloons: b.balloons, crystals: b.crystals, crown: sim.crown.holder },
-          };
-        },
+        snapshot: () => snap(0),
+        snapshotOf: (slot: number) => snap(slot),
         fastForward: (seconds: number) => {
           const steps = Math.round(seconds / PHYS.dt);
           for (let i = 0; i < steps; i++) { sim.step(); sim.drainEvents(); }
           publishHud();
         },
-        setAutopilot: (on: boolean) => { if (sim.player) sim.player.ai = on; },
-        giveItem: (item: KartState['item']) => { if (sim.player) sim.giveItem(sim.player.index, item); },
+        /** Sem `slot`: todos os jogadores humanos. */
+        setAutopilot: (on: boolean, slot?: number) => { for (const k of target(slot)) k.ai = on; },
+        giveItem: (item: KartState['item'], slot = 0) => { const k = sim.players[slot] ?? sim.player; if (k) sim.giveItem(k.index, item); },
         sim,
       };
     }
     return () => {
       delete w.__kl3d;
+      inputManager.setPlayerCount(1);
       audio.stopAllRaceSounds();
       useHudStore.getState().reset();
       useBattleHudStore.getState().reset();
@@ -202,31 +226,35 @@ function BattleWorld({ data, config }: { data: ArenaData; config: BattleConfig }
   }, [sim, models, vfx, meta, data]);
 
   const handleEvent = (e: BattleEvent): void => {
-    const player = sim.player;
     const st = state.current;
     const k: KartState | undefined = 'kart' in e ? sim.karts[e.kart] : undefined;
-    const mine = !!k && k === player;
-    const ref = sim.karts[sim.focusIndex()]!;
+    const mine = !!k && k.isPlayer;
+    // câmera do jogador envolvido (tremor, chute de FOV)
+    const kc = k && k.isPlayer ? cams[k.slot] ?? null : null;
     let vol = 1;
-    if (k && !mine) vol = Math.max(0, 1 - Math.hypot(k.x - ref.x, k.z - ref.z) / 60) * 0.7;
+    if (k && !mine) {
+      let d = Infinity;
+      for (let s = 0; s < cams.length; s++) { const ref = sim.karts[sim.focusIndex(s)]!; d = Math.min(d, Math.hypot(k.x - ref.x, k.z - ref.z)); }
+      vol = Math.max(0, 1 - d / 60) * 0.7;
+    }
     const sfx = (id: Parameters<typeof audio.sfx>[0], v = 1, rate = 1): void => { if (vol * v > 0.03) audio.sfx(id, { volume: vol * v, rate }); };
     switch (e.type) {
       case 'countdown': audio.sfx('countdown_beep'); break;
-      case 'go': audio.sfx('countdown_go'); audio.playMusic(meta.music, { fadeMs: 300 }); audio.engine.start(); break;
+      case 'go': audio.sfx('countdown_go'); audio.playMusic(meta.music, { fadeMs: 300 }); for (const en of engines) en.start(); break;
       case 'drift_level': if (mine) audio.sfx('ui_move', { volume: 0.9, rate: 0.8 + e.level * 0.25 }); break;
-      case 'turbo': sfx(`turbo_${Math.min(3, e.level)}` as 'turbo_1'); if (k) vfx.turbo(k.x, k.y - PHYS.rideHeight, k.z, e.level); if (mine) { cam.addShake(0.08 + e.level * 0.04); cam.kick(2.5 + e.level * 1.5); } break;
-      case 'boost_pad': sfx('boost_pad'); if (k) vfx.turbo(k.x, k.y - PHYS.rideHeight, k.z, 2); if (mine) { cam.addShake(0.1); cam.kick(5); } break;
+      case 'turbo': sfx(`turbo_${Math.min(3, e.level)}` as 'turbo_1'); if (k) vfx.turbo(k.x, k.y - PHYS.rideHeight, k.z, e.level); if (kc) { kc.addShake(0.08 + e.level * 0.04); kc.kick(2.5 + e.level * 1.5); } break;
+      case 'boost_pad': sfx('boost_pad'); if (k) vfx.turbo(k.x, k.y - PHYS.rideHeight, k.z, 2); if (kc) { kc.addShake(0.1); kc.kick(5); } break;
       case 'jump': sfx('jump'); break;
-      case 'land': sfx('land', Math.min(1, 0.4 + e.impact / 14)); if (k) vfx.landing(k.x, k.y - PHYS.rideHeight, k.z, e.impact); if (mine) cam.landing(e.impact); break;
+      case 'land': sfx('land', Math.min(1, 0.4 + e.impact / 14)); if (k) vfx.landing(k.x, k.y - PHYS.rideHeight, k.z, e.impact); if (kc) kc.landing(e.impact); break;
       case 'collision':
         sfx(e.strength > 9 ? 'collision_heavy' : 'collision', Math.min(1, 0.35 + e.strength / 16));
         vfx.impact(e.x, e.y - 0.2, e.z, e.strength);
-        if (mine) cam.addShake(Math.min(0.4, e.strength / 30));
+        if (kc) kc.addShake(Math.min(0.4, e.strength / 30));
         break;
       case 'hit':
         sfx('spinout');
         if (k) { vfx.burst(k.x, k.y - 0.4, k.z, 1, 0.5, 0.25); models[k.index]!.triggerHit(); st.spinStart[k.index] = k.spinTime; }
-        if (mine) cam.addShake(0.45);
+        if (kc) kc.addShake(0.45);
         break;
       case 'shield_break': sfx('shield_break'); if (k) vfx.sparkle(k.x, k.y, k.z, st.color.set('#4fd8e8'), 22); break;
       case 'pushed': if (k) { vfx.sparkle(k.x, k.y, k.z, st.color.set('#9cf0c3'), 10); models[k.index]!.triggerHit(); } break;
@@ -239,7 +267,7 @@ function BattleWorld({ data, config }: { data: ArenaData; config: BattleConfig }
         const c = st.color.set(CHARACTER_BY_ID[sim.karts[e.kart]!.characterId].color);
         vfx.sparkle(e.x, e.y + 1.6, e.z, c, 26);
         vfx.burst(e.x, e.y + 1.6, e.z, c.r, c.g, c.b);
-        if (mine) cam.addShake(0.3);
+        if (kc) kc.addShake(0.3);
         break;
       }
       case 'balloon_steal': if (mine) audio.sfx('item_pickup', { rate: 1.3 }); if (k) vfx.sparkle(k.x, k.y + 2, k.z, st.color.set('#ff4f7b'), 14); break;
@@ -251,7 +279,7 @@ function BattleWorld({ data, config }: { data: ArenaData; config: BattleConfig }
         break;
       case 'crystal_pickup': sfx('item_pickup', 0.8, 1.55); if (k) vfx.sparkle(e.x, e.y, e.z, st.color.set('#7ff3ff'), 10); break;
       case 'crystal_drop': sfx('shield_break', 0.9, 1.1); vfx.sparkle(e.x, e.y + 0.5, e.z, st.color.set('#7ff3ff'), 30); break;
-      case 'crown_take': sfx(mine ? 'final_lap' : 'lap', mine ? 1 : 0.8); if (k) vfx.sparkle(k.x, k.y + 2.2, k.z, st.color.set('#ffd04a'), 30); if (mine) cam.addShake(0.2); break;
+      case 'crown_take': sfx(mine ? 'final_lap' : 'lap', mine ? 1 : 0.8); if (k) vfx.sparkle(k.x, k.y + 2.2, k.z, st.color.set('#ffd04a'), 30); if (kc) kc.addShake(0.2); break;
       case 'crown_drop': sfx('shield_break', 0.8, 0.9); vfx.sparkle(e.x, e.y + 1, e.z, st.color.set('#ffd04a'), 20); break;
       case 'frenzy': audio.sfx('final_lap'); break;
       case 'match_end': audio.sfx('finish'); { const f = sim.karts[sim.order()[0]!]!; vfx.confetti(f.x, f.y, f.z, 160); } break;
@@ -264,13 +292,20 @@ function BattleWorld({ data, config }: { data: ArenaData; config: BattleConfig }
     const game = useGameStore.getState();
     const paused = game.paused;
     const dt = Math.min(delta, 0.1);
-    const fast = useBattleHudStore.getState().fast;
+    // espectador: acelerar a partida só quando todos os humanos estão fora
+    const fast = useBattleHudStore.getState().fast && sim.allHumansOut();
 
     if (!paused) {
       if (sim.phase === 'intro') {
         st.intro += dt;
-        const inp = inputManager.read();
-        if (st.intro > cam.introDuration || (st.intro > 0.6 && (inp.throttle > 0.5 || inp.item))) { sim.startCountdown(); cam.setMode('countdown'); }
+        let skip = false;
+        if (st.intro > 0.6) {
+          for (let s = 0; s < Math.max(1, sim.players.length); s++) {
+            const inp = inputManager.readPlayer(s);
+            if (inp.throttle > 0.5 || inp.item) skip = true;
+          }
+        }
+        if (st.intro > cam.introDuration || skip) { sim.startCountdown(); for (const c of cams) c.setMode('countdown'); }
       }
       // espectador: pode acelerar a partida (mesmos passos fixos, mais por quadro)
       st.acc += dt * (fast && sim.phase === 'racing' ? 8 : 1);
@@ -284,9 +319,9 @@ function BattleWorld({ data, config }: { data: ArenaData; config: BattleConfig }
       }
       if (steps === cap) st.acc = 0;
       view.current.time += dt;
-      if (sim.phase === 'racing' && cam.mode !== 'chase') cam.setMode('chase');
+      for (const c of cams) if (sim.phase === 'racing' && c.mode !== 'chase') c.setMode('chase');
       if (sim.phase === 'finished') {
-        if (cam.mode !== 'finish') cam.setMode('finish');
+        for (const c of cams) if (c.mode !== 'finish') c.setMode('finish');
         st.endTimer += dt;
         if (st.endTimer > 4 && !st.reported) { st.reported = true; game.finishBattle(sim.result()); }
       }
@@ -294,7 +329,6 @@ function BattleWorld({ data, config }: { data: ArenaData; config: BattleConfig }
     const alpha = st.acc / PHYS.dt;
     view.current.alpha = alpha;
 
-    const camPos = camera.position;
     sim.karts.forEach((k, i) => {
       const m = models[i]!;
       if (st.gone[i]! >= 0) {
@@ -313,10 +347,11 @@ function BattleWorld({ data, config }: { data: ArenaData; config: BattleConfig }
       st.basis.makeBasis(left, n, f);
       m.group.quaternion.setFromRotationMatrix(st.basis);
       if (!sim.battlers[i]!.out) m.group.position.set(x, y, z);
-      const far = (x - camPos.x) ** 2 + (z - camPos.z) ** 2 > 170 * 170;
+      const d2 = nearestCamDist2(x, z, cameras);
+      const far = d2 > 170 * 170;
       m.group.visible = !far;
       if (far || paused) return;
-      m.detail = (x - camPos.x) ** 2 + (z - camPos.z) ** 2 < quality.animDetail * quality.animDetail ? 1 : 0;
+      m.detail = d2 < quality.animDetail * quality.animDetail ? 1 : 0;
       const v = st.vis[i]!;
       const spinTotal = st.spinStart[i]!;
       v.speed = k.speed; v.steer = k.steer; v.drifting = k.drifting; v.driftDir = k.driftDir; v.driftLevel = k.boostTime > 0 ? k.boostKind : k.driftLevel;
@@ -325,7 +360,7 @@ function BattleWorld({ data, config }: { data: ArenaData; config: BattleConfig }
       v.grounded = k.grounded; v.shield = k.shield > 0; v.invulnerable = k.invuln > 0 && k.spinTime <= 0; v.hop = k.hopTime / 0.22;
       v.mood = sim.phase === 'finished' ? (k.position === 1 ? 'victory' : 'defeat') : sim.phase === 'racing' ? 'race' : 'idle';
       m.update(dt, v);
-      if ((x - camPos.x) ** 2 + (z - camPos.z) ** 2 < 90 * 90) {
+      if (d2 < 90 * 90) {
         const fx = st.fx[i]!;
         fx.x = x; fx.y = y; fx.z = z; fx.heading = heading; fx.speed = k.speed; fx.drifting = k.drifting; fx.driftLevel = k.driftLevel;
         fx.boost = k.boostTime > 0 ? 1 : 0; fx.boostKind = k.boostKind; fx.grounded = k.grounded; fx.onRoad = true; fx.surface = 0;
@@ -342,30 +377,38 @@ function BattleWorld({ data, config }: { data: ArenaData; config: BattleConfig }
       for (const p of sim.items.projectiles) vfx.trail(p.x, p.y, p.z, dt);
     }
 
-    // câmera: o jogador, ou o líder ainda na arena depois de eliminado
-    const target = sim.karts[sim.focusIndex()]!;
-    const px = target.px + (target.x - target.px) * alpha, py = target.py + (target.y - target.py) * alpha - PHYS.rideHeight, pz = target.pz + (target.z - target.pz) * alpha;
-    focus.current.set(px, py, pz);
-    if (!paused) {
+    // câmeras: cada jogador segue o próprio kart; eliminado, assiste ao outro jogador ou ao líder
+    cams.forEach((c, slot) => {
+      const target = sim.karts[sim.focusIndex(slot)]!;
+      const px = target.px + (target.x - target.px) * alpha, py = target.py + (target.y - target.py) * alpha - PHYS.rideHeight, pz = target.pz + (target.z - target.pz) * alpha;
+      if (slot === 0) focus.current.set(px, py, pz);
+      if (paused) return;
       const boostK = target.boostTime > 0 ? Math.min(1, target.boostTime / 0.5) : 0;
-      cam.update(dt, {
+      c.update(dt, {
         x: px, y: py, z: pz, heading: lerpAngle(target.pHeading, target.heading, alpha), speed: target.speed, steer: target.steer,
         drifting: target.drifting, driftDir: target.driftDir, boost: boostK, grounded: target.grounded,
       });
-      const fwd = st.tmpA.set(0, 0, -1).applyQuaternion(camera.quaternion);
-      vfx.weather(env.weather, camera.position, fwd, dt, quality.weather);
-      vfx.update(dt, frame.size.height, camera.fov);
-      const player = sim.player;
-      if (player && !sim.battlers[player.index]!.out && (sim.phase === 'racing' || sim.phase === 'finished')) {
-        const top = player.tuning.topSpeed;
-        audio.engine.update({ speed: Math.abs(player.speed) / top, throttle: player.input.throttle, boosting: player.boostTime > 0, airborne: !player.grounded });
-        audio.setLoop('drift', player.drifting && player.grounded ? 0.8 : 0);
-        audio.setLoop('drift_sparks', player.drifting && player.driftLevel > 0 && player.grounded ? 0.5 + player.driftLevel * 0.15 : 0);
-        audio.setLoop('brake', player.input.brake > 0.5 && player.speed > 10 && player.grounded ? 0.7 : 0);
-      } else {
-        audio.engine.update({ speed: 0, throttle: 0, boosting: false, airborne: false });
-        audio.setLoop('drift', 0); audio.setLoop('drift_sparks', 0); audio.setLoop('brake', 0);
-      }
+    });
+    if (!paused) {
+      cameras.forEach((c) => {
+        const fwd = st.tmpA.set(0, 0, -1).applyQuaternion(c.quaternion);
+        vfx.weather(env.weather, c.position, fwd, dt / cameras.length, quality.weather);
+      });
+      vfx.update(dt, split ? frame.size.height / 2 : frame.size.height, camera.fov);
+      // um motor por jogador ainda na arena; loops pelo mais "intenso"
+      let drift = 0, sparks = 0, brake = 0;
+      const live = sim.phase === 'racing' || sim.phase === 'finished';
+      engines.forEach((en, slot) => {
+        const p = sim.players[slot];
+        if (p && live && !sim.battlers[p.index]!.out) {
+          const top = p.tuning.topSpeed;
+          en.update({ speed: Math.abs(p.speed) / top, throttle: p.input.throttle, boosting: p.boostTime > 0, airborne: !p.grounded });
+          drift = Math.max(drift, p.drifting && p.grounded ? 0.8 : 0);
+          sparks = Math.max(sparks, p.drifting && p.driftLevel > 0 && p.grounded ? 0.5 + p.driftLevel * 0.15 : 0);
+          brake = Math.max(brake, p.input.brake > 0.5 && p.speed > 10 && p.grounded ? 0.7 : 0);
+        } else en.update({ speed: 0, throttle: 0, boosting: false, airborne: false });
+      });
+      audio.setLoop('drift', drift); audio.setLoop('drift_sparks', sparks); audio.setLoop('brake', brake);
       st.hudTick += dt;
       if (st.hudTick > 1 / 15) { st.hudTick = 0; publishHud(); }
     }
@@ -383,6 +426,7 @@ function BattleWorld({ data, config }: { data: ArenaData; config: BattleConfig }
       ))}
       <primitive object={vfx.solid} />
       <primitive object={vfx.glow} />
+      {split && <SplitRenderer cameras={cameras} full={() => sim.phase === 'intro'} />}
     </>
   );
 }

@@ -4,7 +4,7 @@ import type { InputEventTarget, KeyLikeEvent } from './inputManager';
 
 const storage = installMemoryStorage();
 const { DEFAULT_BINDINGS, SETTINGS_KEY, parseSettings, useSettingsStore } = await import('@/app/settingsStore');
-const { CaptureCancelledError, PAD, inputManager } = await import('./inputManager');
+const { CaptureCancelledError, PAD, TWO_PLAYER_KEYS, assignPads, inputManager } = await import('./inputManager');
 const { keyLabel } = await import('./keyLabels');
 
 type Listener = (event: KeyLikeEvent) => void;
@@ -65,7 +65,7 @@ beforeEach(() => {
   inputManager.getGamepads = () => pads;
   inputManager.attach(target);
 });
-afterEach(() => inputManager.detach());
+afterEach(() => { inputManager.detach(); inputManager.setPlayerCount(1); });
 
 describe('bindings padrão', () => {
   it('seguem a especificação: WASD/setas, Espaço, Shift, Esc e R', () => {
@@ -334,5 +334,123 @@ describe('gamepad', () => {
     press(pad, PAD.A, 0);
     press(pad, PAD.B);
     expect(inputManager.readMenuPad().back).toBe(true);
+  });
+});
+
+describe('dois jogadores (tela dividida)', () => {
+  /** Lê os dois jogadores avançando o relógio (como a simulação a cada passo). */
+  function both(ms = 1000 / 60) {
+    clock += ms;
+    const a = { ...inputManager.readPlayer(0) };
+    const b = { ...inputManager.readPlayer(1) };
+    return [a, b] as const;
+  }
+
+  it('teclas fixas: J1 = WASD, Q item, E drift, R recupera; J2 = setas, Enter item, Shift dir. drift, Backspace recupera', () => {
+    expect(TWO_PLAYER_KEYS[0]).toEqual({ accelerate: ['KeyW'], brake: ['KeyS'], left: ['KeyA'], right: ['KeyD'], item: ['KeyQ'], drift: ['KeyE'], reset: ['KeyR'] });
+    expect(TWO_PLAYER_KEYS[1]).toEqual({ accelerate: ['ArrowUp'], brake: ['ArrowDown'], left: ['ArrowLeft'], right: ['ArrowRight'], item: ['Enter', 'NumpadEnter'], drift: ['ShiftRight'], reset: ['Backspace'] });
+    const all = [...Object.values(TWO_PLAYER_KEYS[0]).flat(), ...Object.values(TWO_PLAYER_KEYS[1]).flat()];
+    expect(new Set(all).size).toBe(all.length); // nenhuma tecla em dois lugares
+    expect(all).not.toContain('Escape');
+  });
+
+  it('cada jogador lê só as próprias teclas', () => {
+    inputManager.setPlayerCount(2);
+    target.fire('keydown', 'KeyW');
+    target.fire('keydown', 'KeyQ');
+    target.fire('keydown', 'KeyE');
+    let [p1, p2] = both();
+    expect(p1).toMatchObject({ throttle: 1, item: true, drift: true, brake: 0 });
+    expect(p2).toMatchObject({ throttle: 0, item: false, drift: false });
+    target.fire('keyup', 'KeyW'); target.fire('keyup', 'KeyQ'); target.fire('keyup', 'KeyE');
+    target.fire('keydown', 'ArrowUp');
+    target.fire('keydown', 'Enter');
+    target.fire('keydown', 'ShiftRight');
+    target.fire('keydown', 'Backspace');
+    [p1, p2] = both();
+    expect(p1).toMatchObject({ throttle: 0, item: false, drift: false, reset: false });
+    expect(p2).toMatchObject({ throttle: 1, item: true, drift: true, reset: true });
+    // compatibilidade: read() é o Jogador 1
+    expect(inputManager.read().throttle).toBe(0);
+  });
+
+  it('a direção de cada um é suavizada separadamente', () => {
+    inputManager.setPlayerCount(2);
+    target.fire('keydown', 'KeyA');
+    target.fire('keydown', 'ArrowRight');
+    let p1 = 0, p2 = 0;
+    for (let i = 0; i < 20; i++) [{ steer: p1 }, { steer: p2 }] = both();
+    expect(p1).toBe(-1);
+    expect(p2).toBe(1);
+  });
+
+  it('o remapeamento de 1 jogador não vale na tela dividida (Espaço não faz drift, setas não aceleram o J1)', () => {
+    inputManager.setPlayerCount(2);
+    target.fire('keydown', 'Space');
+    target.fire('keydown', 'ArrowUp');
+    const [p1, p2] = both();
+    expect(p1).toMatchObject({ drift: false, throttle: 0 });
+    expect(p2.throttle).toBe(1);
+  });
+
+  it('com a corrida ativa, as teclas dos dois jogadores não chegam à página', () => {
+    inputManager.setPlayerCount(2);
+    inputManager.setGameplayActive(true);
+    expect(target.fire('keydown', 'Enter').prevented).toBe(true);
+    expect(target.fire('keydown', 'Backspace').prevented).toBe(true);
+    expect(target.fire('keydown', 'KeyQ').prevented).toBe(true);
+    expect(target.fire('keydown', 'KeyZ').prevented).toBe(false);
+    inputManager.setPlayerCount(1);
+    expect(target.fire('keydown', 'KeyQ').prevented).toBe(false);
+  });
+
+  it('gamepads: 1º → J1 e 2º → J2; com um só, ele vai para o J2', () => {
+    expect(assignPads([], 1)).toEqual([null]);
+    expect(assignPads([2], 1)).toEqual([2]);
+    expect(assignPads([], 2)).toEqual([null, null]);
+    expect(assignPads([0], 2)).toEqual([null, 0]);
+    expect(assignPads([0, 3], 2)).toEqual([0, 3]);
+    expect(assignPads([1, 2, 3], 2)).toEqual([1, 2]);
+
+    inputManager.setPlayerCount(2);
+    const only = makePad();
+    pads = [only];
+    press(only, PAD.A);
+    let [p1, p2] = both();
+    expect(p1.throttle).toBe(0);
+    expect(p2.throttle).toBe(1);
+    target.fire('keydown', 'KeyW');
+    [p1] = both();
+    expect(p1.throttle).toBe(1); // o J1 segue no teclado
+
+    const second = makePad();
+    pads = [only, second];
+    press(second, PAD.X);
+    [p1, p2] = both();
+    expect(p1).toMatchObject({ throttle: 1, drift: false }); // A do 1º controle (e W)
+    expect(p2).toMatchObject({ throttle: 0, drift: true });
+    expect(inputManager.padAssignment()).toEqual([0, 1]);
+  });
+
+  it('Start de qualquer controle pausa (para os dois)', () => {
+    inputManager.setPlayerCount(2);
+    const a = makePad(), b = makePad();
+    pads = [a, b];
+    expect(inputManager.consumePausePressed()).toBe(false);
+    press(b, PAD.START);
+    expect(inputManager.consumePausePressed()).toBe(true);
+    expect(inputManager.consumePausePressed()).toBe(false);
+    press(b, PAD.START, 0);
+    press(a, PAD.START);
+    expect(inputManager.consumePausePressed()).toBe(true);
+    target.fire('keydown', 'Escape');
+    expect(inputManager.consumePausePressed()).toBe(true);
+  });
+
+  it('um jogador: readPlayer(0) é read() e o J2 fica parado', () => {
+    target.fire('keydown', 'ArrowUp');
+    clock += 16;
+    expect(inputManager.readPlayer(0).throttle).toBe(1);
+    expect(inputManager.readPlayer(1).throttle).toBe(0);
   });
 });

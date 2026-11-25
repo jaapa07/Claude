@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { boot, goRacing, hook, snapshot, trackErrors, waitForRace } from './helpers';
+import { boot, goRacing, hook, play, snapshot, trackErrors, waitForRace } from './helpers';
 
 interface BattleSnap { game: string; score: number; timeLeft: number; out: boolean; balloons: number; crystals: number; crown: number }
 const battle = (page: Page): Promise<BattleSnap> =>
@@ -8,7 +8,7 @@ const battle = (page: Page): Promise<BattleSnap> =>
 test('menus da Batalha: modo → minijogo (regras) → arena → voltar', async ({ page }) => {
   const errors = trackErrors(page);
   await boot(page);
-  await page.getByTestId('btn-play').click();
+  await play(page);
   await page.getByTestId('card-mode-battle').click();
   await page.getByTestId('btn-confirm').click();
   await expect(page.getByTestId('screen-battleGame')).toBeVisible();
@@ -29,7 +29,7 @@ test('menus da Batalha: modo → minijogo (regras) → arena → voltar', async 
 test('Batalha completa: Estoura-Balão na Cratera Lunar até o resultado, moedas e volta ao menu', async ({ page }) => {
   const errors = trackErrors(page);
   await boot(page);
-  await page.getByTestId('btn-play').click();
+  await play(page);
   await page.getByTestId('card-mode-battle').click();
   await page.getByTestId('btn-confirm').click();
   await page.getByTestId('card-battle-estoura-balao').click();

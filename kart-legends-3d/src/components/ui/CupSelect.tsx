@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { nextScreen, prevScreen } from '@/app/flow';
+import { nextOf, prevOf } from '@/app/flow';
 import { useGameStore } from '@/app/gameStore';
 import type { CupId } from '@/data/ids';
 import { CUPS, CUP_BY_ID, CUP_UNLOCK, TRACK_BY_ID } from '@/data/tracks';
@@ -20,12 +20,12 @@ export function CupSelect(): JSX.Element {
     selected: selection.cupId,
     isLocked,
     onSelect: (id) => setSelection({ cupId: id, trackId: CUP_BY_ID[id].tracks[0] }),
-    onConfirm: () => goTo(nextScreen('cup', selection.mode) ?? 'difficulty'),
+    onConfirm: () => goTo(nextOf('cup', selection) ?? 'difficulty'),
   });
   const focus = CUP_BY_ID[pick.focusId];
   return (
     <ScreenShell
-      id="cup" title="Escolha a copa" kicker="Campeonato" onBack={() => goTo(prevScreen('cup', selection.mode))}
+      id="cup" title="Escolha a copa" kicker="Campeonato" onBack={() => goTo(prevOf('cup', selection))}
       footer={<Btn testId="btn-confirm" variant="primary" sound="none" disabled={isLocked(selection.cupId)} onClick={pick.confirm}>Confirmar</Btn>}
     >
       <div className="card-list">

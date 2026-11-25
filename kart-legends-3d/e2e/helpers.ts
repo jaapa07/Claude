@@ -31,9 +31,18 @@ export const snapshot = (page: Page): Promise<Snapshot> =>
 export const hook = (page: Page, call: string): Promise<void> =>
   page.evaluate((c) => { new Function('k', `k.${c}`)((window as unknown as { __kl3d: unknown }).__kl3d); }, call);
 
+/** Menu → Jogar → escolha de 1 ou 2 jogadores (tela que só existe no computador) → escolha do modo. */
+export async function play(page: Page, players: 1 | 2 = 1): Promise<void> {
+  await page.getByTestId('btn-play').click();
+  await expect(page.getByTestId('screen-players')).toBeVisible();
+  await page.getByTestId(`card-players-${players}`).click();
+  await page.getByTestId('btn-confirm').click();
+  await expect(page.getByTestId('screen-mode')).toBeVisible();
+}
+
 /** Do menu até a corrida carregada (HUD visível e simulação pronta). */
 export async function startRace(page: Page, o: { mode: 'quick' | 'championship' | 'timetrial' | 'training'; track?: string; cup?: string; difficulty?: string; character?: string; kart?: string }): Promise<void> {
-  await page.getByTestId('btn-play').click();
+  await play(page);
   await page.getByTestId(`card-mode-${o.mode}`).click();
   await page.getByTestId('btn-confirm').click();
   if (o.mode === 'championship') {

@@ -5,7 +5,7 @@ import {
   ACTION_IDS, ACTION_LABELS, BINDING_SLOTS, SENSITIVITY_MAX, SENSITIVITY_MIN, isTouchDevice, useSettingsStore,
 } from '@/app/settingsStore';
 import type { ActionId, Quality, Volumes } from '@/app/settingsStore';
-import { CaptureCancelledError, PAD_HELP, inputManager } from '@/game/input/inputManager';
+import { CaptureCancelledError, PAD_HELP, TWO_PLAYER_KEYS, inputManager, type DriveAction } from '@/game/input/inputManager';
 import { keyLabel } from '@/game/input/keyLabels';
 import { useSaveStore } from '@/game/save/saveStore';
 import { AccelerationPicker } from './AccelerationPicker';
@@ -31,6 +31,9 @@ interface SettingsScreenProps {
   inRace?: boolean;
   onBack: () => void;
 }
+
+/** Ações mostradas na tabela de teclas da tela dividida. */
+const TWO_PLAYER_ROWS: readonly DriveAction[] = ['accelerate', 'brake', 'left', 'right', 'drift', 'item', 'reset'];
 
 export function SettingsScreen({ inRace = false, onBack }: SettingsScreenProps): JSX.Element {
   const settings = useSettingsStore();
@@ -234,6 +237,26 @@ export function SettingsScreen({ inRace = false, onBack }: SettingsScreenProps):
               </Btn>
               <span className="settings__hint">Clique numa tecla e pressione a nova. Esc cancela.</span>
             </div>
+            <details className="pad-help" data-testid="controls-2p">
+              <summary tabIndex={0}>2 jogadores (tela dividida)</summary>
+              <table className="controls-2p">
+                <thead><tr><th scope="col">Ação</th><th scope="col">Jogador 1</th><th scope="col">Jogador 2</th></tr></thead>
+                <tbody>
+                  {TWO_PLAYER_ROWS.map((a) => (
+                    <tr key={a}>
+                      <th scope="row">{ACTION_LABELS[a]}</th>
+                      <td>{TWO_PLAYER_KEYS[0][a].map(keyLabel).join(' / ')}</td>
+                      <td>{TWO_PLAYER_KEYS[1][a].map(keyLabel).join(' / ')}</td>
+                    </tr>
+                  ))}
+                  <tr><th scope="row">{ACTION_LABELS.pause}</th><td colSpan={2}>{settings.bindings.pause.map(keyLabel).join(' / ') || 'Esc'} ou Start (pausa os dois)</td></tr>
+                </tbody>
+              </table>
+              <p className="settings__hint">
+                Teclas fixas (o remapeamento acima vale só com 1 jogador). Gamepads: o 1º controle é do Jogador 1 e o 2º do
+                Jogador 2; com um controle só, ele fica com o Jogador 2 e o Jogador 1 usa o teclado.
+              </p>
+            </details>
               </>
             )}
             {touch && <p className="settings__hint">Celular: arraste o polegar na metade esquerda para virar; a sensibilidade acima também vale para o toque.</p>}

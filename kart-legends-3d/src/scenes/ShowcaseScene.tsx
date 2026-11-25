@@ -23,6 +23,8 @@ const SHOTS: Partial<Record<Screen, Shot>> & { default: Shot } = {
   default: { pos: [2.4, 1.7, 5.6], target: [-1.5, 0.8, 0], fov: 42 },
   character: { pos: [1.2, 1.55, 3.5], target: [-0.85, 1.0, 0], fov: 40 },
   kart: { pos: [2.9, 1.2, 4.4], target: [-1.2, 0.5, 0], fov: 40 },
+  character2: { pos: [1.2, 1.55, 3.5], target: [-0.85, 1.0, 0], fov: 40 },
+  kart2: { pos: [2.9, 1.2, 4.4], target: [-1.2, 0.5, 0], fov: 40 },
   menu: { pos: [3.2, 1.5, 6.4], target: [-1.9, 0.9, 0], fov: 40 },
 };
 

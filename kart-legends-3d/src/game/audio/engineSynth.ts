@@ -71,8 +71,16 @@ export class EngineSynth {
   private boost = 0;
   private air = 0;
   private lastTime = -1;
+  /** Volume relativo deste motor (tela dividida: dois motores, cada um mais baixo). */
+  private gainScale = 1;
 
   constructor(private readonly host: EngineHost) {}
+
+  /** Ajusta o volume relativo (0..1) deste motor. */
+  setGain(scale: number): void {
+    this.gainScale = clamp(scale, 0, 1);
+    this.apply(0.05);
+  }
 
   /** Indica se o jogo pediu o motor ligado (mesmo que o áudio ainda não esteja destravado). */
   get running(): boolean {
@@ -239,6 +247,6 @@ export class EngineSynth {
     set(n.lowpass.frequency, 420 + 2500 * sn + 1300 * this.throttle + 1600 * this.boost);
     set(n.boostGain.gain, 0.16 * this.boost);
     set(n.boostNoiseGain.gain, 0.22 * this.boost);
-    set(n.out.gain, ENGINE_VOLUME * (0.5 + 0.32 * this.throttle + 0.18 * sn));
+    set(n.out.gain, ENGINE_VOLUME * this.gainScale * (0.5 + 0.32 * this.throttle + 0.18 * sn));
   }
 }

@@ -50,6 +50,46 @@ servidor de arquivos estáticos.
 Tudo é remapeável em **Configurações**, onde também ficam a sensibilidade da direção, os volumes
 (música, efeitos, ambiente) e a qualidade gráfica (Baixa, Média, Alta).
 
+## 2 jogadores (tela dividida)
+
+No computador/TV, **Jogar** pergunta **1 jogador** ou **2 jogadores**. Com dois, a tela se divide ao meio:
+**Jogador 1 em cima, Jogador 2 embaixo**, cada um com a própria câmera e o próprio HUD (posição, volta, tempo,
+item, drift/turbo, velocidade, minimapa com o próprio ponto destacado e o do outro jogador com anel). A
+apresentação da pista e a contagem são comuns. Vale para **Corrida Rápida**, **Campeonato** e **Batalha** (os três
+minijogos); Contrarrelógio e Treino continuam só para um jogador. No celular a opção não aparece.
+
+- Cada jogador escolhe piloto e kart na sua vez (Jogador 1, depois Jogador 2), com as roupas e a oficina salvas;
+  o mesmo piloto não pode ser usado pelos dois e os pilotos bloqueados continuam bloqueados.
+- Grid: 2 jogadores + 6 adversários (8 no total); os dois largam no fim (Jogador 1 em 7º, Jogador 2 em 8º).
+- A corrida termina quando os dois cruzam a chegada; quem ficar para trás tem 45 s depois da chegada do outro
+  (esgotado o prazo, entra pelo progresso, com tempo estimado). Na Batalha, quem é eliminado assiste ao outro
+  jogador; só dá para acelerar a partida quando os dois estão fora.
+- Pausa (Esc ou Start de qualquer controle) pausa os dois.
+
+| Ação | Jogador 1 | Jogador 2 |
+|---|---|---|
+| Acelerar / frear | W / S | ↑ / ↓ |
+| Virar | A D | ← → |
+| Usar item | Q | Enter |
+| Drift | E | Shift direito |
+| Recuperar o kart | R | Backspace |
+| Pausar (os dois) | Esc | Esc |
+
+Teclas fixas (o remapeamento das Configurações vale só para 1 jogador; a tabela fica em Configurações →
+Controles). Gamepads: o 1º controle é do Jogador 1 e o 2º do Jogador 2; com **um controle só, ele fica com o
+Jogador 2** e o Jogador 1 joga no teclado.
+
+**Recompensas (save compartilhado):** a corrida/partida conta **uma vez** nas estatísticas; cada colocação paga
+moedas na mesma carteira (as moedas da corrida são a **soma** das duas colocações, mostradas por jogador nos
+resultados); vitória e pódio contam pela melhor colocação; recordes de tempo e de volta pelo melhor dos dois;
+turbos e itens usados são somados. No Campeonato a classificação acompanha os dois e o troféu vale pela melhor
+posição final (o bônus do troféu entra uma vez).
+
+**Desempenho:** a cena é desenhada duas vezes por quadro, então em tela dividida a qualidade é limitada
+(`src/scenes/split.tsx`): resolução até 1× (sem multiplicar pela densidade da tela), sem sombras nem
+pós-processamento, no máximo 1.400 partículas, clima pela metade, distância de desenho até 480 m e detalhe de
+animação dos pilotos só até 30 m. Dois motores sintetizados, cada um a 62 % do volume.
+
 ## Batalha (minijogos)
 
 Modo **Batalha** (escolha de modo → minijogo → arena), até 8 karts, itens ligados, IA própria (sem linha de corrida):

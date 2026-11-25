@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { CHARACTER_BY_ID } from '@/data/characters';
 import type { TrackId } from '@/data/ids';
-import { useHudStore } from '@/game/core/hudStore';
+import { useHud } from './hudSlot';
 import { getMinimap } from '@/game/tracks/minimap';
 import type { MinimapData } from '@/game/tracks/minimap';
 
@@ -9,7 +9,7 @@ interface Loaded { trackId: TrackId; data: MinimapData; path: string }
 
 /** Minimapa em SVG: X do mundo → direita, Z do mundo → baixo (vista de cima, sem espelhar). */
 export function Minimap({ trackId }: { trackId: TrackId }): JSX.Element {
-  const dots = useHudStore((s) => s.hud.minimap);
+  const dots = useHud((h) => h.minimap);
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -52,7 +52,11 @@ export function Minimap({ trackId }: { trackId: TrackId }): JSX.Element {
         {dots.filter((d) => !d.isPlayer).map((d) => (
           <circle key={d.characterId} className="hud-minimap__dot" cx={d.x} cy={d.z} r={r} fill={CHARACTER_BY_ID[d.characterId].color} strokeWidth={r * 0.35} />
         ))}
-        {dots.filter((d) => d.isPlayer).map((d) => (
+        {/* o outro jogador (tela dividida): anel branco, menor que o próprio */}
+        {dots.filter((d) => d.isPlayer && d.me === false).map((d) => (
+          <circle key={d.characterId} className="hud-minimap__dot hud-minimap__dot--mate" data-testid="hud-minimap-mate" cx={d.x} cy={d.z} r={r * 1.2} fill={CHARACTER_BY_ID[d.characterId].color} strokeWidth={r * 0.45} />
+        ))}
+        {dots.filter((d) => d.isPlayer && d.me !== false).map((d) => (
           <circle key={d.characterId} className="hud-minimap__dot hud-minimap__dot--player" data-testid="hud-minimap-player" cx={d.x} cy={d.z} r={r * 1.5} fill={CHARACTER_BY_ID[d.characterId].color} strokeWidth={r * 0.6} />
         ))}
       </svg>

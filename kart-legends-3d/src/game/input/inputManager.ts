@@ -41,6 +41,36 @@ export const PAD_HELP: ReadonlyArray<{ action: string; buttons: string }> = [
   { action: 'Recuperar veículo', buttons: 'Back / Select' },
 ];
 
+/** Ações de pilotagem de um jogador (a pausa é comum aos dois). */
+export type DriveAction = Exclude<ActionId, 'pause'>;
+export type KeyLayout = Readonly<Record<DriveAction, readonly string[]>>;
+
+/**
+ * Teclas fixas da tela dividida (dois jogadores no mesmo teclado). O remapeamento de 1 jogador não vale aqui,
+ * para que os dois lados nunca disputem a mesma tecla. Esc (ou a tecla de pausa) pausa o jogo para os dois.
+ */
+export const TWO_PLAYER_KEYS: readonly [KeyLayout, KeyLayout] = [
+  { accelerate: ['KeyW'], brake: ['KeyS'], left: ['KeyA'], right: ['KeyD'], item: ['KeyQ'], drift: ['KeyE'], reset: ['KeyR'] },
+  { accelerate: ['ArrowUp'], brake: ['ArrowDown'], left: ['ArrowLeft'], right: ['ArrowRight'], item: ['Enter', 'NumpadEnter'], drift: ['ShiftRight'], reset: ['Backspace'] },
+];
+const TWO_PLAYER_CODES: ReadonlySet<string> = new Set(TWO_PLAYER_KEYS.flatMap((l) => Object.values(l).flat()));
+
+/**
+ * Qual gamepad (índice em `navigator.getGamepads()`) controla cada jogador. Um jogador: o primeiro conectado.
+ * Dois jogadores: 1º controle → Jogador 1 e 2º → Jogador 2; com um controle só, ele vai para o Jogador 2 e o
+ * Jogador 1 joga no teclado.
+ */
+export function assignPads(connected: readonly number[], players: number): (number | null)[] {
+  if (players < 2) return [connected[0] ?? null];
+  if (connected.length >= 2) return [connected[0]!, connected[1]!];
+  if (connected.length === 1) return [null, connected[0]!];
+  return [null, null];
+}
+
+/** Estado de leitura de um jogador: direção suavizada do teclado e o objeto devolvido (sem alocação). */
+interface Reader { keySteer: number; lastReadAt: number; state: InputState }
+const newReader = (): Reader => ({ keySteer: 0, lastReadAt: -1, state: { throttle: 0, brake: 0, steer: 0, drift: false, item: false, reset: false } });
+
 const DEADZONE = 0.18;
 /** Segundos para o teclado ir do centro ao esterço total com sensibilidade 1. */
 const KEY_STEER_RISE = 0.14;
@@ -76,6 +106,10 @@ class InputManager {
 
   private target: InputEventTarget | null = null;
   private readonly down = new Set<string>();
+  /** Todas as teclas seguradas (mapeadas ou não): base dos leitores da tela dividida. */
+  private readonly raw = new Set<string>();
+  /** Jogadores humanos na corrida atual (2 = tela dividida, teclas fixas por jogador). */
+  private players = 1;
   private readonly codeToAction = new Map<string, ActionId>();
   private readonly actionDown: Record<ActionId, number> = {
     accelerate: 0, brake: 0, left: 0, right: 0, drift: 0, item: 0, pause: 0, reset: 0,
@@ -84,13 +118,11 @@ class InputManager {
   private gamepadEnabled = true;
   private unsubscribe: (() => void) | null = null;
   private pausePressed = false;
-  private padStartHeld = false;
+  private readonly padStartHeld = new Map<number, boolean>();
   private gameplayActive = false;
-  private keySteer = 0;
-  private lastReadAt = -1;
+  private readonly readers: [Reader, Reader] = [newReader(), newReader()];
   /** Controles de toque (celular): valores escritos pela camada `TouchControls`. */
   private readonly touch = { throttle: 0, brake: 0, steer: 0, drift: false, item: false, reset: false, driftPad: false, dir: 0 };
-  private readonly state: InputState = { throttle: 0, brake: 0, steer: 0, drift: false, item: false, reset: false };
   private capture: { resolve: (code: string) => void; reject: (err: Error) => void } | null = null;
 
   private readonly menu: MenuPadState = { up: false, down: false, left: false, right: false, confirm: false, back: false };
@@ -109,9 +141,10 @@ class InputManager {
       else resolve(e.code);
       return;
     }
+    this.raw.add(e.code);
     const action = this.codeToAction.get(e.code);
+    if (this.gameplayActive && (action || (this.players >= 2 && TWO_PLAYER_CODES.has(e.code)))) e.preventDefault?.();
     if (!action) return;
-    if (this.gameplayActive) e.preventDefault?.();
     if (this.down.has(e.code)) return;
     this.down.add(e.code);
     this.actionDown[action] += 1;
@@ -119,6 +152,7 @@ class InputManager {
   };
 
   private readonly onKeyUp = (e: KeyLikeEvent): void => {
+    this.raw.delete(e.code);
     if (!this.down.delete(e.code)) return;
     const action = this.codeToAction.get(e.code);
     if (action && this.actionDown[action] > 0) this.actionDown[action] -= 1;
@@ -163,15 +197,30 @@ class InputManager {
    */
   setGameplayActive(active: boolean): void {
     this.gameplayActive = active;
-    if (!active) this.keySteer = 0;
+    if (!active) for (const r of this.readers) r.keySteer = 0;
+  }
+
+  /**
+   * Quantos humanos estão na corrida: 1 (padrão: teclas remapeáveis, toque e o primeiro gamepad) ou 2 (tela
+   * dividida: `TWO_PLAYER_KEYS` e um gamepad por jogador, ver `assignPads`).
+   */
+  setPlayerCount(count: number): void {
+    const n = count >= 2 ? 2 : 1;
+    if (n === this.players) return;
+    this.players = n;
+    for (const r of this.readers) { r.keySteer = 0; r.lastReadAt = -1; }
+  }
+
+  get playerCount(): number {
+    return this.players;
   }
 
   /** Solta todas as teclas (perda de foco, troca de tela). */
   releaseAll(): void {
     this.down.clear();
+    this.raw.clear();
     for (const a of ACTION_IDS) this.actionDown[a] = 0;
-    this.keySteer = 0;
-    this.lastReadAt = -1;
+    for (const r of this.readers) { r.keySteer = 0; r.lastReadAt = -1; }
   }
 
   isActionDown(action: ActionId): boolean {
@@ -179,48 +228,86 @@ class InputManager {
   }
 
   /**
-   * Comandos do jogador para um passo de simulação. Devolve SEMPRE o mesmo objeto (sem alocação):
-   * copie os campos se precisar guardá-los.
+   * Comandos do jogador para um passo de simulação (com dois jogadores, os do Jogador 1). Devolve SEMPRE o
+   * mesmo objeto (sem alocação): copie os campos se precisar guardá-los.
    */
   read(): InputState {
-    const s = this.state;
+    if (this.players >= 2) return this.readPlayer(0);
     const a = this.actionDown;
-    const now = this.now();
-    const dt = this.lastReadAt < 0 ? 1 / 60 : Math.min(0.1, Math.max(0, (now - this.lastReadAt) / 1000));
-    this.lastReadAt = now;
+    return this.compose(this.readers[0], (k) => a[k] > 0, true, this.activePad());
+  }
 
-    // Teclado: direção digital suavizada; a sensibilidade define a rapidez do esterço.
-    // Teclado ou setas de toque (◀ ▶): direção digital suavizada do mesmo jeito.
-    const dir = Math.max(-1, Math.min(1, (a.right > 0 ? 1 : 0) - (a.left > 0 ? 1 : 0) + this.touch.dir));
+  /**
+   * Comandos de um jogador (`slot` 0 = Jogador 1, 1 = Jogador 2). Com um jogador só, `readPlayer(0)` é `read()`
+   * e o Jogador 2 fica parado. Devolve sempre o mesmo objeto por jogador.
+   */
+  readPlayer(slot: number): InputState {
+    if (this.players < 2) {
+      if (slot === 0) return this.read();
+      const r = this.readers[1];
+      Object.assign(r.state, { throttle: 0, brake: 0, steer: 0, drift: false, item: false, reset: false });
+      return r.state;
+    }
+    const s = slot === 1 ? 1 : 0;
+    const layout = TWO_PLAYER_KEYS[s];
+    const raw = this.raw;
+    return this.compose(this.readers[s], (k) => layout[k].some((code) => raw.has(code)), false, this.padForSlot(s));
+  }
+
+  /** Índices dos gamepads de cada jogador (para a interface e os testes). */
+  padAssignment(): (number | null)[] {
+    if (!this.gamepadEnabled) return this.players >= 2 ? [null, null] : [null];
+    const connected: number[] = [];
+    const pads = this.getGamepads();
+    for (let i = 0; i < pads.length; i++) if (pads[i]?.connected) connected.push(i);
+    return assignPads(connected, this.players);
+  }
+
+  private padForSlot(slot: number): PadLike | null {
+    const idx = this.padAssignment()[slot];
+    if (idx === null || idx === undefined) return null;
+    return this.getGamepads()[idx] ?? null;
+  }
+
+  /** Junta teclado (direção suavizada), toque (só 1 jogador) e gamepad num `InputState`. */
+  private compose(r: Reader, key: (action: DriveAction) => boolean, useTouch: boolean, pad: PadLike | null): InputState {
+    const s = r.state;
+    const now = this.now();
+    const dt = r.lastReadAt < 0 ? 1 / 60 : Math.min(0.1, Math.max(0, (now - r.lastReadAt) / 1000));
+    r.lastReadAt = now;
+    const t = this.touch;
+
+    // Teclado ou setas de toque (◀ ▶): direção digital suavizada; a sensibilidade define a rapidez do esterço.
+    const dir = Math.max(-1, Math.min(1, (key('right') ? 1 : 0) - (key('left') ? 1 : 0) + (useTouch ? t.dir : 0)));
     if (dir !== 0) {
       // Inverter o sentido parte do centro, sem esperar o retorno.
-      if (this.keySteer * dir < 0) this.keySteer = 0;
-      this.keySteer += dir * (dt / KEY_STEER_RISE) * this.sensitivity;
-      if (this.keySteer > 1) this.keySteer = 1;
-      else if (this.keySteer < -1) this.keySteer = -1;
-    } else if (this.keySteer !== 0) {
+      if (r.keySteer * dir < 0) r.keySteer = 0;
+      r.keySteer += dir * (dt / KEY_STEER_RISE) * this.sensitivity;
+      if (r.keySteer > 1) r.keySteer = 1;
+      else if (r.keySteer < -1) r.keySteer = -1;
+    } else if (r.keySteer !== 0) {
       const step = dt / KEY_STEER_RETURN;
-      this.keySteer = Math.abs(this.keySteer) <= step ? 0 : this.keySteer - Math.sign(this.keySteer) * step;
+      r.keySteer = Math.abs(r.keySteer) <= step ? 0 : r.keySteer - Math.sign(r.keySteer) * step;
     }
 
-    let throttle = a.accelerate > 0 ? 1 : 0;
-    let brake = a.brake > 0 ? 1 : 0;
-    let steer = this.keySteer;
-    let drift = a.drift > 0;
-    let item = a.item > 0;
-    let reset = a.reset > 0;
+    let throttle = key('accelerate') ? 1 : 0;
+    let brake = key('brake') ? 1 : 0;
+    let steer = r.keySteer;
+    let drift = key('drift');
+    let item = key('item');
+    let reset = key('reset');
 
-    const t = this.touch;
-    // Botão de drift do polegar esquerdo (modo manual): segurar também acelera.
-    if (t.brake > 0) throttle = 0;
-    else throttle = Math.max(throttle, t.throttle, t.driftPad ? 1 : 0);
-    brake = Math.max(brake, t.brake);
-    if (Math.abs(t.steer) > Math.abs(steer)) steer = t.steer;
-    drift = drift || t.drift || t.driftPad;
-    item = item || t.item;
-    reset = reset || t.reset;
+    if (useTouch) {
+      // Botão de drift do polegar esquerdo (modo manual): segurar também acelera.
+      if (t.brake > 0) throttle = 0;
+      else throttle = Math.max(throttle, t.throttle, t.driftPad ? 1 : 0);
+      brake = Math.max(brake, t.brake);
+      if (Math.abs(t.steer) > Math.abs(steer)) steer = t.steer;
+      drift = drift || t.drift || t.driftPad;
+      item = item || t.item;
+      reset = reset || t.reset;
+    }
 
-    const pad = this.activePad();
     if (pad) {
       throttle = Math.max(throttle, pressed(pad, PAD.A) ? 1 : 0, analog(pad, PAD.RT));
       brake = Math.max(brake, pressed(pad, PAD.B) ? 1 : 0, analog(pad, PAD.LT));
@@ -264,12 +351,17 @@ class InputManager {
     this.pausePressed = true;
   }
 
-  /** `true` uma única vez por toque na tecla de pausa ou no Start do gamepad. */
+  /** `true` uma única vez por toque na tecla de pausa ou no Start do gamepad (de qualquer jogador). */
   consumePausePressed(): boolean {
-    const pad = this.activePad();
-    const start = !!pad && pressed(pad, PAD.START);
-    if (start && !this.padStartHeld) this.pausePressed = true;
-    this.padStartHeld = start;
+    const pads = this.getGamepads();
+    const idx = this.players >= 2 ? this.padAssignment() : [this.activePadIndex()];
+    for (const i of idx) {
+      if (i === null || i === undefined) continue;
+      const pad = pads[i];
+      const start = !!pad && pad.connected && pressed(pad, PAD.START);
+      if (start && !this.padStartHeld.get(i)) this.pausePressed = true;
+      this.padStartHeld.set(i, start);
+    }
     const was = this.pausePressed;
     this.pausePressed = false;
     return was;
@@ -340,11 +432,16 @@ class InputManager {
   }
 
   private activePad(): PadLike | null {
+    const i = this.activePadIndex();
+    return i === null ? null : this.getGamepads()[i] ?? null;
+  }
+
+  private activePadIndex(): number | null {
     if (!this.gamepadEnabled) return null;
     const pads = this.getGamepads();
     for (let i = 0; i < pads.length; i++) {
       const p = pads[i];
-      if (p && p.connected) return p;
+      if (p && p.connected) return i;
     }
     return null;
   }

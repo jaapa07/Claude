@@ -7,7 +7,9 @@ export type Screen =
   | 'loading' | 'menu' | 'character' | 'kart' | 'mode' | 'cup' | 'track' | 'difficulty'
   | 'race' | 'results' | 'podium' | 'progress' | 'settings' | 'shop'
   /** Batalha: escolha do minijogo e da arena. */
-  | 'battleGame' | 'arena';
+  | 'battleGame' | 'arena'
+  /** Escolha 1 ou 2 jogadores e a vez do Jogador 2 (tela dividida). */
+  | 'players' | 'character2' | 'kart2';
 
 export interface Selection {
   characterId: CharacterId;
@@ -19,9 +21,18 @@ export interface Selection {
   /** Modo Batalha. */
   battleGame: BattleGameId;
   arenaId: ArenaId;
+  /** Jogadores humanos: 2 = tela dividida (só Corrida Rápida, Campeonato e Batalha). */
+  players: 1 | 2;
+  /** Piloto e kart do Jogador 2. */
+  p2CharacterId: CharacterId;
+  p2KartId: KartId;
 }
 
-export interface StandingEntry { characterId: CharacterId; kartId: KartId; isPlayer: boolean; points: number }
+export interface StandingEntry {
+  characterId: CharacterId; kartId: KartId; isPlayer: boolean; points: number;
+  /** Vaga do jogador humano na tela dividida (0/1). */
+  slot?: number;
+}
 
 export interface ChampionshipState {
   cupId: CupId;

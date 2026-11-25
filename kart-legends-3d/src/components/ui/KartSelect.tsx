@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { KartWorkshop } from './Customizer';
 import type { CSSProperties } from 'react';
-import { prevScreen } from '@/app/flow';
+import { humanCount, nextOf, prevOf } from '@/app/flow';
+import { playerLabel } from './CharacterSelect';
 import { useGameStore } from '@/app/gameStore';
 import type { KartId } from '@/data/ids';
 import { KARTS, KART_BY_ID, KART_STAT_LABELS } from '@/data/karts';
@@ -13,28 +14,41 @@ import { AssetImg, Btn, LockBadge, ScreenShell, useCardPick } from './common';
 
 const STAT_KEYS = Object.keys(KART_STAT_LABELS) as Array<keyof KartStats>;
 
-export function KartSelect(): JSX.Element {
+/** Escolha do kart. `slot` 1 = a vez do Jogador 2 (tela dividida). */
+export function KartSelect({ slot = 0 }: { slot?: 0 | 1 }): JSX.Element {
   const selection = useGameStore((s) => s.selection);
   const setSelection = useGameStore((s) => s.setSelection);
   const goTo = useGameStore((s) => s.goTo);
   const startRace = useGameStore((s) => s.startRace);
   const unlockedKarts = useSaveStore((s) => s.unlocked.karts);
   const isLocked = (id: KartId): boolean => !unlockedKarts.includes(id);
+  const two = humanCount(selection) === 2;
+  const screen = slot === 1 ? 'kart2' : 'kart';
+  const selected = slot === 1 ? selection.p2KartId : selection.kartId;
+  // Com dois jogadores, o kart do Jogador 1 leva à vez do Jogador 2; o último kart larga.
+  const next = nextOf(screen, selection);
   const pick = useCardPick<KartId>({
-    selected: selection.kartId,
+    selected,
     isLocked,
-    onSelect: (id) => setSelection({ kartId: id }),
-    onConfirm: startRace,
+    onSelect: (id) => setSelection(slot === 1 ? { p2KartId: id } : { kartId: id }),
+    onConfirm: () => {
+      const n = nextOf(screen, useGameStore.getState().selection);
+      if (n) goTo(n);
+      else startRace();
+    },
   });
   const focus = KART_BY_ID[pick.focusId];
   const [tab, setTab] = useState<'stats' | 'shop'>('stats');
   const focusLocked = isLocked(focus.id);
   return (
     <ScreenShell
-      id="kart" title="Escolha o kart" kicker={`${unlockedKarts.length} de ${KARTS.length} liberados`}
-      onBack={() => goTo(prevScreen('kart', selection.mode))}
-      footer={<Btn testId="btn-confirm" variant="primary" sound="none" disabled={isLocked(selection.kartId)} onClick={pick.confirm}>Correr!</Btn>}
+      id={screen} title="Escolha o kart"
+      kicker={two ? `Tela dividida · ${slot === 0 ? 'metade de cima' : 'metade de baixo'}` : `${unlockedKarts.length} de ${KARTS.length} liberados`}
+      className={two ? `screen--player screen--p${slot + 1}` : undefined}
+      onBack={() => goTo(prevOf(screen, useGameStore.getState().selection))}
+      footer={<Btn testId="btn-confirm" variant="primary" sound="none" disabled={isLocked(selected)} onClick={pick.confirm}>{next ? 'Vez do Jogador 2' : 'Correr!'}</Btn>}
     >
+      {two && <p className="player-turn" data-testid="player-turn" data-slot={slot}>{playerLabel(slot)}</p>}
       <div className="card-grid card-grid--roster">
         {KARTS.map((k) => {
           const locked = isLocked(k.id);
