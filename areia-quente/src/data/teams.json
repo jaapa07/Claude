@@ -1,0 +1,1877 @@
+{
+ "teams": [
+  {
+   "id": "BRA",
+   "name": "Brasil",
+   "nick": "Canarinhos da Areia",
+   "flag": "BR",
+   "style": "firula",
+   "colors": [
+    "#FFD21F",
+    "#0B9B4A"
+   ],
+   "stats": {
+    "ataque": 5,
+    "defesa": 3,
+    "tecnica": 5,
+    "velocidade": 4
+   },
+   "home": {
+    "shirt": "#FFD21F",
+    "shirt2": "#0B9B4A",
+    "pattern": "sash",
+    "shorts": "#1D4FC4",
+    "trim": "#0B9B4A",
+    "num": "#0B6B35"
+   },
+   "away": {
+    "shirt": "#1D4FC4",
+    "shirt2": "#FFD21F",
+    "pattern": "chevron",
+    "shorts": "#FFFFFF",
+    "trim": "#FFD21F",
+    "num": "#FFFFFF"
+   },
+   "gk": {
+    "shirt": "#FF6A1A",
+    "shirt2": "#202020",
+    "pattern": "shoulders",
+    "shorts": "#202020",
+    "trim": "#202020",
+    "num": "#202020"
+   },
+   "players": [
+    {
+     "id": "BRA0",
+     "name": "Tatuí",
+     "short": "TATUÍ",
+     "number": 1,
+     "pos": "GOL",
+     "stats": {
+      "chute": 4,
+      "passe": 5,
+      "tecnica": 4,
+      "velocidade": 4,
+      "defesa": 4,
+      "folego": 5
+     },
+     "head": "survivorMaleB",
+     "skin": 1,
+     "hair": 0,
+     "ankle": false
+    },
+    {
+     "id": "BRA1",
+     "name": "Marolinha",
+     "short": "MAROLINHA",
+     "number": 4,
+     "pos": "FIXO",
+     "stats": {
+      "chute": 4,
+      "passe": 5,
+      "tecnica": 4,
+      "velocidade": 5,
+      "defesa": 2,
+      "folego": 5
+     },
+     "head": "skaterMaleA",
+     "skin": 1,
+     "hair": 4,
+     "ankle": true
+    },
+    {
+     "id": "BRA2",
+     "name": "Caju",
+     "short": "CAJU",
+     "number": 7,
+     "pos": "ALA",
+     "stats": {
+      "chute": 5,
+      "passe": 5,
+      "tecnica": 4,
+      "velocidade": 4,
+      "defesa": 2,
+      "folego": 4
+     },
+     "head": "skaterMaleA",
+     "skin": 3,
+     "hair": 1,
+     "ankle": false
+    },
+    {
+     "id": "BRA3",
+     "name": "Zé Coqueiro",
+     "short": "ZÉ COQUEIRO",
+     "number": 10,
+     "pos": "ALA",
+     "stats": {
+      "chute": 5,
+      "passe": 4,
+      "tecnica": 5,
+      "velocidade": 4,
+      "defesa": 4,
+      "folego": 5
+     },
+     "head": "skaterMaleA",
+     "skin": 3,
+     "hair": 5,
+     "ankle": true
+    },
+    {
+     "id": "BRA4",
+     "name": "Pipoca",
+     "short": "PIPOCA",
+     "number": 9,
+     "pos": "PIVÔ",
+     "stats": {
+      "chute": 5,
+      "passe": 5,
+      "tecnica": 5,
+      "velocidade": 5,
+      "defesa": 3,
+      "folego": 5
+     },
+     "head": "survivorMaleB",
+     "skin": 4,
+     "hair": 5,
+     "ankle": false
+    },
+    {
+     "id": "BRA5",
+     "name": "Tubarão",
+     "short": "TUBARÃO",
+     "number": 12,
+     "pos": "GOL",
+     "stats": {
+      "chute": 5,
+      "passe": 5,
+      "tecnica": 4,
+      "velocidade": 3,
+      "defesa": 4,
+      "folego": 5
+     },
+     "head": "criminalMaleA",
+     "skin": 3,
+     "hair": 1,
+     "ankle": false
+    },
+    {
+     "id": "BRA6",
+     "name": "Biscoito",
+     "short": "BISCOITO",
+     "number": 5,
+     "pos": "FIXO",
+     "stats": {
+      "chute": 4,
+      "passe": 5,
+      "tecnica": 5,
+      "velocidade": 4,
+      "defesa": 4,
+      "folego": 4
+     },
+     "head": "survivorMaleB",
+     "skin": 3,
+     "hair": 4,
+     "ankle": true
+    },
+    {
+     "id": "BRA7",
+     "name": "Raio Laser",
+     "short": "RAIO LASER",
+     "number": 8,
+     "pos": "ALA",
+     "stats": {
+      "chute": 5,
+      "passe": 4,
+      "tecnica": 4,
+      "velocidade": 4,
+      "defesa": 4,
+      "folego": 5
+     },
+     "head": "skaterMaleA",
+     "skin": 1,
+     "hair": 2,
+     "ankle": false
+    },
+    {
+     "id": "BRA8",
+     "name": "Dendê",
+     "short": "DENDÊ",
+     "number": 11,
+     "pos": "ALA",
+     "stats": {
+      "chute": 5,
+      "passe": 5,
+      "tecnica": 5,
+      "velocidade": 3,
+      "defesa": 3,
+      "folego": 4
+     },
+     "head": "survivorMaleB",
+     "skin": 0,
+     "hair": 4,
+     "ankle": false
+    },
+    {
+     "id": "BRA9",
+     "name": "Guaraná",
+     "short": "GUARANÁ",
+     "number": 6,
+     "pos": "PIVÔ",
+     "stats": {
+      "chute": 5,
+      "passe": 5,
+      "tecnica": 5,
+      "velocidade": 5,
+      "defesa": 4,
+      "folego": 3
+     },
+     "head": "skaterMaleA",
+     "skin": 3,
+     "hair": 2,
+     "ankle": true
+    }
+   ]
+  },
+  {
+   "id": "ARG",
+   "name": "Argentina",
+   "nick": "Albicelestes del Sol",
+   "flag": "AR",
+   "style": "raça",
+   "colors": [
+    "#7CC6F2",
+    "#FFFFFF"
+   ],
+   "stats": {
+    "ataque": 4,
+    "defesa": 4,
+    "tecnica": 4,
+    "velocidade": 4
+   },
+   "home": {
+    "shirt": "#FFFFFF",
+    "shirt2": "#7CC6F2",
+    "pattern": "stripes",
+    "shorts": "#1B1B2A",
+    "trim": "#1B1B2A",
+    "num": "#1B1B2A"
+   },
+   "away": {
+    "shirt": "#2C2F6B",
+    "shirt2": "#7CC6F2",
+    "pattern": "hoop",
+    "shorts": "#2C2F6B",
+    "trim": "#7CC6F2",
+    "num": "#FFFFFF"
+   },
+   "gk": {
+    "shirt": "#7DE34B",
+    "shirt2": "#1B1B2A",
+    "pattern": "shoulders",
+    "shorts": "#1B1B2A",
+    "trim": "#1B1B2A",
+    "num": "#1B1B2A"
+   },
+   "players": [
+    {
+     "id": "ARG0",
+     "name": "Chiche Ferreyra",
+     "short": "CHICHE",
+     "number": 1,
+     "pos": "GOL",
+     "stats": {
+      "chute": 5,
+      "passe": 4,
+      "tecnica": 5,
+      "velocidade": 3,
+      "defesa": 3,
+      "folego": 3
+     },
+     "head": "survivorMaleB",
+     "skin": 0,
+     "hair": 1,
+     "ankle": true
+    },
+    {
+     "id": "ARG1",
+     "name": "Tano Lunardi",
+     "short": "LUNARDI",
+     "number": 4,
+     "pos": "FIXO",
+     "stats": {
+      "chute": 3,
+      "passe": 4,
+      "tecnica": 4,
+      "velocidade": 4,
+      "defesa": 3,
+      "folego": 4
+     },
+     "head": "survivorMaleB",
+     "skin": 1,
+     "hair": 1,
+     "ankle": true
+    },
+    {
+     "id": "ARG2",
+     "name": "Pampa Ríos",
+     "short": "PAMPA",
+     "number": 7,
+     "pos": "ALA",
+     "stats": {
+      "chute": 4,
+      "passe": 4,
+      "tecnica": 3,
+      "velocidade": 5,
+      "defesa": 4,
+      "folego": 4
+     },
+     "head": "skaterMaleA",
+     "skin": 2,
+     "hair": 3,
+     "ankle": false
+    },
+    {
+     "id": "ARG3",
+     "name": "Mono Quiroga",
+     "short": "QUIROGA",
+     "number": 10,
+     "pos": "ALA",
+     "stats": {
+      "chute": 4,
+      "passe": 5,
+      "tecnica": 3,
+      "velocidade": 3,
+      "defesa": 5,
+      "folego": 3
+     },
+     "head": "skaterMaleA",
+     "skin": 1,
+     "hair": 2,
+     "ankle": false
+    },
+    {
+     "id": "ARG4",
+     "name": "Gringo Sosa",
+     "short": "GRINGO",
+     "number": 9,
+     "pos": "PIVÔ",
+     "stats": {
+      "chute": 5,
+      "passe": 3,
+      "tecnica": 5,
+      "velocidade": 4,
+      "defesa": 4,
+      "folego": 5
+     },
+     "head": "skaterMaleA",
+     "skin": 0,
+     "hair": 3,
+     "ankle": false
+    },
+    {
+     "id": "ARG5",
+     "name": "Lalo Benítez",
+     "short": "BENÍTEZ",
+     "number": 12,
+     "pos": "GOL",
+     "stats": {
+      "chute": 4,
+      "passe": 4,
+      "tecnica": 4,
+      "velocidade": 5,
+      "defesa": 4,
+      "folego": 5
+     },
+     "head": "criminalMaleA",
+     "skin": 0,
+     "hair": 3,
+     "ankle": true
+    },
+    {
+     "id": "ARG6",
+     "name": "Toto Ibarra",
+     "short": "IBARRA",
+     "number": 5,
+     "pos": "FIXO",
+     "stats": {
+      "chute": 4,
+      "passe": 3,
+      "tecnica": 3,
+      "velocidade": 5,
+      "defesa": 4,
+      "folego": 5
+     },
+     "head": "skaterMaleA",
+     "skin": 1,
+     "hair": 1,
+     "ankle": false
+    },
+    {
+     "id": "ARG7",
+     "name": "Facha Correa",
+     "short": "FACHA",
+     "number": 8,
+     "pos": "ALA",
+     "stats": {
+      "chute": 4,
+      "passe": 4,
+      "tecnica": 4,
+      "velocidade": 5,
+      "defesa": 4,
+      "folego": 5
+     },
+     "head": "survivorMaleB",
+     "skin": 0,
+     "hair": 3,
+     "ankle": true
+    },
+    {
+     "id": "ARG8",
+     "name": "Pocho Medina",
+     "short": "POCHO",
+     "number": 11,
+     "pos": "ALA",
+     "stats": {
+      "chute": 4,
+      "passe": 4,
+      "tecnica": 4,
+      "velocidade": 5,
+      "defesa": 5,
+      "folego": 5
+     },
+     "head": "skaterMaleA",
+     "skin": 2,
+     "hair": 1,
+     "ankle": true
+    },
+    {
+     "id": "ARG9",
+     "name": "Nacho Arrieta",
+     "short": "NACHO",
+     "number": 6,
+     "pos": "PIVÔ",
+     "stats": {
+      "chute": 5,
+      "passe": 5,
+      "tecnica": 3,
+      "velocidade": 4,
+      "defesa": 3,
+      "folego": 4
+     },
+     "head": "criminalMaleA",
+     "skin": 0,
+     "hair": 0,
+     "ankle": false
+    }
+   ]
+  },
+  {
+   "id": "POR",
+   "name": "Portugal",
+   "nick": "Navegadores",
+   "flag": "PT",
+   "style": "posse",
+   "colors": [
+    "#C8102E",
+    "#046A38"
+   ],
+   "stats": {
+    "ataque": 4,
+    "defesa": 4,
+    "tecnica": 4,
+    "velocidade": 3
+   },
+   "home": {
+    "shirt": "#C8102E",
+    "shirt2": "#046A38",
+    "pattern": "sleeves",
+    "shorts": "#046A38",
+    "trim": "#FFD100",
+    "num": "#FFD100"
+   },
+   "away": {
+    "shirt": "#F4F1E6",
+    "shirt2": "#C8102E",
+    "pattern": "sash",
+    "shorts": "#F4F1E6",
+    "trim": "#C8102E",
+    "num": "#C8102E"
+   },
+   "gk": {
+    "shirt": "#3B3B3B",
+    "shirt2": "#FFD100",
+    "pattern": "shoulders",
+    "shorts": "#3B3B3B",
+    "trim": "#FFD100",
+    "num": "#FFD100"
+   },
+   "players": [
+    {
+     "id": "POR0",
+     "name": "Zeca Amaral",
+     "short": "AMARAL",
+     "number": 1,
+     "pos": "GOL",
+     "stats": {
+      "chute": 4,
+      "passe": 5,
+      "tecnica": 4,
+      "velocidade": 2,
+      "defesa": 4,
+      "folego": 4
+     },
+     "head": "skaterMaleA",
+     "skin": 2,
+     "hair": 2,
+     "ankle": true
+    },
+    {
+     "id": "POR1",
+     "name": "Tiago Brandão",
+     "short": "TIAGO",
+     "number": 4,
+     "pos": "FIXO",
+     "stats": {
+      "chute": 4,
+      "passe": 3,
+      "tecnica": 4,
+      "velocidade": 3,
+      "defesa": 4,
+      "folego": 4
+     },
+     "head": "criminalMaleA",
+     "skin": 0,
+     "hair": 1,
+     "ankle": true
+    },
+    {
+     "id": "POR2",
+     "name": "Nuno Seixas",
+     "short": "SEIXAS",
+     "number": 7,
+     "pos": "ALA",
+     "stats": {
+      "chute": 5,
+      "passe": 4,
+      "tecnica": 3,
+      "velocidade": 2,
+      "defesa": 4,
+      "folego": 4
+     },
+     "head": "skaterMaleA",
+     "skin": 2,
+     "hair": 1,
+     "ankle": true
+    },
+    {
+     "id": "POR3",
+     "name": "Rui Faneca",
+     "short": "FANECA",
+     "number": 10,
+     "pos": "ALA",
+     "stats": {
+      "chute": 3,
+      "passe": 4,
+      "tecnica": 4,
+      "velocidade": 3,
+      "defesa": 4,
+      "folego": 4
+     },
+     "head": "skaterMaleA",
+     "skin": 0,
+     "hair": 1,
+     "ankle": false
+    },
+    {
+     "id": "POR4",
+     "name": "Duarte Pinho",
+     "short": "DUARTE",
+     "number": 9,
+     "pos": "PIVÔ",
+     "stats": {
+      "chute": 5,
+      "passe": 5,
+      "tecnica": 3,
+      "velocidade": 2,
+      "defesa": 3,
+      "folego": 4
+     },
+     "head": "skaterMaleA",
+     "skin": 1,
+     "hair": 0,
+     "ankle": true
+    },
+    {
+     "id": "POR5",
+     "name": "Vasco Lemos",
+     "short": "VASCO",
+     "number": 12,
+     "pos": "GOL",
+     "stats": {
+      "chute": 4,
+      "passe": 4,
+      "tecnica": 5,
+      "velocidade": 2,
+      "defesa": 5,
+      "folego": 4
+     },
+     "head": "criminalMaleA",
+     "skin": 2,
+     "hair": 1,
+     "ankle": true
+    },
+    {
+     "id": "POR6",
+     "name": "Gil Peixoto",
+     "short": "PEIXOTO",
+     "number": 5,
+     "pos": "FIXO",
+     "stats": {
+      "chute": 3,
+      "passe": 4,
+      "tecnica": 4,
+      "velocidade": 4,
+      "defesa": 4,
+      "folego": 4
+     },
+     "head": "skaterMaleA",
+     "skin": 2,
+     "hair": 2,
+     "ankle": true
+    },
+    {
+     "id": "POR7",
+     "name": "Bruno Areal",
+     "short": "BRUNO",
+     "number": 8,
+     "pos": "ALA",
+     "stats": {
+      "chute": 3,
+      "passe": 4,
+      "tecnica": 4,
+      "velocidade": 3,
+      "defesa": 3,
+      "folego": 4
+     },
+     "head": "survivorMaleB",
+     "skin": 1,
+     "hair": 2,
+     "ankle": false
+    },
+    {
+     "id": "POR8",
+     "name": "Hugo Marés",
+     "short": "MARÉS",
+     "number": 11,
+     "pos": "ALA",
+     "stats": {
+      "chute": 4,
+      "passe": 4,
+      "tecnica": 3,
+      "velocidade": 2,
+      "defesa": 4,
+      "folego": 3
+     },
+     "head": "skaterMaleA",
+     "skin": 0,
+     "hair": 0,
+     "ankle": true
+    },
+    {
+     "id": "POR9",
+     "name": "Lino Abreu",
+     "short": "ABREU",
+     "number": 6,
+     "pos": "PIVÔ",
+     "stats": {
+      "chute": 4,
+      "passe": 3,
+      "tecnica": 5,
+      "velocidade": 3,
+      "defesa": 4,
+      "folego": 5
+     },
+     "head": "survivorMaleB",
+     "skin": 1,
+     "hair": 0,
+     "ankle": false
+    }
+   ]
+  },
+  {
+   "id": "ESP",
+   "name": "Espanha",
+   "nick": "La Furia Playera",
+   "flag": "ES",
+   "style": "toque",
+   "colors": [
+    "#C60B1E",
+    "#FFC400"
+   ],
+   "stats": {
+    "ataque": 4,
+    "defesa": 3,
+    "tecnica": 5,
+    "velocidade": 3
+   },
+   "home": {
+    "shirt": "#C60B1E",
+    "shirt2": "#FFC400",
+    "pattern": "side",
+    "shorts": "#14285E",
+    "trim": "#FFC400",
+    "num": "#FFC400"
+   },
+   "away": {
+    "shirt": "#FFF3D6",
+    "shirt2": "#C60B1E",
+    "pattern": "hoop",
+    "shorts": "#C60B1E",
+    "trim": "#C60B1E",
+    "num": "#C60B1E"
+   },
+   "gk": {
+    "shirt": "#1FB6A6",
+    "shirt2": "#0B3B37",
+    "pattern": "shoulders",
+    "shorts": "#0B3B37",
+    "trim": "#0B3B37",
+    "num": "#0B3B37"
+   },
+   "players": [
+    {
+     "id": "ESP0",
+     "name": "Quique Morales",
+     "short": "QUIQUE",
+     "number": 1,
+     "pos": "GOL",
+     "stats": {
+      "chute": 4,
+      "passe": 5,
+      "tecnica": 5,
+      "velocidade": 2,
+      "defesa": 4,
+      "folego": 4
+     },
+     "head": "criminalMaleA",
+     "skin": 0,
+     "hair": 0,
+     "ankle": true
+    },
+    {
+     "id": "ESP1",
+     "name": "Paco Ledesma",
+     "short": "LEDESMA",
+     "number": 4,
+     "pos": "FIXO",
+     "stats": {
+      "chute": 5,
+      "passe": 5,
+      "tecnica": 5,
+      "velocidade": 3,
+      "defesa": 3,
+      "folego": 3
+     },
+     "head": "criminalMaleA",
+     "skin": 2,
+     "hair": 0,
+     "ankle": false
+    },
+    {
+     "id": "ESP2",
+     "name": "Íker Salvatierra",
+     "short": "SALVATIERRA",
+     "number": 7,
+     "pos": "ALA",
+     "stats": {
+      "chute": 4,
+      "passe": 5,
+      "tecnica": 5,
+      "velocidade": 2,
+      "defesa": 2,
+      "folego": 4
+     },
+     "head": "survivorMaleB",
+     "skin": 0,
+     "hair": 1,
+     "ankle": false
+    },
+    {
+     "id": "ESP3",
+     "name": "Rafa Cuenca",
+     "short": "CUENCA",
+     "number": 10,
+     "pos": "ALA",
+     "stats": {
+      "chute": 4,
+      "passe": 5,
+      "tecnica": 5,
+      "velocidade": 3,
+      "defesa": 3,
+      "folego": 4
+     },
+     "head": "criminalMaleA",
+     "skin": 1,
+     "hair": 2,
+     "ankle": true
+    },
+    {
+     "id": "ESP4",
+     "name": "Toni Barral",
+     "short": "BARRAL",
+     "number": 9,
+     "pos": "PIVÔ",
+     "stats": {
+      "chute": 5,
+      "passe": 5,
+      "tecnica": 5,
+      "velocidade": 3,
+      "defesa": 3,
+      "folego": 5
+     },
+     "head": "criminalMaleA",
+     "skin": 1,
+     "hair": 0,
+     "ankle": false
+    },
+    {
+     "id": "ESP5",
+     "name": "Chema Ojeda",
+     "short": "CHEMA",
+     "number": 12,
+     "pos": "GOL",
+     "stats": {
+      "chute": 5,
+      "passe": 4,
+      "tecnica": 5,
+      "velocidade": 2,
+      "defesa": 3,
+      "folego": 4
+     },
+     "head": "skaterMaleA",
+     "skin": 0,
+     "hair": 0,
+     "ankle": false
+    },
+    {
+     "id": "ESP6",
+     "name": "Dani Montoro",
+     "short": "MONTORO",
+     "number": 5,
+     "pos": "FIXO",
+     "stats": {
+      "chute": 3,
+      "passe": 5,
+      "tecnica": 5,
+      "velocidade": 2,
+      "defesa": 4,
+      "folego": 5
+     },
+     "head": "criminalMaleA",
+     "skin": 2,
+     "hair": 0,
+     "ankle": true
+    },
+    {
+     "id": "ESP7",
+     "name": "Juanma Llorente",
+     "short": "JUANMA",
+     "number": 8,
+     "pos": "ALA",
+     "stats": {
+      "chute": 5,
+      "passe": 5,
+      "tecnica": 5,
+      "velocidade": 3,
+      "defesa": 2,
+      "folego": 4
+     },
+     "head": "criminalMaleA",
+     "skin": 1,
+     "hair": 2,
+     "ankle": true
+    },
+    {
+     "id": "ESP8",
+     "name": "Pau Ferrán",
+     "short": "FERRÁN",
+     "number": 11,
+     "pos": "ALA",
+     "stats": {
+      "chute": 4,
+      "passe": 5,
+      "tecnica": 5,
+      "velocidade": 3,
+      "defesa": 2,
+      "folego": 5
+     },
+     "head": "survivorMaleB",
+     "skin": 1,
+     "hair": 1,
+     "ankle": false
+    },
+    {
+     "id": "ESP9",
+     "name": "Nando Gil",
+     "short": "NANDO",
+     "number": 6,
+     "pos": "PIVÔ",
+     "stats": {
+      "chute": 3,
+      "passe": 5,
+      "tecnica": 5,
+      "velocidade": 3,
+      "defesa": 3,
+      "folego": 3
+     },
+     "head": "skaterMaleA",
+     "skin": 2,
+     "hair": 0,
+     "ankle": false
+    }
+   ]
+  },
+  {
+   "id": "ITA",
+   "name": "Itália",
+   "nick": "Gli Azzurri di Sabbia",
+   "flag": "IT",
+   "style": "ferrolho",
+   "colors": [
+    "#1C64C8",
+    "#FFFFFF"
+   ],
+   "stats": {
+    "ataque": 3,
+    "defesa": 5,
+    "tecnica": 4,
+    "velocidade": 3
+   },
+   "home": {
+    "shirt": "#1C64C8",
+    "shirt2": "#FFFFFF",
+    "pattern": "shoulders",
+    "shorts": "#FFFFFF",
+    "trim": "#FFFFFF",
+    "num": "#FFFFFF"
+   },
+   "away": {
+    "shirt": "#FFFFFF",
+    "shirt2": "#1C64C8",
+    "pattern": "chevron",
+    "shorts": "#1C64C8",
+    "trim": "#1C64C8",
+    "num": "#1C64C8"
+   },
+   "gk": {
+    "shirt": "#2F2F2F",
+    "shirt2": "#9ADB2E",
+    "pattern": "shoulders",
+    "shorts": "#2F2F2F",
+    "trim": "#9ADB2E",
+    "num": "#9ADB2E"
+   },
+   "players": [
+    {
+     "id": "ITA0",
+     "name": "Gigi Fontana",
+     "short": "FONTANA",
+     "number": 1,
+     "pos": "GOL",
+     "stats": {
+      "chute": 2,
+      "passe": 4,
+      "tecnica": 4,
+      "velocidade": 3,
+      "defesa": 5,
+      "folego": 4
+     },
+     "head": "criminalMaleA",
+     "skin": 0,
+     "hair": 1,
+     "ankle": true
+    },
+    {
+     "id": "ITA1",
+     "name": "Totò Mancuso",
+     "short": "MANCUSO",
+     "number": 4,
+     "pos": "FIXO",
+     "stats": {
+      "chute": 2,
+      "passe": 5,
+      "tecnica": 4,
+      "velocidade": 3,
+      "defesa": 4,
+      "folego": 4
+     },
+     "head": "survivorMaleB",
+     "skin": 1,
+     "hair": 0,
+     "ankle": true
+    },
+    {
+     "id": "ITA2",
+     "name": "Nico Barbagallo",
+     "short": "BARBAGALLO",
+     "number": 7,
+     "pos": "ALA",
+     "stats": {
+      "chute": 3,
+      "passe": 4,
+      "tecnica": 5,
+      "velocidade": 3,
+      "defesa": 4,
+      "folego": 3
+     },
+     "head": "skaterMaleA",
+     "skin": 1,
+     "hair": 1,
+     "ankle": true
+    },
+    {
+     "id": "ITA3",
+     "name": "Pippo Rinaldi",
+     "short": "PIPPO",
+     "number": 10,
+     "pos": "ALA",
+     "stats": {
+      "chute": 3,
+      "passe": 4,
+      "tecnica": 4,
+      "velocidade": 4,
+      "defesa": 5,
+      "folego": 4
+     },
+     "head": "survivorMaleB",
+     "skin": 1,
+     "hair": 1,
+     "ankle": true
+    },
+    {
+     "id": "ITA4",
+     "name": "Ciro Esposito",
+     "short": "ESPOSITO",
+     "number": 9,
+     "pos": "PIVÔ",
+     "stats": {
+      "chute": 5,
+      "passe": 4,
+      "tecnica": 4,
+      "velocidade": 3,
+      "defesa": 5,
+      "folego": 5
+     },
+     "head": "criminalMaleA",
+     "skin": 0,
+     "hair": 1,
+     "ankle": false
+    },
+    {
+     "id": "ITA5",
+     "name": "Lele Martinelli",
+     "short": "MARTINELLI",
+     "number": 12,
+     "pos": "GOL",
+     "stats": {
+      "chute": 3,
+      "passe": 5,
+      "tecnica": 4,
+      "velocidade": 3,
+      "defesa": 4,
+      "folego": 4
+     },
+     "head": "skaterMaleA",
+     "skin": 1,
+     "hair": 1,
+     "ankle": true
+    },
+    {
+     "id": "ITA6",
+     "name": "Sandro Vitale",
+     "short": "SANDRO",
+     "number": 5,
+     "pos": "FIXO",
+     "stats": {
+      "chute": 3,
+      "passe": 4,
+      "tecnica": 4,
+      "velocidade": 3,
+      "defesa": 4,
+      "folego": 4
+     },
+     "head": "skaterMaleA",
+     "skin": 1,
+     "hair": 1,
+     "ankle": false
+    },
+    {
+     "id": "ITA7",
+     "name": "Michi Ferraro",
+     "short": "MICHI",
+     "number": 8,
+     "pos": "ALA",
+     "stats": {
+      "chute": 4,
+      "passe": 3,
+      "tecnica": 4,
+      "velocidade": 4,
+      "defesa": 5,
+      "folego": 3
+     },
+     "head": "survivorMaleB",
+     "skin": 1,
+     "hair": 2,
+     "ankle": false
+    },
+    {
+     "id": "ITA8",
+     "name": "Beppe Lazzari",
+     "short": "BEPPE",
+     "number": 11,
+     "pos": "ALA",
+     "stats": {
+      "chute": 3,
+      "passe": 5,
+      "tecnica": 4,
+      "velocidade": 3,
+      "defesa": 4,
+      "folego": 5
+     },
+     "head": "criminalMaleA",
+     "skin": 0,
+     "hair": 1,
+     "ankle": true
+    },
+    {
+     "id": "ITA9",
+     "name": "Dodo Caruso",
+     "short": "CARUSO",
+     "number": 6,
+     "pos": "PIVÔ",
+     "stats": {
+      "chute": 3,
+      "passe": 4,
+      "tecnica": 4,
+      "velocidade": 4,
+      "defesa": 5,
+      "folego": 5
+     },
+     "head": "skaterMaleA",
+     "skin": 0,
+     "hair": 0,
+     "ankle": false
+    }
+   ]
+  },
+  {
+   "id": "FRA",
+   "name": "França",
+   "nick": "Les Bleus du Sable",
+   "flag": "FR",
+   "style": "velocidade",
+   "colors": [
+    "#1F2A5C",
+    "#E3263B"
+   ],
+   "stats": {
+    "ataque": 4,
+    "defesa": 4,
+    "tecnica": 3,
+    "velocidade": 5
+   },
+   "home": {
+    "shirt": "#1F2A5C",
+    "shirt2": "#E3263B",
+    "pattern": "hoop",
+    "shorts": "#FFFFFF",
+    "trim": "#E3263B",
+    "num": "#FFFFFF"
+   },
+   "away": {
+    "shirt": "#FFFFFF",
+    "shirt2": "#1F2A5C",
+    "pattern": "side",
+    "shorts": "#1F2A5C",
+    "trim": "#E3263B",
+    "num": "#1F2A5C"
+   },
+   "gk": {
+    "shirt": "#F6C531",
+    "shirt2": "#1F2A5C",
+    "pattern": "shoulders",
+    "shorts": "#1F2A5C",
+    "trim": "#1F2A5C",
+    "num": "#1F2A5C"
+   },
+   "players": [
+    {
+     "id": "FRA0",
+     "name": "Bastien Roulet",
+     "short": "BASTIEN",
+     "number": 1,
+     "pos": "GOL",
+     "stats": {
+      "chute": 3,
+      "passe": 3,
+      "tecnica": 3,
+      "velocidade": 4,
+      "defesa": 4,
+      "folego": 5
+     },
+     "head": "skaterMaleA",
+     "skin": 2,
+     "hair": 3,
+     "ankle": true
+    },
+    {
+     "id": "FRA1",
+     "name": "Yannick Morel",
+     "short": "YANNICK",
+     "number": 4,
+     "pos": "FIXO",
+     "stats": {
+      "chute": 4,
+      "passe": 2,
+      "tecnica": 2,
+      "velocidade": 5,
+      "defesa": 4,
+      "folego": 4
+     },
+     "head": "survivorMaleB",
+     "skin": 1,
+     "hair": 5,
+     "ankle": false
+    },
+    {
+     "id": "FRA2",
+     "name": "Loïc Dufresne",
+     "short": "DUFRESNE",
+     "number": 7,
+     "pos": "ALA",
+     "stats": {
+      "chute": 4,
+      "passe": 2,
+      "tecnica": 4,
+      "velocidade": 5,
+      "defesa": 3,
+      "folego": 3
+     },
+     "head": "skaterMaleA",
+     "skin": 4,
+     "hair": 0,
+     "ankle": true
+    },
+    {
+     "id": "FRA3",
+     "name": "Théo Garnier",
+     "short": "GARNIER",
+     "number": 10,
+     "pos": "ALA",
+     "stats": {
+      "chute": 4,
+      "passe": 4,
+      "tecnica": 3,
+      "velocidade": 5,
+      "defesa": 4,
+      "folego": 4
+     },
+     "head": "survivorMaleB",
+     "skin": 3,
+     "hair": 4,
+     "ankle": false
+    },
+    {
+     "id": "FRA4",
+     "name": "Kévin Lamarre",
+     "short": "KÉVIN",
+     "number": 9,
+     "pos": "PIVÔ",
+     "stats": {
+      "chute": 5,
+      "passe": 2,
+      "tecnica": 4,
+      "velocidade": 5,
+      "defesa": 3,
+      "folego": 5
+     },
+     "head": "skaterMaleA",
+     "skin": 3,
+     "hair": 4,
+     "ankle": true
+    },
+    {
+     "id": "FRA5",
+     "name": "Mathis Perrot",
+     "short": "MATHIS",
+     "number": 12,
+     "pos": "GOL",
+     "stats": {
+      "chute": 4,
+      "passe": 4,
+      "tecnica": 3,
+      "velocidade": 5,
+      "defesa": 3,
+      "folego": 5
+     },
+     "head": "skaterMaleA",
+     "skin": 2,
+     "hair": 5,
+     "ankle": false
+    },
+    {
+     "id": "FRA6",
+     "name": "Rémi Chauvet",
+     "short": "CHAUVET",
+     "number": 5,
+     "pos": "FIXO",
+     "stats": {
+      "chute": 4,
+      "passe": 4,
+      "tecnica": 2,
+      "velocidade": 5,
+      "defesa": 5,
+      "folego": 4
+     },
+     "head": "skaterMaleA",
+     "skin": 3,
+     "hair": 2,
+     "ankle": true
+    },
+    {
+     "id": "FRA7",
+     "name": "Sacha Belmont",
+     "short": "SACHA",
+     "number": 8,
+     "pos": "ALA",
+     "stats": {
+      "chute": 4,
+      "passe": 3,
+      "tecnica": 4,
+      "velocidade": 4,
+      "defesa": 4,
+      "folego": 3
+     },
+     "head": "survivorMaleB",
+     "skin": 1,
+     "hair": 2,
+     "ankle": true
+    },
+    {
+     "id": "FRA8",
+     "name": "Enzo Delattre",
+     "short": "DELATTRE",
+     "number": 11,
+     "pos": "ALA",
+     "stats": {
+      "chute": 4,
+      "passe": 3,
+      "tecnica": 3,
+      "velocidade": 5,
+      "defesa": 4,
+      "folego": 4
+     },
+     "head": "skaterMaleA",
+     "skin": 4,
+     "hair": 5,
+     "ankle": false
+    },
+    {
+     "id": "FRA9",
+     "name": "Jules Ferrand",
+     "short": "JULES",
+     "number": 6,
+     "pos": "PIVÔ",
+     "stats": {
+      "chute": 4,
+      "passe": 3,
+      "tecnica": 3,
+      "velocidade": 5,
+      "defesa": 4,
+      "folego": 3
+     },
+     "head": "skaterMaleA",
+     "skin": 3,
+     "hair": 3,
+     "ankle": false
+    }
+   ]
+  },
+  {
+   "id": "JPN",
+   "name": "Japão",
+   "nick": "Samurais da Praia",
+   "flag": "JP",
+   "style": "coletivo",
+   "colors": [
+    "#0E2F8A",
+    "#E60026"
+   ],
+   "stats": {
+    "ataque": 3,
+    "defesa": 4,
+    "tecnica": 4,
+    "velocidade": 5
+   },
+   "home": {
+    "shirt": "#0E2F8A",
+    "shirt2": "#E60026",
+    "pattern": "chevron",
+    "shorts": "#0E2F8A",
+    "trim": "#FFFFFF",
+    "num": "#FFFFFF"
+   },
+   "away": {
+    "shirt": "#FFFFFF",
+    "shirt2": "#E60026",
+    "pattern": "sun",
+    "shorts": "#FFFFFF",
+    "trim": "#0E2F8A",
+    "num": "#0E2F8A"
+   },
+   "gk": {
+    "shirt": "#FF8A00",
+    "shirt2": "#0E2F8A",
+    "pattern": "shoulders",
+    "shorts": "#0E2F8A",
+    "trim": "#0E2F8A",
+    "num": "#0E2F8A"
+   },
+   "players": [
+    {
+     "id": "JPN0",
+     "name": "Kaito Hamada",
+     "short": "KAITO",
+     "number": 1,
+     "pos": "GOL",
+     "stats": {
+      "chute": 3,
+      "passe": 4,
+      "tecnica": 4,
+      "velocidade": 5,
+      "defesa": 4,
+      "folego": 5
+     },
+     "head": "criminalMaleA",
+     "skin": 0,
+     "hair": 1,
+     "ankle": false
+    },
+    {
+     "id": "JPN1",
+     "name": "Ren Oshiro",
+     "short": "OSHIRO",
+     "number": 4,
+     "pos": "FIXO",
+     "stats": {
+      "chute": 3,
+      "passe": 5,
+      "tecnica": 5,
+      "velocidade": 4,
+      "defesa": 4,
+      "folego": 4
+     },
+     "head": "skaterMaleA",
+     "skin": 0,
+     "hair": 5,
+     "ankle": false
+    },
+    {
+     "id": "JPN2",
+     "name": "Sora Ikeda",
+     "short": "IKEDA",
+     "number": 7,
+     "pos": "ALA",
+     "stats": {
+      "chute": 4,
+      "passe": 4,
+      "tecnica": 4,
+      "velocidade": 5,
+      "defesa": 3,
+      "folego": 5
+     },
+     "head": "skaterMaleA",
+     "skin": 0,
+     "hair": 1,
+     "ankle": true
+    },
+    {
+     "id": "JPN3",
+     "name": "Daichi Mori",
+     "short": "DAICHI",
+     "number": 10,
+     "pos": "ALA",
+     "stats": {
+      "chute": 3,
+      "passe": 4,
+      "tecnica": 3,
+      "velocidade": 5,
+      "defesa": 4,
+      "folego": 3
+     },
+     "head": "survivorMaleB",
+     "skin": 1,
+     "hair": 1,
+     "ankle": false
+    },
+    {
+     "id": "JPN4",
+     "name": "Haruto Kanda",
+     "short": "HARUTO",
+     "number": 9,
+     "pos": "PIVÔ",
+     "stats": {
+      "chute": 5,
+      "passe": 4,
+      "tecnica": 4,
+      "velocidade": 5,
+      "defesa": 4,
+      "folego": 4
+     },
+     "head": "criminalMaleA",
+     "skin": 1,
+     "hair": 5,
+     "ankle": true
+    },
+    {
+     "id": "JPN5",
+     "name": "Yuma Takeshi",
+     "short": "TAKESHI",
+     "number": 12,
+     "pos": "GOL",
+     "stats": {
+      "chute": 3,
+      "passe": 4,
+      "tecnica": 4,
+      "velocidade": 5,
+      "defesa": 5,
+      "folego": 3
+     },
+     "head": "criminalMaleA",
+     "skin": 0,
+     "hair": 1,
+     "ankle": false
+    },
+    {
+     "id": "JPN6",
+     "name": "Riku Nishi",
+     "short": "NISHI",
+     "number": 5,
+     "pos": "FIXO",
+     "stats": {
+      "chute": 3,
+      "passe": 4,
+      "tecnica": 3,
+      "velocidade": 5,
+      "defesa": 4,
+      "folego": 5
+     },
+     "head": "criminalMaleA",
+     "skin": 1,
+     "hair": 1,
+     "ankle": true
+    },
+    {
+     "id": "JPN7",
+     "name": "Shun Arakawa",
+     "short": "ARAKAWA",
+     "number": 8,
+     "pos": "ALA",
+     "stats": {
+      "chute": 3,
+      "passe": 4,
+      "tecnica": 4,
+      "velocidade": 5,
+      "defesa": 5,
+      "folego": 3
+     },
+     "head": "survivorMaleB",
+     "skin": 1,
+     "hair": 5,
+     "ankle": false
+    },
+    {
+     "id": "JPN8",
+     "name": "Kenta Umino",
+     "short": "KENTA",
+     "number": 11,
+     "pos": "ALA",
+     "stats": {
+      "chute": 4,
+      "passe": 4,
+      "tecnica": 3,
+      "velocidade": 5,
+      "defesa": 4,
+      "folego": 4
+     },
+     "head": "survivorMaleB",
+     "skin": 1,
+     "hair": 1,
+     "ankle": false
+    },
+    {
+     "id": "JPN9",
+     "name": "Taiga Sasaki",
+     "short": "TAIGA",
+     "number": 6,
+     "pos": "PIVÔ",
+     "stats": {
+      "chute": 3,
+      "passe": 4,
+      "tecnica": 3,
+      "velocidade": 5,
+      "defesa": 5,
+      "folego": 4
+     },
+     "head": "skaterMaleA",
+     "skin": 1,
+     "hair": 5,
+     "ankle": true
+    }
+   ]
+  },
+  {
+   "id": "SEN",
+   "name": "Senegal",
+   "nick": "Leões da Teranga",
+   "flag": "SN",
+   "style": "força",
+   "colors": [
+    "#00853F",
+    "#FDEF42"
+   ],
+   "stats": {
+    "ataque": 5,
+    "defesa": 3,
+    "tecnica": 3,
+    "velocidade": 5
+   },
+   "home": {
+    "shirt": "#FFFFFF",
+    "shirt2": "#00853F",
+    "pattern": "tricolor",
+    "shorts": "#FFFFFF",
+    "trim": "#00853F",
+    "num": "#00853F"
+   },
+   "away": {
+    "shirt": "#00853F",
+    "shirt2": "#FDEF42",
+    "pattern": "chevron",
+    "shorts": "#00853F",
+    "trim": "#E31B23",
+    "num": "#FDEF42"
+   },
+   "gk": {
+    "shirt": "#E31B23",
+    "shirt2": "#1A1A1A",
+    "pattern": "shoulders",
+    "shorts": "#1A1A1A",
+    "trim": "#FDEF42",
+    "num": "#FDEF42"
+   },
+   "players": [
+    {
+     "id": "SEN0",
+     "name": "Mamadou Ndour",
+     "short": "MAMADOU",
+     "number": 1,
+     "pos": "GOL",
+     "stats": {
+      "chute": 4,
+      "passe": 2,
+      "tecnica": 4,
+      "velocidade": 4,
+      "defesa": 4,
+      "folego": 5
+     },
+     "head": "survivorMaleB",
+     "skin": 3,
+     "hair": 1,
+     "ankle": true
+    },
+    {
+     "id": "SEN1",
+     "name": "Ousmane Faye",
+     "short": "OUSMANE",
+     "number": 4,
+     "pos": "FIXO",
+     "stats": {
+      "chute": 5,
+      "passe": 3,
+      "tecnica": 2,
+      "velocidade": 4,
+      "defesa": 4,
+      "folego": 3
+     },
+     "head": "criminalMaleA",
+     "skin": 3,
+     "hair": 5,
+     "ankle": true
+    },
+    {
+     "id": "SEN2",
+     "name": "Cheikh Diallo",
+     "short": "CHEIKH",
+     "number": 7,
+     "pos": "ALA",
+     "stats": {
+      "chute": 4,
+      "passe": 2,
+      "tecnica": 2,
+      "velocidade": 5,
+      "defesa": 3,
+      "folego": 4
+     },
+     "head": "survivorMaleB",
+     "skin": 5,
+     "hair": 5,
+     "ankle": false
+    },
+    {
+     "id": "SEN3",
+     "name": "Ibou Sarr",
+     "short": "SARR",
+     "number": 10,
+     "pos": "ALA",
+     "stats": {
+      "chute": 5,
+      "passe": 3,
+      "tecnica": 4,
+      "velocidade": 5,
+      "defesa": 3,
+      "folego": 5
+     },
+     "head": "skaterMaleA",
+     "skin": 4,
+     "hair": 1,
+     "ankle": true
+    },
+    {
+     "id": "SEN4",
+     "name": "Pape Gueye",
+     "short": "GUEYE",
+     "number": 9,
+     "pos": "PIVÔ",
+     "stats": {
+      "chute": 5,
+      "passe": 3,
+      "tecnica": 2,
+      "velocidade": 5,
+      "defesa": 4,
+      "folego": 5
+     },
+     "head": "skaterMaleA",
+     "skin": 4,
+     "hair": 1,
+     "ankle": true
+    },
+    {
+     "id": "SEN5",
+     "name": "Abdou Seck",
+     "short": "ABDOU",
+     "number": 12,
+     "pos": "GOL",
+     "stats": {
+      "chute": 4,
+      "passe": 4,
+      "tecnica": 3,
+      "velocidade": 5,
+      "defesa": 3,
+      "folego": 4
+     },
+     "head": "skaterMaleA",
+     "skin": 4,
+     "hair": 1,
+     "ankle": true
+    },
+    {
+     "id": "SEN6",
+     "name": "Lamine Sow",
+     "short": "LAMINE",
+     "number": 5,
+     "pos": "FIXO",
+     "stats": {
+      "chute": 5,
+      "passe": 2,
+      "tecnica": 3,
+      "velocidade": 5,
+      "defesa": 2,
+      "folego": 4
+     },
+     "head": "survivorMaleB",
+     "skin": 4,
+     "hair": 1,
+     "ankle": false
+    },
+    {
+     "id": "SEN7",
+     "name": "Modou Cissé",
+     "short": "MODOU",
+     "number": 8,
+     "pos": "ALA",
+     "stats": {
+      "chute": 5,
+      "passe": 4,
+      "tecnica": 2,
+      "velocidade": 5,
+      "defesa": 3,
+      "folego": 3
+     },
+     "head": "skaterMaleA",
+     "skin": 5,
+     "hair": 5,
+     "ankle": false
+    },
+    {
+     "id": "SEN8",
+     "name": "Babacar Niang",
+     "short": "BABACAR",
+     "number": 11,
+     "pos": "ALA",
+     "stats": {
+      "chute": 4,
+      "passe": 3,
+      "tecnica": 3,
+      "velocidade": 4,
+      "defesa": 3,
+      "folego": 3
+     },
+     "head": "survivorMaleB",
+     "skin": 3,
+     "hair": 1,
+     "ankle": true
+    },
+    {
+     "id": "SEN9",
+     "name": "Saliou Mbaye",
+     "short": "SALIOU",
+     "number": 6,
+     "pos": "PIVÔ",
+     "stats": {
+      "chute": 5,
+      "passe": 2,
+      "tecnica": 3,
+      "velocidade": 5,
+      "defesa": 2,
+      "folego": 4
+     },
+     "head": "skaterMaleA",
+     "skin": 5,
+     "hair": 1,
+     "ankle": true
+    }
+   ]
+  }
+ ],
+ "hairColors": [
+  "#2A1B12",
+  "#140D09",
+  "#5A3A1E",
+  "#8A5A2B",
+  "#B8925A",
+  "#151515",
+  "#8E3A22"
+ ]
+}

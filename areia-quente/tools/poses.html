@@ -1,0 +1,30 @@
+<!doctype html><html><body style="margin:0;background:#88a">
+<script type="importmap">{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}</script>
+<script type="module">
+// Ferramenta de desenvolvimento: renderiza uma grade de poses (clipe@tempo) do athlete.glb.
+import * as THREE from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import * as SU from 'three/addons/utils/SkeletonUtils.js';
+const q=new URLSearchParams(location.search);
+const clips=(q.get('c')||'idle').split(','); const cols=Math.min(clips.length,5); const rows=Math.ceil(clips.length/cols);
+const W=240,H=300;
+const r=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true}); r.setSize(W*cols,H*rows); document.body.appendChild(r.domElement);
+r.setScissorTest(true);
+const g=await new GLTFLoader().loadAsync(q.get('model')||'/public/assets/models/players/athlete.glb');
+const skins=(q.get('skin')||'/.cache/src/kenney/animated-characters-protagonists/Skins/skaterMaleA.png').split(','); const texs=await Promise.all(skins.map(u=>new THREE.TextureLoader().loadAsync(u))); texs.forEach(t=>{t.flipY=false;t.colorSpace='srgb';});
+const side=q.get('side')==='1';
+const scenes=clips.map((name,i)=>{ const tex=texs[i%texs.length];
+  const s=new THREE.Scene(); s.background=new THREE.Color(0xc8d0e0);
+  s.add(new THREE.HemisphereLight(0xffffff,0x886644,2)); const d=new THREE.DirectionalLight(0xffffff,2); d.position.set(3,5,4); s.add(d);
+  const m=SU.clone(g.scene); m.traverse(o=>{if(o.isMesh){o.material=new THREE.MeshStandardMaterial({map:tex});}}); s.add(m);
+  const floor=new THREE.Mesh(new THREE.PlaneGeometry(10,10),new THREE.MeshStandardMaterial({color:0xd8c08a})); floor.rotation.x=-Math.PI/2; s.add(floor);
+  const mix=new THREE.AnimationMixer(m); const [cn,ct]=name.split('@'); const clip=g.animations.find(a=>a.name===cn);
+  if(clip){const a=mix.clipAction(clip); a.play(); mix.setTime(parseFloat(ct||'0'));}
+  const cam=new THREE.PerspectiveCamera(40,W/H,0.1,100);
+  const zoom=q.get('zoom')==='1'; const back=q.get('back')==='1';
+  if(zoom){cam.position.set(0.8,3.4,4.2); cam.lookAt(0,3.1,0);} else if(back){cam.position.set(-1,2.6,-7); cam.lookAt(0,1.7,0);} else if(side) cam.position.set(9,2.4,0.5); else cam.position.set(3,2.6,8); if(!zoom&&!back) cam.lookAt(0,1.6,0);
+  return {s,cam,name};
+});
+scenes.forEach((o,i)=>{const x=(i%cols)*W,y=(rows-1-Math.floor(i/cols))*H; r.setViewport(x,y,W,H); r.setScissor(x,y,W,H); r.render(o.s,o.cam);});
+document.title='done';
+</script></body></html>

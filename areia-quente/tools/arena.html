@@ -1,0 +1,24 @@
+<!doctype html><html><body style="margin:0">
+<script type="importmap">{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}</script>
+<script type="module">
+// Ferramenta de desenvolvimento: vista rápida de uma arena (?a=copacabana&cam=tv|high|end)
+import * as THREE from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {RGBELoader} from 'three/addons/loaders/RGBELoader.js';
+const q=new URLSearchParams(location.search); const a=q.get('a')||'copacabana';
+const sky={copacabana:'kloofendal_43d_clear_puresky',lagoa:'dikhololo_night',dunas:'belfast_sunset_puresky'}[a];
+const r=new THREE.WebGLRenderer({antialias:true}); r.setSize(innerWidth,innerHeight); r.toneMapping=THREE.ACESFilmicToneMapping; r.shadowMap.enabled=true; document.body.appendChild(r.domElement);
+const s=new THREE.Scene();
+const hdr=await new RGBELoader().loadAsync(`/public/assets/textures/sky/${sky}.hdr`); hdr.mapping=THREE.EquirectangularReflectionMapping; s.background=hdr; s.environment=hdr;
+const sun=new THREE.DirectionalLight(0xffffff,a==='lagoa'?0.2:2.5); sun.position.set(-30,50,20); sun.castShadow=true; s.add(sun);
+const g=await new GLTFLoader().loadAsync(`/public/assets/models/arenas/${a}.glb`); s.add(g.scene);
+const tl=new THREE.TextureLoader(); const T=(u,rep,srgb)=>{const t=tl.load(u); t.wrapS=t.wrapT=THREE.RepeatWrapping; if(srgb)t.colorSpace='srgb'; return t;};
+g.scene.traverse(o=>{ if(o.name==='FIELD_SAND'){o.material=new THREE.MeshStandardMaterial({map:T('/public/assets/textures/sand/field_color.jpg',0,1),normalMap:T('/public/assets/textures/sand/field_normal.jpg'),roughnessMap:T('/public/assets/textures/sand/field_rough.jpg')}); o.receiveShadow=true;}
+ if(o.name==='BEACH_SAND'){o.material=new THREE.MeshStandardMaterial({map:T('/public/assets/textures/sand/beach_color.jpg',0,1),normalMap:T('/public/assets/textures/sand/beach_normal.jpg')});}
+ if(o.name==='WATER'){o.material=new THREE.MeshStandardMaterial({color:0x1a6a8a,roughness:0.08,metalness:0.2});}
+ if(o.isMesh){o.castShadow=true;}});
+const cam=new THREE.PerspectiveCamera(40,innerWidth/innerHeight,0.5,3000);
+const c=q.get('cam')||'tv';
+if(c==='tv'){cam.position.set(0,14,34); cam.lookAt(0,0,0);} else if(c==='high'){cam.position.set(-60,60,80); cam.lookAt(0,0,0);} else {cam.position.set(-30,6,-6); cam.lookAt(10,4,2);}
+r.render(s,cam); requestAnimationFrame(()=>{r.render(s,cam); document.title='done';});
+</script></body></html>

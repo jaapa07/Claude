@@ -1,0 +1,226 @@
+{
+ "shot": {
+  "contact": 0.3,
+  "loop": false,
+  "duration": 0.75
+ },
+ "pass_short": {
+  "contact": 0.24,
+  "loop": false,
+  "duration": 0.55
+ },
+ "pass_lob": {
+  "contact": 0.3,
+  "loop": false,
+  "duration": 0.7
+ },
+ "volley": {
+  "contact": 0.3,
+  "loop": false,
+  "duration": 0.8
+ },
+ "header": {
+  "contact": 0.42,
+  "loop": false,
+  "duration": 0.8
+ },
+ "diving_header": {
+  "contact": 0.34,
+  "endsLying": "front",
+  "loop": false,
+  "duration": 1.0
+ },
+ "bicycle_kick": {
+  "contact": 0.46,
+  "endsLying": "back",
+  "loop": false,
+  "duration": 1.15
+ },
+ "scissor_kick": {
+  "contact": 0.48,
+  "endsLying": "side",
+  "loop": false,
+  "duration": 1.1
+ },
+ "chest_control": {
+  "contact": 0.18,
+  "loop": false,
+  "duration": 0.5
+ },
+ "juggle": {
+  "contact": 0.18,
+  "contact2": 0.54,
+  "loop": true,
+  "duration": 0.72
+ },
+ "sombrero_flick": {
+  "contact": 0.28,
+  "loop": false,
+  "duration": 0.65
+ },
+ "slide_tackle": {
+  "contact": 0.3,
+  "loop": false,
+  "duration": 1.2
+ },
+ "fall_hit": {
+  "endsLying": "back",
+  "loop": false,
+  "duration": 0.8
+ },
+ "gk_dive_left": {
+  "endsLying": "side",
+  "reach": 0.38,
+  "loop": false,
+  "duration": 1.0
+ },
+ "gk_dive_right": {
+  "endsLying": "side",
+  "reach": 0.38,
+  "loop": false,
+  "duration": 1.0
+ },
+ "gk_punch": {
+  "contact": 0.26,
+  "loop": false,
+  "duration": 0.6
+ },
+ "gk_throw": {
+  "contact": 0.42,
+  "loop": false,
+  "duration": 0.8
+ },
+ "throw_in": {
+  "contact": 0.48,
+  "loop": false,
+  "duration": 0.8
+ },
+ "idle": {
+  "loop": true,
+  "duration": 2.0
+ },
+ "idle_ready": {
+  "loop": true,
+  "duration": 0.8
+ },
+ "idle_tired": {
+  "loop": true,
+  "duration": 1.2
+ },
+ "walk": {
+  "loop": true,
+  "duration": 1.0
+ },
+ "jog": {
+  "loop": true,
+  "duration": 0.7
+ },
+ "run": {
+  "loop": true,
+  "duration": 0.62
+ },
+ "sprint": {
+  "loop": true,
+  "duration": 0.5
+ },
+ "run_airplane": {
+  "loop": true,
+  "duration": 0.6
+ },
+ "shoulder_charge": {
+  "loop": false,
+  "duration": 0.5
+ },
+ "get_up": {
+  "loop": false,
+  "duration": 0.9
+ },
+ "get_up_front": {
+  "loop": false,
+  "duration": 0.95
+ },
+ "celebrate_knee_slide": {
+  "loop": true,
+  "duration": 1.8
+ },
+ "celebrate_samba": {
+  "loop": true,
+  "duration": 1.0
+ },
+ "celebrate_point_sky": {
+  "loop": true,
+  "duration": 1.6
+ },
+ "celebrate_fist": {
+  "loop": true,
+  "duration": 1.2
+ },
+ "celebrate_trophy": {
+  "loop": true,
+  "duration": 1.0
+ },
+ "sad": {
+  "loop": true,
+  "duration": 3.0
+ },
+ "hands_on_head": {
+  "loop": false,
+  "duration": 1.6
+ },
+ "argue_ref": {
+  "loop": true,
+  "duration": 1.2
+ },
+ "clap": {
+  "loop": true,
+  "duration": 0.3
+ },
+ "wave": {
+  "loop": false,
+  "duration": 1.2
+ },
+ "gk_idle": {
+  "loop": true,
+  "duration": 0.9
+ },
+ "gk_catch": {
+  "loop": false,
+  "duration": 0.8
+ },
+ "gk_hold": {
+  "loop": true,
+  "duration": 2.0
+ },
+ "ref_whistle": {
+  "loop": false,
+  "duration": 1.3
+ },
+ "ref_card": {
+  "loop": false,
+  "duration": 1.8
+ },
+ "ref_point": {
+  "loop": false,
+  "duration": 1.5
+ },
+ "dance_1": {
+  "loop": true,
+  "duration": 1.2
+ },
+ "dance_2": {
+  "loop": true,
+  "duration": 1.0
+ },
+ "dance_3": {
+  "loop": true,
+  "duration": 1.6
+ },
+ "lineup": {
+  "loop": true,
+  "duration": 3.0
+ },
+ "stretch": {
+  "loop": false,
+  "duration": 3.4
+ }
+}
