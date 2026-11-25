@@ -14,6 +14,11 @@ export type SimEvent =
   | { type: 'hit'; kart: number; cause: 'faisca' | 'nevoa' | 'obstaculo' }
   | { type: 'shield_break'; kart: number }
   | { type: 'pushed'; kart: number }
+  /** Raio Corrente atingiu `kart` no elo `link` (0 = primeiro, o mais forte), vindo de `from`. */
+  | { type: 'zapped'; kart: number; from: number; link: number }
+  /** O Cometa Guia de `by` tirou `kart` do caminho. */
+  | { type: 'rammed'; kart: number; by: number }
+  | { type: 'comet_end'; kart: number }
   | { type: 'item_pickup'; kart: number }
   | { type: 'item_ready'; kart: number; item: ItemId }
   | { type: 'item_use'; kart: number; item: ItemId; x: number; y: number; z: number }

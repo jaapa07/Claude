@@ -3,7 +3,7 @@
   "author": "Equipe Kart Legends 3D (síntese procedural própria)",
   "license": "Original do projeto",
   "codec": "Ogg Vorbis (libvorbis -q:a 4), 44,1 kHz, estéreo",
-  "totalBytes": 6928904,
+  "totalBytes": 7014296,
   "files": [
     {
       "id": "menu",
@@ -434,6 +434,54 @@
       "bytes": 16794,
       "peakDb": -1,
       "rmsDb": -17.7,
+      "author": "Equipe Kart Legends 3D (síntese procedural própria)",
+      "license": "Original do projeto"
+    },
+    {
+      "id": "item_raio",
+      "kind": "sfx",
+      "file": "audio/sfx/item_raio.ogg",
+      "durationSec": 1.1,
+      "loop": false,
+      "bytes": 19795,
+      "peakDb": -1,
+      "rmsDb": -24.9,
+      "author": "Equipe Kart Legends 3D (síntese procedural própria)",
+      "license": "Original do projeto"
+    },
+    {
+      "id": "zap",
+      "kind": "sfx",
+      "file": "audio/sfx/zap.ogg",
+      "durationSec": 1,
+      "loop": false,
+      "bytes": 17829,
+      "peakDb": -1,
+      "rmsDb": -20.1,
+      "author": "Equipe Kart Legends 3D (síntese procedural própria)",
+      "license": "Original do projeto"
+    },
+    {
+      "id": "item_cometa",
+      "kind": "sfx",
+      "file": "audio/sfx/item_cometa.ogg",
+      "durationSec": 2,
+      "loop": false,
+      "bytes": 33670,
+      "peakDb": -1,
+      "rmsDb": -18.5,
+      "author": "Equipe Kart Legends 3D (síntese procedural própria)",
+      "license": "Original do projeto"
+    },
+    {
+      "id": "comet_ram",
+      "kind": "sfx",
+      "file": "audio/sfx/comet_ram.ogg",
+      "durationSec": 0.7,
+      "loop": false,
+      "bytes": 14098,
+      "peakDb": -1,
+      "rmsDb": -18.8,
       "author": "Equipe Kart Legends 3D (síntese procedural própria)",
       "license": "Original do projeto"
     },

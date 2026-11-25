@@ -23,7 +23,7 @@ const BONES = ['root', 'hips', 'spine', 'chest', 'neck', 'head', 'armL', 'forear
 const CLIPS = ['idle', 'drive', 'turn_left', 'turn_right', 'drift_left', 'drift_right', 'hit', 'victory', 'defeat', 'podium'];
 const KART_NODES = ['body', 'wheel_fl', 'wheel_fr', 'wheel_rl', 'wheel_rr', 'steering', 'seat', 'exhaust_l', 'exhaust_r'];
 const ITEM_MODELS = [
-  'item-box', 'pulso-solar', 'bolha-guardia', 'nevoa-prisma', 'faisca-rastreadora', 'onda-vento', 'cristal-salto',
+  'item-box', 'pulso-solar', 'bolha-guardia', 'nevoa-prisma', 'faisca-rastreadora', 'onda-vento', 'cristal-salto', 'raio-corrente', 'cometa-guia',
   'boost-pad', 'ramp', 'finish-arch', 'trophy-gold', 'trophy-silver', 'trophy-bronze', 'podium',
 ];
 

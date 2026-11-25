@@ -9,7 +9,7 @@ import { SURFACES } from '@/game/tracks/trackTypes';
 import { loadTrack } from './simHarness';
 
 describe('conteúdo do jogo', () => {
-  it('tem 14 pilotos, 8 karts, 12 pistas, 3 copas de 4 pistas e 6 itens', () => {
+  it('tem 14 pilotos, 8 karts, 12 pistas, 3 copas de 4 pistas e 8 itens', () => {
     expect(CHARACTERS).toHaveLength(14);
     expect(new Set(CHARACTERS.map((c) => c.id)).size).toBe(14);
     expect(KARTS).toHaveLength(8);
@@ -19,7 +19,7 @@ describe('conteúdo do jogo', () => {
     expect(CUPS).toHaveLength(3);
     for (const cup of CUPS) expect(cup.tracks).toHaveLength(4);
     expect(new Set(CUPS.flatMap((c) => c.tracks))).toEqual(new Set(TRACK_IDS));
-    expect(ITEM_IDS).toHaveLength(6);
+    expect(ITEM_IDS).toHaveLength(8);
     expect(KART_IDS).toHaveLength(8);
   });
 

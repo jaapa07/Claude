@@ -29,9 +29,9 @@ Testes unitários e de simulação (Vitest — a simulação roda sem navegador,
 | `src/tests/physics.test.ts` | 15 | inicialização/grid/contagem, aceleração, velocidade máxima por kart, frenagem, ré, direção, grama, gelo, determinismo, passo fixo, colisão entre karts, muros, rampas, recuperação manual, queda no vazio |
 | `src/tests/drift.test.ts` | 8 | entrada em drift, três níveis em ordem, soltar cedo, duração crescente do miniturbo, turbo acima da máxima, eficiência por kart, placas de turbo |
 | `src/tests/race.test.ts` | 10 | checkpoints em ordem, voltas, largada não conta volta, corte de caminho, contramão, chegada, classificação, pontuação, HUD, contrarrelógio e treino |
-| `src/tests/items.test.ts` | 12 | caixas e reaparecimento, distribuição por posição, os 6 itens, defesa contra a Faísca, giro e invulnerabilidade, cooldown |
+| `src/tests/items.test.ts` | 21 | caixas e reaparecimento, distribuição por posição (Cometa Guia só para a metade de trás, Raio Corrente raro para o líder), os 8 itens, defesa contra a Faísca, Raio Corrente (lentidão e recuperação, 3 elos cada vez mais fracos, alcance, Bolha aterra o raio), Cometa Guia (piloto automático, imunidade, empurrão, Bolha absorve), giro e invulnerabilidade, cooldown |
 | `src/tests/ai.test.ts` | 32 | 8 pilotos de IA completam 3 voltas em **cada uma das 12 pistas**, sem teletransporte, dentro do limite de velocidade; usam drift, turbo, itens e atalhos; desviam de obstáculos; ritmo cresce Fácil → Normal → Difícil |
-| `src/tests/tracks.test.ts` | 64 | conteúdo (8/8/12/3/6), integridade dos dados de cada pista, variedade de superfícies e elementos |
+| `src/tests/tracks.test.ts` | 64 | conteúdo (8/8/12/3/8), integridade dos dados de cada pista, variedade de superfícies e elementos |
 | `src/app/gameStore.test.ts` | 13 | fluxo: corrida rápida, campeonato de 4 corridas com pontos e troféu, contrarrelógio, treino |
 | `src/game/save/saveStore.test.ts` | 15 | persistência, versão, migração, save corrompido, desbloqueios, melhores tempos |
 | `src/game/input/inputManager.test.ts` | 22 | bindings, remapeamento, teclado, gamepad (simulado), sensibilidade |
@@ -69,7 +69,10 @@ exercitados com teclas reais, mas **nenhuma corrida inteira foi pilotada por uma
 - **Física arcade em passo fixo** sobre Rapier: 5 superfícies, saltos, colisões, recuperação.
 - **Drift com três níveis** de miniturbo, com efeitos e sons distintos por nível.
 - **7 adversários com IA** e três dificuldades, usando a mesma física do jogador.
-- **6 itens** com modelo, ícone, efeito, som, regras, cooldown e uso pela IA.
+- **8 itens** com modelo, ícone, efeito, som, regras, cooldown e uso pela IA: Pulso Solar, Bolha Guardiã,
+  Névoa Prisma, Faísca Rastreadora, Onda de Vento, Cristal de Salto, Raio Corrente (raio em cadeia que freia
+  até 3 pilotos à frente, cada vez mais fraco) e Cometa Guia (piloto automático veloz que tira rivais do
+  caminho, só para a metade de trás do grid).
 - **Câmeras**: perseguição com proteção contra atravessar o cenário, apresentação da pista, largada, chegada,
   vitrine de seleção e pódio.
 - **Efeitos**: fumaça de pneu, poeira/areia/neve por superfície, faíscas de drift por nível, chamas e rastro

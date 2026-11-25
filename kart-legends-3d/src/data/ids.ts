@@ -17,6 +17,7 @@ export type CupId = (typeof CUP_IDS)[number];
 
 export const ITEM_IDS = [
   'pulso-solar', 'bolha-guardia', 'nevoa-prisma', 'faisca-rastreadora', 'onda-vento', 'cristal-salto',
+  'raio-corrente', 'cometa-guia',
 ] as const;
 export type ItemId = (typeof ITEM_IDS)[number];
 

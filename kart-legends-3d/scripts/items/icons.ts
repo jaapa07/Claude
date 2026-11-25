@@ -1,4 +1,4 @@
-/** Ícones de HUD dos 6 itens: arte vetorial autoral (SVG) → WebP 256×256 com fundo transparente. */
+/** Ícones de HUD dos 8 itens: arte vetorial autoral (SVG) → WebP 256×256 com fundo transparente. */
 import sharp from 'sharp';
 import { mkdir } from 'node:fs/promises';
 import path from 'node:path';
@@ -96,6 +96,30 @@ export const ICONS: Record<string, string> = {
     <path d="M128,18 L176,74 L160,150 L128,176 L96,150 L80,74 Z M80,74 L128,92 L176,74 M128,92 L128,176" fill="none" ${o(8)}/>
     <path d="M84,196 L172,196 L96,214 L160,214 L108,232 L148,232" fill="none" stroke="${INK}" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
     <path d="M84,196 L172,196 L96,214 L160,214 L108,232 L148,232" fill="none" stroke="#dfe7f5" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>`,
+  // Raio Corrente: um raio que salta entre três pilotos (bolinhas), cada salto menor.
+  'raio-corrente': `
+    <path d="M118,196 L146,170 L150,188 L172,162" fill="none" stroke="${INK}" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M118,196 L146,170 L150,188 L172,162" fill="none" stroke="#d4ff3a" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M194,136 L206,116 L194,112 L210,92" fill="none" stroke="${INK}" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M194,136 L206,116 L194,112 L210,92" fill="none" stroke="#efff9a" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="96" cy="206" r="28" fill="#ffffff" ${O}/>
+    <circle cx="186" cy="150" r="21" fill="#ffffff" ${O}/>
+    <circle cx="220" cy="76" r="15" fill="#ffffff" ${o(9)}/>
+    <path d="M52,14 L120,14 L98,72 L136,72 L80,182 L90,110 L52,110 Z" fill="#d4ff3a" ${O}/>
+    <path d="M100,26 L84,64" fill="none" stroke="#ffffff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="${star(186, 34, 20)}" fill="#ffffff" ${o(7)}/>
+    <path d="${star(30, 150, 18)}" fill="#efff9a" ${o(7)}/>`,
+  // Cometa Guia: estrela-cometa rosa disparando na diagonal, com cauda e uma seta-guia tracejada.
+  'cometa-guia': `
+    <path d="M18,180 Q70,120 130,96 L160,126 Q136,186 76,238 Q40,222 18,180 Z" fill="#ffb22e" ${O}/>
+    <path d="M44,182 Q86,138 132,112 L146,126 Q120,170 80,212 Q56,204 44,182 Z" fill="#ff6fae"/>
+    <path d="M70,186 Q98,156 132,130" fill="none" stroke="#fff3b0" stroke-width="10" stroke-linecap="round"/>
+    <circle cx="160" cy="96" r="52" fill="#ff6fae" ${O}/>
+    <circle cx="160" cy="96" r="38" fill="#ffc4e0"/>
+    <path d="${star(160, 96, 34, 0.38)}" fill="#ffe36a" ${o(7)}/>
+    <path d="M128,70 Q138,52 158,48" fill="none" stroke="#ffffff" stroke-width="9" stroke-linecap="round"/>
+    <path d="M196,34 L230,26 L222,60" fill="none" stroke="${INK}" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M196,34 L230,26 L222,60" fill="none" stroke="#ffffff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>`,
 };
 
 export async function buildIcons(): Promise<string[]> {

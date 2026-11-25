@@ -35,6 +35,7 @@ import { TrackModel } from './TrackModel';
 const ITEM_SFX = {
   'pulso-solar': 'item_pulso', 'bolha-guardia': 'item_bolha', 'nevoa-prisma': 'item_nevoa',
   'faisca-rastreadora': 'item_faisca', 'onda-vento': 'item_onda', 'cristal-salto': 'item_cristal',
+  'raio-corrente': 'item_raio', 'cometa-guia': 'item_cometa',
 } as const;
 
 const lerpAngle = (a: number, b: number, t: number): number => {
@@ -189,6 +190,17 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
         break;
       case 'shield_break': sfx('shield_break'); if (k) vfx.sparkle(k.x, k.y, k.z, st.color.set('#4fd8e8'), 22); break;
       case 'pushed': if (k) { vfx.sparkle(k.x, k.y, k.z, st.color.set('#9cf0c3'), 10); models[k.index]!.triggerHit(); } break;
+      case 'zapped':
+        sfx('zap', 1 - e.link * 0.25);
+        if (k) { vfx.zap(k.x, k.y, k.z, 1 - e.link * 0.25); if (e.link === 0) models[k.index]!.triggerHit(); }
+        if (mine) cam.addShake(0.3 - e.link * 0.08);
+        break;
+      case 'rammed':
+        sfx('comet_ram');
+        if (k) { vfx.sparkle(k.x, k.y, k.z, st.color.set('#ff6fae'), 16); models[k.index]!.triggerHit(); }
+        if (mine || sim.karts[e.by] === player) cam.addShake(mine ? 0.35 : 0.15);
+        break;
+      case 'comet_end': if (k) vfx.sparkle(k.x, k.y + 0.4, k.z, st.color.set('#ff6fae'), 12); break;
       case 'item_pickup': if (mine) { audio.sfx('item_pickup'); audio.sfx('item_roll', { volume: 0.8 }); } if (k) vfx.sparkle(k.x, k.y + 0.4, k.z, st.color.set('#ffe66b')); break;
       case 'item_ready': break;
       case 'item_use': sfx(ITEM_SFX[e.item]); vfx.sparkle(e.x, e.y + 0.3, e.z, st.color.set(ITEM_BY_ID[e.item].color), 18); break;
@@ -291,6 +303,10 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
     if (!paused) {
       for (const h of sim.items.hazards) vfx.mist(h.x, h.y, h.z, h.radius, dt);
       for (const p of sim.items.projectiles) vfx.trail(p.x, p.y, p.z, dt);
+      for (const k of sim.karts) {
+        if (k.comet > 0) vfx.comet(k.index, k.x, k.y - PHYS.rideHeight, k.z, k.heading, dt);
+        if (k.slowTime > 0) vfx.zapped(k.index, k.x, k.y - PHYS.rideHeight, k.z, dt);
+      }
     }
 
     // câmera

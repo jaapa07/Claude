@@ -80,7 +80,7 @@ Caminhos relativos a `public/assets/`.
 | `victory` | `audio/music/victory.ogg` | 10.17 | não | 156 |
 | `defeat` | `audio/music/defeat.ogg` | 7.80 | não | 121 |
 
-### sfx (31, 638 KB)
+### sfx (35, 721 KB)
 
 | id | arquivo | duração (s) | loop | KB |
 |---|---|---:|:---:|---:|
@@ -115,6 +115,10 @@ Caminhos relativos a `public/assets/`.
 | `unlock` | `audio/sfx/unlock.ogg` | 2.60 | não | 46 |
 | `respawn` | `audio/sfx/respawn.ogg` | 1.50 | não | 26 |
 | `splash` | `audio/sfx/splash.ogg` | 0.98 | não | 16 |
+| `item_raio` | `audio/sfx/item_raio.ogg` | 1.10 | não | 19 |
+| `zap` | `audio/sfx/zap.ogg` | 1.00 | não | 17 |
+| `item_cometa` | `audio/sfx/item_cometa.ogg` | 2.00 | não | 33 |
+| `comet_ram` | `audio/sfx/comet_ram.ogg` | 0.70 | não | 14 |
 
 ### loop (5, 212 KB)
 

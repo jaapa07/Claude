@@ -14,6 +14,7 @@ export const SFX_IDS = [
   'final_lap', 'collision', 'collision_heavy', 'jump', 'land', 'item_pickup', 'item_roll', 'turbo_1', 'turbo_2',
   'turbo_3', 'boost_pad', 'item_pulso', 'item_bolha', 'item_nevoa', 'item_faisca', 'item_onda', 'item_cristal',
   'shield_break', 'spinout', 'thunder', 'unlock', 'respawn', 'splash',
+  'item_raio', 'zap', 'item_cometa', 'comet_ram',
 ] as const;
 export type SfxId = (typeof SFX_IDS)[number];
 

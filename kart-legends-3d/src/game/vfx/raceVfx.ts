@@ -168,6 +168,35 @@ export class RaceVfx {
     for (let i = this.rate(990, 60, dt); i > 0; i--) this.glow.emit({ x, y, z, spread: 1.6, life: 0.35, size: 0.4, grow: 0.2, sprite: SPRITE.flame, r: 1, g: 0.45, b: 0.2, alpha: 0.9, spin: 4 });
   }
 
+  /** Cometa Guia: chamas rosa → laranja e estrelinhas saindo da cauda. */
+  comet(index: number, x: number, y: number, z: number, heading: number, dt: number): void {
+    const bx = -Math.sin(heading), bz = -Math.cos(heading);
+    // dois rastros, um de cada lado (no meio ficariam entre a câmera e o kart)
+    for (let i = this.rate(5000 + index * 4, 70, dt); i > 0; i--) {
+      const t = Math.random(), side = i % 2 ? 1 : -1;
+      const sx = -bz * side * 1.1, sz = bx * side * 1.1;
+      this.glow.emit({ x: x + sx + bx * (1.4 + t * 2), y: y + 0.35, z: z + sz + bz * (1.4 + t * 2), vx: bx * 6, vz: bz * 6, spread: 0.8, life: 0.4, size: 0.7, grow: 0.2, sprite: SPRITE.flame, r: 1, g: 0.45 + 0.25 * t, b: 0.7 - 0.4 * t, alpha: 0.75, spin: 4 });
+    }
+    for (let i = this.rate(5001 + index * 4, 22, dt); i > 0; i--) {
+      this.glow.emit({ x: x + bx * 3, y: y + 1.2, z: z + bz * 3, vx: bx * 3, vy: 1, vz: bz * 3, spread: 2.5, life: 0.7, size: 0.35, sprite: SPRITE.star, r: 1, g: 0.85, b: 0.95, alpha: 1, gravity: 2, spin: 6 });
+    }
+  }
+
+  /** Kart "engasgado" pelo Raio Corrente: faíscas elétricas verde-limão em volta. */
+  zapped(index: number, x: number, y: number, z: number, dt: number): void {
+    for (let i = this.rate(5002 + index * 4, 26, dt); i > 0; i--) {
+      const a = Math.random() * Math.PI * 2;
+      this.glow.emit({ x: x + Math.cos(a) * 0.9, y: y + 0.3 + Math.random() * 0.9, z: z + Math.sin(a) * 0.9, spread: 1.5, life: 0.18, size: 0.9, sprite: SPRITE.bolt, r: 0.85, g: 1, b: 0.3, alpha: 1, spin: 12 });
+    }
+  }
+
+  /** Choque do raio ao atingir um kart. */
+  zap(x: number, y: number, z: number, strength: number): void {
+    this.glow.emit({ x, y: y + 0.5, z, life: 0.3, size: 3 * strength, grow: 1.8, sprite: SPRITE.glow, r: 0.85, g: 1, b: 0.35, alpha: 0.9 });
+    this.glow.emit({ x, y: y + 0.2, z, life: 0.35, size: 1.5, grow: 3 * strength, sprite: SPRITE.ring, r: 0.9, g: 1, b: 0.5, alpha: 0.9 });
+    for (let i = 0; i < Math.round(14 * strength); i++) this.glow.emit({ x, y: y + 0.5, z, vy: 2, spread: 8, life: 0.3, size: 0.7, sprite: SPRITE.bolt, r: 0.9, g: 1, b: 0.4, alpha: 1, spin: 10 });
+  }
+
   confetti(x: number, y: number, z: number, count = 90): void {
     for (let i = 0; i < count; i++) {
       const c = CONFETTI[i % CONFETTI.length]!;

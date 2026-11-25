@@ -4,22 +4,22 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 (id, nome, tipo, caminho, formato, origem, autor, licença, tamanho, status de validação e local de uso), está em
 `public/assets/manifest.json`. A validação automática é `npm run validate:assets`.
 
-- **Total:** 361 arquivos, 142.4 MB
+- **Total:** 373 arquivos, 142.6 MB
 - **Autor de todos os recursos:** Equipe Kart Legends 3D
 - **Licença:** Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)
 - **Recursos de terceiros:** nenhum
 
 | Pasta | Arquivos | Tamanho | Origem | Onde é usado |
 |---|---:|---:|---|---|
-| `audio/` | 99 | 13868 kB | scripts/build-audio.ts (síntese procedural própria) | Música, efeitos e ambiência |
+| `audio/` | 107 | 14033 kB | scripts/build-audio.ts (síntese procedural própria) | Música, efeitos e ambiência |
 | `characters/` | 15 | 5233 kB | scripts/build-characters.ts (modelagem, rig e animação por script) | Pilotos na corrida, vitrine e pódio |
-| `items/` | 15 | 655 kB | scripts/build-items.ts (modelagem por script) | Itens, placas de turbo, rampas, pórtico, troféus e pódio |
+| `items/` | 17 | 714 kB | scripts/build-items.ts (modelagem por script) | Itens, placas de turbo, rampas, pórtico, troféus e pódio |
 | `karts/` | 9 | 1692 kB | scripts/build-karts.ts (modelagem por script) | Veículos na corrida, vitrine e pódio |
 | `props/` | 27 | 651 kB | scripts/build-tracks.ts (partes móveis de cenário e obstáculos) | Cenário animado e obstáculos dinâmicos |
 | `textures/` | 101 | 1415 kB | scripts (texturas procedurais e arte vetorial próprias) | Materiais dos modelos (também embutidas nos GLB) |
 | `tires/` | 8 | 183 kB | scripts/build-tires.ts (modelagem por script) | Rodas da loja, equipáveis em qualquer kart |
 | `tracks/` | 25 | 120684 kB | scripts/build-tracks.ts (traçado autorado + cenário) | Pistas e dados de corrida |
-| `ui/` | 61 | 1399 kB | scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo) | Interface (retratos, ícones, miniaturas) |
+| `ui/` | 63 | 1416 kB | scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo) | Interface (retratos, ícones, miniaturas) |
 | `vfx/` | 1 | 25 kB | scripts/build-vfx.ts (arte vetorial própria) | Sistema de partículas |
 
 ## characters/
@@ -48,15 +48,17 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 |---|---|---:|
 | `items/bolha-guardia.glb` | model | 29 kB |
 | `items/boost-pad.glb` | model | 34 kB |
+| `items/cometa-guia.glb` | model | 37 kB |
 | `items/cristal-salto.glb` | model | 31 kB |
 | `items/faisca-rastreadora.glb` | model | 39 kB |
 | `items/finish-arch.glb` | model | 158 kB |
 | `items/item-box.glb` | model | 39 kB |
-| `items/items-manifest.json` | data | 5 kB |
+| `items/items-manifest.json` | data | 6 kB |
 | `items/nevoa-prisma.glb` | model | 42 kB |
 | `items/onda-vento.glb` | model | 29 kB |
 | `items/podium.glb` | model | 89 kB |
 | `items/pulso-solar.glb` | model | 20 kB |
+| `items/raio-corrente.glb` | model | 20 kB |
 | `items/ramp.glb` | model | 17 kB |
 | `items/trophy-bronze.glb` | model | 42 kB |
 | `items/trophy-gold.glb` | model | 42 kB |
@@ -170,11 +172,13 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | `ui/icons/yuki.webp` | image | 4 kB |
 | `ui/icons/zera.webp` | image | 5 kB |
 | `ui/items/bolha-guardia.webp` | image | 11 kB |
+| `ui/items/cometa-guia.webp` | image | 10 kB |
 | `ui/items/cristal-salto.webp` | image | 7 kB |
 | `ui/items/faisca-rastreadora.webp` | image | 8 kB |
 | `ui/items/nevoa-prisma.webp` | image | 7 kB |
 | `ui/items/onda-vento.webp` | image | 10 kB |
 | `ui/items/pulso-solar.webp` | image | 12 kB |
+| `ui/items/raio-corrente.webp` | image | 8 kB |
 | `ui/karts/broto.webp` | image | 30 kB |
 | `ui/karts/cometa.webp` | image | 29 kB |
 | `ui/karts/duna.webp` | image | 39 kB |
@@ -225,4 +229,4 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 
 ## audio/ e textures/
 
-99 arquivos de áudio (lista e durações em `public/assets/audio/audio-manifest.json` e `docs/AUDIO.md`) e 101 texturas (todas também embutidas nos GLB que as usam).
+107 arquivos de áudio (lista e durações em `public/assets/audio/audio-manifest.json` e `docs/AUDIO.md`) e 101 texturas (todas também embutidas nos GLB que as usam).

@@ -2,7 +2,7 @@
 
 Jogo original de corrida de kart arcade 3D para navegador (desktop), em português do Brasil.
 React + TypeScript + Vite + Zustand, Three.js / React Three Fiber / Drei, física Rapier (`@react-three/rapier`),
-Web Audio API. Catorze pilotos, oito karts, doze pistas em três copas, sete adversários com IA, seis itens,
+Web Audio API. Catorze pilotos, oito karts, doze pistas em três copas, sete adversários com IA, oito itens,
 drift com três níveis de miniturbo, quatro modos de jogo e progressão salva no navegador.
 
 > **Estado da entrega: PARCIAL** segundo os critérios da seção 27 da especificação. O jogo roda, é jogável do
@@ -93,6 +93,22 @@ no mesmo Wi‑Fi, ou publique a pasta `dist/` em qualquer hospedagem estática (
 - **Campeonato** — as 4 pistas de uma copa com pontuação acumulada e troféu.
 - **Contrarrelógio** — sozinho, sem itens, em busca do melhor tempo.
 - **Treino** — pista livre, sem adversários; sai pelo menu de pausa.
+
+## Itens
+
+Caixas de item na pista sorteiam um item conforme a posição: quem está atrás recebe mais ataque e velocidade,
+quem lidera recebe mais defesa.
+
+| Item | Efeito |
+|---|---|
+| **Pulso Solar** | Turbo de 2,2 s. |
+| **Bolha Guardiã** | Escudo por 8 s que absorve um impacto (faísca, névoa, raio, empurrão do cometa). |
+| **Névoa Prisma** | Nuvem deixada para trás; quem a atravessa roda. |
+| **Faísca Rastreadora** | Projétil que persegue o piloto à frente. Bolha, névoa ou vento a destroem. |
+| **Onda de Vento** | Empurra os adversários próximos e desfaz faíscas. |
+| **Cristal de Salto** | Um salto para passar por cima de obstáculos e cortar caminho. |
+| **Raio Corrente** | Atinge o piloto à frente (até 90 m) e salta para os seguintes (até 42 m entre eles), no máximo 3 elos: o motor "engasga" (velocidade máxima a 60 % por 1,6 s, depois 74 % por 1,05 s e 86 % por 0,65 s), sem rodar. A Bolha Guardiã estoura e aterra o raio. Raro para o líder. |
+| **Cometa Guia** | Só para a metade de trás do grid: 3,2 s de piloto automático em velocidade de turbo pela linha ideal, atravessando obstáculos, névoas e faíscas e tirando do caminho (sem rodar) quem encostar. |
 
 ## Comandos
 

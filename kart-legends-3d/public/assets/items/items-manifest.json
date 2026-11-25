@@ -128,6 +128,42 @@
       "note": "Cristal alado sobre mola (≈1,0 m de altura), origem na base."
     },
     {
+      "id": "raio-corrente",
+      "file": "items/raio-corrente.glb",
+      "bytes": 20984,
+      "triangles": 804,
+      "clips": [
+        {
+          "name": "loop",
+          "duration": 0.4
+        }
+      ],
+      "size": [
+        0.32,
+        0.31,
+        1.17
+      ],
+      "note": "Segmento de raio unitário de z = 0 a z = 1 (≈0,3 m de espessura); o runtime estica entre os karts."
+    },
+    {
+      "id": "cometa-guia",
+      "file": "items/cometa-guia.glb",
+      "bytes": 38232,
+      "triangles": 1908,
+      "clips": [
+        {
+          "name": "loop",
+          "duration": 0.6
+        }
+      ],
+      "size": [
+        2.37,
+        2.1,
+        7.03
+      ],
+      "note": "Aura do kart em modo cometa: casca de ≈2,3 m em volta do kart e cauda de ≈5 m para −Z; origem no chão sob o kart."
+    },
+    {
       "id": "boost-pad",
       "file": "items/boost-pad.glb",
       "bytes": 34368,
@@ -225,6 +261,8 @@
     "ui/items/nevoa-prisma.webp",
     "ui/items/faisca-rastreadora.webp",
     "ui/items/onda-vento.webp",
-    "ui/items/cristal-salto.webp"
+    "ui/items/cristal-salto.webp",
+    "ui/items/raio-corrente.webp",
+    "ui/items/cometa-guia.webp"
   ]
 }

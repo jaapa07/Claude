@@ -65,7 +65,13 @@ export class RaceSim {
     world.timestep = PHYS.dt;
     createTrackColliders(R, world, this.track);
     this.obstacles = createObstacles(R, world, data.obstacles);
-    const emit = (e: SimEvent): void => { this.events.push(e); };
+    const emit = (e: SimEvent): void => {
+      this.events.push(e);
+      // avisos de item para o jogador
+      if (!('kart' in e) || e.kart !== this.player?.index) return;
+      if (e.type === 'item_use' && e.item === 'cometa-guia') this.alert('COMETA GUIA!', 'good', 1.6);
+      else if (e.type === 'zapped') this.alert('RAIO! MOTOR ENGASGADO', 'warn', 1.4);
+    };
     this.ctx = { R, world, ray: new R.Ray({ x: 0, y: 0, z: 0 }, { x: 0, y: -1, z: 0 }), emit, controlsEnabled: false };
     this.items = new ItemSystem(this.track, this.rng, emit, config.mode !== 'timetrial');
 
@@ -132,6 +138,7 @@ export class RaceSim {
       else if (k.ai) (this.drivers[k.index] ?? this.autopilot).update(k, this.aiWorld, dt);
       else if (k.isPlayer && this.opts.playerInput) Object.assign(k.input, this.opts.playerInput());
       if (k.finished) k.input.item = false;
+      if (racing && k.comet > 0) this.items.steerComet(k);
       stepKart(k, this.ctx, dt);
     }
 
@@ -249,7 +256,7 @@ export class RaceSim {
     k.pathId = -1; k.pathIndex = k.mainIndex = idx; k.lastSafeIndex = idx;
     const w = this.watch[k.index]!;
     w.time = 0; w.progress = idx + k.lap * this.track.n - this.track.n;
-    k.freeze = 0.8; k.invuln = 2.2; k.stun = 0; k.offTrackTime = 0; k.wrongWayTime = 0; k.jumpGrace = 0;
+    k.freeze = 0.8; k.invuln = 2.2; k.stun = 0; k.comet = 0; k.slowTime = 0; k.offTrackTime = 0; k.wrongWayTime = 0; k.jumpGrace = 0;
     this.events.push({ type: 'respawn', kart: k.index, reason });
   }
 

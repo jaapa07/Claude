@@ -18,5 +18,7 @@ export const ITEMS: readonly ItemDef[] = [
   { id: 'faisca-rastreadora', name: 'Faísca Rastreadora', description: 'Persegue o piloto à frente. Bolha, névoa ou vento a destroem.', color: '#ff5b3a', duration: 7, cooldown: 2.5 },
   { id: 'onda-vento', name: 'Onda de Vento', description: 'Empurra adversários próximos e desfaz faíscas.', color: '#9cf0c3', duration: 0.6, cooldown: 2 },
   { id: 'cristal-salto', name: 'Cristal de Salto', description: 'Um salto para passar por cima de obstáculos e cortar caminho.', color: '#7aa8ff', duration: 0, cooldown: 1.5 },
+  { id: 'raio-corrente', name: 'Raio Corrente', description: 'Freia o piloto à frente e salta para os seguintes, cada vez mais fraco. A bolha o aterra.', color: '#d4ff3a', duration: 1.6, cooldown: 2.5 },
+  { id: 'cometa-guia', name: 'Cometa Guia', description: 'Piloto automático veloz pela linha ideal que tira rivais do caminho. Só para quem está bem atrás.', color: '#ff6fae', duration: 3.2, cooldown: 3 },
 ];
 export const ITEM_BY_ID = Object.fromEntries(ITEMS.map((i) => [i.id, i])) as Record<ItemId, ItemDef>;

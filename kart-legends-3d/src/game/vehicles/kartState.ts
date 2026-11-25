@@ -52,6 +52,11 @@ export interface KartState {
   stun: number;
   shield: number;
   freeze: number;
+  /** Raio Corrente: segundos restantes de lentidão e fração da velocidade máxima permitida. */
+  slowTime: number;
+  slowFactor: number;
+  /** Cometa Guia: segundos restantes de piloto automático (imune a giros, empurra rivais). */
+  comet: number;
 
   // itens
   item: ItemId | null;
@@ -96,7 +101,7 @@ export function createKartState(base: Pick<KartState, 'index' | 'characterId' | 
     x: 0, y: 0, z: 0, px: 0, py: 0, pz: 0, heading: 0, pHeading: 0, vx: 0, vy: 0, vz: 0,
     speed: 0, lateralSpeed: 0, steer: 0, grounded: true, airTime: 0, nx: 0, ny: 1, nz: 0, surface: 0, onRoad: true,
     drifting: false, driftDir: 0, driftCharge: 0, driftLevel: 0, driftHeld: false, boostTime: 0, boostTotal: 1, boostKind: 0,
-    hopTime: 0, jumpGrace: 0, spinTime: 0, invuln: 0, stun: 0, shield: 0, freeze: 0,
+    hopTime: 0, jumpGrace: 0, spinTime: 0, invuln: 0, stun: 0, shield: 0, freeze: 0, slowTime: 0, slowFactor: 1, comet: 0,
     item: null, itemRoll: 0, itemCooldown: 0, itemHeld: false,
     pathId: -1, pathIndex: 0, mainIndex: 0, lateral: 0, lap: 0, nextCheckpoint: 1, checkpointsPassed: 0, progress: 0,
     position: 1, finished: false, finishTime: 0, lapStart: 0, lapTimes: [], wrongWayTime: 0, offTrackTime: 0,

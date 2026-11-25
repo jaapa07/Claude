@@ -11,7 +11,7 @@ import { registerItemMaterials, type ItemEntry } from './items/util';
 
 await registerItemMaterials();
 const builders: (() => Promise<ItemEntry>)[] = [
-  M.itemBox, M.pulsoSolar, M.bolhaGuardia, M.nevoaPrisma, M.faiscaRastreadora, M.ondaVento, M.cristalSalto,
+  M.itemBox, M.pulsoSolar, M.bolhaGuardia, M.nevoaPrisma, M.faiscaRastreadora, M.ondaVento, M.cristalSalto, M.raioCorrente, M.cometaGuia,
   M.boostPad, M.ramp, M.finishArch, () => M.trophy('gold'), () => M.trophy('silver'), () => M.trophy('bronze'), M.podium,
 ];
 const items: ItemEntry[] = [];

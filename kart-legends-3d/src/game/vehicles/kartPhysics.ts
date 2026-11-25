@@ -26,7 +26,8 @@ export function applyBoost(k: KartState, seconds: number, kind: number): void {
 
 /** Faz o kart rodar (atingido). Devolve false se estava protegido. */
 export function spinOut(k: KartState, emit: (e: SimEvent) => void, cause: 'faisca' | 'nevoa' | 'obstaculo'): boolean {
-  if (k.invuln > 0 || k.spinTime > 0) return false;
+  // o Cometa Guia atravessa névoas, faíscas e obstáculos sem rodar
+  if (k.invuln > 0 || k.spinTime > 0 || k.comet > 0) return false;
   if (k.shield > 0) {
     k.shield = 0;
     k.invuln = 0.8;
@@ -68,6 +69,9 @@ export function stepKart(k: KartState, ctx: PhysicsContext, dt: number): void {
   k.jumpGrace = Math.max(0, k.jumpGrace - dt);
   k.padCooldown = Math.max(0, k.padCooldown - dt);
   k.freeze = Math.max(0, k.freeze - dt);
+  k.comet = Math.max(0, k.comet - dt);
+  k.slowTime = Math.max(0, k.slowTime - dt);
+  if (k.slowTime <= 0) k.slowFactor = 1;
 
   if (k.freeze > 0 || !ctx.controlsEnabled) {
     k.vx = 0; k.vz = 0;
@@ -115,6 +119,8 @@ export function stepKart(k: KartState, ctx: PhysicsContext, dt: number): void {
   const penalty = (base: number): number => 1 - (1 - base) * (1 - t.offroad * off) * (boosting ? 0.35 : 1);
   let top = t.topSpeed * penalty(surf.speed);
   if (boosting) top = Math.max(top, t.topSpeed * PHYS.boostSpeed * (off ? 0.86 : 1));
+  // atingido pelo Raio Corrente: o motor "engasga" e a velocidade máxima cai por um instante
+  if (k.slowTime > 0) top *= k.slowFactor;
 
   const controllable = ctx.controlsEnabled && k.spinTime <= 0 && k.stun <= 0 && k.freeze <= 0;
   const throttle = controllable ? clamp(inp.throttle, 0, 1) : 0;
@@ -131,7 +137,7 @@ export function stepKart(k: KartState, ctx: PhysicsContext, dt: number): void {
       vf += t.accel * penalty(surf.accel) * (1 - ratio * ratio * 0.82) * throttle * t.recovery ** (ratio < 0.5 ? 1 : 0) * dt;
       vf = Math.min(vf, top);
     }
-    if (vf > top) vf = Math.max(top, vf - (off ? 26 : 10) * dt);
+    if (vf > top) vf = Math.max(top, vf - (off ? 26 : k.slowTime > 0 ? 16 : 10) * dt);
     // teto absoluto: empurrões, quedas e ladeiras não podem render mais que o turbo do próprio kart
     vf = Math.min(vf, t.topSpeed * PHYS.boostSpeed * 1.1);
     if (brake > 0) {
