@@ -69,8 +69,10 @@ export interface ApplyReport {
   newRecords: { raceTime: boolean; bestLap: boolean };
   /** Troféu obtido nesta copa (mesmo que não supere o já guardado). */
   trophy: TrophyTier | null;
-  /** Moedas ganhas nesta corrida. */
+  /** Moedas ganhas nesta corrida (tela dividida: soma das colocações dos dois jogadores). */
   coins: number;
+  /** Tela dividida: moedas de cada jogador (pela vaga), já incluídas em `coins`. */
+  coinsBySlot?: number[];
 }
 
 export type SaveLoadStatus = 'fresh' | 'loaded' | 'migrated' | 'recovered';
@@ -305,19 +307,22 @@ export const useSaveStore = create<SaveState>()((set, get) => ({
     const finished = result.playerTimeMs !== null;
     const record = data.records[result.trackId];
     const newRecords = { raceTime: false, bestLap: false };
+    // Tela dividida: a corrida conta uma vez só no save compartilhado. Vitória/pódio pela melhor colocação dos
+    // dois, recordes pelo melhor tempo dos dois, turbos e itens somados e moedas das DUAS colocações.
+    const outs = result.players && result.players.length > 1 ? result.players : null;
 
     if (competitive) {
+      const best = outs ? Math.min(...outs.map((o) => o.position)) : result.playerPosition;
       data.stats.races += 1;
-      if (result.playerPosition === 1) data.stats.wins += 1;
-      if (result.playerPosition >= 1 && result.playerPosition <= 3) data.stats.podiums += 1;
-      if (finished) {
-        const t = better(record.bestRaceMs, result.playerTimeMs);
-        newRecords.raceTime = t !== record.bestRaceMs;
-        record.bestRaceMs = t;
-      }
-      const lap = better(record.bestLapMs, result.playerBestLapMs);
-      newRecords.bestLap = lap !== record.bestLapMs;
-      record.bestLapMs = lap;
+      if (best === 1) data.stats.wins += 1;
+      if (best >= 1 && best <= 3) data.stats.podiums += 1;
+      const times = outs ? outs.map((o) => o.timeMs) : [finished ? result.playerTimeMs : null];
+      const laps = outs ? outs.map((o) => o.bestLapMs) : [result.playerBestLapMs];
+      const prevRace = record.bestRaceMs, prevLap = record.bestLapMs;
+      for (const t of times) if (t !== null) record.bestRaceMs = better(record.bestRaceMs, t);
+      for (const l of laps) record.bestLapMs = better(record.bestLapMs, l);
+      newRecords.raceTime = record.bestRaceMs !== prevRace;
+      newRecords.bestLap = record.bestLapMs !== prevLap;
     } else if (result.mode === 'timetrial') {
       if (finished) {
         data.stats.timeTrials += 1;
@@ -330,9 +335,12 @@ export const useSaveStore = create<SaveState>()((set, get) => ({
       record.timeTrialLapMs = lap;
     }
     // Treino: só conta turbos, itens e tempo jogado.
-    for (let i = 0; i < 3; i++) data.stats.turbos[i] += count(result.stats.turbos[i]);
-    data.stats.itemsUsed += count(result.stats.itemsUsed);
-    data.stats.playTimeMs += count(result.playerTimeMs ?? 0);
+    for (const st of outs ? outs.map((o) => o.stats) : [result.stats]) {
+      for (let i = 0; i < 3; i++) data.stats.turbos[i] += count(st.turbos[i]);
+      data.stats.itemsUsed += count(st.itemsUsed);
+    }
+    // tempo jogado: a duração da sessão (a dos dois jogadores é a mesma), uma vez
+    data.stats.playTimeMs += count(outs ? Math.max(0, ...outs.map((o) => o.timeMs ?? 0)) : result.playerTimeMs ?? 0);
 
     let trophy: TrophyTier | null = null;
     if (championship) {
@@ -341,33 +349,50 @@ export const useSaveStore = create<SaveState>()((set, get) => ({
       if (trophyRank(trophy) > trophyRank(data.trophies[championship.cupId])) data.trophies[championship.cupId] = trophy;
     }
 
-    const coins = coinsForRace({
-      mode: result.mode, difficulty: result.difficulty, position: result.playerPosition, finished,
-      trophy, timeTrialRecord: result.mode === 'timetrial' && newRecords.raceTime,
-    });
+    let coins: number;
+    let coinsBySlot: number[] | undefined;
+    if (outs) {
+      // cada colocação paga na mesma carteira; o bônus do troféu entra uma vez (com o Jogador 1)
+      coinsBySlot = outs.map((o, i) => coinsForRace({
+        mode: result.mode, difficulty: result.difficulty, position: o.position, finished: o.timeMs !== null, trophy: i === 0 ? trophy : null, timeTrialRecord: false,
+      }));
+      coins = coinsBySlot.reduce((a, b) => a + b, 0);
+    } else {
+      coins = coinsForRace({
+        mode: result.mode, difficulty: result.difficulty, position: result.playerPosition, finished,
+        trophy, timeTrialRecord: result.mode === 'timetrial' && newRecords.raceTime,
+      });
+    }
     data.coins += coins;
 
     data.unlocked = computeUnlocks(data);
     const unlocks = diffUnlocks(before, data.unlocked);
     persist(data);
-    set({ ...data, lastReport: { unlocks, newRecords, trophy, coins } });
+    set({ ...data, lastReport: { unlocks, newRecords, trophy, coins, ...(coinsBySlot ? { coinsBySlot } : {}) } });
     return unlocks;
   },
 
   applyBattleResult: (result) => {
     const data = snapshot(get());
     const before = data.unlocked;
+    // Tela dividida: uma partida no save; vitória se um dos dois venceu; moedas das duas colocações.
+    const outs = result.players && result.players.length > 1 ? result.players : null;
     data.stats.battles += 1;
-    if (result.playerPosition === 1) data.stats.battleWins += 1;
-    for (let i = 0; i < 3; i++) data.stats.turbos[i] += count(result.stats.turbos[i]);
-    data.stats.itemsUsed += count(result.stats.itemsUsed);
+    if ((outs ? Math.min(...outs.map((o) => o.position)) : result.playerPosition) === 1) data.stats.battleWins += 1;
+    for (const st of outs ? outs.map((o) => o.stats) : [result.stats]) {
+      for (let i = 0; i < 3; i++) data.stats.turbos[i] += count(st.turbos[i]);
+      data.stats.itemsUsed += count(st.itemsUsed);
+    }
     data.stats.playTimeMs += count(result.durationMs);
-    const coins = coinsForBattle({ difficulty: result.difficulty, position: result.playerPosition, racers: result.standings.length });
+    const coinsBySlot = outs ? outs.map((o) => coinsForBattle({ difficulty: result.difficulty, position: o.position, racers: result.standings.length })) : undefined;
+    const coins = coinsBySlot
+      ? coinsBySlot.reduce((a, b) => a + b, 0)
+      : coinsForBattle({ difficulty: result.difficulty, position: result.playerPosition, racers: result.standings.length });
     data.coins += coins;
     data.unlocked = computeUnlocks(data);
     const unlocks = diffUnlocks(before, data.unlocked);
     persist(data);
-    set({ ...data, lastReport: { unlocks, newRecords: { raceTime: false, bestLap: false }, trophy: null, coins } });
+    set({ ...data, lastReport: { unlocks, newRecords: { raceTime: false, bestLap: false }, trophy: null, coins, ...(coinsBySlot ? { coinsBySlot } : {}) } });
     return unlocks;
   },
 

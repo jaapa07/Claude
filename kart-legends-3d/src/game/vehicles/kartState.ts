@@ -9,6 +9,8 @@ export interface KartState {
   characterId: CharacterId;
   kartId: KartId;
   isPlayer: boolean;
+  /** Vaga do jogador humano (0 = Jogador 1, 1 = Jogador 2); -1 = IA. */
+  slot: number;
   /** true = controlado pela IA (inclui o jogador depois de cruzar a chegada). */
   ai: boolean;
   tuning: KartTuning;
@@ -94,9 +96,10 @@ export interface KartState {
   topSpeed: number;
 }
 
-export function createKartState(base: Pick<KartState, 'index' | 'characterId' | 'kartId' | 'isPlayer' | 'ai' | 'tuning' | 'body' | 'collider'>): KartState {
+export function createKartState(base: Pick<KartState, 'index' | 'characterId' | 'kartId' | 'isPlayer' | 'ai' | 'tuning' | 'body' | 'collider'> & { slot?: number }): KartState {
   return {
     ...base,
+    slot: base.isPlayer ? (base.slot ?? 0) : -1,
     input: { ...NEUTRAL_INPUT },
     x: 0, y: 0, z: 0, px: 0, py: 0, pz: 0, heading: 0, pHeading: 0, vx: 0, vy: 0, vz: 0,
     speed: 0, lateralSpeed: 0, steer: 0, grounded: true, airTime: 0, nx: 0, ny: 1, nz: 0, surface: 0, onRoad: true,

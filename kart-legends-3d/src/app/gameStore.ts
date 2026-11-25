@@ -8,6 +8,7 @@ import type { RaceConfig, RaceResult, RacerSetup } from '@/game/core/types';
 import { useSaveStore } from '@/game/save/saveStore';
 import type { ChampionshipOutcome, UnlockNotice } from '@/game/save/saveStore';
 import type { TrophyTier } from '@/data/ids';
+import { humanCount } from './flow';
 import type { ChampionshipState, GameState, Screen, Selection, StandingEntry } from './gameTypes';
 
 /** Voltas do Treino: na prática "sem fim" — a sessão termina pelo menu de pausa. */
@@ -16,6 +17,7 @@ export const TRAINING_LAPS = 99;
 export const DEFAULT_SELECTION: Readonly<Selection> = {
   characterId: 'nilo', kartId: 'flecha', mode: 'quick', cupId: 'aurora', trackId: 'porto-lanternas', difficulty: 'normal',
   battleGame: 'estoura-balao', arenaId: 'praca-coreto',
+  players: 1, p2CharacterId: 'boro', p2KartId: 'engrenagem',
 };
 
 /** O que a última corrida rendeu (mostrado em Resultados e no Pódio). */
@@ -28,8 +30,10 @@ export interface RaceRewards {
   championshipPosition: number | null;
   /** Pontos somados por piloto nesta corrida (Campeonato). */
   pointsThisRace: Partial<Record<CharacterId, number>>;
-  /** Moedas ganhas nesta corrida. */
+  /** Moedas ganhas nesta corrida (com dois jogadores, a soma das duas colocações). */
   coins: number;
+  /** Tela dividida: moedas da colocação de cada jogador (pela vaga), já somadas em `coins`. */
+  coinsBySlot?: number[];
 }
 
 /** `GameState` do contrato + extras usados só pela interface. */
@@ -62,7 +66,7 @@ function mulberry32(seed: number): () => number {
 /** Pilotos por corrida: no máximo 8 ao mesmo tempo (as pistas têm oito posições de largada). */
 export { RACERS_PER_RACE };
 
-/** Trava de segurança: nunca mais de 8 na pista; o jogador sempre fica. */
+/** Trava de segurança: nunca mais de 8 na pista; os jogadores humanos sempre ficam. */
 export function capRacers(racers: RacerSetup[]): RacerSetup[] {
   if (racers.length <= RACERS_PER_RACE) return racers;
   const player = racers.filter((r) => r.isPlayer);
@@ -72,16 +76,30 @@ export function capRacers(racers: RacerSetup[]): RacerSetup[] {
 /**
  * Grid da Corrida Rápida e da 1ª corrida de uma copa: sete adversários sorteados pela seed entre os outros
  * personagens (inclusive os ainda bloqueados, cada um com seu kart preferido), em ordem embaralhada, e o
- * jogador em 8º.
+ * jogador em 8º. Com `second` (tela dividida), seis adversários e os dois jogadores no fim do grid:
+ * Jogador 1 em 7º e Jogador 2 em 8º.
  */
-export function buildFreshGrid(selection: Pick<Selection, 'characterId' | 'kartId'>, seed: number): RacerSetup[] {
-  const rivals = CHARACTERS.filter((c) => c.id !== selection.characterId).map<RacerSetup>((c) => ({ characterId: c.id, kartId: c.kartId, isPlayer: false }));
+export function buildFreshGrid(
+  selection: Pick<Selection, 'characterId' | 'kartId'>, seed: number, second?: Pick<Selection, 'characterId' | 'kartId'> | null,
+): RacerSetup[] {
+  const taken = new Set<CharacterId>([selection.characterId, ...(second ? [second.characterId] : [])]);
+  const rivals = CHARACTERS.filter((c) => !taken.has(c.id)).map<RacerSetup>((c) => ({ characterId: c.id, kartId: c.kartId, isPlayer: false }));
   const rand = mulberry32(seed);
   for (let i = rivals.length - 1; i > 0; i--) {
     const j = Math.floor(rand() * (i + 1));
     [rivals[i], rivals[j]] = [rivals[j], rivals[i]];
   }
-  return [...rivals.slice(0, RACERS_PER_RACE - 1), { characterId: selection.characterId, kartId: selection.kartId, isPlayer: true }];
+  if (!second) return [...rivals.slice(0, RACERS_PER_RACE - 1), { characterId: selection.characterId, kartId: selection.kartId, isPlayer: true }];
+  return [
+    ...rivals.slice(0, RACERS_PER_RACE - 2),
+    { characterId: selection.characterId, kartId: selection.kartId, isPlayer: true, slot: 0 },
+    { characterId: second.characterId, kartId: second.kartId, isPlayer: true, slot: 1 },
+  ];
+}
+
+/** Monta um participante a partir da classificação (mantém a vaga do jogador na tela dividida). */
+function setupOf({ characterId, kartId, isPlayer, slot }: StandingEntry): RacerSetup {
+  return slot === undefined ? { characterId, kartId, isPlayer } : { characterId, kartId, isPlayer, slot };
 }
 
 /**
@@ -89,7 +107,12 @@ export function buildFreshGrid(selection: Pick<Selection, 'characterId' | 'kartI
  * `standings` já está ordenado do líder para o último.
  */
 export function buildStandingsGrid(standings: readonly StandingEntry[]): RacerSetup[] {
-  return [...standings].reverse().map(({ characterId, kartId, isPlayer }) => ({ characterId, kartId, isPlayer }));
+  return [...standings].reverse().map(setupOf);
+}
+
+/** Segundo jogador da seleção (tela dividida) ou null. */
+export function secondPlayerOf(sel: Selection): Pick<Selection, 'characterId' | 'kartId'> | null {
+  return humanCount(sel) === 2 ? { characterId: sel.p2CharacterId, kartId: sel.p2KartId } : null;
 }
 
 /** Ordena por pontos; empates são decididos pela melhor chegada na corrida mais recente. */
@@ -110,6 +133,13 @@ function validSelection(sel: Selection): Selection {
   if (!save.isCharacterUnlocked(out.characterId)) out.characterId = DEFAULT_SELECTION.characterId;
   if (!save.isKartUnlocked(out.kartId)) out.kartId = CHARACTER_BY_ID[out.characterId].kartId;
   if (!save.isKartUnlocked(out.kartId)) out.kartId = DEFAULT_SELECTION.kartId;
+  // Jogador 2: piloto liberado e diferente do Jogador 1.
+  if (out.players !== 2) out.players = 1;
+  if (!save.isCharacterUnlocked(out.p2CharacterId) || out.p2CharacterId === out.characterId) {
+    out.p2CharacterId = CHARACTERS.find((c) => c.id !== out.characterId && save.isCharacterUnlocked(c.id))?.id ?? DEFAULT_SELECTION.p2CharacterId;
+  }
+  if (!save.isKartUnlocked(out.p2KartId)) out.p2KartId = CHARACTER_BY_ID[out.p2CharacterId].kartId;
+  if (!save.isKartUnlocked(out.p2KartId)) out.p2KartId = DEFAULT_SELECTION.kartId;
   if (!save.isCupUnlocked(out.cupId)) out.cupId = DEFAULT_SELECTION.cupId;
   if (!save.isTrackUnlocked(out.trackId)) out.trackId = DEFAULT_SELECTION.trackId;
   return out;
@@ -147,7 +177,7 @@ export const useGameStore = create<GameStoreState>()((set, get) => ({
       // Batalha: oito pilotos (você e sete sorteados), sem copa e sem RaceConfig.
       const battle: BattleConfig = {
         arenaId: selection.arenaId, game: selection.battleGame, difficulty: selection.difficulty,
-        racers: capRacers(buildFreshGrid(selection, seed)), seed,
+        racers: capRacers(buildFreshGrid(selection, seed, secondPlayerOf(selection))), seed,
       };
       set({
         selection, championship: null, race: null, battle, raceNonce: state.raceNonce + 1, paused: false,
@@ -165,10 +195,10 @@ export const useGameStore = create<GameStoreState>()((set, get) => ({
         // Copa em andamento: mesmos oito pilotos (o sorteio de adversários é feito uma vez só, ao criar a copa),
         // grid pela classificação invertida a partir da 2ª corrida.
         racers = championship.raceIndex === 0
-          ? championship.standings.map(({ characterId, kartId, isPlayer }) => ({ characterId, kartId, isPlayer }))
+          ? championship.standings.map(setupOf)
           : buildStandingsGrid(championship.standings);
       } else {
-        racers = buildFreshGrid(selection, seed);
+        racers = buildFreshGrid(selection, seed, secondPlayerOf(selection));
         championship = {
           cupId: selection.cupId,
           raceIndex: 0,
@@ -179,7 +209,7 @@ export const useGameStore = create<GameStoreState>()((set, get) => ({
       trackId = CUP_BY_ID[championship.cupId].tracks[championship.raceIndex];
     } else {
       championship = null;
-      if (selection.mode === 'quick') racers = buildFreshGrid(selection, seed);
+      if (selection.mode === 'quick') racers = buildFreshGrid(selection, seed, secondPlayerOf(selection));
       else {
         // Contrarrelógio e Treino: só o jogador na pista.
         racers = [{ characterId: selection.characterId, kartId: selection.kartId, isPlayer: true }];
@@ -253,6 +283,7 @@ export const useGameStore = create<GameStoreState>()((set, get) => ({
       const finished = championship.raceIndex >= CUP_BY_ID[championship.cupId].tracks.length - 1;
       championship = { ...championship, standings, finished };
       if (finished) {
+        // Tela dividida: o troféu vale pela melhor colocação entre os dois jogadores.
         championshipPosition = standings.findIndex((e) => e.isPlayer) + 1;
         outcome = { cupId: championship.cupId, position: championshipPosition };
       }
@@ -276,6 +307,7 @@ export const useGameStore = create<GameStoreState>()((set, get) => ({
         championshipPosition,
         pointsThisRace,
         coins: report ? report.coins : 0,
+        ...(report?.coinsBySlot ? { coinsBySlot: report.coinsBySlot } : {}),
       },
       paused: false,
       screen: 'results',
@@ -292,6 +324,7 @@ export const useGameStore = create<GameStoreState>()((set, get) => ({
       lastRewards: {
         unlocks, newRecords: { raceTime: false, bestLap: false }, trophy: null, championshipPosition: null, pointsThisRace: {},
         coins: report ? report.coins : 0,
+        ...(report?.coinsBySlot ? { coinsBySlot: report.coinsBySlot } : {}),
       },
       paused: false,
       screen: 'results',

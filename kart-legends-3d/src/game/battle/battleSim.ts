@@ -5,7 +5,7 @@ import type { CharacterId, Difficulty, KartId } from '@/data/ids';
 import { RACERS_PER_RACE } from '@/data/tracks';
 import { BattleAi, type BattleWorld } from '@/game/ai/battleAi';
 import { createRng, type Rng } from '@/game/core/rng';
-import { NEUTRAL_INPUT, type HudAlert, type InputState, type RacePhase, type RacerSetup } from '@/game/core/types';
+import { NEUTRAL_INPUT, playerSlotOf, type HudAlert, type InputState, type RacePhase, type RacerSetup } from '@/game/core/types';
 import { ItemSystem, WIND_RADIUS, type Projectile } from '@/game/items/itemSystem';
 import { GROUP_KART, GROUP_OBSTACLE, GROUP_STATIC, RAY_GROUPS, groups, type Rapier } from '@/game/physics/trackColliders';
 import type { SimEvent } from '@/game/racing/events';
@@ -86,6 +86,8 @@ export interface BattleStanding {
   characterId: CharacterId;
   kartId: KartId;
   isPlayer: boolean;
+  /** Vaga do jogador humano (0/1); ausente = IA. */
+  slot?: number;
   position: number;
   score: number;
   eliminated: boolean;
@@ -102,9 +104,23 @@ export interface BattleResult {
   /** Duração real da partida (ms). */
   durationMs: number;
   stats: { itemsUsed: number; hitsLanded: number; hitsTaken: number; turbos: [number, number, number] };
+  /** Um item por jogador humano (ordem das vagas); os campos acima são os do Jogador 1. */
+  players?: PlayerBattleOutcome[];
 }
 
-export interface BattleHudRow { index: number; characterId: CharacterId; isPlayer: boolean; score: number; out: boolean; crown: boolean; position: number }
+export interface PlayerBattleOutcome {
+  slot: number;
+  racerIndex: number;
+  characterId: CharacterId;
+  position: number;
+  stats: { itemsUsed: number; hitsLanded: number; hitsTaken: number; turbos: [number, number, number] };
+}
+
+export interface BattleHudRow {
+  index: number; characterId: CharacterId; isPlayer: boolean; score: number; out: boolean; crown: boolean; position: number;
+  /** Vaga do humano (0/1) ou -1; `me` = a linha de quem lê este HUD. */
+  slot?: number; me?: boolean;
+}
 
 /** Estado publicado para o HUD da batalha (aprox. 15 vezes por segundo). */
 export interface BattleHudSnapshot {
@@ -123,9 +139,14 @@ export interface BattleHudSnapshot {
   out: boolean;
   /** Personagem acompanhado pela câmera quando o jogador está fora. */
   spectating: CharacterId | null;
+  /** Vaga do jogador deste HUD e quantos humanos há na partida. */
+  slot?: number;
+  humans?: number;
+  /** Todos os humanos já estão fora (só então dá para acelerar a partida). */
+  allHumansOut?: boolean;
   board: BattleHudRow[];
   alerts: HudAlert[];
-  dots: { x: number; z: number; characterId: CharacterId; isPlayer: boolean; out: boolean; crown: boolean }[];
+  dots: { x: number; z: number; characterId: CharacterId; isPlayer: boolean; out: boolean; crown: boolean; me?: boolean }[];
   crystalDots: number[];
   crown: { x: number; z: number; free: boolean } | null;
 }
@@ -158,8 +179,11 @@ const wrapAngle = (a: number): number => {
 };
 
 export interface BattleSimOptions {
-  playerInput?: () => InputState;
+  /** Comandos de um jogador humano (`slot` 0 = Jogador 1, 1 = Jogador 2). */
+  playerInput?: (slot: number) => InputState;
 }
+
+type TimedAlert = HudAlert & { ttl: number };
 
 /**
  * Simulação determinística de uma partida de batalha (passo fixo de 1/60 s, independente da renderização).
@@ -171,7 +195,10 @@ export class BattleSim implements BattleWorld {
   readonly battlers: Battler[] = [];
   readonly items: ItemSystem;
   readonly events: BattleEvent[] = [];
+  /** Jogador 1 (ou null numa partida só de IA). */
   readonly player: KartState | null;
+  /** Jogadores humanos na ordem das vagas. */
+  readonly players: KartState[];
   readonly crystals: Crystal[] = [];
   readonly crown: CrownState = { holder: -1, x: 0, y: 0, z: 0, lock: 0, lockFor: -1, lockForTime: 0, active: false };
   readonly game: BattleGameId;
@@ -186,11 +213,12 @@ export class BattleSim implements BattleWorld {
   private readonly drivers: BattleAi[] = [];
   private readonly ctx: PhysicsContext;
   private readonly rng: Rng;
-  private readonly alerts: (HudAlert & { ttl: number })[] = [];
+  /** Alertas por jogador (sempre ao menos uma lista). */
+  private readonly alerts: TimedAlert[][] = [[]];
   private alertId = 1;
   private crystalId = 1;
   private spawnTimer = 0;
-  private resetCooldown = 0;
+  private readonly resetCooldown: number[] = [];
   private readonly ray: RAPIER.Ray;
   private readonly baseTuning: KartTuning[] = [];
   private readonly preVel: { vx: number; vz: number; boost: number }[] = [];
@@ -235,17 +263,21 @@ export class BattleSim implements BattleWorld {
           .setCollisionGroups(groups(GROUP_KART, GROUP_STATIC | GROUP_KART | GROUP_OBSTACLE)),
         body,
       );
-      const k = createKartState({ index: i, characterId: r.characterId, kartId: r.kartId, isPlayer: r.isPlayer, ai: !r.isPlayer, tuning, body, collider });
+      const k = createKartState({ index: i, characterId: r.characterId, kartId: r.kartId, isPlayer: r.isPlayer, slot: playerSlotOf(r), ai: !r.isPlayer, tuning, body, collider });
       placeKart(k, slot.pos[0], slot.pos[1] + PHYS.rideHeight, slot.pos[2], slot.heading);
       k.position = i + 1;
       this.karts.push(k);
       this.baseTuning.push(tuning);
       this.preVel.push({ vx: 0, vz: 0, boost: 0 });
       this.watch.push({ x: k.x, z: k.z, time: 0 });
+      this.resetCooldown.push(0);
       this.battlers.push({ balloons: config.game === 'estoura-balao' ? BATTLE_RULES.balloons.start : 0, crystals: 0, crownTime: 0, out: false, outAt: 0, hitsLanded: 0, hitsTaken: 0, pops: 0 });
       this.drivers.push(new BattleAi(r.isPlayer ? 'normal' : config.difficulty, createRng(config.seed + 31 * (i + 1))));
     });
-    this.player = this.karts.find((k) => k.isPlayer) ?? null;
+    this.players = this.karts.filter((k) => k.isPlayer).sort((a, b) => a.slot - b.slot || a.index - b.index);
+    this.players.forEach((k, slot) => { k.slot = slot; });
+    this.player = this.players[0] ?? null;
+    for (let i = 1; i < this.players.length; i++) this.alerts.push([]);
     if (config.game === 'caca-cristais') for (let i = 0; i < 8; i++) this.spawnCrystal();
     this.rank();
   }
@@ -313,13 +345,13 @@ export class BattleSim implements BattleWorld {
     if (playing) this.matchTime += dt;
     // depois do apito os karts ainda deslizam até parar (controles ligados, comandos neutros)
     this.ctx.controlsEnabled = playing || this.phase === 'finished';
-    this.resetCooldown = Math.max(0, this.resetCooldown - dt);
+    for (let i = 0; i < this.resetCooldown.length; i++) this.resetCooldown[i] = Math.max(0, this.resetCooldown[i]! - dt);
 
     for (const k of this.karts) {
       if (this.battlers[k.index]!.out) continue;
       if (!playing) { Object.assign(k.input, NEUTRAL_INPUT); if (this.phase === 'finished') k.input.brake = 1; }
       else if (k.ai) this.drivers[k.index]!.update(k, this, dt);
-      else if (k.isPlayer && this.opts.playerInput) Object.assign(k.input, this.opts.playerInput());
+      else if (k.isPlayer && this.opts.playerInput) Object.assign(k.input, this.opts.playerInput(k.slot));
       stepKart(k, this.ctx, dt);
       const pv = this.preVel[k.index]!;
       pv.vx = k.vx; pv.vz = k.vz; pv.boost = k.boostTime;
@@ -345,9 +377,11 @@ export class BattleSim implements BattleWorld {
     }
     this.rank();
 
-    for (let i = this.alerts.length - 1; i >= 0; i--) {
-      this.alerts[i]!.ttl -= dt;
-      if (this.alerts[i]!.ttl <= 0) this.alerts.splice(i, 1);
+    for (const list of this.alerts) {
+      for (let i = list.length - 1; i >= 0; i--) {
+        list[i]!.ttl -= dt;
+        if (list[i]!.ttl <= 0) list.splice(i, 1);
+      }
     }
   }
 
@@ -474,7 +508,8 @@ export class BattleSim implements BattleWorld {
     b.hitsTaken++;
     if (att >= 0) this.battlers[att]!.hitsLanded++;
     const vName = this.nameOf(victim), aName = att >= 0 ? this.nameOf(att) : '';
-    const playerIdx = this.player?.index ?? -1;
+    // Vaga do humano envolvido (-1 = IA): cada jogador recebe o alerta do próprio ponto de vista.
+    const attSlot = att >= 0 ? this.slotOf(att) : -1, vicSlot = this.slotOf(victim);
     if (this.game === 'estoura-balao') {
       b.balloons = Math.max(0, b.balloons - 1);
       v.invuln = Math.max(v.invuln, 3);
@@ -484,26 +519,26 @@ export class BattleSim implements BattleWorld {
         a.pops++;
         if (a.balloons < BATTLE_RULES.balloons.max) { a.balloons++; this.events.push({ type: 'balloon_steal', kart: att, from: victim }); }
       }
-      if (att === playerIdx) this.alert(`Você estourou o balão de ${vName}!`, 'good');
-      else if (victim === playerIdx) this.alert(att >= 0 ? `${aName} estourou seu balão!` : 'Você perdeu um balão!', 'warn');
+      if (attSlot >= 0) this.alert(`Você estourou o balão de ${vName}!`, 'good', 2.4, attSlot);
+      if (vicSlot >= 0) this.alert(att >= 0 ? `${aName} estourou seu balão!` : 'Você perdeu um balão!', 'warn', 2.4, vicSlot);
       if (b.balloons <= 0) this.eliminate(victim, att);
     } else if (this.game === 'caca-cristais') {
       const lose = b.crystals > 0 ? Math.ceil(b.crystals * BATTLE_RULES.crystals.dropFraction) : 0;
       if (lose > 0) {
         b.crystals -= lose;
         this.scatterCrystals(victim, lose, v.x, v.y, v.z);
-        if (victim === playerIdx) this.alert(`Você perdeu ${lose} cristal${lose > 1 ? 'is' : ''}!`, 'warn');
-        else if (att === playerIdx) this.alert(`${vName} derrubou ${lose} cristal${lose > 1 ? 'is' : ''}!`, 'good');
+        if (vicSlot >= 0) this.alert(`Você perdeu ${lose} cristal${lose > 1 ? 'is' : ''}!`, 'warn', 2.4, vicSlot);
+        if (attSlot >= 0) this.alert(`${vName} derrubou ${lose} cristal${lose > 1 ? 'is' : ''}!`, 'good', 2.4, attSlot);
       }
     } else if (this.game === 'rei-da-coroa' && this.crown.holder === victim) {
       if (att >= 0) {
         this.setHolder(att, victim);
-        if (att === playerIdx) this.alert(`Você roubou a coroa de ${vName}!`, 'good');
-        else if (victim === playerIdx) this.alert(`${aName} roubou sua coroa!`, 'warn');
-        else this.alert(`${aName} roubou a coroa!`, 'info', 1.8);
+        if (attSlot >= 0) this.alert(`Você roubou a coroa de ${vName}!`, 'good', 2.4, attSlot);
+        if (vicSlot >= 0) this.alert(`${aName} roubou sua coroa!`, 'warn', 2.4, vicSlot);
+        this.alertOthers([attSlot, vicSlot], `${aName} roubou a coroa!`, 'info', 1.8);
       } else {
         this.dropCrown(v.x, v.y, v.z, victim);
-        if (victim === playerIdx) this.alert('Você perdeu a coroa!', 'warn');
+        if (vicSlot >= 0) this.alert('Você perdeu a coroa!', 'warn', 2.4, vicSlot);
       }
     }
   }
@@ -516,8 +551,8 @@ export class BattleSim implements BattleWorld {
     k.finished = true;
     k.item = null; k.itemRoll = 0;
     this.events.push({ type: 'eliminated', kart: i, by, x: k.x, y: k.y, z: k.z });
-    if (k.isPlayer) this.alert('Você está fora!', 'warn', 3.5);
-    else this.alert(`${this.nameOf(i)} está fora!`, 'info', 2);
+    if (k.isPlayer) this.alert('Você está fora!', 'warn', 3.5, k.slot);
+    this.alertOthers([k.isPlayer ? k.slot : -1], `${this.nameOf(i)} está fora!`, 'info', 2);
     // tira o kart do mundo físico (continua no placar)
     k.body.setTranslation({ x: k.x, y: -500, z: k.z }, true);
     k.body.setLinvel({ x: 0, y: 0, z: 0 }, true);
@@ -644,8 +679,9 @@ export class BattleSim implements BattleWorld {
     }
     if (best >= 0) {
       this.setHolder(best, -1);
-      if (best === this.player?.index) this.alert('Você pegou a coroa!', 'good');
-      else this.alert(`${this.nameOf(best)} pegou a coroa!`, 'info', 1.8);
+      const slot = this.slotOf(best);
+      if (slot >= 0) this.alert('Você pegou a coroa!', 'good', 2.4, slot);
+      this.alertOthers([slot], `${this.nameOf(best)} pegou a coroa!`, 'info', 1.8);
     }
   }
 
@@ -677,7 +713,7 @@ export class BattleSim implements BattleWorld {
       if (Math.hypot(k.x - w.x, k.z - w.z) > 4) { w.x = k.x; w.z = k.z; w.time = 0; } else w.time += dt;
       if (w.time > 5) { this.drivers[k.index]!.resetStuck(); this.respawn(k, 'stuck'); }
     } else if (k.isPlayer) {
-      if (k.input.reset && !k.resetHeld && this.resetCooldown <= 0) { this.resetCooldown = 3; this.respawn(k, 'manual'); }
+      if (k.input.reset && !k.resetHeld && this.resetCooldown[k.index]! <= 0) { this.resetCooldown[k.index] = 3; this.respawn(k, 'manual'); }
       k.resetHeld = k.input.reset;
     }
   }
@@ -744,30 +780,58 @@ export class BattleSim implements BattleWorld {
     this.phase = 'finished';
     this.events.push({ type: 'match_end' });
     const winner = this.order()[0]!;
-    this.alert(winner === this.player?.index ? 'VOCÊ VENCEU!' : `${this.nameOf(winner).toUpperCase()} VENCEU!`, winner === this.player?.index ? 'good' : 'info', 5);
+    const ws = this.slotOf(winner);
+    if (ws >= 0) this.alert('VOCÊ VENCEU!', 'good', 5, ws);
+    this.alertOthers([ws], `${this.nameOf(winner).toUpperCase()} VENCEU!`, 'info', 5);
     for (const k of this.karts) { k.item = null; k.itemRoll = 0; }
   }
 
-  private alert(text: string, kind: HudAlert['kind'], ttl = 2.4): void {
-    this.alerts.push({ id: this.alertId++, text, kind, ttl });
-    if (this.alerts.length > 3) this.alerts.shift();
+  /** Alerta no HUD de um jogador (`slot`) ou de todos (`slot` omitido). */
+  private alert(text: string, kind: HudAlert['kind'], ttl = 2.4, slot = -1): void {
+    this.alerts.forEach((list, i) => {
+      if (slot >= 0 && slot !== i) return;
+      list.push({ id: this.alertId++, text, kind, ttl });
+      if (list.length > 3) list.shift();
+    });
+  }
+
+  /** Alerta para todos os jogadores, menos as vagas listadas (que já receberam a versão pessoal). */
+  private alertOthers(except: number[], text: string, kind: HudAlert['kind'], ttl = 2.4): void {
+    this.alerts.forEach((_, i) => { if (!except.includes(i)) this.alert(text, kind, ttl, i); });
+  }
+
+  /** Vaga do humano que pilota o kart `i`, ou -1 (IA). */
+  slotOf(i: number): number {
+    const k = this.karts[i];
+    return k && k.isPlayer ? k.slot : -1;
   }
 
   nameOf(index: number): string {
     return CHARACTER_BY_ID[this.karts[index]!.characterId].name;
   }
 
-  /** Kart acompanhado pela câmera: o jogador ou, se ele estiver fora, o líder ainda na arena. */
-  focusIndex(): number {
-    const p = this.player;
+  /**
+   * Kart acompanhado pela câmera do jogador `slot`: ele mesmo ou, se estiver fora, o outro jogador ainda na arena
+   * (tela dividida) ou o líder.
+   */
+  focusIndex(slot = 0): number {
+    const p = this.players[slot] ?? this.player;
     if (p && !this.battlers[p.index]!.out) return p.index;
+    const mate = this.players.find((o) => o !== p && !this.battlers[o.index]!.out);
+    if (mate) return mate.index;
     return this.order().find((i) => !this.battlers[i]!.out) ?? (p?.index ?? 0);
   }
 
-  hud(): BattleHudSnapshot {
-    const p = this.player ?? this.karts[0]!;
+  /** Todos os humanos foram eliminados (sem humanos: true). */
+  allHumansOut(): boolean {
+    return this.players.every((k) => this.battlers[k.index]!.out);
+  }
+
+  hud(slot = 0): BattleHudSnapshot {
+    const p = this.players[slot] ?? this.player ?? this.karts[0]!;
     const b = this.battlers[p.index]!;
-    const focus = this.focusIndex();
+    const mySlot = Math.max(0, p.slot);
+    const focus = this.focusIndex(mySlot);
     return {
       game: this.game,
       phase: this.phase,
@@ -783,12 +847,15 @@ export class BattleSim implements BattleWorld {
       holdingCrown: this.crown.holder === p.index,
       out: b.out,
       spectating: b.out ? this.karts[focus]!.characterId : null,
+      slot: mySlot,
+      humans: this.players.length,
+      allHumansOut: this.allHumansOut(),
       board: this.order().map((i, pos) => ({
         index: i, characterId: this.karts[i]!.characterId, isPlayer: this.karts[i]!.isPlayer, score: this.scoreOf(i),
-        out: this.battlers[i]!.out, crown: this.crown.holder === i, position: pos + 1,
+        out: this.battlers[i]!.out, crown: this.crown.holder === i, position: pos + 1, slot: this.slotOf(i), me: i === p.index,
       })),
-      alerts: this.alerts.map(({ id, text, kind }) => ({ id, text, kind })),
-      dots: this.karts.map((k) => ({ x: k.x, z: k.z, characterId: k.characterId, isPlayer: k.isPlayer, out: this.battlers[k.index]!.out, crown: this.crown.holder === k.index })),
+      alerts: (this.alerts[mySlot] ?? this.alerts[0]!).map(({ id, text, kind }) => ({ id, text, kind })),
+      dots: this.karts.map((k) => ({ x: k.x, z: k.z, characterId: k.characterId, isPlayer: k.isPlayer, out: this.battlers[k.index]!.out, crown: this.crown.holder === k.index, me: k === p })),
       crystalDots: this.game === 'caca-cristais' ? this.crystals.flatMap((c) => [Math.round(c.x), Math.round(c.z)]) : [],
       crown: this.game === 'rei-da-coroa' && this.crown.active ? { x: this.crown.x, z: this.crown.z, free: this.crown.holder < 0 } : null,
     };
@@ -799,7 +866,7 @@ export class BattleSim implements BattleWorld {
     const standings: BattleStanding[] = order.map((i, pos) => {
       const k = this.karts[i]!, b = this.battlers[i]!;
       return {
-        racerIndex: i, characterId: k.characterId, kartId: k.kartId, isPlayer: k.isPlayer, position: pos + 1,
+        racerIndex: i, characterId: k.characterId, kartId: k.kartId, isPlayer: k.isPlayer, ...(k.isPlayer ? { slot: k.slot } : {}), position: pos + 1,
         score: this.scoreOf(i), eliminated: b.out, hitsLanded: b.hitsLanded, hitsTaken: b.hitsTaken,
       };
     });
@@ -810,6 +877,14 @@ export class BattleSim implements BattleWorld {
       playerPosition: standings.find((s) => s.racerIndex === p.index)!.position,
       durationMs: Math.round(this.matchTime * 1000),
       stats: { itemsUsed: p.itemsUsed, hitsLanded: pb.hitsLanded, hitsTaken: pb.hitsTaken, turbos: [...p.turbos] },
+      players: this.players.map((k) => {
+        const kb = this.battlers[k.index]!;
+        return {
+          slot: k.slot, racerIndex: k.index, characterId: k.characterId,
+          position: standings.find((s) => s.racerIndex === k.index)!.position,
+          stats: { itemsUsed: k.itemsUsed, hitsLanded: kb.hitsLanded, hitsTaken: kb.hitsTaken, turbos: [...k.turbos] },
+        };
+      }),
     };
   }
 

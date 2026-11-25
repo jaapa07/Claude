@@ -50,7 +50,10 @@ export function ringTrack(radius = 70, halfWidth = 40): TrackData {
 
 export interface Harness {
   sim: RaceSim;
+  /** Comandos do Jogador 1 (= inputs[0]). */
   input: InputState;
+  /** Comandos de cada jogador humano, pela vaga. */
+  inputs: InputState[];
   events: SimEvent[];
   /** Avança `seconds` de simulação acumulando os eventos. */
   run: (seconds: number) => void;
@@ -67,6 +70,8 @@ export interface HarnessOptions {
   /** Número de adversários de IA (0 = só o jogador). */
   opponents?: number;
   player?: boolean;
+  /** Jogadores humanos (tela dividida): 2 = Jogador 1 e Jogador 2 no fim do grid. Padrão 1. */
+  humans?: number;
   kart?: KartId;
   difficulty?: Difficulty;
   mode?: GameMode;
@@ -75,18 +80,20 @@ export interface HarnessOptions {
 }
 
 export function createHarness(o: HarnessOptions = {}): Harness {
-  const input: InputState = { ...NEUTRAL_INPUT };
   const withPlayer = o.player ?? true;
+  const humans = withPlayer ? Math.max(1, o.humans ?? 1) : 0;
+  const inputs: InputState[] = Array.from({ length: Math.max(1, humans) }, () => ({ ...NEUTRAL_INPUT }));
+  const input = inputs[0]!;
   const racers = [
-    ...(withPlayer ? [{ characterId: CHARACTERS[0]!.id, kartId: o.kart ?? CHARACTERS[0]!.kartId, isPlayer: true }] : []),
-    ...CHARACTERS.slice(withPlayer ? 1 : 0, (withPlayer ? 1 : 0) + (o.opponents ?? 0)).map((c) => ({ characterId: c.id, kartId: c.kartId, isPlayer: false })),
+    ...Array.from({ length: humans }, (_, slot) => ({ characterId: CHARACTERS[slot]!.id, kartId: slot === 0 ? o.kart ?? CHARACTERS[0]!.kartId : CHARACTERS[slot]!.kartId, isPlayer: true, slot })),
+    ...CHARACTERS.slice(humans, humans + (o.opponents ?? 0)).map((c) => ({ characterId: c.id, kartId: c.kartId, isPlayer: false })),
   ];
   const sim = new RaceSim(RAPIER, new RAPIER.World({ x: 0, y: 0, z: 0 }), o.data ?? loadTrack(o.track ?? 'porto-lanternas'), {
     trackId: o.track ?? 'porto-lanternas', mode: o.mode ?? 'quick', difficulty: o.difficulty ?? 'normal', laps: o.laps ?? 3, seed: o.seed ?? 7, racers,
-  }, { playerInput: () => input });
+  }, { playerInput: (slot) => inputs[slot] ?? input });
   const events: SimEvent[] = [];
   const h: Harness = {
-    sim, input, events, follow: false,
+    sim, input, inputs, events, follow: false,
     run: (seconds: number): void => {
       const steps = Math.round(seconds * 60);
       for (let i = 0; i < steps; i++) {
