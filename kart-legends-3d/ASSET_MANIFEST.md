@@ -4,13 +4,14 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 (id, nome, tipo, caminho, formato, origem, autor, licença, tamanho, status de validação e local de uso), está em
 `public/assets/manifest.json`. A validação automática é `npm run validate:assets`.
 
-- **Total:** 373 arquivos, 142.6 MB
+- **Total:** 379 arquivos, 146.7 MB
 - **Autor de todos os recursos:** Equipe Kart Legends 3D
 - **Licença:** Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)
 - **Recursos de terceiros:** nenhum
 
 | Pasta | Arquivos | Tamanho | Origem | Onde é usado |
 |---|---:|---:|---|---|
+| `arenas/` | 4 | 4166 kB | scripts/build-arenas.ts (arena autorada + cenário das bibliotecas) | Arenas do modo Batalha |
 | `audio/` | 107 | 14033 kB | scripts/build-audio.ts (síntese procedural própria) | Música, efeitos e ambiência |
 | `characters/` | 15 | 5233 kB | scripts/build-characters.ts (modelagem, rig e animação por script) | Pilotos na corrida, vitrine e pódio |
 | `items/` | 17 | 714 kB | scripts/build-items.ts (modelagem por script) | Itens, placas de turbo, rampas, pórtico, troféus e pódio |
@@ -19,8 +20,17 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | `textures/` | 101 | 1415 kB | scripts (texturas procedurais e arte vetorial próprias) | Materiais dos modelos (também embutidas nos GLB) |
 | `tires/` | 8 | 183 kB | scripts/build-tires.ts (modelagem por script) | Rodas da loja, equipáveis em qualquer kart |
 | `tracks/` | 25 | 120684 kB | scripts/build-tracks.ts (traçado autorado + cenário) | Pistas e dados de corrida |
-| `ui/` | 63 | 1416 kB | scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo) | Interface (retratos, ícones, miniaturas) |
+| `ui/` | 65 | 1466 kB | scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo) | Interface (retratos, ícones, miniaturas) |
 | `vfx/` | 1 | 25 kB | scripts/build-vfx.ts (arte vetorial própria) | Sistema de partículas |
+
+## arenas/
+
+| Arquivo | Tipo | Tamanho |
+|---|---|---:|
+| `arenas/cratera-lunar.glb` | model | 375 kB |
+| `arenas/cratera-lunar.json` | data | 28 kB |
+| `arenas/praca-coreto.glb` | model | 3749 kB |
+| `arenas/praca-coreto.json` | data | 15 kB |
 
 ## characters/
 
@@ -157,6 +167,8 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 
 | Arquivo | Tipo | Tamanho |
 |---|---|---:|
+| `ui/arenas/cratera-lunar.webp` | image | 13 kB |
+| `ui/arenas/praca-coreto.webp` | image | 37 kB |
 | `ui/icons/boro.webp` | image | 5 kB |
 | `ui/icons/capi.webp` | image | 4 kB |
 | `ui/icons/kaito.webp` | image | 3 kB |

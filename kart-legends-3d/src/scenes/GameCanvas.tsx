@@ -9,6 +9,7 @@ import { CHARACTER_BY_ID } from '@/data/characters';
 import { CHARACTER_IDS, KART_IDS, type CharacterId, type KartId, type TrackId } from '@/data/ids';
 import { PodiumScene, type PodiumEntry } from './PodiumScene';
 import { QUALITY } from './quality';
+import { BattleScene } from './battle/BattleScene';
 import { RaceScene } from './race/RaceScene';
 import { useSceneStore } from './sceneStore';
 import { ShowcaseScene, TrackPreviewScene } from './ShowcaseScene';
@@ -75,6 +76,7 @@ function studioRequest(): { kind: 'character' | 'kart' | 'track'; id: string } |
 export function GameCanvas(): JSX.Element {
   const screen = useGameStore((s) => s.screen);
   const race = useGameStore((s) => s.race);
+  const battle = useGameStore((s) => s.battle);
   const raceNonce = useGameStore((s) => s.raceNonce);
   const selection = useGameStore((s) => s.selection);
   const lastResult = useGameStore((s) => s.lastResult);
@@ -96,7 +98,7 @@ export function GameCanvas(): JSX.Element {
     return pos === 0 ? 'gold' as const : pos === 1 ? 'silver' as const : pos === 2 ? 'bronze' as const : null;
   }, [championship]);
 
-  const mode = studio ? 'studio' : (screen === 'race' || screen === 'results') && race ? 'race' : screen === 'podium' && podium.length ? 'podium' : screen === 'loading' ? 'none' : 'showcase';
+  const mode = studio ? 'studio' : (screen === 'race' || screen === 'results') && (race || battle) ? 'race' : screen === 'podium' && podium.length ? 'podium' : screen === 'loading' ? 'none' : 'showcase';
 
   return (
     <div className="game-canvas" data-testid="game-canvas" data-mode={mode} data-loading={loading ? '1' : '0'} data-fps={fps}>
@@ -113,6 +115,7 @@ export function GameCanvas(): JSX.Element {
         <FrameStepHook setManual={setManualFrames} />
         <Suspense fallback={<LoadingSignal />}>
           {mode === 'race' && race && <RaceScene key={raceNonce} config={race} />}
+          {mode === 'race' && battle && <BattleScene key={raceNonce} config={battle} />}
           {mode === 'podium' && <PodiumScene entries={podium} trophy={trophy} />}
           {mode === 'showcase' && <ShowcaseScene screen={screen} characterId={selection.characterId} kartId={selection.kartId} />}
           {mode === 'studio' && studio?.kind === 'track' && <TrackPreviewScene trackId={studio.id as TrackId} />}
@@ -132,7 +135,7 @@ export function GameCanvas(): JSX.Element {
           </EffectComposer>
         )}
       </Canvas>
-      {loading && mode === 'race' && <div className="scene-loading" role="status">Carregando pista…</div>}
+      {loading && mode === 'race' && <div className="scene-loading" role="status">{battle ? 'Carregando arena…' : 'Carregando pista…'}</div>}
     </div>
   );
 }

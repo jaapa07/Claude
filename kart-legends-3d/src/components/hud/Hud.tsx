@@ -72,7 +72,7 @@ function Speedometer(): JSX.Element {
   );
 }
 
-function ItemBox(): JSX.Element {
+export function ItemBox(): JSX.Element {
   const item = useHudStore((s) => s.hud.item);
   const rolling = useHudStore((s) => s.hud.itemRolling);
   const [rollIndex, setRollIndex] = useState(0);
@@ -130,7 +130,7 @@ function DriftAndBoost(): JSX.Element {
   );
 }
 
-function Countdown(): JSX.Element | null {
+export function Countdown(): JSX.Element | null {
   const countdown = useHudStore((s) => s.hud.countdown);
   if (countdown < 0) return null;
   const text = countdown === 0 ? 'VAI!' : String(countdown);

@@ -3,6 +3,58 @@
  "generatedBy": "scripts/build-manifest.ts",
  "assets": [
   {
+   "id": "arenas:cratera-lunar",
+   "name": "cratera-lunar",
+   "type": "model",
+   "path": "arenas/cratera-lunar.glb",
+   "format": "glb",
+   "origin": "scripts/build-arenas.ts (arena autorada + cenário das bibliotecas)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 383716,
+   "status": "validado",
+   "usedIn": "Arenas do modo Batalha"
+  },
+  {
+   "id": "arenas:cratera-lunar",
+   "name": "cratera-lunar",
+   "type": "data",
+   "path": "arenas/cratera-lunar.json",
+   "format": "json",
+   "origin": "scripts/build-arenas.ts (arena autorada + cenário das bibliotecas)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 28223,
+   "status": "validado",
+   "usedIn": "Arenas do modo Batalha"
+  },
+  {
+   "id": "arenas:praca-coreto",
+   "name": "praca-coreto",
+   "type": "model",
+   "path": "arenas/praca-coreto.glb",
+   "format": "glb",
+   "origin": "scripts/build-arenas.ts (arena autorada + cenário das bibliotecas)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 3839064,
+   "status": "validado",
+   "usedIn": "Arenas do modo Batalha"
+  },
+  {
+   "id": "arenas:praca-coreto",
+   "name": "praca-coreto",
+   "type": "data",
+   "path": "arenas/praca-coreto.json",
+   "format": "json",
+   "origin": "scripts/build-arenas.ts (arena autorada + cenário das bibliotecas)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 15056,
+   "status": "validado",
+   "usedIn": "Arenas do modo Batalha"
+  },
+  {
    "id": "audio:aac:music:defeat",
    "name": "defeat",
    "type": "audio",
@@ -4018,6 +4070,32 @@
    "bytes": 100984,
    "status": "validado",
    "usedIn": "Pistas e dados de corrida"
+  },
+  {
+   "id": "ui:arenas:cratera-lunar",
+   "name": "cratera-lunar",
+   "type": "image",
+   "path": "ui/arenas/cratera-lunar.webp",
+   "format": "webp",
+   "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 12986,
+   "status": "validado",
+   "usedIn": "Interface (retratos, ícones, miniaturas)"
+  },
+  {
+   "id": "ui:arenas:praca-coreto",
+   "name": "praca-coreto",
+   "type": "image",
+   "path": "ui/arenas/praca-coreto.webp",
+   "format": "webp",
+   "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 37740,
+   "status": "validado",
+   "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
   {
    "id": "ui:icons:boro",

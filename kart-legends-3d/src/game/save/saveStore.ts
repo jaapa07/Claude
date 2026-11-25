@@ -5,8 +5,9 @@ import type { CharacterId, CupId, KartId, TrackId, TrophyTier } from '@/data/ids
 import { KARTS } from '@/data/karts';
 import { CUPS, CUP_UNLOCK, TRACK_BY_ID } from '@/data/tracks';
 import type { UnlockRule } from '@/data/unlocks';
+import type { BattleResult } from '@/game/battle/battleSim';
 import type { RaceResult } from '@/game/core/types';
-import { COINS_TROPHY, COSMETIC_PRICES, SHOP_PRICES, START_COINS, TIRE_PRICES, coinsForRace, type ShopKind } from '@/data/shop';
+import { COINS_TROPHY, COSMETIC_PRICES, SHOP_PRICES, START_COINS, TIRE_PRICES, coinsForBattle, coinsForRace, type ShopKind } from '@/data/shop';
 import { readKey, removeKey, writeKey } from './storage';
 
 export const SAVE_KEY = 'kl3d.save';
@@ -37,6 +38,9 @@ export interface SaveStats {
   timeTrials: number;
   championships: number;
   playTimeMs: number;
+  /** Partidas de Batalha concluídas e vencidas. */
+  battles: number;
+  battleWins: number;
 }
 
 export interface SaveUnlocks { characters: CharacterId[]; karts: KartId[]; cups: CupId[] }
@@ -77,6 +81,8 @@ export interface SaveState extends SaveData {
   lastReport: ApplyReport | null;
   /** Registra uma corrida; devolve os novos desbloqueios. */
   applyRaceResult: (result: RaceResult, championship?: ChampionshipOutcome) => UnlockNotice[];
+  /** Registra uma partida de Batalha (moedas, partidas, vitórias, itens, turbos e tempo jogado). */
+  applyBattleResult: (result: BattleResult) => UnlockNotice[];
   addPlayTime: (ms: number) => void;
   resetProgress: () => void;
   /** Relê o localStorage (usado na inicialização e nos testes). */
@@ -112,7 +118,7 @@ export function createDefaultSave(): SaveData {
     owned: { characters: [], karts: [], tires: [], cosmetics: [] },
     trophies: Object.fromEntries(CUP_IDS.map((c) => [c, null])) as Record<CupId, TrophyTier | null>,
     records: Object.fromEntries(TRACK_IDS.map((t) => [t, emptyRecord()])) as Record<TrackId, TrackRecord>,
-    stats: { races: 0, wins: 0, podiums: 0, turbos: [0, 0, 0], itemsUsed: 0, timeTrials: 0, championships: 0, playTimeMs: 0 },
+    stats: { races: 0, wins: 0, podiums: 0, turbos: [0, 0, 0], itemsUsed: 0, timeTrials: 0, championships: 0, playTimeMs: 0, battles: 0, battleWins: 0 },
   };
   data.unlocked = computeUnlocks(data);
   return data;
@@ -190,6 +196,7 @@ export function sanitizeSave(raw: Raw): SaveData {
     turbos: [count(turbos[0]), count(turbos[1]), count(turbos[2])],
     itemsUsed: count(stats.itemsUsed), timeTrials: count(stats.timeTrials),
     championships: count(stats.championships), playTimeMs: count(stats.playTimeMs),
+    battles: count(stats.battles), battleWins: count(stats.battleWins),
   };
   const trophies = isObject(raw.trophies) ? raw.trophies : {};
   for (const cup of CUP_IDS) {
@@ -344,6 +351,23 @@ export const useSaveStore = create<SaveState>()((set, get) => ({
     const unlocks = diffUnlocks(before, data.unlocked);
     persist(data);
     set({ ...data, lastReport: { unlocks, newRecords, trophy, coins } });
+    return unlocks;
+  },
+
+  applyBattleResult: (result) => {
+    const data = snapshot(get());
+    const before = data.unlocked;
+    data.stats.battles += 1;
+    if (result.playerPosition === 1) data.stats.battleWins += 1;
+    for (let i = 0; i < 3; i++) data.stats.turbos[i] += count(result.stats.turbos[i]);
+    data.stats.itemsUsed += count(result.stats.itemsUsed);
+    data.stats.playTimeMs += count(result.durationMs);
+    const coins = coinsForBattle({ difficulty: result.difficulty, position: result.playerPosition, racers: result.standings.length });
+    data.coins += coins;
+    data.unlocked = computeUnlocks(data);
+    const unlocks = diffUnlocks(before, data.unlocked);
+    persist(data);
+    set({ ...data, lastReport: { unlocks, newRecords: { raceTime: false, bestLap: false }, trophy: null, coins } });
     return unlocks;
   },
 

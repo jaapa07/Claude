@@ -4,9 +4,11 @@ import type { Screen } from './gameTypes';
 /**
  * Ordem das telas antes da corrida:
  * menu → modo → (copa no Campeonato | pista nos demais) → dificuldade (pulada no Contrarrelógio e no
- * Treino, que não têm adversários) → personagem → kart → corrida.
+ * Treino, que não têm adversários) → personagem → kart → corrida. Batalha: modo → minijogo → arena → dificuldade →
+ * personagem → kart → partida.
  */
 export function flowSteps(mode: GameMode): Screen[] {
+  if (mode === 'battle') return ['menu', 'mode', 'battleGame', 'arena', 'difficulty', 'character', 'kart'];
   const steps: Screen[] = ['menu', 'mode', mode === 'championship' ? 'cup' : 'track'];
   if (mode === 'quick' || mode === 'championship') steps.push('difficulty');
   steps.push('character', 'kart');
@@ -32,6 +34,7 @@ export const MODE_INFO: ReadonlyArray<{ id: GameMode; name: string; description:
   { id: 'quick', name: 'Corrida Rápida', description: 'Escolha uma pista e dispute contra sete adversários.', detail: '8 pilotos · 3 voltas' },
   { id: 'championship', name: 'Campeonato', description: 'Quatro corridas de uma copa valendo pontos e troféu.', detail: '4 corridas · troféu' },
   { id: 'timetrial', name: 'Contrarrelógio', description: 'Só você e o cronômetro: busque o melhor tempo.', detail: 'Sem adversários · 3 voltas' },
+  { id: 'battle', name: 'Batalha', description: 'Minijogos numa arena aberta: balões, cristais e a coroa.', detail: '8 pilotos · 3 minijogos' },
   { id: 'training', name: 'Treino', description: 'Explore a pista livremente, sem adversários nem limite de voltas.', detail: 'Livre · saia pelo menu de pausa' },
 ];
 

@@ -98,6 +98,11 @@ export class ItemSystem {
   private ramCooldown: number[] = [];
   private cometOn: boolean[] = [];
   private readonly tmp = { x: 0, y: 0, z: 0 };
+  /**
+   * Movimento alternativo dos projéteis, para lugares sem traçado (arenas de batalha). Recebe o projétil
+   * com `px/py/pz` já atualizados e escreve `x/y/z` (ou zera `life` para destruí-lo). null = segue a pista.
+   */
+  projectileMotion: ((p: Projectile, karts: KartState[], dt: number) => void) | null = null;
 
   constructor(
     private readonly track: TrackRuntime,
@@ -368,6 +373,8 @@ export class ItemSystem {
       const p = this.projectiles[i]!;
       p.life -= dt;
       p.px = p.x; p.py = p.y; p.pz = p.z;
+      if (this.projectileMotion) this.projectileMotion(p, karts, dt);
+      else {
       p.s += (PROJECTILE_SPEED * dt) / this.track.data.spacing;
       const target = p.target >= 0 ? karts[p.target] : undefined;
       let wanted = this.track.racingLine[main.wrap(Math.floor(p.s))]!;
@@ -379,6 +386,7 @@ export class ItemSystem {
       p.lateral += Math.max(-rate * dt, Math.min(rate * dt, wanted - p.lateral));
       main.point(Math.floor(p.s), p.lateral, this.tmp);
       p.x = this.tmp.x; p.y = this.tmp.y + 1; p.z = this.tmp.z;
+      }
       let dead = p.life <= 0;
       for (const h of this.hazards) {
         if (Math.hypot(p.x - h.x, p.z - h.z) < h.radius) { dead = true; h.life = Math.min(h.life, 0.6); }

@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { CHARACTERS, CHARACTER_BY_ID } from '@/data/characters';
 import type { CharacterId } from '@/data/ids';
 import { CUP_BY_ID, LAPS_PER_RACE, POINTS_BY_POSITION } from '@/data/tracks';
+import type { BattleConfig, BattleResult } from '@/game/battle/battleSim';
 import type { RaceConfig, RaceResult, RacerSetup } from '@/game/core/types';
 import { useSaveStore } from '@/game/save/saveStore';
 import type { ChampionshipOutcome, UnlockNotice } from '@/game/save/saveStore';
@@ -14,6 +15,7 @@ export const TRAINING_LAPS = 99;
 
 export const DEFAULT_SELECTION: Readonly<Selection> = {
   characterId: 'nilo', kartId: 'flecha', mode: 'quick', cupId: 'aurora', trackId: 'porto-lanternas', difficulty: 'normal',
+  battleGame: 'estoura-balao', arenaId: 'praca-coreto',
 };
 
 /** O que a última corrida rendeu (mostrado em Resultados e no Pódio). */
@@ -124,6 +126,8 @@ export const useGameStore = create<GameStoreState>()((set, get) => ({
   championship: null,
   lastRewards: null,
   raceStartedAt: 0,
+  battle: null,
+  lastBattle: null,
 
   goTo: (screen: Screen) => {
     const current = get().screen;
@@ -139,6 +143,18 @@ export const useGameStore = create<GameStoreState>()((set, get) => ({
     const state = get();
     const selection = validSelection(state.selection);
     const seed = randomSeed();
+    if (selection.mode === 'battle') {
+      // Batalha: oito pilotos (você e sete sorteados), sem copa e sem RaceConfig.
+      const battle: BattleConfig = {
+        arenaId: selection.arenaId, game: selection.battleGame, difficulty: selection.difficulty,
+        racers: capRacers(buildFreshGrid(selection, seed)), seed,
+      };
+      set({
+        selection, championship: null, race: null, battle, raceNonce: state.raceNonce + 1, paused: false,
+        lastResult: null, lastBattle: null, lastRewards: null, raceStartedAt: Date.now(), screen: 'race',
+      });
+      return;
+    }
     let championship: ChampionshipState | null = state.championship;
     let racers: RacerSetup[];
     let trackId = selection.trackId;
@@ -176,6 +192,8 @@ export const useGameStore = create<GameStoreState>()((set, get) => ({
       selection: { ...selection, trackId },
       championship,
       race,
+      battle: null,
+      lastBattle: null,
       raceNonce: state.raceNonce + 1,
       paused: false,
       lastResult: null,
@@ -186,7 +204,11 @@ export const useGameStore = create<GameStoreState>()((set, get) => ({
   },
 
   restartRace: () => {
-    const { race, raceNonce, screen, championship } = get();
+    const { race, raceNonce, screen, championship, battle } = get();
+    if (battle) {
+      set({ battle: { ...battle, seed: randomSeed() }, raceNonce: raceNonce + 1, paused: false, lastBattle: null, lastRewards: null, raceStartedAt: Date.now(), screen: 'race' });
+      return;
+    }
     if (!race) return;
     // Depois de registrado o resultado, uma corrida de copa não pode ser refeita.
     if (screen !== 'race' && championship) return;
@@ -203,7 +225,7 @@ export const useGameStore = create<GameStoreState>()((set, get) => ({
 
   setPaused: (paused) => {
     const s = get();
-    if (s.screen !== 'race' || !s.race) {
+    if (s.screen !== 'race' || (!s.race && !s.battle)) {
       if (s.paused) set({ paused: false });
       return;
     }
@@ -260,6 +282,22 @@ export const useGameStore = create<GameStoreState>()((set, get) => ({
     });
   },
 
+  finishBattle: (result: BattleResult) => {
+    const state = get();
+    if (state.screen !== 'race' || !state.battle) return;
+    const unlocks = useSaveStore.getState().applyBattleResult(result);
+    const report = useSaveStore.getState().lastReport;
+    set({
+      lastBattle: result,
+      lastRewards: {
+        unlocks, newRecords: { raceTime: false, bestLap: false }, trophy: null, championshipPosition: null, pointsThisRace: {},
+        coins: report ? report.coins : 0,
+      },
+      paused: false,
+      screen: 'results',
+    });
+  },
+
   continueAfterResults: () => {
     const { screen, championship, lastResult } = get();
     if (screen === 'results') {
@@ -277,7 +315,7 @@ export const useGameStore = create<GameStoreState>()((set, get) => ({
   quitToMenu: () => {
     const s = get();
     // Sessão abandonada pelo menu de pausa (é assim que o Treino termina): registra o tempo jogado.
-    if (s.screen === 'race' && s.race && s.raceStartedAt > 0) useSaveStore.getState().addPlayTime(Date.now() - s.raceStartedAt);
-    set({ screen: 'menu', race: null, championship: null, paused: false, lastResult: null, lastRewards: null, raceStartedAt: 0 });
+    if (s.screen === 'race' && (s.race || s.battle) && s.raceStartedAt > 0) useSaveStore.getState().addPlayTime(Date.now() - s.raceStartedAt);
+    set({ screen: 'menu', race: null, battle: null, lastBattle: null, championship: null, paused: false, lastResult: null, lastRewards: null, raceStartedAt: 0 });
   },
 }));

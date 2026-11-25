@@ -50,6 +50,19 @@ servidor de arquivos estáticos.
 Tudo é remapeável em **Configurações**, onde também ficam a sensibilidade da direção, os volumes
 (música, efeitos, ambiente) e a qualidade gráfica (Baixa, Média, Alta).
 
+## Batalha (minijogos)
+
+Modo **Batalha** (escolha de modo → minijogo → arena), até 8 karts, itens ligados, IA própria (sem linha de corrida):
+
+| Minijogo | Regras | Tempo |
+|---|---|---|
+| **Estoura-Balão** | 3 balões por kart (máx. 5); item ou batida forte estoura um e quem estourou rouba; sem balões, está fora | 3:00 |
+| **Caça-Cristais** | Junte cristais; levar golpe derruba metade; nos últimos 30 s, chuva de cristais | 2:30 |
+| **Rei da Coroa** | Com a coroa, 1 ponto por segundo (um pouco mais lento); acertar o dono rouba; 60 pontos vencem | 2:30 |
+
+Arenas: **Praça do Coreto** (fonte, terraços com rampas, coreto) e **Cratera Lunar** (cratera com plataforma central).
+Moedas pela colocação (menos que numa copa). Regras e números em `src/data/battle.ts`.
+
 ## Personalização
 
 - **Roupas:** na escolha do piloto, 6 roupas para cada um (Clássico, Tropical, Oceano, Noturno, Neve e Ouro).
