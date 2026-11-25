@@ -94,5 +94,53 @@
     "animated": 15,
     "colliders": 276,
     "warnings": []
+  },
+  {
+    "id": "recife-coral",
+    "length": 1216,
+    "samples": 608,
+    "triangles": 263268,
+    "glbBytes": 7033080,
+    "jsonBytes": 108656,
+    "props": 399,
+    "animated": 2,
+    "colliders": 234,
+    "warnings": []
+  },
+  {
+    "id": "templo-esmeralda",
+    "length": 1204,
+    "samples": 602,
+    "triangles": 315598,
+    "glbBytes": 8763320,
+    "jsonBytes": 103414,
+    "props": 480,
+    "animated": 6,
+    "colliders": 165,
+    "warnings": []
+  },
+  {
+    "id": "vulcao-rubro",
+    "length": 1184,
+    "samples": 592,
+    "triangles": 147518,
+    "glbBytes": 3900876,
+    "jsonBytes": 100984,
+    "props": 407,
+    "animated": 3,
+    "colliders": 200,
+    "warnings": []
+  },
+  {
+    "id": "estacao-lunar",
+    "length": 1252,
+    "samples": 626,
+    "triangles": 169406,
+    "glbBytes": 4157172,
+    "jsonBytes": 104153,
+    "props": 433,
+    "animated": 13,
+    "colliders": 93,
+    "warnings": []
   }
 ]
