@@ -398,7 +398,7 @@ export class Flow {
     this.tick = () => {
       if (!this.match) return;
       const pausePressed = input.devices().some((d) => input.pressed(d, 'pause'));
-      if (pausePressed && ['play', 'kickoff', 'setpiece'].includes(this.match.state) && !this.match.paused) this.pause();
+      if (pausePressed && !['intro', 'fulltime', 'done', 'halftime'].includes(this.match.state) && !this.match.paused && !this.busy) this.pause();
       else if (pausePressed && this.match.state === 'intro') { /* START pula a intro */ }
     };
   }
