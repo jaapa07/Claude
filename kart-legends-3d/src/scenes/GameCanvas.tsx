@@ -48,6 +48,8 @@ function FrameStepHook({ setManual }: { setManual: (on: boolean) => void }): nul
     w.__kl3dFrames = {
       manual: (on: boolean) => setManual(on),
       step: (frames: number, dt = 1 / 30) => { for (let i = 0; i < frames; i++) advance(clock.elapsedTime + dt); },
+      /** Posição e campo de visão da câmera atual (inspeção da câmera de corrida). */
+      camera: () => ({ pos: camera.position.toArray(), fov: (camera as THREE.PerspectiveCamera).fov }),
       /** Redesenha o quadro atual visto de outro ponto (inspeção de cenário animado). */
       view: (pos: [number, number, number], target: [number, number, number]) => {
         camera.position.set(...pos);

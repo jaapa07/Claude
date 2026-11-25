@@ -184,13 +184,13 @@ export class RaceVfx {
       const x = cam.x + forward.x * 22 + (Math.random() - 0.5) * 60;
       const z = cam.z + forward.z * 22 + (Math.random() - 0.5) * 60;
       switch (kind) {
-        case 'snow': this.solid.emit({ x, y: cam.y + 3 + Math.random() * 12, z, vx: -2.5, vy: -3.2, vz: 1, spread: 1.6, life: 3.2, size: 0.16, sprite: SPRITE.snow, r: 1, g: 1, b: 1, alpha: 0.9, spin: 2 }); break;
+        case 'snow': this.solid.emit({ x, y: cam.y + 3 + Math.random() * 12, z, vx: -2.5, vy: -3.2, vz: 1, spread: 1.6, life: 3.2, size: 0.16, sprite: SPRITE.snow, r: 1, g: 1, b: 1, alpha: 0.9, spin: 2, flutter: 1.2 }); break;
         case 'rain': this.solid.emit({ x, y: cam.y + 6 + Math.random() * 10, z, vx: -1.5, vy: -30, vz: 0, life: 0.55, size: 0.5, sprite: SPRITE.rain, r: 0.7, g: 0.8, b: 1, alpha: 0.45 }); break;
         case 'sand': this.solid.emit({ x, y: cam.y - 2 + Math.random() * 6, z, vx: 13, vy: 0.4, vz: 5, spread: 3, life: 1.8, size: 0.9, grow: 2.2, sprite: SPRITE.dust, r: 0.93, g: 0.76, b: 0.5, alpha: 0.22 }); break;
-        case 'leaves': this.solid.emit({ x, y: cam.y + 2 + Math.random() * 8, z, vx: 3, vy: -1.4, vz: 1.5, spread: 2, life: 4, size: 0.3, sprite: SPRITE.leaf, r: 0.75 + Math.random() * 0.25, g: 0.7, b: 0.25, alpha: 0.95, spin: 4 }); break;
-        case 'petals': this.solid.emit({ x, y: cam.y + 2 + Math.random() * 8, z, vx: 2, vy: -1, vz: 1, spread: 2, life: 4.5, size: 0.26, sprite: SPRITE.petal, r: 1, g: 0.72, b: 0.86, alpha: 0.95, spin: 4 }); break;
+        case 'leaves': this.solid.emit({ x, y: cam.y + 2 + Math.random() * 8, z, vx: 3, vy: -1.4, vz: 1.5, spread: 2, life: 4, size: 0.3, sprite: SPRITE.leaf, r: 0.75 + Math.random() * 0.25, g: 0.7, b: 0.25, alpha: 0.95, spin: 4, flutter: 2.2 }); break;
+        case 'petals': this.solid.emit({ x, y: cam.y + 2 + Math.random() * 8, z, vx: 2, vy: -1, vz: 1, spread: 2, life: 4.5, size: 0.26, sprite: SPRITE.petal, r: 1, g: 0.72, b: 0.86, alpha: 0.95, spin: 4, flutter: 2 }); break;
         case 'embers': this.glow.emit({ x, y: cam.y - 3 + Math.random() * 6, z, vx: 0.8, vy: 2.2, vz: 0.4, spread: 1.2, life: 2.6, size: 0.14 + Math.random() * 0.1, sprite: SPRITE.spark, r: 1, g: 0.45 + Math.random() * 0.3, b: 0.12, alpha: 0.95, spin: 3 }); break;
-        case 'fireflies': this.glow.emit({ x, y: cam.y - 1.5 + Math.random() * 5, z, spread: 1.4, life: 3, size: 0.22, sprite: SPRITE.glow, r: 0.7, g: 1, b: 0.6, alpha: 0.9 }); break;
+        case 'fireflies': this.glow.emit({ x, y: cam.y - 1.5 + Math.random() * 5, z, spread: 1.4, life: 3, size: 0.22, sprite: SPRITE.glow, r: 0.7, g: 1, b: 0.6, alpha: 0.9, spin: 1.6, flutter: 1.1 }); break;
       }
     }
   }
