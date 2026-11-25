@@ -19,6 +19,13 @@ async function skipIntro(g) {
   await g.ev(() => { const m = window.__game.flow.match; if (m.state === 'intro') { m.hud.cinema(false); m.hud.show(true); m.beginKickoff(m.kickoffTeam); } });
   await g.waitFor(() => ['kickoff', 'play'].includes(window.__game.flow.match.state), null, 60000);
 }
+/** Espera a CPU agir: acelera o tempo de jogo durante a espera (o headless roda a poucos quadros por segundo). */
+async function waitPlay(g, ms = 90000) {
+  await g.speed(6);
+  const ok = await g.waitFor(() => window.__game.flow.match?.state === 'play', null, ms).then(() => true, () => false);
+  await g.speed(1);
+  return ok;
+}
 const st = (g) => g.ev(() => { const m = window.__game.flow.match; if (!m) return null; const me = m.all.find((p) => p.device);
   return { state: m.state, per: m.period, clock: Math.round(m.clock), score: [m.teams[0].score, m.teams[1].score], shots: [m.teams[0].shots, m.teams[1].shots],
     me: me ? { n: me.data.short, x: me.pos.x, z: me.pos.z } : null, ball: [m.ball.pos.x, m.ball.pos.y, m.ball.pos.z], owner: m.ball.owner?.data.short ?? null, paused: m.paused }; });
@@ -98,7 +105,7 @@ const SUITES = {
     await quickMatch(g, { homeDevices: ['kb'] }); await skipIntro(g);
     await g.waitFor(() => window.__game.flow.match.state === 'kickoff', null, 30000).catch(() => {});
     await g.key('KeyU');
-    const ok = await g.waitFor(() => window.__game.flow.match.state === 'play', null, 30000).then(() => true, () => false);
+    const ok = await g.waitFor(() => window.__game.flow.match.state === 'play', null, 60000).then(() => true, () => false);
     check(ok, 'saída de bola com a tecla remapeada (U)', n);
     await g.ev(() => { const s = JSON.parse(localStorage.getItem('aq.settings')); s.keys.pass = 'KeyJ'; s.music = 0.7; localStorage.setItem('aq.settings', JSON.stringify(s)); });
   },
@@ -185,19 +192,20 @@ const SUITES = {
 
   async setpieces(g, n) {
     await quickMatch(g); await skipIntro(g);
-    await g.waitFor(() => window.__game.flow.match.state === 'play', null, 60000);
+    await waitPlay(g);
     for (const kind of ['throw_in', 'corner', 'goal_kick', 'free_kick', 'penalty']) {
       await g.ev((k) => { const m = window.__game.flow.match; const tm = m.teams[0]; const spots = { throw_in: [5, 0, 13.5], corner: [17.7, 0, 13.2], goal_kick: [-16.5, 0, 0], free_kick: [8, 0, 3], penalty: [9, 0, 0] };
         m.setPiece(k, k === 'goal_kick' ? tm : tm, new m.ball.pos.constructor(...spots[k])); }, kind);
-      const ok = await g.waitFor(() => window.__game.flow.match.state === 'play', null, 40000).then(() => true, () => false);
-      check(ok, `${kind}: CPU cobra e o jogo segue`, n);
+      const ok = await waitPlay(g);
+      const info = await g.ev(() => { const m = window.__game.flow.match; return `${m.state} sp=${m.sp?.kind ?? '-'} t=${m.sp?.t?.toFixed(1) ?? '-'}`; });
+      check(ok, `${kind}: CPU cobra e o jogo segue (${info})`, n);
       await sleep(1500);
     }
   },
 
   async fouls(g, n) {
     await quickMatch(g); await skipIntro(g);
-    await g.waitFor(() => window.__game.flow.match.state === 'play', null, 60000);
+    await waitPlay(g);
     const r = await g.ev(async () => {
       const m = window.__game.flow.match; const a = m.teams[0].players[1]; const out = [];
       for (let i = 0; i < 2; i++) {
@@ -214,8 +222,8 @@ const SUITES = {
     log(JSON.stringify(r));
     check(r[0].yellow >= 1, 'falta por trás gera cartão amarelo', n);
     check(r[1].sentOff > 0, 'segundo amarelo tira o jogador por 2 minutos', n);
-    const ok = await g.waitFor(() => ['setpiece', 'play'].includes(window.__game.flow.match.state), null, 30000).then(() => true, () => false);
-    check(ok, 'jogo continua com tiro livre/pênalti após a falta', n);
+    const ok = await waitPlay(g);
+    check(ok, 'jogo continua (cobrança executada) após a falta', n);
     await g.speed(30);
     const back = await g.waitFor(() => window.__game.flow.match.teams[0].players[1].sentOff <= 0, null, 240000).then(() => true, () => false);
     check(back, 'jogador expulso volta após 2 minutos de jogo', n);
@@ -225,7 +233,7 @@ const SUITES = {
   async pausemenu(g, n) {
     await quickMatch(g, { homeDevices: ['kb'] }); await skipIntro(g);
     await g.key('KeyJ');
-    await g.waitFor(() => window.__game.flow.match.state === 'play', null, 30000);
+    await waitPlay(g);
     await g.key('Escape');
     const paused = await g.waitFor(() => window.__game.flow.match.paused, null, 20000).then(() => true, () => false);
     check(paused, 'ESC pausa a partida', n);
