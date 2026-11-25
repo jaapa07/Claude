@@ -1,0 +1,112 @@
+{
+ "asphalt_n.webp": {
+  "origin": "Poly Haven — textura \"Asphalt 02\" (https://polyhaven.com/a/asphalt_02), mapa de normal (OpenGL) 1k reduzido por scripts/build-env.ts",
+  "author": "Rob Tuytel",
+  "license": "CC0-1.0"
+ },
+ "asphalt_r.webp": {
+  "origin": "Poly Haven — textura \"Asphalt 02\" (https://polyhaven.com/a/asphalt_02), mapa de rugosidade 1k reduzido por scripts/build-env.ts",
+  "author": "Rob Tuytel",
+  "license": "CC0-1.0"
+ },
+ "rock_n.webp": {
+  "origin": "Poly Haven — textura \"Rock Face\" (https://polyhaven.com/a/rock_face), mapa de normal (OpenGL) 1k reduzido por scripts/build-env.ts",
+  "author": "Greg Zaal, Dario Barresi",
+  "license": "CC0-1.0"
+ },
+ "sand_n.webp": {
+  "origin": "Poly Haven — textura \"Coast Sand 01\" (https://polyhaven.com/a/coast_sand_01), mapa de normal (OpenGL) 1k reduzido por scripts/build-env.ts",
+  "author": "Rob Tuytel",
+  "license": "CC0-1.0"
+ },
+ "snow_n.webp": {
+  "origin": "Poly Haven — textura \"Snow 02\" (https://polyhaven.com/a/snow_02), mapa de normal (OpenGL) 1k reduzido por scripts/build-env.ts",
+  "author": "Rob Tuytel",
+  "license": "CC0-1.0"
+ },
+ "dirt_n.webp": {
+  "origin": "Poly Haven — textura \"Dirt\" (https://polyhaven.com/a/dirt), mapa de normal (OpenGL) 1k reduzido por scripts/build-env.ts",
+  "author": "Charlotte Baglioni",
+  "license": "CC0-1.0"
+ },
+ "grass_n.webp": {
+  "origin": "Poly Haven — textura \"Leafy Grass\" (https://polyhaven.com/a/leafy_grass), mapa de normal (OpenGL) 1k reduzido por scripts/build-env.ts",
+  "author": "Charlotte Baglioni",
+  "license": "CC0-1.0"
+ },
+ "planks_n.webp": {
+  "origin": "Poly Haven — textura \"Wood Planks\" (https://polyhaven.com/a/wood_planks), mapa de normal (OpenGL) 1k reduzido por scripts/build-env.ts",
+  "author": "Amal Kumar",
+  "license": "CC0-1.0"
+ },
+ "bark_n.webp": {
+  "origin": "Poly Haven — textura \"Bark Brown 02\" (https://polyhaven.com/a/bark_brown_02), mapa de normal (OpenGL) 1k reduzido por scripts/build-env.ts",
+  "author": "Rob Tuytel",
+  "license": "CC0-1.0"
+ },
+ "volcanic_n.webp": {
+  "origin": "Poly Haven — textura \"Rock Ground\" (https://polyhaven.com/a/rock_ground), mapa de normal (OpenGL) 1k reduzido por scripts/build-env.ts",
+  "author": "Rob Tuytel",
+  "license": "CC0-1.0"
+ },
+ "concrete_n.webp": {
+  "origin": "Poly Haven — textura \"Concrete Floor 02\" (https://polyhaven.com/a/concrete_floor_02), mapa de normal (OpenGL) 1k reduzido por scripts/build-env.ts",
+  "author": "Rob Tuytel",
+  "license": "CC0-1.0"
+ },
+ "trk_cobble_n.webp": {
+  "origin": "scripts/build-env.ts (relevo derivado da textura própria textures/trk_cobble.webp)",
+  "author": "Equipe Kart Legends 3D",
+  "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)"
+ },
+ "trk_brick_n.webp": {
+  "origin": "scripts/build-env.ts (relevo derivado da textura própria textures/trk_brick.webp)",
+  "author": "Equipe Kart Legends 3D",
+  "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)"
+ },
+ "trk_flagstone_n.webp": {
+  "origin": "scripts/build-env.ts (relevo derivado da textura própria textures/trk_flagstone.webp)",
+  "author": "Equipe Kart Legends 3D",
+  "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)"
+ },
+ "trk_temple_n.webp": {
+  "origin": "scripts/build-env.ts (relevo derivado da textura própria textures/trk_temple.webp)",
+  "author": "Equipe Kart Legends 3D",
+  "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)"
+ },
+ "trk_marble_n.webp": {
+  "origin": "scripts/build-env.ts (relevo derivado da textura própria textures/trk_marble.webp)",
+  "author": "Equipe Kart Legends 3D",
+  "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)"
+ },
+ "trk_ice_n.webp": {
+  "origin": "scripts/build-env.ts (relevo derivado da textura própria textures/trk_ice.webp)",
+  "author": "Equipe Kart Legends 3D",
+  "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)"
+ },
+ "trk_plate_n.webp": {
+  "origin": "scripts/build-env.ts (relevo derivado da textura própria textures/trk_plate.webp)",
+  "author": "Equipe Kart Legends 3D",
+  "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)"
+ },
+ "aur_stone_n.webp": {
+  "origin": "scripts/build-env.ts (relevo derivado da textura própria textures/aur_stone.webp)",
+  "author": "Equipe Kart Legends 3D",
+  "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)"
+ },
+ "aur_block_n.webp": {
+  "origin": "scripts/build-env.ts (relevo derivado da textura própria textures/aur_block.webp)",
+  "author": "Equipe Kart Legends 3D",
+  "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)"
+ },
+ "ecl_pedra_n.webp": {
+  "origin": "scripts/build-env.ts (relevo derivado da textura própria textures/ecl_pedra.webp)",
+  "author": "Equipe Kart Legends 3D",
+  "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)"
+ },
+ "sources.json": {
+  "origin": "scripts/build-env.ts (origem, autor e licença de cada arquivo desta pasta)",
+  "author": "Equipe Kart Legends 3D",
+  "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)"
+ }
+}

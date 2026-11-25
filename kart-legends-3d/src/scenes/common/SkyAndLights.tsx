@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import type { Environment } from '@/game/tracks/environments';
 import { skyFragment, skyVertex } from '@/shaders/sky';
+import { IblSphere } from './ibl';
 
 export interface SkyHandle { flash: number }
 
@@ -16,10 +17,12 @@ interface Props {
   handle?: React.MutableRefObject<SkyHandle>;
   /** Distância máxima de desenho (qualidade gráfica): encurta a neblina e o plano de corte da câmera. */
   drawDistance?: number;
+  /** Resolução do cubo do mapa de ambiente (Baixa usa 64). */
+  envResolution?: number;
 }
 
 /** Céu em shader, neblina, luz hemisférica, sol com sombra que segue o jogador e mapa de ambiente para reflexos. */
-export function SkyAndLights({ env, follow, shadows, shadowSize = 2048, handle, drawDistance = Infinity }: Props): JSX.Element {
+export function SkyAndLights({ env, follow, shadows, shadowSize = 2048, handle, drawDistance = Infinity, envResolution = 128 }: Props): JSX.Element {
   const { scene, gl, camera } = useThree();
   const sun = useRef<THREE.DirectionalLight>(null);
   const hemi = useRef<THREE.HemisphereLight>(null);
@@ -75,11 +78,13 @@ export function SkyAndLights({ env, follow, shadows, shadowSize = 2048, handle, 
         shadow-camera-left={-48} shadow-camera-right={48} shadow-camera-top={48} shadow-camera-bottom={-48}
         shadow-camera-near={10} shadow-camera-far={200} shadow-bias={-0.0006} shadow-normalBias={0.04}
       />
-      <DreiEnvironment resolution={64} frames={1} background={false}>
+      {/* Mapa de ambiente: HDRI da pista (Poly Haven, CC0) normalizado e tingido + o sol da pista como luz de recorte
+          (dá o brilho especular forte que a faixa comprimida do HDRI corta). Desenhado uma vez num cubo. */}
+      <DreiEnvironment resolution={envResolution} frames={1} background={false}>
         <color attach="background" args={[env.skyHorizon]} />
-        <Lightformer form="rect" intensity={2.2} color={env.skyTop} position={[0, 8, 0]} rotation-x={Math.PI / 2} scale={[30, 30, 1]} />
-        <Lightformer form="circle" intensity={env.sunIntensity * 2.4} color={env.sunColor} position={[dir.x * 12, dir.y * 12, dir.z * 12]} scale={5} target={[0, 0, 0]} />
-        <Lightformer form="rect" intensity={1.2} color={env.ambientGround} position={[0, -8, 0]} rotation-x={-Math.PI / 2} scale={[30, 30, 1]} />
+        <IblSphere env={env} />
+        <Lightformer form="rect" intensity={0.6} color={env.skyTop} position={[0, 12, 0]} rotation-x={Math.PI / 2} scale={[20, 20, 1]} />
+        <Lightformer form="circle" intensity={env.sunIntensity * 2.4} color={env.sunColor} position={[dir.x * 12, dir.y * 12, dir.z * 12]} scale={4} target={[0, 0, 0]} />
       </DreiEnvironment>
     </>
   );

@@ -4,16 +4,18 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 (id, nome, tipo, caminho, formato, origem, autor, licença, tamanho, status de validação e local de uso), está em
 `public/assets/manifest.json`. A validação automática é `npm run validate:assets`.
 
-- **Total:** 379 arquivos, 148.4 MB
-- **Autor de todos os recursos:** Equipe Kart Legends 3D
-- **Licença:** Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)
-- **Recursos de terceiros:** nenhum
+- **Total:** 416 arquivos, 149.9 MB
+- **Autor dos recursos próprios:** Equipe Kart Legends 3D
+- **Licença dos recursos próprios:** Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)
+- **Recursos de terceiros:** 24 arquivos (CC0-1.0, OFL-1.1), listados abaixo com autor e origem
 
 | Pasta | Arquivos | Tamanho | Origem | Onde é usado |
 |---|---:|---:|---|---|
 | `arenas/` | 4 | 4166 kB | scripts/build-arenas.ts (arena autorada + cenário das bibliotecas) | Arenas do modo Batalha |
 | `audio/` | 107 | 14033 kB | scripts/build-audio.ts (síntese procedural própria) | Música, efeitos e ambiência |
 | `characters/` | 15 | 5233 kB | scripts/build-characters.ts (modelagem, rig e animação por script) | Pilotos na corrida, vitrine e pódio |
+| `detail/` | 22 | 1290 kB | Poly Haven — textura "Asphalt 02" (https://polyhaven.com/a/asphalt_02), mapa de normal (OpenGL) 1k reduzido por scripts/build-env.ts | Relevo dos pisos, rochas, madeira e metal (qualidade Média/Alta) |
+| `env/` | 15 | 291 kB | Poly Haven — HDRI "Approaching Storm" (https://polyhaven.com/a/approaching_storm), 1k .hdr reduzido a 512×256 por scripts/build-env.ts | Mapas de ambiente (reflexos e luz ambiente) das pistas, arenas e menus |
 | `items/` | 17 | 714 kB | scripts/build-items.ts (modelagem por script) | Itens, placas de turbo, rampas, pórtico, troféus e pódio |
 | `karts/` | 9 | 1692 kB | scripts/build-karts.ts (modelagem por script) | Veículos na corrida, vitrine e pódio |
 | `props/` | 27 | 651 kB | scripts/build-tracks.ts (partes móveis de cenário e obstáculos) | Cenário animado e obstáculos dinâmicos |
@@ -51,6 +53,53 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | `characters/tuca.glb` | model | 355 kB |
 | `characters/yuki.glb` | model | 381 kB |
 | `characters/zera.glb` | model | 408 kB |
+
+## detail/
+
+| Arquivo | Tipo | Tamanho |
+|---|---|---:|
+| `detail/asphalt_n.webp` | image | 97 kB |
+| `detail/asphalt_r.webp` | image | 16 kB |
+| `detail/aur_block_n.webp` | image | 7 kB |
+| `detail/aur_stone_n.webp` | image | 16 kB |
+| `detail/bark_n.webp` | image | 125 kB |
+| `detail/concrete_n.webp` | image | 41 kB |
+| `detail/dirt_n.webp` | image | 106 kB |
+| `detail/ecl_pedra_n.webp` | image | 10 kB |
+| `detail/grass_n.webp` | image | 136 kB |
+| `detail/planks_n.webp` | image | 21 kB |
+| `detail/rock_n.webp` | image | 112 kB |
+| `detail/sand_n.webp` | image | 106 kB |
+| `detail/snow_n.webp` | image | 99 kB |
+| `detail/sources.json` | data | 5 kB |
+| `detail/trk_brick_n.webp` | image | 25 kB |
+| `detail/trk_cobble_n.webp` | image | 62 kB |
+| `detail/trk_flagstone_n.webp` | image | 29 kB |
+| `detail/trk_ice_n.webp` | image | 29 kB |
+| `detail/trk_marble_n.webp` | image | 16 kB |
+| `detail/trk_plate_n.webp` | image | 45 kB |
+| `detail/trk_temple_n.webp` | image | 34 kB |
+| `detail/volcanic_n.webp` | image | 151 kB |
+
+## env/
+
+| Arquivo | Tipo | Tamanho |
+|---|---|---:|
+| `env/approaching_storm.webp` | image | 12 kB |
+| `env/env.json` | data | 1 kB |
+| `env/forest_grove.webp` | image | 50 kB |
+| `env/goegap.webp` | image | 28 kB |
+| `env/kloppenheim_06_puresky.webp` | image | 10 kB |
+| `env/meadow_2.webp` | image | 23 kB |
+| `env/rainforest_trail.webp` | image | 55 kB |
+| `env/rogland_clear_night.webp` | image | 30 kB |
+| `env/secluded_beach.webp` | image | 26 kB |
+| `env/shanghai_bund.webp` | image | 13 kB |
+| `env/sources.json` | data | 3 kB |
+| `env/studio_small_09.webp` | image | 5 kB |
+| `env/the_sky_is_on_fire.webp` | image | 12 kB |
+| `env/venice_sunset.webp` | image | 11 kB |
+| `env/winter_lake_01.webp` | image | 11 kB |
 
 ## items/
 
@@ -238,6 +287,35 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | Arquivo | Tipo | Tamanho |
 |---|---|---:|
 | `vfx/particles.webp` | image | 25 kB |
+
+## Recursos de terceiros
+
+| Arquivo | Licença | Autor | Origem |
+|---|---|---|---|
+| `detail/asphalt_n.webp` | CC0-1.0 | Rob Tuytel | Poly Haven — textura "Asphalt 02" (https://polyhaven.com/a/asphalt_02), mapa de normal (OpenGL) 1k reduzido por scripts/build-env.ts |
+| `detail/asphalt_r.webp` | CC0-1.0 | Rob Tuytel | Poly Haven — textura "Asphalt 02" (https://polyhaven.com/a/asphalt_02), mapa de rugosidade 1k reduzido por scripts/build-env.ts |
+| `detail/bark_n.webp` | CC0-1.0 | Rob Tuytel | Poly Haven — textura "Bark Brown 02" (https://polyhaven.com/a/bark_brown_02), mapa de normal (OpenGL) 1k reduzido por scripts/build-env.ts |
+| `detail/concrete_n.webp` | CC0-1.0 | Rob Tuytel | Poly Haven — textura "Concrete Floor 02" (https://polyhaven.com/a/concrete_floor_02), mapa de normal (OpenGL) 1k reduzido por scripts/build-env.ts |
+| `detail/dirt_n.webp` | CC0-1.0 | Charlotte Baglioni | Poly Haven — textura "Dirt" (https://polyhaven.com/a/dirt), mapa de normal (OpenGL) 1k reduzido por scripts/build-env.ts |
+| `detail/grass_n.webp` | CC0-1.0 | Charlotte Baglioni | Poly Haven — textura "Leafy Grass" (https://polyhaven.com/a/leafy_grass), mapa de normal (OpenGL) 1k reduzido por scripts/build-env.ts |
+| `detail/planks_n.webp` | CC0-1.0 | Amal Kumar | Poly Haven — textura "Wood Planks" (https://polyhaven.com/a/wood_planks), mapa de normal (OpenGL) 1k reduzido por scripts/build-env.ts |
+| `detail/rock_n.webp` | CC0-1.0 | Greg Zaal, Dario Barresi | Poly Haven — textura "Rock Face" (https://polyhaven.com/a/rock_face), mapa de normal (OpenGL) 1k reduzido por scripts/build-env.ts |
+| `detail/sand_n.webp` | CC0-1.0 | Rob Tuytel | Poly Haven — textura "Coast Sand 01" (https://polyhaven.com/a/coast_sand_01), mapa de normal (OpenGL) 1k reduzido por scripts/build-env.ts |
+| `detail/snow_n.webp` | CC0-1.0 | Rob Tuytel | Poly Haven — textura "Snow 02" (https://polyhaven.com/a/snow_02), mapa de normal (OpenGL) 1k reduzido por scripts/build-env.ts |
+| `detail/volcanic_n.webp` | CC0-1.0 | Rob Tuytel | Poly Haven — textura "Rock Ground" (https://polyhaven.com/a/rock_ground), mapa de normal (OpenGL) 1k reduzido por scripts/build-env.ts |
+| `env/approaching_storm.webp` | CC0-1.0 | Greg Zaal | Poly Haven — HDRI "Approaching Storm" (https://polyhaven.com/a/approaching_storm), 1k .hdr reduzido a 512×256 por scripts/build-env.ts |
+| `env/forest_grove.webp` | CC0-1.0 | Dimitrios Savva, Jarod Guest | Poly Haven — HDRI "Forest Grove" (https://polyhaven.com/a/forest_grove), 1k .hdr reduzido a 512×256 por scripts/build-env.ts |
+| `env/goegap.webp` | CC0-1.0 | Greg Zaal | Poly Haven — HDRI "Goegap" (https://polyhaven.com/a/goegap), 1k .hdr reduzido a 512×256 por scripts/build-env.ts |
+| `env/kloppenheim_06_puresky.webp` | CC0-1.0 | Greg Zaal, Jarod Guest | Poly Haven — HDRI "Kloppenheim 06 (Pure Sky)" (https://polyhaven.com/a/kloppenheim_06_puresky), 1k .hdr reduzido a 512×256 por scripts/build-env.ts |
+| `env/meadow_2.webp` | CC0-1.0 | Sergej Majboroda | Poly Haven — HDRI "Meadow 2" (https://polyhaven.com/a/meadow_2), 1k .hdr reduzido a 512×256 por scripts/build-env.ts |
+| `env/rainforest_trail.webp` | CC0-1.0 | Dimitrios Savva, Jarod Guest | Poly Haven — HDRI "Rainforest Trail" (https://polyhaven.com/a/rainforest_trail), 1k .hdr reduzido a 512×256 por scripts/build-env.ts |
+| `env/rogland_clear_night.webp` | CC0-1.0 | Greg Zaal | Poly Haven — HDRI "Rogland Clear Night" (https://polyhaven.com/a/rogland_clear_night), 1k .hdr reduzido a 512×256 por scripts/build-env.ts |
+| `env/secluded_beach.webp` | CC0-1.0 | Greg Zaal, Rico Cilliers | Poly Haven — HDRI "Secluded Beach" (https://polyhaven.com/a/secluded_beach), 1k .hdr reduzido a 512×256 por scripts/build-env.ts |
+| `env/shanghai_bund.webp` | CC0-1.0 | Greg Zaal | Poly Haven — HDRI "Shanghai Bund" (https://polyhaven.com/a/shanghai_bund), 1k .hdr reduzido a 512×256 por scripts/build-env.ts |
+| `env/studio_small_09.webp` | CC0-1.0 | Sergej Majboroda | Poly Haven — HDRI "Studio Small 09" (https://polyhaven.com/a/studio_small_09), 1k .hdr reduzido a 512×256 por scripts/build-env.ts |
+| `env/the_sky_is_on_fire.webp` | CC0-1.0 | Greg Zaal, Rico Cilliers | Poly Haven — HDRI "The Sky Is On Fire" (https://polyhaven.com/a/the_sky_is_on_fire), 1k .hdr reduzido a 512×256 por scripts/build-env.ts |
+| `env/venice_sunset.webp` | CC0-1.0 | Greg Zaal | Poly Haven — HDRI "Venice Sunset" (https://polyhaven.com/a/venice_sunset), 1k .hdr reduzido a 512×256 por scripts/build-env.ts |
+| `env/winter_lake_01.webp` | CC0-1.0 | Sergej Majboroda | Poly Haven — HDRI "Winter Lake 01" (https://polyhaven.com/a/winter_lake_01), 1k .hdr reduzido a 512×256 por scripts/build-env.ts |
 
 ## audio/ e textures/
 

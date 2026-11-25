@@ -1,0 +1,77 @@
+{
+ "venice_sunset.webp": {
+  "origin": "Poly Haven — HDRI \"Venice Sunset\" (https://polyhaven.com/a/venice_sunset), 1k .hdr reduzido a 512×256 por scripts/build-env.ts",
+  "author": "Greg Zaal",
+  "license": "CC0-1.0"
+ },
+ "forest_grove.webp": {
+  "origin": "Poly Haven — HDRI \"Forest Grove\" (https://polyhaven.com/a/forest_grove), 1k .hdr reduzido a 512×256 por scripts/build-env.ts",
+  "author": "Dimitrios Savva, Jarod Guest",
+  "license": "CC0-1.0"
+ },
+ "meadow_2.webp": {
+  "origin": "Poly Haven — HDRI \"Meadow 2\" (https://polyhaven.com/a/meadow_2), 1k .hdr reduzido a 512×256 por scripts/build-env.ts",
+  "author": "Sergej Majboroda",
+  "license": "CC0-1.0"
+ },
+ "goegap.webp": {
+  "origin": "Poly Haven — HDRI \"Goegap\" (https://polyhaven.com/a/goegap), 1k .hdr reduzido a 512×256 por scripts/build-env.ts",
+  "author": "Greg Zaal",
+  "license": "CC0-1.0"
+ },
+ "shanghai_bund.webp": {
+  "origin": "Poly Haven — HDRI \"Shanghai Bund\" (https://polyhaven.com/a/shanghai_bund), 1k .hdr reduzido a 512×256 por scripts/build-env.ts",
+  "author": "Greg Zaal",
+  "license": "CC0-1.0"
+ },
+ "winter_lake_01.webp": {
+  "origin": "Poly Haven — HDRI \"Winter Lake 01\" (https://polyhaven.com/a/winter_lake_01), 1k .hdr reduzido a 512×256 por scripts/build-env.ts",
+  "author": "Sergej Majboroda",
+  "license": "CC0-1.0"
+ },
+ "kloppenheim_06_puresky.webp": {
+  "origin": "Poly Haven — HDRI \"Kloppenheim 06 (Pure Sky)\" (https://polyhaven.com/a/kloppenheim_06_puresky), 1k .hdr reduzido a 512×256 por scripts/build-env.ts",
+  "author": "Greg Zaal, Jarod Guest",
+  "license": "CC0-1.0"
+ },
+ "approaching_storm.webp": {
+  "origin": "Poly Haven — HDRI \"Approaching Storm\" (https://polyhaven.com/a/approaching_storm), 1k .hdr reduzido a 512×256 por scripts/build-env.ts",
+  "author": "Greg Zaal",
+  "license": "CC0-1.0"
+ },
+ "secluded_beach.webp": {
+  "origin": "Poly Haven — HDRI \"Secluded Beach\" (https://polyhaven.com/a/secluded_beach), 1k .hdr reduzido a 512×256 por scripts/build-env.ts",
+  "author": "Greg Zaal, Rico Cilliers",
+  "license": "CC0-1.0"
+ },
+ "rainforest_trail.webp": {
+  "origin": "Poly Haven — HDRI \"Rainforest Trail\" (https://polyhaven.com/a/rainforest_trail), 1k .hdr reduzido a 512×256 por scripts/build-env.ts",
+  "author": "Dimitrios Savva, Jarod Guest",
+  "license": "CC0-1.0"
+ },
+ "the_sky_is_on_fire.webp": {
+  "origin": "Poly Haven — HDRI \"The Sky Is On Fire\" (https://polyhaven.com/a/the_sky_is_on_fire), 1k .hdr reduzido a 512×256 por scripts/build-env.ts",
+  "author": "Greg Zaal, Rico Cilliers",
+  "license": "CC0-1.0"
+ },
+ "rogland_clear_night.webp": {
+  "origin": "Poly Haven — HDRI \"Rogland Clear Night\" (https://polyhaven.com/a/rogland_clear_night), 1k .hdr reduzido a 512×256 por scripts/build-env.ts",
+  "author": "Greg Zaal",
+  "license": "CC0-1.0"
+ },
+ "studio_small_09.webp": {
+  "origin": "Poly Haven — HDRI \"Studio Small 09\" (https://polyhaven.com/a/studio_small_09), 1k .hdr reduzido a 512×256 por scripts/build-env.ts",
+  "author": "Sergej Majboroda",
+  "license": "CC0-1.0"
+ },
+ "env.json": {
+  "origin": "scripts/build-env.ts (metadados dos mapas de ambiente)",
+  "author": "Equipe Kart Legends 3D",
+  "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)"
+ },
+ "sources.json": {
+  "origin": "scripts/build-env.ts (origem, autor e licença de cada arquivo desta pasta)",
+  "author": "Equipe Kart Legends 3D",
+  "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)"
+ }
+}

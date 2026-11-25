@@ -1,4 +1,7 @@
 import { assetUrl } from '@/game/core/assets';
+import { STUDIO_ENVIRONMENT } from '@/game/tracks/environments';
+
+const MENU_HDRI = STUDIO_ENVIRONMENT.ibl.map;
 
 interface ManifestEntry { id: string; path: string; type: string }
 
@@ -13,7 +16,11 @@ export async function preloadCoreAssets(onProgress: (p: number) => void): Promis
   const manifest = (await res.json()) as { assets: ManifestEntry[] };
   // Áudio: carregado pelo gerenciador de áudio. Malhas das pistas (~100 MB): baixadas só quando a corrida
   // daquela pista começa — no celular baixar tudo no início é lento e pode estourar a memória do navegador.
-  const list = manifest.assets.filter((a) => a.type !== 'audio' && !(a.path.startsWith('tracks/') && a.path.endsWith('.glb')));
+  // Mapas de ambiente e de relevo também são por pista (baixados na hora da corrida; o relevo nem existe na
+  // qualidade Baixa); só o ambiente do menu e os metadados entram aqui.
+  const lazy = (p: string): boolean => (p.startsWith('tracks/') && p.endsWith('.glb')) || p.startsWith('detail/')
+    || (p.startsWith('env/') && p !== 'env/env.json' && p !== `env/${MENU_HDRI}.webp`) || p.endsWith('sources.json');
+  const list = manifest.assets.filter((a) => a.type !== 'audio' && !lazy(a.path));
   const missing: string[] = [];
   let done = 0;
   onProgress(0);

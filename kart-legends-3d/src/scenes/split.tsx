@@ -20,6 +20,8 @@ export function splitQuality(q: QualityProfile): QualityProfile {
     drawDistance: Math.min(q.drawDistance, 480),
     animDetail: Math.min(q.animDetail, 30),
     shake: q.shake * 0.8,
+    envResolution: Math.min(q.envResolution, 128),
+    surfaceDetail: false,
   };
 }
 

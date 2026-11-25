@@ -42,6 +42,7 @@ export const ARENA_ENVIRONMENTS: Record<ArenaId, Environment> = {
   'praca-coreto': {
     ...ENVIRONMENTS['vale-moinhos'], skyTop: '#3a86e0', skyHorizon: '#ffd9a8', skyBottom: '#fff1dc', sunDir: [0.45, 0.62, 0.55], sunColor: '#ffe6c0',
     sunIntensity: 2.8, ambientSky: '#d8e8ff', ambientGround: '#8a7458', fogColor: '#f2dcc0', fogNear: 120, fogFar: 520, clouds: 0.6, weather: 'leaves', bloom: 0.35,
+    ibl: { map: 'meadow_2', intensity: 1, tint: '#fff0dc' },
     dust: '#c9b08a',
   },
   'cratera-lunar': { ...ENVIRONMENTS['estacao-lunar'], fogNear: 140, fogFar: 640 },
@@ -416,7 +417,7 @@ function BattleWorld({ data, config }: { data: ArenaData; config: BattleConfig }
 
   return (
     <>
-      <SkyAndLights env={env} follow={focus} shadows={quality.shadows} shadowSize={quality.shadowSize} handle={sky} drawDistance={quality.drawDistance} />
+      <SkyAndLights env={env} follow={focus} shadows={quality.shadows} shadowSize={quality.shadowSize} handle={sky} drawDistance={quality.drawDistance} envResolution={quality.envResolution} />
       <ArenaModel id={config.arenaId} shadows={quality.shadows} />
       <BattleObjects view={view} models={models} />
       {data.animatedProps.length > 0 && <AnimatedProps list={data.animatedProps} view={view as unknown as React.MutableRefObject<RaceView>} />}

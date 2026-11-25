@@ -13,7 +13,8 @@ import type { ArenaData } from '../src/game/battle/arenaTypes';
 import { TIRE_IDS } from '../src/game/vehicles/tires';
 import { ALL_AUDIO_FILES } from '../src/game/audio/audioIds';
 import type { TrackData } from '../src/game/tracks/trackTypes';
-import { LICENSE, buildManifest, type ManifestEntry } from './build-manifest';
+import { DETAIL_BY_TEXTURE, HDRIS } from '../src/game/tracks/iblSources';
+import { ALLOWED_LICENSES, LICENSE, buildManifest, type ManifestEntry } from './build-manifest';
 import { createIO } from './lib/glb';
 import { ASSETS_DIR } from './lib/textures';
 
@@ -43,10 +44,12 @@ for (const d of onDisk) {
   const m = listed.get(d.path);
   if (!m) fail(`não registrado no manifesto: ${d.path}`);
   else if (m.bytes !== d.bytes) fail(`tamanho divergente do manifesto: ${d.path} (${m.bytes} ≠ ${d.bytes})`);
+  else if (m.license !== d.license || m.author !== d.author) fail(`licença/autor divergente do registro de origem: ${d.path}`);
 }
 for (const a of manifest.assets) {
   if (!existsSync(file(a.path))) fail(`arquivo ausente: ${a.path}`);
-  if (a.license !== LICENSE) fail(`licença não reconhecida em ${a.path}: "${a.license}"`);
+  if (!ALLOWED_LICENSES.includes(a.license)) fail(`licença não reconhecida em ${a.path}: "${a.license}"`);
+  if (a.license !== LICENSE && !/https?:\/\//.test(a.origin) && !a.origin.includes('@')) fail(`recurso de terceiros sem fonte rastreável em ${a.path}`);
   for (const k of ['id', 'name', 'type', 'path', 'format', 'origin', 'author', 'license', 'usedIn'] as const) if (!a[k]) fail(`campo "${k}" vazio em ${a.path}`);
 }
 
@@ -59,6 +62,9 @@ for (const id of ITEM_IDS) need(`ui/items/${id}.webp`);
 for (const id of ITEM_MODELS) need(`items/${id}.glb`);
 for (const f of ALL_AUDIO_FILES) need(f);
 need('vfx/particles.webp');
+need('env/env.json');
+for (const id of Object.keys(HDRIS)) need(`env/${id}.webp`);
+for (const r of Object.values(DETAIL_BY_TEXTURE)) { need(`detail/${r.id}_n.webp`); if (r.rough) need(`detail/${r.id}_r.webp`); }
 for (const id of ARENA_IDS) { need(`arenas/${id}.glb`); need(`arenas/${id}.json`); }
 for (const id of TIRE_IDS) { need(`tires/${id}.glb`); need(`ui/tires/${id}.webp`); }
 
