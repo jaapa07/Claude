@@ -13,14 +13,14 @@
   },
   {
     "id": "bosque-cristal",
-    "length": 1098,
-    "samples": 549,
-    "triangles": 638956,
-    "glbBytes": 22147800,
-    "jsonBytes": 97494,
-    "props": 556,
-    "animated": 3,
-    "colliders": 174,
+    "length": 1130,
+    "samples": 565,
+    "triangles": 645720,
+    "glbBytes": 22279680,
+    "jsonBytes": 98415,
+    "props": 539,
+    "animated": 2,
+    "colliders": 183,
     "warnings": []
   },
   {
