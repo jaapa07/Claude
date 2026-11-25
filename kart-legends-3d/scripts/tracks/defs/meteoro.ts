@@ -17,8 +17,11 @@ export const RECIFE_CORAL: TrackDef = {
   },
   points: [
     { x: 0, z: -160, y: 1.6, w: 9, wall: 'none', tag: 'largada', flat: 18 },
-    { x: 86, z: -162, y: 1.6, tag: 'calcadao' },
-    { x: 156, z: -134, y: 1.4, bank: 3, surface: 'sand', tag: 'praia' },
+    { x: 76, z: -162, y: 1.6, tag: 'calcadao' },
+    // chicane do calçadão para a areia
+    { x: 112, z: -170, y: 1.5, w: 8 },
+    { x: 138, z: -150, y: 1.4 },
+    { x: 162, z: -138, y: 1.4, bank: 3, surface: 'sand', tag: 'praia' },
     { x: 192, z: -70, y: 1.3, bank: 0, surface: 'asphalt' },
     { x: 196, z: -8, y: 2.2, w: 7, surface: 'asphalt', bridge: true, style: 'wood', wall: 'both', tag: 'passarela' },
     { x: 182, z: 46, y: 3.2, bank: 3 },
@@ -29,12 +32,18 @@ export const RECIFE_CORAL: TrackDef = {
     { x: 34, z: 104, y: 3.2, bank: 5, tag: 'grampo' },
     { x: -6, z: 116, y: 3.6, bank: 0 },
     { x: -40, z: 162, y: 4.4, tag: 'corais' },
-    { x: -112, z: 138, y: 3.6, bank: 5 },
+    // slalom entre os corais
+    { x: -76, z: 156, y: 4.2, w: 8 },
+    { x: -104, z: 168, y: 4 },
+    { x: -134, z: 148, y: 3.6, bank: 5, w: 9 },
     { x: -170, z: 84, y: 3, bank: 0, tag: 'palmeiras' },
     { x: -150, z: 26, y: 2.6, bank: -4 },
     { x: -186, z: -28, y: 2.2, bank: 4, tag: 'curvas' },
-    { x: -160, z: -86, y: 1.9, w: 7, bank: 0, bridge: true, style: 'wood', wall: 'both', tag: 'pier' },
-    { x: -100, z: -128, y: 1.8 },
+    { x: -160, z: -86, y: 1.9, w: 6.5, bank: 0, bridge: true, style: 'wood', wall: 'both', tag: 'pier' },
+    // cotovelo no píer
+    { x: -138, z: -100, y: 1.9 },
+    { x: -122, z: -122, y: 1.8 },
+    { x: -92, z: -136, y: 1.8 },
     { x: -46, z: -158, y: 1.7, w: 9, bridge: false, style: '', wall: 'none', tag: 'retorno' },
   ],
   shortcuts: [
@@ -43,7 +52,7 @@ export const RECIFE_CORAL: TrackDef = {
   items: ['calcadao+20', 'passarela-10', 'vila+20', 'palmeiras+10', 'retorno-20'],
   boostPads: [
     { at: 'salto-40' }, { at: 'salto-40', offset: 4 }, { at: 'salto-40', offset: -4 },
-    { at: 'corais+30', offset: 3 }, { at: 'pier+40' },
+    { at: 'corais+100', offset: 3 }, { at: 'pier+90' },
   ],
   ramps: [{ at: 'salto-9', width: 14, length: 8, height: 1.9 }, { at: 'praia+40', offset: -3, width: 6, height: 1.2 }],
   obstacles: [
@@ -59,7 +68,8 @@ export const RECIFE_CORAL: TrackDef = {
     { prop: ['coral', 'coral', 'rocha-praia'], from: 'corais-40', to: 'corais+80', side: 'both', every: 9, dist: [1, 5], face: 'random', noCollide: true },
     { prop: ['palmeira', 'palmeira', 'palmeira'], from: 'palmeiras-50', to: 'curvas+30', side: 'both', every: 9, dist: [2, 8], face: 'random', scale: [0.9, 1.3] },
     { prop: 'passarela-poste', from: 'pier-2', to: 'retorno-30', side: 'both', every: 6, dist: [-1.4, -1.4], face: 'along', noCollide: true },
-    { prop: 'placa-seta-dir', from: 'praia-30', to: 'praia+10', side: 'left', every: 9, dist: [1, 1.5] },
+    { prop: 'placa-seta-dir', from: 'calcadao+8', to: 'calcadao+34', side: 'left', every: 8, dist: [1, 1.5] },
+    { prop: 'placa-seta-dir', from: 'corais-30', to: 'corais-6', side: 'left', every: 8, dist: [1, 1.5] },
     { prop: 'placa-seta-dir', from: 'palmeiras-40', to: 'palmeiras', side: 'left', every: 9, dist: [1, 1.5] },
     { prop: 'placa-seta-esq', from: 'curvas-40', to: 'curvas', side: 'right', every: 9, dist: [1, 1.5] },
   ],

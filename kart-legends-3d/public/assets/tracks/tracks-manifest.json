@@ -97,14 +97,14 @@
   },
   {
     "id": "recife-coral",
-    "length": 1216,
-    "samples": 608,
-    "triangles": 263268,
-    "glbBytes": 7033080,
-    "jsonBytes": 108656,
-    "props": 399,
+    "length": 1250,
+    "samples": 625,
+    "triangles": 267446,
+    "glbBytes": 7112432,
+    "jsonBytes": 111151,
+    "props": 391,
     "animated": 2,
-    "colliders": 234,
+    "colliders": 242,
     "warnings": []
   },
   {
