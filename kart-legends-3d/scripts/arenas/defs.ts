@@ -28,7 +28,7 @@ export const PRACA_CORETO: ArenaDef = {
     colors: ['#d9b896', '#d9b896', '#d9b896', '#b89878'],
   },
   decals: [
-    { kind: 'disc', x: 0, z: 0, r: 57, mat: 'road_flagstone', tile: 4.5, color: '#f3e7d6' },
+    { kind: 'disc', x: 0, z: 0, r: 57, mat: 'road_flagstone', tile: 4.5, color: '#ffe6c8' },
     { kind: 'ring', x: 0, z: 0, r0: 5.8, r1: 12, mat: 'road_marble', tile: 6, color: '#f6efe4' },
     { kind: 'ring', x: 0, z: 0, r0: 21, r1: 27, mat: 'road_cobble', tile: 4, color: '#e3c3a3' },
     ...[45, 135, 225, 315].map((d): ArenaDef['decals'][number] => {

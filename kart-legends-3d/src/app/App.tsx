@@ -1,5 +1,8 @@
 import { useEffect, useRef } from 'react';
+import { BattleHud } from '@/components/hud/BattleHud';
 import { Hud } from '@/components/hud/Hud';
+import { ArenaSelect, BattleGameSelect } from '@/components/ui/BattleSelect';
+import { BattleResultsScreen } from '@/components/ui/BattleResultsScreen';
 import { CharacterSelect } from '@/components/ui/CharacterSelect';
 import { CupSelect } from '@/components/ui/CupSelect';
 import { DifficultySelect } from '@/components/ui/DifficultySelect';
@@ -27,7 +30,7 @@ import type { Screen } from './gameTypes';
 import { useSettingsStore } from './settingsStore';
 
 const ARROWS: Record<string, NavDirection> = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' };
-const FLOW_SCREENS: ReadonlySet<Screen> = new Set<Screen>(['mode', 'cup', 'track', 'difficulty', 'character', 'kart']);
+const FLOW_SCREENS: ReadonlySet<Screen> = new Set<Screen>(['mode', 'cup', 'track', 'difficulty', 'character', 'kart', 'battleGame', 'arena']);
 
 /** Chamadas de áudio feitas a partir de efeitos: um erro aqui não pode derrubar a interface. */
 function safeAudio(label: string, fn: () => void): void {
@@ -72,6 +75,7 @@ export function App(): JSX.Element {
   const goTo = useGameStore((s) => s.goTo);
   const quality = useSettingsStore((s) => s.quality);
   const pauseSettingsOpen = useUiStore((s) => s.pauseSettingsOpen);
+  const battleResults = useGameStore((s) => s.lastBattle !== null);
 
   // Entrada: teclado + gamepad durante toda a vida do app.
   useEffect(() => {
@@ -94,8 +98,9 @@ export function App(): JSX.Element {
     if (screen === 'loading' || screen === 'race' || screen === 'podium') return;
     let wanted: 'menu' | 'victory' | 'defeat' = 'menu';
     if (screen === 'results') {
-      const result = useGameStore.getState().lastResult;
-      wanted = result && result.playerPosition <= 3 ? 'victory' : 'defeat';
+      const { lastResult: result, lastBattle } = useGameStore.getState();
+      const place = lastBattle ? lastBattle.playerPosition : result ? result.playerPosition : 99;
+      wanted = place <= 3 ? 'victory' : 'defeat';
       if ((useGameStore.getState().lastRewards?.unlocks.length ?? 0) > 0) uiSfx('unlock');
     }
     if (lastMusic.current === wanted && wanted === 'menu') return;
@@ -199,16 +204,19 @@ export function App(): JSX.Element {
         {screen === 'mode' && <ModeSelect />}
         {screen === 'cup' && <CupSelect />}
         {screen === 'track' && <TrackSelect />}
+        {screen === 'battleGame' && <BattleGameSelect />}
+        {screen === 'arena' && <ArenaSelect />}
         {screen === 'difficulty' && <DifficultySelect />}
         {screen === 'character' && <CharacterSelect />}
         {screen === 'kart' && <KartSelect />}
         {screen === 'race' && (
           <>
             <Hud />
+            <BattleHud />
             {paused && <PauseMenu />}
           </>
         )}
-        {screen === 'results' && <ResultsScreen />}
+        {screen === 'results' && (battleResults ? <BattleResultsScreen /> : <ResultsScreen />)}
         {screen === 'podium' && <PodiumScreen />}
         {screen === 'progress' && <ProgressScreen onBack={backFromAux} />}
         {screen === 'shop' && <ShopScreen onBack={backFromAux} />}

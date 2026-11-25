@@ -21,5 +21,5 @@ export const ITEM_IDS = [
 export type ItemId = (typeof ITEM_IDS)[number];
 
 export type Difficulty = 'easy' | 'normal' | 'hard';
-export type GameMode = 'quick' | 'championship' | 'timetrial' | 'training';
+export type GameMode = 'quick' | 'championship' | 'timetrial' | 'training' | 'battle';
 export type TrophyTier = 'bronze' | 'silver' | 'gold';

@@ -24,6 +24,7 @@ const RULES: { dir: string; origin: string; usedIn: string }[] = [
   { dir: 'characters', origin: 'scripts/build-characters.ts (modelagem, rig e animação por script)', usedIn: 'Pilotos na corrida, vitrine e pódio' },
   { dir: 'karts', origin: 'scripts/build-karts.ts (modelagem por script)', usedIn: 'Veículos na corrida, vitrine e pódio' },
   { dir: 'tracks', origin: 'scripts/build-tracks.ts (traçado autorado + cenário)', usedIn: 'Pistas e dados de corrida' },
+  { dir: 'arenas', origin: 'scripts/build-arenas.ts (arena autorada + cenário das bibliotecas)', usedIn: 'Arenas do modo Batalha' },
   { dir: 'props', origin: 'scripts/build-tracks.ts (partes móveis de cenário e obstáculos)', usedIn: 'Cenário animado e obstáculos dinâmicos' },
   { dir: 'tires', origin: 'scripts/build-tires.ts (modelagem por script)', usedIn: 'Rodas da loja, equipáveis em qualquer kart' },
   { dir: 'items', origin: 'scripts/build-items.ts (modelagem por script)', usedIn: 'Itens, placas de turbo, rampas, pórtico, troféus e pódio' },

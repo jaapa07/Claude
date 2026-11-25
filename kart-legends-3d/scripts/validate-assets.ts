@@ -7,7 +7,9 @@ import { existsSync } from 'node:fs';
 import { readFile, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
+import { ARENA_IDS } from '../src/data/battle';
 import { CHARACTER_IDS, ITEM_IDS, KART_IDS, TRACK_IDS } from '../src/data/ids';
+import type { ArenaData } from '../src/game/battle/arenaTypes';
 import { TIRE_IDS } from '../src/game/vehicles/tires';
 import { ALL_AUDIO_FILES } from '../src/game/audio/audioIds';
 import type { TrackData } from '../src/game/tracks/trackTypes';
@@ -57,6 +59,7 @@ for (const id of ITEM_IDS) need(`ui/items/${id}.webp`);
 for (const id of ITEM_MODELS) need(`items/${id}.glb`);
 for (const f of ALL_AUDIO_FILES) need(f);
 need('vfx/particles.webp');
+for (const id of ARENA_IDS) { need(`arenas/${id}.glb`); need(`arenas/${id}.json`); }
 for (const id of TIRE_IDS) { need(`tires/${id}.glb`); need(`ui/tires/${id}.webp`); }
 
 // 3. imagens e texturas decodificam
@@ -132,6 +135,21 @@ for (const id of TRACK_IDS) {
   for (const m of new Set([...t.obstacles.map((o) => o.model), ...t.animatedProps.map((o) => o.model)])) {
     if (!listed.has(`props/${m}.glb`)) fail(`tracks/${id}.json: referência quebrada a props/${m}.glb`);
   }
+}
+
+// 7. arenas de batalha
+for (const id of ARENA_IDS) {
+  const p = file(`arenas/${id}.json`);
+  if (!existsSync(p)) continue;
+  const a = JSON.parse(await readFile(p, 'utf8')) as ArenaData;
+  if (a.id !== id) fail(`arenas/${id}.json: id divergente`);
+  if (a.spawns.length < 8) fail(`arenas/${id}.json: menos de 8 posições de largada`);
+  if (a.itemBoxes.length < 4) fail(`arenas/${id}.json: poucas caixas de item`);
+  if (a.crystalSpawns.length < 20) fail(`arenas/${id}.json: poucos pontos de cristal`);
+  if (a.crownSpawns.length < 1) fail(`arenas/${id}.json: sem ponto da coroa`);
+  if (a.ground.nx * a.ground.nz * 2 !== Buffer.from(a.ground.heights, 'base64').length) fail(`arenas/${id}.json: chão inconsistente`);
+  if (a.boxes.length % 7 || a.cylinders.length % 5) fail(`arenas/${id}.json: colisores malformados`);
+  for (const m of new Set(a.animatedProps.map((o) => o.model))) if (!listed.has(`props/${m}.glb`)) fail(`arenas/${id}.json: referência quebrada a props/${m}.glb`);
 }
 
 if (errors.length) {

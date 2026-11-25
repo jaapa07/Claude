@@ -1,3 +1,4 @@
+import { COINS_BY_BATTLE_PLACE } from './battle';
 import type { Difficulty, GameMode, TrophyTier } from './ids';
 
 /**
@@ -39,6 +40,14 @@ export function coinsForRace(i: CoinInput): number {
   }
   if (i.mode === 'timetrial' && i.finished) return COINS_TIME_TRIAL.finish + (i.timeTrialRecord ? COINS_TIME_TRIAL.record : 0);
   return 0;
+}
+
+/** Moedas por colocação numa batalha (menos que uma corrida), com o mesmo multiplicador de dificuldade. */
+export function coinsForBattle(i: { difficulty: Difficulty; position: number; racers: number }): number {
+  const table = COINS_BY_BATTLE_PLACE;
+  // com menos participantes a tabela é "comprimida": o último sempre recebe o valor do 8º
+  const slot = i.racers > 1 ? Math.round(((Math.max(1, Math.min(i.racers, i.position)) - 1) / (i.racers - 1)) * 7) : 0;
+  return Math.round((table[slot]! * COIN_DIFFICULTY[i.difficulty]) / 5) * 5;
 }
 
 export type ShopKind = 'character' | 'kart' | 'tire' | 'cosmetic';
