@@ -33,10 +33,28 @@ test('corrida rápida completa: controles, drift, turbo, item, pausa, IA, result
   await hook(page, 'fastForward(0.3)');
   const drift = await snapshot(page);
   expect(drift.heading).toBeGreaterThan(h0 + 0.1);
-  expect(drift.drifting).toBe(true);
-  // mantendo o drift a carga sobe de nível; soltar libera o miniturbo
-  let level = drift.driftLevel;
-  for (let i = 0; i < 12 && level < 1; i++) { await hook(page, 'fastForward(0.1)'); level = (await snapshot(page)).driftLevel; }
+  // mantendo o drift a carga sobe de nível; soltar libera o miniturbo.
+  // O grid é sorteado: uma batida com o kart vizinho cancela o drift (regra do jogo). Nesse caso o teste faz o que
+  // o jogador faria — solta e aperta Espaço de novo — em vez de depender da sorte na largada.
+  let level = 0;
+  let drifted = drift.drifting;
+  for (let attempt = 0; attempt < 4 && level < 1; attempt++) {
+    if (attempt > 0) {
+      await page.keyboard.up('Space');
+      await hook(page, 'fastForward(0.1)');
+      await page.keyboard.down('Space');
+      await page.waitForTimeout(200);
+      await hook(page, 'fastForward(0.15)');
+    }
+    for (let i = 0; i < 12 && level < 1; i++) {
+      const s = await snapshot(page);
+      drifted ||= s.drifting;
+      if (!s.drifting) break;
+      level = s.driftLevel;
+      if (level < 1) await hook(page, 'fastForward(0.1)');
+    }
+  }
+  expect(drifted).toBe(true);
   expect(level).toBeGreaterThanOrEqual(1);
   await page.keyboard.up('Space');
   await page.keyboard.up('KeyA');
