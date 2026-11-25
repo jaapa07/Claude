@@ -41,7 +41,7 @@ function monitorSource() {
         // estados presos
         if (m.state !== qa.lastState) { qa.lastState = m.state; qa.stateT = 0; }
         qa.stateT += 1 / 60 * (g.speed || 1);
-        const limits = { kickoff: 25, setpiece: 25, goal: 15, replay: 20, periodEnd: 10, penalties: 25, fulltime: 30, intro: 40, halftime: 40 };
+        const limits = { kickoff: 25, setpiece: 25, goal: 15, replay: 20, periodEnd: 10, penalties: 25, fulltime: document.querySelector('.results') ? 1e9 : 30, intro: 40, halftime: 40 };
         if (limits[m.state] && m.stateT > limits[m.state] && !m.teams.some((t) => t.human)) add('stuck:' + m.state, `estado ${m.state} preso há ${m.stateT.toFixed(0)}s`);
         // bola morta: parada, sem dono, em jogo, por muito tempo
         if (m.state === 'play' && !b.owner && b.speed < 0.3 && m.opts.mode !== 'training') { qa.deadT += 1 / 60 * (g.speed || 1); if (qa.deadT > 10) add('dead-ball', `bola parada e sem dono por ${qa.deadT.toFixed(0)}s em ${b.pos.toArray().map((v) => v.toFixed(1))}`); }

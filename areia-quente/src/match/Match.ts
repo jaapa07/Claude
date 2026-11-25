@@ -460,6 +460,8 @@ export class Match {
   private executeKick(p: Player) {
     const k = p.kick!;
     k.done = true;
+    // chute que ficou na fila não é executado fora do jogo (ex.: durante a comemoração de gol)
+    if (!['play', 'kickoff', 'setpiece', 'penalties'].includes(this.state)) return;
     const b = this.ball;
     const tm = p.team;
     const fire = k.fire;
@@ -994,6 +996,8 @@ export class Match {
     const by = this.ball.lastTouch;
     const own = !!by && by.team !== scorer;
     scorer.score++;
+    for (const p of this.all) { if (p.kick && !p.kick.done) p.kick = null; p.sliding = 0; }
+    this.pendingSave = null;
     this.hud.setScore(this.teams[0].score, this.teams[1].score);
     this.state = 'goal'; this.stateT = 0;
     this.lastScorer = own ? null : by;
