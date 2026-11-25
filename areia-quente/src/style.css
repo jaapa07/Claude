@@ -286,3 +286,5 @@ body { font-family: var(--body); color: var(--white); user-select: none; -webkit
 .squad td.at { cursor: pointer; } .squad td.at span { color: var(--green); font-size: 12px; } .squad td.at sup { color: var(--gold); }
 .squad td.cur { outline: 3px solid var(--gold); border-radius: 6px; }
 @media (max-width: 720px) { .careerhub { grid-template-columns: 1fr; } }
+
+#ui.locked .screen { pointer-events: none !important; }

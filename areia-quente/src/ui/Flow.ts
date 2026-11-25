@@ -74,14 +74,26 @@ export class Flow {
     // transições em sequência: se outra estiver em andamento, espera em vez de descartar
     while (this.busy) await new Promise((r) => setTimeout(r, 40));
     this.busy = true;
-    this.fadeEl.className = 'on';
-    await new Promise((r) => setTimeout(r, 470));
-    await fn();
-    this.fadeEl.className = 'out';
-    await new Promise((r) => setTimeout(r, 470));
-    this.fadeEl.className = '';
-    this.busy = false;
+    this.ui.classList.add('locked'); // cliques (inclusive duplo clique) ignorados durante a transição
+    this.fadeLog.push(`${Math.round(performance.now())} início`);
+    try {
+      this.fadeEl.className = 'on';
+      await new Promise((r) => setTimeout(r, 470));
+      await fn();
+      this.fadeEl.className = 'out';
+      await new Promise((r) => setTimeout(r, 470));
+    } catch (e) {
+      console.error('Erro na troca de tela:', e);
+    } finally {
+      // a trava sempre é liberada: um erro numa tela não pode congelar a navegação
+      this.fadeEl.className = '';
+      this.busy = false;
+      this.ui.classList.remove('locked');
+      this.fadeLog.push(`${Math.round(performance.now())} fim`);
+      if (this.fadeLog.length > 40) this.fadeLog.splice(0, this.fadeLog.length - 40);
+    }
   }
+  fadeLog: string[] = [];
   private clearShow() {
     for (const a of this.show) a.dispose();
     this.show = [];

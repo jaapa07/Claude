@@ -1,13 +1,14 @@
 # QA ponta a ponta
 
-Executado em 2026-11-25 21:00 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
+Executado em 2026-11-25 21:13 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
 
-**0/1 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
+**1/2 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
 bola perto do dono, controle duplicado, time humano sem jogador, estados presos, bola morta sem ninguém ir buscar).
 
 | Suíte | Resultado | Tempo |
 |---|---|---|
-| career | ✘ FALHOU | 213s |
+| career | ✔ OK | 142s |
+| menus | ✘ FALHOU | 53s |
 
 ## career
 
@@ -19,6 +20,11 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔ evolução gasta 1 ponto e melhora o atributo ({"POR0":{"chute":1}})
 - ✔ temporada concluída e registrada no histórico (1º)
 - ✔ segunda temporada começa
-- ✘ exceção: page.waitForFunction: Timeout 90000ms exceeded.
+- ✔ histórico lista a temporada
+
+## menus
+
+- ✔ ENTER no título abre o menu
+- ✘ exceção: elementHandle.dblclick: Timeout 30000ms exceeded.
 
 Capturas de tela das suítes em `docs/qa/`.

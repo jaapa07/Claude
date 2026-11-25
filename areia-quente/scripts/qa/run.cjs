@@ -69,6 +69,14 @@ const SUITES = {
     const path_ = [['Enter', 'menu']];
     await g.key('Enter'); await g.waitScene('menu');
     check(await g.scene() === 'menu', 'ENTER no título abre o menu', n);
+    // duplo clique de mouse em "Opções" não pode enfileirar duas transições
+    await g.waitFor(() => !window.__game.flow.busy, null, 60000);
+    const opt = await g.page.$$('.menu .btn');
+    await opt[6].dblclick();
+    await g.waitScene('options', 60000); await sleep(2500);
+    const fades = await g.ev(() => window.__game.flow.fadeLog.filter((x) => x.endsWith('início')).length);
+    check(fades === 2, `duplo clique gera uma única transição (${fades - 1})`, n);
+    await g.key('Escape'); await g.waitScene('menu', 60000);
     const items = await g.ev(() => [...document.querySelectorAll('.menu .btn')].map((b) => b.textContent.trim()));
     check(items.length === 8, `menu com 8 opções (${items.join(' | ')})`, n);
     const expect = ['ctrl', 'teams', 'teams', 'teams', 'challenges', 'achievements', 'options', 'credits'];
@@ -437,9 +445,11 @@ const SUITES = {
         const pool = x.phase === 'league' ? x.rounds[x.round] : x.phase === 'semis' ? x.semis : [x.final];
         const mf = pool.find((q) => q && (q.a === C.team || q.b === C.team) && !q.played);
         if (mf) { mf.ga = mf.a === C.team ? 2 : 1; mf.gb = mf.a === C.team ? 1 : 2; mf.played = true; }
+        while (f.busy) await new Promise((r) => setTimeout(r, 100));
         f.careerHub();
         document.querySelector('.careerhub .btn').click();
-        await new Promise((r) => setTimeout(r, 1300));
+        await new Promise((r) => setTimeout(r, 200));
+        while (f.busy) await new Promise((r) => setTimeout(r, 100));
       }
       f.careerHub();
     });
@@ -451,8 +461,8 @@ const SUITES = {
     await g.waitScene('career', 60000);
     const c4 = await g.ev(() => window.__game.flow.career);
     check(c4.season.n === 2 && c4.season.phase === 'league', 'segunda temporada começa', n);
+    await g.waitFor(() => !window.__game.flow.busy, null, 60000);
     await g.ev(() => window.__game.flow.careerHistory()); await sleep(1500);
-    log('após histórico:', JSON.stringify(await g.ev(() => ({ scene: window.__game.flow.scene, busy: window.__game.flow.busy, dom: !!document.querySelector('.careersquad') }))));
     await g.waitScene('careerhistory');
     check(await g.ev(() => document.querySelectorAll('.squad tr').length >= 2), 'histórico lista a temporada', n);
   },
