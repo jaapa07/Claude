@@ -589,7 +589,7 @@ export class Flow {
       const ang = (i / 7) * Math.PI - Math.PI / 2;
       const k = i === 0 ? 4 : i === 4 ? 0 : i; // capitão = pivô (índice 4)
       a.setKit(this.kit(team, c.kit, k));
-      a.root.position.set(i === 0 ? 0 : Math.sin(ang) * 2.6, 0, i === 0 ? 1 : Math.cos(ang) * 1.3 - 0.6);
+      a.root.position.set(i === 0 ? 0 : Math.sin(ang) * 2.6, 0, i === 0 ? 2.4 : Math.cos(ang) * 1.3 - 0.6);
       a.root.rotation.y = 0;
       a.play(i === 0 ? 'celebrate_trophy' : ['celebrate_samba', 'celebrate_fist', 'clap', 'celebrate_point_sky'][i % 4], 0);
       this.world.root.add(a.root); ps.push(a); this.show.push(a);
