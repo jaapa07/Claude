@@ -89,7 +89,8 @@
   .hud--battle .battle-board__name, .hud--battle .battle-board__pos { display: none; }
   .hud--battle .battle-board__icon { width: 1.05rem; height: 1.05rem; }
   .hud--battle .battle-board__score { min-width: 0.8rem; }
-  .hud--battle .hud__top-center { top: 3.2rem; }
+  /* alertas abaixo do botão de pausa (40 px + margem) */
+  .hud--battle .hud__top-center { top: calc(env(safe-area-inset-top, 0px) + 58px); }
   .hud--battle .hud-alert { font-size: 0.85rem; padding: 0.2rem 0.9rem; }
   .battle-spectate { top: 26%; padding: 0.5rem 1rem; }
   .battle-spectate__title { font-size: 1.3rem; }
