@@ -1,13 +1,30 @@
 {
  "menus": {
   "name": "menus",
-  "ok": false,
+  "ok": true,
   "notes": [
    "✔ ENTER no título abre o menu",
-   "✘ exceção: elementHandle.dblclick: Timeout 30000ms exceeded."
+   "✔ duplo clique gera uma única transição (1)",
+   "✔ menu com 8 opções (Amistoso | Copa Areia Quente | Modo Carreira | Treino | Desafios da Praia | Conquistas (0/20) | Opções | Créditos)",
+   "✔ opção 1 → ctrl",
+   "✔   ESC volta ao menu",
+   "✔ opção 2 → teams",
+   "✔   ESC volta ao menu",
+   "✔ opção 3 → teams",
+   "✔   ESC volta ao menu",
+   "✔ opção 4 → teams",
+   "✔   ESC volta ao menu",
+   "✔ opção 5 → challenges",
+   "✔   ESC volta ao menu",
+   "✔ opção 6 → achievements",
+   "✔   ESC volta ao menu",
+   "✔ opção 7 → options",
+   "✔   ESC volta ao menu",
+   "✔ opção 8 → credits",
+   "✔   ESC volta ao menu"
   ],
-  "secs": 56,
-  "at": "rodada 1"
+  "secs": 250,
+  "at": "2026-11-25T22:24:07.298Z"
  },
  "options": {
   "name": "options",
@@ -23,15 +40,14 @@
  },
  "fullmatch": {
   "name": "fullmatch",
-  "ok": false,
+  "ok": true,
   "notes": [
    "✔ partida de 3 períodos termina na tela de resultado",
-   "✔ ciclo de estados completo (play, goal, replay, setpiece, halftime, kickoff, periodEnd, fulltime)",
-   "✔ houve chutes (11,8)",
-   "✘ 2 anomalia(s): bola fora do mundo 53.7,1.4,12.9 estado=replay | estado fulltime preso há 30s"
+   "✔ ciclo de estados completo (play, goal, replay, halftime, setpiece, periodEnd, kickoff, fulltime)",
+   "✔ houve chutes (20,9)"
   ],
-  "secs": 175,
-  "at": "rodada 1"
+  "secs": 170,
+  "at": "2026-11-25T22:24:07.298Z"
  },
  "arenas": {
   "name": "arenas",
@@ -56,16 +72,16 @@
  },
  "twoplayers": {
   "name": "twoplayers",
-  "ok": false,
+  "ok": true,
   "notes": [
    "✔ controles movidos para CASA e FORA",
    "✔ teclado não é arrastado pelo analógico dos controles",
    "✔ os dois times têm jogador controlado (2,1)",
-   "✘ botão A não cobrou a saída",
+   "✔ saída cobrada pelo dispositivo do batedor (kb)",
    "✔ analógico move o jogador do controle 1"
   ],
-  "secs": 82,
-  "at": "rodada 1"
+  "secs": 54,
+  "at": "2026-11-25T22:24:07.298Z"
  },
  "setpieces": {
   "name": "setpieces",
@@ -102,8 +118,8 @@
    "✔ continuar retoma a partida",
    "✔ reiniciar começa uma nova partida"
   ],
-  "secs": 65,
-  "at": "rodada 1"
+  "secs": 66,
+  "at": "2026-11-25T22:24:07.298Z"
  },
  "cup": {
   "name": "cup",
@@ -142,14 +158,14 @@
   "name": "minigames",
   "ok": false,
   "notes": [
-   "✘ Pênaltis de Ouro termina com tela de resultado ([false,false])",
-   "✘ embaixadinhas contadas pelo bot (1)",
-   "✔ Embaixadinhas termina (bola caiu ou tempo)",
-   "✘ Tiro ao Alvo termina após 10 bolas (10,450)",
-   "✔ recordes salvos ({\"pk\":0,\"juggle\":1,\"target\":450})"
+   "✔ Pênaltis de Ouro: 5 cobranças pelo teclado e tela de resultado ([false,false,true,true,false])",
+   "✔ embaixadinhas encadeadas pelo bot (34)",
+   "✘ Embaixadinhas termina (bola caiu ou tempo)",
+   "✔ Tiro ao Alvo termina após 10 bolas (10,370)",
+   "✘ recordes salvos ({\"pk\":2,\"juggle\":0,\"target\":370})"
   ],
-  "secs": 928,
-  "at": "rodada 1"
+  "secs": 1065,
+  "at": "2026-11-25T22:24:07.298Z"
  },
  "achievements": {
   "name": "achievements",

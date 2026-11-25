@@ -1,25 +1,25 @@
 # QA ponta a ponta
 
-Executado em 2026-11-25 21:56 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
+Executado em 2026-11-25 22:24 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
 
-**12/17 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
+**15/17 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
 bola perto do dono, controle duplicado, time humano sem jogador, estados presos, bola morta sem ninguém ir buscar).
 
 | Suíte | Resultado | Tempo |
 |---|---|---|
-| menus | ✘ FALHOU | 56s |
+| menus | ✔ OK | 250s |
 | options | ✔ OK | 51s |
-| fullmatch | ✘ FALHOU | 175s |
+| fullmatch | ✔ OK | 170s |
 | arenas | ✔ OK | 136s |
 | human | ✔ OK | 173s |
-| twoplayers | ✘ FALHOU | 82s |
+| twoplayers | ✔ OK | 54s |
 | setpieces | ✔ OK | 74s |
 | fouls | ✔ OK | 60s |
-| pausemenu | ✘ FALHOU | 65s |
+| pausemenu | ✘ FALHOU | 66s |
 | cup | ✔ OK | 164s |
 | pens | ✔ OK | 86s |
 | training | ✔ OK | 32s |
-| minigames | ✘ FALHOU | 928s |
+| minigames | ✘ FALHOU | 1065s |
 | achievements | ✔ OK | 64s |
 | memory | ✔ OK | 108s |
 | career | ✔ OK | 161s |
@@ -28,7 +28,24 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 ## menus
 
 - ✔ ENTER no título abre o menu
-- ✘ exceção: elementHandle.dblclick: Timeout 30000ms exceeded.
+- ✔ duplo clique gera uma única transição (1)
+- ✔ menu com 8 opções (Amistoso | Copa Areia Quente | Modo Carreira | Treino | Desafios da Praia | Conquistas (0/20) | Opções | Créditos)
+- ✔ opção 1 → ctrl
+- ✔   ESC volta ao menu
+- ✔ opção 2 → teams
+- ✔   ESC volta ao menu
+- ✔ opção 3 → teams
+- ✔   ESC volta ao menu
+- ✔ opção 4 → teams
+- ✔   ESC volta ao menu
+- ✔ opção 5 → challenges
+- ✔   ESC volta ao menu
+- ✔ opção 6 → achievements
+- ✔   ESC volta ao menu
+- ✔ opção 7 → options
+- ✔   ESC volta ao menu
+- ✔ opção 8 → credits
+- ✔   ESC volta ao menu
 
 ## options
 
@@ -40,9 +57,8 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 ## fullmatch
 
 - ✔ partida de 3 períodos termina na tela de resultado
-- ✔ ciclo de estados completo (play, goal, replay, setpiece, halftime, kickoff, periodEnd, fulltime)
-- ✔ houve chutes (11,8)
-- ✘ 2 anomalia(s): bola fora do mundo 53.7,1.4,12.9 estado=replay | estado fulltime preso há 30s
+- ✔ ciclo de estados completo (play, goal, replay, halftime, setpiece, periodEnd, kickoff, fulltime)
+- ✔ houve chutes (20,9)
 
 ## arenas
 
@@ -60,7 +76,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔ controles movidos para CASA e FORA
 - ✔ teclado não é arrastado pelo analógico dos controles
 - ✔ os dois times têm jogador controlado (2,1)
-- ✘ botão A não cobrou a saída
+- ✔ saída cobrada pelo dispositivo do batedor (kb)
 - ✔ analógico move o jogador do controle 1
 
 ## setpieces
@@ -106,11 +122,11 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 ## minigames
 
-- ✘ Pênaltis de Ouro termina com tela de resultado ([false,false])
-- ✘ embaixadinhas contadas pelo bot (1)
-- ✔ Embaixadinhas termina (bola caiu ou tempo)
-- ✘ Tiro ao Alvo termina após 10 bolas (10,450)
-- ✔ recordes salvos ({"pk":0,"juggle":1,"target":450})
+- ✔ Pênaltis de Ouro: 5 cobranças pelo teclado e tela de resultado ([false,false,true,true,false])
+- ✔ embaixadinhas encadeadas pelo bot (34)
+- ✘ Embaixadinhas termina (bola caiu ou tempo)
+- ✔ Tiro ao Alvo termina após 10 bolas (10,370)
+- ✘ recordes salvos ({"pk":2,"juggle":0,"target":370})
 
 ## achievements
 

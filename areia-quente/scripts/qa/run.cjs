@@ -362,7 +362,10 @@ const SUITES = {
         requestAnimationFrame(loop); };
       requestAnimationFrame(loop);
     });
-    const jres = await g.waitFor(() => document.querySelector('.overlay h1')?.textContent.includes('Embaixadinhas'), null, 600000).then(() => true, () => false);
+    // depois de 10 toques encurta o cronômetro (60 s de jogo levariam ~10 min no headless) para testar o fim por tempo
+    await g.waitFor(() => (window.__game.flow.match?.mini?.count ?? 0) >= 10 || window.__game.flow.match?.mini?.done, null, 300000).catch(() => {});
+    await g.ev(() => { const mm = window.__game.flow.match?.mini; if (mm && !mm.done) mm.time = Math.min(mm.time, 1.5); });
+    const jres = await g.waitFor(() => document.querySelector('.overlay h1')?.textContent.includes('Embaixadinhas'), null, 300000).then(() => true, () => false);
     const jc = await g.ev(() => window.__game.flow.match?.mini?.count ?? -1);
     check(jc >= 5, `embaixadinhas encadeadas pelo bot (${jc})`, n);
     check(jres, 'Embaixadinhas termina (bola caiu ou tempo)', n);
