@@ -110,6 +110,8 @@ export interface TrackData {
   animatedProps: AnimatedPropData[];
   /** Plano de água (y) ou null. */
   waterY: number | null;
+  /** O que preenche o plano de `waterY`: água (padrão) ou lava (mesma regra de queda, outro efeito). */
+  liquid?: 'water' | 'lava';
   introCamera: { pos: [number, number, number]; target: [number, number, number] }[];
   minimap: { points: number[]; minX: number; maxX: number; minZ: number; maxZ: number };
 }

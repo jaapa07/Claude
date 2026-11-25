@@ -96,6 +96,8 @@ export interface TrackDef {
     material: string;
   };
   waterY?: number;
+  /** O que preenche o plano de `waterY` (padrão: água). Lava tem o mesmo efeito de queda, com outro visual. */
+  liquid?: 'water' | 'lava';
   shortcuts?: { id: string; from: At; to: At; fromOffset?: number; toOffset?: number; points: CP[]; risky?: boolean }[];
   items: At[];
   boostPads?: { at: At; offset?: number }[];

@@ -139,6 +139,16 @@ export class RaceVfx {
     this.solid.emit({ x, y: y + 0.1, z, life: 0.7, size: 2, grow: 5, sprite: SPRITE.ring, r: 0.9, g: 0.97, b: 1, alpha: 0.7 });
   }
 
+  /** Queda na lava: respingos incandescentes, clarão e fumaça escura. */
+  lavaSplash(x: number, y: number, z: number): void {
+    this.glow.emit({ x, y: y + 0.5, z, life: 0.45, size: 4, grow: 2.5, sprite: SPRITE.glow, r: 1, g: 0.45, b: 0.1, alpha: 0.9 });
+    for (let i = 0; i < 34; i++) {
+      const a = Math.random() * Math.PI * 2, s = 2 + Math.random() * 5;
+      this.glow.emit({ x, y, z, vx: Math.cos(a) * s, vy: 5 + Math.random() * 6, vz: Math.sin(a) * s, life: 0.9, size: 0.32, sprite: SPRITE.spark, r: 1, g: 0.5 + Math.random() * 0.3, b: 0.1, gravity: 18, spin: 5 });
+    }
+    for (let i = 0; i < 10; i++) this.solid.emit({ x, y: y + 0.6, z, vy: 2.5, spread: 3, life: 1.4, size: 1.6, grow: 3, sprite: SPRITE.smoke, r: 0.25, g: 0.22, b: 0.22, alpha: 0.55, drag: 1.5, spin: 1.5 });
+  }
+
   /** Brilho de coleta de item / uso de item. */
   sparkle(x: number, y: number, z: number, color: THREE.Color, count = 14): void {
     this.glow.emit({ x, y, z, life: 0.35, size: 2, grow: 2, sprite: SPRITE.glow, r: color.r, g: color.g, b: color.b, alpha: 0.8 });
@@ -165,10 +175,10 @@ export class RaceVfx {
     }
   }
 
-  /** Clima em um volume ao redor da câmera (neve, areia, folhas, chuva, pétalas, vaga-lumes). */
+  /** Clima em um volume ao redor da câmera (neve, areia, folhas, chuva, pétalas, vaga-lumes, brasas). */
   weather(kind: Weather, cam: THREE.Vector3, forward: THREE.Vector3, dt: number, quality: number): void {
     if (kind === 'none') return;
-    this.weatherAcc += dt * quality * (kind === 'rain' ? 420 : kind === 'snow' ? 260 : kind === 'sand' ? 170 : kind === 'fireflies' ? 24 : 34);
+    this.weatherAcc += dt * quality * (kind === 'rain' ? 420 : kind === 'snow' ? 260 : kind === 'sand' ? 170 : kind === 'fireflies' ? 24 : kind === 'embers' ? 60 : 34);
     while (this.weatherAcc >= 1) {
       this.weatherAcc -= 1;
       const x = cam.x + forward.x * 22 + (Math.random() - 0.5) * 60;
@@ -179,6 +189,7 @@ export class RaceVfx {
         case 'sand': this.solid.emit({ x, y: cam.y - 2 + Math.random() * 6, z, vx: 13, vy: 0.4, vz: 5, spread: 3, life: 1.8, size: 0.9, grow: 2.2, sprite: SPRITE.dust, r: 0.93, g: 0.76, b: 0.5, alpha: 0.22 }); break;
         case 'leaves': this.solid.emit({ x, y: cam.y + 2 + Math.random() * 8, z, vx: 3, vy: -1.4, vz: 1.5, spread: 2, life: 4, size: 0.3, sprite: SPRITE.leaf, r: 0.75 + Math.random() * 0.25, g: 0.7, b: 0.25, alpha: 0.95, spin: 4 }); break;
         case 'petals': this.solid.emit({ x, y: cam.y + 2 + Math.random() * 8, z, vx: 2, vy: -1, vz: 1, spread: 2, life: 4.5, size: 0.26, sprite: SPRITE.petal, r: 1, g: 0.72, b: 0.86, alpha: 0.95, spin: 4 }); break;
+        case 'embers': this.glow.emit({ x, y: cam.y - 3 + Math.random() * 6, z, vx: 0.8, vy: 2.2, vz: 0.4, spread: 1.2, life: 2.6, size: 0.14 + Math.random() * 0.1, sprite: SPRITE.spark, r: 1, g: 0.45 + Math.random() * 0.3, b: 0.12, alpha: 0.95, spin: 3 }); break;
         case 'fireflies': this.glow.emit({ x, y: cam.y - 1.5 + Math.random() * 5, z, spread: 1.4, life: 3, size: 0.22, sprite: SPRITE.glow, r: 0.7, g: 1, b: 0.6, alpha: 0.9 }); break;
       }
     }

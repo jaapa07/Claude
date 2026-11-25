@@ -3,6 +3,8 @@ import { defineMaterial } from '../lib/materials';
 import { fbm, makeTexture, voronoi, vnoise } from '../lib/textures';
 
 const g = (v: number): [number, number, number] => [v, v, v];
+/** Variação por chapa (ladrilho 4×4) para as placas metálicas. */
+const id2 = (u: number, v: number): number => vnoise(Math.floor(u * 4) / 8 + 0.01, Math.floor(v * 4) / 8 + 0.01, 8, 163);
 const lerp3 = (a: number[], b: number[], t: number): [number, number, number] =>
   [a[0]! + (b[0]! - a[0]!) * t, a[1]! + (b[1]! - a[1]!) * t, a[2]! + (b[2]! - a[2]!) * t];
 
@@ -103,6 +105,43 @@ export async function registerTrackTextures(): Promise<void> {
     const t = 0.6 + n * 0.25 + cau * cau * 0.3;
     return [t * 0.72, t * 0.92, t];
   });
+  // Copa Meteoro: basalto, chapas metálicas, lajes de templo, lava, regolito
+  await makeTexture('trk_basalt', S, (u, v) => {
+    const [d1, edge, id] = voronoi(u, v, 7, 151, 0.55);
+    const seam = Math.min(1, edge * 14);
+    const t = 0.26 + id * 0.12 - d1 * 0.08 + fbm(u, v, 16, 3, 153) * 0.1;
+    return lerp3([0.42, 0.14, 0.06], [t * 1.05, t, t * 0.98], seam);
+  });
+  await makeTexture('trk_plate', S, (u, v) => {
+    const cu = (u * 4) % 1, cv = (v * 4) % 1;
+    const seam = Math.min(cu, 1 - cu, cv, 1 - cv) < 0.018 ? 0.45 : 1;
+    const bolt = [0.07, 0.93].some((a) => [0.07, 0.93].some((b) => Math.hypot(cu - a, cv - b) < 0.022)) ? 1.25 : 1;
+    const tread = (Math.floor(u * 64) + Math.floor(v * 64)) % 2 === 0 && (Math.floor(u * 4) + Math.floor(v * 4)) % 3 === 0 ? 0.92 : 1;
+    const t = (0.66 + fbm(u, v, 8, 3, 161) * 0.14 + id2(u, v) * 0.06) * seam * bolt * tread;
+    return [t * 0.95, t * 0.97, t];
+  });
+  await makeTexture('trk_temple', S, (u, v) => {
+    const row = Math.floor(v * 4);
+    const uu = u * 3 + (row % 2) * 0.5;
+    const joint = Math.min(uu % 1, 1 - (uu % 1)) / 3 < 0.01 || Math.min((v * 4) % 1, 1 - ((v * 4) % 1)) < 0.035;
+    const id = vnoise(Math.floor(uu) / 6 + 0.01, row / 6 + 0.01, 6, 171);
+    const moss = Math.max(0, fbm(u, v, 6, 4, 173) - 0.52) * 2.4;
+    const t = joint ? 0.26 : 0.52 + id * 0.16 + fbm(u, v, 16, 3, 175) * 0.12;
+    return lerp3([t * 0.98, t * 0.94, t * 0.84], [0.3, 0.46, 0.22], Math.min(0.75, moss + (joint ? 0.35 : 0)));
+  });
+  await makeTexture('trk_lava', S, (u, v) => {
+    const [d1, edge] = voronoi(u + fbm(u, v, 4, 3, 181) * 0.08, v, 6, 183, 0.8);
+    const crack = Math.max(0, 1 - edge * 9);
+    const hot = Math.min(1, crack * 1.2 + (1 - d1) * 0.1 + fbm(u, v, 8, 4, 185) * 0.25);
+    return lerp3([0.16, 0.04, 0.03], [1, 0.62, 0.16], hot);
+  });
+  await makeTexture('trk_regolith', S, (u, v) => {
+    const n = fbm(u, v, 8, 5, 191);
+    const [d1] = voronoi(u, v, 10, 193, 0.9);
+    const pit = d1 < 0.12 ? -0.1 + d1 : 0;
+    const t = 0.7 + n * 0.22 + pit + (vnoise(u, v, 256, 195) > 0.9 ? 0.08 : 0);
+    return g(t);
+  });
   await makeTexture('trk_checker', 64, (u, v) => g((Math.floor(u * 2) + Math.floor(v * 2)) % 2 ? 0.95 : 0.06));
   await makeTexture('trk_neonstrip', 64, (u) => g(Math.abs(u - 0.5) < 0.3 ? 1 : 0.15));
 
@@ -126,6 +165,16 @@ export async function registerTrackTextures(): Promise<void> {
   road('wall_ice', 'trk_ice', 0.2);
   road('wall_marble', 'trk_marble', 0.4);
   defineMaterial('wall_neon', { map: 'trk_neonstrip', roughness: 0.4, emissive: [0.25, 0.9, 1], emissiveStrength: 1.6 });
+  road('road_basalt', 'trk_basalt', 0.88);
+  road('road_plate', 'trk_plate', 0.42, 0.55);
+  road('road_temple', 'trk_temple', 0.86);
+  road('road_regolith', 'trk_regolith', 0.95);
+  road('wall_basalt', 'trk_basalt', 0.92);
+  road('wall_temple', 'trk_temple', 0.9);
+  road('wall_metal', 'trk_plate', 0.38, 0.6);
+  road('terr_basalt', 'trk_basalt', 0.95);
+  road('terr_regolith', 'trk_regolith', 0.97);
+  defineMaterial('lava', { map: 'trk_lava', emissive: [1, 0.8, 0.7], emissiveMap: 'trk_lava', emissiveStrength: 1.6, roughness: 0.7 });
   road('terr_ground', 'trk_ground', 0.95);
   road('terr_grass', 'trk_grass', 0.95);
   road('terr_sand', 'trk_sand', 0.95);

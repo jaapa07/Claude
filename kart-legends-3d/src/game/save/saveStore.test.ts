@@ -97,9 +97,9 @@ describe('save: dados ausentes, corrompidos e versões', () => {
     }));
     expect(status).toBe('loaded');
     expect(data.stats).toMatchObject({ races: 7, wins: 0, podiums: 0, turbos: [1, 0, 30], playTimeMs: 0 });
-    expect(data.trophies).toEqual({ aurora: null, eclipse: 'silver' });
+    expect(data.trophies).toEqual({ aurora: null, eclipse: 'silver', meteoro: null });
     expect(data.records['porto-lanternas']).toEqual({ bestRaceMs: 88000, bestLapMs: null, timeTrialMs: null, timeTrialLapMs: null });
-    expect(Object.keys(data.records)).toHaveLength(8);
+    expect(Object.keys(data.records)).toHaveLength(TRACK_IDS.length);
     // 'zera' estava salvo (mantém); 'tiko' sai da regra de 3 corridas; 'duna' dos 25 turbos nível 3.
     expect(data.unlocked.characters).toEqual(['nilo', 'boro', 'lumi', 'kora', 'tiko', 'zera']);
     expect(data.unlocked.karts).toContain('duna');
@@ -151,7 +151,8 @@ describe('save: desbloqueios pelas regras dos dados', () => {
     expect(useSaveStore.getState().lastReport?.trophy).toBeNull();
 
     const eclipse = s.applyRaceResult(makeResult(race({ mode: 'championship', trackId: 'fortaleza-tempestade' })), { cupId: 'eclipse', position: 2 });
-    expect(eclipse.map((u) => u.id)).toEqual(expect.arrayContaining(['zera', 'geada']));
+    expect(eclipse.map((u) => u.id)).toEqual(expect.arrayContaining(['zera', 'geada', 'meteoro']));
+    expect(useSaveStore.getState().unlocked.cups).toContain('meteoro');
     expect(useSaveStore.getState().stats.championships).toBe(4);
   });
 

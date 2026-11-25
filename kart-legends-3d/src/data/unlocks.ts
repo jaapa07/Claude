@@ -1,4 +1,5 @@
 import type { CupId, TrophyTier } from './ids';
+import { CUP_BY_ID } from './tracks';
 
 /** Regra declarativa de desbloqueio avaliada pelo sistema de progressão. */
 export type UnlockRule =
@@ -16,7 +17,7 @@ export function describeUnlock(rule: UnlockRule): string {
     case 'wins': return `Vença ${rule.count} ${rule.count === 1 ? 'corrida' : 'corridas'}`;
     case 'trophy': {
       const tier = { bronze: 'bronze', silver: 'prata', gold: 'ouro' }[rule.min];
-      const cup = { aurora: 'Copa Aurora', eclipse: 'Copa Eclipse' }[rule.cup];
+      const cup = CUP_BY_ID[rule.cup].name;
       return `Conquiste o troféu de ${tier} ou melhor na ${cup}`;
     }
     case 'timeTrials': return `Registre tempos no Contrarrelógio em ${rule.count} pistas`;

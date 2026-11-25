@@ -1745,6 +1745,19 @@
    "usedIn": "Veículos na corrida, vitrine e pódio"
   },
   {
+   "id": "props:antena-radar",
+   "name": "antena-radar",
+   "type": "model",
+   "path": "props/antena-radar.glb",
+   "format": "glb",
+   "origin": "scripts/build-tracks.ts (partes móveis de cenário e obstáculos)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 19444,
+   "status": "validado",
+   "usedIn": "Cenário animado e obstáculos dinâmicos"
+  },
+  {
    "id": "props:balao-ar",
    "name": "balao-ar",
    "type": "model",
@@ -1780,6 +1793,32 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 17460,
+   "status": "validado",
+   "usedIn": "Cenário animado e obstáculos dinâmicos"
+  },
+  {
+   "id": "props:bola-magma",
+   "name": "bola-magma",
+   "type": "model",
+   "path": "props/bola-magma.glb",
+   "format": "glb",
+   "origin": "scripts/build-tracks.ts (partes móveis de cenário e obstáculos)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 13612,
+   "status": "validado",
+   "usedIn": "Cenário animado e obstáculos dinâmicos"
+  },
+  {
+   "id": "props:caranguejo",
+   "name": "caranguejo",
+   "type": "model",
+   "path": "props/caranguejo.glb",
+   "format": "glb",
+   "origin": "scripts/build-tracks.ts (partes móveis de cenário e obstáculos)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 19804,
    "status": "validado",
    "usedIn": "Cenário animado e obstáculos dinâmicos"
   },
@@ -1823,6 +1862,19 @@
    "usedIn": "Cenário animado e obstáculos dinâmicos"
   },
   {
+   "id": "props:engrenagem-forja",
+   "name": "engrenagem-forja",
+   "type": "model",
+   "path": "props/engrenagem-forja.glb",
+   "format": "glb",
+   "origin": "scripts/build-tracks.ts (partes móveis de cenário e obstáculos)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 22560,
+   "status": "validado",
+   "usedIn": "Cenário animado e obstáculos dinâmicos"
+  },
+  {
    "id": "props:estandarte",
    "name": "estandarte",
    "type": "model",
@@ -1832,6 +1884,19 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 6268,
+   "status": "validado",
+   "usedIn": "Cenário animado e obstáculos dinâmicos"
+  },
+  {
+   "id": "props:farol-listrado",
+   "name": "farol-listrado",
+   "type": "model",
+   "path": "props/farol-listrado.glb",
+   "format": "glb",
+   "origin": "scripts/build-tracks.ts (partes móveis de cenário e obstáculos)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 3652,
    "status": "validado",
    "usedIn": "Cenário animado e obstáculos dinâmicos"
   },
@@ -1966,6 +2031,19 @@
    "usedIn": "Cenário animado e obstáculos dinâmicos"
   },
   {
+   "id": "props:robo-carga",
+   "name": "robo-carga",
+   "type": "model",
+   "path": "props/robo-carga.glb",
+   "format": "glb",
+   "origin": "scripts/build-tracks.ts (partes móveis de cenário e obstáculos)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 38564,
+   "status": "validado",
+   "usedIn": "Cenário animado e obstáculos dinâmicos"
+  },
+  {
    "id": "props:roda-dagua",
    "name": "roda-dagua",
    "type": "model",
@@ -1988,6 +2066,32 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 33576,
+   "status": "validado",
+   "usedIn": "Cenário animado e obstáculos dinâmicos"
+  },
+  {
+   "id": "props:tronco-pendulo",
+   "name": "tronco-pendulo",
+   "type": "model",
+   "path": "props/tronco-pendulo.glb",
+   "format": "glb",
+   "origin": "scripts/build-tracks.ts (partes móveis de cenário e obstáculos)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 29384,
+   "status": "validado",
+   "usedIn": "Cenário animado e obstáculos dinâmicos"
+  },
+  {
+   "id": "props:vagonete-lava",
+   "name": "vagonete-lava",
+   "type": "model",
+   "path": "props/vagonete-lava.glb",
+   "format": "glb",
+   "origin": "scripts/build-tracks.ts (partes móveis de cenário e obstáculos)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 22740,
    "status": "validado",
    "usedIn": "Cenário animado e obstáculos dinâmicos"
   },
@@ -2941,6 +3045,32 @@
    "usedIn": "Materiais dos modelos (também embutidas nos GLB)"
   },
   {
+   "id": "textures:met_painel",
+   "name": "met_painel",
+   "type": "texture",
+   "path": "textures/met_painel.webp",
+   "format": "webp",
+   "origin": "scripts (texturas procedurais e arte vetorial próprias)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 1906,
+   "status": "validado",
+   "usedIn": "Materiais dos modelos (também embutidas nos GLB)"
+  },
+  {
+   "id": "textures:met_palha",
+   "name": "met_palha",
+   "type": "texture",
+   "path": "textures/met_palha.webp",
+   "format": "webp",
+   "origin": "scripts (texturas procedurais e arte vetorial próprias)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 13612,
+   "status": "validado",
+   "usedIn": "Materiais dos modelos (também embutidas nos GLB)"
+  },
+  {
    "id": "textures:trk_asphalt",
    "name": "trk_asphalt",
    "type": "texture",
@@ -2950,6 +3080,19 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 30218,
+   "status": "validado",
+   "usedIn": "Materiais dos modelos (também embutidas nos GLB)"
+  },
+  {
+   "id": "textures:trk_basalt",
+   "name": "trk_basalt",
+   "type": "texture",
+   "path": "textures/trk_basalt.webp",
+   "format": "webp",
+   "origin": "scripts (texturas procedurais e arte vetorial próprias)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 12550,
    "status": "validado",
    "usedIn": "Materiais dos modelos (também embutidas nos GLB)"
   },
@@ -3058,6 +3201,19 @@
    "usedIn": "Materiais dos modelos (também embutidas nos GLB)"
   },
   {
+   "id": "textures:trk_lava",
+   "name": "trk_lava",
+   "type": "texture",
+   "path": "textures/trk_lava.webp",
+   "format": "webp",
+   "origin": "scripts (texturas procedurais e arte vetorial próprias)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 20510,
+   "status": "validado",
+   "usedIn": "Materiais dos modelos (também embutidas nos GLB)"
+  },
+  {
    "id": "textures:trk_marble",
    "name": "trk_marble",
    "type": "texture",
@@ -3080,6 +3236,32 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 96,
+   "status": "validado",
+   "usedIn": "Materiais dos modelos (também embutidas nos GLB)"
+  },
+  {
+   "id": "textures:trk_plate",
+   "name": "trk_plate",
+   "type": "texture",
+   "path": "textures/trk_plate.webp",
+   "format": "webp",
+   "origin": "scripts (texturas procedurais e arte vetorial próprias)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 6264,
+   "status": "validado",
+   "usedIn": "Materiais dos modelos (também embutidas nos GLB)"
+  },
+  {
+   "id": "textures:trk_regolith",
+   "name": "trk_regolith",
+   "type": "texture",
+   "path": "textures/trk_regolith.webp",
+   "format": "webp",
+   "origin": "scripts (texturas procedurais e arte vetorial próprias)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 7910,
    "status": "validado",
    "usedIn": "Materiais dos modelos (também embutidas nos GLB)"
   },
@@ -3119,6 +3301,19 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 4054,
+   "status": "validado",
+   "usedIn": "Materiais dos modelos (também embutidas nos GLB)"
+  },
+  {
+   "id": "textures:trk_temple",
+   "name": "trk_temple",
+   "type": "texture",
+   "path": "textures/trk_temple.webp",
+   "format": "webp",
+   "origin": "scripts (texturas procedurais e arte vetorial próprias)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 6694,
    "status": "validado",
    "usedIn": "Materiais dos modelos (também embutidas nos GLB)"
   },
@@ -3240,6 +3435,32 @@
    "usedIn": "Pistas e dados de corrida"
   },
   {
+   "id": "tracks:estacao-lunar",
+   "name": "estacao-lunar",
+   "type": "model",
+   "path": "tracks/estacao-lunar.glb",
+   "format": "glb",
+   "origin": "scripts/build-tracks.ts (traçado autorado + cenário)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 4157172,
+   "status": "validado",
+   "usedIn": "Pistas e dados de corrida"
+  },
+  {
+   "id": "tracks:estacao-lunar",
+   "name": "estacao-lunar",
+   "type": "data",
+   "path": "tracks/estacao-lunar.json",
+   "format": "json",
+   "origin": "scripts/build-tracks.ts (traçado autorado + cenário)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 104153,
+   "status": "validado",
+   "usedIn": "Pistas e dados de corrida"
+  },
+  {
    "id": "tracks:fortaleza-tempestade",
    "name": "fortaleza-tempestade",
    "type": "model",
@@ -3344,6 +3565,58 @@
    "usedIn": "Pistas e dados de corrida"
   },
   {
+   "id": "tracks:recife-coral",
+   "name": "recife-coral",
+   "type": "model",
+   "path": "tracks/recife-coral.glb",
+   "format": "glb",
+   "origin": "scripts/build-tracks.ts (traçado autorado + cenário)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 7033080,
+   "status": "validado",
+   "usedIn": "Pistas e dados de corrida"
+  },
+  {
+   "id": "tracks:recife-coral",
+   "name": "recife-coral",
+   "type": "data",
+   "path": "tracks/recife-coral.json",
+   "format": "json",
+   "origin": "scripts/build-tracks.ts (traçado autorado + cenário)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 108656,
+   "status": "validado",
+   "usedIn": "Pistas e dados de corrida"
+  },
+  {
+   "id": "tracks:templo-esmeralda",
+   "name": "templo-esmeralda",
+   "type": "model",
+   "path": "tracks/templo-esmeralda.glb",
+   "format": "glb",
+   "origin": "scripts/build-tracks.ts (traçado autorado + cenário)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 8763320,
+   "status": "validado",
+   "usedIn": "Pistas e dados de corrida"
+  },
+  {
+   "id": "tracks:templo-esmeralda",
+   "name": "templo-esmeralda",
+   "type": "data",
+   "path": "tracks/templo-esmeralda.json",
+   "format": "json",
+   "origin": "scripts/build-tracks.ts (traçado autorado + cenário)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 103414,
+   "status": "validado",
+   "usedIn": "Pistas e dados de corrida"
+  },
+  {
    "id": "tracks:tracks-manifest",
    "name": "tracks-manifest",
    "type": "data",
@@ -3352,7 +3625,7 @@
    "origin": "scripts/build-tracks.ts (traçado autorado + cenário)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 1843,
+   "bytes": 2760,
    "status": "validado",
    "usedIn": "Pistas e dados de corrida"
   },
@@ -3379,6 +3652,32 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 106114,
+   "status": "validado",
+   "usedIn": "Pistas e dados de corrida"
+  },
+  {
+   "id": "tracks:vulcao-rubro",
+   "name": "vulcao-rubro",
+   "type": "model",
+   "path": "tracks/vulcao-rubro.glb",
+   "format": "glb",
+   "origin": "scripts/build-tracks.ts (traçado autorado + cenário)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 3900876,
+   "status": "validado",
+   "usedIn": "Pistas e dados de corrida"
+  },
+  {
+   "id": "tracks:vulcao-rubro",
+   "name": "vulcao-rubro",
+   "type": "data",
+   "path": "tracks/vulcao-rubro.json",
+   "format": "json",
+   "origin": "scripts/build-tracks.ts (traçado autorado + cenário)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 100984,
    "status": "validado",
    "usedIn": "Pistas e dados de corrida"
   },
@@ -3864,6 +4163,19 @@
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
   {
+   "id": "ui:tracks:estacao-lunar",
+   "name": "estacao-lunar",
+   "type": "image",
+   "path": "ui/tracks/estacao-lunar.webp",
+   "format": "webp",
+   "origin": "scripts/build-items.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 28274,
+   "status": "validado",
+   "usedIn": "Interface (retratos, ícones, miniaturas)"
+  },
+  {
    "id": "ui:tracks:fortaleza-tempestade",
    "name": "fortaleza-tempestade",
    "type": "image",
@@ -3916,6 +4228,32 @@
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
   {
+   "id": "ui:tracks:recife-coral",
+   "name": "recife-coral",
+   "type": "image",
+   "path": "ui/tracks/recife-coral.webp",
+   "format": "webp",
+   "origin": "scripts/build-items.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 31556,
+   "status": "validado",
+   "usedIn": "Interface (retratos, ícones, miniaturas)"
+  },
+  {
+   "id": "ui:tracks:templo-esmeralda",
+   "name": "templo-esmeralda",
+   "type": "image",
+   "path": "ui/tracks/templo-esmeralda.webp",
+   "format": "webp",
+   "origin": "scripts/build-items.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 34504,
+   "status": "validado",
+   "usedIn": "Interface (retratos, ícones, miniaturas)"
+  },
+  {
    "id": "ui:tracks:vale-moinhos",
    "name": "vale-moinhos",
    "type": "image",
@@ -3925,6 +4263,19 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 42424,
+   "status": "validado",
+   "usedIn": "Interface (retratos, ícones, miniaturas)"
+  },
+  {
+   "id": "ui:tracks:vulcao-rubro",
+   "name": "vulcao-rubro",
+   "type": "image",
+   "path": "ui/tracks/vulcao-rubro.webp",
+   "format": "webp",
+   "origin": "scripts/build-items.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 41616,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },

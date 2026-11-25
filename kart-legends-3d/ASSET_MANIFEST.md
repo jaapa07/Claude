@@ -4,7 +4,7 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 (id, nome, tipo, caminho, formato, origem, autor, licença, tamanho, status de validação e local de uso), está em
 `public/assets/manifest.json`. A validação automática é `npm run validate:assets`.
 
-- **Total:** 303 arquivos, 116.8 MB
+- **Total:** 330 arquivos, 140.3 MB
 - **Autor de todos os recursos:** Equipe Kart Legends 3D
 - **Licença:** Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)
 - **Recursos de terceiros:** nenhum
@@ -15,10 +15,10 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | `characters/` | 11 | 3669 kB | scripts/build-characters.ts (modelagem, rig e animação por script) | Pilotos na corrida, vitrine e pódio |
 | `items/` | 15 | 655 kB | scripts/build-items.ts (modelagem por script) | Itens, placas de turbo, rampas, pórtico, troféus e pódio |
 | `karts/` | 9 | 1693 kB | scripts/build-karts.ts (modelagem por script) | Veículos na corrida, vitrine e pódio |
-| `props/` | 19 | 485 kB | scripts/build-tracks.ts (partes móveis de cenário e obstáculos) | Cenário animado e obstáculos dinâmicos |
-| `textures/` | 90 | 1145 kB | scripts (texturas procedurais e arte vetorial próprias) | Materiais dos modelos (também embutidas nos GLB) |
-| `tracks/` | 17 | 96981 kB | scripts/build-tracks.ts (traçado autorado + cenário) | Pistas e dados de corrida |
-| `ui/` | 42 | 1045 kB | scripts/build-items.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo) | Interface (retratos, ícones, miniaturas) |
+| `props/` | 27 | 651 kB | scripts/build-tracks.ts (partes móveis de cenário e obstáculos) | Cenário animado e obstáculos dinâmicos |
+| `textures/` | 97 | 1213 kB | scripts (texturas procedurais e arte vetorial próprias) | Materiais dos modelos (também embutidas nos GLB) |
+| `tracks/` | 25 | 120684 kB | scripts/build-tracks.ts (traçado autorado + cenário) | Pistas e dados de corrida |
+| `ui/` | 46 | 1178 kB | scripts/build-items.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo) | Interface (retratos, ícones, miniaturas) |
 | `vfx/` | 1 | 25 kB | scripts/build-vfx.ts (arte vetorial própria) | Sistema de partículas |
 
 ## characters/
@@ -75,13 +75,18 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 
 | Arquivo | Tipo | Tamanho |
 |---|---|---:|
+| `props/antena-radar.glb` | model | 19 kB |
 | `props/balao-ar.glb` | model | 41 kB |
 | `props/bandeira-expedicao.glb` | model | 4 kB |
 | `props/barril-rolante.glb` | model | 17 kB |
+| `props/bola-magma.glb` | model | 13 kB |
+| `props/caranguejo.glb` | model | 19 kB |
 | `props/carrinho-limpeza.glb` | model | 32 kB |
 | `props/catavento-areia.glb` | model | 21 kB |
 | `props/drone-carga.glb` | model | 41 kB |
+| `props/engrenagem-forja.glb` | model | 22 kB |
 | `props/estandarte.glb` | model | 6 kB |
+| `props/farol-listrado.glb` | model | 4 kB |
 | `props/flor-gigante.glb` | model | 21 kB |
 | `props/grade-movel.glb` | model | 56 kB |
 | `props/holograma.glb` | model | 12 kB |
@@ -92,8 +97,11 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | `props/nuvem-trovao.glb` | model | 26 kB |
 | `props/pedra-rolante.glb` | model | 36 kB |
 | `props/planta-dancarina.glb` | model | 14 kB |
+| `props/robo-carga.glb` | model | 38 kB |
 | `props/roda-dagua.glb` | model | 32 kB |
 | `props/rolo-neve.glb` | model | 33 kB |
+| `props/tronco-pendulo.glb` | model | 29 kB |
+| `props/vagonete-lava.glb` | model | 22 kB |
 
 ## tracks/
 
@@ -105,6 +113,8 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | `tracks/canion-solar.json` | data | 92 kB |
 | `tracks/cidade-neon.glb` | model | 7920 kB |
 | `tracks/cidade-neon.json` | data | 120 kB |
+| `tracks/estacao-lunar.glb` | model | 4060 kB |
+| `tracks/estacao-lunar.json` | data | 102 kB |
 | `tracks/fortaleza-tempestade.glb` | model | 8412 kB |
 | `tracks/fortaleza-tempestade.json` | data | 101 kB |
 | `tracks/jardim-celeste.glb` | model | 8687 kB |
@@ -113,9 +123,15 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | `tracks/pico-boreal.json` | data | 100 kB |
 | `tracks/porto-lanternas.glb` | model | 12759 kB |
 | `tracks/porto-lanternas.json` | data | 105 kB |
-| `tracks/tracks-manifest.json` | data | 2 kB |
+| `tracks/recife-coral.glb` | model | 6868 kB |
+| `tracks/recife-coral.json` | data | 106 kB |
+| `tracks/templo-esmeralda.glb` | model | 8558 kB |
+| `tracks/templo-esmeralda.json` | data | 101 kB |
+| `tracks/tracks-manifest.json` | data | 3 kB |
 | `tracks/vale-moinhos.glb` | model | 10866 kB |
 | `tracks/vale-moinhos.json` | data | 104 kB |
+| `tracks/vulcao-rubro.glb` | model | 3809 kB |
+| `tracks/vulcao-rubro.json` | data | 99 kB |
 
 ## ui/
 
@@ -158,11 +174,15 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | `ui/tracks/bosque-cristal.webp` | image | 45 kB |
 | `ui/tracks/canion-solar.webp` | image | 39 kB |
 | `ui/tracks/cidade-neon.webp` | image | 52 kB |
+| `ui/tracks/estacao-lunar.webp` | image | 28 kB |
 | `ui/tracks/fortaleza-tempestade.webp` | image | 31 kB |
 | `ui/tracks/jardim-celeste.webp` | image | 21 kB |
 | `ui/tracks/pico-boreal.webp` | image | 33 kB |
 | `ui/tracks/porto-lanternas.webp` | image | 46 kB |
+| `ui/tracks/recife-coral.webp` | image | 31 kB |
+| `ui/tracks/templo-esmeralda.webp` | image | 34 kB |
 | `ui/tracks/vale-moinhos.webp` | image | 41 kB |
+| `ui/tracks/vulcao-rubro.webp` | image | 41 kB |
 
 ## vfx/
 
@@ -172,4 +192,4 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 
 ## audio/ e textures/
 
-99 arquivos de áudio (lista e durações em `public/assets/audio/audio-manifest.json` e `docs/AUDIO.md`) e 90 texturas (todas também embutidas nos GLB que as usam).
+99 arquivos de áudio (lista e durações em `public/assets/audio/audio-manifest.json` e `docs/AUDIO.md`) e 97 texturas (todas também embutidas nos GLB que as usam).

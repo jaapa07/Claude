@@ -8,6 +8,8 @@ export interface MatDef {
   emissiveStrength?: number;
   /** Nome de textura registrada em textures.ts (sem extensão). */
   map?: string;
+  /** Textura que modula a emissão (ex.: rachaduras incandescentes da lava). */
+  emissiveMap?: string;
   alpha?: number;
   doubleSided?: boolean;
   /** Ignora a cor de vértice (usa só textura/fator). */
