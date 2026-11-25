@@ -1298,7 +1298,7 @@
    "origin": "scripts/build-characters.ts (modelagem, rig e animação por script)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 365720,
+   "bytes": 365676,
    "status": "validado",
    "usedIn": "Pilotos na corrida, vitrine e pódio"
   },
@@ -1337,7 +1337,7 @@
    "origin": "scripts/build-characters.ts (modelagem, rig e animação por script)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 381160,
+   "bytes": 381548,
    "status": "validado",
    "usedIn": "Pilotos na corrida, vitrine e pódio"
   },
@@ -1350,7 +1350,7 @@
    "origin": "scripts/build-characters.ts (modelagem, rig e animação por script)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 368664,
+   "bytes": 368644,
    "status": "validado",
    "usedIn": "Pilotos na corrida, vitrine e pódio"
   },
@@ -1363,7 +1363,7 @@
    "origin": "scripts/build-characters.ts (modelagem, rig e animação por script)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 361552,
+   "bytes": 361480,
    "status": "validado",
    "usedIn": "Pilotos na corrida, vitrine e pódio"
   },
@@ -1376,7 +1376,7 @@
    "origin": "scripts/build-characters.ts (modelagem, rig e animação por script)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 378768,
+   "bytes": 378728,
    "status": "validado",
    "usedIn": "Pilotos na corrida, vitrine e pódio"
   },
@@ -1389,7 +1389,7 @@
    "origin": "scripts/build-characters.ts (modelagem, rig e animação por script)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 388276,
+   "bytes": 388392,
    "status": "validado",
    "usedIn": "Pilotos na corrida, vitrine e pódio"
   },
@@ -1402,7 +1402,7 @@
    "origin": "scripts/build-characters.ts (modelagem, rig e animação por script)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 394388,
+   "bytes": 394508,
    "status": "validado",
    "usedIn": "Pilotos na corrida, vitrine e pódio"
   },
@@ -1415,7 +1415,7 @@
    "origin": "scripts/build-characters.ts (modelagem, rig e animação por script)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 390464,
+   "bytes": 390556,
    "status": "validado",
    "usedIn": "Pilotos na corrida, vitrine e pódio"
   },
@@ -1428,7 +1428,7 @@
    "origin": "scripts/build-characters.ts (modelagem, rig e animação por script)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 427872,
+   "bytes": 428356,
    "status": "validado",
    "usedIn": "Pilotos na corrida, vitrine e pódio"
   },
@@ -1454,7 +1454,7 @@
    "origin": "scripts/build-characters.ts (modelagem, rig e animação por script)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 362652,
+   "bytes": 363120,
    "status": "validado",
    "usedIn": "Pilotos na corrida, vitrine e pódio"
   },
@@ -1467,7 +1467,7 @@
    "origin": "scripts/build-characters.ts (modelagem, rig e animação por script)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 389568,
+   "bytes": 389908,
    "status": "validado",
    "usedIn": "Pilotos na corrida, vitrine e pódio"
   },
@@ -1480,7 +1480,7 @@
    "origin": "scripts/build-characters.ts (modelagem, rig e animação por script)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 417868,
+   "bytes": 418204,
    "status": "validado",
    "usedIn": "Pilotos na corrida, vitrine e pódio"
   },
@@ -1714,7 +1714,7 @@
    "origin": "scripts/build-karts.ts (modelagem por script)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 201800,
+   "bytes": 200936,
    "status": "validado",
    "usedIn": "Veículos na corrida, vitrine e pódio"
   },
@@ -3898,7 +3898,7 @@
    "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 5544,
+   "bytes": 5598,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
@@ -3924,7 +3924,7 @@
    "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 2794,
+   "bytes": 2772,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
@@ -3937,7 +3937,7 @@
    "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 6662,
+   "bytes": 6620,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
@@ -3950,7 +3950,7 @@
    "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 5376,
+   "bytes": 5248,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
@@ -3963,7 +3963,7 @@
    "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 6016,
+   "bytes": 6032,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
@@ -3976,7 +3976,7 @@
    "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 5872,
+   "bytes": 5974,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
@@ -3989,7 +3989,7 @@
    "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 4510,
+   "bytes": 4488,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
@@ -4002,7 +4002,7 @@
    "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 8396,
+   "bytes": 8416,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
@@ -4015,7 +4015,7 @@
    "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 4372,
+   "bytes": 4422,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
@@ -4041,7 +4041,7 @@
    "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 3716,
+   "bytes": 3756,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
@@ -4054,7 +4054,7 @@
    "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 4242,
+   "bytes": 4482,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
@@ -4067,7 +4067,7 @@
    "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 4768,
+   "bytes": 4770,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
@@ -4184,7 +4184,7 @@
    "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 39146,
+   "bytes": 40124,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
@@ -4262,7 +4262,7 @@
    "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 37618,
+   "bytes": 37846,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
@@ -4288,7 +4288,7 @@
    "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 29826,
+   "bytes": 30020,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
@@ -4301,7 +4301,7 @@
    "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 42124,
+   "bytes": 42276,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
@@ -4314,7 +4314,7 @@
    "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 37990,
+   "bytes": 38008,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
@@ -4327,7 +4327,7 @@
    "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 40964,
+   "bytes": 41588,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
@@ -4340,7 +4340,7 @@
    "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 37912,
+   "bytes": 38164,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
@@ -4353,7 +4353,7 @@
    "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 31816,
+   "bytes": 31468,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
@@ -4366,7 +4366,7 @@
    "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 41352,
+   "bytes": 41904,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
@@ -4379,7 +4379,7 @@
    "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 36372,
+   "bytes": 36426,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
@@ -4405,7 +4405,7 @@
    "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 28256,
+   "bytes": 27896,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
@@ -4418,7 +4418,7 @@
    "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 36130,
+   "bytes": 35842,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
@@ -4431,7 +4431,7 @@
    "origin": "scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 36292,
+   "bytes": 36182,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },

@@ -50,7 +50,7 @@
     {
       "id": "nilo",
       "file": "assets/characters/nilo.glb",
-      "bytes": 388276,
+      "bytes": 388392,
       "triangles": 12899,
       "bones": 22,
       "extraBones": [
@@ -132,7 +132,7 @@
     {
       "id": "boro",
       "file": "assets/characters/boro.glb",
-      "bytes": 365720,
+      "bytes": 365676,
       "triangles": 13280,
       "bones": 17,
       "extraBones": [
@@ -209,7 +209,7 @@
     {
       "id": "lumi",
       "file": "assets/characters/lumi.glb",
-      "bytes": 361552,
+      "bytes": 361480,
       "triangles": 11346,
       "bones": 22,
       "extraBones": [
@@ -291,7 +291,7 @@
     {
       "id": "kora",
       "file": "assets/characters/kora.glb",
-      "bytes": 368664,
+      "bytes": 368644,
       "triangles": 13768,
       "bones": 19,
       "extraBones": [
@@ -452,7 +452,7 @@
     {
       "id": "mavi",
       "file": "assets/characters/mavi.glb",
-      "bytes": 378768,
+      "bytes": 378728,
       "triangles": 13624,
       "bones": 22,
       "extraBones": [
@@ -534,7 +534,7 @@
     {
       "id": "runi",
       "file": "assets/characters/runi.glb",
-      "bytes": 390464,
+      "bytes": 390556,
       "triangles": 12834,
       "bones": 23,
       "extraBones": [
@@ -617,7 +617,7 @@
     {
       "id": "zera",
       "file": "assets/characters/zera.glb",
-      "bytes": 417868,
+      "bytes": 418204,
       "triangles": 13456,
       "bones": 24,
       "extraBones": [
@@ -780,7 +780,7 @@
     {
       "id": "tuca",
       "file": "assets/characters/tuca.glb",
-      "bytes": 362652,
+      "bytes": 363120,
       "triangles": 11170,
       "bones": 20,
       "extraBones": [
@@ -860,7 +860,7 @@
     {
       "id": "yuki",
       "file": "assets/characters/yuki.glb",
-      "bytes": 389568,
+      "bytes": 389908,
       "triangles": 12740,
       "bones": 23,
       "extraBones": [
@@ -943,7 +943,7 @@
     {
       "id": "kaito",
       "file": "assets/characters/kaito.glb",
-      "bytes": 381160,
+      "bytes": 381548,
       "triangles": 12518,
       "bones": 23,
       "extraBones": [
@@ -1026,7 +1026,7 @@
     {
       "id": "ren",
       "file": "assets/characters/ren.glb",
-      "bytes": 394388,
+      "bytes": 394508,
       "triangles": 13398,
       "bones": 23,
       "extraBones": [
@@ -1109,7 +1109,7 @@
     {
       "id": "sora",
       "file": "assets/characters/sora.glb",
-      "bytes": 427872,
+      "bytes": 428356,
       "triangles": 13399,
       "bones": 26,
       "extraBones": [
