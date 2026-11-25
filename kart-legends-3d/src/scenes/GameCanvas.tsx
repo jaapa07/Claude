@@ -1,7 +1,7 @@
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Bloom, EffectComposer, ToneMapping, Vignette } from '@react-three/postprocessing';
 import { ToneMappingMode } from 'postprocessing';
-import { Suspense, useEffect, useMemo, useRef } from 'react';
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { useGameStore } from '@/app/gameStore';
 import { useSettingsStore } from '@/app/settingsStore';
@@ -32,6 +32,35 @@ function FpsProbe(): null {
   return null;
 }
 
+/**
+ * Gancho dos testes/capturas (?e2e=1): permite desligar o laço de quadros e avançar quadro a quadro com um
+ * passo fixo, para gravar sequências de animação determinísticas mesmo com renderização por software.
+ */
+function FrameStepHook({ setManual }: { setManual: (on: boolean) => void }): null {
+  const advance = useThree((s) => s.advance);
+  const clock = useThree((s) => s.clock);
+  const gl = useThree((s) => s.gl);
+  const scene = useThree((s) => s.scene);
+  const camera = useThree((s) => s.camera);
+  useEffect(() => {
+    if (!new URLSearchParams(window.location.search).has('e2e')) return;
+    const w = window as unknown as { __kl3dFrames?: unknown };
+    w.__kl3dFrames = {
+      manual: (on: boolean) => setManual(on),
+      step: (frames: number, dt = 1 / 30) => { for (let i = 0; i < frames; i++) advance(clock.elapsedTime + dt); },
+      /** Redesenha o quadro atual visto de outro ponto (inspeção de cenário animado). */
+      view: (pos: [number, number, number], target: [number, number, number]) => {
+        camera.position.set(...pos);
+        camera.lookAt(...target);
+        camera.updateMatrixWorld();
+        gl.render(scene, camera);
+      },
+    };
+    return () => { delete w.__kl3dFrames; };
+  }, [setManual, advance, clock, gl, scene, camera]);
+  return null;
+}
+
 /** Modo estúdio (?studio=character:nilo | kart:flecha): usado pelo script que gera retratos e miniaturas. */
 function studioRequest(): { kind: 'character' | 'kart' | 'track'; id: string } | null {
   const v = new URLSearchParams(window.location.search).get('studio');
@@ -53,6 +82,7 @@ export function GameCanvas(): JSX.Element {
   const loading = useSceneStore((s) => s.loading);
   const fps = useSceneStore((s) => s.fps);
   const studio = useMemo(studioRequest, []);
+  const [manualFrames, setManualFrames] = useState(false);
 
   const podium = useMemo((): PodiumEntry[] => {
     if (championship?.finished) return [...championship.standings].sort((a, b) => b.points - a.points);
@@ -70,6 +100,7 @@ export function GameCanvas(): JSX.Element {
     <div className="game-canvas" data-testid="game-canvas" data-mode={mode} data-loading={loading ? '1' : '0'} data-fps={fps}>
       <Canvas
         key={qualityId}
+        frameloop={manualFrames ? 'never' : 'always'}
         shadows={quality.shadows ? { type: THREE.PCFSoftShadowMap } : false}
         dpr={quality.dpr}
         camera={{ fov: 60, near: 0.3, far: 1600, position: [3, 2, 6] }}
@@ -77,6 +108,7 @@ export function GameCanvas(): JSX.Element {
         onCreated={({ gl }) => { if (studio && studio.kind !== 'track') gl.setClearColor(0x000000, 0); }}
       >
         <FpsProbe />
+        <FrameStepHook setManual={setManualFrames} />
         <Suspense fallback={<LoadingSignal />}>
           {mode === 'race' && race && <RaceScene key={raceNonce} config={race} />}
           {mode === 'podium' && <PodiumScene entries={podium} trophy={trophy} />}

@@ -131,6 +131,8 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
         },
         setAutopilot: (on: boolean) => { if (sim.player) sim.player.ai = on; },
         giveItem: (item: KartState['item']) => { if (sim.player) sim.player.item = item; },
+        /** Acesso direto à simulação (ferramentas de captura de animação). */
+        sim,
       };
     }
     return () => {
