@@ -10,7 +10,7 @@ import { useGameStore } from '@/app/gameStore';
 import { useSettingsStore } from '@/app/settingsStore';
 import { ITEM_BY_ID } from '@/data/items';
 import { TRACK_BY_ID } from '@/data/tracks';
-import { audio } from '@/game/audio/audioManager';
+import { audio, type EngineControl } from '@/game/audio/audioManager';
 import { ChaseCamera } from '@/game/camera/chaseCamera';
 import { useHudStore } from '@/game/core/hudStore';
 import type { RaceConfig } from '@/game/core/types';
@@ -29,6 +29,7 @@ import { speedLinesFragment, speedLinesVertex } from '@/shaders/speedLines';
 import { useModel, useModels, useParticleAtlas } from '../assets';
 import { SkyAndLights, type SkyHandle } from '../common/SkyAndLights';
 import { QUALITY } from '../quality';
+import { SplitRenderer, nearestCamDist2, splitQuality } from '../split';
 import { AnimatedProps, RaceObjects, type RaceView } from './RaceObjects';
 import { TrackModel } from './TrackModel';
 
@@ -45,6 +46,9 @@ const lerpAngle = (a: number, b: number, t: number): number => {
   return a + d * t;
 };
 
+/** Volume de cada motor na tela dividida (dois motores somados ficam perto de um só). */
+const SPLIT_ENGINE_GAIN = 0.62;
+
 export function RaceScene({ config }: { config: RaceConfig }): JSX.Element {
   const data = suspend(() => loadTrackData(config.trackId), ['track-data', config.trackId]);
   return (
@@ -57,7 +61,10 @@ export function RaceScene({ config }: { config: RaceConfig }): JSX.Element {
 function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): JSX.Element {
   const { world, rapier } = useRapier();
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
-  const quality = QUALITY[useSettingsStore((s) => s.quality)];
+  const humans = config.racers.filter((r) => r.isPlayer).length;
+  const split = humans >= 2;
+  const baseQuality = QUALITY[useSettingsStore((s) => s.quality)];
+  const quality = useMemo(() => (split ? splitQuality(baseQuality) : baseQuality), [split, baseQuality]);
   const env = ENVIRONMENTS[config.trackId];
   const meta = TRACK_BY_ID[config.trackId];
   const atlas = useParticleAtlas();
@@ -68,7 +75,8 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
   // simulação (uma por montagem da cena)
   const simRef = useRef<RaceSim | null>(null);
   if (!simRef.current) {
-    simRef.current = new RaceSim(rapier as unknown as Rapier, world, data, config, { playerInput: () => inputManager.read() });
+    inputManager.setPlayerCount(humans);
+    simRef.current = new RaceSim(rapier as unknown as Rapier, world, data, config, { playerInput: (slot) => inputManager.readPlayer(slot) });
   }
   const sim = simRef.current;
   const view = useRef<RaceView>({ sim, alpha: 0, time: 0 });
@@ -77,7 +85,7 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
     const model = new KartModel(kartGltfs[i]!, charGltfs[i]!, shieldGltf);
     // Kart repetido na corrida (há mais pilotos que karts): quem não é o "dono" do kart ganha a cor do próprio piloto.
     const r = config.racers[i]!;
-    // Jogador: roupa e kart personalizados.
+    // Jogadores: roupa e kart personalizados.
     const customPaint = r.isPlayer && dressPlayer(model, r.characterId, r.kartId);
     const same = config.racers.filter((o) => o.kartId === r.kartId);
     const keeper = same.find((o) => CHARACTER_BY_ID[o.characterId].kartId === r.kartId) ?? same[0]!;
@@ -85,7 +93,14 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
     return model;
   }), [sim, kartGltfs, charGltfs, shieldGltf, config.racers]);
   const vfx = useMemo(() => new RaceVfx(atlas, env, quality.particles), [atlas, env, quality.particles]);
-  const cam = useMemo(() => new ChaseCamera(camera, rapier as unknown as Rapier, world, data.introCamera, quality.shake), [camera, rapier, world, data, quality.shake]);
+  // Uma câmera por jogador: a do Jogador 1 é a câmera do Canvas; a do Jogador 2 é criada aqui (tela dividida).
+  const cameras = useMemo(() => (split ? [camera, new THREE.PerspectiveCamera(60, 2, 0.3, 1600)] : [camera]), [split, camera]);
+  const cams = useMemo(
+    () => cameras.map((c) => new ChaseCamera(c, rapier as unknown as Rapier, world, data.introCamera, quality.shake)),
+    [cameras, rapier, world, data, quality.shake],
+  );
+  const cam = cams[0]!;
+  const engines: EngineControl[] = useMemo(() => (split ? [audio.engine, audio.engine2] : [audio.engine]), [split]);
   const speedLines = useMemo(() => new THREE.ShaderMaterial({
     vertexShader: speedLinesVertex, fragmentShader: speedLinesFragment, transparent: true, depthTest: false, depthWrite: false,
     blending: THREE.AdditiveBlending, uniforms: { uIntensity: { value: 0 }, uTime: { value: 0 }, uColor: { value: new THREE.Color('#ffffff') } },
@@ -106,41 +121,55 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
       drifting: false, driftLevel: 0, boost: 0, boostKind: 0, grounded: true, onRoad: true, surface: 0, braking: false, spinning: false,
     })),
     color: new THREE.Color(),
+    /** Intensidade dos riscos de velocidade de cada jogador (cada metade da tela tem a sua). */
+    lines: [0, 0],
   });
 
+  const publishHud = (): void => {
+    useHudStore.getState().setHud(sim.hud(0), split ? sim.hud(1) : null);
+  };
+
   useEffect(() => {
-    useHudStore.getState().setHud(sim.hud());
+    publishHud();
     audio.playAmbience(meta.ambience);
     audio.playMusic(null, { fadeMs: 600 });
+    for (const e of engines) e.setGain(split ? SPLIT_ENGINE_GAIN : 1);
     const query = new URLSearchParams(window.location.search);
     if (query.has('fast')) state.current.intro = 999;
     // Gancho exclusivo dos testes de ponta a ponta (?e2e=1): lê o estado real da simulação e permite
     // adiantar o relógio rodando os MESMOS passos fixos, sem renderizar. Não existe fora desse modo.
+    // Com dois jogadores, `snapshot()` é o Jogador 1 e `snapshotOf(1)` o Jogador 2.
     const w = window as unknown as { __kl3d?: unknown };
     if (query.has('e2e')) {
+      const snap = (slot: number) => {
+        const p = sim.players[slot] ?? sim.player ?? sim.karts[0]!;
+        return {
+          phase: sim.phase, raceTime: sim.raceTime, racers: sim.karts.length, lap: p.lap, position: p.position, speed: p.speed,
+          heading: p.heading, x: p.x, z: p.z, drifting: p.drifting, driftLevel: p.driftLevel, boost: p.boostTime, item: p.item,
+          grounded: p.grounded, progress: p.progress, finished: sim.karts.filter((k) => k.finished).length,
+          aiMoving: sim.karts.filter((k) => !k.isPlayer && Math.abs(k.speed) > 3).length,
+          players: sim.players.length, slot: Math.max(0, p.slot), characterId: p.characterId, playerFinished: p.finished,
+        };
+      };
+      const target = (slot?: number): KartState[] => (slot === undefined ? sim.players : sim.players[slot] ? [sim.players[slot]] : []);
       w.__kl3d = {
-        snapshot: () => {
-          const p = sim.player ?? sim.karts[0]!;
-          return {
-            phase: sim.phase, raceTime: sim.raceTime, racers: sim.karts.length, lap: p.lap, position: p.position, speed: p.speed,
-            heading: p.heading, x: p.x, z: p.z, drifting: p.drifting, driftLevel: p.driftLevel, boost: p.boostTime, item: p.item,
-            grounded: p.grounded, progress: p.progress, finished: sim.karts.filter((k) => k.finished).length,
-            aiMoving: sim.karts.filter((k) => !k.isPlayer && Math.abs(k.speed) > 3).length,
-          };
-        },
+        snapshot: () => snap(0),
+        snapshotOf: (slot: number) => snap(slot),
         fastForward: (seconds: number) => {
           const steps = Math.round(seconds / PHYS.dt);
           for (let i = 0; i < steps; i++) { sim.step(); for (const e of sim.drainEvents()) if (e.type === 'finish' || e.type === 'lap') handleEvent(e); }
-          useHudStore.getState().setHud(sim.hud());
+          publishHud();
         },
-        setAutopilot: (on: boolean) => { if (sim.player) sim.player.ai = on; },
-        giveItem: (item: KartState['item']) => { if (sim.player) sim.player.item = item; },
+        /** Sem `slot`: todos os jogadores humanos. */
+        setAutopilot: (on: boolean, slot?: number) => { for (const k of target(slot)) k.ai = on; },
+        giveItem: (item: KartState['item'], slot = 0) => { const k = sim.players[slot] ?? sim.player; if (k) k.item = item; },
         /** Acesso direto à simulação (ferramentas de captura de animação). */
         sim,
       };
     }
     return () => {
       delete w.__kl3d;
+      inputManager.setPlayerCount(1);
       audio.stopAllRaceSounds();
       useHudStore.getState().reset();
       for (const m of models) m.dispose();
@@ -149,15 +178,19 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
     };
   }, [sim, models, vfx, speedLines, meta]);
 
+  /** Câmera do jogador humano que pilota `k` (ou null para a IA). */
+  const camOf = (k: KartState | undefined): ChaseCamera | null => (k && k.isPlayer ? cams[k.slot] ?? null : null);
+
   const handleEvent = (e: SimEvent): void => {
-    const player = sim.player;
     const st = state.current;
     const k: KartState | undefined = 'kart' in e ? sim.karts[e.kart] : undefined;
-    const mine = !!k && k === player;
-    // volume por distância para os outros pilotos
+    const mine = !!k && k.isPlayer;
+    const kc = camOf(k);
+    // volume por distância (até o jogador mais próximo) para os outros pilotos
     let vol = 1;
-    if (k && player && !mine) {
-      const d = Math.hypot(k.x - player.x, k.z - player.z);
+    if (k && !mine && sim.players.length) {
+      let d = Infinity;
+      for (const p of sim.players) d = Math.min(d, Math.hypot(k.x - p.x, k.z - p.z));
       vol = Math.max(0, 1 - d / 60) * 0.7;
     }
     const sfx = (id: Parameters<typeof audio.sfx>[0], v = 1, rate = 1): void => { if (vol * v > 0.03) audio.sfx(id, { volume: vol * v, rate }); };
@@ -166,40 +199,43 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
       case 'go':
         audio.sfx('countdown_go');
         audio.playMusic(meta.music, { fadeMs: 300 });
-        audio.engine.start();
+        for (const en of engines) en.start();
         break;
       case 'drift_start': if (mine) audio.sfx('jump', { volume: 0.5, rate: 1.3 }); break;
       case 'drift_level': if (mine) audio.sfx('ui_move', { volume: 0.9, rate: 0.8 + e.level * 0.25 }); break;
       case 'turbo':
         sfx(`turbo_${Math.min(3, e.level)}` as 'turbo_1');
         if (k) vfx.turbo(k.x, k.y - PHYS.rideHeight, k.z, e.level);
-        if (mine) { cam.addShake(0.08 + e.level * 0.04); cam.kick(2.5 + e.level * 1.5); }
+        if (kc) { kc.addShake(0.08 + e.level * 0.04); kc.kick(2.5 + e.level * 1.5); }
         break;
-      case 'boost_pad': sfx('boost_pad'); if (k) vfx.turbo(k.x, k.y - PHYS.rideHeight, k.z, 2); if (mine) { cam.addShake(0.1); cam.kick(5); } break;
+      case 'boost_pad': sfx('boost_pad'); if (k) vfx.turbo(k.x, k.y - PHYS.rideHeight, k.z, 2); if (kc) { kc.addShake(0.1); kc.kick(5); } break;
       case 'jump': sfx('jump'); break;
-      case 'land': sfx('land', Math.min(1, 0.4 + e.impact / 14)); if (k) vfx.landing(k.x, k.y - PHYS.rideHeight, k.z, e.impact); if (mine) { cam.addShake(Math.min(0.25, e.impact / 45)); cam.landing(e.impact); } break;
+      case 'land': sfx('land', Math.min(1, 0.4 + e.impact / 14)); if (k) vfx.landing(k.x, k.y - PHYS.rideHeight, k.z, e.impact); if (kc) { kc.addShake(Math.min(0.25, e.impact / 45)); kc.landing(e.impact); } break;
       case 'collision':
         sfx(e.strength > 9 ? 'collision_heavy' : 'collision', Math.min(1, 0.35 + e.strength / 16));
         vfx.impact(e.x, e.y - 0.2, e.z, e.strength);
-        if (mine) cam.addShake(Math.min(0.4, e.strength / 30));
+        if (kc) kc.addShake(Math.min(0.4, e.strength / 30));
         break;
       case 'hit':
         sfx('spinout');
         if (k) { vfx.burst(k.x, k.y - 0.4, k.z, 1, 0.5, 0.25); models[k.index]!.triggerHit(); st.spinStart[k.index] = k.spinTime; }
-        if (mine) cam.addShake(0.45);
+        if (kc) kc.addShake(0.45);
         break;
       case 'shield_break': sfx('shield_break'); if (k) vfx.sparkle(k.x, k.y, k.z, st.color.set('#4fd8e8'), 22); break;
       case 'pushed': if (k) { vfx.sparkle(k.x, k.y, k.z, st.color.set('#9cf0c3'), 10); models[k.index]!.triggerHit(); } break;
       case 'zapped':
         sfx('zap', 1 - e.link * 0.25);
         if (k) { vfx.zap(k.x, k.y, k.z, 1 - e.link * 0.25); if (e.link === 0) models[k.index]!.triggerHit(); }
-        if (mine) cam.addShake(0.3 - e.link * 0.08);
+        if (kc) kc.addShake(0.3 - e.link * 0.08);
         break;
-      case 'rammed':
+      case 'rammed': {
         sfx('comet_ram');
         if (k) { vfx.sparkle(k.x, k.y, k.z, st.color.set('#ff6fae'), 16); models[k.index]!.triggerHit(); }
-        if (mine || sim.karts[e.by] === player) cam.addShake(mine ? 0.35 : 0.15);
+        if (kc) kc.addShake(0.35);
+        const bc = camOf(sim.karts[e.by]);
+        if (bc && bc !== kc) bc.addShake(0.15);
         break;
+      }
       case 'comet_end': if (k) vfx.sparkle(k.x, k.y + 0.4, k.z, st.color.set('#ff6fae'), 12); break;
       case 'item_pickup': if (mine) { audio.sfx('item_pickup'); audio.sfx('item_roll', { volume: 0.8 }); } if (k) vfx.sparkle(k.x, k.y + 0.4, k.z, st.color.set('#ffe66b')); break;
       case 'item_ready': break;
@@ -224,16 +260,23 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
     const game = useGameStore.getState();
     const paused = game.paused;
     const dt = Math.min(delta, 0.1);
-    const player = sim.player ?? sim.karts[0]!;
+    const humansNow = sim.players.length ? sim.players : [sim.karts[0]!];
+    const player = humansNow[0]!;
 
     if (!paused) {
-      // apresentação da pista → contagem
+      // apresentação da pista → contagem (qualquer jogador pode pular)
       if (sim.phase === 'intro') {
         st.intro += dt;
-        const inp = inputManager.read();
-        if (st.intro > cam.introDuration || (st.intro > 0.6 && (inp.throttle > 0.5 || inp.item))) {
+        let skip = false;
+        if (st.intro > 0.6) {
+          for (let s = 0; s < Math.max(1, sim.players.length); s++) {
+            const inp = inputManager.readPlayer(s);
+            if (inp.throttle > 0.5 || inp.item) skip = true;
+          }
+        }
+        if (st.intro > cam.introDuration || skip) {
           sim.startCountdown();
-          cam.setMode('countdown');
+          for (const c of cams) c.setMode('countdown');
         }
       }
       // passo fixo
@@ -247,9 +290,13 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
       }
       if (steps === 5) st.acc = 0;
       view.current.time += dt;
-      if (sim.phase === 'racing' && cam.mode !== 'chase') cam.setMode('chase');
+      // câmera de cada jogador: perseguição na corrida; órbita de chegada quando ELE cruza a linha
+      cams.forEach((c, i) => {
+        const k = humansNow[i];
+        const done = sim.phase === 'finished' || (!!k && k.isPlayer && k.finished);
+        if (done) { if (c.mode !== 'finish') c.setMode('finish'); } else if (sim.phase === 'racing' && c.mode !== 'chase') c.setMode('chase');
+      });
       if (sim.phase === 'finished') {
-        if (cam.mode !== 'finish') cam.setMode('finish');
         st.finishTimer += dt;
         if (st.finishTimer > 3.4 && !st.reported) { st.reported = true; game.finishRace(sim.result()); }
       }
@@ -257,8 +304,7 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
     const alpha = st.acc / PHYS.dt;
     view.current.alpha = alpha;
 
-    // karts
-    const camPos = camera.position;
+    // karts (visíveis e animados se perto de QUALQUER câmera)
     sim.karts.forEach((k, i) => {
       const m = models[i]!;
       const x = k.px + (k.x - k.px) * alpha, y = k.py + (k.y - k.py) * alpha - PHYS.rideHeight, z = k.pz + (k.z - k.pz) * alpha;
@@ -272,11 +318,12 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
       m.group.quaternion.setFromRotationMatrix(st.basis);
       m.group.position.set(x, y, z);
       const spinTotal = st.spinStart[i]!;
-      const far = (x - camPos.x) ** 2 + (z - camPos.z) ** 2 > 170 * 170;
+      const d2 = nearestCamDist2(x, z, cameras);
+      const far = d2 > 170 * 170;
       m.group.visible = !far;
       if (far) return;
       if (!paused) {
-        m.detail = (x - camPos.x) ** 2 + (z - camPos.z) ** 2 < quality.animDetail * quality.animDetail ? 1 : 0;
+        m.detail = d2 < quality.animDetail * quality.animDetail ? 1 : 0;
         // estado visual reaproveitado (sem alocação por quadro)
         const v = st.vis[i]!;
         v.speed = k.speed; v.steer = k.steer; v.drifting = k.drifting; v.driftDir = k.driftDir; v.driftLevel = k.boostTime > 0 ? k.boostKind : k.driftLevel;
@@ -285,8 +332,7 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
         v.grounded = k.grounded; v.shield = k.shield > 0; v.invulnerable = k.invuln > 0 && k.spinTime <= 0; v.hop = k.hopTime / 0.22;
         v.mood = k.finished ? (k.position <= 3 ? 'victory' : 'defeat') : sim.phase === 'intro' || sim.phase === 'countdown' ? 'idle' : 'race';
         m.update(dt, v);
-        const near = (x - camPos.x) ** 2 + (z - camPos.z) ** 2 < 90 * 90;
-        if (near) {
+        if (d2 < 90 * 90) {
           const fx = st.fx[i]!;
           fx.x = x; fx.y = y; fx.z = z; fx.heading = heading; fx.speed = k.speed; fx.drifting = k.drifting; fx.driftLevel = k.driftLevel;
           fx.boost = k.boostTime > 0 ? 1 : 0; fx.boostKind = k.boostKind; fx.grounded = k.grounded; fx.onRoad = k.onRoad; fx.surface = k.surface;
@@ -309,21 +355,25 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
       }
     }
 
-    // câmera
-    const px = player.px + (player.x - player.px) * alpha, py = player.py + (player.y - player.py) * alpha - PHYS.rideHeight, pz = player.pz + (player.z - player.pz) * alpha;
-    focus.current.set(px, py, pz);
-    const boostK = player.boostTime > 0 ? Math.min(1, player.boostTime / 0.5) : 0;
-    if (!paused) {
-      cam.update(dt, {
-        x: px, y: py, z: pz, heading: lerpAngle(player.pHeading, player.heading, alpha), speed: player.speed, steer: player.steer,
-        drifting: player.drifting, driftDir: player.driftDir, boost: boostK, grounded: player.grounded,
+    // câmeras (uma por jogador)
+    cams.forEach((c, i) => {
+      const p = humansNow[i] ?? player;
+      const px = p.px + (p.x - p.px) * alpha, py = p.py + (p.y - p.py) * alpha - PHYS.rideHeight, pz = p.pz + (p.z - p.pz) * alpha;
+      if (i === 0) focus.current.set(px, py, pz);
+      if (paused) return;
+      const boostK = p.boostTime > 0 ? Math.min(1, p.boostTime / 0.5) : 0;
+      c.update(dt, {
+        x: px, y: py, z: pz, heading: lerpAngle(p.pHeading, p.heading, alpha), speed: p.speed, steer: p.steer,
+        drifting: p.drifting, driftDir: p.driftDir, boost: boostK, grounded: p.grounded,
       });
-    }
+    });
 
     // clima, relâmpagos, partículas, riscos de velocidade
     if (!paused) {
-      const fwd = st.tmpC.set(0, 0, -1).applyQuaternion(camera.quaternion);
-      vfx.weather(env.weather, camera.position, fwd, dt, quality.weather);
+      cameras.forEach((c) => {
+        const fwd = st.tmpC.set(0, 0, -1).applyQuaternion(c.quaternion);
+        vfx.weather(env.weather, c.position, fwd, dt / cameras.length, quality.weather);
+      });
       if (env.lightning) {
         st.lightning -= dt;
         if (st.lightning <= 0) {
@@ -332,25 +382,39 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
           audio.sfx('thunder', { volume: 0.9 });
         }
       }
-      vfx.update(dt, frame.size.height, camera.fov);
-      const speedK = Math.max(0, (Math.abs(player.speed) - 22) / 12);
+      vfx.update(dt, split ? frame.size.height / 2 : frame.size.height, camera.fov);
       const u = speedLines.uniforms;
-      u.uIntensity!.value += ((sim.phase === 'racing' ? Math.min(1, speedK * 0.35 + boostK * 0.75) : 0) - u.uIntensity!.value) * (1 - Math.exp(-6 * dt));
+      humansNow.forEach((p, i) => {
+        if (i > 1) return;
+        const speedK = Math.max(0, (Math.abs(p.speed) - 22) / 12);
+        const boostK = p.boostTime > 0 ? Math.min(1, p.boostTime / 0.5) : 0;
+        const want = sim.phase === 'racing' && !(p.isPlayer && p.finished && split) ? Math.min(1, speedK * 0.35 + boostK * 0.75) : 0;
+        st.lines[i] = st.lines[i]! + (want - st.lines[i]!) * (1 - Math.exp(-6 * dt));
+      });
+      u.uIntensity!.value = st.lines[0]!;
       u.uTime!.value += dt;
 
-      // áudio do jogador
+      // áudio dos jogadores: um motor por humano; loops pelo mais "intenso" dos dois
       if (sim.phase === 'racing' || sim.phase === 'finished') {
-        const top = player.tuning.topSpeed;
-        audio.engine.update({ speed: Math.abs(player.speed) / top, throttle: player.input.throttle, boosting: player.boostTime > 0, airborne: !player.grounded });
-        audio.setLoop('drift', player.drifting && player.grounded ? 0.8 : 0);
-        audio.setLoop('drift_sparks', player.drifting && player.driftLevel > 0 && player.grounded ? 0.5 + player.driftLevel * 0.15 : 0);
-        audio.setLoop('brake', player.input.brake > 0.5 && player.speed > 10 && player.grounded ? 0.7 : 0);
-        audio.setLoop('offroad', !player.onRoad && player.grounded && Math.abs(player.speed) > 4 ? 0.7 : 0);
-        audio.setLoop('wind_speed', Math.min(1, Math.max(0, Math.abs(player.speed) / top - 0.5) * 1.6));
+        let drift = 0, sparks = 0, brake = 0, offroad = 0, wind = 0;
+        humansNow.forEach((p, i) => {
+          const top = p.tuning.topSpeed;
+          engines[i]?.update({ speed: Math.abs(p.speed) / top, throttle: p.input.throttle, boosting: p.boostTime > 0, airborne: !p.grounded });
+          drift = Math.max(drift, p.drifting && p.grounded ? 0.8 : 0);
+          sparks = Math.max(sparks, p.drifting && p.driftLevel > 0 && p.grounded ? 0.5 + p.driftLevel * 0.15 : 0);
+          brake = Math.max(brake, p.input.brake > 0.5 && p.speed > 10 && p.grounded ? 0.7 : 0);
+          offroad = Math.max(offroad, !p.onRoad && p.grounded && Math.abs(p.speed) > 4 ? 0.7 : 0);
+          wind = Math.max(wind, Math.min(1, Math.max(0, Math.abs(p.speed) / top - 0.5) * 1.6));
+        });
+        audio.setLoop('drift', drift);
+        audio.setLoop('drift_sparks', sparks);
+        audio.setLoop('brake', brake);
+        audio.setLoop('offroad', offroad);
+        audio.setLoop('wind_speed', wind);
       }
       // HUD (cerca de 15 vezes por segundo)
       st.hudTick += dt;
-      if (st.hudTick > 1 / 15) { st.hudTick = 0; useHudStore.getState().setHud(sim.hud()); }
+      if (st.hudTick > 1 / 15) { st.hudTick = 0; publishHud(); }
     }
   }, -2);
 
@@ -369,6 +433,13 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
       <mesh material={speedLines} frustumCulled={false} renderOrder={30}>
         <planeGeometry args={[2, 2]} />
       </mesh>
+      {split && (
+        <SplitRenderer
+          cameras={cameras}
+          full={() => sim.phase === 'intro'}
+          before={(slot) => { speedLines.uniforms.uIntensity!.value = state.current.lines[slot] ?? 0; }}
+        />
+      )}
     </>
   );
 }

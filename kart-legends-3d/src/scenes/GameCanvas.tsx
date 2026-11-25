@@ -12,6 +12,7 @@ import { QUALITY } from './quality';
 import { BattleScene } from './battle/BattleScene';
 import { RaceScene } from './race/RaceScene';
 import { useSceneStore } from './sceneStore';
+import { splitQuality } from './split';
 import { ShowcaseScene, TrackPreviewScene } from './ShowcaseScene';
 
 function LoadingSignal(): null {
@@ -82,7 +83,6 @@ export function GameCanvas(): JSX.Element {
   const lastResult = useGameStore((s) => s.lastResult);
   const championship = useGameStore((s) => s.championship);
   const qualityId = useSettingsStore((s) => s.quality);
-  const quality = QUALITY[qualityId];
   const loading = useSceneStore((s) => s.loading);
   const fps = useSceneStore((s) => s.fps);
   const studio = useMemo(studioRequest, []);
@@ -99,9 +99,12 @@ export function GameCanvas(): JSX.Element {
   }, [championship]);
 
   const mode = studio ? 'studio' : (screen === 'race' || screen === 'results') && (race || battle) ? 'race' : screen === 'podium' && podium.length ? 'podium' : screen === 'loading' ? 'none' : 'showcase';
+  // Tela dividida: a cena é desenhada duas vezes, então a qualidade fica limitada (ver `splitQuality`).
+  const split = mode === 'race' && ((race ?? battle)?.racers.filter((r) => r.isPlayer).length ?? 0) >= 2;
+  const quality = split ? splitQuality(QUALITY[qualityId]) : QUALITY[qualityId];
 
   return (
-    <div className="game-canvas" data-testid="game-canvas" data-mode={mode} data-loading={loading ? '1' : '0'} data-fps={fps}>
+    <div className="game-canvas" data-testid="game-canvas" data-mode={mode} data-split={split ? '1' : '0'} data-loading={loading ? '1' : '0'} data-fps={fps}>
       <Canvas
         key={qualityId}
         frameloop={manualFrames ? 'never' : 'always'}

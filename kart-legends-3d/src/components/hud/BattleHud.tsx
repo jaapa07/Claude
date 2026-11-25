@@ -8,7 +8,8 @@ import { useBattleHudStore } from '@/game/battle/battleHudStore';
 import type { BattleHudSnapshot } from '@/game/battle/battleSim';
 import { assetUrl } from '@/game/core/assets';
 import { useSceneStore } from '@/scenes/sceneStore';
-import { Countdown, ItemBox } from './Hud';
+import { Countdown, ItemBox, PlayerBadge } from './Hud';
+import { HudSlotContext, slotTag, useBattleHud } from './hudSlot';
 import { TouchControls } from './TouchControls';
 
 const mmss = (ms: number): string => {
@@ -29,7 +30,7 @@ function Timer({ hud }: { hud: BattleHudSnapshot }): JSX.Element {
 }
 
 function Status({ hud }: { hud: BattleHudSnapshot }): JSX.Element {
-  const color = CHARACTER_BY_ID[hud.board.find((r) => r.isPlayer)?.characterId ?? 'nilo'].color;
+  const color = CHARACTER_BY_ID[(hud.board.find((r) => r.me) ?? hud.board.find((r) => r.isPlayer))?.characterId ?? 'nilo'].color;
   if (hud.game === 'estoura-balao') {
     return (
       <div className="battle-status battle-status--balloons" data-testid="hud-battle-score" data-score={hud.balloons} aria-label={`${hud.balloons} balões`} style={{ '--me': color } as CSSProperties}>
@@ -59,15 +60,19 @@ function Status({ hud }: { hud: BattleHudSnapshot }): JSX.Element {
 }
 
 function Board({ hud }: { hud: BattleHudSnapshot }): JSX.Element {
+  const two = (hud.humans ?? 1) >= 2;
   return (
     <ol className="battle-board hud-panel" data-testid="hud-battle-board" aria-label="Placar">
       {hud.board.map((r) => {
         const c = CHARACTER_BY_ID[r.characterId];
+        const me = r.me ?? r.isPlayer;
+        // tela dividida: "Você" na própria linha e "J1/J2" na do outro jogador
+        const name = me ? 'Você' : r.isPlayer && two ? `${c.name} · ${slotTag(r.slot)}` : c.name;
         return (
-          <li key={r.index} className="battle-board__row" data-player={r.isPlayer} data-out={r.out} data-crown={r.crown} style={{ '--row-color': c.color } as CSSProperties}>
+          <li key={r.index} className="battle-board__row" data-player={r.isPlayer} data-me={me} data-out={r.out} data-crown={r.crown} style={{ '--row-color': c.color } as CSSProperties}>
             <span className="battle-board__pos">{r.position}</span>
             <AssetImg className="battle-board__icon" src={assetUrl(`ui/icons/${c.id}.webp`)} alt="" label={c.name} color={c.color} />
-            <span className="battle-board__name">{r.isPlayer ? 'Você' : c.name}</span>
+            <span className="battle-board__name">{name}</span>
             <span className="battle-board__score">{r.out ? '✕' : r.score}</span>
           </li>
         );
@@ -100,7 +105,10 @@ function BattleMinimap({ hud }: { hud: BattleHudSnapshot }): JSX.Element | null 
         {hud.dots.filter((d) => !d.out && !d.isPlayer).map((d) => (
           <circle key={d.characterId} className="hud-minimap__dot" cx={d.x} cy={d.z} r={r} fill={CHARACTER_BY_ID[d.characterId].color} strokeWidth={r * 0.35} />
         ))}
-        {hud.dots.filter((d) => !d.out && d.isPlayer).map((d) => (
+        {hud.dots.filter((d) => !d.out && d.isPlayer && d.me === false).map((d) => (
+          <circle key={d.characterId} className="hud-minimap__dot hud-minimap__dot--mate" data-testid="hud-minimap-mate" cx={d.x} cy={d.z} r={r * 1.2} fill={CHARACTER_BY_ID[d.characterId].color} strokeWidth={r * 0.45} />
+        ))}
+        {hud.dots.filter((d) => !d.out && d.isPlayer && d.me !== false).map((d) => (
           <circle key={d.characterId} className="hud-minimap__dot hud-minimap__dot--player" data-testid="hud-minimap-player" cx={d.x} cy={d.z} r={r * 1.5} fill={CHARACTER_BY_ID[d.characterId].color} strokeWidth={r * 0.6} />
         ))}
       </svg>
@@ -120,13 +128,15 @@ function Spectate({ hud }: { hud: BattleHudSnapshot }): JSX.Element | null {
   const fast = useBattleHudStore((s) => s.fast);
   const setFast = useBattleHudStore((s) => s.setFast);
   if (!hud.out || hud.phase === 'finished') return null;
+  // tela dividida: só dá para acelerar a partida quando os dois jogadores estão fora
+  const canFast = (hud.humans ?? 1) < 2 || !!hud.allHumansOut;
   return (
     <div className="battle-spectate" data-testid="battle-spectate">
       <p className="battle-spectate__title">Você está fora!</p>
       {hud.spectating && <p className="battle-spectate__who">Assistindo {CHARACTER_BY_ID[hud.spectating].name}</p>}
-      <button type="button" className="btn btn--secondary battle-spectate__btn" data-testid="btn-battle-fast" aria-pressed={fast} onClick={() => setFast(!fast)}>
+      {canFast && <button type="button" className="btn btn--secondary battle-spectate__btn" data-testid="btn-battle-fast" aria-pressed={fast} onClick={() => setFast(!fast)}>
         <span className="btn__label">{fast ? 'Velocidade normal' : 'Acelerar até o fim ▸▸'}</span>
-      </button>
+      </button>}
     </div>
   );
 }
@@ -135,7 +145,7 @@ function Final({ hud }: { hud: BattleHudSnapshot }): JSX.Element | null {
   if (hud.phase !== 'finished') return null;
   const winner = hud.board[0];
   if (!winner) return null;
-  const mine = winner.isPlayer;
+  const mine = winner.me ?? winner.isPlayer;
   return (
     <div className="battle-final" data-testid="hud-battle-final" data-win={mine}>
       <span className="battle-final__kicker">Fim de jogo!</span>
@@ -144,14 +154,11 @@ function Final({ hud }: { hud: BattleHudSnapshot }): JSX.Element | null {
   );
 }
 
-/** HUD da Batalha: relógio, placar do jogador, placar geral, mapa da arena, alertas, item e controles de toque. */
-export function BattleHud(): JSX.Element | null {
-  const battle = useGameStore((s) => s.battle);
-  const hud = useBattleHudStore((s) => s.hud);
-  const sceneLoading = useSceneStore((s) => s.loading);
-  if (!battle) return null;
+/** Painéis da batalha de um jogador (o do contexto `HudSlotContext`). */
+function BattlePanels(): JSX.Element {
+  const hud = useBattleHud();
   return (
-    <div className="hud hud--battle" data-testid="hud" data-mode="battle" data-game={battle.game} data-scene-loading={sceneLoading} style={sceneLoading ? { visibility: 'hidden' } : undefined}>
+    <>
       {hud && (
         <>
           <div className="hud__top-left battle-top-left">
@@ -166,6 +173,38 @@ export function BattleHud(): JSX.Element | null {
         </>
       )}
       <div className="hud__bottom-left"><ItemBox /></div>
+    </>
+  );
+}
+
+/** HUD da Batalha: relógio, placar do jogador, placar geral, mapa da arena, alertas, item e controles de toque. */
+export function BattleHud(): JSX.Element | null {
+  const battle = useGameStore((s) => s.battle);
+  const phase = useBattleHudStore((s) => s.hud?.phase ?? 'intro');
+  const sceneLoading = useSceneStore((s) => s.loading);
+  if (!battle) return null;
+  const humans = battle.racers.filter((r) => r.isPlayer);
+  if (humans.length >= 2) {
+    // Tela dividida: Jogador 1 em cima, Jogador 2 embaixo; contagem comum no centro.
+    const bySlot = (slot: number) => humans.find((r) => (r.slot ?? 0) === slot) ?? humans[slot];
+    return (
+      <div className="hud hud--battle hud--split" data-testid="hud" data-mode="battle" data-players="2" data-phase={phase} data-game={battle.game} data-scene-loading={sceneLoading} style={sceneLoading ? { visibility: 'hidden' } : undefined}>
+        {[0, 1].map((slot) => (
+          <HudSlotContext.Provider key={slot} value={slot}>
+            <div className={`hud hud--battle hud--player hud--p${slot + 1}`} data-testid={`hud-p${slot + 1}`} data-slot={slot} data-game={battle.game}>
+              <BattlePanels />
+              <PlayerBadge slot={slot} characterId={bySlot(slot)?.characterId} />
+            </div>
+          </HudSlotContext.Provider>
+        ))}
+        <div className="hud-split__divider" aria-hidden="true" />
+        <Countdown />
+      </div>
+    );
+  }
+  return (
+    <div className="hud hud--battle" data-testid="hud" data-mode="battle" data-game={battle.game} data-scene-loading={sceneLoading} style={sceneLoading ? { visibility: 'hidden' } : undefined}>
+      <BattlePanels />
       <Countdown />
       <TouchControls />
     </div>

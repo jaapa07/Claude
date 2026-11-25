@@ -46,6 +46,8 @@ export interface EngineControl {
   start(): void;
   update(p: EngineParams): void;
   stop(): void;
+  /** Volume relativo (0..1); a tela dividida toca dois motores mais baixos. */
+  setGain(scale: number): void;
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -179,8 +181,11 @@ export interface AudioDebugState {
 
 export class AudioManager implements EngineHost {
   readonly engine: EngineControl;
+  /** Motor do Jogador 2 (tela dividida). */
+  readonly engine2: EngineControl;
 
   private readonly engineSynth: EngineSynth;
+  private readonly engineSynth2: EngineSynth;
   private graph: Graph | null = null;
   private contextFailed = false;
   private unlocked = false;
@@ -204,6 +209,8 @@ export class AudioManager implements EngineHost {
   constructor() {
     this.engineSynth = new EngineSynth(this);
     this.engine = this.engineSynth;
+    this.engineSynth2 = new EngineSynth(this);
+    this.engine2 = this.engineSynth2;
   }
 
   // -------------------------------------------------------------------------------------------
@@ -331,6 +338,9 @@ export class AudioManager implements EngineHost {
   /** Fim de corrida/saída para o menu: para motor, loops, ambiência e efeitos em andamento (a música fica). */
   stopAllRaceSounds(): void {
     this.engineSynth.stop();
+    this.engineSynth2.stop();
+    this.engineSynth.setGain(1);
+    this.engineSynth2.setGain(1);
     this.loopTargets.clear();
     for (const [id, loop] of this.loops) {
       this.fadeOutAndStop(loop.source, loop.gain, 0.08);
@@ -561,6 +571,7 @@ export class AudioManager implements EngineHost {
     this.syncAmbience();
     for (const id of this.loopTargets.keys()) this.syncLoop(id);
     this.engineSynth.resume();
+    this.engineSynth2.resume();
   }
 
   private syncMusic(): void {

@@ -3,10 +3,11 @@ import type { CSSProperties } from 'react';
 import { TRAINING_LAPS, useGameStore } from '@/app/gameStore';
 import { ITEMS, ITEM_BY_ID } from '@/data/items';
 import { assetUrl } from '@/game/core/assets';
-import { useHudStore } from '@/game/core/hudStore';
+import { CHARACTER_BY_ID } from '@/data/characters';
 import { AssetImg } from '@/components/ui/common';
 import { formatTime } from '@/components/ui/format';
 import { useSceneStore } from '@/scenes/sceneStore';
+import { HudSlotContext, useHud } from './hudSlot';
 import { Minimap } from './Minimap';
 import { TouchControls } from './TouchControls';
 
@@ -16,8 +17,8 @@ const ARC_LENGTH = 188.5; // ¾ de círculo com r = 40
 const DRIFT_NAMES = ['', 'Faísca azul', 'Faísca laranja', 'Faísca magenta'] as const;
 
 function Position(): JSX.Element {
-  const position = useHudStore((s) => s.hud.position);
-  const total = useHudStore((s) => s.hud.totalRacers);
+  const position = useHud((h) => h.position);
+  const total = useHud((h) => h.totalRacers);
   return (
     <div className="hud-position" data-testid="hud-position" data-place={position} aria-label={`Posição ${position} de ${total}`}>
       <span className="hud-position__value">{position}º</span><span className="hud-position__total">/{total}</span>
@@ -26,11 +27,11 @@ function Position(): JSX.Element {
 }
 
 function LapAndTime({ training }: { training: boolean }): JSX.Element {
-  const lap = useHudStore((s) => s.hud.lap);
-  const totalLaps = useHudStore((s) => s.hud.totalLaps);
-  const timeMs = useHudStore((s) => s.hud.timeMs);
-  const lapTimeMs = useHudStore((s) => s.hud.lapTimeMs);
-  const bestLapMs = useHudStore((s) => s.hud.bestLapMs);
+  const lap = useHud((h) => h.lap);
+  const totalLaps = useHud((h) => h.totalLaps);
+  const timeMs = useHud((h) => h.timeMs);
+  const lapTimeMs = useHud((h) => h.lapTimeMs);
+  const bestLapMs = useHud((h) => h.bestLapMs);
   const endless = training || totalLaps >= TRAINING_LAPS;
   const shownLap = endless ? Math.max(1, lap) : Math.min(Math.max(1, lap), totalLaps);
   return (
@@ -56,8 +57,8 @@ function LapAndTime({ training }: { training: boolean }): JSX.Element {
 }
 
 function Speedometer(): JSX.Element {
-  const speed = useHudStore((s) => s.hud.speedKmh);
-  const boost = useHudStore((s) => s.hud.boost);
+  const speed = useHud((h) => h.speedKmh);
+  const boost = useHud((h) => h.boost);
   const kmh = Math.max(0, Math.round(speed));
   const fill = Math.min(1, kmh / SPEEDO_MAX_KMH);
   return (
@@ -73,8 +74,8 @@ function Speedometer(): JSX.Element {
 }
 
 export function ItemBox(): JSX.Element {
-  const item = useHudStore((s) => s.hud.item);
-  const rolling = useHudStore((s) => s.hud.itemRolling);
+  const item = useHud((h) => h.item);
+  const rolling = useHud((h) => h.itemRolling);
   const [rollIndex, setRollIndex] = useState(0);
   useEffect(() => {
     if (!rolling) return undefined;
@@ -97,10 +98,10 @@ export function ItemBox(): JSX.Element {
 }
 
 function DriftAndBoost(): JSX.Element {
-  const level = useHudStore((s) => s.hud.driftLevel);
-  const charge = useHudStore((s) => s.hud.driftCharge);
-  const boost = useHudStore((s) => s.hud.boost);
-  const shield = useHudStore((s) => s.hud.shield);
+  const level = useHud((h) => h.driftLevel);
+  const charge = useHud((h) => h.driftCharge);
+  const boost = useHud((h) => h.boost);
+  const shield = useHud((h) => h.shield);
   const c = Math.min(1, Math.max(0, charge));
   return (
     <div className="hud-meters hud-panel">
@@ -131,7 +132,7 @@ function DriftAndBoost(): JSX.Element {
 }
 
 export function Countdown(): JSX.Element | null {
-  const countdown = useHudStore((s) => s.hud.countdown);
+  const countdown = useHud((h) => h.countdown);
   if (countdown < 0) return null;
   const text = countdown === 0 ? 'VAI!' : String(countdown);
   return (
@@ -142,25 +143,35 @@ export function Countdown(): JSX.Element | null {
 }
 
 function Alerts(): JSX.Element {
-  const alerts = useHudStore((s) => s.hud.alerts);
-  const wrongWay = useHudStore((s) => s.hud.wrongWay);
-  const phase = useHudStore((s) => s.hud.phase);
+  const alerts = useHud((h) => h.alerts);
+  const wrongWay = useHud((h) => h.wrongWay);
+  const phase = useHud((h) => h.phase);
+  // Este jogador já chegou (na tela dividida o outro pode ainda estar correndo).
+  const done = useHud((h) => h.finished ?? h.phase === 'finished');
   return (
     <div className="hud-alerts" data-testid="hud-alerts" aria-live="polite">
       {wrongWay && <div className="hud-alert hud-alert--warn hud-alert--wrongway" data-testid="hud-wrong-way">Contramão!</div>}
       {alerts.map((a) => <div key={a.id} className={`hud-alert hud-alert--${a.kind}`}>{a.text}</div>)}
-      {phase === 'finished' && <div className="hud-alert hud-alert--good hud-alert--finish" data-testid="hud-finished">Chegada!</div>}
+      {(done || phase === 'finished') && <div className="hud-alert hud-alert--good hud-alert--finish" data-testid="hud-finished">Chegada!</div>}
     </div>
   );
 }
 
-export function Hud(): JSX.Element | null {
-  const race = useGameStore((s) => s.race);
-  const sceneLoading = useSceneStore((s) => s.loading);
-  if (!race) return null;
-  const solo = race.mode === 'timetrial' || race.mode === 'training';
+/** Etiqueta "J1"/"J2" com a cor do piloto, no canto de cada metade da tela dividida. */
+export function PlayerBadge({ slot, characterId }: { slot: number; characterId: string | undefined }): JSX.Element {
+  const c = characterId ? CHARACTER_BY_ID[characterId as keyof typeof CHARACTER_BY_ID] : undefined;
   return (
-    <div className="hud" data-testid="hud" data-mode={race.mode} data-scene-loading={sceneLoading} style={sceneLoading ? { visibility: 'hidden' } : undefined}>
+    <div className="hud-player-badge" data-testid={`hud-badge-p${slot + 1}`} style={{ '--badge-color': c?.color ?? '#fff' } as CSSProperties}>
+      <span className="hud-player-badge__tag">J{slot + 1}</span>
+      <span className="hud-player-badge__name">{c?.name ?? `Jogador ${slot + 1}`}</span>
+    </div>
+  );
+}
+
+/** Painéis de um jogador (posição, voltas, mapa, alertas, item, drift/turbo, velocidade). */
+function PlayerPanels({ race, solo }: { race: NonNullable<ReturnType<typeof useGameStore.getState>['race']>; solo: boolean }): JSX.Element {
+  return (
+    <>
       <div className="hud__top-left">
         {!solo && <Position />}
         <LapAndTime training={race.mode === 'training'} />
@@ -174,6 +185,38 @@ export function Hud(): JSX.Element | null {
         <DriftAndBoost />
         <Speedometer />
       </div>
+    </>
+  );
+}
+
+export function Hud(): JSX.Element | null {
+  const race = useGameStore((s) => s.race);
+  const sceneLoading = useSceneStore((s) => s.loading);
+  const phase = useHud((h) => h.phase);
+  if (!race) return null;
+  const solo = race.mode === 'timetrial' || race.mode === 'training';
+  const humans = race.racers.filter((r) => r.isPlayer);
+  if (humans.length >= 2) {
+    // Tela dividida: Jogador 1 em cima, Jogador 2 embaixo; contagem no centro, comum aos dois.
+    const bySlot = (slot: number) => humans.find((r) => (r.slot ?? 0) === slot) ?? humans[slot];
+    return (
+      <div className="hud hud--split" data-testid="hud" data-mode={race.mode} data-players="2" data-phase={phase} data-scene-loading={sceneLoading} style={sceneLoading ? { visibility: 'hidden' } : undefined}>
+        {[0, 1].map((slot) => (
+          <HudSlotContext.Provider key={slot} value={slot}>
+            <div className={`hud hud--player hud--p${slot + 1}`} data-testid={`hud-p${slot + 1}`} data-slot={slot}>
+              <PlayerPanels race={race} solo={solo} />
+              <PlayerBadge slot={slot} characterId={bySlot(slot)?.characterId} />
+            </div>
+          </HudSlotContext.Provider>
+        ))}
+        <div className="hud-split__divider" aria-hidden="true" />
+        <Countdown />
+      </div>
+    );
+  }
+  return (
+    <div className="hud" data-testid="hud" data-mode={race.mode} data-scene-loading={sceneLoading} style={sceneLoading ? { visibility: 'hidden' } : undefined}>
+      <PlayerPanels race={race} solo={solo} />
       {race.mode === 'training' && <p className="hud__hint">Treino livre · pause para sair</p>}
       <Countdown />
       <TouchControls />
