@@ -6,7 +6,7 @@ import Stats from 'stats.js';
 
 const world = new World(document.getElementById('view')!);
 const flow = new Flow(world);
-const G = ((window as any).__game = { world, flow, speed: 1 });
+const G = ((window as any).__game = { world, flow, input, speed: 1 });
 
 // ?stats mostra o painel de FPS (stats.js)
 const stats = new URLSearchParams(location.search).has('stats') ? new Stats() : null;

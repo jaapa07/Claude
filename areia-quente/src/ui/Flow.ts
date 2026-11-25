@@ -23,7 +23,11 @@ class Nav {
   i = 0;
   constructor(public items: HTMLElement[], public back?: () => void, public horiz = false) { this.mark(); items.forEach((it, k) => it.addEventListener('mouseenter', () => { this.i = k; this.mark(); })); }
   mark() { this.items.forEach((it, k) => it.classList.toggle('sel', k === this.i)); }
+  private armed = false;
   update() {
+    // ignora o quadro em que o menu foi criado: a mesma tecla que abriu a tela (ex.: ESC da pausa)
+    // não pode ser lida de novo como ação desta tela (antes fechava a pausa no mesmo instante)
+    if (!this.armed) { this.armed = true; return false; }
     const m = input.menu;
     const prev = this.horiz ? m.left : m.up, next = this.horiz ? m.right : m.down;
     if (prev) { this.i = (this.i - 1 + this.items.length) % this.items.length; this.mark(); audio.play('ui_move', 0.5); }
