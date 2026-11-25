@@ -89,7 +89,7 @@ class InputManager {
   private keySteer = 0;
   private lastReadAt = -1;
   /** Controles de toque (celular): valores escritos pela camada `TouchControls`. */
-  private readonly touch = { throttle: 0, brake: 0, steer: 0, drift: false, item: false, reset: false, driftPad: false };
+  private readonly touch = { throttle: 0, brake: 0, steer: 0, drift: false, item: false, reset: false, driftPad: false, dir: 0 };
   private readonly state: InputState = { throttle: 0, brake: 0, steer: 0, drift: false, item: false, reset: false };
   private capture: { resolve: (code: string) => void; reject: (err: Error) => void } | null = null;
 
@@ -190,7 +190,8 @@ class InputManager {
     this.lastReadAt = now;
 
     // Teclado: direção digital suavizada; a sensibilidade define a rapidez do esterço.
-    const dir = (a.right > 0 ? 1 : 0) - (a.left > 0 ? 1 : 0);
+    // Teclado ou setas de toque (◀ ▶): direção digital suavizada do mesmo jeito.
+    const dir = Math.max(-1, Math.min(1, (a.right > 0 ? 1 : 0) - (a.left > 0 ? 1 : 0) + this.touch.dir));
     if (dir !== 0) {
       // Inverter o sentido parte do centro, sem esperar o retorno.
       if (this.keySteer * dir < 0) this.keySteer = 0;
@@ -249,13 +250,13 @@ class InputManager {
   }
 
   /** Atualiza os comandos de toque (só os campos informados). */
-  setTouch(values: Partial<{ throttle: number; brake: number; steer: number; drift: boolean; item: boolean; reset: boolean; driftPad: boolean }>): void {
+  setTouch(values: Partial<{ throttle: number; brake: number; steer: number; drift: boolean; item: boolean; reset: boolean; driftPad: boolean; dir: number }>): void {
     Object.assign(this.touch, values);
   }
 
   /** Solta todos os comandos de toque. */
   clearTouch(): void {
-    Object.assign(this.touch, { throttle: 0, brake: 0, steer: 0, drift: false, item: false, reset: false, driftPad: false });
+    Object.assign(this.touch, { throttle: 0, brake: 0, steer: 0, drift: false, item: false, reset: false, driftPad: false, dir: 0 });
   }
 
   /** Botão de pausa na tela (toque). */

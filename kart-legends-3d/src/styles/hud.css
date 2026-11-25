@@ -98,7 +98,7 @@
 
 /* ---------- Celular: controles de toque ---------- */
 .hud .touch-controls { position: absolute; inset: 0; pointer-events: none; }
-.touch-controls .touch-steer, .touch-controls .touch-right, .touch-controls .touch-btn--pause { pointer-events: auto; touch-action: none; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+.touch-controls .touch-steer, .touch-controls .touch-right, .touch-controls .touch-arrows, .touch-controls .touch-btn--pause { pointer-events: auto; touch-action: none; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
 .touch-steer { position: absolute; left: 0; bottom: 0; width: 48%; height: 62%; }
 .touch-steer__hint { position: absolute; left: calc(env(safe-area-inset-left, 0px) + 1.5rem); bottom: 9rem; font-size: 0.8rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255, 255, 255, 0.55); }
 .touch-steer__base { position: absolute; width: 150px; height: 56px; transform: translate(-50%, -50%); border-radius: 28px; background: rgba(14, 9, 34, 0.35); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.35); }
@@ -131,7 +131,12 @@
 .touch-right[data-manual="true"] .touch-btn--brake { right: 124px; bottom: 8px; width: 64px; height: 64px; font-size: 12px; }
 .touch-right[data-manual="true"] .touch-btn--reset { right: 30px; bottom: 148px; }
 /* Drift do polegar esquerdo (modo manual): segure e arraste para o lado da curva. */
-.touch-btn--driftpad { left: calc(env(safe-area-inset-left, 0px) + 22px); bottom: calc(env(safe-area-inset-bottom, 0px) + 22px); width: 108px; height: 108px; flex-direction: column; gap: 2px; box-shadow: inset 0 0 0 3px #ff8a1f; font-size: 15px; pointer-events: none; display: flex; align-items: center; justify-content: center; }
+.touch-btn--driftpad { left: calc(env(safe-area-inset-left, 0px) + 40px); bottom: calc(env(safe-area-inset-bottom, 0px) + 104px); width: 82px; height: 82px; flex-direction: column; gap: 2px; box-shadow: inset 0 0 0 3px #ff8a1f; font-size: 15px; pointer-events: none; display: flex; align-items: center; justify-content: center; }
 .touch-btn--driftpad__arrows { font-size: 11px; letter-spacing: 0.3em; opacity: 0.75; }
 .touch-steer__base[data-drift="true"] { box-shadow: inset 0 0 0 2px #ff8a1f; }
 .touch-steer__base[data-drift="true"] .touch-steer__knob { background: #ffb347; box-shadow: 0 0 16px rgba(255, 138, 31, 0.9); }
+
+/* Setas ◀ ▶ do modo manual, embaixo do Drift. */
+.touch-arrows { position: absolute; left: calc(env(safe-area-inset-left, 0px) + 14px); bottom: calc(env(safe-area-inset-bottom, 0px) + 12px); width: 168px; height: 80px; display: flex; gap: 8px; }
+.touch-arrows .touch-arrow { position: relative; flex: 1; height: 100%; border-radius: 18px; font-size: 26px; pointer-events: none; box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.5); }
+.touch-btn--driftpad { font-size: 13px; }

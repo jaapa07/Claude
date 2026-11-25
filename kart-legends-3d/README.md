@@ -70,8 +70,8 @@ Tudo é remapeável em **Configurações**, onde também ficam a sensibilidade d
 
 Em telas de toque aparecem controles na tela e, por padrão, o kart **acelera sozinho**. Para acelerar
 manualmente, escolha **Manual** em "Aceleração no toque" — no menu de pausa (botão ❚❚) ou em Configurações:
-aparece o botão **Acelerar** no canto direito e o **Drift** passa para o canto esquerdo: encoste nele e
-puxe o polegar para o lado da curva (segurar o Drift também acelera).
+aparece o botão **Acelerar** no canto direito; à esquerda ficam as setas **◀ ▶** (embaixo) e o **Drift** (acima
+delas): encoste no Drift e puxe o polegar para o lado da curva (segurar o Drift também acelera).
 
 
 | Ação | Toque |

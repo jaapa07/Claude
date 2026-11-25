@@ -131,8 +131,50 @@ function SteerZone({ manual }: { manual: boolean }): JSX.Element {
           <div className="touch-steer__knob" style={{ transform: `translate(calc(-50% + ${knob.dx}px), -50%)` }} />
         </div>
       ) : (
-        <span className="touch-steer__hint">{manual ? '◀ arraste para virar · puxe o Drift para derrapar ▶' : '◀ arraste para virar ▶'}</span>
+        // No modo manual os botões (Drift e setas) já se explicam; a dica ficaria por cima das setas.
+        !manual && <span className="touch-steer__hint">◀ arraste para virar ▶</span>
       )}
+    </div>
+  );
+}
+
+/**
+ * Setas ◀ ▶ (modo manual, embaixo do Drift): segure para virar; dá para deslizar de uma para a outra sem soltar.
+ * Usam a mesma suavização da direção do teclado.
+ */
+function ArrowPad(): JSX.Element {
+  const finger = useRef<number | null>(null);
+  const box = useRef<HTMLDivElement>(null);
+  const [dir, setDir] = useState(0);
+  const update = (x: number): void => {
+    const r = box.current?.getBoundingClientRect();
+    const d = r ? (x < r.left + r.width / 2 ? -1 : 1) : 0;
+    setDir(d);
+    inputManager.setTouch({ dir: d });
+  };
+  const end = (e: ReactPointerEvent): void => {
+    if (finger.current !== e.pointerId) return;
+    finger.current = null;
+    setDir(0);
+    inputManager.setTouch({ dir: 0 });
+  };
+  return (
+    <div
+      ref={box} className="touch-arrows" data-testid="touch-arrows"
+      onPointerDown={(e) => {
+        if (finger.current !== null) return;
+        e.preventDefault();
+        e.stopPropagation();
+        e.currentTarget.setPointerCapture(e.pointerId);
+        finger.current = e.pointerId;
+        update(e.clientX);
+      }}
+      onPointerMove={(e) => { if (finger.current === e.pointerId) update(e.clientX); }}
+      onPointerUp={end} onPointerCancel={end} onLostPointerCapture={end}
+      onContextMenu={(e) => e.preventDefault()}
+    >
+      <div className="touch-btn touch-arrow" data-testid="touch-left" data-down={dir < 0} aria-label="Virar à esquerda">◀</div>
+      <div className="touch-btn touch-arrow" data-testid="touch-right" data-down={dir > 0} aria-label="Virar à direita">▶</div>
     </div>
   );
 }
@@ -153,6 +195,7 @@ export function TouchControls(): JSX.Element | null {
   return (
     <div className="touch-controls" data-testid="touch-controls">
       <SteerZone manual={manual} />
+      {manual && <ArrowPad />}
       <ButtonCluster manual={manual} />
       <button
         type="button" className="touch-btn touch-btn--pause" data-testid="touch-pause" aria-label="Pausar"
