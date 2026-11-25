@@ -310,8 +310,8 @@ export async function cometaGuia(): Promise<ItemEntry> {
   shellM.add(nose, 'item_comet', (p) => mix('#ffd0ea', '#ff6fae', 0.5 - p.z * 0.35), { p: [0, 0.55, 0.2] });
   const nShell = it.part('shell', shellM);
   const tail = new Model();
-  tail.add(cone(1.05, 4.6, 18).rotateX(-Math.PI / 2), 'item_comet_tail', (p) => mix('#ff6fae', '#ffb22e', (-p.z - 0.6) / 4.6), { p: [0, 0.55, -2.9] });
-  tail.add(cone(0.55, 3.2, 12).rotateX(-Math.PI / 2), 'glow_white', (p) => mix('#fff3c0', '#ffc46a', (-p.z - 0.6) / 3.2), { p: [0, 0.55, -2.2] });
+  // cauda oca e bem translúcida: a câmera de perseguição vê o kart através dela
+  tail.add(cyl(0.05, 1.05, 4.6, 18, true).rotateX(-Math.PI / 2), 'item_comet_tail', (p) => mix('#ffb22e', '#ff6fae', (p.z + 5.2) / 4.6), { p: [0, 0.55, -2.9] });
   const nTail = it.part('tail', tail);
   const ribbons = new Model();
   for (let i = 0; i < 3; i++) {

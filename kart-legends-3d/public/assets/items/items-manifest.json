@@ -148,8 +148,8 @@
     {
       "id": "cometa-guia",
       "file": "items/cometa-guia.glb",
-      "bytes": 40624,
-      "triangles": 1932,
+      "bytes": 38232,
+      "triangles": 1908,
       "clips": [
         {
           "name": "loop",

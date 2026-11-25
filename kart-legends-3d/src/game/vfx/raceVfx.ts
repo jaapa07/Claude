@@ -171,12 +171,14 @@ export class RaceVfx {
   /** Cometa Guia: chamas rosa → laranja e estrelinhas saindo da cauda. */
   comet(index: number, x: number, y: number, z: number, heading: number, dt: number): void {
     const bx = -Math.sin(heading), bz = -Math.cos(heading);
-    for (let i = this.rate(5000 + index * 4, 80, dt); i > 0; i--) {
-      const t = Math.random();
-      this.glow.emit({ x: x + bx * (1.2 + t * 2), y: y + 0.6, z: z + bz * (1.2 + t * 2), vx: bx * 6, vz: bz * 6, spread: 1.2, life: 0.45, size: 1.1, grow: 0.2, sprite: SPRITE.flame, r: 1, g: 0.45 + 0.25 * t, b: 0.7 - 0.4 * t, alpha: 0.85, spin: 4 });
+    // dois rastros, um de cada lado (no meio ficariam entre a câmera e o kart)
+    for (let i = this.rate(5000 + index * 4, 70, dt); i > 0; i--) {
+      const t = Math.random(), side = i % 2 ? 1 : -1;
+      const sx = -bz * side * 1.1, sz = bx * side * 1.1;
+      this.glow.emit({ x: x + sx + bx * (1.4 + t * 2), y: y + 0.35, z: z + sz + bz * (1.4 + t * 2), vx: bx * 6, vz: bz * 6, spread: 0.8, life: 0.4, size: 0.7, grow: 0.2, sprite: SPRITE.flame, r: 1, g: 0.45 + 0.25 * t, b: 0.7 - 0.4 * t, alpha: 0.75, spin: 4 });
     }
     for (let i = this.rate(5001 + index * 4, 22, dt); i > 0; i--) {
-      this.glow.emit({ x: x + bx * 2.5, y: y + 0.8, z: z + bz * 2.5, vx: bx * 3, vy: 1, vz: bz * 3, spread: 2.5, life: 0.7, size: 0.35, sprite: SPRITE.star, r: 1, g: 0.85, b: 0.95, alpha: 1, gravity: 2, spin: 6 });
+      this.glow.emit({ x: x + bx * 3, y: y + 1.2, z: z + bz * 3, vx: bx * 3, vy: 1, vz: bz * 3, spread: 2.5, life: 0.7, size: 0.35, sprite: SPRITE.star, r: 1, g: 0.85, b: 0.95, alpha: 1, gravity: 2, spin: 6 });
     }
   }
 

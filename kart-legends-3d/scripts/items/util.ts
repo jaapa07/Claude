@@ -95,8 +95,8 @@ export async function registerItemMaterials(): Promise<void> {
   defineMaterial('item_mist_c', { roughness: 1, alpha: 0.56, emissive: [1, 0.15, 0.55], emissiveStrength: 1.0 });
   defineMaterial('item_wing', { roughness: 0.7, doubleSided: true, emissive: [0.75, 0.82, 1], emissiveStrength: 0.7 });
   defineMaterial('item_bolt', { roughness: 0.6, emissive: [0.85, 1, 0.25], emissiveStrength: 1.8 });
-  defineMaterial('item_comet', { roughness: 0.4, alpha: 0.4, doubleSided: true, emissive: [1, 0.35, 0.62], emissiveStrength: 1.4 });
-  defineMaterial('item_comet_tail', { roughness: 0.6, alpha: 0.5, doubleSided: true, emissive: [1, 0.5, 0.35], emissiveStrength: 1.5 });
+  defineMaterial('item_comet', { roughness: 0.4, alpha: 0.16, doubleSided: true, emissive: [1, 0.35, 0.62], emissiveStrength: 1.4 });
+  defineMaterial('item_comet_tail', { roughness: 0.6, alpha: 0.24, doubleSided: true, emissive: [1, 0.5, 0.35], emissiveStrength: 1.5 });
   defineMaterial('item_gold', { roughness: 0.3, metalness: 0.65, emissive: [0.32, 0.22, 0.04], emissiveStrength: 1 });
   defineMaterial('item_silver', { roughness: 0.3, metalness: 0.65, emissive: [0.2, 0.22, 0.26], emissiveStrength: 1 });
   defineMaterial('item_bronze', { roughness: 0.36, metalness: 0.6, emissive: [0.26, 0.13, 0.05], emissiveStrength: 1 });

@@ -13,7 +13,7 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 |---|---:|---:|---|---|
 | `audio/` | 107 | 14033 kB | scripts/build-audio.ts (síntese procedural própria) | Música, efeitos e ambiência |
 | `characters/` | 15 | 5233 kB | scripts/build-characters.ts (modelagem, rig e animação por script) | Pilotos na corrida, vitrine e pódio |
-| `items/` | 17 | 716 kB | scripts/build-items.ts (modelagem por script) | Itens, placas de turbo, rampas, pórtico, troféus e pódio |
+| `items/` | 17 | 714 kB | scripts/build-items.ts (modelagem por script) | Itens, placas de turbo, rampas, pórtico, troféus e pódio |
 | `karts/` | 9 | 1692 kB | scripts/build-karts.ts (modelagem por script) | Veículos na corrida, vitrine e pódio |
 | `props/` | 27 | 651 kB | scripts/build-tracks.ts (partes móveis de cenário e obstáculos) | Cenário animado e obstáculos dinâmicos |
 | `textures/` | 101 | 1415 kB | scripts (texturas procedurais e arte vetorial próprias) | Materiais dos modelos (também embutidas nos GLB) |
@@ -48,7 +48,7 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 |---|---|---:|
 | `items/bolha-guardia.glb` | model | 29 kB |
 | `items/boost-pad.glb` | model | 34 kB |
-| `items/cometa-guia.glb` | model | 40 kB |
+| `items/cometa-guia.glb` | model | 37 kB |
 | `items/cristal-salto.glb` | model | 31 kB |
 | `items/faisca-rastreadora.glb` | model | 39 kB |
 | `items/finish-arch.glb` | model | 158 kB |

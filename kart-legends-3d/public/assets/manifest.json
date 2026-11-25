@@ -1623,7 +1623,7 @@
    "origin": "scripts/build-items.ts (modelagem por script)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 40624,
+   "bytes": 38232,
    "status": "validado",
    "usedIn": "Itens, placas de turbo, rampas, pórtico, troféus e pódio"
   },
