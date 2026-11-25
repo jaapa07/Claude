@@ -49,14 +49,14 @@
   },
   {
     "id": "cidade-neon",
-    "length": 1516,
-    "samples": 758,
-    "triangles": 416500,
-    "glbBytes": 8110388,
-    "jsonBytes": 122515,
-    "props": 362,
-    "animated": 27,
-    "colliders": 290,
+    "length": 1574,
+    "samples": 787,
+    "triangles": 436734,
+    "glbBytes": 8543520,
+    "jsonBytes": 123342,
+    "props": 393,
+    "animated": 29,
+    "colliders": 321,
     "warnings": []
   },
   {
