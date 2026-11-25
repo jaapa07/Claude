@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import type { GLTF } from 'three-stdlib';
 import { SkeletonUtils } from 'three-stdlib';
 import { CharacterAnimator, type DriverMood } from '@/game/characters/characterAnimator';
+import { applyTires } from './tires';
 import { flameById, metalById, neonById, paintById, type ColorRecipe, type Finish, type KartLook, type OutfitDef } from '@/data/customization';
 
 /** Materiais recoloridos pela personalização. */
@@ -167,11 +168,21 @@ export class KartModel {
     if (this.charScene) this.recolor(this.charScene, OUTFIT_MATERIALS, outfit.recipe, outfit.finish);
   }
 
-  /** Modificações do kart: pintura, metais, chama do turbo e neon. */
+  private look: KartLook | null = null;
+
+  /** Pneus da loja (null = os originais do kart). Reaplica a pintura/metais por cima dos pneus novos. */
+  setTire(tire: GLTF | null): void {
+    applyTires(this.wheels, tire);
+    if (this.look) this.applyLook(this.look);
+  }
+
+  /** Modificações do kart: pintura, metais, chama do turbo e neon (os pneus vêm de `setTire`). */
   applyLook(look: KartLook): void {
+    this.look = look;
     const paint = paintById(look.paint), metal = metalById(look.metal);
-    this.recolor(this.kartScene, PAINT_MATERIALS, paint.recipe, paint.finish);
-    this.recolor(this.kartScene, METAL_MATERIALS, metal.recipe, metal.finish);
+    // `group` inclui as rodas (que saem da cena do kart para os pivôs) e os pneus da loja.
+    this.recolor(this.group, PAINT_MATERIALS, paint.recipe, paint.finish);
+    this.recolor(this.group, METAL_MATERIALS, metal.recipe, metal.finish);
     this.flameColor = flameById(look.flame).color ?? DEFAULT_FLAME;
     this.flameMaterial.color.set(this.flameColor);
     const neon = neonById(look.neon).color;

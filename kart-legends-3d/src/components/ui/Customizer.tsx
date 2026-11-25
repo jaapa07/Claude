@@ -3,6 +3,7 @@ import { KART_PARTS, OUTFITS, outfitById, type KartOption } from '@/data/customi
 import type { CharacterId, KartId } from '@/data/ids';
 import { COSMETIC_PRICES, TIRE_PRICES, cosmeticKey } from '@/data/shop';
 import { describeUnlock } from '@/data/unlocks';
+import { assetUrl } from '@/game/core/assets';
 import { kartLookOf, useCustomStore } from '@/game/custom/customStore';
 import { isRuleMet, useSaveStore } from '@/game/save/saveStore';
 import { LockBadge } from './common';
@@ -19,6 +20,15 @@ function useUnlocked(group: string): (o: KartOption) => boolean {
     if (o.unlock.type !== 'shop') return isRuleMet(o.unlock, { trophies, records, stats });
     return group === 'tire' ? tires.includes(o.id) : cosmetics.includes(cosmeticKey(group, o.id));
   };
+}
+
+/**
+ * Amostras com imagem (`url(assets/…)`): numa variável CSS o endereço relativo seria resolvido a partir da
+ * folha de estilos, então vira absoluto aqui.
+ */
+function resolveSwatch(swatch: string): string {
+  if (!swatch.includes('url(assets/')) return swatch;
+  return swatch.replace(/url\(assets\//g, `url(${new URL(assetUrl(''), document.baseURI).href}`);
 }
 
 /** Texto do cadeado: "na loja por N moedas" para itens à venda. */
@@ -50,7 +60,7 @@ function Swatches({ group, label, options, value, onPick, testId }: {
               key={o.id} type="button" role="radio" aria-checked={o.id === value} className="swatch"
               data-testid={`${testId}-${o.id}`} data-selected={o.id === value} data-locked={!open}
               title={open ? o.name : `${o.name} — ${lockText(group, o)}`} aria-label={open ? o.name : `${o.name} (bloqueado: ${lockText(group, o)})`}
-              style={{ '--swatch': o.swatch } as CSSProperties}
+              style={{ '--swatch': resolveSwatch(o.swatch) } as CSSProperties}
               onClick={() => {
                 if (!open) { uiSfx('ui_error'); setLockedTap(o); return; }
                 setLockedTap(null);

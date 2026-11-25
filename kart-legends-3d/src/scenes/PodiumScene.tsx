@@ -1,4 +1,5 @@
-import { dressPlayer } from '@/game/custom/customStore';
+import { dressPlayer, kartLookOf, useCustomStore } from '@/game/custom/customStore';
+import { TireFitting } from './common/TireFitting';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
@@ -67,6 +68,9 @@ export function PodiumScene({ entries, trophy }: { entries: PodiumEntry[]; troph
       <SkyAndLights env={ENV} shadows shadowSize={1024} />
       <primitive object={stage} />
       {models.map((m, i) => <primitive key={i} object={m.group} />)}
+      {top.map((e, i) => e.isPlayer && (
+        <TireFitting key={`tire-${i}`} model={models[i]!} tireId={kartLookOf(useCustomStore.getState().karts, e.kartId).tire} />
+      ))}
       {trophy && <primitive object={cup} />}
       <primitive object={vfx.solid} />
       <primitive object={vfx.glow} />

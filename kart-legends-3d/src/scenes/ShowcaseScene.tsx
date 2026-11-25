@@ -1,3 +1,4 @@
+import { TireFitting } from './common/TireFitting';
 import { useCustomStore } from '@/game/custom/customStore';
 import { DEFAULT_KART_LOOK, outfitById } from '@/data/customization';
 import { useFrame, useThree } from '@react-three/fiber';
@@ -72,6 +73,7 @@ export function ShowcaseScene({ screen, characterId, kartId, studio }: { screen:
         </>
       )}
       <primitive object={model.group} />
+      {!studio && <TireFitting model={model} tireId={kartLook?.tire} />}
       {!studio && (
         <group>
           <mesh rotation-x={-Math.PI / 2} position-y={-0.02} receiveShadow>

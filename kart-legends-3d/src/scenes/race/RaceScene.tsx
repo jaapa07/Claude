@@ -1,4 +1,5 @@
-import { dressPlayer } from '@/game/custom/customStore';
+import { dressPlayer, kartLookOf, useCustomStore } from '@/game/custom/customStore';
+import { TireFitting } from '../common/TireFitting';
 import { CHARACTER_BY_ID } from '@/data/characters';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Physics, useRapier } from '@react-three/rapier';
@@ -338,6 +339,9 @@ function RaceWorld({ data, config }: { data: TrackData; config: RaceConfig }): J
       <RaceObjects view={view} />
       {data.animatedProps.length > 0 && <AnimatedProps list={data.animatedProps} view={view} />}
       {models.map((m, i) => <primitive key={i} object={m.group} />)}
+      {config.racers.map((r, i) => r.isPlayer && (
+        <TireFitting key={`tire-${i}`} model={models[i]!} tireId={kartLookOf(useCustomStore.getState().karts, r.kartId).tire} />
+      ))}
       <primitive object={vfx.solid} />
       <primitive object={vfx.glow} />
       <mesh material={speedLines} frustumCulled={false} renderOrder={30}>
