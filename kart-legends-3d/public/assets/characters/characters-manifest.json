@@ -780,7 +780,7 @@
     {
       "id": "tuca",
       "file": "assets/characters/tuca.glb",
-      "bytes": 362652,
+      "bytes": 363120,
       "triangles": 11170,
       "bones": 20,
       "extraBones": [
@@ -860,7 +860,7 @@
     {
       "id": "yuki",
       "file": "assets/characters/yuki.glb",
-      "bytes": 389568,
+      "bytes": 389872,
       "triangles": 12740,
       "bones": 23,
       "extraBones": [
@@ -943,7 +943,7 @@
     {
       "id": "kaito",
       "file": "assets/characters/kaito.glb",
-      "bytes": 381160,
+      "bytes": 381496,
       "triangles": 12518,
       "bones": 23,
       "extraBones": [
@@ -1026,7 +1026,7 @@
     {
       "id": "ren",
       "file": "assets/characters/ren.glb",
-      "bytes": 394388,
+      "bytes": 394444,
       "triangles": 13398,
       "bones": 23,
       "extraBones": [
@@ -1109,7 +1109,7 @@
     {
       "id": "sora",
       "file": "assets/characters/sora.glb",
-      "bytes": 427940,
+      "bytes": 428284,
       "triangles": 13399,
       "bones": 26,
       "extraBones": [

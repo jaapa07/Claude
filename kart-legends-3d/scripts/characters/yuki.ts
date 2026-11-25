@@ -191,9 +191,10 @@ function build(c: Ctx): FaceSpec {
   const knot: V3 = [-0.03, 0.555, -0.1];
   c.soft(sphere(0.035, 8, 6).scale(1.2, 0.9, 0.8), 'cloth', rig.torsoW, (_p, n) => mix(CORAL_D, CORAL, 0.5 + 0.5 * n.y), { p: knot });
   const tails: { name: string; pts: V3[]; w: number; ph: number }[] = [
-    { name: 'scarfA', pts: [[-0.04, 0.56, -0.12], [-0.1, 0.6, -0.25], [-0.17, 0.585, -0.39], [-0.22, 0.54, -0.52], [-0.25, 0.5, -0.62]], w: 0.07, ph: 0.15 },
-    { name: 'scarfB', pts: [[-0.04, 0.54, -0.12], [-0.085, 0.565, -0.24], [-0.13, 0.53, -0.36], [-0.16, 0.46, -0.46], [-0.18, 0.43, -0.52]], w: 0.06, ph: 0.45 },
+    { name: 'scarfA', pts: [[-0.04, 0.56, -0.12], [-0.1, 0.605, -0.24], [-0.16, 0.625, -0.36], [-0.2, 0.62, -0.47], [-0.225, 0.605, -0.55]], w: 0.07, ph: 0.15 },
+    { name: 'scarfB', pts: [[-0.04, 0.54, -0.12], [-0.085, 0.57, -0.23], [-0.125, 0.575, -0.33], [-0.15, 0.56, -0.41], [-0.165, 0.545, -0.46]], w: 0.06, ph: 0.45 },
   ];
+  // pontas curtas e erguidas, com o vento levantando (caídas, entravam no bagageiro/santantônio/encosto dos karts)
   for (const t of tails) {
     const bones = c.chain(t.name, 'chest', [t.pts[0]!, t.pts[1]!, t.pts[2]!], { roll: 0.3, pitch: 0.22, lag: 0.08, sway: [0.05, 0.09, 0.05], phase: t.ph, wind: [0.12, 0, 0], flutter: [0.12, 0.16, 0.08], bounce: 2.2 });
     const w = rig.chainW(bones, { parent: 'chest', blend: 0.05, tip: t.pts[4] });
@@ -212,11 +213,13 @@ function build(c: Ctx): FaceSpec {
   for (const dx of [-0.06, 0.06]) c.rigid('chest', torus(0.036, 0.006, 4, 12).rotateY(Math.PI / 2), 'std', CORAL_D, { p: [dx, 0.39, pz + 0.005] });
 
   /* ---------- prancha de snowboard na diagonal (ponta alta no ombro esquerdo) ---------- */
-  const bL = 0.5, bW = 0.15;
+  const bL = 0.44, bW = 0.15;
+  // mais curta, mais alta e com a ponta de baixo para a frente (acompanha a inclinação dos encostos dos karts); a ponta de baixo atravessava o encosto
+  const tilt = -0.15;
   const outline = smoothOutline([[-bW / 2, -bL / 2 + 0.05], [-bW / 2 + 0.012, 0], [-bW / 2, bL / 2 - 0.05], [-bW / 2 + 0.03, bL / 2 - 0.005], [0, bL / 2], [bW / 2 - 0.03, bL / 2 - 0.005], [bW / 2, bL / 2 - 0.05], [bW / 2 - 0.012, 0], [bW / 2, -bL / 2 + 0.05], [bW / 2 - 0.03, -bL / 2 + 0.005], [0, -bL / 2], [-bW / 2 + 0.03, -bL / 2 + 0.005]], 26);
   const ang = -0.5; // inclinação: topo para a esquerda (+X)
-  const bc: V3 = [0.01, 0.58, -0.262];
-  const boardX = { p: bc, r: [0.08, 0, ang] as V3 };
+  const bc: V3 = [0.01, 0.64, -0.262];
+  const boardX = { p: bc, r: [tilt, 0, ang] as V3 };
   const mountain = (x: number): number => 0.045 * (1 - Math.abs(((x / 0.05) % 2 + 2) % 2 - 1) * 2); // ziguezague
   c.rigid('chest', extrude(outline, 0.018, 0.004), 'glossy', (p, n) => {
     if (n.z > 0.5) return mix(darken(TEAL_D, 0.2), TEAL_D, 0.5); // base (encostada na mochila)
@@ -230,14 +233,14 @@ function build(c: Ctx): FaceSpec {
   }, boardX);
   // duas fixações
   for (const yb of [-0.11, 0.11]) {
-    const local = new THREE.Vector3(0, yb, -0.02).applyEuler(new THREE.Euler(0.08, 0, ang)).add(new THREE.Vector3(...bc));
-    c.rigid('chest', box(0.13, 0.05, 0.02, 0.008, 1), 'std', STRAP, { p: v3(local), r: [0.08, 0, ang] });
-    const strap = new THREE.Vector3(0, yb + 0.012, -0.034).applyEuler(new THREE.Euler(0.08, 0, ang)).add(new THREE.Vector3(...bc));
-    c.rigid('chest', box(0.11, 0.024, 0.014), 'cloth', CORAL, { p: v3(strap), r: [0.08, 0, ang] });
+    const local = new THREE.Vector3(0, yb, -0.02).applyEuler(new THREE.Euler(tilt, 0, ang)).add(new THREE.Vector3(...bc));
+    c.rigid('chest', box(0.13, 0.05, 0.02, 0.008, 1), 'std', STRAP, { p: v3(local), r: [tilt, 0, ang] });
+    const strap = new THREE.Vector3(0, yb + 0.012, -0.034).applyEuler(new THREE.Euler(tilt, 0, ang)).add(new THREE.Vector3(...bc));
+    c.rigid('chest', box(0.11, 0.024, 0.014), 'cloth', CORAL, { p: v3(strap), r: [tilt, 0, ang] });
   }
   // tiras que prendem a prancha à mochila
-  c.rigid('chest', box(0.2, 0.022, 0.012), 'std', STRAP, { p: [0, 0.54, -0.278], r: [0.08, 0, 0] });
-  c.rigid('chest', box(0.03, 0.03, 0.016), METAL, BUCKLE, { p: [0.08, 0.54, -0.286], r: [0.08, 0, 0] });
+  c.rigid('chest', box(0.2, 0.022, 0.012), 'std', STRAP, { p: [0, 0.54, -0.264], r: [tilt, 0, 0] });
+  c.rigid('chest', box(0.03, 0.03, 0.016), METAL, BUCKLE, { p: [0.08, 0.54, -0.272], r: [tilt, 0, 0] });
 
   const my = -c.fy(0.69);
   return {

@@ -8,8 +8,9 @@
  *     distância à superfície. Mãos, pernas e quadril (que tocam volante, banco e pedais de propósito) ficam fora
  *     do ranking principal.
  *
+ * As posições do relatório são no espaço do piloto (o mesmo dos scripts de personagem).
  * Uso: npx tsx scripts/tools/seat-check.ts --out=/tmp/clipping [--chars=sora,ren] [--karts=mare] [--size=220]
- *      [--no-render] [--no-check] [--tag=antes] [--cols=0,1,4 (subconjunto das colunas)] [--top=60]
+ *      [--no-render] [--no-check] [--tag=antes] [--cols=0,1,4 (subconjunto das colunas)] [--top=60] [--profile]
  */
 import { chromium } from 'playwright';
 import http from 'node:http';
@@ -126,7 +127,8 @@ function penetration(ch, k) {
       if (!box.containsPoint(v)) continue;
       if (!inside(k.bvh, v)) continue;
       const cp = k.bvh.closestPointToPoint(v, hitTarget);
-      res.push([v.x, v.y, v.z, cp ? cp.distance : 0, ch.dom[mi][i]]);
+      const l = ch.scene.worldToLocal(v.clone());
+      res.push([v.x, v.y, v.z, cp ? cp.distance : 0, ch.dom[mi][i], l.x, l.y, l.z]);
     }
   });
   return res;
@@ -153,14 +155,14 @@ window.runCheck = async (charIds, kartIds, phases) => {
           for (const p of pts) {
             const core = CORE.has(p[4]);
             if (core) { if (p[3] > coreMax) { coreMax = p[3]; coreAt = p[4] + ' @ ' + [p[0], p[1], p[2]].map((v) => v.toFixed(2)).join(','); } continue; }
-            const b = byBone[p[4]] ?? (byBone[p[4]] = { n: 0, max: 0, sx: 0, sy: 0, sz: 0 });
+            const b = byBone[p[4]] ?? (byBone[p[4]] = { n: 0, max: 0, sx: 0, sy: 0, sz: 0, lx: 0, ly: 0, lz: 0, ymin: 9 });
             if (p[3] < 0.008) continue; // toque raso (< 8 mm) não conta
-            b.n++; b.max = Math.max(b.max, p[3]); b.sx += p[0]; b.sy += p[1]; b.sz += p[2];
+            b.n++; b.max = Math.max(b.max, p[3]); b.sx += p[0]; b.sy += p[1]; b.sz += p[2]; b.lx += p[5]; b.ly += p[6]; b.lz += p[7]; b.ymin = Math.min(b.ymin, p[6]);
             acc++; accMax = Math.max(accMax, p[3]); accPts.push(p);
           }
           const score = accPts.reduce((s, p) => s + p[3], 0);
           if (!worst || score > worst.score) {
-            const bones = Object.entries(byBone).filter(([, b]) => b.n > 0).map(([name, b]) => ({ name, n: b.n, maxCm: +(b.max * 100).toFixed(1), at: [+(b.sx / b.n).toFixed(3), +(b.sy / b.n).toFixed(3), +(b.sz / b.n).toFixed(3)] })).sort((a, b) => b.n - a.n);
+            const bones = Object.entries(byBone).filter(([, b]) => b.n > 0).map(([name, b]) => ({ name, n: b.n, maxCm: +(b.max * 100).toFixed(1), at: [+(b.sx / b.n).toFixed(3), +(b.sy / b.n).toFixed(3), +(b.sz / b.n).toFixed(3)], loc: [+(b.lx / b.n).toFixed(3), +(b.ly / b.n).toFixed(3), +(b.lz / b.n).toFixed(3)], locYmin: +b.ymin.toFixed(3) })).sort((a, b) => b.n - a.n);
             worst = { char: cid, kart: kid, clip, t: +t.toFixed(3), score: +score.toFixed(3), verts: acc, maxCm: +(accMax * 100).toFixed(1), coreMaxCm: +(coreMax * 100).toFixed(1), coreAt, bones };
           }
         }
@@ -222,6 +224,29 @@ window.runSheet = async (cid, kartIds) => {
   ch.scene.removeFromParent();
   return shots;
 };
+/** Perfil do encosto: para cada kart, a profundidade (z, espaço do piloto) da primeira superfície atrás do piloto. */
+window.runProfile = async (kartIds, xs, ys) => {
+  const out = {};
+  for (const kid of kartIds) {
+    const k = await loadKart(kid);
+    const probe = new THREE.Object3D(); k.seat.add(probe); k.scene.updateMatrixWorld(true);
+    const rows = [];
+    for (const y of ys) {
+      const row = [];
+      for (const x of xs) {
+        const o = probe.localToWorld(new THREE.Vector3(x, y, -0.12));
+        const d = probe.localToWorld(new THREE.Vector3(x, y, -1.2)).sub(o).normalize();
+        ray.origin.copy(o); ray.direction.copy(d);
+        const hit = k.bvh.raycastFirst(ray, THREE.DoubleSide);
+        row.push(hit && hit.distance < 1.1 ? +probe.worldToLocal(hit.point.clone()).z.toFixed(3) : null);
+      }
+      rows.push(row);
+    }
+    probe.removeFromParent();
+    out[kid] = rows;
+  }
+  return out;
+};
 window.__ready = true;
 </script></body></html>`;
 
@@ -239,7 +264,7 @@ await new Promise<void>((r) => server.listen(0, r));
 const port = (server.address() as { port: number }).port;
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
 
-interface Row { char: string; kart: string; clip: string; t: number; score: number; verts: number; maxCm: number; coreMaxCm: number; coreAt: string; bones: { name: string; n: number; maxCm: number; at: number[] }[] }
+interface Row { char: string; kart: string; clip: string; t: number; score: number; verts: number; maxCm: number; coreMaxCm: number; coreAt: string; bones: { name: string; n: number; maxCm: number; at: number[]; loc: number[]; locYmin: number }[] }
 try {
   const page = await browser.newPage({ viewport: { width: 400, height: 300 } });
   const errors: string[] = [];
@@ -248,6 +273,15 @@ try {
   await page.goto(`http://127.0.0.1:${port}/`);
   await page.waitForFunction('window.__ready === true', undefined, { timeout: 60000 }).catch(() => { throw new Error('página falhou: ' + errors.join(' | ')); });
 
+  if (flags.profile !== undefined) {
+    const xs = [-0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3], ys = Array.from({ length: 12 }, (_, i) => +(0.1 + i * 0.1).toFixed(2));
+    const prof = await page.evaluate(async ([k, x, y]) => (window as unknown as { runProfile: (k: string[], x: number[], y: number[]) => Promise<Record<string, (number | null)[][]>> }).runProfile(k, x, y), [karts, xs, ys] as [string[], number[], number[]]);
+    console.log('encosto: z da primeira superfície atrás do piloto (espaço do piloto); colunas x = ' + xs.join(' '));
+    for (const [kid, rows] of Object.entries(prof)) {
+      console.log(kid);
+      rows.forEach((r, i) => console.log(`  y=${ys[i]!.toFixed(1)}  ` + r.map((z) => (z === null ? '   -  ' : z.toFixed(2).padStart(6))).join(' ')));
+    }
+  }
   if (doRender) {
     for (const id of chars) {
       const shots = await page.evaluate(async ([c, k]) => (window as unknown as { runSheet: (c: string, k: string[]) => Promise<Record<string, string>> }).runSheet(c, k), [id, karts] as [string, string[]]);
@@ -270,7 +304,7 @@ try {
     const bad = rows.filter((r) => r.verts > 0).sort((a, b) => b.score - a.score);
     console.log(`\n${bad.length} de ${rows.length} combinações (piloto × kart × pose) com acessório/tronco/cabeça dentro do kart (> 8 mm):`);
     for (const r of bad.slice(0, Number(flags.top ?? 60))) {
-      const bones = r.bones.slice(0, 4).map((b) => `${b.name}×${b.n} (${b.maxCm} cm @ ${b.at.join(',')})`).join('; ');
+      const bones = r.bones.slice(0, 4).map((b) => `${b.name}×${b.n} (${b.maxCm} cm @ piloto ${b.loc.join(',')} ymin ${b.locYmin})`).join('; ');
       console.log(`  ${r.char.padEnd(6)} ${r.kart.padEnd(10)} ${r.clip.padEnd(11)} t=${r.t.toFixed(2)} vértices=${String(r.verts).padStart(4)} máx=${r.maxCm.toFixed(1).padStart(4)} cm  ${bones}`);
     }
     const core = rows.filter((r) => r.coreMaxCm > 3).sort((a, b) => b.coreMaxCm - a.coreMaxCm);

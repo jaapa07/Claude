@@ -134,12 +134,13 @@ function build(c: Ctx): FaceSpec {
   }
 
   /* ---------- cauda empinada ---------- */
-  const tp: V3[] = [[0, 0.15, -0.1], [0, 0.21, -0.23], [0, 0.32, -0.33], [0, 0.45, -0.4], [0, 0.56, -0.44]];
-  const tb = c.chain('tail', 'hips', [tp[0]!, tp[1]!, tp[2]!], { roll: 0.25, pitch: 0.2, lag: 0.08, sway: [0.03, 0.08, 0.05], phase: 0.2, wind: [-0.12, 0, 0], flutter: [0.05, 0.05, 0.03], bounce: 2.4 });
+  // sobe rente às costas e só abre o leque acima do encosto dos karts (mais para trás, atravessava o encosto)
+  const tp: V3[] = [[0, 0.15, -0.1], [0, 0.25, -0.17], [0, 0.38, -0.205], [0, 0.52, -0.245], [0, 0.64, -0.3]];
+  const tb = c.chain('tail', 'hips', [tp[0]!, tp[1]!, tp[2]!], { roll: 0.25, pitch: 0.08, lag: 0.08, sway: [0.03, 0.08, 0.05], phase: 0.2, wind: [0.02, 0, 0], flutter: [0.05, 0.05, 0.03], bounce: 2.4 });
   const tw = rig.chainW(tb, { parent: 'hips', blend: 0.06, tip: tp[4] });
   c.soft(ribbon(tp, (t) => ramp(t, [[0, 0.09], [0.3, 0.15], [1, 0.19]]), 0.03, (t) => mix(INK, INK_L, sstep(0.6, 1, t) * 0.5), { ref: [1, 0, 0], nv: 16, nu: 8 }), 'fur', tw);
   for (const sg of [1, -1, 0]) {
-    c.soft(leafBlade([[sg * 0.03, 0.2, -0.2], [sg * 0.06, 0.36, -0.34], [sg * 0.08, 0.52, -0.42]], 0.07, INK, INK_L, [1, 0, 0]), 'fur', tw);
+    c.soft(leafBlade([[sg * 0.03, 0.24, -0.17], [sg * 0.06, 0.42, -0.215], [sg * 0.08, 0.6, -0.285]], 0.07, INK, INK_L, [1, 0, 0]), 'fur', tw);
   }
   // penas vermelhas sob a cauda e brancas por cima
   c.rigid('hips', sphere(0.06, 12, 8).scale(1.3, 0.8, 1), 'fur', (p, n) => mix(darken(RED, 0.3), RED, 0.5 + 0.5 * n.y + 0.1 * Math.sin(p.x * 200)), { p: [0, 0.09, -0.12] });
