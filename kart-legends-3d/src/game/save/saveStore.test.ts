@@ -179,6 +179,15 @@ describe('save: desbloqueios pelas regras dos dados', () => {
     expect(computeUnlocks(d).characters).toContain('yuki');
   });
 
+  it('Kaito sai com 4 vitórias', () => {
+    const d = createDefaultSave();
+    expect(d.unlocked.characters).not.toContain('kaito');
+    d.stats.wins = 3;
+    expect(computeUnlocks(d).characters).not.toContain('kaito');
+    d.stats.wins = 4;
+    expect(computeUnlocks(d).characters).toContain('kaito');
+  });
+
   it('trophyForPosition: ouro, prata, bronze e nada', () => {
     expect([1, 2, 3, 4, 8].map(trophyForPosition)).toEqual(['gold', 'silver', 'bronze', null, null]);
   });

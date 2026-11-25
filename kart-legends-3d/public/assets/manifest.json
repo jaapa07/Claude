@@ -1324,7 +1324,20 @@
    "origin": "scripts/build-characters.ts (modelagem, rig e animação por script)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 18447,
+   "bytes": 20020,
+   "status": "validado",
+   "usedIn": "Pilotos na corrida, vitrine e pódio"
+  },
+  {
+   "id": "characters:kaito",
+   "name": "kaito",
+   "type": "model",
+   "path": "characters/kaito.glb",
+   "format": "glb",
+   "origin": "scripts/build-characters.ts (modelagem, rig e animação por script)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 381160,
    "status": "validado",
    "usedIn": "Pilotos na corrida, vitrine e pódio"
   },
@@ -2681,6 +2694,19 @@
    "usedIn": "Materiais dos modelos (também embutidas nos GLB)"
   },
   {
+   "id": "textures:face_kaito",
+   "name": "face_kaito",
+   "type": "texture",
+   "path": "textures/face_kaito.webp",
+   "format": "webp",
+   "origin": "scripts (texturas procedurais e arte vetorial próprias)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 47952,
+   "status": "validado",
+   "usedIn": "Materiais dos modelos (também embutidas nos GLB)"
+  },
+  {
    "id": "textures:face_kora",
    "name": "face_kora",
    "type": "texture",
@@ -3734,6 +3760,19 @@
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
   {
+   "id": "ui:icons:kaito",
+   "name": "kaito",
+   "type": "image",
+   "path": "ui/icons/kaito.webp",
+   "format": "webp",
+   "origin": "scripts/build-items.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 2794,
+   "status": "validado",
+   "usedIn": "Interface (retratos, ícones, miniaturas)"
+  },
+  {
    "id": "ui:icons:kora",
    "name": "kora",
    "type": "image",
@@ -4055,6 +4094,19 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 35406,
+   "status": "validado",
+   "usedIn": "Interface (retratos, ícones, miniaturas)"
+  },
+  {
+   "id": "ui:portraits:kaito",
+   "name": "kaito",
+   "type": "image",
+   "path": "ui/portraits/kaito.webp",
+   "format": "webp",
+   "origin": "scripts/build-items.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 29826,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },

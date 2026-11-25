@@ -26,6 +26,7 @@ export const CHARACTERS: readonly CharacterDef[] = [
   { id: 'capi', name: 'Capi', title: 'Capivara sossegada', bio: 'Nunca tem pressa, mas sempre chega: a tangerina na cabeça nunca caiu.', color: '#ff5fa2', accent: '#ffb547', kartId: 'mare', unlock: { type: 'wins', count: 3 } },
   { id: 'tuca', name: 'Tuca', title: 'Tucano acrobata', bio: 'Pilota de bico erguido e faz cada miniturbo parecer um voo rasante.', color: '#9bd43a', accent: '#ff9a1f', kartId: 'faisca', unlock: { type: 'turbo3', count: 40 } },
   { id: 'yuki', name: 'Yuki', title: 'Ninja da neve', bio: 'Desce a montanha de prancha e sobe ao pódio de kart, sempre com o cachecol ao vento.', color: '#2ec4d6', accent: '#ff7a59', kartId: 'geada', unlock: { type: 'races', count: 6 } },
+  { id: 'kaito', name: 'Kaito', title: 'Ninja da lua', bio: 'Rival declarado da Yuki, corre em silêncio sob o luar e só sorri de canto quando cruza a linha primeiro.', color: '#6b5cff', accent: '#c9d2e6', kartId: 'cometa', unlock: { type: 'wins', count: 4 } },
 ];
 
 export const CHARACTER_BY_ID = Object.fromEntries(CHARACTERS.map((c) => [c.id, c])) as Record<CharacterId, CharacterDef>;
