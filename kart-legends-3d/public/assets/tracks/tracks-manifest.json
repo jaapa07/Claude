@@ -133,14 +133,14 @@
   },
   {
     "id": "estacao-lunar",
-    "length": 1252,
-    "samples": 626,
-    "triangles": 169406,
-    "glbBytes": 4157172,
-    "jsonBytes": 104153,
-    "props": 433,
-    "animated": 13,
-    "colliders": 93,
+    "length": 1312,
+    "samples": 656,
+    "triangles": 174332,
+    "glbBytes": 4238112,
+    "jsonBytes": 110937,
+    "props": 437,
+    "animated": 15,
+    "colliders": 94,
     "warnings": []
   }
 ]

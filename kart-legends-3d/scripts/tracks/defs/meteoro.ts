@@ -302,8 +302,11 @@ export const ESTACAO_LUNAR: TrackDef = {
   },
   points: [
     { x: 0, z: -150, y: 2, w: 9, wall: 'both', tag: 'largada', flat: 18 },
-    { x: 90, z: -150, y: 2, tag: 'base' },
-    { x: 160, z: -110, y: 2.5, bank: 5, wall: 'none' },
+    { x: 80, z: -150, y: 2, tag: 'base' },
+    // chicane entre os módulos da base
+    { x: 116, z: -160, y: 2.1, w: 8 },
+    { x: 140, z: -138, y: 2.3 },
+    { x: 166, z: -108, y: 2.6, bank: 5, wall: 'none' },
     { x: 176, z: -40, y: 3.5, bank: 0, tag: 'radar' },
     { x: 128, z: -4, y: 3.6, surface: 'dirt', bank: -4, w: 8 },
     { x: 102, z: 44, y: 3.6, bank: 0, tag: 'grampo' },
@@ -313,11 +316,18 @@ export const ESTACAO_LUNAR: TrackDef = {
     { x: 105.9, z: 159.4, y: 4.6, w: 10, surface: 'asphalt', tag: 'pouso' },
     { x: 40, z: 160, y: 4, w: 9, wall: 'both', tag: 'tubo' },
     { x: -40, z: 156, y: 4 },
-    { x: -110, z: 130, y: 3.5, bank: 4, wall: 'none' },
+    // esse das antenas
+    { x: -76, z: 164, y: 3.9, w: 8, bank: -4 },
+    { x: -104, z: 146, y: 3.6, bank: 4, wall: 'none' },
+    { x: -128, z: 120, y: 3, bank: 0, w: 9 },
     { x: -160, z: 70, y: 2, bank: 0, surface: 'ice', w: 9, tag: 'gelo', flat: 14 },
     { x: -140, z: 10, y: 1.5, bank: -3 },
     { x: -190, z: -50, y: 2, surface: 'asphalt', bank: 4, tag: 'foguete' },
-    { x: -150, z: -116, y: 2, bank: 0, w: 9 },
+    // grampo ao redor da plataforma do foguete
+    { x: -200, z: -92, y: 2, w: 9, bank: 6 },
+    { x: -182, z: -122, y: 2 },
+    { x: -150, z: -120, y: 2, bank: 0, w: 8.5 },
+    { x: -128, z: -142, y: 2, bank: -3 },
     { x: -80, z: -150, y: 2, tag: 'retorno' },
   ],
   shortcuts: [
@@ -326,7 +336,7 @@ export const ESTACAO_LUNAR: TrackDef = {
   items: ['base+20', 'radar-20', 'tubo+40', 'gelo-30', 'retorno-20'],
   boostPads: [
     { at: 'salto-40' }, { at: 'salto-40', offset: 4 }, { at: 'salto-40', offset: -4 },
-    { at: 'tubo+70', offset: 2 }, { at: 'foguete+30', offset: -2 },
+    { at: 'tubo+56', offset: 2 }, { at: 'retorno', offset: -2 },
   ],
   ramps: [{ at: 'salto-9', width: 14, length: 8, height: 1.9 }, { at: 'foguete-40', offset: 0, width: 8, height: 1.5 }],
   obstacles: [
@@ -344,7 +354,9 @@ export const ESTACAO_LUNAR: TrackDef = {
     { prop: ['rocha-lunar'], from: 'gelo-30', to: 'gelo+60', side: 'both', every: 12, dist: [2, 8], face: 'random' },
     { prop: ['painel-solar', 'caixa-carga', 'modulo-lunar'], from: 'foguete-30', to: 'retorno', side: 'both', every: 22, dist: [6, 14] },
     { prop: 'placa-seta-dir', from: 'poeira-30', to: 'poeira+10', side: 'left', every: 9, dist: [1, 1.5] },
-    { prop: 'placa-seta-esq', from: 'gelo+10', to: 'gelo+50', side: 'right', every: 9, dist: [1, 1.5] },
+    { prop: 'placa-seta-esq', from: 'gelo+34', to: 'gelo+58', side: 'right', every: 8, dist: [1, 1.5] },
+    { prop: 'placa-seta-dir', from: 'base+12', to: 'base+34', side: 'left', every: 8, dist: [1, 1.5] },
+    { prop: 'placa-seta-dir', from: 'foguete+50', to: 'foguete+76', side: 'left', every: 8, dist: [1, 1.5] },
   ],
   singles: [
     { prop: 'tubo-pressurizado', at: 'tubo', over: true },
