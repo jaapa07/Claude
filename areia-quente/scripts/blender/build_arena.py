@@ -385,7 +385,8 @@ def palms(rnd, spots):
              kenney('nature-kit/Models/GLTF format/tree_palmBend.glb', target_h=9),
              kenney('nature-kit/Models/GLTF format/tree_palmDetailedTall.glb', target_h=12)]
     for i, (x, y) in enumerate(spots):
-        rnd.choice(kinds)(f'palm', (x, y, 0), rnd.uniform(0, 6.28), rnd.uniform(0.8, 1.2))
+        if rnd.random() < 0.3: continue
+        rnd.choice(kinds)(f'palm', (x + rnd.uniform(-3.5, 3.5), y + rnd.uniform(-3, 3), 0), rnd.uniform(0, 6.28), rnd.uniform(0.75, 1.25))
 
 
 def skyline(rnd, y0, x_span, night=False, count=26, low=False):

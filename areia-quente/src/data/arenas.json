@@ -1,0 +1,103 @@
+{
+ "arenas": [
+  {
+   "id": "copacabana",
+   "name": "Copacabana Sol",
+   "city": "RIO DE JANEIRO",
+   "time": "day",
+   "sky": "kloofendal_48d_partly_cloudy_puresky",
+   "skyRot": 1.2,
+   "sun": {
+    "color": "#fff4e0",
+    "intensity": 3.2,
+    "dir": [
+     -0.45,
+     0.75,
+     0.35
+    ]
+   },
+   "hemi": {
+    "sky": "#cfe6ff",
+    "ground": "#d9b98a",
+    "intensity": 0.9
+   },
+   "fog": {
+    "color": "#cfe0f0",
+    "near": 140,
+    "far": 900
+   },
+   "exposure": 1.0,
+   "bloom": 0.25,
+   "floodlights": false,
+   "envIntensity": 0.8,
+   "water": "#1f8fb3",
+   "description": "Sol a pino, morros ao fundo e o mar mais famoso do Brasil."
+  },
+  {
+   "id": "lagoa",
+   "name": "Lagoa Neon",
+   "city": "FLORIANÓPOLIS",
+   "time": "night",
+   "sky": "qwantani_night_puresky",
+   "skyRot": 0.0,
+   "sun": {
+    "color": "#9fb6ff",
+    "intensity": 0.35,
+    "dir": [
+     0.3,
+     0.8,
+     -0.4
+    ]
+   },
+   "hemi": {
+    "sky": "#2a3a66",
+    "ground": "#3a2e22",
+    "intensity": 0.22
+   },
+   "fog": {
+    "color": "#0b1020",
+    "near": 120,
+    "far": 700
+   },
+   "exposure": 0.95,
+   "bloom": 0.9,
+   "floodlights": true,
+   "envIntensity": 0.25,
+   "water": "#0c2a40",
+   "description": "Noite de holofotes, placas em neon e a lagoa iluminada."
+  },
+  {
+   "id": "dunas",
+   "name": "Dunas Douradas",
+   "city": "NATAL",
+   "time": "sunset",
+   "sky": "qwantani_sunset_puresky",
+   "skyRot": 2.6,
+   "sun": {
+    "color": "#ffc590",
+    "intensity": 2.3,
+    "dir": [
+     0.85,
+     0.32,
+     -0.25
+    ]
+   },
+   "hemi": {
+    "sky": "#ffd9b8",
+    "ground": "#c9a27a",
+    "intensity": 0.8
+   },
+   "fog": {
+    "color": "#f0b48a",
+    "near": 120,
+    "far": 800
+   },
+   "exposure": 0.95,
+   "bloom": 0.45,
+   "floodlights": false,
+   "envIntensity": 0.7,
+   "water": "#2a6f8f",
+   "description": "Pôr do sol alaranjado entre dunas e coqueiros. Vento levanta a areia."
+  }
+ ]
+}

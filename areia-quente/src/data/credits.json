@@ -1,0 +1,67 @@
+{
+ "sections": [
+  {
+   "title": "Jogo",
+   "items": [
+    "AREIA QUENTE — futebol de praia arcade 3D",
+    "Design, código, animações e pipeline de assets gerados com Claude Code"
+   ]
+  },
+  {
+   "title": "Personagens, cenário e interface",
+   "items": [
+    "Kenney (kenney.nl) — Animated Characters, Mini Characters, City Kit, Nature Kit, Watercraft Kit, Furniture Kit, Particle Pack, Smoke Particles, Input Prompts, Impact & Interface Sounds — CC0"
+   ]
+  },
+  {
+   "title": "Texturas e céus",
+   "items": [
+    "ambientCG — Ground080, Ground093C — CC0",
+    "Poly Haven — Kloofendal 48d Partly Cloudy, Qwantani Sunset, Qwantani Night (Greg Zaal, Jarod Guest) — CC0"
+   ]
+  },
+  {
+   "title": "Música",
+   "items": [
+    "\"Mad Bossa\" — spring-spring",
+    "\"Funky House\" — Of Far Different Nature",
+    "\"Crystal Beach\" — iamoneabe",
+    "\"Fever Stadium\" — mintodog",
+    "(todas CC0 via OpenGameArt)"
+   ]
+  },
+  {
+   "title": "Sons",
+   "items": [
+    "Torcida — starninjas, nocturnalvanguard, expl0it3r",
+    "Ondas — qubodup / jasinski",
+    "Gaivotas — rango-mango",
+    "Areia — peludo",
+    "(todos CC0 via OpenGameArt)",
+    "Apitos sintetizados para o jogo"
+   ]
+  },
+  {
+   "title": "Fontes",
+   "items": [
+    "Bungee — David Jonathan Ross (OFL)",
+    "Rubik — Hubert & Fischer (OFL)"
+   ]
+  },
+  {
+   "title": "Tecnologia",
+   "items": [
+    "three.js",
+    "Howler.js",
+    "Vite + TypeScript",
+    "Blender (bpy) para o pipeline de assets"
+   ]
+  },
+  {
+   "title": "Seleções",
+   "items": [
+    "Todos os jogadores, apelidos, brasões e patrocinadores são fictícios."
+   ]
+  }
+ ]
+}

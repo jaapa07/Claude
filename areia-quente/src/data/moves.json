@@ -1,0 +1,9 @@
+{
+  "style": {
+    "pass": 5, "lob": 8, "juggle": 5, "sombrero": 15, "chest": 5, "volley": 25, "header": 10,
+    "diving_header": 25, "bicycle_kick": 45, "scissor_kick": 35, "tackle": 10, "save": 20, "long_throw": 10, "goal": 100
+  },
+  "heatToFill": 260,
+  "fireDuration": 10,
+  "maxMultiplier": 5
+}
