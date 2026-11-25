@@ -89,7 +89,7 @@ class InputManager {
   private keySteer = 0;
   private lastReadAt = -1;
   /** Controles de toque (celular): valores escritos pela camada `TouchControls`. */
-  private readonly touch = { throttle: 0, brake: 0, steer: 0, drift: false, item: false, reset: false };
+  private readonly touch = { throttle: 0, brake: 0, steer: 0, drift: false, item: false, reset: false, driftPad: false };
   private readonly state: InputState = { throttle: 0, brake: 0, steer: 0, drift: false, item: false, reset: false };
   private capture: { resolve: (code: string) => void; reject: (err: Error) => void } | null = null;
 
@@ -210,11 +210,12 @@ class InputManager {
     let reset = a.reset > 0;
 
     const t = this.touch;
+    // Botão de drift do polegar esquerdo (modo manual): segurar também acelera.
     if (t.brake > 0) throttle = 0;
-    else throttle = Math.max(throttle, t.throttle);
+    else throttle = Math.max(throttle, t.throttle, t.driftPad ? 1 : 0);
     brake = Math.max(brake, t.brake);
     if (Math.abs(t.steer) > Math.abs(steer)) steer = t.steer;
-    drift = drift || t.drift;
+    drift = drift || t.drift || t.driftPad;
     item = item || t.item;
     reset = reset || t.reset;
 
@@ -248,13 +249,13 @@ class InputManager {
   }
 
   /** Atualiza os comandos de toque (só os campos informados). */
-  setTouch(values: Partial<{ throttle: number; brake: number; steer: number; drift: boolean; item: boolean; reset: boolean }>): void {
+  setTouch(values: Partial<{ throttle: number; brake: number; steer: number; drift: boolean; item: boolean; reset: boolean; driftPad: boolean }>): void {
     Object.assign(this.touch, values);
   }
 
   /** Solta todos os comandos de toque. */
   clearTouch(): void {
-    Object.assign(this.touch, { throttle: 0, brake: 0, steer: 0, drift: false, item: false, reset: false });
+    Object.assign(this.touch, { throttle: 0, brake: 0, steer: 0, drift: false, item: false, reset: false, driftPad: false });
   }
 
   /** Botão de pausa na tela (toque). */

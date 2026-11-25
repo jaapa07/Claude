@@ -126,8 +126,12 @@
 
 /* Modo manual: Acelerar no canto (polegar descansa nele) e Drift logo ao lado, para deslizar. */
 .touch-right[data-manual="true"] { width: 250px; height: 200px; }
-.touch-right[data-manual="true"] .touch-btn--gas { right: 0; bottom: 20px; width: 104px; height: 104px; box-shadow: inset 0 0 0 3px #7df0a8; font-size: 13px; }
-.touch-right[data-manual="true"] .touch-btn--drift { right: 112px; bottom: 38px; width: 84px; height: 84px; }
-.touch-right[data-manual="true"] .touch-btn--item { right: 118px; bottom: 128px; width: 66px; height: 66px; }
-.touch-right[data-manual="true"] .touch-btn--brake { right: 196px; bottom: 0; width: 56px; height: 56px; font-size: 11px; }
-.touch-right[data-manual="true"] .touch-btn--reset { right: 20px; bottom: 140px; }
+.touch-right[data-manual="true"] .touch-btn--gas { right: 0; bottom: 24px; width: 112px; height: 112px; box-shadow: inset 0 0 0 3px #7df0a8; font-size: 13px; }
+.touch-right[data-manual="true"] .touch-btn--item { right: 118px; bottom: 96px; width: 72px; height: 72px; }
+.touch-right[data-manual="true"] .touch-btn--brake { right: 124px; bottom: 8px; width: 64px; height: 64px; font-size: 12px; }
+.touch-right[data-manual="true"] .touch-btn--reset { right: 30px; bottom: 148px; }
+/* Drift do polegar esquerdo (modo manual): segure e arraste para o lado da curva. */
+.touch-btn--driftpad { left: calc(env(safe-area-inset-left, 0px) + 22px); bottom: calc(env(safe-area-inset-bottom, 0px) + 22px); width: 108px; height: 108px; flex-direction: column; gap: 2px; box-shadow: inset 0 0 0 3px #ff8a1f; font-size: 15px; pointer-events: none; display: flex; align-items: center; justify-content: center; }
+.touch-btn--driftpad__arrows { font-size: 11px; letter-spacing: 0.3em; opacity: 0.75; }
+.touch-steer__base[data-drift="true"] { box-shadow: inset 0 0 0 2px #ff8a1f; }
+.touch-steer__base[data-drift="true"] .touch-steer__knob { background: #ffb347; box-shadow: 0 0 16px rgba(255, 138, 31, 0.9); }

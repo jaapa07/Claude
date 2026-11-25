@@ -1,7 +1,9 @@
 import { expect, test } from '@playwright/test';
 import { boot, trackErrors } from './helpers';
 
-const CHARACTERS = ['nilo', 'boro', 'lumi', 'kora', 'tiko', 'mavi', 'runi', 'zera', 'capi', 'tuca', 'yuki', 'kaito', 'ren', 'sora'];
+const CHARACTERS = ['nilo', 'boro', 'lumi', 'kora', 'tiko', 'mavi', 'runi', 'zera', 'capi', 'tuca'];
+/** Segunda página da seleção: os ninjas exclusivos da loja. */
+const NINJAS = ['yuki', 'kaito', 'ren', 'sora'];
 const KARTS = ['flecha', 'engrenagem', 'cometa', 'broto', 'faisca', 'mare', 'duna', 'geada'];
 const TRACKS = ['porto-lanternas', 'bosque-cristal', 'vale-moinhos', 'canion-solar', 'cidade-neon', 'pico-boreal', 'jardim-celeste', 'fortaleza-tempestade',
   'recife-coral', 'templo-esmeralda', 'vulcao-rubro', 'estacao-lunar'];
@@ -58,6 +60,12 @@ test('menus: todos os modos, copas, pistas, personagens e karts aparecem e a nav
 
   await expect(page.getByTestId('screen-character')).toBeVisible();
   for (const c of CHARACTERS) await expect(page.getByTestId(`card-character-${c}`)).toBeVisible();
+  await page.getByTestId('roster-page-ninjas').click();
+  for (const c of NINJAS) await expect(page.getByTestId(`card-character-${c}`)).toBeVisible();
+  await expect(page.getByTestId('card-coming-soon')).toHaveCount(4);
+  await page.getByTestId('card-character-kaito').click();
+  await expect(page.getByTestId('lock-condition')).toContainText('Loja');
+  await page.getByTestId('roster-page-main').click();
   await page.getByTestId('card-character-zera').click();
   await expect(page.getByTestId('lock-condition')).toBeVisible();
   await page.getByTestId('card-character-kora').click();

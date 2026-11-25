@@ -79,7 +79,13 @@
 .card-grid { display: grid; gap: 0.55rem; flex: none; }
 .card-grid--roster { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 /* Catorze pilotos: 7 × 2. */
-.card-grid--characters { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.card-grid--characters { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.card-grid--page-ninjas { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.roster-pages { padding-left: 0; }
+.card--soon { display: flex; flex-direction: column; align-items: center; justify-content: center; background: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0 10px, rgba(255, 255, 255, 0.07) 10px 20px); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.12); cursor: default; }
+.card--soon__mark { font-family: var(--font-display); font-size: 3.4rem; font-weight: 900; font-style: italic; color: rgba(255, 255, 255, 0.28); line-height: 1; }
+.card--soon .card__caption { position: static; background: none; }
+.card--soon .card__title { color: var(--muted); }
 .card-grid--tracks { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .card--portrait, .card--track { flex-direction: column; overflow: hidden; }
 .card--portrait { aspect-ratio: 1 / 0.88; }

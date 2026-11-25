@@ -27,7 +27,7 @@ export function AccelerationPicker(): JSX.Element {
         ))}
       </div>
       <span className="accel-picker__hint">
-        {auto ? 'O kart acelera sozinho: use Freio para frear e dar ré.' : 'Segure Acelerar; deslize o polegar para Drift sem soltar.'}
+        {auto ? 'O kart acelera sozinho: use Freio para frear e dar ré.' : 'Segure Acelerar com o polegar direito; com o esquerdo, encoste no Drift e puxe para o lado da curva.'}
       </span>
     </div>
   );
