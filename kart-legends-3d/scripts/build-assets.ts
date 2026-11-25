@@ -9,6 +9,7 @@ const steps: [string, string][] = [
   ['Atlas de partículas', 'scripts/build-vfx.ts'],
   ['Personagens', 'scripts/build-characters.ts'],
   ['Karts', 'scripts/build-karts.ts'],
+  ['Rodas da loja', 'scripts/build-tires.ts'],
   ['Itens e objetos de corrida', 'scripts/build-items.ts'],
   ['Pistas e cenário', 'scripts/build-tracks.ts'],
   ...(process.argv.includes('--skip-audio') ? [] : [['Áudio', 'scripts/build-audio.ts'] as [string, string], ['Áudio AAC (Safari)', 'scripts/build-audio-aac.ts'] as [string, string]]),

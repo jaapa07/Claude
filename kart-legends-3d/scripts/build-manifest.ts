@@ -25,10 +25,11 @@ const RULES: { dir: string; origin: string; usedIn: string }[] = [
   { dir: 'karts', origin: 'scripts/build-karts.ts (modelagem por script)', usedIn: 'Veículos na corrida, vitrine e pódio' },
   { dir: 'tracks', origin: 'scripts/build-tracks.ts (traçado autorado + cenário)', usedIn: 'Pistas e dados de corrida' },
   { dir: 'props', origin: 'scripts/build-tracks.ts (partes móveis de cenário e obstáculos)', usedIn: 'Cenário animado e obstáculos dinâmicos' },
+  { dir: 'tires', origin: 'scripts/build-tires.ts (modelagem por script)', usedIn: 'Rodas da loja, equipáveis em qualquer kart' },
   { dir: 'items', origin: 'scripts/build-items.ts (modelagem por script)', usedIn: 'Itens, placas de turbo, rampas, pórtico, troféus e pódio' },
   { dir: 'textures', origin: 'scripts (texturas procedurais e arte vetorial próprias)', usedIn: 'Materiais dos modelos (também embutidas nos GLB)' },
   { dir: 'vfx', origin: 'scripts/build-vfx.ts (arte vetorial própria)', usedIn: 'Sistema de partículas' },
-  { dir: 'ui', origin: 'scripts/build-items.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)', usedIn: 'Interface (retratos, ícones, miniaturas)' },
+  { dir: 'ui', origin: 'scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)', usedIn: 'Interface (retratos, ícones, miniaturas)' },
   { dir: 'audio', origin: 'scripts/build-audio.ts (síntese procedural própria)', usedIn: 'Música, efeitos e ambiência' },
 ];
 const TYPES: Record<string, ManifestEntry['type']> = { '.glb': 'model', '.webp': 'image', '.png': 'image', '.ogg': 'audio', '.m4a': 'audio', '.json': 'data' };

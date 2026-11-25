@@ -8,6 +8,7 @@ import { readFile, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
 import { CHARACTER_IDS, ITEM_IDS, KART_IDS, TRACK_IDS } from '../src/data/ids';
+import { TIRE_IDS } from '../src/game/vehicles/tires';
 import { ALL_AUDIO_FILES } from '../src/game/audio/audioIds';
 import type { TrackData } from '../src/game/tracks/trackTypes';
 import { LICENSE, buildManifest, type ManifestEntry } from './build-manifest';
@@ -56,6 +57,7 @@ for (const id of ITEM_IDS) need(`ui/items/${id}.webp`);
 for (const id of ITEM_MODELS) need(`items/${id}.glb`);
 for (const f of ALL_AUDIO_FILES) need(f);
 need('vfx/particles.webp');
+for (const id of TIRE_IDS) { need(`tires/${id}.glb`); need(`ui/tires/${id}.webp`); }
 
 // 3. imagens e texturas decodificam
 for (const a of manifest.assets.filter((x) => x.format === 'webp' || x.format === 'png')) {
@@ -108,6 +110,7 @@ for (const a of manifest.assets.filter((x) => x.type === 'model')) {
       if (root.listSkins().length === 0) fail(`${a.path}: sem skin`);
       if (!names.has('face') && !root.listMeshes().some((m) => m.getName() === 'face') && !root.listMaterials().some((m) => m.getName().startsWith('face_'))) fail(`${a.path}: malha "face" ausente`);
     }
+    if (a.path.startsWith('tires/') && !names.has('tire')) fail(`${a.path}: nó obrigatório ausente "tire"`);
     if (a.path.startsWith('karts/')) for (const nme of KART_NODES) if (!names.has(nme)) fail(`${a.path}: nó obrigatório ausente "${nme}"`);
   } catch (e) { fail(`modelo inválido: ${a.path} (${(e as Error).message})`); }
 }
