@@ -86,16 +86,29 @@ export function createTrackColliders(R: Rapier, world: RAPIER.World, track: Trac
       }
       // Começo de muro depois de trecho aberto: guia inclinada (invisível) que abre 5 m para fora em 4 amostras,
       // para quem vem pela borda ser desviado para dentro em vez de passar por trás do muro.
+      // A guia não pode atravessar a boca de um atalho (o muro volta logo depois da bifurcação).
+      const blocksShortcut = (x: number, z: number): boolean => track.shortcuts.some((sc) => {
+        const p = sc.path;
+        for (let s = 0; s < p.n; s++) {
+          const k = s * 3;
+          if (Math.hypot(p.pos[k]! - x, p.pos[k + 2]! - z) < p.halfWidth[s]! + 2) return true;
+        }
+        return false;
+      });
       for (let i = 0; i < m.n; i++) {
         const prev = (i - 1 + m.n) % m.n;
         if (!(data.wall[i]! & bit) || (data.wall[prev]! & bit)) continue;
         const LEAD = 4;
+        // abre menos (ou nada) quando a guia cheia entraria no atalho
+        const k0 = ((i - LEAD + m.n) % m.n) * 3, hw0 = m.halfWidth[(i - LEAD + m.n) % m.n]!;
+        const spread = [5, 3.5, 2].find((sp) => !blocksShortcut(m.pos[k0]! + m.side[k0]! * (hw0 + 0.55 + sp) * sgn, m.pos[k0 + 2]! + m.side[k0 + 2]! * (hw0 + 0.55 + sp) * sgn));
+        if (spread === undefined) continue;
         for (let t = 0; t < LEAD; t++) {
           const a = (i - LEAD + t + m.n) % m.n, b = (i - LEAD + t + 1 + m.n) % m.n;
           const base = verts.length / 3;
           for (const [s2, f] of [[a, (LEAD - t) / LEAD], [b, (LEAD - t - 1) / LEAD]] as const) {
             const k = s2 * 3;
-            const w = (m.halfWidth[s2]! + 0.55 + 5 * f) * sgn;
+            const w = (m.halfWidth[s2]! + 0.55 + spread * f) * sgn;
             const x = m.pos[k]! + m.side[k]! * w, y = m.pos[k + 1]! + m.side[k + 1]! * w, z = m.pos[k + 2]! + m.side[k + 2]! * w;
             verts.push(x, y - 0.6, z, x, y + H, z);
           }

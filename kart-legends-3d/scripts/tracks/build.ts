@@ -91,6 +91,29 @@ export async function buildTrack(def: TrackDef, opts: BuildOptions): Promise<Bui
   });
   // nas entradas e saídas de atalho não pode haver muro na pista principal
   for (const sc of shortcuts) for (const j of [sc.from, sc.to]) for (let d = -10; d <= 10; d++) main.wall[(((j + d) % n) + n) % n] = 0;
+  // bifurcação suave: enquanto o atalho corre colado à pista (a partir das bocas), o muro do lado dele fica aberto
+  for (const sc of shortcuts) {
+    const p = sc.path;
+    const span = (sc.to - sc.from + n) % n;
+    const close = (k: number): { i: number; side: number } | null => {
+      let best = 0, bd = Infinity;
+      for (let d = -30; d <= span + 30; d++) {
+        const i = (((sc.from + d) % n) + n) % n;
+        const q = main.pos[i]!; const dd = (q.x - p.pos[k]!.x) ** 2 + (q.z - p.pos[k]!.z) ** 2;
+        if (dd < bd) { bd = dd; best = i; }
+      }
+      const rel = p.pos[k]!.clone().sub(main.pos[best]!);
+      const lat = rel.x * main.side[best]!.x + rel.z * main.side[best]!.z;
+      return Math.abs(lat) > main.halfWidth[best]! + p.halfWidth[k]! + 2.5 ? null : { i: best, side: lat > 0 ? 1 : 2 };
+    };
+    for (const [start, step] of [[0, 1], [p.n - 1, -1]] as const) {
+      for (let k = start; k >= 0 && k < p.n; k += step) {
+        const c = close(k);
+        if (!c) break;
+        for (let d = -3; d <= 3; d++) main.wall[(((c.i + d) % n) + n) % n]! &= ~c.side;
+      }
+    }
+  }
   const allPaths = [main, ...shortcuts.map((s) => s.path)];
   const index = new RoadIndex(allPaths);
 
@@ -272,6 +295,10 @@ export async function buildTrack(def: TrackDef, opts: BuildOptions): Promise<Bui
         const onRoad = Math.abs(sp.offset ?? 0) < main.halfWidth[i]! + 1.5;
         const y = (onRoad || sp.platform ? main.pos[i]!.y : groundY(p.x, p.z, p.y)) + (sp.dy ?? 0);
         const toRoad = Math.atan2(main.pos[i]!.x - p.x, main.pos[i]!.z - p.z);
+        // objeto avulso fora da pista que acabou encostando em outro trecho (traçado sinuoso)
+        if (!sp.platform && !onRoad && (sp.dy ?? 0) > -1 && (sp.dy ?? 0) < 8 && index.edgeDistance(p.x, p.z) < prop.radius * (sp.scale ?? 1) + 0.5) {
+          warnings.push(`objeto ${sp.prop} em ${sp.at} encosta na pista`);
+        }
         place(sp.prop, p.x, y, p.z, sp.rotY !== undefined ? main.heading[i]! + sp.rotY : toRoad, sp.scale ?? 1, undefined, !!sp.platform, !!sp.platform);
         if (sp.platform) {
           propColliders.push(p.x, y - 3, p.z, prop.radius * (sp.scale ?? 1) * 0.9, 3);

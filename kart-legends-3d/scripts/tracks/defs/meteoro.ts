@@ -17,8 +17,11 @@ export const RECIFE_CORAL: TrackDef = {
   },
   points: [
     { x: 0, z: -160, y: 1.6, w: 9, wall: 'none', tag: 'largada', flat: 18 },
-    { x: 86, z: -162, y: 1.6, tag: 'calcadao' },
-    { x: 156, z: -134, y: 1.4, bank: 3, surface: 'sand', tag: 'praia' },
+    { x: 76, z: -162, y: 1.6, tag: 'calcadao' },
+    // chicane do calçadão para a areia
+    { x: 112, z: -170, y: 1.5, w: 8 },
+    { x: 138, z: -150, y: 1.4 },
+    { x: 162, z: -138, y: 1.4, bank: 3, surface: 'sand', tag: 'praia' },
     { x: 192, z: -70, y: 1.3, bank: 0, surface: 'asphalt' },
     { x: 196, z: -8, y: 2.2, w: 7, surface: 'asphalt', bridge: true, style: 'wood', wall: 'both', tag: 'passarela' },
     { x: 182, z: 46, y: 3.2, bank: 3 },
@@ -29,12 +32,18 @@ export const RECIFE_CORAL: TrackDef = {
     { x: 34, z: 104, y: 3.2, bank: 5, tag: 'grampo' },
     { x: -6, z: 116, y: 3.6, bank: 0 },
     { x: -40, z: 162, y: 4.4, tag: 'corais' },
-    { x: -112, z: 138, y: 3.6, bank: 5 },
+    // slalom entre os corais
+    { x: -76, z: 156, y: 4.2, w: 8 },
+    { x: -104, z: 168, y: 4 },
+    { x: -134, z: 148, y: 3.6, bank: 5, w: 9 },
     { x: -170, z: 84, y: 3, bank: 0, tag: 'palmeiras' },
     { x: -150, z: 26, y: 2.6, bank: -4 },
     { x: -186, z: -28, y: 2.2, bank: 4, tag: 'curvas' },
-    { x: -160, z: -86, y: 1.9, w: 7, bank: 0, bridge: true, style: 'wood', wall: 'both', tag: 'pier' },
-    { x: -100, z: -128, y: 1.8 },
+    { x: -160, z: -86, y: 1.9, w: 6.5, bank: 0, bridge: true, style: 'wood', wall: 'both', tag: 'pier' },
+    // cotovelo no píer
+    { x: -138, z: -100, y: 1.9 },
+    { x: -122, z: -122, y: 1.8 },
+    { x: -92, z: -136, y: 1.8 },
     { x: -46, z: -158, y: 1.7, w: 9, bridge: false, style: '', wall: 'none', tag: 'retorno' },
   ],
   shortcuts: [
@@ -43,7 +52,7 @@ export const RECIFE_CORAL: TrackDef = {
   items: ['calcadao+20', 'passarela-10', 'vila+20', 'palmeiras+10', 'retorno-20'],
   boostPads: [
     { at: 'salto-40' }, { at: 'salto-40', offset: 4 }, { at: 'salto-40', offset: -4 },
-    { at: 'corais+30', offset: 3 }, { at: 'pier+40' },
+    { at: 'corais+100', offset: 3 }, { at: 'pier+90' },
   ],
   ramps: [{ at: 'salto-9', width: 14, length: 8, height: 1.9 }, { at: 'praia+40', offset: -3, width: 6, height: 1.2 }],
   obstacles: [
@@ -59,7 +68,8 @@ export const RECIFE_CORAL: TrackDef = {
     { prop: ['coral', 'coral', 'rocha-praia'], from: 'corais-40', to: 'corais+80', side: 'both', every: 9, dist: [1, 5], face: 'random', noCollide: true },
     { prop: ['palmeira', 'palmeira', 'palmeira'], from: 'palmeiras-50', to: 'curvas+30', side: 'both', every: 9, dist: [2, 8], face: 'random', scale: [0.9, 1.3] },
     { prop: 'passarela-poste', from: 'pier-2', to: 'retorno-30', side: 'both', every: 6, dist: [-1.4, -1.4], face: 'along', noCollide: true },
-    { prop: 'placa-seta-dir', from: 'praia-30', to: 'praia+10', side: 'left', every: 9, dist: [1, 1.5] },
+    { prop: 'placa-seta-dir', from: 'calcadao+8', to: 'calcadao+34', side: 'left', every: 8, dist: [1, 1.5] },
+    { prop: 'placa-seta-dir', from: 'corais-30', to: 'corais-6', side: 'left', every: 8, dist: [1, 1.5] },
     { prop: 'placa-seta-dir', from: 'palmeiras-40', to: 'palmeiras', side: 'left', every: 9, dist: [1, 1.5] },
     { prop: 'placa-seta-esq', from: 'curvas-40', to: 'curvas', side: 'right', every: 9, dist: [1, 1.5] },
   ],
@@ -103,9 +113,13 @@ export const TEMPLO_ESMERALDA: TrackDef = {
   },
   points: [
     { x: -10, z: -150, y: 3, w: 9, surface: 'asphalt', tag: 'largada', flat: 20 },
-    { x: 80, z: -150, y: 3, surface: 'dirt', tag: 'trilha' },
-    { x: 150, z: -120, y: 4, bank: 4 },
-    { x: 176, z: -60, y: 5, bank: 0 },
+    { x: 70, z: -150, y: 3, surface: 'dirt', tag: 'trilha' },
+    // esses da trilha na mata
+    { x: 108, z: -160, y: 3.3, w: 8 },
+    { x: 136, z: -138, y: 3.7, bank: -4 },
+    { x: 146, z: -104, y: 4.2, bank: 4 },
+    { x: 176, z: -76, y: 4.6, bank: 0 },
+    { x: 172, z: -44, y: 5.2 },
     { x: 150, z: -14, y: 6, w: 6, bridge: true, style: 'wood', surface: 'asphalt', wall: 'both', tag: 'ponte' },
     { x: 140, z: 50, y: 7, w: 8, bridge: false, style: '', surface: 'dirt', wall: 'none', bank: 4 },
     { x: 180, z: 110, y: 10, bank: -3, tag: 'subida' },
@@ -117,15 +131,19 @@ export const TEMPLO_ESMERALDA: TrackDef = {
     { x: -96, z: 54, y: 9, bank: 4, tag: 'serpente' },
     { x: -150, z: 20, y: 7, w: 6, bank: 0, bridge: true, style: 'wood', surface: 'asphalt', wall: 'both', tag: 'pontecorda' },
     { x: -184, z: -40, y: 5, w: 8, bridge: false, style: '', surface: 'dirt', wall: 'none', flat: 12 },
-    { x: -150, z: -100, y: 4, surface: 'asphalt', bank: 3, tag: 'rolagem' },
-    { x: -80, z: -146, y: 3, bank: 0, tag: 'retorno' },
+    // grampo das pedras rolantes
+    { x: -196, z: -84, y: 4.6, bank: 5, w: 8.5 },
+    { x: -180, z: -116, y: 4.3 },
+    { x: -150, z: -112, y: 4, surface: 'asphalt', bank: 0, tag: 'rolagem' },
+    { x: -124, z: -128, y: 3.6, bank: -3 },
+    { x: -80, z: -148, y: 3, bank: 0, tag: 'retorno' },
   ],
   shortcuts: [
     { id: 'passagem-das-raizes', from: 'subida-6', to: 'santuario-20', risky: true, points: [{ x: 150, z: 116, y: 11, w: 4, surface: 'dirt' }, { x: 92, z: 146, y: 14.6, w: 4 }] },
   ],
   items: ['trilha+20', 'subida-30', 'santuario+80', 'serpente-20', 'retorno-30'],
   boostPads: [{ at: 'ponte-30' }, { at: 'mirante+10', offset: 2 }, { at: 'pontecorda-30' }, { at: 'largada-50', offset: -3 }],
-  ramps: [{ at: 'subida+40', offset: 0, width: 8, height: 1.5 }, { at: 'rolagem-50', offset: 2, width: 7, height: 1.3 }],
+  ramps: [{ at: 'subida+40', offset: 0, width: 8, height: 1.5 }, { at: 'pontecorda+86', offset: 0, width: 7, height: 1.3 }],
   obstacles: [
     { id: 'tronco-1', kind: 'pendulum', model: 'tronco-pendulo', at: 'santuario+20', from: -7, to: 7, period: 3.6, radius: 1.2, y: 1.3 },
     { id: 'tronco-2', kind: 'pendulum', model: 'tronco-pendulo', at: 'santuario+56', from: 7, to: -7, period: 3.6, phase: 0.5, radius: 1.2, y: 1.3 },
@@ -144,6 +162,8 @@ export const TEMPLO_ESMERALDA: TrackDef = {
     { prop: 'placa-seta-esq', from: 'subida-30', to: 'subida+10', side: 'right', every: 9, dist: [1, 1.5] },
     { prop: 'placa-seta-dir', from: 'serpente-30', to: 'serpente+10', side: 'left', every: 9, dist: [1, 1.5] },
     { prop: 'placa-seta-esq', from: 'rolagem-30', to: 'rolagem', side: 'right', every: 9, dist: [1, 1.5] },
+    { prop: 'placa-seta-dir', from: 'trilha+12', to: 'trilha+34', side: 'left', every: 8, dist: [1, 1.5] },
+    { prop: 'placa-seta-dir', from: 'pontecorda+124', to: 'pontecorda+148', side: 'left', every: 8, dist: [1, 1.5] },
   ],
   singles: [
     { prop: 'portal-templo', at: 'santuario', over: true },
@@ -157,7 +177,7 @@ export const TEMPLO_ESMERALDA: TrackDef = {
     { prop: 'arquibancada', at: 'largada+6', offset: -22 },
     { prop: 'cachoeira', at: 'pontecorda', offset: 34 },
     { prop: 'cachoeira', at: 'ponte+20', offset: 34 },
-    { prop: 'cabeca-pedra', at: 'retorno', offset: 12, scale: 1.4 },
+    { prop: 'cabeca-pedra', at: 'retorno', offset: 15, scale: 1.4 },
   ],
   scatter: [
     { prop: ['arvore-selva'], count: 75, dist: [18, 110], scale: [1, 1.6] },
@@ -185,11 +205,17 @@ export const VULCAO_RUBRO: TrackDef = {
   },
   points: [
     { x: 0, z: -150, y: 3, w: 9, wall: 'both', tag: 'largada', flat: 16 },
-    { x: 80, z: -150, y: 3, tag: 'forja' },
-    { x: 150, z: -120, y: 3.5, bank: 4 },
-    { x: 180, z: -50, y: 5, bank: 0, w: 8, wall: 'none', tag: 'encosta' },
-    { x: 150, z: 10, y: 7, bank: -4, surface: 'dirt' },
-    { x: 186, z: 70, y: 9, bank: 3 },
+    { x: 70, z: -150, y: 3, tag: 'forja' },
+    // chicane da forja
+    { x: 108, z: -160, y: 3.2, w: 8 },
+    { x: 136, z: -138, y: 3.4 },
+    { x: 162, z: -116, y: 3.8, bank: 4, w: 8.5 },
+    { x: 182, z: -60, y: 5, bank: 0, w: 8, wall: 'none', tag: 'encosta' },
+    // serpentina à beira da lava
+    { x: 160, z: -22, y: 6, w: 7.5, bank: -5, surface: 'dirt' },
+    { x: 154, z: 14, y: 7, bank: 0 },
+    { x: 182, z: 40, y: 8, bank: 5 },
+    { x: 184, z: 76, y: 9, bank: 3, w: 8 },
     { x: 140, z: 120, y: 11, bank: 0, surface: 'asphalt', w: 7, bridge: true, wall: 'both', tag: 'ponte' },
     { x: 70, z: 140, y: 11, bridge: false },
     { x: 10, z: 120, y: 12, w: 8, wall: 'none', tag: 'cratera' },
@@ -199,8 +225,12 @@ export const VULCAO_RUBRO: TrackDef = {
     { x: -175, z: 96, y: 7, bank: 0, surface: 'dirt', tag: 'cinzas' },
     { x: -150, z: 40, y: 6, bank: -4 },
     { x: -180, z: -20, y: 5, surface: 'asphalt', bank: 0, wall: 'both', tag: 'canal' },
-    { x: -150, z: -90, y: 4, w: 7, bridge: true, tag: 'ponte2' },
-    { x: -90, z: -140, y: 3, w: 9, bridge: false, wall: 'both', tag: 'retorno' },
+    // ponte de ferro com cotovelo e grampo de raio decrescente até a reta
+    { x: -164, z: -70, y: 4.4, w: 7, bridge: true, tag: 'ponte2' },
+    { x: -140, z: -104, y: 4 },
+    { x: -150, z: -134, y: 3.6, w: 8.5, bridge: false, bank: 4 },
+    { x: -124, z: -156, y: 3.2 },
+    { x: -84, z: -150, y: 3, w: 9, bank: 0, wall: 'both', tag: 'retorno' },
   ],
   shortcuts: [
     { id: 'trilha-de-cinzas', from: 'cinzas+6', to: 'canal-30', risky: true, points: [{ x: -184, z: 44, y: 6.2, w: 3.8, surface: 'dirt' }] },
@@ -208,12 +238,12 @@ export const VULCAO_RUBRO: TrackDef = {
   items: ['forja+30', 'encosta+20', 'cratera-20', 'cinzas-20', 'retorno-20'],
   boostPads: [
     { at: 'salto-40' }, { at: 'salto-40', offset: 4 }, { at: 'salto-40', offset: -4 },
-    { at: 'ponte-20' }, { at: 'canal+30', offset: 2 },
+    { at: 'ponte-20' }, { at: 'retorno', offset: 2 },
   ],
-  ramps: [{ at: 'salto-9', width: 14, length: 8, height: 1.9 }, { at: 'encosta+60', offset: 2, width: 7, height: 1.4 }],
+  ramps: [{ at: 'salto-9', width: 14, length: 8, height: 1.9 }, { at: 'encosta-26', offset: 2, width: 7, height: 1.4 }],
   obstacles: [
     { id: 'magma-1', kind: 'roller', model: 'bola-magma', at: 'canal+10', from: 6.5, to: -6.5, period: 5.6, radius: 1.5, y: 1.5 },
-    { id: 'magma-2', kind: 'roller', model: 'bola-magma', at: 'canal+60', from: -6, to: 6, period: 6.2, phase: 0.45, radius: 1.5, y: 1.5 },
+    { id: 'magma-2', kind: 'roller', model: 'bola-magma', at: 'canal-24', from: -6, to: 6, period: 6.2, phase: 0.45, radius: 1.5, y: 1.5 },
     { id: 'vagao-1', kind: 'slider', model: 'vagonete-lava', at: 'forja+60', from: -6.5, to: 6.5, period: 6.4, radius: 1.3 },
   ],
   scenery: [
@@ -223,7 +253,8 @@ export const VULCAO_RUBRO: TrackDef = {
     { prop: 'grade-ferro', from: 'ponte-2', to: 'ponte+66', side: 'both', every: 6, dist: [-1.4, -1.4], face: 'along', noCollide: true },
     { prop: 'grade-ferro', from: 'ponte2-2', to: 'ponte2+66', side: 'both', every: 6, dist: [-1.4, -1.4], face: 'along', noCollide: true },
     { prop: ['fumarola', 'cristal-obsidiana'], from: 'cinzas-40', to: 'cinzas+60', side: 'both', every: 14, dist: [2, 7], face: 'random' },
-    { prop: 'placa-seta-esq', from: 'encosta+20', to: 'encosta+60', side: 'right', every: 9, dist: [1, 1.5] },
+    { prop: 'placa-seta-esq', from: 'encosta+56', to: 'encosta+80', side: 'right', every: 8, dist: [1, 1.5] },
+    { prop: 'placa-seta-dir', from: 'forja+14', to: 'forja+36', side: 'left', every: 8, dist: [1, 1.5] },
     { prop: 'placa-seta-dir', from: 'cinzas-40', to: 'cinzas', side: 'left', every: 9, dist: [1, 1.5] },
   ],
   singles: [
@@ -271,8 +302,11 @@ export const ESTACAO_LUNAR: TrackDef = {
   },
   points: [
     { x: 0, z: -150, y: 2, w: 9, wall: 'both', tag: 'largada', flat: 18 },
-    { x: 90, z: -150, y: 2, tag: 'base' },
-    { x: 160, z: -110, y: 2.5, bank: 5, wall: 'none' },
+    { x: 80, z: -150, y: 2, tag: 'base' },
+    // chicane entre os módulos da base
+    { x: 116, z: -160, y: 2.1, w: 8 },
+    { x: 140, z: -138, y: 2.3 },
+    { x: 166, z: -108, y: 2.6, bank: 5, wall: 'none' },
     { x: 176, z: -40, y: 3.5, bank: 0, tag: 'radar' },
     { x: 128, z: -4, y: 3.6, surface: 'dirt', bank: -4, w: 8 },
     { x: 102, z: 44, y: 3.6, bank: 0, tag: 'grampo' },
@@ -282,11 +316,18 @@ export const ESTACAO_LUNAR: TrackDef = {
     { x: 105.9, z: 159.4, y: 4.6, w: 10, surface: 'asphalt', tag: 'pouso' },
     { x: 40, z: 160, y: 4, w: 9, wall: 'both', tag: 'tubo' },
     { x: -40, z: 156, y: 4 },
-    { x: -110, z: 130, y: 3.5, bank: 4, wall: 'none' },
+    // esse das antenas
+    { x: -76, z: 164, y: 3.9, w: 8, bank: -4 },
+    { x: -104, z: 146, y: 3.6, bank: 4, wall: 'none' },
+    { x: -128, z: 120, y: 3, bank: 0, w: 9 },
     { x: -160, z: 70, y: 2, bank: 0, surface: 'ice', w: 9, tag: 'gelo', flat: 14 },
     { x: -140, z: 10, y: 1.5, bank: -3 },
     { x: -190, z: -50, y: 2, surface: 'asphalt', bank: 4, tag: 'foguete' },
-    { x: -150, z: -116, y: 2, bank: 0, w: 9 },
+    // grampo ao redor da plataforma do foguete
+    { x: -200, z: -92, y: 2, w: 9, bank: 6 },
+    { x: -182, z: -122, y: 2 },
+    { x: -150, z: -120, y: 2, bank: 0, w: 8.5 },
+    { x: -128, z: -142, y: 2, bank: -3 },
     { x: -80, z: -150, y: 2, tag: 'retorno' },
   ],
   shortcuts: [
@@ -295,13 +336,13 @@ export const ESTACAO_LUNAR: TrackDef = {
   items: ['base+20', 'radar-20', 'tubo+40', 'gelo-30', 'retorno-20'],
   boostPads: [
     { at: 'salto-40' }, { at: 'salto-40', offset: 4 }, { at: 'salto-40', offset: -4 },
-    { at: 'tubo+70', offset: 2 }, { at: 'foguete+30', offset: -2 },
+    { at: 'tubo+56', offset: 2 }, { at: 'retorno', offset: -2 },
   ],
   ramps: [{ at: 'salto-9', width: 14, length: 8, height: 1.9 }, { at: 'foguete-40', offset: 0, width: 8, height: 1.5 }],
   obstacles: [
     { id: 'robo-1', kind: 'slider', model: 'robo-carga', at: 'base+50', from: -6.5, to: 6.5, period: 5.8, radius: 1.3 },
     { id: 'robo-2', kind: 'slider', model: 'robo-carga', at: 'tubo+20', from: 6.5, to: -6.5, period: 5, phase: 0.3, radius: 1.3 },
-    { id: 'robo-3', kind: 'slider', model: 'robo-carga', at: 'retorno-40', from: -6, to: 6, period: 6.2, phase: 0.6, radius: 1.3 },
+    { id: 'robo-3', kind: 'slider', model: 'robo-carga', at: 'retorno+16', from: -6, to: 6, period: 6.2, phase: 0.6, radius: 1.3 },
   ],
   scenery: [
     { prop: 'baliza', from: 'largada', to: 'largada-2', side: 'both', every: 24, dist: [0.6, 1] },
@@ -313,7 +354,9 @@ export const ESTACAO_LUNAR: TrackDef = {
     { prop: ['rocha-lunar'], from: 'gelo-30', to: 'gelo+60', side: 'both', every: 12, dist: [2, 8], face: 'random' },
     { prop: ['painel-solar', 'caixa-carga', 'modulo-lunar'], from: 'foguete-30', to: 'retorno', side: 'both', every: 22, dist: [6, 14] },
     { prop: 'placa-seta-dir', from: 'poeira-30', to: 'poeira+10', side: 'left', every: 9, dist: [1, 1.5] },
-    { prop: 'placa-seta-esq', from: 'gelo+10', to: 'gelo+50', side: 'right', every: 9, dist: [1, 1.5] },
+    { prop: 'placa-seta-esq', from: 'gelo+34', to: 'gelo+58', side: 'right', every: 8, dist: [1, 1.5] },
+    { prop: 'placa-seta-dir', from: 'base+12', to: 'base+34', side: 'left', every: 8, dist: [1, 1.5] },
+    { prop: 'placa-seta-dir', from: 'foguete+50', to: 'foguete+76', side: 'left', every: 8, dist: [1, 1.5] },
   ],
   singles: [
     { prop: 'tubo-pressurizado', at: 'tubo', over: true },

@@ -4,7 +4,7 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 (id, nome, tipo, caminho, formato, origem, autor, licença, tamanho, status de validação e local de uso), está em
 `public/assets/manifest.json`. A validação automática é `npm run validate:assets`.
 
-- **Total:** 379 arquivos, 146.7 MB
+- **Total:** 379 arquivos, 148.4 MB
 - **Autor de todos os recursos:** Equipe Kart Legends 3D
 - **Licença:** Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)
 - **Recursos de terceiros:** nenhum
@@ -19,8 +19,8 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | `props/` | 27 | 651 kB | scripts/build-tracks.ts (partes móveis de cenário e obstáculos) | Cenário animado e obstáculos dinâmicos |
 | `textures/` | 101 | 1415 kB | scripts (texturas procedurais e arte vetorial próprias) | Materiais dos modelos (também embutidas nos GLB) |
 | `tires/` | 8 | 183 kB | scripts/build-tires.ts (modelagem por script) | Rodas da loja, equipáveis em qualquer kart |
-| `tracks/` | 25 | 120684 kB | scripts/build-tracks.ts (traçado autorado + cenário) | Pistas e dados de corrida |
-| `ui/` | 65 | 1466 kB | scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo) | Interface (retratos, ícones, miniaturas) |
+| `tracks/` | 25 | 122370 kB | scripts/build-tracks.ts (traçado autorado + cenário) | Pistas e dados de corrida |
+| `ui/` | 65 | 1462 kB | scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo) | Interface (retratos, ícones, miniaturas) |
 | `vfx/` | 1 | 25 kB | scripts/build-vfx.ts (arte vetorial própria) | Sistema de partículas |
 
 ## arenas/
@@ -137,31 +137,31 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 
 | Arquivo | Tipo | Tamanho |
 |---|---|---:|
-| `tracks/bosque-cristal.glb` | model | 21629 kB |
-| `tracks/bosque-cristal.json` | data | 95 kB |
-| `tracks/canion-solar.glb` | model | 9900 kB |
-| `tracks/canion-solar.json` | data | 92 kB |
-| `tracks/cidade-neon.glb` | model | 7920 kB |
-| `tracks/cidade-neon.json` | data | 120 kB |
-| `tracks/estacao-lunar.glb` | model | 4060 kB |
-| `tracks/estacao-lunar.json` | data | 102 kB |
-| `tracks/fortaleza-tempestade.glb` | model | 8412 kB |
-| `tracks/fortaleza-tempestade.json` | data | 101 kB |
-| `tracks/jardim-celeste.glb` | model | 8687 kB |
-| `tracks/jardim-celeste.json` | data | 60 kB |
-| `tracks/pico-boreal.glb` | model | 16029 kB |
-| `tracks/pico-boreal.json` | data | 100 kB |
-| `tracks/porto-lanternas.glb` | model | 12759 kB |
-| `tracks/porto-lanternas.json` | data | 105 kB |
-| `tracks/recife-coral.glb` | model | 6868 kB |
-| `tracks/recife-coral.json` | data | 106 kB |
-| `tracks/templo-esmeralda.glb` | model | 8558 kB |
-| `tracks/templo-esmeralda.json` | data | 101 kB |
+| `tracks/bosque-cristal.glb` | model | 21758 kB |
+| `tracks/bosque-cristal.json` | data | 96 kB |
+| `tracks/canion-solar.glb` | model | 10014 kB |
+| `tracks/canion-solar.json` | data | 95 kB |
+| `tracks/cidade-neon.glb` | model | 8120 kB |
+| `tracks/cidade-neon.json` | data | 121 kB |
+| `tracks/estacao-lunar.glb` | model | 4139 kB |
+| `tracks/estacao-lunar.json` | data | 108 kB |
+| `tracks/fortaleza-tempestade.glb` | model | 8877 kB |
+| `tracks/fortaleza-tempestade.json` | data | 106 kB |
+| `tracks/jardim-celeste.glb` | model | 9000 kB |
+| `tracks/jardim-celeste.json` | data | 63 kB |
+| `tracks/pico-boreal.glb` | model | 15245 kB |
+| `tracks/pico-boreal.json` | data | 108 kB |
+| `tracks/porto-lanternas.glb` | model | 13477 kB |
+| `tracks/porto-lanternas.json` | data | 112 kB |
+| `tracks/recife-coral.glb` | model | 6946 kB |
+| `tracks/recife-coral.json` | data | 109 kB |
+| `tracks/templo-esmeralda.glb` | model | 8518 kB |
+| `tracks/templo-esmeralda.json` | data | 105 kB |
 | `tracks/tracks-manifest.json` | data | 3 kB |
-| `tracks/vale-moinhos.glb` | model | 10866 kB |
-| `tracks/vale-moinhos.json` | data | 104 kB |
-| `tracks/vulcao-rubro.glb` | model | 3809 kB |
-| `tracks/vulcao-rubro.json` | data | 99 kB |
+| `tracks/vale-moinhos.glb` | model | 11187 kB |
+| `tracks/vale-moinhos.json` | data | 109 kB |
+| `tracks/vulcao-rubro.glb` | model | 3854 kB |
+| `tracks/vulcao-rubro.json` | data | 101 kB |
 
 ## ui/
 
@@ -220,18 +220,18 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | `ui/tires/offroad.webp` | image | 11 kB |
 | `ui/tires/raios.webp` | image | 11 kB |
 | `ui/tires/slick.webp` | image | 11 kB |
-| `ui/tracks/bosque-cristal.webp` | image | 45 kB |
-| `ui/tracks/canion-solar.webp` | image | 39 kB |
-| `ui/tracks/cidade-neon.webp` | image | 52 kB |
-| `ui/tracks/estacao-lunar.webp` | image | 28 kB |
+| `ui/tracks/bosque-cristal.webp` | image | 44 kB |
+| `ui/tracks/canion-solar.webp` | image | 37 kB |
+| `ui/tracks/cidade-neon.webp` | image | 49 kB |
+| `ui/tracks/estacao-lunar.webp` | image | 27 kB |
 | `ui/tracks/fortaleza-tempestade.webp` | image | 31 kB |
-| `ui/tracks/jardim-celeste.webp` | image | 21 kB |
-| `ui/tracks/pico-boreal.webp` | image | 33 kB |
-| `ui/tracks/porto-lanternas.webp` | image | 46 kB |
+| `ui/tracks/jardim-celeste.webp` | image | 22 kB |
+| `ui/tracks/pico-boreal.webp` | image | 32 kB |
+| `ui/tracks/porto-lanternas.webp` | image | 48 kB |
 | `ui/tracks/recife-coral.webp` | image | 31 kB |
 | `ui/tracks/templo-esmeralda.webp` | image | 34 kB |
 | `ui/tracks/vale-moinhos.webp` | image | 41 kB |
-| `ui/tracks/vulcao-rubro.webp` | image | 41 kB |
+| `ui/tracks/vulcao-rubro.webp` | image | 42 kB |
 
 ## vfx/
 
