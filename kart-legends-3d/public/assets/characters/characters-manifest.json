@@ -50,7 +50,7 @@
     {
       "id": "nilo",
       "file": "assets/characters/nilo.glb",
-      "bytes": 388276,
+      "bytes": 388392,
       "triangles": 12899,
       "bones": 22,
       "extraBones": [
@@ -209,7 +209,7 @@
     {
       "id": "lumi",
       "file": "assets/characters/lumi.glb",
-      "bytes": 361552,
+      "bytes": 361580,
       "triangles": 11346,
       "bones": 22,
       "extraBones": [
@@ -452,7 +452,7 @@
     {
       "id": "mavi",
       "file": "assets/characters/mavi.glb",
-      "bytes": 378768,
+      "bytes": 378728,
       "triangles": 13624,
       "bones": 22,
       "extraBones": [
@@ -534,7 +534,7 @@
     {
       "id": "runi",
       "file": "assets/characters/runi.glb",
-      "bytes": 390464,
+      "bytes": 390600,
       "triangles": 12834,
       "bones": 23,
       "extraBones": [
@@ -617,7 +617,7 @@
     {
       "id": "zera",
       "file": "assets/characters/zera.glb",
-      "bytes": 417868,
+      "bytes": 417912,
       "triangles": 13456,
       "bones": 24,
       "extraBones": [
@@ -1109,7 +1109,7 @@
     {
       "id": "sora",
       "file": "assets/characters/sora.glb",
-      "bytes": 427872,
+      "bytes": 427940,
       "triangles": 13399,
       "bones": 26,
       "extraBones": [

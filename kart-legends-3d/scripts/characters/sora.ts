@@ -168,8 +168,9 @@ function build(c: Ctx): FaceSpec {
     c.rigid('head', tuft([[sg * 0.19, 0.9, 0.09], [sg * 0.222, 0.78, 0.095], [sg * 0.215, 0.66, 0.095], [sg * 0.19, 0.58, 0.09]], [0.022, 0.045], HAIR, HAIR_D, 8, 6, [0, 0, 1]), 'fur');
   }
   // trança grossa (ossos braid1..4) que balança nas costas, por cima da pipa
-  const bp: V3[] = [[0, 0.74, -0.2], [0.004, 0.63, -0.285], [0.012, 0.52, -0.33], [0.02, 0.41, -0.345], [0.026, 0.31, -0.345], [0.028, 0.25, -0.342]];
-  const bb = c.chain('braid', 'head', [bp[0]!, bp[1]!, bp[2]!, bp[3]!], { roll: 0.24, pitch: 0.2, lag: 0.09, sway: [0.05, 0.03, 0.07], phase: 0.25, wind: [0.3, 0, 0], flutter: [0.09, 0.05, 0.11], bounce: 2.6 });
+  // termina acima do encosto dos karts (mais baixa, a ponta entrava no encosto/caldeira/bagageiro ao balançar)
+  const bp: V3[] = [[0, 0.74, -0.2], [0.004, 0.64, -0.295], [0.012, 0.55, -0.338], [0.02, 0.46, -0.352], [0.026, 0.38, -0.352], [0.028, 0.33, -0.349]];
+  const bb = c.chain('braid', 'head', [bp[0]!, bp[1]!, bp[2]!, bp[3]!], { roll: 0.24, pitch: 0.2, lag: 0.09, sway: [0.05, 0.03, 0.07], phase: 0.25, wind: [0.13, 0, 0], flutter: [0.09, 0.05, 0.11], bounce: 2.6 });
   const bw = rig.chainW(bb, { parent: 'head', blend: 0.04, tip: bp[5] });
   const curve = new THREE.CatmullRomCurve3(bp.map((p) => new THREE.Vector3(...p)));
   const braid = surf((u, v) => {
@@ -181,8 +182,8 @@ function build(c: Ctx): FaceSpec {
   }, 10, 30, { capStart: true, flip: true });
   c.soft(paintUV(braid, (_u, v, _p, n) => mix(HAIR_D, HAIR, (0.35 + 0.65 * Math.abs(Math.sin(v * Math.PI * 7))) * (0.75 + 0.25 * n.y))), 'fur', bw);
   c.rigid('head', torus(0.04, 0.011, 6, 14).rotateX(Math.PI / 2), 'glossy', MINT, { p: [0, 0.725, -0.21], r: [0.75, 0, 0] });
-  c.rigid(bb[3]!, cyl(0.03, 0.03, 0.022, 10), 'cloth', MINT, { p: [0.026, 0.31, -0.345] });
-  c.rigid(bb[3]!, tuft([[0.026, 0.305, -0.345], [0.03, 0.25, -0.35], [0.034, 0.19, -0.355]], 0.036, HAIR, HAIR_L, 8, 5), 'fur');
+  c.rigid(bb[3]!, cyl(0.03, 0.03, 0.022, 10), 'cloth', MINT, { p: [0.026, 0.38, -0.352] });
+  c.rigid(bb[3]!, tuft([[0.026, 0.375, -0.352], [0.03, 0.33, -0.357], [0.034, 0.28, -0.362]], 0.036, HAIR, HAIR_L, 8, 5), 'fur');
 
   /* ---------- cachecol cinza-claro de duas pontas ---------- */
   const knot: V3 = [0.03, 0.555, -0.1];
@@ -205,11 +206,12 @@ function build(c: Ctx): FaceSpec {
   cloudEmblem(c, 'chest', 0.022, [-0.097, 0.49, pz], aimZ([-1, 0, 0]));
 
   /* ---------- pipa-planador dobrada (losango menta e branco) presa nas costas, inclinada como as pranchas ---------- */
-  const kc: V3 = [-0.01, 0.49, -0.242];
-  const kRot: V3 = [0.06, 0, -0.38];
+  // alta e com o topo para trás, acompanhando a inclinação dos encostos dos karts (mais baixa, entrava no encosto)
+  const kc: V3 = [-0.01, 0.575, -0.248];
+  const kRot: V3 = [-0.12, 0, -0.38];
   const kTop = 0.23, kBot = 0.19, kW = 0.17, kMid = 0.035;
   const kx = { p: kc, r: kRot };
-  const fold = (g: THREE.BufferGeometry, sg: number): THREE.BufferGeometry => g.applyMatrix4(new THREE.Matrix4().makeRotationY(sg * 0.22));
+  const fold = (g: THREE.BufferGeometry, sg: number): THREE.BufferGeometry => g.applyMatrix4(new THREE.Matrix4().makeRotationY(sg * 0.15));
   for (const sg of [1, -1]) {
     // cada metade é um triângulo dobrado para trás ao longo da vareta central; borda azul-céu em volta
     const tri: [number, number][] = sg > 0 ? [[0, kTop], [kW, kMid], [0, -kBot]] : [[0, kTop], [0, -kBot], [-kW, kMid]];
@@ -231,9 +233,9 @@ function build(c: Ctx): FaceSpec {
     cloudEmblem(c, 'chest', 0.03, v3(at), [er.x, er.y, er.z]);
   }
   // tiras que prendem a pipa à mochila
-  c.rigid('chest', box(0.19, 0.02, 0.01), 'std', STRAP, { p: [0, 0.54, -0.252], r: [0.06, 0, 0] });
-  c.rigid('chest', box(0.19, 0.02, 0.01), 'std', STRAP, { p: [0, 0.41, -0.246], r: [0.06, 0, 0] });
-  c.rigid('chest', box(0.026, 0.026, 0.014), METAL, BUCKLE, { p: [0.07, 0.54, -0.258], r: [0.06, 0, 0] });
+  c.rigid('chest', box(0.19, 0.02, 0.01), 'std', STRAP, { p: [0, 0.585, -0.26], r: [-0.12, 0, 0] });
+  c.rigid('chest', box(0.19, 0.02, 0.01), 'std', STRAP, { p: [0, 0.475, -0.247], r: [-0.12, 0, 0] });
+  c.rigid('chest', box(0.026, 0.026, 0.014), METAL, BUCKLE, { p: [0.07, 0.585, -0.266], r: [-0.12, 0, 0] });
 
   return {
     bg: SKIN,

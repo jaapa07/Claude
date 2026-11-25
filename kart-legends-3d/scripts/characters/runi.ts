@@ -139,8 +139,9 @@ function build(c: Ctx): FaceSpec {
   c.soft(paintUV(band(T, 0.52, 0.585, 0.028, 20), (_u, _v, p) => mix(darken(RUST, 0.3), RUST, sstep(0.52, 0.59, p.y))), 'cloth', rig.torsoW);
 
   /* ---------- cauda grossa listrada ---------- */
-  const tp: V3[] = [[-0.04, 0.13, -0.09], [-0.21, 0.16, -0.16], [-0.35, 0.22, -0.28], [-0.42, 0.33, -0.42], [-0.39, 0.46, -0.54], [-0.31, 0.54, -0.6]];
-  const tl = c.chain('tail', 'hips', [tp[0]!, [-0.29, 0.19, -0.22], [-0.41, 0.3, -0.38]], { roll: 0.28, pitch: 0.15, lag: 0.09, sway: [0.03, 0.1, 0.04], phase: 0.2, wind: [-0.04, 0.03, 0], flutter: [0.03, 0.06, 0.03], bounce: 2 });
+  // sobe logo depois do quadril para passar por cima da borda lateral e das rodas traseiras dos karts
+  const tp: V3[] = [[-0.04, 0.13, -0.09], [-0.19, 0.2, -0.14], [-0.3, 0.36, -0.23], [-0.38, 0.47, -0.37], [-0.36, 0.58, -0.5], [-0.29, 0.64, -0.57]];
+  const tl = c.chain('tail', 'hips', [tp[0]!, [-0.26, 0.29, -0.19], [-0.38, 0.45, -0.35]], { roll: 0.28, pitch: 0.15, lag: 0.09, sway: [0.03, 0.1, 0.04], phase: 0.2, wind: [-0.04, 0.03, 0], flutter: [0.03, 0.06, 0.03], bounce: 2 });
   c.soft(plume(tp, (t) => ramp(t, [[0, 0.05], [0.2, 0.074], [0.6, 0.058], [1, 0.0]]) + 0.004, (t, u, n) => {
     const top = Math.cos(u * Math.PI * 2) > -0.2;
     const stripe = Math.sin(t * 30) > 0.35 && top;

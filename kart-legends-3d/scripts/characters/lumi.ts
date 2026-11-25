@@ -89,8 +89,9 @@ function build(c: Ctx): FaceSpec {
   c.soft(ribbon(sPts, (t) => ramp(t, [[0, 0.08], [0.25, 0.17], [0.7, 0.12], [1, 0.03]]), 0.012, cometCol, { ref: [1, 0, 0], nv: 20 }), 'cloth', sw);
   c.soft(ribbon([sPts[1]!, [0.11, 0.6, -0.31], [0.13, 0.54, -0.44]], (t) => 0.07 - 0.05 * t, 0.01, (t) => cometCol(0.3 + t * 0.6), { ref: [1, 0, 0], nv: 8 }), 'cloth', sw);
   c.soft(ribbon([sPts[1]!, [-0.09, 0.66, -0.3], [-0.13, 0.64, -0.42]], (t) => 0.065 - 0.045 * t, 0.01, (t) => cometCol(0.3 + t * 0.6), { ref: [1, 0, 0], nv: 8 }), 'cloth', sw);
-  c.rigid(sb[3]!, extrude(starOutline(0.03, 0.013), 0.01, 0.003), 'glow_warm', GOLD, { p: [0.0, 0.52, -0.62], r: [0.4, 0.3, 0.3] });
-  c.rigid(sb[2]!, extrude(starOutline(0.02, 0.009), 0.008, 0.002), 'glow_warm', GOLD, { p: [0.14, 0.5, -0.49], r: [0.2, 0.5, 0.6] });
+  // estrelinhas um pouco acima da ponta do cachecol (mais baixas, entravam no bagageiro do Flecha)
+  c.rigid(sb[3]!, extrude(starOutline(0.03, 0.013), 0.01, 0.003), 'glow_warm', GOLD, { p: [0.0, 0.6, -0.63], r: [0.4, 0.3, 0.3] });
+  c.rigid(sb[2]!, extrude(starOutline(0.02, 0.009), 0.008, 0.002), 'glow_warm', GOLD, { p: [0.14, 0.58, -0.48], r: [0.2, 0.5, 0.6] });
 
   return {
     bg: SKIN,

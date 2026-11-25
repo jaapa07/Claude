@@ -93,11 +93,12 @@ function build(c: Ctx): FaceSpec {
   /* ---------- cachecol comprido (ossos scarf1..3) ---------- */
   const stripes = (t: number): string => (Math.floor(t * 9) % 2 ? SNOW : CORAL);
   c.soft(paintUV(band(T, 0.5, 0.61, 0.034, 22), (u, _v, p, n) => mix(darken(stripes(u * 1.4), 0.25), stripes(u * 1.4), 0.55 + 0.45 * n.y + (p.y > 0.6 ? 0.1 : 0))), 'cloth', rig.torsoW);
-  const sp: V3[] = [[0.07, 0.565, -0.09], [0.11, 0.59, -0.23], [0.115, 0.57, -0.37], [0.1, 0.52, -0.5], [0.09, 0.46, -0.6]];
+  // ponta erguida: mais baixa, entrava no bagageiro do Flecha
+  const sp: V3[] = [[0.07, 0.565, -0.09], [0.11, 0.59, -0.23], [0.115, 0.585, -0.37], [0.1, 0.56, -0.5], [0.09, 0.52, -0.6]];
   const sb = c.chain('scarf', 'chest', [sp[0]!, sp[1]!, sp[2]!], { roll: 0.3, pitch: 0.22, lag: 0.08, sway: [0.05, 0.08, 0.05], phase: 0.2, wind: [0.1, 0, 0], flutter: [0.1, 0.15, 0.08], bounce: 2 });
   const sw = rig.chainW(sb, { parent: 'chest', blend: 0.05, tip: sp[4] });
   c.soft(ribbon(sp, 0.1, 0.02, (t) => stripes(t), { ref: [1, 0, 0.25], nv: 20 }), 'cloth', sw);
-  for (let k = 0; k < 4; k++) c.soft(tuft([[0.055 + k * 0.024, 0.465, -0.595], [0.052 + k * 0.026, 0.44, -0.625], [0.05 + k * 0.028, 0.41, -0.64]], 0.011, CORAL, CORAL_D, 5, 3), 'cloth', sw);
+  for (let k = 0; k < 4; k++) c.soft(tuft([[0.055 + k * 0.024, 0.525, -0.595], [0.052 + k * 0.026, 0.5, -0.625], [0.05 + k * 0.028, 0.47, -0.64]], 0.011, CORAL, CORAL_D, 5, 3), 'cloth', sw);
   // ponta curta na frente
   c.soft(ribbon([[-0.06, 0.55, 0.1], [-0.075, 0.47, 0.135], [-0.08, 0.38, 0.14]], 0.085, 0.018, (t) => stripes(t * 0.5 + 0.1), { ref: [1, 0, 0], nv: 8 }), 'cloth', rig.torsoW);
 
@@ -128,8 +129,9 @@ function build(c: Ctx): FaceSpec {
   }
 
   /* ---------- cauda grossa pintada ---------- */
-  const tp: V3[] = [[0.04, 0.13, -0.09], [0.22, 0.17, -0.16], [0.37, 0.25, -0.26], [0.45, 0.38, -0.36], [0.44, 0.54, -0.42], [0.36, 0.66, -0.43]];
-  const tl = c.chain('tail', 'hips', [tp[0]!, [0.3, 0.21, -0.21], [0.44, 0.35, -0.34]], { roll: 0.28, pitch: 0.15, lag: 0.09, sway: [0.03, 0.09, 0.05], phase: 0.2, wind: [-0.06, 0.03, 0], flutter: [0.03, 0.06, 0.03], bounce: 2.2 });
+  // sobe logo depois do quadril para passar por cima da borda lateral e das rodas traseiras dos karts
+  const tp: V3[] = [[0.04, 0.13, -0.09], [0.2, 0.2, -0.14], [0.31, 0.36, -0.21], [0.4, 0.48, -0.31], [0.41, 0.61, -0.38], [0.34, 0.71, -0.41]];
+  const tl = c.chain('tail', 'hips', [tp[0]!, [0.27, 0.29, -0.18], [0.4, 0.46, -0.3]], { roll: 0.28, pitch: 0.15, lag: 0.09, sway: [0.03, 0.09, 0.05], phase: 0.2, wind: [-0.06, 0.03, 0], flutter: [0.03, 0.06, 0.03], bounce: 2.2 });
   c.soft(plume(tp, (t) => ramp(t, [[0, 0.05], [0.2, 0.068], [0.75, 0.072], [0.92, 0.06], [1, 0.0]]) + 0.004, (t, u, n) => {
     const ringK = t > 0.55 && Math.sin(t * 46) > 0.5;
     const sp2 = t <= 0.55 && Math.sin(t * 60) * Math.sin(u * Math.PI * 10 + t * 20) > 0.45;

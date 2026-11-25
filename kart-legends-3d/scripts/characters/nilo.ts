@@ -156,8 +156,9 @@ function build(c: Ctx): FaceSpec {
   }
 
   /* ---------- cauda ---------- */
-  const tailPts: V3[] = [[0.05, 0.14, -0.09], [0.22, 0.2, -0.15], [0.35, 0.33, -0.29], [0.385, 0.53, -0.41], [0.33, 0.72, -0.47], [0.25, 0.85, -0.45]];
-  const tb = c.chain('tail', 'hips', [tailPts[0]!, [0.3, 0.27, -0.23], [0.385, 0.5, -0.39]], { roll: 0.3, pitch: 0.18, lag: 0.09, sway: [0.04, 0.1, 0.05], phase: 0.18, wind: [-0.1, 0.03, 0], flutter: [0.04, 0.07, 0.03], bounce: 2.5 });
+  // sobe logo depois do quadril para passar por cima da borda lateral e das rodas traseiras dos karts
+  const tailPts: V3[] = [[0.05, 0.14, -0.09], [0.2, 0.22, -0.14], [0.31, 0.37, -0.25], [0.37, 0.55, -0.39], [0.33, 0.73, -0.46], [0.25, 0.86, -0.45]];
+  const tb = c.chain('tail', 'hips', [tailPts[0]!, [0.27, 0.31, -0.2], [0.37, 0.52, -0.37]], { roll: 0.3, pitch: 0.18, lag: 0.09, sway: [0.04, 0.1, 0.05], phase: 0.18, wind: [-0.1, 0.03, 0], flutter: [0.04, 0.07, 0.03], bounce: 2.5 });
   c.soft(plume(tailPts, (t) => ramp(t, [[0, 0.04], [0.25, 0.07], [0.6, 0.108], [0.82, 0.085], [1, 0.0]]) + 0.004, (t, u, n) => {
     const edge = 0.7 + 0.035 * Math.sin(u * Math.PI * 14);
     return t > edge ? mix(CREAM, '#ffffff', sstep(edge, 1, t)) : mix(FUR_D, FUR, 0.5 + 0.5 * n.y);
