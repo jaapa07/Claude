@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
-import { FLAMES, KART_PARTS, METALS, NEONS, OUTFITS, PAINTS, TIRE_OPTIONS } from '@/data/customization';
+import { COSMETIC_PRICES, cosmeticKey } from '@/data/shop';
+import { COSMETIC_GROUPS, FLAMES, KART_PARTS, METALS, NEONS, OUTFITS, PAINTS, TIRE_OPTIONS } from '@/data/customization';
 import { applyRecipe } from '@/game/vehicles/kartModel';
 import { parseCustom } from './customStore';
 
@@ -20,6 +21,11 @@ describe('personalização', () => {
     for (const list of [OUTFITS, PAINTS, METALS, FLAMES, NEONS, TIRE_OPTIONS]) {
       expect(new Set(list.map((o) => o.id)).size).toBe(list.length);
       expect(list[0]!.unlock.type).toBe('initial');
+    }
+    // Tudo que não é grátis está à venda na loja (e vice-versa).
+    for (const g of COSMETIC_GROUPS) for (const o of g.options) {
+      expect(o.unlock.type === 'shop', `${g.group}:${o.id}`).toBe(COSMETIC_PRICES[cosmeticKey(g.group, o.id)] !== undefined);
+      expect(['initial', 'shop']).toContain(o.unlock.type);
     }
     expect(KART_PARTS.map((p) => p.key)).toEqual(['paint', 'metal', 'flame', 'neon', 'tire']);
   });

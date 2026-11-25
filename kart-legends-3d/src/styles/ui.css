@@ -332,3 +332,8 @@ input[type="range"]:focus-visible { outline: 0.16rem solid var(--amber); outline
   .shop-item__detail { display: none; }
   .menu__coins { top: 0.6rem; right: 0.8rem; }
 }
+
+.shop-item__swatch { display: grid; place-items: center; background: linear-gradient(150deg, #2a1f4e, #140d2e); }
+.shop-item__swatch::after { content: ''; width: 45%; aspect-ratio: 1; border-radius: 50%; background: var(--swatch); box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.3), 0 0.3rem 1rem rgba(0, 0, 0, 0.5); }
+.shop-item__tag { align-self: flex-start; margin-top: 0.3rem; padding: 0.05rem 0.45rem; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bg-0); background: var(--cyan); }
+.shop-item__tag + .shop-item__name { margin-top: 0.1rem; }

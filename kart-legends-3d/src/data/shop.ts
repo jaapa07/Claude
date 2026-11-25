@@ -41,7 +41,7 @@ export function coinsForRace(i: CoinInput): number {
   return 0;
 }
 
-export type ShopKind = 'character' | 'kart' | 'tire';
+export type ShopKind = 'character' | 'kart' | 'tire' | 'cosmetic';
 
 /**
  * Preços. Pilotos e karts bloqueados podem ser comprados antes de serem liberados jogando;
@@ -49,7 +49,8 @@ export type ShopKind = 'character' | 'kart' | 'tire';
  */
 export const CHARACTER_PRICES: Readonly<Record<string, number>> = {
   tiko: 600, mavi: 1200, runi: 1600, zera: 1800, capi: 1400, tuca: 1600,
-  yuki: 2200, kaito: 2600, ren: 2400, sora: 2400,
+  // Exclusivos da loja: só comprando, e caros.
+  yuki: 4000, kaito: 5000, ren: 4500, sora: 4500,
 };
 export const KART_PRICES: Readonly<Record<string, number>> = {
   faisca: 900, mare: 1200, duna: 1500, geada: 1800,
@@ -58,8 +59,21 @@ export const TIRE_PRICES: Readonly<Record<string, number>> = {
   offroad: 500, slick: 600, raios: 800, neon: 900, estrela: 700, neve: 650, flor: 550,
 };
 
+/**
+ * Adereços (roupas e itens da Oficina) vendidos na loja, pela chave `grupo:id`.
+ * As opções básicas de cada grupo são grátis; estas só comprando.
+ */
+export const COSMETIC_PRICES: Readonly<Record<string, number>> = {
+  'outfit:oceano': 600, 'outfit:noturno': 800, 'outfit:neve': 900, 'outfit:ouro': 1800,
+  'paint:preto': 400, 'paint:branco': 400, 'paint:dourado': 1500,
+  'metal:cobre': 500, 'metal:ouro': 1200,
+  'flame:rosa': 300, 'flame:roxo': 450, 'flame:branco': 600,
+  'neon:verde': 350, 'neon:ambar': 350, 'neon:roxo': 500,
+};
+export const cosmeticKey = (group: string, id: string): string => `${group}:${id}`;
+
 export const SHOP_PRICES: Record<ShopKind, Readonly<Record<string, number>>> = {
-  character: CHARACTER_PRICES, kart: KART_PRICES, tire: TIRE_PRICES,
+  character: CHARACTER_PRICES, kart: KART_PRICES, tire: TIRE_PRICES, cosmetic: COSMETIC_PRICES,
 };
 
 /** Pneus vendidos na loja (modelos em assets/tires/<id>.glb, ícones em ui/tires/<id>.webp). */

@@ -262,10 +262,14 @@ describe('save: moedas e loja', () => {
     expect(useSaveStore.getState().buy('kart', 'geada')).toBe(true);
     expect(useSaveStore.getState().buy('tire', 'neon')).toBe(true);
     expect(useSaveStore.getState().buy('tire', 'nao-existe')).toBe(false);
+    expect(useSaveStore.getState().buy('cosmetic', 'paint:dourado')).toBe(false); // faltam moedas
+    useSaveStore.setState({ coins: useSaveStore.getState().coins + 1500 });
+    expect(useSaveStore.getState().buy('cosmetic', 'paint:dourado')).toBe(true);
+    expect(useSaveStore.getState().buy('cosmetic', 'paint:azul')).toBe(false); // grátis, não se vende
     expect(useSaveStore.getState().coins).toBe(5000 - 1800 - 1800 - 900);
     useSaveStore.getState().reload();
     const r = useSaveStore.getState();
-    expect(r.owned).toEqual({ characters: ['zera'], karts: ['geada'], tires: ['neon'] });
+    expect(r.owned).toEqual({ characters: ['zera'], karts: ['geada'], tires: ['neon'], cosmetics: ['paint:dourado'] });
     expect(r.isKartUnlocked('geada')).toBe(true);
     expect(r.owns('tire', 'neon')).toBe(true);
   });
@@ -276,6 +280,6 @@ describe('save: moedas e loja', () => {
     const s = useSaveStore.getState();
     expect(s.loadStatus).toBe('migrated');
     expect(s.coins).toBe(START_COINS + 10 * 60 + 3 * 80 + 600);
-    expect(s.owned).toEqual({ characters: [], karts: [], tires: [] });
+    expect(s.owned).toEqual({ characters: [], karts: [], tires: [], cosmetics: [] });
   });
 });

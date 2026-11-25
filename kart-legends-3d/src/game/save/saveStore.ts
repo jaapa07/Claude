@@ -6,7 +6,7 @@ import { KARTS } from '@/data/karts';
 import { CUPS, CUP_UNLOCK, TRACK_BY_ID } from '@/data/tracks';
 import type { UnlockRule } from '@/data/unlocks';
 import type { RaceResult } from '@/game/core/types';
-import { COINS_TROPHY, SHOP_PRICES, START_COINS, TIRE_PRICES, coinsForRace, type ShopKind } from '@/data/shop';
+import { COINS_TROPHY, COSMETIC_PRICES, SHOP_PRICES, START_COINS, TIRE_PRICES, coinsForRace, type ShopKind } from '@/data/shop';
 import { readKey, removeKey, writeKey } from './storage';
 
 export const SAVE_KEY = 'kl3d.save';
@@ -42,7 +42,7 @@ export interface SaveStats {
 export interface SaveUnlocks { characters: CharacterId[]; karts: KartId[]; cups: CupId[] }
 
 /** Itens comprados na loja (pilotos e karts comprados também entram em `unlocked`). */
-export interface SaveOwned { characters: CharacterId[]; karts: KartId[]; tires: string[] }
+export interface SaveOwned { characters: CharacterId[]; karts: KartId[]; tires: string[]; cosmetics: string[] }
 
 export interface SaveData {
   version: number;
@@ -109,7 +109,7 @@ export function createDefaultSave(): SaveData {
     version: SAVE_VERSION,
     unlocked: { characters: [], karts: [], cups: [] },
     coins: START_COINS,
-    owned: { characters: [], karts: [], tires: [] },
+    owned: { characters: [], karts: [], tires: [], cosmetics: [] },
     trophies: Object.fromEntries(CUP_IDS.map((c) => [c, null])) as Record<CupId, TrophyTier | null>,
     records: Object.fromEntries(TRACK_IDS.map((t) => [t, emptyRecord()])) as Record<TrackId, TrackRecord>,
     stats: { races: 0, wins: 0, podiums: 0, turbos: [0, 0, 0], itemsUsed: 0, timeTrials: 0, championships: 0, playTimeMs: 0 },
@@ -176,7 +176,7 @@ const MIGRATIONS: Record<number, (raw: Raw) => Raw> = {
     const trophies = isObject(raw.trophies) ? Object.values(raw.trophies) : [];
     const bonus = count(stats.races) * 60 + count(stats.wins) * 80
       + trophies.reduce<number>((sum, t) => sum + (t === 'gold' || t === 'silver' || t === 'bronze' ? COINS_TROPHY[t] : 0), 0);
-    return { ...raw, version: 2, coins: START_COINS + bonus, owned: { characters: [], karts: [], tires: [] } };
+    return { ...raw, version: 2, coins: START_COINS + bonus, owned: { characters: [], karts: [], tires: [], cosmetics: [] } };
   },
 };
 
@@ -211,6 +211,7 @@ export function sanitizeSave(raw: Raw): SaveData {
     characters: idList(owned.characters, CHARACTER_IDS),
     karts: idList(owned.karts, KART_IDS),
     tires: Array.isArray(owned.tires) ? owned.tires.filter((t): t is string => typeof t === 'string' && t in TIRE_PRICES) : [],
+    cosmetics: Array.isArray(owned.cosmetics) ? owned.cosmetics.filter((t): t is string => typeof t === 'string' && t in COSMETIC_PRICES) : [],
   };
   const unlocked = isObject(raw.unlocked) ? raw.unlocked : {};
   data.unlocked = {
@@ -276,7 +277,7 @@ function snapshot(s: SaveData): SaveData {
     version: SAVE_VERSION,
     unlocked: { characters: [...s.unlocked.characters], karts: [...s.unlocked.karts], cups: [...s.unlocked.cups] },
     coins: s.coins,
-    owned: { characters: [...s.owned.characters], karts: [...s.owned.karts], tires: [...s.owned.tires] },
+    owned: { characters: [...s.owned.characters], karts: [...s.owned.karts], tires: [...s.owned.tires], cosmetics: [...s.owned.cosmetics] },
     trophies: { ...s.trophies },
     records: Object.fromEntries(TRACK_IDS.map((t) => [t, { ...s.records[t] }])) as Record<TrackId, TrackRecord>,
     stats: { ...s.stats, turbos: [...s.stats.turbos] as [number, number, number] },
@@ -374,6 +375,7 @@ export const useSaveStore = create<SaveState>()((set, get) => ({
   owns: (kind, id) => {
     const s = get();
     if (kind === 'tire') return s.owned.tires.includes(id);
+    if (kind === 'cosmetic') return s.owned.cosmetics.includes(id);
     return kind === 'character' ? s.unlocked.characters.includes(id as CharacterId) : s.unlocked.karts.includes(id as KartId);
   },
 
@@ -387,7 +389,8 @@ export const useSaveStore = create<SaveState>()((set, get) => ({
     } else if (kind === 'kart') {
       if (!(KART_IDS as readonly string[]).includes(id)) return false;
       data.owned.karts.push(id as KartId);
-    } else data.owned.tires.push(id);
+    } else if (kind === 'tire') data.owned.tires.push(id);
+    else data.owned.cosmetics.push(id);
     data.coins -= price;
     data.unlocked = computeUnlocks(data);
     persist(data);

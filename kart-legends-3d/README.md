@@ -55,8 +55,16 @@ Tudo é remapeável em **Configurações**, onde também ficam a sensibilidade d
 - **Roupas:** na escolha do piloto, 6 roupas para cada um (Clássico, Tropical, Oceano, Noturno, Neve e Ouro).
 - **Oficina:** na escolha do kart, aba **Oficina** com pintura (12 cores, incluindo preto, branco e dourado),
   metais e rodas (cromado, grafite, cobre, ouro), cor da chama do turbo e neon embaixo do kart.
-- Parte das opções começa liberada; as outras se ganham jogando (corridas, vitórias, miniturbos, troféus).
-  A escolha fica salva no navegador e aparece na corrida e no pódio.
+- As opções básicas são grátis; as outras (roupas especiais, pintura preta/branca/dourada, metais cobre/ouro,
+  chamas e neons extras) são vendidas na **Loja**, aba **Adereços**. A escolha fica salva e aparece na corrida e no pódio.
+
+## Loja e moedas
+
+- Moedas por corrida (pela posição, mais na dificuldade Normal/Difícil), bônus de troféu ao fim de cada copa e
+  moedas no Contrarrelógio. O saldo aparece no menu.
+- **Loja** (menu principal): pilotos e karts bloqueados podem ser comprados antes de liberar jogando; **Yuki, Kaito,
+  Ren e Sora** são exclusivos da loja (4.000 a 5.000 moedas). Abas **Pneus** (modelos de roda para qualquer kart)
+  e **Adereços**. Preços e ganhos em `src/data/shop.ts`.
 
 ## Celular (iPhone / Android)
 
