@@ -92,7 +92,8 @@ export class PenaltyGame extends MiniGame {
     if (!this.waiting) { this.nextT -= dt; if (this.nextT <= 0) this.setup(); return; }
     if (m.state === 'play') {
       this.waitT += dt;
-      if (this.waitT > 0.5 && !b.inGoal && (b.held || b.speed < 1.0 || (b.owner && b.owner.isGK))) this.result(false);
+      // defesa: assim que o goleiro toca na bola (ou ela para) a cobrança está decidida
+      if (this.waitT > 0.3 && !b.inGoal && (b.held || b.speed < 1.0 || (b.owner && b.owner.isGK) || b.lastTouch?.isGK)) this.result(false);
       if (this.waitT > 4) this.result(false);
     }
   }

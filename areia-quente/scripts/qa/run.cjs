@@ -333,52 +333,57 @@ const SUITES = {
   },
 
   async minigames(g, n) {
-    // pênaltis: 5 cobranças segurando K
+    // pênaltis: 5 cobranças segurando K (mira com A/D)
     await g.ev(() => window.__game.flow.startMini('pk'));
     await g.waitFor(() => window.__game.flow.match?.mini, null, 120000);
+    await g.speed(3);
     for (let i = 0; i < 5; i++) {
-      await g.waitFor(() => window.__game.flow.match.state === 'setpiece', null, 30000).catch(() => {});
-      await sleep(800);
-      await g.key(i % 2 ? 'KeyA' : 'KeyD', 0);
-      await g.page.keyboard.down(i % 2 ? 'KeyA' : 'KeyD'); await g.key('KeyK', 450); await g.page.keyboard.up(i % 2 ? 'KeyA' : 'KeyD');
-      await g.waitFor((k) => window.__game.flow.match.mini.kicks.length > k, i, 30000).catch(() => {});
+      await g.waitFor((k) => { const m = window.__game.flow.match; return m.state === 'setpiece' && m.mini.waiting && m.mini.kicks.length === k; }, i, 60000).catch(() => {});
+      await sleep(600);
+      const side = i % 2 ? 'KeyA' : 'KeyD';
+      await g.page.keyboard.down(side); await g.key('KeyK', 500); await g.page.keyboard.up(side);
+      await g.waitFor((k) => window.__game.flow.match.mini.kicks.length > k, i, 60000).catch(() => {});
     }
-    const pk = await g.waitFor(() => document.querySelector('.overlay h1')?.textContent.includes('Pênaltis'), null, 30000).then(() => true, () => false);
+    const pk = await g.waitFor(() => document.querySelector('.overlay h1')?.textContent.includes('Pênaltis'), null, 60000).then(() => true, () => false);
     const pkRes = await g.ev(() => window.__game.flow.match?.mini?.kicks);
-    check(pk, `Pênaltis de Ouro termina com tela de resultado (${JSON.stringify(pkRes)})`, n);
+    check(pk && pkRes.length === 5, `Pênaltis de Ouro: 5 cobranças pelo teclado e tela de resultado (${JSON.stringify(pkRes)})`, n);
     await g.shot('mini_pk');
-    // embaixadinhas: bot aperta I quando a bola desce perto do pé
+    await g.speed(1);
+    // embaixadinhas: bot dentro da página reage a cada quadro (dispara a tecla I quando a bola desce perto do pé)
     await g.ev(() => window.__game.flow.startMini('juggle'));
-    await g.waitFor(() => window.__game.flow.match?.mini?.kind === 'juggle', null, 120000);
+    await g.waitFor(() => window.__game.flow.match?.mini?.kind === 'juggle' && window.__game.flow.scene === 'match', null, 120000);
     await sleep(800);
-    await g.key('KeyI');
-    const t0 = Date.now();
-    while (Date.now() - t0 < 60000) {
-      const s = await g.ev(() => { const m = window.__game.flow.match; return m?.mini ? { y: m.ball.pos.y, vy: m.ball.vel.y, done: m.mini.done, c: m.mini.count } : null; });
-      if (!s || s.done) break;
-      if (s.vy < 0 && s.y < 0.95 && s.y > 0.4) { await g.key('KeyI'); await sleep(250); }
-      await sleep(40);
-    }
+    await g.ev(() => {
+      const fire = () => { addEventListener; window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyI' })); setTimeout(() => window.dispatchEvent(new KeyboardEvent('keyup', { code: 'KeyI' })), 30); };
+      fire();
+      let cool = 0;
+      const loop = () => { const m = window.__game.flow.match; if (!m?.mini || m.mini.done) return;
+        cool--; if (cool <= 0 && m.ball.vel.y < 0 && m.ball.pos.y < 0.95 && m.ball.pos.y > 0.45 && !m.mini.me.kick) { fire(); cool = 3; }
+        requestAnimationFrame(loop); };
+      requestAnimationFrame(loop);
+    });
+    const jres = await g.waitFor(() => document.querySelector('.overlay h1')?.textContent.includes('Embaixadinhas'), null, 600000).then(() => true, () => false);
     const jc = await g.ev(() => window.__game.flow.match?.mini?.count ?? -1);
-    check(jc >= 2, `embaixadinhas contadas pelo bot (${jc})`, n);
-    const jres = await g.waitFor(() => document.querySelector('.overlay h1')?.textContent.includes('Embaixadinhas'), null, 90000).then(() => true, () => false);
+    check(jc >= 5, `embaixadinhas encadeadas pelo bot (${jc})`, n);
     check(jres, 'Embaixadinhas termina (bola caiu ou tempo)', n);
     await g.shot('mini_juggle');
     // tiro ao alvo: 10 chutes
     await g.ev(() => window.__game.flow.startMini('target'));
-    await g.waitFor(() => window.__game.flow.match?.mini?.kind === 'target', null, 120000);
+    await g.waitFor(() => window.__game.flow.match?.mini?.kind === 'target' && window.__game.flow.scene === 'match', null, 120000);
+    await g.speed(3);
     for (let i = 0; i < 10; i++) {
-      await g.waitFor((k) => { const mm = window.__game.flow.match?.mini; return mm && mm.waiting && mm.shots === k && window.__game.flow.match.ball.owner; }, i, 30000).catch(() => {});
-      await sleep(400);
+      await g.waitFor((k) => { const mm = window.__game.flow.match?.mini; return mm && mm.waiting && mm.shots === k && window.__game.flow.match.ball.owner; }, i, 60000).catch(() => {});
+      await sleep(300);
       await g.key('KeyK', 300 + (i % 3) * 150);
-      await g.waitFor((k) => (window.__game.flow.match?.mini?.shots ?? 99) > k, i, 30000).catch(() => {});
+      await g.waitFor((k) => (window.__game.flow.match?.mini?.shots ?? 99) > k, i, 60000).catch(() => {});
     }
-    const tres = await g.waitFor(() => document.querySelector('.overlay h1')?.textContent.includes('Tiro'), null, 30000).then(() => true, () => false);
+    const tres = await g.waitFor(() => document.querySelector('.overlay h1')?.textContent.includes('Tiro'), null, 60000).then(() => true, () => false);
     const ts = await g.ev(() => window.__game.flow.match?.mini ? [window.__game.flow.match.mini.shots, window.__game.flow.match.mini.score] : null);
     check(tres, `Tiro ao Alvo termina após 10 bolas (${ts})`, n);
     await g.shot('mini_target');
+    await g.speed(1);
     const rec = await g.ev(() => JSON.parse(localStorage.getItem('aq.progress')).records);
-    check(rec.pk >= 0 && rec.juggle >= 1, `recordes salvos (${JSON.stringify(rec)})`, n);
+    check(rec.juggle >= 5 && rec.target > 0, `recordes salvos (${JSON.stringify(rec)})`, n);
   },
 
   async achievements(g, n) {
