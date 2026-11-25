@@ -94,6 +94,21 @@ export function RaceObjects({ view }: { view: React.MutableRefObject<RaceView> }
     });
     const bolts = animated(bolt, 12);
     const comets = animated(comet, sim.karts.length);
+    // "gaiola" elétrica em volta de quem está engasgado pelo raio: três raios curtos girando
+    const cages = sim.karts.map(() => {
+      const g = new THREE.Group();
+      g.visible = false;
+      for (let j = 0; j < 3; j++) {
+        const o = bolt!.scene.clone(true);
+        const a = (j / 3) * Math.PI * 2;
+        o.position.set(Math.cos(a) * 1.1, 0.25 + j * 0.25, Math.sin(a) * 1.1);
+        o.rotation.set(-0.5 + j * 0.4, -a, 0);
+        o.scale.set(2.2, 2.2, 1.6);
+        g.add(o);
+      }
+      root.add(g);
+      return g;
+    });
     const obstacles = sim.obstacles.map((o) => {
       const g = new THREE.Group();
       const spin = new THREE.Group();
@@ -109,7 +124,7 @@ export function RaceObjects({ view }: { view: React.MutableRefObject<RaceView> }
       const style: SliderStyle = /drone|balao|nave/.test(m) ? 'hover' : /robo|caranguejo/.test(m) ? 'walk' : /carrinho|vagonete/.test(m) ? 'roll' : 'rigid';
       return { g, spin, style, lean: 0 };
     });
-    return { root, boxes, boxPop, mists, sparks, waves, bolts, comets, mixers, obstacles };
+    return { root, boxes, boxPop, mists, sparks, waves, bolts, comets, cages, mixers, obstacles };
   }, [sim, data, box, pad, ramp, arch, mist, spark, wave, bolt, comet, obstacleModels, obstacleIds]);
   useEffect(() => () => { built.root.removeFromParent(); }, [built]);
 
@@ -156,13 +171,24 @@ export function RaceObjects({ view }: { view: React.MutableRefObject<RaceView> }
       const a = sim.karts[arc.from]!, b = sim.karts[arc.to]!;
       const ax = a.px + (a.x - a.px) * alpha, ay = a.py + (a.y - a.py) * alpha + 0.4, az = a.pz + (a.z - a.pz) * alpha;
       const bx = b.px + (b.x - b.px) * alpha, by = b.py + (b.y - b.py) * alpha + 0.4, bz = b.pz + (b.z - b.pz) * alpha;
-      const len = Math.hypot(bx - ax, by - ay, bz - az);
+      const full = Math.hypot(bx - ax, by - ay, bz - az) || 1;
+      // começa um pouco à frente do kart de origem, para não cobrir o piloto
+      const off = Math.min(1.4, full * 0.3);
+      const len = full - off;
       const fade = 1 - arc.age / ARC_LIFE;
-      const w = (2.6 - arc.link * 0.6) * (0.4 + 0.6 * fade) * (j & 1 ? 0.7 : 1);
-      o.position.set(ax, ay, az);
+      const w = (4 - arc.link * 0.9) * (0.4 + 0.6 * fade) * (j & 1 ? 0.6 : 1);
+      o.position.set(ax + ((bx - ax) / full) * off, ay + ((by - ay) / full) * off, az + ((bz - az) / full) * off);
       o.lookAt(bx, by, bz);
       o.rotateZ(Math.random() * Math.PI * 2);
       o.scale.set(w, w, len);
+    });
+    built.cages.forEach((g, i) => {
+      const k = sim.karts[i]!;
+      g.visible = k.slowTime > 0 && Math.random() > 0.15;
+      if (!g.visible) return;
+      g.position.set(k.px + (k.x - k.px) * alpha, k.py + (k.y - k.py) * alpha - PHYS.rideHeight, k.pz + (k.z - k.pz) * alpha);
+      g.rotation.y = time * 9 + i;
+      g.scale.setScalar(Math.min(1, k.slowTime * 3) * (1 - k.slowFactor) * 2.5);
     });
     // Cometa Guia: aura em volta do kart, crescendo ao ativar e encolhendo no fim
     const cometDur = ITEM_BY_ID['cometa-guia'].duration;

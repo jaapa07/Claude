@@ -47,7 +47,7 @@ export const CHAIN_LINKS = [
 /** Alcance (m, medido ao longo da pista) do primeiro elo e dos saltos seguintes. */
 export const CHAIN_FIRST_RANGE = 90;
 export const CHAIN_HOP_RANGE = 42;
-export const ARC_LIFE = 0.45;
+export const ARC_LIFE = 0.6;
 /** Cometa Guia: raio do "para-choque" que tira rivais do caminho e força do empurrão lateral. */
 export const RAM_RADIUS = 3.4;
 const RAM_PUSH = 10;

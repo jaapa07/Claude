@@ -34,7 +34,7 @@ Três camadas com responsabilidades separadas:
 | `src/game/vehicles/` | Atributos → parâmetros físicos, estado do kart, física arcade, modelo visual do kart |
 | `src/game/racing/` | `RaceSim`, progresso/checkpoints/voltas/classificação, obstáculos móveis, eventos |
 | `src/game/ai/` | Piloto de IA e perfis de dificuldade |
-| `src/game/items/` | Caixas, sorteio por posição, os seis itens, perigos e projéteis |
+| `src/game/items/` | Caixas, sorteio por posição, os oito itens, perigos, projéteis, raios em cadeia e o piloto automático do Cometa Guia |
 | `src/game/tracks/` | Tipos dos dados de pista, consultas em tempo de execução, ambientes (céu/luz/clima) |
 | `src/game/characters/` | Máquina de estados de animação e expressões faciais |
 | `src/game/camera/` | Câmera de perseguição, apresentação, largada e chegada |
