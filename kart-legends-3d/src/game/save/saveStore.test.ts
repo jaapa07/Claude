@@ -125,11 +125,11 @@ describe('save: dados ausentes, corrompidos e versões', () => {
 });
 
 describe('save: desbloqueios pelas regras dos dados', () => {
-  it('Tiko abre com 3 corridas e Faísca Turbo com 1 vitória', () => {
+  it('Mia abre com 3 corridas e Faísca Turbo com 1 vitória', () => {
     const s = useSaveStore.getState();
     expect(s.applyRaceResult(makeResult(race(), { playerPosition: 4 }))).toEqual([]);
     expect(s.applyRaceResult(makeResult(race(), { playerPosition: 1 }))).toEqual([{ kind: 'kart', id: 'faisca', name: 'Faísca Turbo' }]);
-    expect(s.applyRaceResult(makeResult(race(), { playerPosition: 3 }))).toEqual([{ kind: 'character', id: 'tiko', name: 'Tiko' }]);
+    expect(s.applyRaceResult(makeResult(race(), { playerPosition: 3 }))).toEqual([{ kind: 'character', id: 'tiko', name: 'Mia' }]);
     expect(s.applyRaceResult(makeResult(race(), { playerPosition: 1 }))).toEqual([]);
     const st = useSaveStore.getState().stats;
     expect(st).toMatchObject({ races: 4, wins: 2, podiums: 3 });
@@ -260,25 +260,26 @@ describe('save: moedas e loja', () => {
     expect(coinsForRace({ mode: 'timetrial', difficulty: 'easy', position: 1, finished: true, trophy: null, timeTrialRecord: true })).toBe(80);
   });
 
-  it('compra piloto, kart e pneu; não compra sem moedas nem duas vezes; persiste', () => {
+  it('compra piloto ninja, kart e pneu; não compra sem moedas nem duas vezes; persiste', () => {
     const s = useSaveStore.getState();
-    expect(s.buy('character', 'zera')).toBe(false); // 1800 > 300
-    useSaveStore.setState({ coins: 5000 });
-    expect(useSaveStore.getState().buy('character', 'zera')).toBe(true);
-    expect(useSaveStore.getState().isCharacterUnlocked('zera')).toBe(true);
-    expect(useSaveStore.getState().buy('character', 'zera')).toBe(false);
-    expect(useSaveStore.getState().buy('character', 'nilo')).toBe(false); // sem preço (já é inicial)
+    expect(s.buy('character', 'yuki')).toBe(false); // 4000 > 300
+    useSaveStore.setState({ coins: 7000 });
+    expect(useSaveStore.getState().buy('character', 'zera')).toBe(false); // pilotos comuns não são vendidos: só missões
+    expect(useSaveStore.getState().buy('character', 'yuki')).toBe(true);
+    expect(useSaveStore.getState().isCharacterUnlocked('yuki')).toBe(true);
+    expect(useSaveStore.getState().buy('character', 'yuki')).toBe(false);
+    expect(useSaveStore.getState().buy('character', 'nilo')).toBe(false);
     expect(useSaveStore.getState().buy('kart', 'geada')).toBe(true);
     expect(useSaveStore.getState().buy('tire', 'neon')).toBe(true);
     expect(useSaveStore.getState().buy('tire', 'nao-existe')).toBe(false);
-    expect(useSaveStore.getState().buy('cosmetic', 'paint:dourado')).toBe(false); // faltam moedas
+    expect(useSaveStore.getState().buy('cosmetic', 'paint:dourado')).toBe(false); // faltam moedas (sobraram 300)
     useSaveStore.setState({ coins: useSaveStore.getState().coins + 1500 });
     expect(useSaveStore.getState().buy('cosmetic', 'paint:dourado')).toBe(true);
     expect(useSaveStore.getState().buy('cosmetic', 'paint:azul')).toBe(false); // grátis, não se vende
-    expect(useSaveStore.getState().coins).toBe(5000 - 1800 - 1800 - 900);
+    expect(useSaveStore.getState().coins).toBe(7000 - 4000 - 1800 - 900);
     useSaveStore.getState().reload();
     const r = useSaveStore.getState();
-    expect(r.owned).toEqual({ characters: ['zera'], karts: ['geada'], tires: ['neon'], cosmetics: ['paint:dourado'] });
+    expect(r.owned).toEqual({ characters: ['yuki'], karts: ['geada'], tires: ['neon'], cosmetics: ['paint:dourado'] });
     expect(r.isKartUnlocked('geada')).toBe(true);
     expect(r.owns('tire', 'neon')).toBe(true);
   });

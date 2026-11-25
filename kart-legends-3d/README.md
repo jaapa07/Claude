@@ -62,8 +62,8 @@ Tudo é remapeável em **Configurações**, onde também ficam a sensibilidade d
 
 - Moedas por corrida (pela posição, mais na dificuldade Normal/Difícil), bônus de troféu ao fim de cada copa e
   moedas no Contrarrelógio. O saldo aparece no menu.
-- **Loja** (menu principal): pilotos e karts bloqueados podem ser comprados antes de liberar jogando; **Yuki, Kaito,
-  Ren e Sora** são exclusivos da loja (4.000 a 5.000 moedas). Abas **Pneus** (modelos de roda para qualquer kart)
+- **Loja** (menu principal): os únicos pilotos à venda são os ninjas **Yuki, Kaito, Ren e Sora** (4.000 a 5.000
+  moedas); os outros se liberam jogando, pelas missões. Karts bloqueados podem ser comprados antes de liberar. Abas **Pneus** (modelos de roda para qualquer kart)
   e **Adereços**. Preços e ganhos em `src/data/shop.ts`.
 
 ## Celular (iPhone / Android)

@@ -21,13 +21,13 @@ const PAGES: ReadonlyArray<{ id: PageId; label: string }> = [
 const COMING_SOON = 4;
 const pageOf = (id: CharacterId): PageId => (CHARACTER_BY_ID[id].unlock.type === 'shop' ? 'ninjas' : 'main');
 
-/** Condição de desbloqueio; exclusivos da loja mostram o preço, e os demais lembram que também dá para comprar. */
+/** Condição de desbloqueio; os ninjas exclusivos da loja mostram o preço. */
 function lockText(id: CharacterId): string {
   const c = CHARACTER_BY_ID[id];
   const price = CHARACTER_PRICES[id];
   if (price === undefined) return describeUnlock(c.unlock);
   const coins = `${price.toLocaleString('pt-BR')} moedas`;
-  return c.unlock.type === 'shop' ? `Exclusivo da Loja: ${coins}` : `${describeUnlock(c.unlock)} — ou compre na Loja por ${coins}`;
+  return c.unlock.type === 'shop' ? `Exclusivo da Loja: ${coins}` : describeUnlock(c.unlock);
 }
 
 export function CharacterSelect(): JSX.Element {

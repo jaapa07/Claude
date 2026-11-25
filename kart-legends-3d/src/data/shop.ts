@@ -44,12 +44,11 @@ export function coinsForRace(i: CoinInput): number {
 export type ShopKind = 'character' | 'kart' | 'tire' | 'cosmetic';
 
 /**
- * Preços. Pilotos e karts bloqueados podem ser comprados antes de serem liberados jogando;
- * os que só existem na loja têm a regra de desbloqueio `{ type: 'shop' }`.
+ * Preços. Pilotos: só os ninjas exclusivos (regra `{ type: 'shop' }`); os demais se liberam jogando.
+ * Karts bloqueados podem ser comprados antes de serem liberados jogando.
  */
 export const CHARACTER_PRICES: Readonly<Record<string, number>> = {
-  tiko: 600, mavi: 1200, runi: 1600, zera: 1800, capi: 1400, tuca: 1600,
-  // Exclusivos da loja: só comprando, e caros.
+  // Só os 4 ninjas são vendidos (e só comprando). Os outros pilotos saem jogando, pelas missões de desbloqueio.
   yuki: 4000, kaito: 5000, ren: 4500, sora: 4500,
 };
 export const KART_PRICES: Readonly<Record<string, number>> = {
