@@ -13,10 +13,10 @@ estão listados em "O que falta" e nada abaixo deve ser lido como se cobrisse es
 |---|---|
 | `npm run typecheck` | saiu com 0 — TypeScript strict no jogo e nos scripts, sem erros |
 | `npm run lint` | saiu com 0 — ESLint sem erros nem avisos |
-| `npm run validate:assets` | `OK: 273 recursos validados (132.5 MB, ~4741 mil triângulos em modelos)` |
-| `npm run test` | **10 arquivos, 205 testes, 205 passaram** (~105 s) |
-| `npm run build` | saiu com 0 — `dist/` gerado (JS 3,45 MB / 1,16 MB gzip + 132 MB de assets) |
-| `npm run test:e2e` | **8 testes, 8 passaram** (5,7 min), contra a build de produção — execução anterior à Copa Meteoro; não reexecutado depois dela |
+| `npm run validate:assets` | `OK: 419 recursos validados (149.9 MB, ~5104 mil triângulos em modelos)` |
+| `npm run test` | **17 arquivos, 278 testes, 278 passaram** (~95 s) |
+| `npm run build` | saiu com 0 — `dist/` gerado (JS 3,61 MB / 1,22 MB gzip + ~150 MB de assets) |
+| `npm run test:e2e` | **13 testes, 13 passaram** — 12 na rodada completa (23 min, com outra captura de tela rodando em paralelo na mesma CPU) e o do campeonato, que estourou o limite de 5 min nessa rodada carregada, passou sozinho em 3,1 min |
 
 Ambiente: Linux, Node 22.23, Chromium headless do Playwright 1.63 com **WebGL por software (SwiftShader), sem GPU**.
 
@@ -48,6 +48,27 @@ treino; campeonato de quatro corridas com classificação e troféu.
 gancho que só existe com `?e2e=1` e que adianta o relógio rodando os mesmos passos fixos da simulação sem
 desenhar, e entregam o kart do jogador ao piloto automático para terminar as corridas. Os controles foram
 exercitados com teclas reais, mas **nenhuma corrida inteira foi pilotada por uma pessoa**.
+
+## Qualidade visual: recursos CC0 (luz por imagem, relevo, abertura)
+
+- **Luz por imagem por pista:** 13 HDRIs do Poly Haven (CC0) convertidos em mapas de 512×256 (5–55 kB cada) usados
+  só para reflexos e luz ambiente; o céu continua em shader. Pintura, cromado/ouro da oficina, vidro, asfalto
+  molhado da Cidade Neon, gelo e água refletem o ambiente da pista. Vale em todas as qualidades (mesmo custo por
+  pixel do mapa de ambiente que já existia; só a resolução do cubo muda: 64/128/256).
+- **Relevo:** mapas de normal (10 conjuntos CC0 do Poly Haven + 10 derivados das texturas próprias) e rugosidade
+  no asfalto, só na Média/Alta.
+- **Pós-processamento (Média/Alta):** FXAA (a Média ficava sem antisserrilhado dentro do pós), bloom por pista,
+  saturação/contraste leves por pista depois do ACES, vinheta mais leve.
+- **Pilotos:** luz de recorte (fresnel) na cor do céu; rosto reage a ultrapassagens (sorriso / cara fechada), itens,
+  piscadas duplas; o piloto do palco sorri ao ser escolhido e faz caretas de vez em quando.
+- **Abertura:** depois do carregamento, karts de verdade derrapam num anel ao entardecer atrás do logotipo
+  (2 karts e sem sombras na Baixa; desligada com "reduzir movimento"); fonte Lilita One (OFL, 11 kB) no logotipo e
+  nos títulos.
+
+Medições (SwiftShader, sem GPU, 640×360, Templo Esmeralda, médias de 6 leituras de `data-fps`): Baixa 6,0 → 5,7 FPS,
+Média 3,2 → 3,0 FPS (diferença dentro do ruído do renderizador por software). Download adicional: ~28 kB na
+abertura (2 mapas de ambiente, metadados e a fonte); por corrida na Baixa só o mapa de ambiente da pista
+(10–55 kB); na Média/Alta mais 0,2–0,78 MB de relevo conforme a pista. JS: 3.587 → 3.610 kB (gzip 1.209 → 1.217 kB).
 
 ## Funcionalidades implementadas
 
