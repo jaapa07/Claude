@@ -63,11 +63,17 @@ const TYRES = (minCurv: number, max: number, dist: [number, number] = [2.5, 4]):
   { kind: 'corners', models: ['c_tire_stack'], minCurv, every: 5, dist, max, tier: 1, face: 'random' },
   { kind: 'corners', models: ['k_barrier_red', 'k_barrier_white'], minCurv: minCurv * 0.8, every: 2.6, dist: [dist[0] + 2, dist[1] + 2], max: max * 2, tier: 1, face: 'along' },
 ];
-/** Árvores: poucas na Baixa (≈ 3), mais na Média e a mata cheia só na Alta. */
+/**
+ * Árvores (folhagem recortada, a parte mais cara): nenhuma na Baixa — lá a pista ganha só pedras/tocos leves
+ * (`STONES`) e o GLB da Quaternius nem é baixado —, algumas na Média e a mata cheia só na Alta.
+ */
 const FOREST = (count: number, models: string[], tint?: string): Rule[] => [
-  { kind: 'scatter', models, count: 3, dist: [14, 34], tier: 0, scale: [0.9, 1.25], face: 'random', ...(tint ? { tint } : {}) },
   { kind: 'scatter', models, count: Math.round(count * 0.25), dist: [12, 60], tier: 1, scale: [0.85, 1.3], face: 'random', ...(tint ? { tint } : {}) },
   { kind: 'scatter', models, count: Math.round(count * 0.5), dist: [20, 110], tier: 2, scale: [0.85, 1.3], face: 'random', ...(tint ? { tint } : {}) },
+];
+/** Marcos leves da Baixa nas pistas de natureza: pedras e tocos da Kenney (poucas dezenas de triângulos cada). */
+const STONES = (count: number, tint: string, models = ['n_stone_large_a', 'n_stone_large_c', 'n_stone_tall_g', 'n_stone_small_b']): Rule[] => [
+  { kind: 'scatter', models, count, dist: [8, 40], tier: 0, scale: [0.8, 1.4], face: 'random', tint },
 ];
 const UNDERGROWTH = (count: number, models: string[], tint?: string): Rule[] => [
   { kind: 'scatter', models, count: Math.round(count * 0.3), dist: [3, 16], tier: 1, scale: [0.8, 1.3], face: 'random', ...(tint ? { tint } : {}) },
@@ -76,6 +82,7 @@ const UNDERGROWTH = (count: number, models: string[], tint?: string): Rule[] => 
 
 export const TRACK_DRESSING: Partial<Record<TrackId, Rule[]>> = {
   'porto-lanternas': [
+    { kind: 'along', models: ['n_log_stack'], from: 'cais+5', to: 'cais+70', side: 'right', every: 30, dist: [2, 4], tier: 0, face: 'along' },
     { kind: 'along', models: ['c_delivery', 'c_van', 'c_truck_flat'], from: 'cais+10', to: 'cais+60', side: 'right', every: 24, dist: [3, 6], tier: 0, face: 'along' },
     { kind: 'along', models: ['c_delivery', 'c_van', 'c_truck_flat', 'c_sedan'], from: 'cais-10', to: 'cais+90', side: 'right', every: 14, dist: [3, 6], tier: 1, face: 'along' },
     { kind: 'along', models: ['c_sedan', 'c_hatch', 'c_van'], from: 'feira-30', to: 'arco-10', side: 'both', every: 24, dist: [3, 7], tier: 2, face: 'along' },
@@ -83,6 +90,7 @@ export const TRACK_DRESSING: Partial<Record<TrackId, Rule[]>> = {
     ...UNDERGROWTH(40, ['q_bush_flowers', 'q_flowers_3', 'q_bush']),
   ],
   'bosque-cristal': [
+    ...STONES(6, '#8f9a92', ['n_stone_large_a', 'n_stone_small_b', 'n_stump', 'n_log_stack']),
     ...FOREST(70, ['q_tree_1', 'q_tree_3', 'q_tree_5', 'q_pine_1', 'q_pine_3']),
     ...UNDERGROWTH(80, ['q_bush', 'q_fern', 'q_mushroom', 'q_flowers_3', 'q_bush_flowers', 'q_plant']),
     { kind: 'scatter', models: ['q_rock_1', 'q_rock_2', 'n_stump', 'n_log_stack'], count: 14, dist: [4, 30], tier: 1, face: 'random', tint: '#9aa39a' },
@@ -115,25 +123,30 @@ export const TRACK_DRESSING: Partial<Record<TrackId, Rule[]>> = {
   ],
   'pico-boreal': [
     ...START_STAND('right'),
+    ...STONES(5, '#c4d0de'),
     ...TYRES(0.022, 8),
     ...FOREST(60, ['q_pine_1', 'q_pine_3', 'q_pine_5'], '#bcd3cc'),
     { kind: 'scatter', models: ['n_stone_large_a', 'n_stone_large_c', 'n_stone_tall_g', 'q_rock_1'], count: 18, dist: [8, 60], tier: 1, face: 'random', tint: '#c4d0de', scale: [0.8, 1.4] },
     { kind: 'scatter', models: ['n_log_stack', 'n_stump'], count: 8, dist: [6, 26], tier: 2, face: 'random', tint: '#dfe6ee' },
   ],
   'fortaleza-tempestade': [
+    ...STONES(6, '#6a6f80', ['n_stone_tall_b', 'n_stone_tall_g', 'n_cliff_large']),
     ...FOREST(26, ['q_dead_1', 'q_dead_3', 'q_twisted_1'], '#7d7f8c'),
     { kind: 'scatter', models: ['n_stone_tall_b', 'n_stone_tall_g', 'n_cliff_large', 'q_rock_1', 'q_rock_2'], count: 22, dist: [10, 80], tier: 1, face: 'random', tint: '#6a6f80', scale: [0.9, 1.6] },
   ],
   'recife-coral': [
+    ...STONES(5, '#e0cfa0'),
     ...UNDERGROWTH(40, ['q_bush', 'q_plant', 'q_fern', 'q_bush_flowers'], '#d8f0b0'),
     { kind: 'scatter', models: ['q_rock_1', 'q_rock_2', 'n_stone_large_a'], count: 16, dist: [6, 40], tier: 1, face: 'random', tint: '#e0cfa0' },
   ],
   'templo-esmeralda': [
+    ...STONES(6, '#8f9e7c', ['n_stone_large_a', 'n_stone_tall_b', 'n_stump']),
     ...FOREST(50, ['q_twisted_1', 'q_tree_1', 'q_tree_3', 'q_tree_5'], '#b8dca8'),
     ...UNDERGROWTH(80, ['q_fern', 'q_plant', 'q_bush', 'q_mushroom', 'q_flowers_3']),
     { kind: 'scatter', models: ['q_rock_1', 'q_rock_2'], count: 14, dist: [5, 40], tier: 1, face: 'random', tint: '#a8b890' },
   ],
   'vulcao-rubro': [
+    ...STONES(6, '#5a4844', ['n_stone_tall_b', 'n_stone_tall_g', 'n_cliff_large']),
     ...FOREST(24, ['q_dead_1', 'q_dead_3'], '#5a4844'),
     { kind: 'scatter', models: ['n_stone_tall_b', 'n_stone_tall_g', 'n_cliff_large', 'n_stone_large_c'], count: 24, dist: [10, 80], tier: 1, face: 'random', tint: '#5a4844', scale: [0.9, 1.6] },
   ],
@@ -248,9 +261,9 @@ export interface ArenaDressRule { models: string[]; count: number; r: [number, n
 
 export const ARENA_DRESSING: Record<ArenaId, ArenaDressRule[]> = {
   'praca-coreto': [
-    { models: ['q_tree_1', 'q_tree_3', 'q_tree_5'], count: 6, r: [74, 100], tier: 0, scale: [1, 1.3], face: 'random' },
-    { models: ['q_tree_1', 'q_tree_3', 'q_tree_5'], count: 10, r: [74, 108], tier: 1, scale: [1, 1.3], face: 'random' },
-    { models: ['c_sedan', 'c_taxi', 'c_van', 'c_hatch'], count: 5, r: [76, 96], tier: 1, face: 'random' },
+    { models: ['c_sedan', 'c_taxi', 'c_van'], count: 2, r: [76, 92], tier: 0, face: 'random' },
+    { models: ['q_tree_1', 'q_tree_3', 'q_tree_5'], count: 12, r: [74, 108], tier: 1, scale: [1, 1.3], face: 'random' },
+    { models: ['c_sedan', 'c_taxi', 'c_van', 'c_hatch'], count: 4, r: [76, 96], tier: 1, face: 'random' },
     { models: ['q_bush_flowers', 'q_flowers_3', 'q_bush'], count: 24, r: [70, 100], tier: 2, face: 'random' },
   ],
   'cratera-lunar': [

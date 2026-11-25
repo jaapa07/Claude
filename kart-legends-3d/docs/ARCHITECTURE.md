@@ -108,5 +108,8 @@ colisores de cenário, câmeras de apresentação, minimapa).
   relevo das superfícies (mapas de normal só na Média/Alta). Mapas de ambiente e de relevo são baixados com a pista.
 - Abertura: depois do pré-carregamento, `src/scenes/AttractScene.tsx` mostra karts reais correndo atrás do logo
   (só modelos já baixados; 2 karts e sem sombras na Baixa; desligada com "reduzir movimento").
+- Decoração extra com modelos CC0 (Kenney/Quaternius, `src/scenes/common/KitDressing.tsx`): só visual, em camadas
+  por qualidade (Baixa = poucos marcos leves), fundida por material em blocos de 110 m; não altera malha, colisão
+  nem dados de corrida da pista (ver `docs/ASSET_PIPELINE.md`).
 - Ao sair de uma corrida, modelos, mixers, materiais próprios, partículas e sons são liberados; o mundo físico
   é destruído com o componente `<Physics>`.

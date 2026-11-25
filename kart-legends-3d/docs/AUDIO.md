@@ -1,7 +1,9 @@
 # Áudio — Kart Legends 3D
 
-Todo o áudio do jogo é **original e gerado por código do próprio projeto**. Não há amostras gravadas,
-bibliotecas de sons de terceiros nem trechos de músicas existentes.
+As músicas, ambiências, loops e a maior parte dos efeitos são **originais e gerados por código do próprio
+projeto**. A exceção são 19 efeitos curtos gravados (batidas, aterrissagens, vidro e sons de menu) dos pacotes
+**Impact Sounds** e **Interface Sounds** da Kenney (CC0 1.0, https://kenney.nl), descritos em
+"Gravações CC0 (Kenney)" abaixo. Não há trechos de músicas existentes.
 
 - Autor: **Equipe Kart Legends 3D (síntese procedural própria)**
 - Licença: **Original do projeto**
@@ -144,6 +146,32 @@ Caminhos relativos a `public/assets/`.
 | `amb_storm` | `audio/sfx/amb_storm.ogg` | 16.00 | sim | 243 |
 
 Total: **49 arquivos, ≈ 6,6 MB** (meta: < 12 MB).
+
+## Gravações CC0 (Kenney)
+
+`npx tsx scripts/build-kits.ts --only=audio` converte só os arquivos listados em `SAMPLE_SFX`
+(`src/game/audio/audioIds.ts`) a partir dos pacotes extraídos em `.cache/kenney/` (fora do git): nível ajustado para
+o **mesmo RMS** do efeito sintetizado que ele substitui (pico ≤ −1 dBFS; camadas 3 dB abaixo), 44,1 kHz estéreo,
+Ogg Vorbis em `public/assets/audio/kenney/` e a cópia AAC para o Safari em `public/assets/audio/aac/kenney/`.
+Origem, autor e licença de cada arquivo ficam no `sources.json` de cada uma dessas pastas.
+
+| Efeito | Gravações (variação sorteada a cada disparo) | Uso |
+|---|---|---|
+| `ui_move` | `toggle_002` | substitui |
+| `ui_select` | `select_002` | substitui |
+| `ui_back` | `back_002` | substitui |
+| `ui_error` | `error_004` | substitui |
+| `purchase` (novo: compra na loja) | `confirmation_001` | só gravação |
+| `unlock` | `maximize_006` | camada sobre o sintetizado (70 %) |
+| `collision` | `impactPlate_medium_000..002` | substitui |
+| `collision_heavy` | `impactMetal_heavy_000..002` | substitui |
+| `land` | `impactSoft_heavy_000`, `_002` | substitui |
+| `spinout` (atingido por item) | `impactPunch_heavy_000..001` | camada (80 %) |
+| `shield_break` | `impactGlass_medium_000`, `_002` | camada (70 %) |
+| `comet_ram` | `impactMetal_heavy_003` | camada (70 %) |
+
+Os arquivos sintetizados que foram substituídos continuam sendo gerados por `build-audio.ts` (o contrato de ids não
+mudou), mas não são baixados: `ALL_AUDIO_FILES` lista só o que cada efeito realmente toca.
 
 ## Em tempo de execução (`src/game/audio/`)
 

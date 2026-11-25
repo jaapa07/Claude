@@ -18,6 +18,37 @@ Os modelos do jogo são **modelados por scripts de autoria** (TypeScript) e expo
 
 Cores em sRGB hex (`'#e2542b'`); a conversão para linear é automática. A cor final = cor de vértice × textura × fator.
 
+## Kits CC0 (Kenney e Quaternius): cenário extra, partículas e sons
+
+`npx tsx scripts/build-kits.ts` lê os pacotes extraídos em `.cache/` (fora do git; só leitura e conversão) e grava
+apenas o que o jogo usa:
+
+| Saída | Origem | Como |
+|---|---|---|
+| `kits/kenney-scenery.glb` (37 modelos, ~20 mil tri, 450 kB) | Kenney Racing Kit, Car Kit, Nature Kit | cores de material e a paleta `colormap.png` viram **cor de vértice** (amostrada no centro de cada face): um material só, sem textura; carros simplificados com meshoptimizer preservando as ilhas de cor; pneus empilhados em `c_tire_stack` |
+| `kits/quaternius-nature.glb` (17 modelos, ~18 mil tri, 540 kB) | Quaternius Stylized Nature MegaKit [Standard] (OBJ+MTL) | casca/pedra/cogumelo viram cor de vértice e os troncos são simplificados (10–15 % dos triângulos); folhas e flores num **atlas WebP 512 px** com recorte (`alphaTest`, sem blending) e normais "de copa" (apontando para fora da copa) |
+| `kits/kenney-particles.webp` (512 px, 79 kB) | Kenney Particle Pack | 16 sprites reduzidos a 128 px, grade 4×4 (ordem em `scripts/kits/sprites.ts`) |
+| `audio/kenney/*.ogg`, `audio/aac/kenney/*.m4a` | Kenney Impact Sounds, Interface Sounds | ver `docs/AUDIO.md` |
+
+Catálogo (arquivo, escala em metros, raio, simplificação) em `scripts/kits/catalog.ts`. As texturas do MegaKit
+chegaram sem nome; o mapeamento material → arquivo está em `QUATERNIUS_TEXTURES` (os mapas de normal da casca não
+são usados: a casca vira cor de vértice).
+
+**Decoração das pistas e arenas** — `npx tsx scripts/build-dressing.ts` grava `tracks/<id>.dress.json` e
+`arenas/<id>.dress.json` a partir das regras de `scripts/kits/dressing.ts` (ao longo de um trecho, lado de fora das
+curvas, espalhado por faixa de distância). Para ler traçado, terreno e o cenário já colocado, reconstrói a pista
+numa pasta temporária (via `onContext` de `buildTrack`) e confere que ela bate **byte a byte** com a publicada: a
+malha, os colisores, os dados de corrida e a linha da IA não mudam. Os objetos são só visuais (sem colisor), ficam
+fora da pista e dos atalhos (`edgeDistance` inclui os atalhos), longe do cenário existente e acima da água; os
+grandes sem muro na frente ficam a ≥ 6 m da borda. Cada objeto tem uma **camada**: 0 = todas as qualidades (marcos
+leves, ~1–8 mil tri por pista), 1 = Média, 2 = Alta (`QualityProfile.dressing`; a tela dividida usa só a 0). O
+script imprime objetos e triângulos por qualidade.
+
+Na cena, `src/scenes/common/KitDressing.tsx` funde os objetos da camada permitida **por material em blocos de
+110 m** (no máximo 2 chamadas de desenho por bloco, com frustum culling por bloco), aplicando a tinta de cada regra
+na cor de vértice (encaixa pedras, cactos e folhagem na paleta da pista). Os kits e as listas são baixados com a
+primeira corrida que os usa (não entram no pré-carregamento do menu).
+
 ## Luz por imagem e relevo (recursos CC0 do Poly Haven)
 
 `npx tsx scripts/build-env.ts` (precisa de rede: api.polyhaven.com e dl.polyhaven.org; os originais ficam em

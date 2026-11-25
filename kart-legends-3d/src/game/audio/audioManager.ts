@@ -276,7 +276,7 @@ export class AudioManager implements EngineHost {
     if (!g) return;
     // gravações CC0: uma variação sorteada substitui o sintetizado, ou toca por cima dele (camada)
     const sample = SAMPLE_SFX[id];
-    const recorded = sample ? sample.files[Math.floor(Math.random() * sample.files.length)]! : null;
+    const recorded = sample ? sample.files[Math.min(sample.files.length - 1, Math.floor(Math.random() * sample.files.length))]! : null;
     if (!sample || sample.layer !== undefined) this.voice(g, id, id, sfxFile(id as Parameters<typeof sfxFile>[0]), opts, 1);
     if (recorded) this.voice(g, sample!.layer !== undefined ? `${id}+` : id, id, recorded, opts, sample!.layer ?? 1);
   }

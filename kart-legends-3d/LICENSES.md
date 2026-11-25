@@ -12,7 +12,7 @@ exceção dos poucos arquivos de terceiros listados em "Recursos de terceiros" a
 | Texturas | Geração procedural e arte vetorial próprias |
 | Retratos, ícones de piloto, miniaturas de kart e de pista | Capturas do próprio jogo (`scripts/capture-ui.ts`) |
 | Ícones de item | Arte vetorial própria |
-| Músicas, efeitos e ambiências | Composição e síntese por código (`scripts/build-audio.ts`) |
+| Músicas, efeitos e ambiências | Composição e síntese por código (`scripts/build-audio.ts`); 19 efeitos curtos são gravações CC0 da Kenney (abaixo) |
 
 Fora os arquivos da seção seguinte, não há recursos de terceiros, bancos de assets, amostras de áudio ou fontes
 externas na build.
@@ -53,6 +53,18 @@ CC0-1.0 / OFL-1.1 ou recurso de terceiros sem fonte rastreável.
 | `detail/concrete_n.webp` | Concrete Floor 02 (mapa de normal 512 px) | https://polyhaven.com/a/concrete_floor_02 | Rob Tuytel | CC0 1.0 | 41 kB |
 | `fonts/lilita-one-latin.woff2` | Fonte "Lilita One", subconjunto latino (logotipo e títulos) | npm `@fontsource/lilita-one@5.3.0` (https://fontsource.org/fonts/lilita-one) | Juan Montoreano | SIL OFL 1.1 | 10 kB |
 | `fonts/OFL-lilita-one.txt` | Texto da licença da fonte (exigido pela OFL) | idem | Juan Montoreano | SIL OFL 1.1 | 4 kB |
+| `kits/kenney-scenery.glb` | 37 modelos (arquibancadas, torres de faixa, bandeiras, barreiras, postes, boxes, tendas, câmera, radar, cones; 8 carros e pneu; pedras, penhasco, toco, lenha, cactos) convertidos em cor de vértice | Kenney Racing Kit 2.0, Car Kit 3.1, Nature Kit 2.1 — https://kenney.nl | Kenney | CC0 1.0 | 450 kB |
+| `kits/quaternius-nature.glb` | 17 modelos (árvores comuns, pinheiros, árvore retorcida, árvores secas, arbustos, samambaia, flores, planta, cogumelo, rochas) + atlas de folhagem 512 px | Stylized Nature MegaKit [Standard] — https://quaternius.com | Quaternius | CC0 1.0 | 539 kB |
+| `kits/kenney-particles.webp` | 16 sprites de partícula (fumaça, poeira, fogo, chama, clarão, faíscas, anel, raio, riscos, redemoinho, brilho) em atlas 4×4 | Kenney Particle Pack 1.1 — https://kenney.nl | Kenney | CC0 1.0 | 79 kB |
+| `audio/kenney/*.ogg` (19) e `audio/aac/kenney/*.m4a` (19) | Efeitos gravados: back_002, confirmation_001, error_004, impactGlass_medium_000, impactGlass_medium_002, impactMetal_heavy_000, impactMetal_heavy_001, impactMetal_heavy_002, impactMetal_heavy_003, impactPlate_medium_000, impactPlate_medium_001, impactPlate_medium_002, impactPunch_heavy_000, impactPunch_heavy_001, impactSoft_heavy_000, impactSoft_heavy_002, maximize_006, select_002, toggle_002 | Kenney Impact Sounds 1.0 e Interface Sounds 1.0 — https://kenney.nl | Kenney | CC0 1.0 | 130 + 125 kB |
+
+Kenney (https://kenney.nl, pacotes Racing Kit, Car Kit, Nature Kit, Particle Pack, Impact Sounds e Interface Sounds) e
+Quaternius (https://quaternius.com, Stylized Nature MegaKit [Standard]): CC0 1.0, sem exigência de atribuição — creditados
+aqui por cortesia. Convertidos por `scripts/build-kits.ts` a partir dos pacotes originais (guardados fora do git em
+`.cache/kenney/` e `.cache/quaternius/`, com o `License.txt` de cada um); só os arquivos usados entram na build. O
+registro por arquivo está em `public/assets/kits/sources.json`, `public/assets/audio/kenney/sources.json` e
+`public/assets/audio/aac/kenney/sources.json`. Os modelos são cenário decorativo: os karts e os pilotos continuam
+sendo os próprios do projeto.
 
 Poly Haven (https://polyhaven.com/license): todos os HDRIs e texturas são CC0 (domínio público), sem exigência de
 atribuição — os autores são creditados aqui por cortesia. Os mapas `detail/trk_*_n.webp`, `detail/aur_*_n.webp` e

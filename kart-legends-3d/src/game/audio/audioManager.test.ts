@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AudioManager, audio } from './audioManager';
-import { ALL_AUDIO_FILES, AMBIENCE_IDS, LOOP_IDS, MUSIC_IDS, SFX_IDS } from './audioIds';
+import { ALL_AUDIO_FILES, AMBIENCE_IDS, LOOP_IDS, MUSIC_IDS, SAMPLE_ONLY_SFX_IDS, SFX_IDS, sfxFiles } from './audioIds';
 
 // ---------------------------------------------------------------------------------------------
 // AudioContext falso mínimo: registra nós, conexões e fontes iniciadas.
@@ -186,7 +186,12 @@ describe('audioManager com AudioContext falso', () => {
     const fetchMock = installFetch();
     const m = new AudioManager();
     await m.preload();
-    expect(ALL_AUDIO_FILES).toHaveLength(MUSIC_IDS.length + SFX_IDS.length + LOOP_IDS.length + AMBIENCE_IDS.length);
+    // efeitos: o sintetizado e/ou as gravações CC0 que cada um toca (substituídos não são baixados)
+    const sfxCount = [...SFX_IDS, ...SAMPLE_ONLY_SFX_IDS].reduce((n, id) => n + sfxFiles(id).length, 0);
+    expect(ALL_AUDIO_FILES).toHaveLength(MUSIC_IDS.length + sfxCount + LOOP_IDS.length + AMBIENCE_IDS.length);
+    expect(new Set(ALL_AUDIO_FILES).size).toBe(ALL_AUDIO_FILES.length);
+    expect(ALL_AUDIO_FILES).toContain('audio/kenney/impactPlate_medium_000.ogg');
+    expect(ALL_AUDIO_FILES).not.toContain('audio/sfx/collision.ogg');
     expect(fetchMock).toHaveBeenCalledTimes(ALL_AUDIO_FILES.length);
     const urls = fetchMock.mock.calls.map((c) => String(c[0]));
     expect(urls.some((u) => u.endsWith('assets/audio/music/race_eclipse.ogg'))).toBe(true);
@@ -303,7 +308,7 @@ describe('audioManager com AudioContext falso', () => {
   });
 
   it('preload rejeita listando os arquivos ausentes', async () => {
-    installFetch(['audio/sfx/collision.ogg', 'audio/music/menu.ogg', 'audio/aac/sfx/collision.m4a', 'audio/aac/music/menu.m4a']);
+    installFetch(['audio/sfx/finish.ogg', 'audio/music/menu.ogg', 'audio/aac/sfx/finish.m4a', 'audio/aac/music/menu.m4a']);
     const m = new AudioManager();
     const err = await m.preload().then(
       () => null,
@@ -312,7 +317,7 @@ describe('audioManager com AudioContext falso', () => {
     expect(err).toBeInstanceOf(Error);
     const message = (err as Error).message;
     expect(message).toContain('2 arquivo(s)');
-    expect(message).toContain('audio/sfx/collision.ogg');
+    expect(message).toContain('audio/sfx/finish.ogg');
     expect(message).toContain('audio/music/menu.ogg');
     expect(message).toContain('404');
     expect(message).not.toContain('audio/sfx/land.ogg');

@@ -88,18 +88,23 @@ function materials(foliageMap: THREE.Texture | null): { solid: THREE.MeshStandar
  */
 export function KitDressing({ file, maxTier, shadows }: { file: string; maxTier: number; shadows: boolean }): JSX.Element | null {
   const data = suspend(() => loadDress(file), ['kit-dress', file]);
-  if (!data || maxTier < 0) return null;
-  return <DressMeshes data={data} maxTier={maxTier} shadows={shadows} />;
+  // só baixa o GLB de um kit se algum objeto da camada permitida for dele (na Baixa, em geral só o da Kenney)
+  const kits = useMemo(() => {
+    const used = new Set<string>();
+    if (data) for (let k = 0; k < data.items.length; k += 8) if (data.items[k + 6]! <= maxTier) used.add(data.models[data.items[k]!]!.split(':')[0]!);
+    return (['kenney', 'quaternius'] as const).filter((kit) => used.has(kit));
+  }, [data, maxTier]);
+  if (!data || !kits.length) return null;
+  return <DressMeshes data={data} kits={kits} maxTier={maxTier} shadows={shadows} />;
 }
 
-function DressMeshes({ data, maxTier, shadows }: { data: DressData; maxTier: number; shadows: boolean }): JSX.Element {
-  const needQ = data.models.some((m) => m.startsWith('quaternius:'));
-  const gltfs = useModels(needQ ? [KITS.kenney, KITS.quaternius] : [KITS.kenney]);
+function DressMeshes({ data, kits, maxTier, shadows }: { data: DressData; kits: readonly ('kenney' | 'quaternius')[]; maxTier: number; shadows: boolean }): JSX.Element {
+  const gltfs = useModels(kits.map((k) => KITS[k]));
   const group = useMemo(() => {
     const parts = new Map<string, Part[]>();
     let foliageMap: THREE.Texture | null = null;
     gltfs.forEach((g, k) => {
-      const kit = k === 0 ? 'kenney' : 'quaternius';
+      const kit = kits[k]!;
       for (const [name, list] of partsOf(g.scene)) parts.set(`${kit}:${name}`, list);
       g.scene.traverse((o) => { const m = (o as THREE.Mesh).material as THREE.MeshStandardMaterial | undefined; if (m?.map) foliageMap = m.map; });
     });
@@ -145,7 +150,7 @@ function DressMeshes({ data, maxTier, shadows }: { data: DressData; maxTier: num
     }
     for (const list of parts.values()) for (const p of list) p.geo.dispose();
     return root;
-  }, [gltfs, data, maxTier, shadows]);
+  }, [gltfs, kits, data, maxTier, shadows]);
   useEffect(() => () => { group.traverse((o) => { if ((o as THREE.Mesh).isMesh) (o as THREE.Mesh).geometry.dispose(); }); }, [group]);
   return <primitive object={group} />;
 }
