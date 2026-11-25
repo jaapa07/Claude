@@ -109,14 +109,14 @@
   },
   {
     "id": "templo-esmeralda",
-    "length": 1204,
-    "samples": 602,
-    "triangles": 315598,
-    "glbBytes": 8763320,
-    "jsonBytes": 103414,
-    "props": 480,
-    "animated": 6,
-    "colliders": 165,
+    "length": 1258,
+    "samples": 629,
+    "triangles": 316938,
+    "glbBytes": 8721960,
+    "jsonBytes": 107506,
+    "props": 491,
+    "animated": 5,
+    "colliders": 167,
     "warnings": []
   },
   {

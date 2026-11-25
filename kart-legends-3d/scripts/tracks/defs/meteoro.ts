@@ -113,9 +113,13 @@ export const TEMPLO_ESMERALDA: TrackDef = {
   },
   points: [
     { x: -10, z: -150, y: 3, w: 9, surface: 'asphalt', tag: 'largada', flat: 20 },
-    { x: 80, z: -150, y: 3, surface: 'dirt', tag: 'trilha' },
-    { x: 150, z: -120, y: 4, bank: 4 },
-    { x: 176, z: -60, y: 5, bank: 0 },
+    { x: 70, z: -150, y: 3, surface: 'dirt', tag: 'trilha' },
+    // esses da trilha na mata
+    { x: 108, z: -160, y: 3.3, w: 8 },
+    { x: 136, z: -138, y: 3.7, bank: -4 },
+    { x: 146, z: -104, y: 4.2, bank: 4 },
+    { x: 176, z: -76, y: 4.6, bank: 0 },
+    { x: 172, z: -44, y: 5.2 },
     { x: 150, z: -14, y: 6, w: 6, bridge: true, style: 'wood', surface: 'asphalt', wall: 'both', tag: 'ponte' },
     { x: 140, z: 50, y: 7, w: 8, bridge: false, style: '', surface: 'dirt', wall: 'none', bank: 4 },
     { x: 180, z: 110, y: 10, bank: -3, tag: 'subida' },
@@ -127,15 +131,19 @@ export const TEMPLO_ESMERALDA: TrackDef = {
     { x: -96, z: 54, y: 9, bank: 4, tag: 'serpente' },
     { x: -150, z: 20, y: 7, w: 6, bank: 0, bridge: true, style: 'wood', surface: 'asphalt', wall: 'both', tag: 'pontecorda' },
     { x: -184, z: -40, y: 5, w: 8, bridge: false, style: '', surface: 'dirt', wall: 'none', flat: 12 },
-    { x: -150, z: -100, y: 4, surface: 'asphalt', bank: 3, tag: 'rolagem' },
-    { x: -80, z: -146, y: 3, bank: 0, tag: 'retorno' },
+    // grampo das pedras rolantes
+    { x: -196, z: -84, y: 4.6, bank: 5, w: 8.5 },
+    { x: -180, z: -116, y: 4.3 },
+    { x: -150, z: -112, y: 4, surface: 'asphalt', bank: 0, tag: 'rolagem' },
+    { x: -124, z: -128, y: 3.6, bank: -3 },
+    { x: -80, z: -148, y: 3, bank: 0, tag: 'retorno' },
   ],
   shortcuts: [
     { id: 'passagem-das-raizes', from: 'subida-6', to: 'santuario-20', risky: true, points: [{ x: 150, z: 116, y: 11, w: 4, surface: 'dirt' }, { x: 92, z: 146, y: 14.6, w: 4 }] },
   ],
   items: ['trilha+20', 'subida-30', 'santuario+80', 'serpente-20', 'retorno-30'],
   boostPads: [{ at: 'ponte-30' }, { at: 'mirante+10', offset: 2 }, { at: 'pontecorda-30' }, { at: 'largada-50', offset: -3 }],
-  ramps: [{ at: 'subida+40', offset: 0, width: 8, height: 1.5 }, { at: 'rolagem-50', offset: 2, width: 7, height: 1.3 }],
+  ramps: [{ at: 'subida+40', offset: 0, width: 8, height: 1.5 }, { at: 'pontecorda+86', offset: 0, width: 7, height: 1.3 }],
   obstacles: [
     { id: 'tronco-1', kind: 'pendulum', model: 'tronco-pendulo', at: 'santuario+20', from: -7, to: 7, period: 3.6, radius: 1.2, y: 1.3 },
     { id: 'tronco-2', kind: 'pendulum', model: 'tronco-pendulo', at: 'santuario+56', from: 7, to: -7, period: 3.6, phase: 0.5, radius: 1.2, y: 1.3 },
@@ -154,6 +162,8 @@ export const TEMPLO_ESMERALDA: TrackDef = {
     { prop: 'placa-seta-esq', from: 'subida-30', to: 'subida+10', side: 'right', every: 9, dist: [1, 1.5] },
     { prop: 'placa-seta-dir', from: 'serpente-30', to: 'serpente+10', side: 'left', every: 9, dist: [1, 1.5] },
     { prop: 'placa-seta-esq', from: 'rolagem-30', to: 'rolagem', side: 'right', every: 9, dist: [1, 1.5] },
+    { prop: 'placa-seta-dir', from: 'trilha+12', to: 'trilha+34', side: 'left', every: 8, dist: [1, 1.5] },
+    { prop: 'placa-seta-dir', from: 'pontecorda+124', to: 'pontecorda+148', side: 'left', every: 8, dist: [1, 1.5] },
   ],
   singles: [
     { prop: 'portal-templo', at: 'santuario', over: true },
@@ -167,7 +177,7 @@ export const TEMPLO_ESMERALDA: TrackDef = {
     { prop: 'arquibancada', at: 'largada+6', offset: -22 },
     { prop: 'cachoeira', at: 'pontecorda', offset: 34 },
     { prop: 'cachoeira', at: 'ponte+20', offset: 34 },
-    { prop: 'cabeca-pedra', at: 'retorno', offset: 12, scale: 1.4 },
+    { prop: 'cabeca-pedra', at: 'retorno', offset: 15, scale: 1.4 },
   ],
   scatter: [
     { prop: ['arvore-selva'], count: 75, dist: [18, 110], scale: [1, 1.6] },
