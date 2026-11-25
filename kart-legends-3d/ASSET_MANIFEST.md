@@ -4,10 +4,10 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 (id, nome, tipo, caminho, formato, origem, autor, licença, tamanho, status de validação e local de uso), está em
 `public/assets/manifest.json`. A validação automática é `npm run validate:assets`.
 
-- **Total:** 416 arquivos, 149.9 MB
+- **Total:** 419 arquivos, 149.9 MB
 - **Autor dos recursos próprios:** Equipe Kart Legends 3D
 - **Licença dos recursos próprios:** Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)
-- **Recursos de terceiros:** 24 arquivos (CC0-1.0, OFL-1.1), listados abaixo com autor e origem
+- **Recursos de terceiros:** 26 arquivos (CC0-1.0, OFL-1.1), listados abaixo com autor e origem
 
 | Pasta | Arquivos | Tamanho | Origem | Onde é usado |
 |---|---:|---:|---|---|
@@ -16,6 +16,7 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | `characters/` | 15 | 5233 kB | scripts/build-characters.ts (modelagem, rig e animação por script) | Pilotos na corrida, vitrine e pódio |
 | `detail/` | 22 | 1290 kB | Poly Haven — textura "Asphalt 02" (https://polyhaven.com/a/asphalt_02), mapa de normal (OpenGL) 1k reduzido por scripts/build-env.ts | Relevo dos pisos, rochas, madeira e metal (qualidade Média/Alta) |
 | `env/` | 15 | 291 kB | Poly Haven — HDRI "Approaching Storm" (https://polyhaven.com/a/approaching_storm), 1k .hdr reduzido a 512×256 por scripts/build-env.ts | Mapas de ambiente (reflexos e luz ambiente) das pistas, arenas e menus |
+| `fonts/` | 3 | 15 kB | Texto da licença SIL Open Font License 1.1 da fonte Lilita One (@fontsource/lilita-one@5.3.0), distribuído junto com a fonte como a licença exige | Logotipo e títulos da interface |
 | `items/` | 17 | 714 kB | scripts/build-items.ts (modelagem por script) | Itens, placas de turbo, rampas, pórtico, troféus e pódio |
 | `karts/` | 9 | 1692 kB | scripts/build-karts.ts (modelagem por script) | Veículos na corrida, vitrine e pódio |
 | `props/` | 27 | 651 kB | scripts/build-tracks.ts (partes móveis de cenário e obstáculos) | Cenário animado e obstáculos dinâmicos |
@@ -100,6 +101,14 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | `env/the_sky_is_on_fire.webp` | image | 12 kB |
 | `env/venice_sunset.webp` | image | 11 kB |
 | `env/winter_lake_01.webp` | image | 11 kB |
+
+## fonts/
+
+| Arquivo | Tipo | Tamanho |
+|---|---|---:|
+| `fonts/OFL-lilita-one.txt` | data | 4 kB |
+| `fonts/lilita-one-latin.woff2` | data | 10 kB |
+| `fonts/sources.json` | data | 1 kB |
 
 ## items/
 
@@ -316,6 +325,8 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | `env/the_sky_is_on_fire.webp` | CC0-1.0 | Greg Zaal, Rico Cilliers | Poly Haven — HDRI "The Sky Is On Fire" (https://polyhaven.com/a/the_sky_is_on_fire), 1k .hdr reduzido a 512×256 por scripts/build-env.ts |
 | `env/venice_sunset.webp` | CC0-1.0 | Greg Zaal | Poly Haven — HDRI "Venice Sunset" (https://polyhaven.com/a/venice_sunset), 1k .hdr reduzido a 512×256 por scripts/build-env.ts |
 | `env/winter_lake_01.webp` | CC0-1.0 | Sergej Majboroda | Poly Haven — HDRI "Winter Lake 01" (https://polyhaven.com/a/winter_lake_01), 1k .hdr reduzido a 512×256 por scripts/build-env.ts |
+| `fonts/OFL-lilita-one.txt` | OFL-1.1 | Juan Montoreano | Texto da licença SIL Open Font License 1.1 da fonte Lilita One (@fontsource/lilita-one@5.3.0), distribuído junto com a fonte como a licença exige |
+| `fonts/lilita-one-latin.woff2` | OFL-1.1 | Juan Montoreano | Fonte "Lilita One" (subconjunto latino), pacote npm @fontsource/lilita-one@5.3.0 (https://fontsource.org/fonts/lilita-one), copiado sem alteração |
 
 ## audio/ e textures/
 

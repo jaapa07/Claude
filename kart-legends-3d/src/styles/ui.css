@@ -345,11 +345,16 @@ input[type="range"]:focus-visible { outline: 0.16rem solid var(--amber); outline
 .shop-item__tag + .shop-item__name { margin-top: 0.1rem; }
 
 /* ---------- Abertura animada (tela de início) ---------- */
-.intro { background: linear-gradient(180deg, #120a35 0%, #3a1a6e 38%, #c2457a 62%, #ff9a5a 74%, #2a1446 74.5%, #140c2c 100%); overflow: hidden; }
+.intro { --intro-bg: linear-gradient(180deg, #120a35 0%, #3a1a6e 38%, #c2457a 62%, #ff9a5a 74%, #2a1446 74.5%, #140c2c 100%); background: var(--intro-bg); overflow: hidden; }
 .intro::before { display: none; }
 .intro .screen__inner { position: relative; z-index: 1; }
 /* Ocupa a tela toda (atrás do logo e do painel, que ficam no centro). */
-.intro__scene { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+.intro__scene { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; background: var(--intro-bg); transition: opacity 1.4s ease; }
+/* Abertura 3D pronta: o cenário em CSS some e revela os karts correndo no canvas; um véu escuro nas bordas
+   mantém o logotipo e o painel legíveis. */
+.intro--attract { background: transparent; box-shadow: inset 0 0 22vmin rgba(8, 4, 24, 0.7); transition: background 1.4s ease; }
+.intro--attract .intro__scene { opacity: 0; }
+.intro--attract .intro__brand { filter: drop-shadow(0 0.4rem 1.6rem rgba(8, 4, 24, 0.65)); }
 .intro__stars {
   position: absolute; inset: 0 0 45% 0;
   background-image:

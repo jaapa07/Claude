@@ -4,6 +4,7 @@ import { useGameStore } from '@/app/gameStore';
 import { useSettingsStore } from '@/app/settingsStore';
 import { audio } from '@/game/audio/audioManager';
 import { preloadCoreAssets } from '@/scenes/preload';
+import { useSceneStore } from '@/scenes/sceneStore';
 import { assetUrl } from '@/game/core/assets';
 import { AssetImg, Btn, ScreenShell } from './common';
 
@@ -81,8 +82,17 @@ export function LoadingScreen(): JSX.Element {
 
   const ready = status !== 'loading';
 
+  // Abertura 3D: com tudo baixado, a cena de karts correndo entra atrás do logotipo (o fundo em CSS some quando
+  // ela desenha). Sem ela se o sistema pede menos movimento ou se o carregamento falhou.
+  const attractReady = useSceneStore((s) => s.attractReady);
+  useEffect(() => {
+    const reduced = typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    useSceneStore.getState().setAttract(status === 'ready' && !reduced);
+  }, [status]);
+  useEffect(() => () => useSceneStore.getState().setAttract(false), []);
+
   return (
-    <ScreenShell id="loading" layout="center" className="loading intro" >
+    <ScreenShell id="loading" layout="center" className={`loading intro${attractReady ? ' intro--attract' : ''}`}>
       <IntroBackdrop />
       <div className="loading__brand intro__brand">
         <p className="screen__kicker intro__kicker">Corrida arcade em 3D</p>

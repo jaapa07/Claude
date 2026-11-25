@@ -2122,6 +2122,45 @@
    "usedIn": "Mapas de ambiente (reflexos e luz ambiente) das pistas, arenas e menus"
   },
   {
+   "id": "fonts:OFL-lilita-one",
+   "name": "OFL-lilita-one",
+   "type": "data",
+   "path": "fonts/OFL-lilita-one.txt",
+   "format": "txt",
+   "origin": "Texto da licença SIL Open Font License 1.1 da fonte Lilita One (@fontsource/lilita-one@5.3.0), distribuído junto com a fonte como a licença exige",
+   "author": "Juan Montoreano",
+   "license": "OFL-1.1",
+   "bytes": 4397,
+   "status": "validado",
+   "usedIn": "Logotipo e títulos da interface"
+  },
+  {
+   "id": "fonts:lilita-one-latin",
+   "name": "lilita-one-latin",
+   "type": "data",
+   "path": "fonts/lilita-one-latin.woff2",
+   "format": "woff2",
+   "origin": "Fonte \"Lilita One\" (subconjunto latino), pacote npm @fontsource/lilita-one@5.3.0 (https://fontsource.org/fonts/lilita-one), copiado sem alteração",
+   "author": "Juan Montoreano",
+   "license": "OFL-1.1",
+   "bytes": 10672,
+   "status": "validado",
+   "usedIn": "Logotipo e títulos da interface"
+  },
+  {
+   "id": "fonts:sources",
+   "name": "sources",
+   "type": "data",
+   "path": "fonts/sources.json",
+   "format": "json",
+   "origin": "Registro de origem e licença dos arquivos desta pasta (escrito à mão)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 744,
+   "status": "validado",
+   "usedIn": "Logotipo e títulos da interface"
+  },
+  {
    "id": "items:bolha-guardia",
    "name": "bolha-guardia",
    "type": "model",

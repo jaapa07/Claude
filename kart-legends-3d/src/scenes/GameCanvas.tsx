@@ -7,6 +7,7 @@ import { useGameStore } from '@/app/gameStore';
 import { useSettingsStore } from '@/app/settingsStore';
 import { CHARACTER_BY_ID } from '@/data/characters';
 import { CHARACTER_IDS, KART_IDS, type CharacterId, type KartId, type TrackId } from '@/data/ids';
+import { AttractScene } from './AttractScene';
 import { PodiumScene, type PodiumEntry } from './PodiumScene';
 import { QUALITY } from './quality';
 import { BattleScene } from './battle/BattleScene';
@@ -86,6 +87,7 @@ export function GameCanvas(): JSX.Element {
   const loading = useSceneStore((s) => s.loading);
   const fps = useSceneStore((s) => s.fps);
   const look = useSceneStore((s) => s.look);
+  const attract = useSceneStore((s) => s.attract);
   const studio = useMemo(studioRequest, []);
   const [manualFrames, setManualFrames] = useState(false);
 
@@ -99,7 +101,7 @@ export function GameCanvas(): JSX.Element {
     return pos === 0 ? 'gold' as const : pos === 1 ? 'silver' as const : pos === 2 ? 'bronze' as const : null;
   }, [championship]);
 
-  const mode = studio ? 'studio' : (screen === 'race' || screen === 'results') && (race || battle) ? 'race' : screen === 'podium' && podium.length ? 'podium' : screen === 'loading' ? 'none' : 'showcase';
+  const mode = studio ? 'studio' : (screen === 'race' || screen === 'results') && (race || battle) ? 'race' : screen === 'podium' && podium.length ? 'podium' : screen === 'loading' ? (attract ? 'attract' : 'none') : 'showcase';
   // Tela dividida: a cena é desenhada duas vezes, então a qualidade fica limitada (ver `splitQuality`).
   const split = mode === 'race' && ((race ?? battle)?.racers.filter((r) => r.isPlayer).length ?? 0) >= 2;
   const quality = split ? splitQuality(QUALITY[qualityId]) : QUALITY[qualityId];
@@ -121,6 +123,7 @@ export function GameCanvas(): JSX.Element {
           {mode === 'race' && race && <RaceScene key={raceNonce} config={race} />}
           {mode === 'race' && battle && <BattleScene key={raceNonce} config={battle} />}
           {mode === 'podium' && <PodiumScene entries={podium} trophy={trophy} />}
+          {mode === 'attract' && <AttractScene quality={quality} />}
           {mode === 'showcase' && (
             // vez do Jogador 2 (tela dividida): o palco mostra a escolha dele
             screen === 'character2' || screen === 'kart2'

@@ -19,6 +19,8 @@
   --cut-shape: polygon(0 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% 100%, var(--cut) 100%, 0 calc(100% - var(--cut)));
   --font-ui: "Segoe UI", "Inter", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
   --font-display: "Segoe UI", "Arial Black", "Helvetica Neue", system-ui, sans-serif;
+  /* Logotipo e títulos: Lilita One (OFL, carregada por src/styles/fonts.ts) com a fonte de sistema de reserva */
+  --font-brand: "Lilita One", "Segoe UI", "Arial Black", "Helvetica Neue", system-ui, sans-serif;
   --font-mono: "Cascadia Mono", "Consolas", "SF Mono", ui-monospace, monospace;
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   color-scheme: dark;
@@ -65,7 +67,8 @@ table { border-collapse: collapse; width: 100%; }
 :focus-visible { outline: 0.19rem solid var(--amber); outline-offset: 0.16rem; }
 
 .display-title {
-  font-family: var(--font-display);
+  font-family: var(--font-brand);
+  font-synthesis: style; /* a Lilita só tem o peso normal: inclina, mas sem negrito falso */
   font-style: italic;
   font-weight: 900;
   font-size: 2.5rem;
@@ -80,12 +83,13 @@ table { border-collapse: collapse; width: 100%; }
 }
 
 .logo {
-  font-family: var(--font-display);
+  font-family: var(--font-brand);
+  font-synthesis: style;
   font-style: italic;
   font-weight: 900;
   font-size: 5rem;
   line-height: 0.92;
-  letter-spacing: -0.035em;
+  letter-spacing: 0.005em;
   text-transform: uppercase;
   text-shadow: 0 0.35rem 1.5rem rgba(123, 92, 255, 0.45);
 }

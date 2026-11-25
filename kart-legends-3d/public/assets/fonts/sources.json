@@ -1,0 +1,17 @@
+{
+ "lilita-one-latin.woff2": {
+  "origin": "Fonte \"Lilita One\" (subconjunto latino), pacote npm @fontsource/lilita-one@5.3.0 (https://fontsource.org/fonts/lilita-one), copiado sem alteração",
+  "author": "Juan Montoreano",
+  "license": "OFL-1.1"
+ },
+ "OFL-lilita-one.txt": {
+  "origin": "Texto da licença SIL Open Font License 1.1 da fonte Lilita One (@fontsource/lilita-one@5.3.0), distribuído junto com a fonte como a licença exige",
+  "author": "Juan Montoreano",
+  "license": "OFL-1.1"
+ },
+ "sources.json": {
+  "origin": "Registro de origem e licença dos arquivos desta pasta (escrito à mão)",
+  "author": "Equipe Kart Legends 3D",
+  "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)"
+ }
+}

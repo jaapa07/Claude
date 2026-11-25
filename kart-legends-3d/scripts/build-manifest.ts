@@ -50,7 +50,7 @@ async function perFileSources(dir: string): Promise<Record<string, SourceInfo>> 
     throw new Error(`${dir}/sources.json ausente: rode o script que gera a pasta ${dir}/`);
   }
 }
-const TYPES: Record<string, ManifestEntry['type']> = { '.glb': 'model', '.webp': 'image', '.png': 'image', '.ogg': 'audio', '.m4a': 'audio', '.json': 'data' };
+const TYPES: Record<string, ManifestEntry['type']> = { '.glb': 'model', '.webp': 'image', '.png': 'image', '.ogg': 'audio', '.m4a': 'audio', '.json': 'data', '.woff2': 'data', '.txt': 'data' };
 
 async function walk(dir: string): Promise<string[]> {
   const out: string[] = [];
