@@ -70,6 +70,16 @@ todos forem cruzados em ordem, para a frente e perto da pista. A classificação
 validado e avanço desde ele (limitado ao próximo checkpoint), nunca a distância até a chegada. Atalhos são
 caminhos próprios com mapeamento para o progresso da pista principal.
 
+## Tela dividida (2 jogadores)
+
+`RacerSetup.slot` marca os humanos (0 = Jogador 1, 1 = Jogador 2). `RaceSim`/`BattleSim` expõem `players`
+(`player` continua sendo o Jogador 1), leem `playerInput(slot)`, guardam alertas por jogador e publicam
+`hud(slot)`; `result().players` traz a colocação e as estatísticas de cada um. A entrada tem um leitor por
+jogador (`inputManager.readPlayer(slot)`, teclas fixas `TWO_PLAYER_KEYS`, gamepads por `assignPads`); `read()`
+segue sendo o caminho de 1 jogador (remapeamento e toque). Na cena, cada humano tem uma `ChaseCamera`;
+`SplitRenderer` (`src/scenes/split.tsx`) desenha as duas metades com scissor e `splitQuality` limita a qualidade.
+O HUD usa `HudSlotContext` para ler `hud`/`hud2` dos stores.
+
 ## IA
 
 Os adversários produzem os **mesmos comandos** que o jogador (acelerador, freio, direção, drift, item) e passam
