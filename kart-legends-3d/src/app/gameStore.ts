@@ -351,4 +351,10 @@ export const useGameStore = create<GameStoreState>()((set, get) => ({
     if (s.screen === 'race' && (s.race || s.battle) && s.raceStartedAt > 0) useSaveStore.getState().addPlayTime(Date.now() - s.raceStartedAt);
     set({ screen: 'menu', race: null, battle: null, lastBattle: null, championship: null, paused: false, lastResult: null, lastRewards: null, raceStartedAt: 0 });
   },
+
+  backToSelection: () => {
+    const { mode } = get().selection;
+    get().quitToMenu();
+    set({ screen: mode === 'battle' ? 'arena' : mode === 'championship' ? 'cup' : 'track' });
+  },
 }));

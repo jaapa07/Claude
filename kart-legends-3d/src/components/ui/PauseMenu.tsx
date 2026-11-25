@@ -14,6 +14,7 @@ export function PauseMenu(): JSX.Element {
   const setPaused = useGameStore((s) => s.setPaused);
   const restartRace = useGameStore((s) => s.restartRace);
   const quitToMenu = useGameStore((s) => s.quitToMenu);
+  const backToSelection = useGameStore((s) => s.backToSelection);
   const settingsOpen = useUiStore((s) => s.pauseSettingsOpen);
   const setSettingsOpen = useUiStore((s) => s.setPauseSettingsOpen);
 
@@ -35,8 +36,12 @@ export function PauseMenu(): JSX.Element {
           <Btn testId="btn-resume" variant="primary" autoFocusNav onClick={() => setPaused(false)}>Continuar</Btn>
           <Btn testId="btn-restart" onClick={restartRace}>Reiniciar</Btn>
           <Btn testId="btn-pause-settings" onClick={() => setSettingsOpen(true)}>Configurações</Btn>
-          <Btn testId="btn-quit" variant="danger" sound="ui_back" onClick={quitToMenu}>Sair</Btn>
+          <Btn testId="btn-back-select" sound="ui_back" onClick={backToSelection}>
+            Voltar {battle ? 'à escolha da arena' : race?.mode === 'championship' ? 'à escolha da copa' : 'à escolha da pista'}
+          </Btn>
+          <Btn testId="btn-quit" variant="danger" sound="ui_back" onClick={quitToMenu}>Sair para o menu</Btn>
         </div>
+        {!touch && <p className="pause__hint" data-testid="pause-hint"><kbd>Esc</kbd> continua a corrida</p>}
         {touch && <AccelerationPicker />}
       </section>
     </div>

@@ -75,4 +75,6 @@ export interface GameState {
   /** Avança depois dos resultados/pódio (próxima corrida da copa, pódio ou menu). */
   continueAfterResults: () => void;
   quitToMenu: () => void;
+  /** Abandona a corrida/batalha e volta à escolha de pista, copa ou arena, mantendo pilotos e karts escolhidos. */
+  backToSelection: () => void;
 }

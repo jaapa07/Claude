@@ -156,6 +156,11 @@ export function SettingsScreen({ inRace = false, onBack }: SettingsScreenProps):
             )}
             {inRace && <p className="settings__hint">Para apagar o progresso, abra as Configurações pelo menu principal.</p>}
           </section>
+          {!touch && (
+            <p className="settings__hint" data-testid="settings-esc-hint">
+              <kbd>Esc</kbd> {inRace ? 'volta para a pausa' : 'volta para a tela anterior'}
+            </p>
+          )}
           <p className="settings__message" data-testid="settings-message" aria-live="polite">{message}</p>
         </div>
 

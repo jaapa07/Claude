@@ -129,6 +129,7 @@
 .pause { width: min(90%, 24rem); padding: 1.6rem 1.8rem 1.8rem; background: var(--panel-solid); }
 .pause__buttons { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 1.2rem; }
 .pause__buttons .btn { width: 100%; }
+.pause__hint { margin: 0.9rem 0 0; text-align: center; font-size: 0.85rem; opacity: 0.75; }
 
 /* ---------- Configurações ---------- */
 .overlay--settings > .screen, .overlay--solid > .screen { position: absolute; }

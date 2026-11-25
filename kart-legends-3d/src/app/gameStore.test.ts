@@ -277,4 +277,24 @@ describe('limite de pilotos', () => {
     expect(capped).toHaveLength(8);
     expect(capped.at(-1)).toMatchObject({ characterId: 'nilo', isPlayer: true });
   });
+
+describe('voltar à seleção pela pausa', () => {
+  it('abandona a corrida e volta à escolha da pista mantendo a seleção', () => {
+    game().setSelection({ mode: 'quick' });
+    game().startRace();
+    game().setPaused(true);
+    game().backToSelection();
+    expect(game().screen).toBe('track');
+    expect(game().race).toBeNull();
+    expect(game().paused).toBe(false);
+    expect(game().selection.mode).toBe('quick');
+  });
+  it('no Campeonato volta à escolha da copa', () => {
+    game().setSelection({ mode: 'championship' });
+    game().startRace();
+    game().backToSelection();
+    expect(game().screen).toBe('cup');
+    expect(game().championship).toBeNull();
+  });
+});
 });
