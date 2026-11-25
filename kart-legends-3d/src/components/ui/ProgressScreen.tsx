@@ -75,6 +75,8 @@ export function ProgressScreen({ onBack }: { onBack: () => void }): JSX.Element 
               <div><dt>Pódios</dt><dd>{stats.podiums}</dd></div>
               <div><dt>Copas concluídas</dt><dd>{stats.championships}</dd></div>
               <div><dt>Contrarrelógios</dt><dd>{stats.timeTrials}</dd></div>
+              <div><dt>Batalhas</dt><dd data-testid="stat-battles">{stats.battles}</dd></div>
+              <div><dt>Batalhas vencidas</dt><dd>{stats.battleWins}</dd></div>
               <div><dt>Miniturbos nível 1</dt><dd>{stats.turbos[0]}</dd></div>
               <div><dt>Miniturbos nível 2</dt><dd>{stats.turbos[1]}</dd></div>
               <div><dt>Miniturbos nível 3</dt><dd>{stats.turbos[2]}</dd></div>
