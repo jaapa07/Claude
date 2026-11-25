@@ -141,7 +141,15 @@ const SUITES = {
   async human(g, n) {
     await quickMatch(g, { homeDevices: ['kb'] }); await skipIntro(g);
     const s0 = await st(g);
-    const acts = await botPlay(g, 120);
+    await g.speed(4);
+    let acts = await botPlay(g, 90);
+    // fase 2: bola com o jogador controlado perto da área -> o bot precisa finalizar pelo teclado
+    for (let i = 0; i < 3; i++) {
+      await g.ev(() => { const m = window.__game.flow.match; if (m.state !== 'play') { m.state = 'play'; m.sp = null; } const me = m.all.find((p) => p.device && p.onField);
+        me.pos.set(m.goalX(me.team) - me.team.dir * 9, 0, 1); me.yaw = Math.atan2(me.team.dir, 0); me.kick = null; me.stun = 0; m.ball.owner = null; m.ball.held = false; m.ball.place(me.pos.x + me.team.dir * 0.5, 1); m.takeBall(me); });
+      acts += await botPlay(g, 12);
+    }
+    await g.speed(1);
     const s1 = await st(g);
     log('bot:', acts, 'ações', 'placar', s1.score, 'chutes', s1.shots);
     check(acts > 5, `jogador humano executou ações pelo teclado (${acts})`, n);
