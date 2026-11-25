@@ -16,6 +16,7 @@ import {
   ambienceFile,
   loopFile,
   musicFile,
+  SAMPLE_SFX,
   sfxFile,
   type AmbienceId,
   type LoopId,
@@ -60,6 +61,7 @@ const SFX_GAIN: Partial<Record<SfxId, number>> = {
   ui_select: 0.5,
   ui_back: 0.45,
   ui_error: 0.4,
+  purchase: 0.55,
   countdown_beep: 0.55,
   countdown_go: 0.75,
   item_roll: 0.5,
@@ -76,6 +78,7 @@ const SFX_POLYPHONY: Partial<Record<SfxId, number>> = {
   ui_select: 2,
   ui_back: 2,
   ui_error: 1,
+  purchase: 1,
   countdown_beep: 1,
   countdown_go: 1,
   finish: 1,
@@ -173,7 +176,7 @@ export interface AudioDebugState {
   wantedAmbience: AmbienceId | null;
   playingAmbience: AmbienceId | null;
   loadedFiles: number;
-  sfxVoices: Partial<Record<SfxId, number>>;
+  sfxVoices: Partial<Record<string, number>>;
   activeLoops: LoopId[];
   engineRunning: boolean;
   engineActive: boolean;
@@ -204,7 +207,7 @@ export class AudioManager implements EngineHost {
 
   private readonly loopTargets = new Map<LoopId, number>();
   private readonly loops = new Map<LoopId, LoopVoice>();
-  private readonly voices = new Map<SfxId, SfxVoice[]>();
+  private readonly voices = new Map<string, SfxVoice[]>();
 
   constructor() {
     this.engineSynth = new EngineSynth(this);
@@ -271,17 +274,24 @@ export class AudioManager implements EngineHost {
   sfx(id: SfxId, opts?: SfxOptions): void {
     const g = this.playable();
     if (!g) return;
-    const file = sfxFile(id);
+    // gravações CC0: uma variação sorteada substitui o sintetizado, ou toca por cima dele (camada)
+    const sample = SAMPLE_SFX[id];
+    const recorded = sample ? sample.files[Math.floor(Math.random() * sample.files.length)]! : null;
+    if (!sample || sample.layer !== undefined) this.voice(g, id, id, sfxFile(id as Parameters<typeof sfxFile>[0]), opts, 1);
+    if (recorded) this.voice(g, sample!.layer !== undefined ? `${id}+` : id, id, recorded, opts, sample!.layer ?? 1);
+  }
+
+  private voice(g: Graph, key: string, id: SfxId, file: string, opts: SfxOptions | undefined, level: number): void {
     const buffer = this.buffers.get(file);
     if (!buffer) {
       // Ainda não carregado: carrega para a próxima vez (este disparo é perdido, com aviso em caso de erro).
       this.loadInBackground(file);
       return;
     }
-    let list = this.voices.get(id);
+    let list = this.voices.get(key);
     if (!list) {
       list = [];
-      this.voices.set(id, list);
+      this.voices.set(key, list);
     }
     const max = SFX_POLYPHONY[id] ?? SFX_POLYPHONY_DEFAULT;
     while (list.length >= max) {
@@ -296,7 +306,7 @@ export class AudioManager implements EngineHost {
     const rate = opts?.rate ?? 1 + (Math.random() * 2 - 1) * variation;
     source.playbackRate.value = clamp(rate, 0.25, 4);
     const gain = ctx.createGain();
-    gain.gain.value = clamp(opts?.volume ?? 1, 0, 2) * (SFX_GAIN[id] ?? SFX_GAIN_DEFAULT);
+    gain.gain.value = clamp(opts?.volume ?? 1, 0, 2) * (SFX_GAIN[id] ?? SFX_GAIN_DEFAULT) * level;
     source.connect(gain);
     let tail: AudioNode = gain;
     const pan = clamp(opts?.pan ?? 0, -1, 1);
@@ -362,7 +372,7 @@ export class AudioManager implements EngineHost {
   /** Estado interno resumido (painel de depuração e testes). */
   debugState(): AudioDebugState {
     const g = this.graph;
-    const sfxVoices: Partial<Record<SfxId, number>> = {};
+    const sfxVoices: Partial<Record<string, number>> = {};
     for (const [id, list] of this.voices) if (list.length) sfxVoices[id] = list.length;
     return {
       hasContext: g !== null,

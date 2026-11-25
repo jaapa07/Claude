@@ -4,21 +4,22 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 (id, nome, tipo, caminho, formato, origem, autor, licença, tamanho, status de validação e local de uso), está em
 `public/assets/manifest.json`. A validação automática é `npm run validate:assets`.
 
-- **Total:** 419 arquivos, 149.9 MB
+- **Total:** 463 arquivos, 151.2 MB
 - **Autor dos recursos próprios:** Equipe Kart Legends 3D
 - **Licença dos recursos próprios:** Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)
-- **Recursos de terceiros:** 26 arquivos (CC0-1.0, OFL-1.1), listados abaixo com autor e origem
+- **Recursos de terceiros:** 67 arquivos (CC0-1.0, OFL-1.1), listados abaixo com autor e origem
 
 | Pasta | Arquivos | Tamanho | Origem | Onde é usado |
 |---|---:|---:|---|---|
 | `arenas/` | 4 | 4166 kB | scripts/build-arenas.ts (arena autorada + cenário das bibliotecas) | Arenas do modo Batalha |
-| `audio/` | 107 | 14033 kB | scripts/build-audio.ts (síntese procedural própria) | Música, efeitos e ambiência |
+| `audio/` | 147 | 14301 kB | Kenney — Interface Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): back_002.ogg; nível ajustado em 0.0 dB (RMS casado com o efeito "ui_back" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts | Música, efeitos e ambiência |
 | `characters/` | 15 | 5233 kB | scripts/build-characters.ts (modelagem, rig e animação por script) | Pilotos na corrida, vitrine e pódio |
 | `detail/` | 22 | 1290 kB | Poly Haven — textura "Asphalt 02" (https://polyhaven.com/a/asphalt_02), mapa de normal (OpenGL) 1k reduzido por scripts/build-env.ts | Relevo dos pisos, rochas, madeira e metal (qualidade Média/Alta) |
 | `env/` | 15 | 291 kB | Poly Haven — HDRI "Approaching Storm" (https://polyhaven.com/a/approaching_storm), 1k .hdr reduzido a 512×256 por scripts/build-env.ts | Mapas de ambiente (reflexos e luz ambiente) das pistas, arenas e menus |
 | `fonts/` | 3 | 15 kB | Texto da licença SIL Open Font License 1.1 da fonte Lilita One (@fontsource/lilita-one@5.3.0), distribuído junto com a fonte como a licença exige | Logotipo e títulos da interface |
 | `items/` | 17 | 714 kB | scripts/build-items.ts (modelagem por script) | Itens, placas de turbo, rampas, pórtico, troféus e pódio |
 | `karts/` | 9 | 1692 kB | scripts/build-karts.ts (modelagem por script) | Veículos na corrida, vitrine e pódio |
+| `kits/` | 4 | 1060 kB | Kenney — Particle Pack 1.1 (https://kenney.nl/assets, CC0 1.0): smoke_04.png, smoke_07.png, dirt_02.png, fire_01.png, flame_05.png, muzzle_02.png, star_06.png, star_08.png, star_09.png, circle_02.png, light_01.png, spark_02.png, scorch_02.png, trace_04.png, twirl_01.png, magic_03.png; reduzidos a 128 px e montados num atlas 4×4 — scripts/build-kits.ts | Cenário extra das pistas e arenas (arquibancadas, barreiras, carros, árvores, pedras) e sprites de partículas |
 | `props/` | 27 | 651 kB | scripts/build-tracks.ts (partes móveis de cenário e obstáculos) | Cenário animado e obstáculos dinâmicos |
 | `textures/` | 101 | 1415 kB | scripts (texturas procedurais e arte vetorial próprias) | Materiais dos modelos (também embutidas nos GLB) |
 | `tires/` | 8 | 183 kB | scripts/build-tires.ts (modelagem por script) | Rodas da loja, equipáveis em qualquer kart |
@@ -145,6 +146,15 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | `karts/geada.glb` | model | 214 kB |
 | `karts/karts-manifest.json` | data | 8 kB |
 | `karts/mare.glb` | model | 212 kB |
+
+## kits/
+
+| Arquivo | Tipo | Tamanho |
+|---|---|---:|
+| `kits/kenney-particles.webp` | image | 79 kB |
+| `kits/kenney-scenery.glb` | model | 439 kB |
+| `kits/quaternius-nature.glb` | model | 539 kB |
+| `kits/sources.json` | data | 3 kB |
 
 ## props/
 
@@ -301,6 +311,44 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 
 | Arquivo | Licença | Autor | Origem |
 |---|---|---|---|
+| `audio/aac/kenney/back_002.m4a` | CC0-1.0 | Kenney | Kenney — Interface Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): back_002.ogg; nível ajustado em 0.0 dB (RMS casado com o efeito "ui_back" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts |
+| `audio/aac/kenney/confirmation_001.m4a` | CC0-1.0 | Kenney | Kenney — Interface Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): confirmation_001.ogg; nível ajustado em -4.3 dB (RMS casado com o efeito "purchase" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts |
+| `audio/aac/kenney/error_004.m4a` | CC0-1.0 | Kenney | Kenney — Interface Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): error_004.ogg; nível ajustado em 0.3 dB (RMS casado com o efeito "ui_error" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts |
+| `audio/aac/kenney/impactGlass_medium_000.m4a` | CC0-1.0 | Kenney | Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactGlass_medium_000.ogg; nível ajustado em 0.2 dB (RMS casado com o efeito "shield_break" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts |
+| `audio/aac/kenney/impactGlass_medium_002.m4a` | CC0-1.0 | Kenney | Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactGlass_medium_002.ogg; nível ajustado em 0.0 dB (RMS casado com o efeito "shield_break" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts |
+| `audio/aac/kenney/impactMetal_heavy_000.m4a` | CC0-1.0 | Kenney | Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactMetal_heavy_000.ogg; nível ajustado em -0.1 dB (RMS casado com o efeito "collision_heavy" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts |
+| `audio/aac/kenney/impactMetal_heavy_001.m4a` | CC0-1.0 | Kenney | Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactMetal_heavy_001.ogg; nível ajustado em 0.1 dB (RMS casado com o efeito "collision_heavy" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts |
+| `audio/aac/kenney/impactMetal_heavy_002.m4a` | CC0-1.0 | Kenney | Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactMetal_heavy_002.ogg; nível ajustado em -1.1 dB (RMS casado com o efeito "collision_heavy" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts |
+| `audio/aac/kenney/impactMetal_heavy_003.m4a` | CC0-1.0 | Kenney | Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactMetal_heavy_003.ogg; nível ajustado em -0.6 dB (RMS casado com o efeito "comet_ram" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts |
+| `audio/aac/kenney/impactPlate_medium_000.m4a` | CC0-1.0 | Kenney | Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactPlate_medium_000.ogg; nível ajustado em 0.4 dB (RMS casado com o efeito "collision" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts |
+| `audio/aac/kenney/impactPlate_medium_001.m4a` | CC0-1.0 | Kenney | Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactPlate_medium_001.ogg; nível ajustado em 0.1 dB (RMS casado com o efeito "collision" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts |
+| `audio/aac/kenney/impactPlate_medium_002.m4a` | CC0-1.0 | Kenney | Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactPlate_medium_002.ogg; nível ajustado em 0.1 dB (RMS casado com o efeito "collision" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts |
+| `audio/aac/kenney/impactPunch_heavy_000.m4a` | CC0-1.0 | Kenney | Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactPunch_heavy_000.ogg; nível ajustado em -6.9 dB (RMS casado com o efeito "spinout" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts |
+| `audio/aac/kenney/impactPunch_heavy_001.m4a` | CC0-1.0 | Kenney | Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactPunch_heavy_001.ogg; nível ajustado em -7.4 dB (RMS casado com o efeito "spinout" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts |
+| `audio/aac/kenney/impactSoft_heavy_000.m4a` | CC0-1.0 | Kenney | Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactSoft_heavy_000.ogg; nível ajustado em -0.1 dB (RMS casado com o efeito "land" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts |
+| `audio/aac/kenney/impactSoft_heavy_002.m4a` | CC0-1.0 | Kenney | Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactSoft_heavy_002.ogg; nível ajustado em -0.1 dB (RMS casado com o efeito "land" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts |
+| `audio/aac/kenney/maximize_006.m4a` | CC0-1.0 | Kenney | Kenney — Interface Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): maximize_006.ogg; nível ajustado em -7.9 dB (RMS casado com o efeito "unlock" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts |
+| `audio/aac/kenney/select_002.m4a` | CC0-1.0 | Kenney | Kenney — Interface Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): select_002.ogg; nível ajustado em 0.0 dB (RMS casado com o efeito "ui_select" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts |
+| `audio/aac/kenney/toggle_002.m4a` | CC0-1.0 | Kenney | Kenney — Interface Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): toggle_002.ogg; nível ajustado em -2.7 dB (RMS casado com o efeito "ui_move" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts |
+| `audio/kenney/back_002.ogg` | CC0-1.0 | Kenney | Kenney — Interface Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): back_002.ogg; nível ajustado em 0.0 dB (RMS casado com o efeito "ui_back" do jogo), 44,1 kHz estéreo, Ogg Vorbis — scripts/build-kits.ts |
+| `audio/kenney/confirmation_001.ogg` | CC0-1.0 | Kenney | Kenney — Interface Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): confirmation_001.ogg; nível ajustado em -4.3 dB (RMS casado com o efeito "purchase" do jogo), 44,1 kHz estéreo, Ogg Vorbis — scripts/build-kits.ts |
+| `audio/kenney/error_004.ogg` | CC0-1.0 | Kenney | Kenney — Interface Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): error_004.ogg; nível ajustado em 0.3 dB (RMS casado com o efeito "ui_error" do jogo), 44,1 kHz estéreo, Ogg Vorbis — scripts/build-kits.ts |
+| `audio/kenney/impactGlass_medium_000.ogg` | CC0-1.0 | Kenney | Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactGlass_medium_000.ogg; nível ajustado em 0.2 dB (RMS casado com o efeito "shield_break" do jogo), 44,1 kHz estéreo, Ogg Vorbis — scripts/build-kits.ts |
+| `audio/kenney/impactGlass_medium_002.ogg` | CC0-1.0 | Kenney | Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactGlass_medium_002.ogg; nível ajustado em 0.0 dB (RMS casado com o efeito "shield_break" do jogo), 44,1 kHz estéreo, Ogg Vorbis — scripts/build-kits.ts |
+| `audio/kenney/impactMetal_heavy_000.ogg` | CC0-1.0 | Kenney | Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactMetal_heavy_000.ogg; nível ajustado em -0.1 dB (RMS casado com o efeito "collision_heavy" do jogo), 44,1 kHz estéreo, Ogg Vorbis — scripts/build-kits.ts |
+| `audio/kenney/impactMetal_heavy_001.ogg` | CC0-1.0 | Kenney | Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactMetal_heavy_001.ogg; nível ajustado em 0.1 dB (RMS casado com o efeito "collision_heavy" do jogo), 44,1 kHz estéreo, Ogg Vorbis — scripts/build-kits.ts |
+| `audio/kenney/impactMetal_heavy_002.ogg` | CC0-1.0 | Kenney | Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactMetal_heavy_002.ogg; nível ajustado em -1.1 dB (RMS casado com o efeito "collision_heavy" do jogo), 44,1 kHz estéreo, Ogg Vorbis — scripts/build-kits.ts |
+| `audio/kenney/impactMetal_heavy_003.ogg` | CC0-1.0 | Kenney | Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactMetal_heavy_003.ogg; nível ajustado em -0.6 dB (RMS casado com o efeito "comet_ram" do jogo), 44,1 kHz estéreo, Ogg Vorbis — scripts/build-kits.ts |
+| `audio/kenney/impactPlate_medium_000.ogg` | CC0-1.0 | Kenney | Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactPlate_medium_000.ogg; nível ajustado em 0.4 dB (RMS casado com o efeito "collision" do jogo), 44,1 kHz estéreo, Ogg Vorbis — scripts/build-kits.ts |
+| `audio/kenney/impactPlate_medium_001.ogg` | CC0-1.0 | Kenney | Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactPlate_medium_001.ogg; nível ajustado em 0.1 dB (RMS casado com o efeito "collision" do jogo), 44,1 kHz estéreo, Ogg Vorbis — scripts/build-kits.ts |
+| `audio/kenney/impactPlate_medium_002.ogg` | CC0-1.0 | Kenney | Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactPlate_medium_002.ogg; nível ajustado em 0.1 dB (RMS casado com o efeito "collision" do jogo), 44,1 kHz estéreo, Ogg Vorbis — scripts/build-kits.ts |
+| `audio/kenney/impactPunch_heavy_000.ogg` | CC0-1.0 | Kenney | Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactPunch_heavy_000.ogg; nível ajustado em -6.9 dB (RMS casado com o efeito "spinout" do jogo), 44,1 kHz estéreo, Ogg Vorbis — scripts/build-kits.ts |
+| `audio/kenney/impactPunch_heavy_001.ogg` | CC0-1.0 | Kenney | Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactPunch_heavy_001.ogg; nível ajustado em -7.4 dB (RMS casado com o efeito "spinout" do jogo), 44,1 kHz estéreo, Ogg Vorbis — scripts/build-kits.ts |
+| `audio/kenney/impactSoft_heavy_000.ogg` | CC0-1.0 | Kenney | Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactSoft_heavy_000.ogg; nível ajustado em -0.1 dB (RMS casado com o efeito "land" do jogo), 44,1 kHz estéreo, Ogg Vorbis — scripts/build-kits.ts |
+| `audio/kenney/impactSoft_heavy_002.ogg` | CC0-1.0 | Kenney | Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactSoft_heavy_002.ogg; nível ajustado em -0.1 dB (RMS casado com o efeito "land" do jogo), 44,1 kHz estéreo, Ogg Vorbis — scripts/build-kits.ts |
+| `audio/kenney/maximize_006.ogg` | CC0-1.0 | Kenney | Kenney — Interface Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): maximize_006.ogg; nível ajustado em -7.9 dB (RMS casado com o efeito "unlock" do jogo), 44,1 kHz estéreo, Ogg Vorbis — scripts/build-kits.ts |
+| `audio/kenney/select_002.ogg` | CC0-1.0 | Kenney | Kenney — Interface Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): select_002.ogg; nível ajustado em 0.0 dB (RMS casado com o efeito "ui_select" do jogo), 44,1 kHz estéreo, Ogg Vorbis — scripts/build-kits.ts |
+| `audio/kenney/toggle_002.ogg` | CC0-1.0 | Kenney | Kenney — Interface Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): toggle_002.ogg; nível ajustado em -2.7 dB (RMS casado com o efeito "ui_move" do jogo), 44,1 kHz estéreo, Ogg Vorbis — scripts/build-kits.ts |
 | `detail/asphalt_n.webp` | CC0-1.0 | Rob Tuytel | Poly Haven — textura "Asphalt 02" (https://polyhaven.com/a/asphalt_02), mapa de normal (OpenGL) 1k reduzido por scripts/build-env.ts |
 | `detail/asphalt_r.webp` | CC0-1.0 | Rob Tuytel | Poly Haven — textura "Asphalt 02" (https://polyhaven.com/a/asphalt_02), mapa de rugosidade 1k reduzido por scripts/build-env.ts |
 | `detail/bark_n.webp` | CC0-1.0 | Rob Tuytel | Poly Haven — textura "Bark Brown 02" (https://polyhaven.com/a/bark_brown_02), mapa de normal (OpenGL) 1k reduzido por scripts/build-env.ts |
@@ -327,7 +375,10 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | `env/winter_lake_01.webp` | CC0-1.0 | Sergej Majboroda | Poly Haven — HDRI "Winter Lake 01" (https://polyhaven.com/a/winter_lake_01), 1k .hdr reduzido a 512×256 por scripts/build-env.ts |
 | `fonts/OFL-lilita-one.txt` | OFL-1.1 | Juan Montoreano | Texto da licença SIL Open Font License 1.1 da fonte Lilita One (@fontsource/lilita-one@5.3.0), distribuído junto com a fonte como a licença exige |
 | `fonts/lilita-one-latin.woff2` | OFL-1.1 | Juan Montoreano | Fonte "Lilita One" (subconjunto latino), pacote npm @fontsource/lilita-one@5.3.0 (https://fontsource.org/fonts/lilita-one), copiado sem alteração |
+| `kits/kenney-particles.webp` | CC0-1.0 | Kenney | Kenney — Particle Pack 1.1 (https://kenney.nl/assets, CC0 1.0): smoke_04.png, smoke_07.png, dirt_02.png, fire_01.png, flame_05.png, muzzle_02.png, star_06.png, star_08.png, star_09.png, circle_02.png, light_01.png, spark_02.png, scorch_02.png, trace_04.png, twirl_01.png, magic_03.png; reduzidos a 128 px e montados num atlas 4×4 — scripts/build-kits.ts |
+| `kits/kenney-scenery.glb` | CC0-1.0 | Kenney | Kenney — Racing Kit 2.0 (https://kenney.nl/assets, CC0 1.0): grandStandCovered.glb, grandStand.glb, bannerTowerRed.glb, bannerTowerGreen.glb, flagRed.glb, flagGreen.glb, barrierRed.glb, barrierWhite.glb, lightPostModern.glb, lightPostLarge.glb, pitsGarage.glb, pitsOffice.glb, tent.glb, tentRoof.glb, camera_exclusive.glb, radarEquipment.glb, pylon.glb; cores de material e paleta colormap.png convertidas em cor de vértice, escala em metros | Kenney — Car Kit 3.1 (https://kenney.nl/assets, CC0 1.0): sedan.glb, taxi.glb, van.glb, suv.glb, hatchback-sports.glb, police.glb, delivery.glb, truck-flat.glb, debris-tire.glb; cores de material e paleta colormap.png convertidas em cor de vértice, escala em metros | Kenney — Nature Kit 2.1 (https://kenney.nl/assets, CC0 1.0): stone_largeA.glb, stone_largeC.glb, stone_tallB.glb, stone_tallG.glb, stone_smallB.glb, stone_smallF.glb, cliff_large_stone.glb, stump_roundDetailed.glb, log_stackLarge.glb, cactus_tall.glb, cactus_short.glb; cores de material e paleta colormap.png convertidas em cor de vértice, escala em metros — scripts/build-kits.ts |
+| `kits/quaternius-nature.glb` | CC0-1.0 | Quaternius | Quaternius — Stylized Nature MegaKit [Standard] (https://quaternius.com, CC0 1.0): CommonTree_1.obj, CommonTree_3.obj, CommonTree_5.obj, Pine_1.obj, Pine_3.obj, Pine_5.obj, TwistedTree_1.obj, DeadTree_1.obj, DeadTree_3.obj, Bush_Common.obj, Bush_Common_Flowers.obj, Fern_1.obj, Flower_3_Group.obj, Plant_1_Big.obj, Mushroom_Common.obj, Rock_Medium_1.obj, Rock_Medium_2.obj e as texturas de casca, pedra, cogumelo, folhas e flores do pacote; casca/pedra viram cor de vértice (troncos simplificados com meshoptimizer), folhas e flores num atlas WebP 512 px recortado — scripts/build-kits.ts |
 
 ## audio/ e textures/
 
-107 arquivos de áudio (lista e durações em `public/assets/audio/audio-manifest.json` e `docs/AUDIO.md`) e 101 texturas (todas também embutidas nos GLB que as usam).
+147 arquivos de áudio (lista e durações em `public/assets/audio/audio-manifest.json` e `docs/AUDIO.md`) e 101 texturas (todas também embutidas nos GLB que as usam).

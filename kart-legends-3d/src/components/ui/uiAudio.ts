@@ -1,6 +1,6 @@
 import { audio } from '@/game/audio/audioManager';
 
-type UiSfx = 'ui_move' | 'ui_select' | 'ui_back' | 'ui_error' | 'unlock';
+type UiSfx = 'ui_move' | 'ui_select' | 'ui_back' | 'ui_error' | 'unlock' | 'purchase';
 
 let warned = false;
 

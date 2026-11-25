@@ -3,7 +3,7 @@
  * Loops e ambiências usam ruído filtrado periódico e modulações com número inteiro de ciclos,
  * de modo que emendam sem clique.
  */
-import type { AmbienceId, LoopId, SfxId } from '../../src/game/audio/audioIds';
+import type { AmbienceId, LoopId, SynthSfxId as SfxId } from '../../src/game/audio/audioIds';
 import {
   SR,
   Stereo,

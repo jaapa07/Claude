@@ -71,7 +71,7 @@ export function ShopScreen({ onBack }: { onBack: () => void }): JSX.Element {
     const key = `${item.kind}-${item.id}`;
     if (confirm !== key) { uiSfx('ui_move'); setConfirm(key); setMessage(null); return; }
     if (buy(item.kind, item.id)) {
-      uiSfx('unlock');
+      uiSfx('purchase');
       setMessage(item.kind === 'tire' ? `${item.name} comprado! Equipe na Oficina, na escolha do kart.`
         : item.kind === 'cosmetic' ? `${item.name} comprado! ${item.id.startsWith('outfit:') ? 'Escolha a roupa na tela do piloto.' : 'Equipe na Oficina, na escolha do kart.'}`
           : `${item.name} liberado!`);

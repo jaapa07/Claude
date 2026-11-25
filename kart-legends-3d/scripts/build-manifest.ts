@@ -36,6 +36,7 @@ const RULES: { dir: string; origin: string; usedIn: string; perFile?: boolean }[
   { dir: 'env', origin: 'scripts/build-env.ts (HDRIs do Poly Haven, CC0)', usedIn: 'Mapas de ambiente (reflexos e luz ambiente) das pistas, arenas e menus', perFile: true },
   { dir: 'detail', origin: 'scripts/build-env.ts (texturas PBR do Poly Haven, CC0, e relevo derivado das texturas próprias)', usedIn: 'Relevo dos pisos, rochas, madeira e metal (qualidade Média/Alta)', perFile: true },
   { dir: 'fonts', origin: 'Fonte tipográfica de terceiros (ver sources.json)', usedIn: 'Logotipo e títulos da interface', perFile: true },
+  { dir: 'kits', origin: 'scripts/build-kits.ts (modelos e sprites CC0 da Kenney e da Quaternius)', usedIn: 'Cenário extra das pistas e arenas (arquibancadas, barreiras, carros, árvores, pedras) e sprites de partículas', perFile: true },
 ];
 
 /** Licenças aceitas para recursos de terceiros (uso comercial e redistribuição livres). */
@@ -48,6 +49,14 @@ async function perFileSources(dir: string): Promise<Record<string, SourceInfo>> 
     return JSON.parse(await readFile(path.join(ASSETS_DIR, dir, 'sources.json'), 'utf8')) as Record<string, SourceInfo>;
   } catch {
     throw new Error(`${dir}/sources.json ausente: rode o script que gera a pasta ${dir}/`);
+  }
+}
+/** Subpastas de pastas próprias que guardam arquivos de terceiros têm o próprio sources.json (ex.: audio/kenney). */
+async function folderSources(relDir: string): Promise<Record<string, SourceInfo> | null> {
+  try {
+    return JSON.parse(await readFile(path.join(ASSETS_DIR, relDir, 'sources.json'), 'utf8')) as Record<string, SourceInfo>;
+  } catch {
+    return null;
   }
 }
 const TYPES: Record<string, ManifestEntry['type']> = { '.glb': 'model', '.webp': 'image', '.png': 'image', '.ogg': 'audio', '.m4a': 'audio', '.json': 'data', '.woff2': 'data', '.txt': 'data' };
@@ -65,6 +74,7 @@ export async function buildManifest(): Promise<ManifestEntry[]> {
   const files = (await walk(ASSETS_DIR)).filter((f) => path.basename(f) !== 'manifest.json').sort();
   const entries: ManifestEntry[] = [];
   const sources = new Map<string, Record<string, SourceInfo>>();
+  const folders = new Map<string, Record<string, SourceInfo> | null>();
   for (const f of files) {
     const rel = path.relative(ASSETS_DIR, f).split(path.sep).join('/');
     const rule = RULES.find((r) => rel.startsWith(`${r.dir}/`));
@@ -73,6 +83,16 @@ export async function buildManifest(): Promise<ManifestEntry[]> {
     const type = rule.dir === 'textures' ? 'texture' : TYPES[ext];
     if (!type) throw new Error(`Formato de asset não reconhecido: ${rel}`);
     let credit: SourceInfo = { origin: rule.origin, author: AUTHOR, license: LICENSE };
+    const relDir = path.dirname(rel);
+    if (!rule.perFile && relDir !== rule.dir) {
+      if (!folders.has(relDir)) folders.set(relDir, await folderSources(relDir));
+      const list = folders.get(relDir);
+      if (list) {
+        const c = list[path.basename(f)];
+        if (!c) throw new Error(`Sem origem/licença registrada em ${relDir}/sources.json: ${rel}`);
+        credit = c;
+      }
+    }
     if (rule.perFile) {
       if (!sources.has(rule.dir)) sources.set(rule.dir, await perFileSources(rule.dir));
       const c = sources.get(rule.dir)![path.basename(f)];
