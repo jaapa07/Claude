@@ -85,14 +85,14 @@
   },
   {
     "id": "fortaleza-tempestade",
-    "length": 1206,
-    "samples": 603,
-    "triangles": 453388,
-    "glbBytes": 8613568,
-    "jsonBytes": 103797,
-    "props": 314,
-    "animated": 15,
-    "colliders": 276,
+    "length": 1266,
+    "samples": 633,
+    "triangles": 478204,
+    "glbBytes": 9090044,
+    "jsonBytes": 108145,
+    "props": 327,
+    "animated": 13,
+    "colliders": 291,
     "warnings": []
   },
   {
