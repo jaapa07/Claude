@@ -4,7 +4,7 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 (id, nome, tipo, caminho, formato, origem, autor, licença, tamanho, status de validação e local de uso), está em
 `public/assets/manifest.json`. A validação automática é `npm run validate:assets`.
 
-- **Total:** 330 arquivos, 140.3 MB
+- **Total:** 345 arquivos, 140.5 MB
 - **Autor de todos os recursos:** Equipe Kart Legends 3D
 - **Licença:** Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)
 - **Recursos de terceiros:** nenhum
@@ -17,8 +17,9 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | `karts/` | 9 | 1693 kB | scripts/build-karts.ts (modelagem por script) | Veículos na corrida, vitrine e pódio |
 | `props/` | 27 | 651 kB | scripts/build-tracks.ts (partes móveis de cenário e obstáculos) | Cenário animado e obstáculos dinâmicos |
 | `textures/` | 97 | 1213 kB | scripts (texturas procedurais e arte vetorial próprias) | Materiais dos modelos (também embutidas nos GLB) |
+| `tires/` | 8 | 183 kB | scripts/build-tires.ts (modelagem por script) | Rodas da loja, equipáveis em qualquer kart |
 | `tracks/` | 25 | 120684 kB | scripts/build-tracks.ts (traçado autorado + cenário) | Pistas e dados de corrida |
-| `ui/` | 46 | 1178 kB | scripts/build-items.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo) | Interface (retratos, ícones, miniaturas) |
+| `ui/` | 53 | 1250 kB | scripts/build-items.ts, scripts/build-tires.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo) | Interface (retratos, ícones, miniaturas) |
 | `vfx/` | 1 | 25 kB | scripts/build-vfx.ts (arte vetorial própria) | Sistema de partículas |
 
 ## characters/
@@ -103,6 +104,19 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | `props/tronco-pendulo.glb` | model | 29 kB |
 | `props/vagonete-lava.glb` | model | 22 kB |
 
+## tires/
+
+| Arquivo | Tipo | Tamanho |
+|---|---|---:|
+| `tires/estrela.glb` | model | 26 kB |
+| `tires/flor.glb` | model | 26 kB |
+| `tires/neon.glb` | model | 27 kB |
+| `tires/neve.glb` | model | 26 kB |
+| `tires/offroad.glb` | model | 29 kB |
+| `tires/raios.glb` | model | 26 kB |
+| `tires/slick.glb` | model | 23 kB |
+| `tires/tires-manifest.json` | data | 1 kB |
+
 ## tracks/
 
 | Arquivo | Tipo | Tamanho |
@@ -171,6 +185,13 @@ Gerado por `scripts/build-manifest.ts` a partir de `public/assets`. O registro c
 | `ui/portraits/tiko.webp` | image | 32 kB |
 | `ui/portraits/tuca.webp` | image | 28 kB |
 | `ui/portraits/zera.webp` | image | 35 kB |
+| `ui/tires/estrela.webp` | image | 10 kB |
+| `ui/tires/flor.webp` | image | 9 kB |
+| `ui/tires/neon.webp` | image | 10 kB |
+| `ui/tires/neve.webp` | image | 9 kB |
+| `ui/tires/offroad.webp` | image | 11 kB |
+| `ui/tires/raios.webp` | image | 11 kB |
+| `ui/tires/slick.webp` | image | 11 kB |
 | `ui/tracks/bosque-cristal.webp` | image | 45 kB |
 | `ui/tracks/canion-solar.webp` | image | 39 kB |
 | `ui/tracks/cidade-neon.webp` | image | 52 kB |
