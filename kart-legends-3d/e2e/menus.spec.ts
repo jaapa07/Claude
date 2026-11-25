@@ -86,6 +86,9 @@ test('menus: todos os modos, copas, pistas, personagens e karts aparecem e a nav
   await expect(page.getByTestId('screen-difficulty')).toBeVisible();
   await page.keyboard.press('Escape');
   await page.keyboard.press('Escape');
+  await expect(page.getByTestId('screen-mode')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.getByTestId('screen-players')).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(page.getByTestId('screen-menu')).toBeVisible();
   expect(errors).toEqual([]);
