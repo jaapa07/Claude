@@ -340,8 +340,11 @@ export class KartModel {
     const acc = this.acc;
     const speedK = Math.min(1, Math.abs(s.speed) / 26);
 
-    // direção: a física já suaviza o esterço; aqui só tira o degrau quando o drift trava/solta (contra-esterço)
-    const wantSteer = -s.steer * 0.42 + (s.drifting ? s.driftDir * 0.3 : 0);
+    // direção: uma só fonte para mãos, volante e rodas. Com piloto, as rodas seguem o volante que as mãos do
+    // clipe seguram (inclusive o contra-esterço do drift); sem piloto, o esterço da física.
+    const hands = this.animator?.wheelAngle;
+    const held = hands !== null && hands !== undefined;
+    const wantSteer = held ? hands * 0.42 : -s.steer * 0.42 + (s.drifting ? s.driftDir * 0.3 : 0);
     this.wheelSteer += (wantSteer - this.wheelSteer) * damp(16, dt);
     for (const w of this.wheels) {
       w.pivot.rotation.y = w.front ? this.wheelSteer : 0;
@@ -350,14 +353,6 @@ export class KartModel {
       w.angle = (w.angle + (s.speed * slip * dt) / w.radius) % (Math.PI * 2);
       this.tmpQ.setFromAxisAngle(this.axisX, w.angle * w.sign);
       w.mesh.quaternion.copy(w.base).multiply(this.tmpQ);
-    }
-    if (this.steering) {
-      // o volante acompanha as mãos do piloto (clipe), assim as mãos nunca escorregam da coroa
-      const hands = this.animator?.wheelAngle;
-      const want = hands !== null && hands !== undefined ? -hands : s.steer * 1.25;
-      this.steerWheel += (want - this.steerWheel) * damp(hands !== null && hands !== undefined ? 40 : 14, dt);
-      this.tmpQ.setFromAxisAngle(this.axisZ, this.steerWheel);
-      this.steering.quaternion.copy(this.steeringBase).multiply(this.tmpQ);
     }
 
     // impactos: aterrissagem (pela velocidade vertical), fim do pulinho do drift e começo do giro
@@ -401,7 +396,7 @@ export class KartModel {
     // drift: o kart aponta para dentro da curva; atingido: gira (rápido no impacto, freando até parar de frente)
     const wantYaw = s.drifting ? -s.driftDir * 0.42 : 0;
     this.driftYaw += (wantYaw - this.driftYaw) * damp(9, dt);
-    const spinEase = 1 - Math.pow(1 - Math.min(1, s.spin), 2.2);
+    const spinEase = 1 - Math.pow(1 - Math.min(1, s.spin), 1.8);
     this.yaw.rotation.y = this.driftYaw + (s.spin > 0 ? spinEase * Math.PI * 4 : 0);
     this.yaw.position.y = hopArc * 0.32;
 
@@ -438,6 +433,14 @@ export class KartModel {
       m.speed = s.speed; m.steer = s.steer; m.drifting = s.drifting; m.driftDir = s.driftDir; m.boosting = on;
       m.airborne = !s.grounded; m.mood = s.mood; m.ax = acc.x; m.ay = acc.y; m.az = acc.z; m.detail = this.detail;
       this.animator.update(dt, m);
+    }
+    if (this.steering) {
+      // o volante acompanha as mãos do piloto (pose deste quadro), assim as mãos nunca escorregam da coroa
+      const grip = this.animator?.wheelAngle;
+      const gripping = grip !== null && grip !== undefined;
+      this.steerWheel = gripping ? -grip : this.steerWheel + (s.steer * 1.25 - this.steerWheel) * damp(14, dt);
+      this.tmpQ.setFromAxisAngle(this.axisZ, this.steerWheel);
+      this.steering.quaternion.copy(this.steeringBase).multiply(this.tmpQ);
     }
   }
 

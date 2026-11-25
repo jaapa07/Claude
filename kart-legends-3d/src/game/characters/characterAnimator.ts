@@ -87,7 +87,8 @@ function boneDirections(root: THREE.Object3D): Map<string, THREE.Vector3> {
         inv.copy(sm.skeleton.boneInverses[i]!).invert();
         const joint = v.setFromMatrixPosition(inv);
         const d = sum[i]!.multiplyScalar(1 / count[i]!).sub(joint);
-        if (d.lengthSq() > 1e-8) local.set(b.name, d.normalize().clone());
+        // direção com comprimento (distância da junta ao centro da peça): peças longas balançam mais
+        if (d.lengthSq() > 1e-8) local.set(b.name, d.clone());
       });
     }
     directionCache.set(sm.geometry, local);
@@ -177,8 +178,10 @@ export class CharacterAnimator {
       let depth = 0;
       for (let p = o.parent; p && !CORE_BONES.has(p.name); p = p.parent) depth++;
       const child = o.children.find((c) => (c as THREE.Bone).isBone);
-      const dir = dirs.get(o.name)?.clone() ?? (child ? child.position.clone().normalize() : o.position.clone().normalize());
-      this.secondary.push({ bone: o, dir, stiffness: 150 / (1 + depth * 0.55), gain: 0.009 * (1 + depth * 0.25), x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0 });
+      const dir = dirs.get(o.name)?.clone() ?? (child ? child.position.clone() : o.position.clone()).multiplyScalar(0.5);
+      const reach = THREE.MathUtils.clamp(dir.length() / 0.15, 0.35, 1.3);
+      dir.normalize();
+      this.secondary.push({ bone: o, dir, stiffness: 150 / (1 + depth * 0.55), gain: 0.009 * reach * (1 + depth * 0.25), x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0 });
     });
 
     // ponto de pegada de cada mão em repouso, projetado no plano do volante
@@ -397,15 +400,23 @@ export class CharacterAnimator {
   private measureWheel(): void {
     if (!this.handL || !this.handR) { this.wheel = null; return; }
     const a = this.signedWheelAngle(this.boneInRoot(this.handL, this.tmpV), this.restL);
+    const ea = this.gripError;
     const b = this.signedWheelAngle(this.boneInRoot(this.handR, this.tmpW), this.restR);
-    this.wheel = a !== null && b !== null && Math.abs(a - b) < 0.35 ? (a + b) * 0.5 : a ?? b;
+    const eb = this.gripError;
+    // as duas mãos na coroa e de acordo: média; senão vale a mão mais bem assentada
+    if (a !== null && b !== null) this.wheel = Math.abs(a - b) < 0.3 ? (a + b) * 0.5 : ea <= eb ? a : b;
+    else this.wheel = a ?? b;
   }
 
+  /** Distância da última mão medida até a coroa do volante (m). */
+  private gripError = 0;
+
   private signedWheelAngle(hand: THREE.Vector3, rest: THREE.Vector3): number | null {
+    // a mão precisa estar na coroa do volante (perto do plano e do raio)
+    const off = Math.abs(this.tmpC.copy(hand).sub(WHEEL_CENTER).dot(WHEEL_AXIS));
     const p = this.projectOnWheel(hand);
-    const r = rest.length();
-    // a mão precisa estar na coroa do volante
-    if (Math.abs(p.length() - r) > 0.06) return null;
+    this.gripError = Math.abs(p.length() - rest.length()) + off;
+    if (this.gripError > 0.07) return null;
     const sin = this.tmpC.crossVectors(rest, p).dot(WHEEL_AXIS);
     return Math.atan2(sin, rest.dot(p));
   }

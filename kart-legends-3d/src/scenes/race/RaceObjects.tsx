@@ -14,6 +14,10 @@ export interface RaceView {
   time: number;
 }
 
+type SliderStyle = 'hover' | 'walk' | 'roll' | 'rigid';
+/** Inclinação máxima (rad) na direção do movimento; carrinhos "agacham" a traseira ao contrário. */
+const LEAN: Record<SliderStyle, number> = { hover: 0.22, walk: 0.1, roll: -0.035, rigid: 0 };
+
 /** Ajusta um modelo para caber em uma caixa (largura, altura, comprimento) com a base no chão. */
 function fitToBox(obj: THREE.Object3D, w: number, h: number, l: number): THREE.Group {
   const holder = new THREE.Group();
@@ -88,9 +92,11 @@ export function RaceObjects({ view }: { view: React.MutableRefObject<RaceView> }
       spin.add(model);
       g.add(spin);
       root.add(g);
-      // drones e balsas flutuam; os demais "andam" (gingado no ritmo da distância percorrida)
-      const hover = /drone|balao|nave/.test(o.data.model);
-      return { g, spin, hover, lean: 0 };
+      // estilo do deslizante: drones flutuam, robôs e caranguejos andam (gingado no ritmo da distância
+      // percorrida), carrinhos sobre rodas só trepidam, grades se movem rígidas
+      const m = o.data.model;
+      const style: SliderStyle = /drone|balao|nave/.test(m) ? 'hover' : /robo|caranguejo/.test(m) ? 'walk' : /carrinho|vagonete/.test(m) ? 'roll' : 'rigid';
+      return { g, spin, style, lean: 0 };
     });
     return { root, boxes, boxPop, mists, sparks, waves, obstacles };
   }, [sim, data, box, pad, ramp, arch, mist, spark, wave, obstacleModels, obstacleIds]);
@@ -152,14 +158,17 @@ export function RaceObjects({ view }: { view: React.MutableRefObject<RaceView> }
         // deslizante: inclina na direção do movimento (proporcional à velocidade), gingando ou flutuando
         const vMax = (Math.PI * len) / d.period * PHYS.dt;
         const along = ((o.x - o.px) * ax + (o.z - o.pz) * az) / len;
-        const wantLean = THREE.MathUtils.clamp(along / (vMax || 1), -1, 1) * (v.hover ? 0.22 : 0.1);
+        const wantLean = THREE.MathUtils.clamp(along / (vMax || 1), -1, 1) * LEAN[v.style];
         v.lean += (wantLean - v.lean) * (1 - Math.exp(-8 * dt));
         const travel = o.t * len;
-        const bob = v.hover ? Math.sin(time * 2.2 + i * 1.3) * 0.18 : Math.abs(Math.sin(travel * 1.6)) * 0.07;
+        const speed01 = Math.min(1, Math.abs(along) / (vMax || 1));
+        const bob = v.style === 'hover' ? Math.sin(time * 2.2 + i * 1.3) * 0.18
+          : v.style === 'walk' ? Math.abs(Math.sin(travel * 1.6)) * 0.07
+            : v.style === 'roll' ? Math.sin(time * 37 + i) * 0.012 * speed01 : 0;
         v.g.position.set(x, y + bob, z);
         v.g.rotation.set(0, Math.atan2(ax, az), 0);
         v.spin.rotation.x = v.lean;
-        v.spin.rotation.z = v.hover ? Math.sin(time * 1.7 + i) * 0.05 : Math.sin(travel * 0.8) * 0.04;
+        v.spin.rotation.z = v.style === 'hover' ? Math.sin(time * 1.7 + i) * 0.05 : v.style === 'walk' ? Math.sin(travel * 0.8) * 0.04 : 0;
       }
     });
   });
