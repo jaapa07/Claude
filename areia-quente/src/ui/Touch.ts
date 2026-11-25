@@ -66,7 +66,7 @@ export class TouchControls {
     r.querySelectorAll<HTMLElement>('.t-btn').forEach((el) => {
       const b: Btn = { el, action: el.dataset.a!, ids: new Set() };
       this.btns.push(b);
-      el.addEventListener('pointerdown', (e) => { e.preventDefault(); el.setPointerCapture?.(e.pointerId); b.ids.add(e.pointerId); this.setBtn(b); navigator.vibrate?.(8); });
+      el.addEventListener('pointerdown', (e) => { e.preventDefault(); el.setPointerCapture?.(e.pointerId); b.ids.add(e.pointerId); this.setBtn(b); if (settings.data.vibrate !== false) navigator.vibrate?.(8); });
       const up = (e: PointerEvent) => { if (b.ids.delete(e.pointerId)) this.setBtn(b); };
       el.addEventListener('pointerup', up);
       el.addEventListener('pointercancel', up);
@@ -121,6 +121,8 @@ export class TouchControls {
       if (!show) this.releaseAll();
     }
     if (!show || !m) return;
+    const sz = String([0.82, 1, 1.2][settings.data.touchSize ?? 1]);
+    if (this.root.style.getPropertyValue('--ts') !== sz) this.root.style.setProperty('--ts', sz);
     const st = m.state;
     const skippable = st === 'intro' || st === 'replay' || st === 'halftime' || st === 'goal';
     this.skip.classList.toggle('on', skippable);

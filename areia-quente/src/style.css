@@ -315,7 +315,7 @@ html.touch .btn, html.touch .opt, html.touch .k, html.touch .arrow, html.touch .
 #touch .t-stick.on { opacity: 0.95; }
 #touch .t-knob { position: absolute; left: 50%; top: 50%; width: 44%; height: 44%; margin: -22% 0 0 -22%; border-radius: 50%;
   background: radial-gradient(circle at 35% 30%, #fff8dc, var(--gold) 55%, #b36b00); border: 3px solid var(--ink); box-shadow: 0 4px 0 rgba(0,0,0,0.4); }
-#touch .t-btns { position: absolute; right: calc(env(safe-area-inset-right) + 10px); bottom: calc(env(safe-area-inset-bottom) + 8px); width: 46vh; height: 46vh; min-width: 190px; min-height: 190px; }
+#touch .t-btns { position: absolute; right: calc(env(safe-area-inset-right) + 10px); bottom: calc(env(safe-area-inset-bottom) + 8px); width: calc(46vh * var(--ts, 1)); height: calc(46vh * var(--ts, 1)); min-width: calc(190px * var(--ts, 1)); min-height: calc(190px * var(--ts, 1)); }
 #touch .t-btn { position: absolute; border-radius: 50%; display: flex; align-items: center; justify-content: center; pointer-events: auto; touch-action: none;
   font-family: var(--title); color: var(--ink); border: 3px solid var(--ink); box-shadow: 0 4px 0 rgba(0,0,0,0.55); opacity: 0.86;
   font-size: clamp(9px, 2.3vh, 15px); letter-spacing: 0; transition: transform 0.06s; }
@@ -372,3 +372,6 @@ html.touch .hint { display: none; }
 }
 #touch.wait .b-pass, #touch.wait .b-shoot { animation: aq-pulse 0.8s ease-in-out infinite; }
 @keyframes aq-pulse { 50% { transform: scale(1.12); filter: brightness(1.3); } }
+
+/* selo da versão no título */
+.title-screen .plat { margin-top: 10px; font-family: var(--title); font-size: 14px; letter-spacing: 0.08em; padding: 4px 12px; border-radius: 8px; background: rgba(9,22,48,0.7); border: 2px solid var(--gold); color: var(--gold); }

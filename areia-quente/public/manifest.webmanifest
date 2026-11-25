@@ -1,7 +1,7 @@
 {
   "name": "Areia Quente — Futebol de Praia",
   "short_name": "Areia Quente",
-  "start_url": "./",
+  "start_url": "./celular.html",
   "scope": "./",
   "display": "fullscreen",
   "orientation": "landscape",

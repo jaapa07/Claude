@@ -499,6 +499,7 @@ const SUITES = {
     const noOverflow = () => g.ev(() => document.documentElement.scrollWidth <= innerWidth + 1 && document.documentElement.scrollHeight <= innerHeight + 1);
     check(await g.ev(() => window.__game.input.touch && !!document.getElementById('touch')), 'detecta tela de toque e cria os controles', n);
     check(await g.ev(() => document.querySelector('.press').textContent.includes('TOQUE')), 'título pede "TOQUE PARA COMEÇAR"', n);
+    check(await g.ev(() => document.querySelector('.plat')?.textContent === 'VERSÃO CELULAR'), 'título mostra "VERSÃO CELULAR"', n);
     await g.shot('iphone_title');
     await tap('.title-screen'); await g.waitScene('menu');
     check(true, 'toque no título abre o menu', n);
@@ -575,6 +576,16 @@ const SUITES = {
     await g.shot('iphone_portrait');
     await g.page.setViewportSize({ width: 844, height: 390 }); await sleep(500);
     check(await g.ev(() => getComputedStyle(document.getElementById('rotate')).display === 'none'), 'na horizontal o aviso some', n);
+    // opções da versão celular: tamanho dos botões e vibração, sem remapear teclas
+    await g.ev(() => { const f = window.__game.flow; f.mainMenu(); f.options(); }); await g.waitScene('options');
+    const op = await g.ev(() => ({ txt: document.querySelector('.options').textContent, keys: !!document.querySelector('.options .keys') }));
+    check(op.txt.includes('Botões na tela') && op.txt.includes('Vibração') && op.txt.includes('Versão do jogo') && !op.keys, 'opções do celular: botões, vibração, troca de versão; sem teclas', n);
+    await g.shot('iphone_options');
+    // a página da versão PC no mesmo aparelho não mostra controles de toque
+    await g.page.goto('http://game.local/pc.html');
+    await g.waitFor(() => window.__game?.flow.scene === 'title', null, 180000);
+    const pc = await g.ev(() => ({ touch: window.__game.input.touch, overlay: !!document.getElementById('touch'), plat: document.querySelector('.plat')?.textContent }));
+    check(!pc.touch && !pc.overlay && pc.plat === 'VERSÃO PC', 'pc.html: versão PC sem controles de toque', n);
   },
 };
 

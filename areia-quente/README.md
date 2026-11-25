@@ -15,6 +15,16 @@ Todas as capturas estão em [`docs/screenshots/`](docs/screenshots).
 ## Jogar online
 
 **https://jaapa07.github.io/beach_soccer/** — publicado pelo GitHub Actions (`.github/workflows/deploy.yml`) a cada push na `main`.
+
+O jogo tem **duas versões**, com configurações salvas separadamente:
+
+| Versão | Link direto | Como joga | Padrões |
+|---|---|---|---|
+| **PC** | https://jaapa07.github.io/beach_soccer/pc.html | teclado ou controle (até 2 jogadores locais), teclas remapeáveis | gráfico alto, 3 min por período |
+| **Celular** (iPhone/Android) | https://jaapa07.github.io/beach_soccer/celular.html | joystick e botões na tela, multitoque | gráfico médio (sombras leves), 2 min por período, tamanho dos botões e vibração nas Opções |
+
+O link principal escolhe sozinho (tela de toque → Celular). Dá para trocar em *Opções → Versão do jogo*
+ou com `?plataforma=pc` / `?plataforma=celular`.
 Para ativar (uma única vez): no repositório, *Settings → Pages → Build and deployment → Source: **GitHub Actions***.
 
 ## Como rodar

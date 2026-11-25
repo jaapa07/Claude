@@ -1,3 +1,4 @@
+import { platform } from './Platform';
 import { settings } from './Save';
 
 export type Action = 'pass' | 'shoot' | 'lob' | 'trick' | 'sprint' | 'tackle' | 'fire' | 'pause';
@@ -27,7 +28,8 @@ class InputSys {
   /** joystick virtual da tela de toque (null = solto) */
   private stick: { x: number; y: number } | null = null;
   /** aparelho com tela de toque (iPhone/Android/iPad) */
-  readonly touch = typeof window !== 'undefined' && (('ontouchstart' in window) || navigator.maxTouchPoints > 0) && matchMedia('(pointer: coarse)').matches;
+  /** versão Celular: controles de toque na tela */
+  readonly touch = platform.mobile;
 
   constructor() {
     addEventListener('keydown', (e) => {

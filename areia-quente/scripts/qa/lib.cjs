@@ -77,8 +77,10 @@ async function open(opts = {}) {
   const errors = [];
   page.on('pageerror', (e) => errors.push('pageerror: ' + e.message));
   page.on('console', (m) => { if (m.type() === 'error') errors.push('console: ' + m.text()); });
+  // o PC agora começa no gráfico alto; o Chromium headless (SwiftShader) roda os testes no médio
+  await page.addInitScript(() => { try { if (!localStorage.getItem('aq.settings')) localStorage.setItem('aq.settings', JSON.stringify({ quality: 1 })); } catch {} });
   await page.addInitScript(monitorSource);
-  await page.goto('http://game.local/index.html' + (opts.query || ''));
+  await page.goto('http://game.local/' + (opts.page || (opts.iphone ? 'celular.html' : 'index.html')) + (opts.query || ''));
   await page.waitForFunction(() => window.__game?.flow.scene === 'title', null, { timeout: 180000 });
   const api = {
     page, errors, browser: b,
