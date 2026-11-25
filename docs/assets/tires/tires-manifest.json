@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "contract": "nó \"tire\"; lado esquerdo (face externa +X); eixo X; raio 1; largura 1",
+  "tires": [
+    {
+      "id": "offroad",
+      "name": "Garra Off-road",
+      "file": "tires/offroad.glb",
+      "icon": "ui/tires/offroad.webp",
+      "triangles": 1326,
+      "bytes": 29592
+    },
+    {
+      "id": "slick",
+      "name": "Slick de Corrida",
+      "file": "tires/slick.glb",
+      "icon": "ui/tires/slick.webp",
+      "triangles": 1406,
+      "bytes": 23300
+    },
+    {
+      "id": "raios",
+      "name": "Raios Dourados",
+      "file": "tires/raios.glb",
+      "icon": "ui/tires/raios.webp",
+      "triangles": 1178,
+      "bytes": 26336
+    },
+    {
+      "id": "neon",
+      "name": "Neon Turbo",
+      "file": "tires/neon.glb",
+      "icon": "ui/tires/neon.webp",
+      "triangles": 1442,
+      "bytes": 27328
+    },
+    {
+      "id": "estrela",
+      "name": "Estrela",
+      "file": "tires/estrela.glb",
+      "icon": "ui/tires/estrela.webp",
+      "triangles": 1486,
+      "bytes": 26352
+    },
+    {
+      "id": "neve",
+      "name": "Corrente de Neve",
+      "file": "tires/neve.glb",
+      "icon": "ui/tires/neve.webp",
+      "triangles": 1418,
+      "bytes": 26460
+    },
+    {
+      "id": "flor",
+      "name": "Pétala",
+      "file": "tires/flor.glb",
+      "icon": "ui/tires/flor.webp",
+      "triangles": 1454,
+      "bytes": 26236
+    }
+  ]
+}
