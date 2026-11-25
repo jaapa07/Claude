@@ -190,7 +190,7 @@ export const BOSQUE_CRISTAL: TrackDef = {
     { prop: ['cristal-grande'], count: 30, dist: [12, 70], scale: [1, 2] },
   ],
   intro: [
-    { at: 'ponte', offset: [-40, 14, -10], lookAt: 'ponte+30' },
+    { at: 'ponte', offset: [24, 14, -14], lookAt: 'ponte+40' },
     { at: 'caverna', offset: [14, 6, -40], lookAt: 'caverna+10' },
     { at: 'largada', offset: [-10, 5, 26], lookAt: 'largada-10' },
   ],
