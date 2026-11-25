@@ -342,7 +342,7 @@ export const ESTACAO_LUNAR: TrackDef = {
   obstacles: [
     { id: 'robo-1', kind: 'slider', model: 'robo-carga', at: 'base+50', from: -6.5, to: 6.5, period: 5.8, radius: 1.3 },
     { id: 'robo-2', kind: 'slider', model: 'robo-carga', at: 'tubo+20', from: 6.5, to: -6.5, period: 5, phase: 0.3, radius: 1.3 },
-    { id: 'robo-3', kind: 'slider', model: 'robo-carga', at: 'retorno-40', from: -6, to: 6, period: 6.2, phase: 0.6, radius: 1.3 },
+    { id: 'robo-3', kind: 'slider', model: 'robo-carga', at: 'retorno+16', from: -6, to: 6, period: 6.2, phase: 0.6, radius: 1.3 },
   ],
   scenery: [
     { prop: 'baliza', from: 'largada', to: 'largada-2', side: 'both', every: 24, dist: [0.6, 1] },

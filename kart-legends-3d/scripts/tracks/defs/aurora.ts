@@ -21,8 +21,8 @@ export const PORTO_LANTERNAS: TrackDef = {
     { x: 144, z: -150, y: 1, wall: 'none' },
     { x: 186, z: -106, y: 1.2, tag: 'mercado', w: 8 },
     // chicane da feira: esquerda-direita entre as bancas
-    { x: 188, z: -62, y: 1.3, w: 7 },
-    { x: 210, z: -30, y: 1.5, tag: 'feira' },
+    { x: 188, z: -62, y: 1.3, w: 7.5 },
+    { x: 206, z: -30, y: 1.5, tag: 'feira' },
     { x: 192, z: 6, y: 1.8 },
     { x: 172, z: 40, y: 2.5, w: 7.5, tag: 'arco', wall: 'both' },
     // ladeira em zigue-zague: dois grampos subindo a cidade velha
@@ -65,7 +65,7 @@ export const PORTO_LANTERNAS: TrackDef = {
     { prop: ['casa-porto', 'casa-porto', 'casa-porto-torre'], from: 'largada', to: 'mercado', side: 'right', every: 13, dist: [3, 6] },
     { prop: 'lanterna-poste', from: 'largada', to: 'cais+60', side: 'left', every: 22, dist: [0.4, 0.8] },
     { prop: ['cais-poste', 'barril', 'caixote', 'rede-pesca'], from: 'largada', to: 'cais+70', side: 'left', every: 12, dist: [2, 6], face: 'random' },
-    { prop: ['banca-mercado', 'banca-mercado', 'caixote', 'barril'], from: 'mercado', to: 'feira+30', side: 'both', every: 12, dist: [1.5, 4] },
+    { prop: ['banca-mercado', 'banca-mercado', 'caixote', 'barril'], from: 'mercado', to: 'feira+30', side: 'both', every: 12, dist: [3.5, 6] },
     { prop: ['casa-porto', 'casa-porto-torre'], from: 'mercado', to: 'arco', side: 'both', every: 15, dist: [9, 14] },
     { prop: ['casa-porto', 'casa-porto-torre'], from: 'arco', to: 'mirante', side: 'both', every: 14, dist: [2.5, 6] },
     { prop: 'lanterna-poste', from: 'arco', to: 'descida', side: 'left', every: 24, dist: [0.5, 1] },
