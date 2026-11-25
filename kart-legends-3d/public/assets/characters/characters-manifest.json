@@ -209,7 +209,7 @@
     {
       "id": "lumi",
       "file": "assets/characters/lumi.glb",
-      "bytes": 361484,
+      "bytes": 361480,
       "triangles": 11346,
       "bones": 22,
       "extraBones": [
@@ -860,7 +860,7 @@
     {
       "id": "yuki",
       "file": "assets/characters/yuki.glb",
-      "bytes": 389872,
+      "bytes": 389908,
       "triangles": 12740,
       "bones": 23,
       "extraBones": [
@@ -943,7 +943,7 @@
     {
       "id": "kaito",
       "file": "assets/characters/kaito.glb",
-      "bytes": 381496,
+      "bytes": 381548,
       "triangles": 12518,
       "bones": 23,
       "extraBones": [
@@ -1026,7 +1026,7 @@
     {
       "id": "ren",
       "file": "assets/characters/ren.glb",
-      "bytes": 394444,
+      "bytes": 394508,
       "triangles": 13398,
       "bones": 23,
       "extraBones": [
@@ -1109,7 +1109,7 @@
     {
       "id": "sora",
       "file": "assets/characters/sora.glb",
-      "bytes": 428284,
+      "bytes": 428356,
       "triangles": 13399,
       "bones": 26,
       "extraBones": [

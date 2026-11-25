@@ -192,9 +192,9 @@ function build(c: Ctx): FaceSpec {
     { name: 'scarfA', pts: [[0.05, 0.56, -0.12], [0.11, 0.605, -0.23], [0.17, 0.625, -0.35], [0.21, 0.62, -0.46], [0.235, 0.605, -0.54]], w: 0.065, ph: 0.35 },
     { name: 'scarfB', pts: [[0.05, 0.54, -0.12], [0.1, 0.57, -0.22], [0.14, 0.575, -0.32], [0.165, 0.56, -0.4], [0.18, 0.545, -0.45]], w: 0.055, ph: 0.65 },
   ];
-  // pontas curtas e erguidas, com o vento levantando (caídas, entravam no bagageiro/santantônio/encosto dos karts)
+  // pontas curtas e erguidas, com o vento levantando e pouco balanço vertical (caídas, entravam no bagageiro/santantônio/encosto dos karts)
   for (const t of tails) {
-    const bones = c.chain(t.name, 'chest', [t.pts[0]!, t.pts[1]!, t.pts[2]!], { roll: 0.3, pitch: 0.22, lag: 0.08, sway: [0.05, 0.09, 0.05], phase: t.ph, wind: [0.12, 0, 0], flutter: [0.13, 0.17, 0.09], bounce: 2.2 });
+    const bones = c.chain(t.name, 'chest', [t.pts[0]!, t.pts[1]!, t.pts[2]!], { roll: 0.3, pitch: 0.22, lag: 0.08, sway: [0.02, 0.09, 0.05], phase: t.ph, wind: [0.12, 0, 0], flutter: [0.13, 0.17, 0.09], bounce: 2.2 });
     const w = rig.chainW(bones, { parent: 'chest', blend: 0.05, tip: t.pts[4] });
     c.soft(ribbon(t.pts, (s) => t.w * 1.25 * (1 - 0.25 * s), 0.014, (s) => (s > 0.86 ? MINT : SCARF), { ref: [1, 0.35, 0], nv: 12, nu: 6 }), 'cloth', w);
   }

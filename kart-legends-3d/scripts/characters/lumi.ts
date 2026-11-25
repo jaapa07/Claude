@@ -85,7 +85,7 @@ function build(c: Ctx): FaceSpec {
   c.soft(paintUV(band(T, 0.52, 0.595, 0.022, 20), (_u, _v, p) => mix(darken(GOLD, 0.25), GOLD, sstep(0.52, 0.6, p.y))), 'cloth', rig.torsoW);
   // ponta erguida, voando quase na horizontal (caída, entrava no bagageiro do Flecha e no santantônio do Faísca)
   const sPts: V3[] = [[0.02, 0.575, -0.06], [0.03, 0.62, -0.19], [0.01, 0.625, -0.32], [-0.02, 0.61, -0.45], [0.0, 0.59, -0.56]];
-  const sb = c.chain('scarf', 'chest', [sPts[0]!, sPts[1]!, sPts[2]!, sPts[3]!], { roll: 0.3, pitch: 0.25, lag: 0.08, sway: [0.06, 0.1, 0.05], phase: 0.2, wind: [0.12, 0, 0], flutter: [0.1, 0.16, 0.08], bounce: 2 });
+  const sb = c.chain('scarf', 'chest', [sPts[0]!, sPts[1]!, sPts[2]!, sPts[3]!], { roll: 0.3, pitch: 0.25, lag: 0.08, sway: [0.025, 0.1, 0.05], phase: 0.2, wind: [0.12, 0, 0], flutter: [0.1, 0.16, 0.08], bounce: 2 });
   const sw = rig.chainW(sb, { parent: 'chest', blend: 0.05, tip: sPts[4] });
   const cometCol = (t: number): ReturnType<typeof mix> => (t < 0.4 ? mix(GOLD, '#ffab3d', t / 0.4) : t < 0.75 ? mix('#ffab3d', PINK, (t - 0.4) / 0.35) : mix(PINK, SUIT_L, (t - 0.75) / 0.25));
   c.soft(ribbon(sPts, (t) => ramp(t, [[0, 0.08], [0.25, 0.17], [0.7, 0.12], [1, 0.03]]), 0.012, cometCol, { ref: [1, 0, 0], nv: 20 }), 'cloth', sw);
