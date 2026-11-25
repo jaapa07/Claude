@@ -288,3 +288,12 @@ body { font-family: var(--body); color: var(--white); user-select: none; -webkit
 @media (max-width: 720px) { .careerhub { grid-template-columns: 1fr; } }
 
 #ui.locked .screen { pointer-events: none !important; }
+
+/* menus em janelas baixas: rolagem e versão compacta (8 opções não cabiam em 450 px) */
+.menu .col { max-height: 100vh; overflow-y: auto; padding-top: 2vh; padding-bottom: 2vh; }
+@media (max-height: 700px) {
+  .menu img.logo { width: 220px; margin-bottom: 4px; }
+  .menu .col { gap: 8px; }
+  .btn { font-size: 19px; padding: 7px 20px; box-shadow: 0 4px 0 var(--ink); }
+  .menu .desc { margin-top: 4px; min-height: 0; font-size: 14px; }
+}
