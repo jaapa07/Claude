@@ -2,7 +2,7 @@
 
 Jogo original de corrida de kart arcade 3D para navegador (desktop), em português do Brasil.
 React + TypeScript + Vite + Zustand, Three.js / React Three Fiber / Drei, física Rapier (`@react-three/rapier`),
-Web Audio API. Dez pilotos, oito karts, doze pistas em três copas, sete adversários com IA, seis itens,
+Web Audio API. Onze pilotos, oito karts, doze pistas em três copas, sete adversários com IA, seis itens,
 drift com três níveis de miniturbo, quatro modos de jogo e progressão salva no navegador.
 
 > **Estado da entrega: PARCIAL** segundo os critérios da seção 27 da especificação. O jogo roda, é jogável do
@@ -80,7 +80,7 @@ no mesmo Wi‑Fi, ou publique a pasta `dist/` em qualquer hospedagem estática (
 
 ## Modos
 
-- **Corrida Rápida** — escolha pista e dificuldade, 8 pilotos na pista (você e 7 adversários sorteados entre os outros 9), 3 voltas.
+- **Corrida Rápida** — escolha pista e dificuldade, 8 pilotos na pista (você e 7 adversários sorteados entre os outros 10), 3 voltas.
 - **Campeonato** — as 4 pistas de uma copa com pontuação acumulada e troféu.
 - **Contrarrelógio** — sozinho, sem itens, em busca do melhor tempo.
 - **Treino** — pista livre, sem adversários; sai pelo menu de pausa.

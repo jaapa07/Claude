@@ -51,7 +51,7 @@ exercitados com teclas reais, mas **nenhuma corrida inteira foi pilotada por uma
 
 ## Funcionalidades implementadas
 
-- **10 pilotos** (Nilo, Boro, Lumi, Kora, Tiko, Mavi, Runi, Zera, Capi, Tuca; 8 por corrida): GLB com skin, 10 clipes de animação, atlas de
+- **11 pilotos** (Nilo, Boro, Lumi, Kora, Tiko, Mavi, Runi, Zera, Capi, Tuca, Yuki; 8 por corrida): GLB com skin, 10 clipes de animação, atlas de
   8 expressões faciais, retrato e ícone. Máquina de estados de animação (parado, dirigindo, curva, drift,
   batida, vitória, derrota, pódio) com a cabeça acompanhando a curva.
 - **8 karts** com silhuetas próprias, rodas independentes que giram e esterçam, volante, suspensão visual,

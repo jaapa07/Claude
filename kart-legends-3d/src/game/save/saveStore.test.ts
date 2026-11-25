@@ -100,8 +100,8 @@ describe('save: dados ausentes, corrompidos e versões', () => {
     expect(data.trophies).toEqual({ aurora: null, eclipse: 'silver', meteoro: null });
     expect(data.records['porto-lanternas']).toEqual({ bestRaceMs: 88000, bestLapMs: null, timeTrialMs: null, timeTrialLapMs: null });
     expect(Object.keys(data.records)).toHaveLength(TRACK_IDS.length);
-    // 'zera' estava salvo (mantém); 'tiko' sai da regra de 3 corridas; 'duna' dos 25 turbos nível 3.
-    expect(data.unlocked.characters).toEqual(['nilo', 'boro', 'lumi', 'kora', 'tiko', 'zera']);
+    // 'zera' estava salvo (mantém); 'tiko' sai da regra de 3 corridas, 'yuki' da de 6; 'duna' dos 25 turbos nível 3.
+    expect(data.unlocked.characters).toEqual(['nilo', 'boro', 'lumi', 'kora', 'tiko', 'zera', 'yuki']);
     expect(data.unlocked.karts).toContain('duna');
   });
 
@@ -168,6 +168,15 @@ describe('save: desbloqueios pelas regras dos dados', () => {
     expect(computeUnlocks(d).characters).not.toContain('tuca');
     d.stats.turbos = [0, 0, 40];
     expect(computeUnlocks(d).characters).toContain('tuca');
+  });
+
+  it('Yuki sai com 6 corridas', () => {
+    const d = createDefaultSave();
+    expect(d.unlocked.characters).not.toContain('yuki');
+    d.stats.races = 5;
+    expect(computeUnlocks(d).characters).not.toContain('yuki');
+    d.stats.races = 6;
+    expect(computeUnlocks(d).characters).toContain('yuki');
   });
 
   it('trophyForPosition: ouro, prata, bronze e nada', () => {

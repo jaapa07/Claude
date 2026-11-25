@@ -1324,7 +1324,7 @@
    "origin": "scripts/build-characters.ts (modelagem, rig e animação por script)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 16876,
+   "bytes": 18447,
    "status": "validado",
    "usedIn": "Pilotos na corrida, vitrine e pódio"
   },
@@ -1416,6 +1416,19 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 362652,
+   "status": "validado",
+   "usedIn": "Pilotos na corrida, vitrine e pódio"
+  },
+  {
+   "id": "characters:yuki",
+   "name": "yuki",
+   "type": "model",
+   "path": "characters/yuki.glb",
+   "format": "glb",
+   "origin": "scripts/build-characters.ts (modelagem, rig e animação por script)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 389568,
    "status": "validado",
    "usedIn": "Pilotos na corrida, vitrine e pódio"
   },
@@ -2759,6 +2772,19 @@
    "usedIn": "Materiais dos modelos (também embutidas nos GLB)"
   },
   {
+   "id": "textures:face_yuki",
+   "name": "face_yuki",
+   "type": "texture",
+   "path": "textures/face_yuki.webp",
+   "format": "webp",
+   "origin": "scripts (texturas procedurais e arte vetorial próprias)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 54464,
+   "status": "validado",
+   "usedIn": "Materiais dos modelos (também embutidas nos GLB)"
+  },
+  {
    "id": "textures:face_zera",
    "name": "face_zera",
    "type": "texture",
@@ -3799,6 +3825,19 @@
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
   {
+   "id": "ui:icons:yuki",
+   "name": "yuki",
+   "type": "image",
+   "path": "ui/icons/yuki.webp",
+   "format": "webp",
+   "origin": "scripts/build-items.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 4242,
+   "status": "validado",
+   "usedIn": "Interface (retratos, ícones, miniaturas)"
+  },
+  {
    "id": "ui:icons:zera",
    "name": "zera",
    "type": "image",
@@ -4107,6 +4146,19 @@
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
    "bytes": 28256,
+   "status": "validado",
+   "usedIn": "Interface (retratos, ícones, miniaturas)"
+  },
+  {
+   "id": "ui:portraits:yuki",
+   "name": "yuki",
+   "type": "image",
+   "path": "ui/portraits/yuki.webp",
+   "format": "webp",
+   "origin": "scripts/build-items.ts e scripts/capture-ui.ts (arte vetorial e capturas do próprio jogo)",
+   "author": "Equipe Kart Legends 3D",
+   "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
+   "bytes": 36130,
    "status": "validado",
    "usedIn": "Interface (retratos, ícones, miniaturas)"
   },
