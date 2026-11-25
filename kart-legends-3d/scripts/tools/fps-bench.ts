@@ -26,7 +26,8 @@ const results: Record<string, number[]> = {};
 try {
   for (let run = 0; run < runs; run++) {
     for (const track of arena ? [arena] : tracks) {
-      const ctx = await browser.newContext({ ...devices['iPhone 14 landscape'] });
+      // no modo parado, pixel ratio 0,6 fixa a resolução (a adaptativa não tem para onde descer): comparação justa
+      const ctx = await browser.newContext({ ...devices['iPhone 14 landscape'], ...(stat ? { deviceScaleFactor: 0.6 } : {}) });
       const page = await ctx.newPage();
       await page.addInitScript((q) => { localStorage.setItem('kl3d.settings.v1', JSON.stringify({ quality: q })); localStorage.setItem('kl3d.save', JSON.stringify({ version: 2, unlocked: { characters: [], karts: [], cups: ['aurora', 'eclipse', 'meteoro'] }, coins: 0, owned: { characters: [], karts: [], tires: [], cosmetics: [] }, trophies: {}, records: {}, stats: {} })); }, quality);
       await page.goto(`${url}/?fast=1&e2e=1`);

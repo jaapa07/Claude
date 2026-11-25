@@ -37,7 +37,14 @@ export class RaceVfx {
   private readonly dust = new THREE.Color();
 
   /** `atlas`: atlas combinado (próprio + sprites CC0 da Kenney; índices 0–15 e 16–31 de SPRITE). */
+  /**
+   * Qualidade Baixa (orçamento pequeno): os emissores contínuos de alto volume (fumaça de pneu, poeira) ficam com os
+   * sprites próprios, exatamente como antes; os da Kenney entram só nos efeitos pontuais (faíscas, chamas, batidas).
+   */
+  private readonly lite: boolean;
+
   constructor(atlas: THREE.Texture, private readonly env: Environment, budget: number) {
+    this.lite = budget <= 1500;
     this.solid = new ParticleSystem(atlas, budget, false);
     this.glow = new ParticleSystem(atlas, Math.round(budget * 0.7), true);
     this.dust.set(env.dust);
@@ -58,7 +65,7 @@ export class RaceVfx {
       const c = DRIFT_RGB[k.driftLevel] ?? DRIFT_RGB[0]!;
       for (const w of [k.wheelL, k.wheelR]) {
         for (let i = this.rate(index * 16 + 1, 34, dt); i > 0; i--) {
-          this.solid.emit({ x: w.x, y: w.y + 0.12, z: w.z, vx: bx * 1.5, vy: 0.9, vz: bz * 1.5, spread: 1.4, life: 0.55, size: 0.7, grow: 2.6, sprite: SPRITE.kSmoke, r: 0.95, g: 0.95, b: 0.98, alpha: 0.5, drag: 2, spin: 2 });
+          this.solid.emit({ x: w.x, y: w.y + 0.12, z: w.z, vx: bx * 1.5, vy: 0.9, vz: bz * 1.5, spread: 1.4, life: 0.55, size: 0.7, grow: 2.6, sprite: this.lite ? SPRITE.smoke : SPRITE.kSmoke, r: 0.95, g: 0.95, b: 0.98, alpha: this.lite ? 0.4 : 0.5, drag: 2, spin: 2 });
         }
         if (k.driftLevel > 0) {
           for (let i = this.rate(index * 16 + 2, 26 + k.driftLevel * 16, dt); i > 0; i--) {
@@ -70,7 +77,7 @@ export class RaceVfx {
     if (k.grounded && moving && (k.braking || k.spinning)) {
       for (let i = this.rate(index * 16 + 3, 26, dt); i > 0; i--) {
         const w = Math.random() < 0.5 ? k.wheelL : k.wheelR;
-        this.solid.emit({ x: w.x, y: w.y + 0.1, z: w.z, vy: 0.8, spread: 1.6, life: 0.6, size: 0.8, grow: 2.4, sprite: SPRITE.kSmoke, r: 0.88, g: 0.88, b: 0.9, alpha: 0.42, drag: 2, spin: 2 });
+        this.solid.emit({ x: w.x, y: w.y + 0.1, z: w.z, vy: 0.8, spread: 1.6, life: 0.6, size: 0.8, grow: 2.4, sprite: this.lite ? SPRITE.smoke : SPRITE.kSmoke, r: 0.88, g: 0.88, b: 0.9, alpha: this.lite ? 0.35 : 0.42, drag: 2, spin: 2 });
       }
     }
     // poeira/neve/areia: fora da pista ou em pisos soltos
@@ -80,8 +87,8 @@ export class RaceVfx {
       const amount = (k.onRoad ? 14 : 30) * Math.min(1, Math.abs(k.speed) / 18);
       for (let i = this.rate(index * 16 + 4, amount, dt); i > 0; i--) {
         const w = Math.random() < 0.5 ? k.wheelL : k.wheelR;
-        const gravel = i % 4 === 0;
-        this.solid.emit({ x: w.x, y: w.y + 0.15, z: w.z, vx: bx * 2.5, vy: gravel ? 3 : 1.6, vz: bz * 2.5, spread: 2.2, life: gravel ? 0.5 : 0.8, size: gravel ? 0.6 : 0.9, grow: gravel ? 1.2 : 3, sprite: gravel ? SPRITE.kGravel : SPRITE.kPuff, r: d.r, g: d.g, b: d.b, alpha: gravel ? 0.85 : 0.5, drag: 1.6, gravity: gravel ? 9 : 0, spin: 2 });
+        const gravel = !this.lite && i % 4 === 0;
+        this.solid.emit({ x: w.x, y: w.y + 0.15, z: w.z, vx: bx * 2.5, vy: gravel ? 3 : 1.6, vz: bz * 2.5, spread: 2.2, life: gravel ? 0.5 : 0.8, size: gravel ? 0.6 : 0.9, grow: gravel ? 1.2 : 3, sprite: gravel ? SPRITE.kGravel : this.lite ? SPRITE.dust : SPRITE.kPuff, r: d.r, g: d.g, b: d.b, alpha: gravel ? 0.85 : 0.5, drag: 1.6, gravity: gravel ? 9 : 0, spin: 2 });
       }
     }
     if (k.grounded && moving && k.surface === 4 && k.onRoad) {
@@ -130,7 +137,7 @@ export class RaceVfx {
     const n = Math.min(22, 6 + Math.round(impact * 1.5));
     for (let i = 0; i < n; i++) {
       const a = Math.random() * Math.PI * 2;
-      this.solid.emit({ x, y: y + 0.1, z, vx: Math.cos(a) * 5, vy: 1.2, vz: Math.sin(a) * 5, life: 0.6, size: 0.9, grow: 2.8, sprite: SPRITE.kPuff, r: d.r, g: d.g, b: d.b, alpha: 0.55, drag: 3, spin: 2 });
+      this.solid.emit({ x, y: y + 0.1, z, vx: Math.cos(a) * 5, vy: 1.2, vz: Math.sin(a) * 5, life: 0.6, size: 0.9, grow: 2.8, sprite: this.lite ? SPRITE.dust : SPRITE.kPuff, r: d.r, g: d.g, b: d.b, alpha: 0.55, drag: 3, spin: 2 });
     }
   }
 
