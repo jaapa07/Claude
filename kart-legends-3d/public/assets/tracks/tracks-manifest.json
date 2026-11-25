@@ -73,14 +73,14 @@
   },
   {
     "id": "jardim-celeste",
-    "length": 1134,
-    "samples": 567,
-    "triangles": 410394,
-    "glbBytes": 8895480,
-    "jsonBytes": 61337,
-    "props": 266,
+    "length": 1180,
+    "samples": 590,
+    "triangles": 424451,
+    "glbBytes": 9215976,
+    "jsonBytes": 64549,
+    "props": 274,
     "animated": 42,
-    "colliders": 102,
+    "colliders": 111,
     "warnings": []
   },
   {

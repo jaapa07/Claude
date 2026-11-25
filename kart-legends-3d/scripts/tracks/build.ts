@@ -91,6 +91,22 @@ export async function buildTrack(def: TrackDef, opts: BuildOptions): Promise<Bui
   });
   // nas entradas e saídas de atalho não pode haver muro na pista principal
   for (const sc of shortcuts) for (const j of [sc.from, sc.to]) for (let d = -10; d <= 10; d++) main.wall[(((j + d) % n) + n) % n] = 0;
+  // bifurcação suave: enquanto o atalho corre colado à pista, o muro do lado dele também fica aberto
+  for (const sc of shortcuts) {
+    const p = sc.path;
+    for (let k = 0; k < p.n; k++) {
+      let best = 0, bd = Infinity;
+      for (let d = -30; d <= 30 + ((sc.to - sc.from + n) % n); d++) {
+        const i = (((sc.from + d) % n) + n) % n;
+        const q = main.pos[i]!; const dd = (q.x - p.pos[k]!.x) ** 2 + (q.z - p.pos[k]!.z) ** 2;
+        if (dd < bd) { bd = dd; best = i; }
+      }
+      const rel = p.pos[k]!.clone().sub(main.pos[best]!);
+      const lat = rel.x * main.side[best]!.x + rel.z * main.side[best]!.z;
+      if (Math.abs(lat) > main.halfWidth[best]! + p.halfWidth[k]! + 2.5) continue;
+      for (let d = -3; d <= 3; d++) main.wall[(((best + d) % n) + n) % n]! &= lat > 0 ? ~1 : ~2;
+    }
+  }
   const allPaths = [main, ...shortcuts.map((s) => s.path)];
   const index = new RoadIndex(allPaths);
 
