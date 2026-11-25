@@ -121,14 +121,14 @@
   },
   {
     "id": "vulcao-rubro",
-    "length": 1184,
-    "samples": 592,
-    "triangles": 147518,
-    "glbBytes": 3900876,
-    "jsonBytes": 100984,
-    "props": 407,
+    "length": 1238,
+    "samples": 619,
+    "triangles": 148066,
+    "glbBytes": 3946332,
+    "jsonBytes": 103931,
+    "props": 409,
     "animated": 3,
-    "colliders": 200,
+    "colliders": 199,
     "warnings": []
   },
   {

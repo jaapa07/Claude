@@ -205,11 +205,17 @@ export const VULCAO_RUBRO: TrackDef = {
   },
   points: [
     { x: 0, z: -150, y: 3, w: 9, wall: 'both', tag: 'largada', flat: 16 },
-    { x: 80, z: -150, y: 3, tag: 'forja' },
-    { x: 150, z: -120, y: 3.5, bank: 4 },
-    { x: 180, z: -50, y: 5, bank: 0, w: 8, wall: 'none', tag: 'encosta' },
-    { x: 150, z: 10, y: 7, bank: -4, surface: 'dirt' },
-    { x: 186, z: 70, y: 9, bank: 3 },
+    { x: 70, z: -150, y: 3, tag: 'forja' },
+    // chicane da forja
+    { x: 108, z: -160, y: 3.2, w: 8 },
+    { x: 136, z: -138, y: 3.4 },
+    { x: 162, z: -116, y: 3.8, bank: 4, w: 8.5 },
+    { x: 182, z: -60, y: 5, bank: 0, w: 8, wall: 'none', tag: 'encosta' },
+    // serpentina à beira da lava
+    { x: 160, z: -22, y: 6, w: 7.5, bank: -5, surface: 'dirt' },
+    { x: 154, z: 14, y: 7, bank: 0 },
+    { x: 182, z: 40, y: 8, bank: 5 },
+    { x: 184, z: 76, y: 9, bank: 3, w: 8 },
     { x: 140, z: 120, y: 11, bank: 0, surface: 'asphalt', w: 7, bridge: true, wall: 'both', tag: 'ponte' },
     { x: 70, z: 140, y: 11, bridge: false },
     { x: 10, z: 120, y: 12, w: 8, wall: 'none', tag: 'cratera' },
@@ -219,8 +225,12 @@ export const VULCAO_RUBRO: TrackDef = {
     { x: -175, z: 96, y: 7, bank: 0, surface: 'dirt', tag: 'cinzas' },
     { x: -150, z: 40, y: 6, bank: -4 },
     { x: -180, z: -20, y: 5, surface: 'asphalt', bank: 0, wall: 'both', tag: 'canal' },
-    { x: -150, z: -90, y: 4, w: 7, bridge: true, tag: 'ponte2' },
-    { x: -90, z: -140, y: 3, w: 9, bridge: false, wall: 'both', tag: 'retorno' },
+    // ponte de ferro com cotovelo e grampo de raio decrescente até a reta
+    { x: -164, z: -70, y: 4.4, w: 7, bridge: true, tag: 'ponte2' },
+    { x: -140, z: -104, y: 4 },
+    { x: -150, z: -134, y: 3.6, w: 8.5, bridge: false, bank: 4 },
+    { x: -124, z: -156, y: 3.2 },
+    { x: -84, z: -150, y: 3, w: 9, bank: 0, wall: 'both', tag: 'retorno' },
   ],
   shortcuts: [
     { id: 'trilha-de-cinzas', from: 'cinzas+6', to: 'canal-30', risky: true, points: [{ x: -184, z: 44, y: 6.2, w: 3.8, surface: 'dirt' }] },
@@ -228,12 +238,12 @@ export const VULCAO_RUBRO: TrackDef = {
   items: ['forja+30', 'encosta+20', 'cratera-20', 'cinzas-20', 'retorno-20'],
   boostPads: [
     { at: 'salto-40' }, { at: 'salto-40', offset: 4 }, { at: 'salto-40', offset: -4 },
-    { at: 'ponte-20' }, { at: 'canal+30', offset: 2 },
+    { at: 'ponte-20' }, { at: 'retorno', offset: 2 },
   ],
-  ramps: [{ at: 'salto-9', width: 14, length: 8, height: 1.9 }, { at: 'encosta+60', offset: 2, width: 7, height: 1.4 }],
+  ramps: [{ at: 'salto-9', width: 14, length: 8, height: 1.9 }, { at: 'encosta-26', offset: 2, width: 7, height: 1.4 }],
   obstacles: [
     { id: 'magma-1', kind: 'roller', model: 'bola-magma', at: 'canal+10', from: 6.5, to: -6.5, period: 5.6, radius: 1.5, y: 1.5 },
-    { id: 'magma-2', kind: 'roller', model: 'bola-magma', at: 'canal+60', from: -6, to: 6, period: 6.2, phase: 0.45, radius: 1.5, y: 1.5 },
+    { id: 'magma-2', kind: 'roller', model: 'bola-magma', at: 'canal-24', from: -6, to: 6, period: 6.2, phase: 0.45, radius: 1.5, y: 1.5 },
     { id: 'vagao-1', kind: 'slider', model: 'vagonete-lava', at: 'forja+60', from: -6.5, to: 6.5, period: 6.4, radius: 1.3 },
   ],
   scenery: [
@@ -243,7 +253,8 @@ export const VULCAO_RUBRO: TrackDef = {
     { prop: 'grade-ferro', from: 'ponte-2', to: 'ponte+66', side: 'both', every: 6, dist: [-1.4, -1.4], face: 'along', noCollide: true },
     { prop: 'grade-ferro', from: 'ponte2-2', to: 'ponte2+66', side: 'both', every: 6, dist: [-1.4, -1.4], face: 'along', noCollide: true },
     { prop: ['fumarola', 'cristal-obsidiana'], from: 'cinzas-40', to: 'cinzas+60', side: 'both', every: 14, dist: [2, 7], face: 'random' },
-    { prop: 'placa-seta-esq', from: 'encosta+20', to: 'encosta+60', side: 'right', every: 9, dist: [1, 1.5] },
+    { prop: 'placa-seta-esq', from: 'encosta+56', to: 'encosta+80', side: 'right', every: 8, dist: [1, 1.5] },
+    { prop: 'placa-seta-dir', from: 'forja+14', to: 'forja+36', side: 'left', every: 8, dist: [1, 1.5] },
     { prop: 'placa-seta-dir', from: 'cinzas-40', to: 'cinzas', side: 'left', every: 9, dist: [1, 1.5] },
   ],
   singles: [
