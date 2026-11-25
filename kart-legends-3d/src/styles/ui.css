@@ -301,3 +301,8 @@ input[type="range"]:focus-visible { outline: 0.16rem solid var(--amber); outline
   .workshop { column-gap: 0.7rem; }
   .swatches { margin-top: 0.2rem; min-width: 0; }
 }
+
+/* Aceleração no toque (Configurações e pausa) */
+.accel-picker { display: flex; flex-direction: column; gap: 0.35rem; margin-top: 0.9rem; }
+.accel-picker__label { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.accel-picker__hint { font-size: 0.78rem; color: var(--muted); }

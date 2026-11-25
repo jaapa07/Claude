@@ -61,8 +61,8 @@ Tudo é remapeável em **Configurações**, onde também ficam a sensibilidade d
 ## Celular (iPhone / Android)
 
 Em telas de toque aparecem controles na tela e, por padrão, o kart **acelera sozinho**. Para acelerar
-manualmente, desligue **Aceleração automática** em Configurações: aparece o botão **Acelerar** no canto
-direito; deslize o polegar dele para **Drift** sem levantar (segurar Drift também acelera).
+manualmente, escolha **Manual** em "Aceleração no toque" — no menu de pausa (botão ❚❚) ou em Configurações:
+aparece o botão **Acelerar** no canto direito; deslize o polegar dele para **Drift** sem levantar (segurar Drift também acelera).
 
 
 | Ação | Toque |

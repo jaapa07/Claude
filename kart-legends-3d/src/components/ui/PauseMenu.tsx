@@ -1,6 +1,8 @@
 import { useGameStore } from '@/app/gameStore';
 import { MODE_INFO } from '@/app/flow';
 import { TRACK_BY_ID } from '@/data/tracks';
+import { isTouchDevice } from '@/app/settingsStore';
+import { AccelerationPicker } from './AccelerationPicker';
 import { Btn } from './common';
 import { SettingsScreen } from './SettingsScreen';
 import { useUiStore } from './uiStore';
@@ -20,6 +22,7 @@ export function PauseMenu(): JSX.Element {
       </div>
     );
   }
+  const touch = isTouchDevice();
   const modeName = MODE_INFO.find((m) => m.id === race?.mode)?.name ?? '';
   return (
     <div className="overlay">
@@ -32,6 +35,7 @@ export function PauseMenu(): JSX.Element {
           <Btn testId="btn-pause-settings" onClick={() => setSettingsOpen(true)}>Configurações</Btn>
           <Btn testId="btn-quit" variant="danger" sound="ui_back" onClick={quitToMenu}>Sair</Btn>
         </div>
+        {touch && <AccelerationPicker />}
       </section>
     </div>
   );
