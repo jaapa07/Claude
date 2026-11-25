@@ -199,7 +199,7 @@ export class Flow {
       let changed = false;
       for (const d of input.devices()) {
         const s = input.state(d);
-        const k = d === 'kb' ? (input.menu.left ? -1 : input.menu.right ? 1 : 0) : (Math.abs(s.mx) > 0.6 ? Math.sign(s.mx) : 0);
+        const k = d === 'kb' ? input.kbDir : (Math.abs(s.mx) > 0.6 ? Math.sign(s.mx) : 0);
         const key = `__ax_${d}` as const;
         const prev = (this as any)[key] ?? 0;
         if (k !== 0 && prev === 0) { pos.set(d, THREE.MathUtils.clamp((pos.get(d) ?? 0) + k, -1, 1)); changed = true; audio.play('ui_move', 0.5); }

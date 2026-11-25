@@ -18,6 +18,10 @@ class InputSys {
   private menuPrev = { up: false, down: false, left: false, right: false, ok: false, back: false, start: false };
   menu = { up: false, down: false, left: false, right: false, ok: false, back: false, start: false };
   lastKey: string | null = null;
+  /** borda esquerda/direita só do teclado (-1/0/1), para telas onde cada dispositivo age por si */
+  kbDir = 0;
+  private kbPrevL = false;
+  private kbPrevR = false;
   private repeatT = 0;
   private heldDir = '';
 
@@ -67,6 +71,10 @@ class InputSys {
       this.menu[key] = (raw[key] && !this.menuPrev[key]) || (rep && key === dir);
       this.menuPrev[key] = raw[key];
     }
+    const kl = this.down.has('ArrowLeft') || this.down.has('KeyA') || this.tapped.has('ArrowLeft') || this.tapped.has('KeyA');
+    const kr = this.down.has('ArrowRight') || this.down.has('KeyD') || this.tapped.has('ArrowRight') || this.tapped.has('KeyD');
+    this.kbDir = kl && !this.kbPrevL ? -1 : kr && !this.kbPrevR ? 1 : 0;
+    this.kbPrevL = kl; this.kbPrevR = kr;
     this.tapped.clear();
   }
 

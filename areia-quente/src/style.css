@@ -239,3 +239,24 @@ body { font-family: var(--body); color: var(--white); user-select: none; -webkit
 .career { flex: 1; min-width: 300px; font-weight: 600; } .career b { color: var(--gold); margin-right: 8px; }
 .ballpick { display: flex; align-items: center; gap: 10px; text-align: center; }
 .ballpick .arrow { font-family: var(--title); font-size: 34px; color: var(--gold); cursor: pointer; }
+
+/* ---------- telas estreitas (celular) ---------- */
+@media (max-width: 720px) {
+  .hud .score { top: 6px; transform: translateX(-50%) scale(0.92); transform-origin: top center; max-width: 100vw; }
+  .hud .crest { width: 58px; height: 34px; }
+  .hud .bar { height: 34px; padding: 0 6px; gap: 5px; }
+  .hud .bar .tid { display: none; }
+  .hud .bar img.flag { width: 26px; height: 18px; }
+  .hud .bar .goals { font-size: 22px; min-width: 32px; }
+  .hud .clock { padding: 1px 6px; } .hud .clock .per { font-size: 9px; } .hud .clock .time { font-size: 15px; }
+  .hud .mult { top: 48px; font-size: 20px; } .hud .mult.l { left: 8px; } .hud .mult.r { right: 8px; }
+  .hud .pl { bottom: 10px; min-width: 0; } .hud .pl.l { left: 8px; } .hud .pl.r { right: 8px; }
+  .hud .pl .nm { font-size: 12px; } .hud .pl .st { width: 110px; }
+  .hud .big { font-size: 48px; }
+  .hud .challenge { font-size: 12px; top: 56px; left: 8px; right: 8px; }
+  .hud .lower .n { font-size: 18px; }
+  .btn { min-width: 0; font-size: 20px; }
+  .menu { grid-template-columns: 1fr; } .menu .col { padding: 0 16px; } .menu img.logo { width: 260px; }
+  .tcard { width: 46vw; min-width: 0; padding: 8px; } .tcard .stats { width: 100%; font-size: 12px; } .tcard img.em { width: 80px; } .tcard .name { font-size: 20px; }
+  .overlay .box { min-width: 0; width: 92vw; }
+}

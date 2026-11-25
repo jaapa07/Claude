@@ -168,6 +168,7 @@ const SUITES = {
     const cols = await g.ev(() => [...document.querySelectorAll('.slot')].map((s) => s.textContent.trim()));
     log('colunas:', JSON.stringify(cols));
     check(cols[0].includes('CONTROLE') && cols[2].includes('CONTROLE'), 'controles movidos para CASA e FORA', n);
+    check(cols[0].includes('TECLADO'), 'teclado não é arrastado pelo analógico dos controles', n);
     await g.key('Enter'); await g.waitScene('teams');
     await sleep(800); await g.key('Enter');
     await g.waitFor(() => window.__game.flow.match, null, 120000); await skipIntro(g);
