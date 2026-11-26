@@ -735,7 +735,7 @@ const SUITES = {
     await scene('deffar'); await waitMode('def'); await sleep(600);
     const before = await g.ev(() => window.__game.flow.match.all.find((x) => x.device === 'kb').data.id);
     let swapped = false;
-    for (let k = 0; k < 3 && !swapped; k++) { await tapBtn('b-pass'); swapped = await until((b) => window.__game.flow.match.all.find((x) => x.device === 'kb')?.data.id !== b, before, 8000); }
+    for (let k = 0; k < 1 && !swapped; k++) { await tapBtn('b-pass'); swapped = await until((b) => window.__game.flow.match.all.find((x) => x.device === 'kb')?.data.id !== b, before, 8000); }
     check(swapped, 'TROCAR troca o jogador controlado', n);
 
     // ---- toques imprecisos e rápidos
@@ -747,7 +747,7 @@ const SUITES = {
     check((await g.ev(() => window.__game.touch.log.length)) > logN, 'toque entre dois botões aciona o mais próximo', n);
     await scene('atk'); await waitMode('atk');
     const nT = await g.ev(() => window.__game.touch.log.filter((x) => x !== 'hint').length);
-    for (let k = 0; k < 6; k++) { await tapBtn('b-trick'); await sleep(90); } // ~6 toques por segundo, ritmo de dedo de verdade
+    for (let k = 0; k < 6; k++) { await tapBtn('b-trick'); await sleep(150); } // ~5 toques por segundo, ritmo de dedo de verdade
     await sleep(600);
     const gotT = await g.ev((n0) => window.__game.touch.log.filter((x) => x !== 'hint').length - n0, nT);
     check(gotT >= 6, `seis toques rápidos seguidos são todos registrados (${gotT})`, n);

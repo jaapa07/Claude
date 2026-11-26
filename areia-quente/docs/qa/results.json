@@ -263,7 +263,7 @@
    "✔ CHUTE segurado carrega a força (56%) e chuta",
    "✔ LENÇOL levanta a bola",
    "✔ FIRULA faz embaixadinha/chapéu",
-   "✔ CORRER aumenta a velocidade (2.1 → 5.0 m/s)",
+   "✔ CORRER aumenta a velocidade (2.7 → 4.8 m/s)",
    "✔ FOGO apagado com a barra vazia",
    "✔ tocar em botão apagado mostra uma dica",
    "✔ FOGO com a barra cheia ativa o Modo Fogo",
@@ -274,25 +274,25 @@
    "✔ TROCAR, MARCAR e CARRINHO grande ({\"pass\":\"TROCAR\",\"press\":true,\"tackle\":76})",
    "✔ CARRINHO dá o carrinho",
    "✔ MARCAR corre sozinho até o adversário (9.3 → 6.2 m)",
-   "✔ TROCAR troca o jogador controlado",
+   "✘ TROCAR troca o jogador controlado",
    "✔ toque entre dois botões aciona o mais próximo",
-   "✔ seis toques rápidos seguidos são todos registrados (6)",
+   "✘ seis toques rápidos seguidos são todos registrados (5)",
    "✔ três dedos: joystick + CORRER + CHUTE ({\"mx\":1,\"run\":true,\"shoot\":true})",
    "✔ soltar todos os dedos solta tudo",
    "✔ PASSE rasteiro: chega no pé do companheiro (ele andou 0.00 m depois do passe)",
    "✔ LENÇOL: chega no pé do companheiro (ele andou 0.00 m depois do passe)",
    "✔ mira assistida: 20–25° fora do alvo ainda escolhe o companheiro certo (✔✔✔✔✔✔)",
-   "  diagnóstico do passe apontado: {\"mx\":0.91,\"my\":0.42,\"ctrl\":\"CAJU\",\"tgt\":\"ZÉ COQUEIRO\"}",
-   "✘ passe pelo toque apontando torto vai para o companheiro da direção (MAROLINHA)",
+   "  diagnóstico do passe apontado: {\"mx\":0.82,\"my\":0.57,\"ctrl\":\"CAJU\",\"tgt\":\"ZÉ COQUEIRO\"}",
+   "✔ passe pelo toque apontando torto vai para o companheiro da direção (ZÉ COQUEIRO)",
    "✔ proteção ao dominar a bola",
    "✔ tabela: quem passou dispara para receber de volta",
    "✔ tabela: o passador corre para o espaço",
    "✔ bola aérea ao alcance: aviso CHUTE! e botão piscando",
    "✔ MARCAR colado no adversário dá o bote",
    "✔ troca automática passa o controle para quem está perto da bola",
-   "  registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off hint fire:on pass:on tackle:on press:on pass:on pass:on pass:on shoot:on trick:on trick:off hint trick:off hint trick:off hint trick:on trick:off hint sprint:on shoot:on pass:on lob:on pass:on pass:on press:on"
+   "  registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off hint fire:on pass:on tackle:on press:on pass:on pass:on pass:on shoot:on trick:on trick:off hint trick:off hint trick:on trick:off hint sprint:on shoot:on pass:on lob:on pass:on pass:on press:on"
   ],
-  "secs": 385,
-  "at": "2026-11-26T13:37:59.670Z"
+  "secs": 369,
+  "at": "2026-11-26T13:44:22.460Z"
  }
 }

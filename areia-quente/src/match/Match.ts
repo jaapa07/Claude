@@ -834,7 +834,9 @@ export class Match {
     const live = st === 'play' || st === 'kickoff' || st === 'setpiece';
     for (const tm of this.teams) {
       if (live) {
-        if (tm.devices.length) for (const p of tm.players) if (p.device && p.onField) this.humanUpdate(p, dt);
+        // lista fixada antes: se TROCAR/passe mudar o controle neste quadro, o novo jogador não relê o mesmo botão
+        // (antes o controle ia e voltava no mesmo quadro e o TROCAR às vezes "não funcionava")
+        if (tm.devices.length) for (const p of tm.players.filter((x) => x.device && x.onField)) if (p.device) this.humanUpdate(p, dt);
         teamAI(this, tm, dt);
         gkAI(this, tm, dt);
       }
