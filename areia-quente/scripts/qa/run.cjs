@@ -551,10 +551,12 @@ const SUITES = {
     await g.waitFor(() => document.getElementById('touch').classList.contains('atk'), null, 20000).catch(() => {});
     await sleep(500);
     const sh = await g.center('#touch .b-shoot');
+    const n0 = await g.ev(() => window.__game.touch.log.length);
     await g.touch('touchStart', [{ x: 240, y: 270, id: 1 }, { x: sh.x, y: sh.y, id: 2 }]);
     await sleep(250);
-    const both = await g.ev(() => { const i = window.__game.input; return { held: i.held('kb', 'shoot'), mx: i.state('kb').mx }; });
-    check(both.held && both.mx > 0.5, 'multitoque: joystick + CHUTE ao mesmo tempo', n);
+    // a CPU pode roubar a bola nesse meio-tempo e o layout mudar: vale qualquer botão acionado pelo 2º dedo
+    const both = await g.ev((n0) => { const i = window.__game.input; return { btn: window.__game.touch.log.slice(n0).join(','), mx: i.state('kb').mx }; }, n0);
+    check(both.btn.length > 0 && both.mx > 0.5, `multitoque: joystick + botão ao mesmo tempo (${both.btn})`, n);
     await g.touch('touchEnd', []);
     await sleep(300);
     const rel = await g.ev(() => { const i = window.__game.input; return { held: i.held('kb', 'shoot'), mx: i.state('kb').mx }; });
@@ -769,13 +771,16 @@ const SUITES = {
         mate.pos.set(d * 7, 0, 2.5); mate.vel.set(0, 0, 0); mate.sync(); me.yaw = Math.atan2(d, 0); me.sync();
         window.__qaMate = mate; window.__qaMate0 = mate.pos.clone(); return mate.data.id; });
       await tapBtn(btn);
+      // mede a partir do momento do passe (antes disso o companheiro ainda podia estar se desmarcando)
+      await until(() => window.__game.flow.match.passTo === window.__qaMate, null, 10000);
+      await g.ev(() => { window.__qaMate0 = window.__qaMate.pos.clone(); });
       const got = await until(() => window.__game.flow.match.ball.owner === window.__qaMate, null, 30000);
       const moved = await g.ev(() => window.__qaMate.pos.distanceTo(window.__qaMate0));
-      check(got && moved < maxMove, `${label}: chega no pé do companheiro (ele andou ${moved.toFixed(2)} m)`, n);
+      check(got && moved < maxMove, `${label}: chega no pé do companheiro (ele andou ${moved.toFixed(2)} m depois do passe)`, n);
       void info;
     };
-    await feet('b-pass', 'PASSE rasteiro', 1.0);
-    await feet('b-lob', 'LENÇOL', 1.6);
+    await feet('b-pass', 'PASSE rasteiro', 0.5);
+    await feet('b-lob', 'LENÇOL', 0.8);
 
     // ---- jogabilidade nova
     await scene('atk'); await waitMode('atk');
