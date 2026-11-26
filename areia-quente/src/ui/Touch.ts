@@ -129,6 +129,7 @@ export class TouchControls {
     input.virtualKey(this.key(b.action), on);
   }
   private showHint(text: string) {
+    this.log.push('hint');
     this.hint.textContent = text;
     this.hint.classList.add('on');
     this.hintT = performance.now();
@@ -198,7 +199,9 @@ export class TouchControls {
     const set = st !== 'play';
     const want: Mode = !tm || hasBall || taker ? 'atk'
       : set ? ((m.sp?.team ?? m.kickoffTeam) === tm ? 'sup' : 'def')
-      : owner && owner.team === tm ? 'sup' : 'def';
+      : owner ? (owner.team === tm ? 'sup' : 'def')
+      // bola solta: se o último toque foi do meu time (passe, chute, firula em andamento) continua ATAQUE
+      : b.lastTouch?.team === tm ? 'atk' : 'def';
     const now = performance.now();
     const holding = this.btns.some((x) => x.ids.size > 0);
     if (want !== this.mode) {

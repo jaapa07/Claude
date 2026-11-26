@@ -622,7 +622,7 @@ const SUITES = {
       opp.field.forEach((o, i) => { if (!o.isGK) { o.pos.set(-dir * 14, 0, -8 + i * 5); o.sync(); } });
       const me = me0;
       me.pos.set(0, 0, 0); me.yaw = Math.atan2(dir, 0); me.sync();
-      b.owner = null; b.held = false; b.vel.set(0, 0, 0);
+      b.owner = null; b.held = false; b.vel.set(0, 0, 0); b.pos.set(0, 0.11, 0); b.lastTouch = null; m.passTo = null;
       if (kind === 'atk') { m.takeBall(me); }
       if (kind === 'sup') { const mate = tm.field.find((x) => x !== me && !x.isGK); mate.pos.set(-dir * 6, 0, 3); mate.sync(); m.takeBall(mate); }
       if (kind === 'def') { const o = opp.field.find((x) => !x.isGK); o.pos.set(dir * 2.2, 0, 0.4); o.vel.set(0, 0, 0); o.sync(); m.takeBall(o); }
@@ -643,6 +643,8 @@ const SUITES = {
     await g.ev(() => { const m = window.__game.flow.match; m.hud.cinema(false); m.hud.show(true); m.beginKickoff(m.kickoffTeam); });
     await g.waitFor(() => ['kickoff', 'play'].includes(window.__game.flow.match.state), null, 60000);
     await sleep(800);
+    // troca automática desligada nos testes de botão (testada à parte no fim)
+    await g.ev(() => { window.__qaSettings = window.__game.settings; window.__qaSettings.autoSwitch = false; });
 
     // ---- ATAQUE (com a bola)
     await scene('atk'); check(await waitMode('atk'), 'ATAQUE: layout aparece com a bola', n);
@@ -684,27 +686,25 @@ const SUITES = {
     await sleep(400);
     check(await g.ev(() => document.querySelector('#touch .b-fire').classList.contains('off')), 'FOGO apagado com a barra vazia', n);
     await tapBtn('b-fire'); await sleep(300);
-    check(await g.ev(() => document.querySelector('#touch .t-hint').classList.contains('on')), 'tocar em botão apagado mostra uma dica', n);
+    check(await g.ev(() => window.__game.touch.log.includes('hint') && document.querySelector('#touch .t-hint').textContent.length > 5), 'tocar em botão apagado mostra uma dica', n);
     await g.ev(() => { window.__qaMe.team.heat = 1; }); await sleep(500);
     await tapBtn('b-fire');
     check(await until(() => window.__qaMe.team.fire > 0), 'FOGO com a barra cheia ativa o Modo Fogo', n);
     await g.ev(() => { window.__qaMe.team.fire = 0; });
     await g.shot('toques_ataque');
 
-    // ---- APOIO (companheiro da CPU com a bola)
-    await scene('sup'); check(await waitMode('sup'), 'APOIO: layout aparece com o companheiro na bola', n);
-    const lb = await g.ev(() => [document.querySelector('#touch .b-pass span').textContent, document.querySelector('#touch .b-lob span').textContent]);
-    check(lb[0] === 'PEDIR' && lb[1] === 'PEDIR ALTO', `rótulos PEDIR / PEDIR ALTO (${lb.join(', ')})`, n);
-    await g.shot('toques_apoio');
-    await tapBtn('b-pass');
-    check(await until(() => { const b = window.__game.flow.match.ball; return b.owner === window.__qaMe || (b.lastTouch && b.lastTouch !== window.__qaMe && !b.owner && b.speed > 2); }), 'PEDIR: o companheiro passa a bola', n);
-    check(await until(() => window.__game.flow.match.ball.owner === window.__qaMe, null, 30000), 'PEDIR: a bola chega no jogador', n);
-    await scene('sup'); await waitMode('sup');
-    await tapBtn('b-lob');
-    check(await until(() => { const b = window.__game.flow.match.ball; return !b.owner && b.pos.y > 0.9; }), 'PEDIR ALTO: companheiro cruza pelo alto', n);
+    // ---- companheiro ganha a bola: o controle passa para ele e o layout continua ATAQUE
+    await scene('sup');
+    check(await until(() => { const m = window.__game.flow.match; return m.ball.owner && m.ball.owner.device === 'kb'; }), 'companheiro com a bola recebe o controle', n);
+    check(await waitMode('atk'), 'layout ATAQUE para quem está com a bola', n);
+    // passe em voo do meu time: layout não pula para DEFESA
+    await scene('atk'); await waitMode('atk');
+    await tapBtn('b-pass'); await sleep(250);
+    check((await mode()) === 'atk', 'passe em andamento mantém o layout ATAQUE', n);
 
     // ---- DEFESA (adversário com a bola)
     await scene('def'); check(await waitMode('def'), 'DEFESA: layout aparece com o adversário na bola', n);
+    await sleep(900);
     const ld = await g.ev(() => ({ pass: document.querySelector('#touch .b-pass span').textContent, press: getComputedStyle(document.querySelector('#touch .b-press')).opacity > 0.5, tackle: document.querySelector('#touch .b-tackle').getBoundingClientRect().width }));
     check(ld.pass === 'TROCAR' && ld.press && ld.tackle > 60, `TROCAR, MARCAR e CARRINHO grande (${JSON.stringify(ld)})`, n);
     await g.shot('toques_defesa');
@@ -718,7 +718,7 @@ const SUITES = {
     const d1 = await g.ev(() => window.__qaOpp.pos.distanceTo(window.__qaMe.pos));
     await g.touch('touchEnd', []);
     check(d1 < d0 - 1, `MARCAR corre sozinho até o adversário (${d0.toFixed(1)} → ${d1.toFixed(1)} m)`, n);
-    await scene('deffar'); await waitMode('def');
+    await scene('deffar'); await waitMode('def'); await sleep(600);
     const before = await g.ev(() => window.__game.flow.match.all.find((x) => x.device === 'kb').data.id);
     await tapBtn('b-pass');
     check(await until((b) => window.__game.flow.match.all.find((x) => x.device === 'kb')?.data.id !== b, before), 'TROCAR troca o jogador controlado', n);
@@ -747,6 +747,11 @@ const SUITES = {
     check(three.mx > 0.5 && three.run && three.shoot, `três dedos: joystick + CORRER + CHUTE (${JSON.stringify(three)})`, n);
     await sleep(300);
     check(await g.ev(() => !window.__game.input.held('kb', 'sprint') && !window.__game.input.held('kb', 'shoot')), 'soltar todos os dedos solta tudo', n);
+    // troca automática: adversário com a bola longe de mim e perto de um companheiro
+    await g.ev(() => { window.__qaSettings.autoSwitch = true; });
+    await scene('deffar');
+    await g.ev(() => { const m = window.__game.flow.match; const me = window.__qaMe; const o = m.ball.owner; const mate = me.team.field.find((x) => x !== me && !x.isGK); mate.pos.copy(o.pos).add({ x: -me.team.dir * 1.5, y: 0, z: 0 }); mate.sync(); me.pos.set(-me.team.dir * 8, 0, -5); me.sync(); });
+    check(await until(() => window.__game.flow.match.all.find((x) => x.device === 'kb') !== window.__qaMe), 'troca automática passa o controle para quem está perto da bola', n);
     const log = await g.ev(() => window.__game.touch.log.join(' '));
     n.push('  registro de toques: ' + log.slice(0, 400));
   },

@@ -2,6 +2,7 @@ import './style.css';
 import { World } from './game/World';
 import { Flow } from './ui/Flow';
 import { input } from './core/Input';
+import { settings } from './core/Save';
 import { TouchControls, setupMobileBrowser } from './ui/Touch';
 import Stats from 'stats.js';
 
@@ -10,7 +11,7 @@ const flow = new Flow(world);
 // iPhone/Android: joystick e botões na tela + ajustes do navegador
 const touch = input.touch ? new TouchControls(flow) : null;
 setupMobileBrowser();
-const G = ((window as any).__game = { world, flow, input, touch, speed: 1 });
+const G = ((window as any).__game = { world, flow, input, touch, settings: settings.data, speed: 1 });
 
 // ?stats mostra o painel de FPS (stats.js)
 const stats = new URLSearchParams(location.search).has('stats') ? new Stats() : null;
