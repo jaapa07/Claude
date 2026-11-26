@@ -1,33 +1,33 @@
 # QA ponta a ponta
 
-Executado em 2026-11-26 15:37 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
+Executado em 2026-11-26 16:07 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
 
-**20/21 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
+**19/21 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
 bola perto do dono, controle duplicado, time humano sem jogador, estados presos, bola morta sem ninguém ir buscar).
 
 | Suíte | Resultado | Tempo |
 |---|---|---|
-| menus | ✔ OK | 242s |
+| menus | ✔ OK | 222s |
 | options | ✔ OK | 45s |
-| fullmatch | ✔ OK | 121s |
+| fullmatch | ✔ OK | 128s |
 | arenas | ✔ OK | 132s |
-| human | ✔ OK | 160s |
+| human | ✔ OK | 161s |
 | twoplayers | ✔ OK | 50s |
-| setpieces | ✔ OK | 60s |
+| setpieces | ✔ OK | 56s |
 | fouls | ✔ OK | 60s |
 | pausemenu | ✔ OK | 37s |
 | cup | ✔ OK | 164s |
-| pens | ✔ OK | 103s |
+| pens | ✔ OK | 74s |
 | training | ✔ OK | 32s |
 | minigames | ✔ OK | 561s |
 | achievements | ✔ OK | 64s |
 | memory | ✔ OK | 108s |
 | career | ✔ OK | 161s |
 | mobile | ✔ OK | 34s |
-| iphone | ✔ OK | 181s |
-| toques | ✔ OK | 331s |
-| goleiro | ✘ FALHOU | 124s |
-| formatos | ✔ OK | 156s |
+| iphone | ✘ FALHOU | 200s |
+| toques | ✔ OK | 291s |
+| goleiro | ✘ FALHOU | 109s |
+| formatos | ✔ OK | 154s |
 
 ## menus
 
@@ -61,8 +61,8 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 ## fullmatch
 
 - ✔ partida de 3 períodos termina na tela de resultado
-- ✔ ciclo de estados completo (kickoff, setpiece, play, halftime, replay, fulltime)
-- ✔ houve chutes (12,4)
+- ✔ ciclo de estados completo (play, goal, replay, kickoff, halftime, setpiece, fulltime)
+- ✔ houve chutes (8,11)
 
 ## arenas
 
@@ -71,8 +71,8 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 ## human
 
-- ✔ jogador humano executou ações pelo teclado (49)
-- ✔ time humano chutou a gol (4)
+- ✔ jogador humano executou ações pelo teclado (55)
+- ✔ time humano chutou a gol (5)
 - ✔ jogador controlado se movimentou
 
 ## twoplayers
@@ -116,7 +116,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 ## pens
 
 - ✔ empate → prorrogação → pênaltis
-- ✔ disputa termina no resultado (pênaltis 2,3)
+- ✔ disputa termina no resultado (pênaltis 2,1)
 
 ## training
 
@@ -185,7 +185,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔ soltar os dedos solta joystick e botão
 - ✔ jogador se moveu com o joystick
 - ✔ ATAQUE: PASSE/CHUTE/LENÇOL/FIRULA, sem CARRINHO ({"atk":true,"def":false,"pass":"PASSE","tackle":false,"trick":true,"lob":true,"shoot":true,"big":22.800048828125})
-- ✔ DEFESA: CARRINHO grande, TROCAR, sem FIRULA/LENÇOL ({"atk":false,"def":true,"pass":"TROCAR","tackle":true,"trick":false,"lob":false,"shoot":true,"big":76})
+- ✘ DEFESA: CARRINHO grande, TROCAR, sem FIRULA/LENÇOL ({"atk":true,"def":false,"pass":"PASSE","tackle":false,"trick":true,"lob":true,"shoot":true,"big":22.800048828125})
 - ✔ pausa esconde os controles de toque
 - ✔ continuar devolve os controles
 - ✔ na vertical aparece "Gire o aparelho"
@@ -197,11 +197,11 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 - ✔ ATAQUE: layout aparece com a bola
 - ✔ PASSE (toque rápido) passa a bola
-- ✔ CHUTE (toque rápido) chuta para o gol (20.0 m/s)
+- ✔ CHUTE (toque rápido) chuta para o gol (20.1 m/s)
 - ✔ CHUTE segurado carrega a força (56%) e chuta
 - ✔ LENÇOL levanta a bola
 - ✔ FIRULA faz embaixadinha/chapéu
-- ✔ CORRER aumenta a velocidade (2.7 → 4.8 m/s)
+- ✔ CORRER aumenta a velocidade (2.7 → 5.1 m/s)
 - ✔ FOGO apagado com a barra vazia
 - ✔ tocar em botão apagado mostra uma dica
 - ✔ FOGO com a barra cheia ativa o Modo Fogo
@@ -228,27 +228,27 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔ bola aérea ao alcance: aviso CHUTE! e botão piscando
 - ✔ MARCAR colado no adversário dá o bote
 - ✔ troca automática passa o controle para quem está perto da bola
--   registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off hint fire:on pass:on tackle:on press:on pass:on shoot:on trick:on trick:off hint trick:off hint trick:on trick:off hint sprint:on shoot:on pass:on lob:on pass:on pass:on press:on
+-   registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off hint fire:on pass:on tackle:on press:on pass:on shoot:on trick:on trick:off hint trick:off hint trick:off hint trick:off hint sprint:on shoot:on pass:on lob:on pass:on pass:on press:on
 
 ## goleiro
 
-- ✔ 24 chutes contra os dois goleiros sem travar (24 resolvidos, 1 defesas agarradas, maior tempo com a bola 0.0 s)
+- ✔ 24 chutes contra os dois goleiros sem travar (24 resolvidos, 1 defesas agarradas, maior tempo com a bola 0.2 s)
 - ✔ goleiro nunca fica mais de 7 s com a bola na mão
 - ✔ meu goleiro agarra e recebe o controle
 - ✔ aviso "Goleiro com a bola" + PASSE/LANÇAR piscando ({"msg":"Goleiro com a bola: toque PASSE ou LANÇAR","wait":true,"label":"LANÇAR"})
 - ✔ goleiro anda com a bola na mão (0.6 m)
-- ✘ tocar PASSE repõe a bola {"log":"pass:off hint","held":true,"dev":null,"kick":null,"holdT":1.8,"mode":"atk","cls":"on atk"}
-- ✘ sem tocar em nada, o goleiro espera e repõe sozinho aos 6 s (com 5 s ainda segurando: true; aos 7,5 s solto: false)
+- ✔ tocar PASSE repõe a bola 
+- ✘ sem tocar em nada, o goleiro espera e repõe sozinho aos 6 s (com 5 s ainda segurando: false; aos 7,5 s solto: true) {"chg":["kb→null st=setpiece held=false wp.giveControl<wp.setPiece<http://game.local/bundle/main-7v9-TQz9.js:4505:67389"],"dev":null,"holdT":1,"gk":"TATUÍ"}
 
 ## formatos
 
 - ✔ seletor de formato na escolha de times (3x3 4x4 5x5)
 - ✔ clicar em 3x3 seleciona o formato
 - ✔ 3x3: 3 em campo (com goleiro) e 7 no banco [{"field":3,"bench":7,"gk":true,"slots":"014"},{"field":3,"bench":7,"gk":true,"slots":"014"}]
-- ✔ 3x3: a partida anda (relógio 30s, estado goal, placar 1x0, chutes 1x0)
+- ✔ 3x3: a partida anda (relógio 12s, estado replay, placar 0x1, chutes 0x1)
 - ✔ 4x4: 4 em campo (com goleiro) e 6 no banco [{"field":4,"bench":6,"gk":true,"slots":"0123"},{"field":4,"bench":6,"gk":true,"slots":"0123"}]
-- ✔ 4x4: a partida anda (relógio 33s, estado goal, placar 1x0, chutes 2x0)
+- ✔ 4x4: a partida anda (relógio 16s, estado replay, placar 0x1, chutes 0x1)
 - ✔ 5x5: 5 em campo (com goleiro) e 5 no banco [{"field":5,"bench":5,"gk":true,"slots":"01234"},{"field":5,"bench":5,"gk":true,"slots":"01234"}]
-- ✔ 5x5: a partida anda (relógio 36s, estado play, placar 0x0, chutes 0x0)
+- ✔ 5x5: a partida anda (relógio 33s, estado goal, placar 0x1, chutes 0x1)
 
 Capturas de tela das suítes em `docs/qa/`.

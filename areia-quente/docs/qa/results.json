@@ -23,8 +23,8 @@
    "✔ opção 8 → credits",
    "✔   ESC volta ao menu"
   ],
-  "secs": 242,
-  "at": "2026-11-26T15:32:18.146Z"
+  "secs": 222,
+  "at": "2026-11-26T16:02:56.619Z"
  },
  "options": {
   "name": "options",
@@ -43,11 +43,11 @@
   "ok": true,
   "notes": [
    "✔ partida de 3 períodos termina na tela de resultado",
-   "✔ ciclo de estados completo (kickoff, setpiece, play, halftime, replay, fulltime)",
-   "✔ houve chutes (12,4)"
+   "✔ ciclo de estados completo (play, goal, replay, kickoff, halftime, setpiece, fulltime)",
+   "✔ houve chutes (8,11)"
   ],
-  "secs": 121,
-  "at": "2026-11-26T15:32:18.146Z"
+  "secs": 128,
+  "at": "2026-11-26T16:02:56.619Z"
  },
  "arenas": {
   "name": "arenas",
@@ -63,12 +63,12 @@
   "name": "human",
   "ok": true,
   "notes": [
-   "✔ jogador humano executou ações pelo teclado (49)",
-   "✔ time humano chutou a gol (4)",
+   "✔ jogador humano executou ações pelo teclado (55)",
+   "✔ time humano chutou a gol (5)",
    "✔ jogador controlado se movimentou"
   ],
-  "secs": 160,
-  "at": "2026-11-26T15:08:37.778Z"
+  "secs": 161,
+  "at": "2026-11-26T16:02:56.619Z"
  },
  "twoplayers": {
   "name": "twoplayers",
@@ -93,8 +93,8 @@
    "✔ free_kick: CPU cobra e o jogo segue (play sp=- t=-)",
    "✔ penalty: CPU cobra e o jogo segue (play sp=- t=-)"
   ],
-  "secs": 60,
-  "at": "2026-11-26T15:08:37.778Z"
+  "secs": 56,
+  "at": "2026-11-26T16:02:56.619Z"
  },
  "fouls": {
   "name": "fouls",
@@ -138,10 +138,10 @@
   "ok": true,
   "notes": [
    "✔ empate → prorrogação → pênaltis",
-   "✔ disputa termina no resultado (pênaltis 2,3)"
+   "✔ disputa termina no resultado (pênaltis 2,1)"
   ],
-  "secs": 103,
-  "at": "2026-11-26T15:37:55.584Z"
+  "secs": 74,
+  "at": "2026-11-26T16:02:56.619Z"
  },
  "training": {
   "name": "training",
@@ -218,7 +218,7 @@
  },
  "iphone": {
   "name": "iphone",
-  "ok": true,
+  "ok": false,
   "notes": [
    "✔ detecta tela de toque e cria os controles",
    "✔ título pede \"TOQUE PARA COMEÇAR\"",
@@ -242,7 +242,7 @@
    "✔ soltar os dedos solta joystick e botão",
    "✔ jogador se moveu com o joystick",
    "✔ ATAQUE: PASSE/CHUTE/LENÇOL/FIRULA, sem CARRINHO ({\"atk\":true,\"def\":false,\"pass\":\"PASSE\",\"tackle\":false,\"trick\":true,\"lob\":true,\"shoot\":true,\"big\":22.800048828125})",
-   "✔ DEFESA: CARRINHO grande, TROCAR, sem FIRULA/LENÇOL ({\"atk\":false,\"def\":true,\"pass\":\"TROCAR\",\"tackle\":true,\"trick\":false,\"lob\":false,\"shoot\":true,\"big\":76})",
+   "✘ DEFESA: CARRINHO grande, TROCAR, sem FIRULA/LENÇOL ({\"atk\":true,\"def\":false,\"pass\":\"PASSE\",\"tackle\":false,\"trick\":true,\"lob\":true,\"shoot\":true,\"big\":22.800048828125})",
    "✔ pausa esconde os controles de toque",
    "✔ continuar devolve os controles",
    "✔ na vertical aparece \"Gire o aparelho\"",
@@ -250,8 +250,8 @@
    "✔ opções do celular: botões, vibração, troca de versão; sem teclas",
    "✔ pc.html: versão PC sem controles de toque"
   ],
-  "secs": 181,
-  "at": "2026-11-26T15:32:18.146Z"
+  "secs": 200,
+  "at": "2026-11-26T16:02:56.619Z"
  },
  "toques": {
   "name": "toques",
@@ -259,11 +259,11 @@
   "notes": [
    "✔ ATAQUE: layout aparece com a bola",
    "✔ PASSE (toque rápido) passa a bola",
-   "✔ CHUTE (toque rápido) chuta para o gol (20.0 m/s)",
+   "✔ CHUTE (toque rápido) chuta para o gol (20.1 m/s)",
    "✔ CHUTE segurado carrega a força (56%) e chuta",
    "✔ LENÇOL levanta a bola",
    "✔ FIRULA faz embaixadinha/chapéu",
-   "✔ CORRER aumenta a velocidade (2.7 → 4.8 m/s)",
+   "✔ CORRER aumenta a velocidade (2.7 → 5.1 m/s)",
    "✔ FOGO apagado com a barra vazia",
    "✔ tocar em botão apagado mostra uma dica",
    "✔ FOGO com a barra cheia ativa o Modo Fogo",
@@ -290,25 +290,25 @@
    "✔ bola aérea ao alcance: aviso CHUTE! e botão piscando",
    "✔ MARCAR colado no adversário dá o bote",
    "✔ troca automática passa o controle para quem está perto da bola",
-   "  registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off hint fire:on pass:on tackle:on press:on pass:on shoot:on trick:on trick:off hint trick:off hint trick:on trick:off hint sprint:on shoot:on pass:on lob:on pass:on pass:on press:on"
+   "  registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off hint fire:on pass:on tackle:on press:on pass:on shoot:on trick:on trick:off hint trick:off hint trick:off hint trick:off hint sprint:on shoot:on pass:on lob:on pass:on pass:on press:on"
   ],
-  "secs": 331,
-  "at": "2026-11-26T15:08:37.778Z"
+  "secs": 291,
+  "at": "2026-11-26T16:02:56.619Z"
  },
  "goleiro": {
   "name": "goleiro",
   "ok": false,
   "notes": [
-   "✔ 24 chutes contra os dois goleiros sem travar (24 resolvidos, 1 defesas agarradas, maior tempo com a bola 0.0 s)",
+   "✔ 24 chutes contra os dois goleiros sem travar (24 resolvidos, 1 defesas agarradas, maior tempo com a bola 0.2 s)",
    "✔ goleiro nunca fica mais de 7 s com a bola na mão",
    "✔ meu goleiro agarra e recebe o controle",
    "✔ aviso \"Goleiro com a bola\" + PASSE/LANÇAR piscando ({\"msg\":\"Goleiro com a bola: toque PASSE ou LANÇAR\",\"wait\":true,\"label\":\"LANÇAR\"})",
    "✔ goleiro anda com a bola na mão (0.6 m)",
-   "✘ tocar PASSE repõe a bola {\"log\":\"pass:off hint\",\"held\":true,\"dev\":null,\"kick\":null,\"holdT\":1.8,\"mode\":\"atk\",\"cls\":\"on atk\"}",
-   "✘ sem tocar em nada, o goleiro espera e repõe sozinho aos 6 s (com 5 s ainda segurando: true; aos 7,5 s solto: false)"
+   "✔ tocar PASSE repõe a bola ",
+   "✘ sem tocar em nada, o goleiro espera e repõe sozinho aos 6 s (com 5 s ainda segurando: false; aos 7,5 s solto: true) {\"chg\":[\"kb→null st=setpiece held=false wp.giveControl<wp.setPiece<http://game.local/bundle/main-7v9-TQz9.js:4505:67389\"],\"dev\":null,\"holdT\":1,\"gk\":\"TATUÍ\"}"
   ],
-  "secs": 124,
-  "at": "2026-11-26T15:37:55.584Z"
+  "secs": 109,
+  "at": "2026-11-26T16:07:06.663Z"
  },
  "formatos": {
   "name": "formatos",
@@ -317,13 +317,13 @@
    "✔ seletor de formato na escolha de times (3x3 4x4 5x5)",
    "✔ clicar em 3x3 seleciona o formato",
    "✔ 3x3: 3 em campo (com goleiro) e 7 no banco [{\"field\":3,\"bench\":7,\"gk\":true,\"slots\":\"014\"},{\"field\":3,\"bench\":7,\"gk\":true,\"slots\":\"014\"}]",
-   "✔ 3x3: a partida anda (relógio 30s, estado goal, placar 1x0, chutes 1x0)",
+   "✔ 3x3: a partida anda (relógio 12s, estado replay, placar 0x1, chutes 0x1)",
    "✔ 4x4: 4 em campo (com goleiro) e 6 no banco [{\"field\":4,\"bench\":6,\"gk\":true,\"slots\":\"0123\"},{\"field\":4,\"bench\":6,\"gk\":true,\"slots\":\"0123\"}]",
-   "✔ 4x4: a partida anda (relógio 33s, estado goal, placar 1x0, chutes 2x0)",
+   "✔ 4x4: a partida anda (relógio 16s, estado replay, placar 0x1, chutes 0x1)",
    "✔ 5x5: 5 em campo (com goleiro) e 5 no banco [{\"field\":5,\"bench\":5,\"gk\":true,\"slots\":\"01234\"},{\"field\":5,\"bench\":5,\"gk\":true,\"slots\":\"01234\"}]",
-   "✔ 5x5: a partida anda (relógio 36s, estado play, placar 0x0, chutes 0x0)"
+   "✔ 5x5: a partida anda (relógio 33s, estado goal, placar 0x1, chutes 0x1)"
   ],
-  "secs": 156,
-  "at": "2026-11-26T15:08:37.778Z"
+  "secs": 154,
+  "at": "2026-11-26T16:02:56.619Z"
  }
 }

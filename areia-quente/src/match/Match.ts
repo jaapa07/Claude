@@ -552,7 +552,8 @@ export class Match {
 
   doTackle(p: Player, sprint: boolean) {
     if (p.tackleCd > 0 || p.stun > 0 || p.sliding > 0) return;
-    const carrier = this.ball.owner && this.ball.owner.team !== p.team ? this.ball.owner : null;
+    // goleiro com a bola na mão não pode ser desarmado (antes a dividida soltava a bola "presa" no ar e o jogo travava)
+    const carrier = this.ball.owner && this.ball.owner.team !== p.team && !(this.ball.held && this.ball.owner.isGK) ? this.ball.owner : null;
     const d = carrier ? carrier.pos.distanceTo(p.pos) : this.ball.pos.distanceTo(p.pos);
     if (sprint || d > 1.4) {
       // carrinho
@@ -575,7 +576,7 @@ export class Match {
   }
 
   private looseBall(from: Player, push: THREE.Vector3) {
-    this.ball.owner = null;
+    this.ball.owner = null; this.ball.held = false;
     this.ball.vel.copy(push).setY(1.2);
     from.cooldown = 0.6;
   }
@@ -1000,6 +1001,8 @@ export class Match {
       if (this.pendingSombrero.t <= 0) this.pendingSombrero = null;
       else if (b.owner === this.pendingSombrero.p) { const p = this.pendingSombrero.p; this.addStyle(p.team, 'sombrero_flick', p, t('sombrero')); this.hud.worldPop(t('sombrero'), p.pos.clone().setY(2.5), this.world.camera); this.onEvent?.('sombrero', p); if (this.opts.mode === 'training') { this.training.sombrero++; this.onEvent?.('training', undefined, this.training); } this.pendingSombrero = null; }
     }
+    // rede de segurança: bola "na mão" sem ninguém segurando nunca pode ficar congelada
+    if (b.held && (!b.owner || !b.owner.onField)) { b.held = false; b.owner = null; }
     // domínio da bola solta
     if (!b.owner && !b.held && !b.inGoal) {
       let best: Player | null = null, bd = 1e9;

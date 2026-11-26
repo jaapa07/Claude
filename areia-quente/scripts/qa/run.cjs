@@ -575,12 +575,13 @@ const SUITES = {
     for (let k = 0; k < 12 && !(A1.atk && A1.trick && !A1.tackle); k++) { await sleep(500); A1 = await layout(); } // espera as transições de CSS
     check(A1.atk && A1.pass === 'PASSE' && A1.trick && A1.lob && !A1.tackle, `ATAQUE: PASSE/CHUTE/LENÇOL/FIRULA, sem CARRINHO (${JSON.stringify(A1)})`, n);
     await g.shot('iphone_ataque');
-    await g.ev(() => { const m = window.__game.flow.match; const me = m.all.find((x) => x.device === 'kb'); const op = m.all.find((x) => x.team !== me.team && x.onField && !x.isGK); m.timers = []; m.sp = null; m.state = 'play'; m.stateT = 0; m.takeBall(op); });
+    await g.ev(() => { const m = window.__game.flow.match; const me = m.all.find((x) => x.device === 'kb'); const op = m.all.find((x) => x.team !== me.team && x.onField && !x.isGK); m.timers = []; m.sp = null; m.state = 'play'; m.stateT = 0; m.clock = 5; op.pos.copy(me.pos).add({ x: me.team.dir * 4, y: 0, z: 0 }); op.sync(); m.ball.pos.copy(op.pos).setY(0.11); m.takeBall(op); op.device = 'qa'; window.__qaOp = op; });
     await g.waitFor(() => document.getElementById('touch').classList.contains('def'), null, 20000).catch(() => {});
     let D1 = await layout();
     for (let k = 0; k < 12 && !(D1.def && D1.tackle && !D1.trick); k++) { await sleep(500); D1 = await layout(); }
     check(D1.def && D1.pass === 'TROCAR' && D1.tackle && !D1.trick && !D1.lob && D1.big > A1.big, `DEFESA: CARRINHO grande, TROCAR, sem FIRULA/LENÇOL (${JSON.stringify(D1)})`, n);
     await g.shot('iphone_defesa');
+    await g.ev(() => { if (window.__qaOp) window.__qaOp.device = null; });
     // pausa pelo botão e volta tocando em "Continuar"
     await g.waitFor(() => document.querySelector('#touch .t-pause.on'), null, 60000);
     await tap('#touch .t-pause');
@@ -891,7 +892,11 @@ const SUITES = {
       const tm = m.teams.find((t) => t.human), gk = tm.gk; gk.pos.set(m.ownGoalX(tm) + tm.dir * 1.5, 0, 0); gk.vel.set(0, 0, 0); gk.kick = null; gk.stun = 0; gk.lying = null; gk.ath.locked = 0; gk.sync();
       m.ball.owner = null; m.ball.held = false; m.ball.vel.set(0, 0, 0); m.ball.pos.copy(gk.pos).setY(1.0); m.ball.speed; m.takeBall(gk);
       if (!m.ball.held) { m.ball.owner = gk; m.ball.held = true; gk.holdT = 0; m.giveControl(gk); }
-      window.__qaGK = gk; window.__qaGK0 = gk.pos.clone(); return { held: m.ball.held, dev: gk.device }; });
+      window.__qaGK = gk; window.__qaGK0 = gk.pos.clone(); window.__chg = [];
+      // armadilha: registra quem tirar o controle do goleiro
+      let v = gk.device; try { delete gk.device; } catch {}
+      Object.defineProperty(gk, 'device', { get: () => v, set: (x) => { if (x !== v) window.__chg.push(`${v}→${x} st=${m.state} held=${m.ball.held} ` + new Error().stack.split('\n').slice(2, 5).map((l) => l.trim().split(' ')[1]).join('<')); v = x; }, configurable: true });
+      return { held: m.ball.held, dev: gk.device }; });
     const h0 = await setHold();
     check(h0.held && h0.dev === 'kb', 'meu goleiro agarra e recebe o controle', n);
     // avança o jogo em passos fixos (independe da lentidão do Chromium de teste)
@@ -909,15 +914,16 @@ const SUITES = {
     await step(0.2);
     await step(1.0);
     const rel = await g.waitFor(() => !window.__game.flow.match.ball.held, null, 20000).then(() => true, () => false);
-    const dg = await g.ev(() => { const m = window.__game.flow.match, gk = window.__qaGK; return { log: window.__game.touch.log.slice(-4).join(' '), held: m.ball.held, dev: gk.device, kick: gk.kick && gk.kick.kind + ':' + gk.kick.done, holdT: +gk.holdT.toFixed(1), mode: window.__game.touch.mode, cls: document.getElementById('touch').className }; });
+    const dg = await g.ev(() => { const m = window.__game.flow.match, gk = window.__qaGK; return { chg: window.__chg, log: window.__game.touch.log.slice(-4).join(' '), held: m.ball.held, dev: gk.device, kick: gk.kick && gk.kick.kind + ':' + gk.kick.done, holdT: +gk.holdT.toFixed(1), mode: window.__game.touch.mode, cls: document.getElementById('touch').className }; });
     check(rel, `tocar PASSE repõe a bola ${rel ? '' : JSON.stringify(dg)}`, n);
     // sem tocar em nada: regra dos 6 segundos
     await setHold();
     await step(5.0);
     const still = await g.ev(() => window.__game.flow.match.ball.held);
+    const chg2 = await g.ev(() => ({ chg: window.__chg, dev: window.__qaGK.device, holdT: +window.__qaGK.holdT.toFixed(1), owner: window.__game.flow.match.ball.owner?.data.short, gk: window.__qaGK.data.short }));
     await step(2.5);
     const auto = await g.ev(() => !window.__game.flow.match.ball.held);
-    check(still && auto, `sem tocar em nada, o goleiro espera e repõe sozinho aos 6 s (com 5 s ainda segurando: ${still}; aos 7,5 s solto: ${auto})`, n);
+    check(still && auto, `sem tocar em nada, o goleiro espera e repõe sozinho aos 6 s (com 5 s ainda segurando: ${still}; aos 7,5 s solto: ${auto}) ${still ? '' : JSON.stringify(chg2)}`, n);
   },
 
   /** Formatos 3x3 / 4x4 / 5x5: seletor na escolha de times e partidas CPU x CPU em cada formato. */
