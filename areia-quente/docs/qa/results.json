@@ -329,5 +329,25 @@
   ],
   "secs": 145,
   "at": "2026-11-26T19:12:24.117Z"
+ },
+ "copacelular": {
+  "name": "copacelular",
+  "ok": true,
+  "notes": [
+   "✔ título: botão \"TOQUE PARA COMEÇARVERSÃO CELULAR\n      Rei da Praia · jogo original · assets CC0 (Kenney, Poly Haven, ambientCG, OpenGameArt)\" visível na tela",
+   "✔ menu → Copa: botão \"Copa Rei da Praia8 seleções\" visível na tela",
+   "✔ escolha do time: botão \"COMEÇAR\" visível na tela",
+   "✔ chave (rodada 1): botão \"Jogar\" visível na tela",
+   "✔ resultado (rodada 1): botão \"Próximo jogo\" visível na tela",
+   "✔ chave (rodada 2): botão \"Jogar\" visível na tela",
+   "✔ resultado (rodada 2): botão \"Próximo jogo\" visível na tela",
+   "✔ chave (rodada 3): botão \"Jogar\" visível na tela",
+   "✔ resultado (rodada 3): botão \"Próximo jogo\" visível na tela",
+   "✔ campeão: cena do troféu",
+   "✔ troféu → menu: botão \"Voltar ao menu\" visível na tela",
+   "✔ copa concluída e campeão registrado"
+  ],
+  "secs": 209,
+  "at": "2026-11-26T22:55:53.464Z"
  }
 }

@@ -1,8 +1,8 @@
 # QA ponta a ponta
 
-Executado em 2026-11-26 19:24 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
+Executado em 2026-11-26 22:55 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
 
-**21/21 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
+**22/22 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
 bola perto do dono, controle duplicado, time humano sem jogador, estados presos, bola morta sem ninguém ir buscar).
 
 | Suíte | Resultado | Tempo |
@@ -28,6 +28,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 | toques | ✔ OK | 532s |
 | goleiro | ✔ OK | 110s |
 | formatos | ✔ OK | 145s |
+| copacelular | ✔ OK | 209s |
 
 ## menus
 
@@ -254,5 +255,21 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔ 4x4: a partida anda (relógio 37s, estado play, placar 0x0, chutes 1x0)
 - ✔ 5x5: 5 em campo (com goleiro) e 5 no banco [{"field":5,"bench":5,"gk":true,"slots":"01234"},{"field":5,"bench":5,"gk":true,"slots":"01234"}]
 - ✔ 5x5: a partida anda (relógio 42s, estado play, placar 0x0, chutes 0x0)
+
+## copacelular
+
+- ✔ título: botão "TOQUE PARA COMEÇARVERSÃO CELULAR
+      Rei da Praia · jogo original · assets CC0 (Kenney, Poly Haven, ambientCG, OpenGameArt)" visível na tela
+- ✔ menu → Copa: botão "Copa Rei da Praia8 seleções" visível na tela
+- ✔ escolha do time: botão "COMEÇAR" visível na tela
+- ✔ chave (rodada 1): botão "Jogar" visível na tela
+- ✔ resultado (rodada 1): botão "Próximo jogo" visível na tela
+- ✔ chave (rodada 2): botão "Jogar" visível na tela
+- ✔ resultado (rodada 2): botão "Próximo jogo" visível na tela
+- ✔ chave (rodada 3): botão "Jogar" visível na tela
+- ✔ resultado (rodada 3): botão "Próximo jogo" visível na tela
+- ✔ campeão: cena do troféu
+- ✔ troféu → menu: botão "Voltar ao menu" visível na tela
+- ✔ copa concluída e campeão registrado
 
 Capturas de tela das suítes em `docs/qa/`.

@@ -993,6 +993,45 @@ const SUITES = {
     }
     await g.ev(() => { window.__game.settings.teamSize = 5; });
   },
+
+  /** Copa inteira no iPhone deitado, só com toques: cada botão precisa estar visível e funcionar. */
+  async copacelular(g, n) {
+    const onScreen = (sel) => g.ev((sel) => { const els = [...document.querySelectorAll(sel)]; const e = els.find((x) => x.offsetParent !== null) || els[0]; if (!e) return null;
+      const r = e.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, inside: r.top >= 0 && r.bottom <= innerHeight + 1 && r.left >= 0 && r.right <= innerWidth + 1, txt: e.textContent.trim() }; }, sel);
+    const tapEl = async (sel, label) => {
+      const c = await onScreen(sel);
+      check(!!c && c.inside, `${label}: botão "${c?.txt ?? '?'}" visível na tela`, n);
+      if (!c) throw new Error('sem ' + sel);
+      // se estiver fora (não deveria), rola até ele como um dedo faria
+      if (!c.inside) await g.ev((sel) => document.querySelector(sel)?.scrollIntoView({ block: 'center' }), sel);
+      const c2 = await onScreen(sel); await g.page.touchscreen.tap(c2.x, c2.y);
+    };
+    const tapTxt = (cls, txt) => g.ev(([cls, txt]) => { const b = [...document.querySelectorAll(cls)].find((x) => x.textContent.includes(txt)); if (b) b.setAttribute('data-qa', '1'); return !!b; }, [cls, txt]);
+    await tapEl('.title-screen', 'título'); await g.waitScene('menu');
+    await tapTxt('.mainmenu .mtile', 'Copa');
+    await tapEl('.mainmenu .mtile[data-qa]', 'menu → Copa'); await g.waitScene('teams');
+    await tapEl('.tbar .go', 'escolha do time'); await g.waitScene('cup');
+    await g.shot('copa_chave');
+    for (let round = 0; round < 3; round++) {
+      await tapEl('.cup .btn', `chave (rodada ${round + 1})`);
+      await g.waitFor(() => window.__game.flow.scene === 'match' && window.__game.flow.match, null, 180000);
+      // vitória rápida: pula para o fim com o jogador vencendo
+      await g.ev(() => { const m = window.__game.flow.match; m.hud.cinema(false); m.hud.show(true); m.beginKickoff(m.kickoffTeam); m.timers = []; m.sp = null; m.state = 'play';
+        const me = m.teams.find((t) => t.human); me.score = 3; me.opp.score = 1; m.period = 3; m.clock = m.periodLen - 0.2; });
+      await g.speed(6);
+      await g.waitFor(() => !!document.querySelector('.results'), null, 120000);
+      await g.speed(1); await sleep(800);
+      if (round === 0) await g.shot('copa_resultado');
+      await tapEl('.results .btn', `resultado (rodada ${round + 1})`);
+      await g.waitFor(() => ['cup', 'trophy'].includes(window.__game.flow.scene) && !window.__game.flow.busy, null, 120000);
+    }
+    await g.waitScene('trophy', 120000);
+    check(true, 'campeão: cena do troféu', n);
+    await g.shot('copa_trofeu');
+    await tapEl('.screen .btn', 'troféu → menu');
+    await g.waitScene('menu', 60000);
+    check(await g.ev(() => window.__game.flow.cup?.done && window.__game.flow.cup.champion === window.__game.flow.cup.team), 'copa concluída e campeão registrado', n);
+  },
 };
 
 (async () => {
@@ -1003,7 +1042,7 @@ const SUITES = {
     let g;
     console.log('▶', name);
     try {
-      g = await open({ gamepads: name === 'twoplayers' ? 2 : 0, iphone: name === 'iphone' || name === 'toques' || name === 'goleiro' });
+      g = await open({ gamepads: name === 'twoplayers' ? 2 : 0, iphone: name === 'iphone' || name === 'toques' || name === 'goleiro' || name === 'copacelular' });
       await SUITES[name](g, notes);
     } catch (e) {
       notes.push('✘ exceção: ' + String(e.message || e).split('\n')[0]); notes.failed = true;

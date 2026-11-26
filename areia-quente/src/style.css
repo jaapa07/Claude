@@ -485,3 +485,27 @@ html.touch .hint { display: none; }
 /* dica do chapéu, discreta, acima dos botões */
 #touch .t-combo { position: absolute; right: calc(env(safe-area-inset-right) + 12px); bottom: calc(54vh * var(--ts, 1) + 30px); font-size: 11px; font-weight: 800; opacity: 0.75; text-shadow: 0 1px 2px #000; pointer-events: none; }
 #touch.def .t-combo, #touch.sup .t-combo, #touch.cine .t-combo { display: none; }
+
+/* ---------- copa e resultado no celular deitado (~390 px de altura): tudo cabe, botões sempre visíveis ---------- */
+@media (max-height: 500px) {
+  #ui .screen.cup, #ui .screen.results, #ui .screen.halftime, #ui .screen.careerhub { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .cup { gap: 6px; justify-content: flex-start; padding: 6px 10px calc(8px + env(safe-area-inset-bottom)); }
+  .cup h1.title { font-size: 20px; margin: 0; }
+  .bracket { gap: 6px; width: 100%; grid-template-columns: 1fr 1fr 1fr 1fr 0.6fr; }
+  .bracket .round { height: auto; min-height: 0; gap: 4px; justify-content: center; }
+  .bracket .round h3 { font-size: 11px; }
+  .bracket .m { padding: 2px 5px; border-width: 2px; border-radius: 8px; font-size: 11px; }
+  .bracket .m div { gap: 4px; }
+  .bracket .m img { width: 18px; height: 12px; }
+  .bracket .trophy img { width: 90px !important; }
+  .cup .verdict { font-size: 20px !important; }
+  .cup .btn { font-size: 18px; padding: 6px 18px; }
+  .results { grid-template-columns: 1fr; align-items: start; }
+  .results .col { transform: none !important; padding: 10px 16px !important; margin: 6px 0 0 calc(10px + env(safe-area-inset-left)) !important; gap: 6px; max-width: 520px; }
+  .results .verdict { font-size: 22px; }
+  .results .sc { font-size: 40px; gap: 12px; } .results .sc img { width: 56px; }
+  .results .stats-table { font-size: 12px; } .results .stats-table td { padding: 1px 6px; }
+  .results .mom { font-size: 13px; }
+  .results .btn { font-size: 18px; padding: 6px 16px; }
+  .halftime .box { padding: 10px 16px !important; } .halftime h1.title { font-size: 22px; margin: 0 0 4px; }
+}
