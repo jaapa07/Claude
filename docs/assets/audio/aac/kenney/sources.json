@@ -1,0 +1,102 @@
+{
+ "back_002.m4a": {
+  "origin": "Kenney — Interface Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): back_002.ogg; nível ajustado em 0.0 dB (RMS casado com o efeito \"ui_back\" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts",
+  "author": "Kenney",
+  "license": "CC0-1.0"
+ },
+ "confirmation_001.m4a": {
+  "origin": "Kenney — Interface Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): confirmation_001.ogg; nível ajustado em -4.3 dB (RMS casado com o efeito \"purchase\" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts",
+  "author": "Kenney",
+  "license": "CC0-1.0"
+ },
+ "error_004.m4a": {
+  "origin": "Kenney — Interface Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): error_004.ogg; nível ajustado em 0.3 dB (RMS casado com o efeito \"ui_error\" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts",
+  "author": "Kenney",
+  "license": "CC0-1.0"
+ },
+ "impactGlass_medium_000.m4a": {
+  "origin": "Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactGlass_medium_000.ogg; nível ajustado em 0.2 dB (RMS casado com o efeito \"shield_break\" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts",
+  "author": "Kenney",
+  "license": "CC0-1.0"
+ },
+ "impactGlass_medium_002.m4a": {
+  "origin": "Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactGlass_medium_002.ogg; nível ajustado em 0.0 dB (RMS casado com o efeito \"shield_break\" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts",
+  "author": "Kenney",
+  "license": "CC0-1.0"
+ },
+ "impactMetal_heavy_000.m4a": {
+  "origin": "Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactMetal_heavy_000.ogg; nível ajustado em -0.1 dB (RMS casado com o efeito \"collision_heavy\" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts",
+  "author": "Kenney",
+  "license": "CC0-1.0"
+ },
+ "impactMetal_heavy_001.m4a": {
+  "origin": "Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactMetal_heavy_001.ogg; nível ajustado em 0.1 dB (RMS casado com o efeito \"collision_heavy\" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts",
+  "author": "Kenney",
+  "license": "CC0-1.0"
+ },
+ "impactMetal_heavy_002.m4a": {
+  "origin": "Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactMetal_heavy_002.ogg; nível ajustado em -1.1 dB (RMS casado com o efeito \"collision_heavy\" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts",
+  "author": "Kenney",
+  "license": "CC0-1.0"
+ },
+ "impactMetal_heavy_003.m4a": {
+  "origin": "Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactMetal_heavy_003.ogg; nível ajustado em -0.6 dB (RMS casado com o efeito \"comet_ram\" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts",
+  "author": "Kenney",
+  "license": "CC0-1.0"
+ },
+ "impactPlate_medium_000.m4a": {
+  "origin": "Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactPlate_medium_000.ogg; nível ajustado em 0.4 dB (RMS casado com o efeito \"collision\" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts",
+  "author": "Kenney",
+  "license": "CC0-1.0"
+ },
+ "impactPlate_medium_001.m4a": {
+  "origin": "Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactPlate_medium_001.ogg; nível ajustado em 0.1 dB (RMS casado com o efeito \"collision\" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts",
+  "author": "Kenney",
+  "license": "CC0-1.0"
+ },
+ "impactPlate_medium_002.m4a": {
+  "origin": "Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactPlate_medium_002.ogg; nível ajustado em 0.1 dB (RMS casado com o efeito \"collision\" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts",
+  "author": "Kenney",
+  "license": "CC0-1.0"
+ },
+ "impactPunch_heavy_000.m4a": {
+  "origin": "Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactPunch_heavy_000.ogg; nível ajustado em -6.9 dB (RMS casado com o efeito \"spinout\" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts",
+  "author": "Kenney",
+  "license": "CC0-1.0"
+ },
+ "impactPunch_heavy_001.m4a": {
+  "origin": "Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactPunch_heavy_001.ogg; nível ajustado em -7.4 dB (RMS casado com o efeito \"spinout\" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts",
+  "author": "Kenney",
+  "license": "CC0-1.0"
+ },
+ "impactSoft_heavy_000.m4a": {
+  "origin": "Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactSoft_heavy_000.ogg; nível ajustado em -0.1 dB (RMS casado com o efeito \"land\" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts",
+  "author": "Kenney",
+  "license": "CC0-1.0"
+ },
+ "impactSoft_heavy_002.m4a": {
+  "origin": "Kenney — Impact Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): impactSoft_heavy_002.ogg; nível ajustado em -0.1 dB (RMS casado com o efeito \"land\" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts",
+  "author": "Kenney",
+  "license": "CC0-1.0"
+ },
+ "maximize_006.m4a": {
+  "origin": "Kenney — Interface Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): maximize_006.ogg; nível ajustado em -7.9 dB (RMS casado com o efeito \"unlock\" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts",
+  "author": "Kenney",
+  "license": "CC0-1.0"
+ },
+ "select_002.m4a": {
+  "origin": "Kenney — Interface Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): select_002.ogg; nível ajustado em 0.0 dB (RMS casado com o efeito \"ui_select\" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts",
+  "author": "Kenney",
+  "license": "CC0-1.0"
+ },
+ "toggle_002.m4a": {
+  "origin": "Kenney — Interface Sounds 1.0 (https://kenney.nl/assets, CC0 1.0): toggle_002.ogg; nível ajustado em -2.7 dB (RMS casado com o efeito \"ui_move\" do jogo), 44,1 kHz estéreo, cópia AAC para o Safari — scripts/build-kits.ts",
+  "author": "Kenney",
+  "license": "CC0-1.0"
+ },
+ "sources.json": {
+  "origin": "scripts/build-kits.ts (origem, autor e licença de cada arquivo desta pasta)",
+  "author": "Equipe Kart Legends 3D",
+  "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)"
+ }
+}
