@@ -7,6 +7,7 @@ import type { Flow } from './Flow';
  * Tudo vira "teclas virtuais" do dispositivo de teclado, então a lógica da partida não muda.
  */
 type Btn = { el: HTMLElement; action: string; ids: Set<number> };
+type Mode = 'atk' | 'sup' | 'def';
 
 const ACTIONS: [string, string, string][] = [
   // ação, rótulo, classe de posição
@@ -14,10 +15,16 @@ const ACTIONS: [string, string, string][] = [
   ['pass', 'PASSE', 'b-pass'],
   ['lob', 'LENÇOL', 'b-lob'],
   ['tackle', 'CARRINHO', 'b-tackle'],
+  ['press', 'MARCAR', 'b-press'],
   ['trick', 'FIRULA', 'b-trick'],
   ['sprint', 'CORRER', 'b-sprint'],
   ['fire', 'FOGO', 'b-fire'],
 ];
+/** dica mostrada quando o jogador toca num botão que não pode agir agora */
+const HINTS: Record<string, string> = {
+  shoot: 'Chegue na bola para chutar', pass: 'Sem a bola: toque perto dela', lob: 'Só com a bola', trick: 'Só com a bola nos pés',
+  fire: 'Faça jogadas de estilo para encher a barra do FOGO', tackle: 'Chegue perto do adversário', press: '', sprint: '',
+};
 
 export class TouchControls {
   root: HTMLElement;
@@ -26,12 +33,18 @@ export class TouchControls {
   private stickId: number | null = null;
   private origin = { x: 0, y: 0 };
   private btns: Btn[] = [];
+  private byPointer = new Map<number, Btn>();
   private skip: HTMLElement;
   private pauseBtn: HTMLElement;
+  private hint: HTMLElement;
+  private hintT = 0;
   private visible = false;
-  /** layout dos botões: ataque ou defesa */
-  private mode: 'atk' | 'def' = 'atk';
+  /** layout dos botões: ATAQUE (com a bola), APOIO (companheiro com a bola) ou DEFESA */
+  mode: Mode = 'atk';
   private pendingSince = 0;
+  private avail: Record<string, boolean> = {};
+  /** registro de toques (para o QA e para depurar em aparelho real com ?toques) */
+  log: string[] = [];
 
   constructor(private flow: Flow) {
     document.documentElement.classList.add('touch');
@@ -39,20 +52,22 @@ export class TouchControls {
     r.id = 'touch';
     r.innerHTML = `<div class="t-zone"></div><div class="t-stick"><div class="t-knob"></div></div>
       <div class="t-btns">${ACTIONS.map(([a, l, c]) => `<div class="t-btn ${c}" data-a="${a}"><span>${l}</span></div>`).join('')}</div>
+      <div class="t-hint"></div>
       <div class="t-top"><div class="t-skip">PULAR ▶▶</div><div class="t-pause">❚❚</div></div>`;
     document.getElementById('app')!.appendChild(r);
     this.stickBase = r.querySelector('.t-stick')!;
     this.stickKnob = r.querySelector('.t-knob')!;
     this.skip = r.querySelector('.t-skip')!;
     this.pauseBtn = r.querySelector('.t-pause')!;
+    this.hint = r.querySelector('.t-hint')!;
 
     // joystick: o toque em qualquer ponto da metade esquerda vira o centro do direcional
     const zone = r.querySelector('.t-zone') as HTMLElement;
     zone.addEventListener('pointerdown', (e) => {
-      if (this.stickId !== null) return;
       e.preventDefault();
+      if (this.stickId !== null) return;
       this.stickId = e.pointerId;
-      zone.setPointerCapture?.(e.pointerId);
+      try { zone.setPointerCapture(e.pointerId); } catch { /* iOS antigo */ }
       this.origin = { x: e.clientX, y: e.clientY };
       this.stickBase.style.left = `${e.clientX}px`;
       this.stickBase.style.top = `${e.clientY}px`;
@@ -63,28 +78,60 @@ export class TouchControls {
     const end = (e: PointerEvent) => { if (e.pointerId === this.stickId) this.releaseStick(); };
     zone.addEventListener('pointerup', end);
     zone.addEventListener('pointercancel', end);
-    zone.addEventListener('lostpointercapture', end);
 
-    // botões: cada um aceita vários dedos (segurar CHUTE = força; deslizar o dedo para fora solta)
-    r.querySelectorAll<HTMLElement>('.t-btn').forEach((el) => {
-      const b: Btn = { el, action: el.dataset.a!, ids: new Set() };
-      this.btns.push(b);
-      el.addEventListener('pointerdown', (e) => { e.preventDefault(); el.setPointerCapture?.(e.pointerId); b.ids.add(e.pointerId); this.setBtn(b); if (settings.data.vibrate !== false) navigator.vibrate?.(8); });
-      const up = (e: PointerEvent) => { if (b.ids.delete(e.pointerId)) this.setBtn(b); };
-      el.addEventListener('pointerup', up);
-      el.addEventListener('pointercancel', up);
-      el.addEventListener('lostpointercapture', up);
+    // botões: a área inteira do canto direito recebe o toque e escolhe o botão visível mais próximo
+    // (dedo grosso entre dois botões ainda acerta um deles). Cada dedo fica preso ao botão que tocou.
+    const pad = r.querySelector('.t-btns') as HTMLElement;
+    r.querySelectorAll<HTMLElement>('.t-btn').forEach((el) => this.btns.push({ el, action: el.dataset.a!, ids: new Set() }));
+    pad.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      const b = this.pick(e.clientX, e.clientY);
+      if (!b) return;
+      try { pad.setPointerCapture(e.pointerId); } catch { /* iOS antigo */ }
+      this.byPointer.set(e.pointerId, b);
+      b.ids.add(e.pointerId);
+      this.setBtn(b);
+      this.log.push(`${b.action}:${this.avail[b.action] === false ? 'off' : 'on'}`);
+      if (this.log.length > 60) this.log.shift();
+      if (this.avail[b.action] === false && HINTS[b.action]) this.showHint(HINTS[b.action]);
+      if (settings.data.vibrate !== false) navigator.vibrate?.(8);
     });
+    const up = (e: PointerEvent) => {
+      const b = this.byPointer.get(e.pointerId);
+      if (!b) return;
+      this.byPointer.delete(e.pointerId);
+      b.ids.delete(e.pointerId);
+      this.setBtn(b);
+    };
+    pad.addEventListener('pointerup', up);
+    pad.addEventListener('pointercancel', up);
     this.skip.addEventListener('pointerdown', (e) => { e.preventDefault(); this.tap('Enter'); });
     this.pauseBtn.addEventListener('pointerdown', (e) => { e.preventDefault(); this.tap(settings.data.keys.pause); });
   }
 
-  private key(action: string) { return settings.data.keys[action]; }
+  /** botão visível mais próximo do toque (até 1,7× o raio dele) */
+  private pick(x: number, y: number): Btn | null {
+    let best: Btn | null = null, bd = Infinity;
+    for (const b of this.btns) {
+      if (getComputedStyle(b.el).pointerEvents === 'none') continue; // escondido neste modo
+      const r = b.el.getBoundingClientRect();
+      const rad = r.width / 2, d = Math.hypot(x - (r.left + rad), y - (r.top + r.height / 2));
+      const score = d / Math.max(rad, 1);
+      if (score < 1.7 && score < bd) { bd = score; best = b; }
+    }
+    return best;
+  }
+  private key(action: string) { return action === 'press' ? 'TouchPress' : settings.data.keys[action]; }
   private tap(code: string) { input.virtualKey(code, true); input.virtualKey(code, false); }
   private setBtn(b: Btn) {
     const on = b.ids.size > 0;
     b.el.classList.toggle('on', on);
     input.virtualKey(this.key(b.action), on);
+  }
+  private showHint(text: string) {
+    this.hint.textContent = text;
+    this.hint.classList.add('on');
+    this.hintT = performance.now();
   }
   private moveStick(x: number, y: number) {
     const R = Math.max(44, Math.min(innerWidth, innerHeight) * 0.14);
@@ -111,10 +158,15 @@ export class TouchControls {
   }
   private releaseAll() {
     if (this.stickId !== null) this.releaseStick();
+    this.byPointer.clear();
     for (const b of this.btns) if (b.ids.size) { b.ids.clear(); this.setBtn(b); }
   }
+  private label(a: string, t: string) {
+    const el = this.btns.find((b) => b.action === a)!.el.firstElementChild as HTMLElement;
+    if (el.textContent !== t) el.textContent = t;
+  }
 
-  /** Chamado a cada quadro: mostra os controles só durante a partida e adapta rótulos ao contexto. */
+  /** Chamado a cada quadro: mostra os controles só durante a partida e adapta rótulos/disponibilidade ao lance. */
   update() {
     const f = this.flow, m = f.match;
     const show = f.scene === 'match' && !!m && !m.paused;
@@ -123,6 +175,7 @@ export class TouchControls {
       this.root.classList.toggle('on', show);
       if (!show) this.releaseAll();
     }
+    if (this.hintT && performance.now() - this.hintT > 1400) { this.hint.classList.remove('on'); this.hintT = 0; }
     if (!show || !m) return;
     const sz = String([0.82, 1, 1.2][settings.data.touchSize ?? 1]);
     if (this.root.style.getPropertyValue('--ts') !== sz) this.root.style.setProperty('--ts', sz);
@@ -134,42 +187,62 @@ export class TouchControls {
     this.root.classList.toggle('cine', ['intro', 'replay', 'halftime', 'fulltime', 'done', 'goal'].includes(st));
     const tm = m.teams.find((t) => t.players.some((p) => p.device === 'kb'));
     const me = tm?.players.find((p) => p.device === 'kb');
-    const owner = m.ball.owner;
+    const b = m.ball, owner = b.owner;
     const hasBall = !!me && owner === me;
-    const attacking = !!tm && owner?.team === tm;
+    const taker = !!me && (st === 'kickoff' || st === 'setpiece') && m.sp?.taker === me;
     // saque/cobrança esperando o jogador: os botões de passe e chute piscam
-    this.root.classList.toggle('wait', !!me && (st === 'kickoff' || st === 'setpiece') && (hasBall || m.sp?.taker === me));
+    this.root.classList.toggle('wait', taker);
     if (st !== 'play' && st !== 'kickoff' && st !== 'setpiece') return;
-    const label = (a: string, t: string) => { const el = this.btns.find((b) => b.action === a)!.el.firstElementChild as HTMLElement; if (el.textContent !== t) el.textContent = t; };
-    // ATAQUE: meu time com a bola (ou bola solta depois de um toque nosso, ex.: passe em voo, ou nossa cobrança)
-    // DEFESA: adversário com a bola, bola solta tocada por ele, ou cobrança dele
-    const lt = m.ball.lastTouch;
-    const atkNow = !tm ? true
-      : st !== 'play' ? (m.sp?.team ?? m.kickoffTeam) === tm
-      : owner ? owner.team === tm : lt ? lt.team === tm : true;
-    const want = atkNow ? 'atk' : 'def';
+
+    // modo do layout
+    const set = st !== 'play';
+    const want: Mode = !tm || hasBall || taker ? 'atk'
+      : set ? ((m.sp?.team ?? m.kickoffTeam) === tm ? 'sup' : 'def')
+      : owner && owner.team === tm ? 'sup' : 'def';
     const now = performance.now();
-    const holding = this.btns.some((b) => b.ids.size > 0);
+    const holding = this.btns.some((x) => x.ids.size > 0);
     if (want !== this.mode) {
       this.pendingSince ||= now;
-      // espera a posse "firmar" (evita piscar em dividida) e não troca botão debaixo do dedo
-      if (now - this.pendingSince > (holding ? 600 : 180)) { this.mode = want; this.pendingSince = 0; this.root.classList.remove('atk', 'def'); void this.root.offsetWidth; this.root.classList.add(want, 'swap'); setTimeout(() => this.root.classList.remove('swap'), 260); }
+      // espera a posse "firmar" (evita piscar em dividida) e não troca botão debaixo do dedo por muito tempo
+      if (now - this.pendingSince > (holding ? 600 : 150)) {
+        this.mode = want; this.pendingSince = 0;
+        this.root.classList.remove('atk', 'sup', 'def'); void this.root.offsetWidth;
+        this.root.classList.add(want, 'swap'); setTimeout(() => this.root.classList.remove('swap'), 260);
+      }
     } else this.pendingSince = 0;
     if (!this.root.classList.contains(this.mode)) this.root.classList.add(this.mode);
-    const gkHold = hasBall && m.ball.held;
+    const training = m.opts.mode === 'training';
+    this.root.classList.toggle('training', training);
+
+    // o que cada botão faz agora (rótulo) e se pode agir (aceso/apagado)
+    const near = !!me && (m.nearLooseBall(me) || m.aerialChance(me));
+    const gkHold = hasBall && b.held;
+    const mateCpu = !!owner && owner.team === tm && owner !== me && !owner.device;
+    const heat = tm ? Math.min(1, tm.heat) : 0;
+    this.root.style.setProperty('--heat', heat.toFixed(2));
+    const av = this.avail;
     if (this.mode === 'atk') {
-      label('pass', 'PASSE');
-      label('shoot', gkHold ? 'LANÇAR' : 'CHUTE');
-      label('lob', 'LENÇOL');
-      label('trick', 'FIRULA');
+      this.label('shoot', gkHold ? 'LANÇAR' : 'CHUTE');
+      this.label('pass', 'PASSE');
+      this.label('lob', 'LENÇOL');
+      this.label('trick', 'FIRULA');
+      av.shoot = hasBall || taker || near; av.pass = hasBall || taker || near; av.lob = av.pass && !gkHold; av.trick = hasBall && !gkHold;
+    } else if (this.mode === 'sup') {
+      this.label('shoot', 'CHUTE');
+      this.label('pass', 'PEDIR');
+      this.label('lob', 'PEDIR ALTO');
+      av.shoot = near; av.pass = mateCpu && !set; av.lob = mateCpu && !set; av.trick = false;
     } else {
-      label('pass', 'TROCAR');
-      label('shoot', 'CHUTE');
-      label('lob', 'CRUZAR');
-      label('tackle', 'CARRINHO');
+      this.label('shoot', 'CHUTE');
+      this.label('pass', 'TROCAR');
+      this.label('lob', 'CRUZAR');
+      av.shoot = near; av.pass = true; av.trick = false; av.lob = training;
     }
-    this.root.classList.toggle('training', m.opts.mode === 'training');
-    this.root.classList.toggle('hasball', hasBall);
+    av.tackle = !hasBall && !set;
+    av.press = !hasBall && !set;
+    av.sprint = true;
+    av.fire = !!tm && tm.heat >= 1 && tm.fire <= 0;
+    for (const x of this.btns) x.el.classList.toggle('off', av[x.action] === false);
   }
 }
 

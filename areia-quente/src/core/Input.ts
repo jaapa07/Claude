@@ -46,6 +46,8 @@ class InputSys {
   virtualKey(code: string, isDown: boolean) {
     if (isDown) { this.down.add(code); this.tapped.add(code); } else this.down.delete(code);
   }
+  /** tecla (física ou virtual) pressionada agora */
+  isDown(code: string) { return this.down.has(code) || this.tapped.has(code); }
   /** Joystick virtual: vetor (-1..1) ou null ao soltar. */
   setStick(v: { x: number; y: number } | null) { this.stick = v; }
 

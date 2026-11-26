@@ -273,6 +273,7 @@ export class Match {
     const s = input.state(dev);
     const mv = new THREE.Vector3(s.mx, 0, s.my);
     const tm = p.team;
+    this.requestT = Math.max(0, this.requestT - dt);
     const sp = this.sp;
     const inSet = this.state === 'setpiece' || this.state === 'kickoff';
     if (input.pressed(dev, 'fire')) this.activateFire(tm);
@@ -288,7 +289,9 @@ export class Match {
     }
     if (inSet) { p.vel.set(0, 0, 0); return; }
     const canMove = p.stun <= 0 && p.sliding <= 0 && !(p.kick && !p.kick.done) && !this.ball.held;
-    const sprint = input.held(dev, 'sprint');
+    let sprint = input.held(dev, 'sprint');
+    // MARCAR (toque): corre sozinho atrás da bola/adversário enquanto o botão estiver pressionado
+    if (input.isDown('TouchPress') && dev === 'kb' && !hasBall && mv.lengthSq() < 0.04) { mv.copy(this.pressDir(p)); sprint = true; }
     if (canMove) {
       const max = p.maxSpeed(sprint);
       const want = mv.clone().multiplyScalar(max);
@@ -310,9 +313,11 @@ export class Match {
     if (input.pressed(dev, 'pass')) {
       if (hasBall) this.doPass(p, mv.lengthSq() > 0.01 ? mv : null, false);
       else if (this.ball.owner?.team !== tm || !this.ball.owner) this.switchToNearest(tm, dev);
+      else this.requestPass(p, false); // companheiro com a bola: pede o passe
     }
     if (input.pressed(dev, 'lob') && hasBall) this.doPass(p, mv.lengthSq() > 0.01 ? mv : null, true);
     else if (input.pressed(dev, 'lob') && this.opts.mode === 'training') this.trainerCross();
+    else if (input.pressed(dev, 'lob') && this.ball.owner && this.ball.owner.team === tm) this.requestPass(p, true);
     if (input.pressed(dev, 'trick')) this.doTrick(p);
     if (input.pressed(dev, 'tackle') && !hasBall) this.doTackle(p, sprint);
     // chute: segurar = força; bola no alto = finalização acrobática imediata
@@ -333,7 +338,25 @@ export class Match {
   }
 
   // ------------------------------------------------------------------ ações
-  doPass(p: Player, dir: THREE.Vector3 | null, lob: boolean) {
+  /** Pedir a bola (botão PEDIR / J sem bola): o companheiro da CPU que está com ela passa para o jogador. */
+  requestT = 0;
+  requestPass(p: Player, lob: boolean) {
+    const o = this.ball.owner;
+    if (!o || o === p || o.team !== p.team || o.device || o.isGK && this.ball.held || (o.kick && !o.kick.done) || this.requestT > 0) return false;
+    this.requestT = 0.8;
+    this.doPass(o, null, lob, p);
+    this.hud.worldPop(lob ? 'NO ALTO!' : 'TOCA!', p.pos.clone().setY(2.3), this.world.camera, '#ffffff');
+    return true;
+  }
+  /** Marcação assistida (botão MARCAR): direção até quem está com a bola, ou até onde a bola vai estar. */
+  pressDir(p: Player) {
+    const b = this.ball;
+    const tgt = b.owner && b.owner.team !== p.team ? b.owner.pos.clone().add(b.owner.vel.clone().multiplyScalar(0.25)) : b.predict(0.3);
+    const d = tgt.sub(p.pos).setY(0);
+    return d.lengthSq() > 0.04 ? d.normalize() : new THREE.Vector3();
+  }
+
+  doPass(p: Player, dir: THREE.Vector3 | null, lob: boolean, target?: Player) {
     const b = this.ball;
     const hasIt = b.owner === p || this.sp?.taker === p || this.nearLooseBall(p);
     if (!hasIt || (p.kick && !p.kick.done)) return;
@@ -341,7 +364,7 @@ export class Match {
     if (p.isGK || this.sp?.kind === 'goal_kick') mates.push(...[]);
     let best: Player | null = null, bestS = -1e9;
     const fwd = dir && dir.lengthSq() > 0.01 ? dir.clone().normalize() : p.forward;
-    for (const m of mates) {
+    for (const m of target ? [target] : mates) {
       const to = m.pos.clone().sub(p.pos); const d = to.length(); to.normalize();
       const ang = to.dot(fwd);
       const opp = Math.min(...p.team.opp.field.map((o) => distToSeg(o.pos, p.pos, m.pos)));
