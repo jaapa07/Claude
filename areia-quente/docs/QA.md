@@ -1,6 +1,6 @@
 # QA ponta a ponta
 
-Executado em 2026-11-26 13:11 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
+Executado em 2026-11-26 13:17 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
 
 **18/19 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
 bola perto do dono, controle duplicado, time humano sem jogador, estados presos, bola morta sem ninguém ir buscar).
@@ -25,7 +25,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 | career | ✔ OK | 161s |
 | mobile | ✔ OK | 34s |
 | iphone | ✔ OK | 178s |
-| toques | ✘ FALHOU | 387s |
+| toques | ✘ FALHOU | 357s |
 
 ## menus
 
@@ -196,7 +196,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔ ATAQUE: layout aparece com a bola
 - ✔ PASSE (toque rápido) passa a bola
 - ✔ CHUTE (toque rápido) chuta para o gol (20.0 m/s)
-- ✔ CHUTE segurado carrega a força (56%) e chuta
+- ✔ CHUTE segurado carrega a força (50%) e chuta
 - ✔ LENÇOL levanta a bola
 - ✔ FIRULA faz embaixadinha/chapéu
 - ✔ CORRER aumenta a velocidade (2.7 → 5.1 m/s)
@@ -209,22 +209,22 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔ DEFESA: layout aparece com o adversário na bola
 - ✔ TROCAR, MARCAR e CARRINHO grande ({"pass":"TROCAR","press":true,"tackle":76})
 - ✔ CARRINHO dá o carrinho
-- ✔ MARCAR corre sozinho até o adversário (9.3 → 5.6 m)
+- ✔ MARCAR corre sozinho até o adversário (9.3 → 6.2 m)
 - ✔ TROCAR troca o jogador controlado
 - ✔ toque entre dois botões aciona o mais próximo
-- ✔ seis toques rápidos seguidos são todos registrados
+- ✘ seis toques rápidos seguidos são todos registrados
 - ✔ três dedos: joystick + CORRER + CHUTE ({"mx":1,"run":true,"shoot":true})
 - ✔ soltar todos os dedos solta tudo
 - ✔ PASSE rasteiro: chega no pé do companheiro (ele andou 0.00 m depois do passe)
 - ✔ LENÇOL: chega no pé do companheiro (ele andou 0.00 m depois do passe)
 - ✔ mira assistida: 20–25° fora do alvo ainda escolhe o companheiro certo (✔✔✔✔✔✔)
-- ✘ passe pelo toque apontando torto vai para o companheiro da direção
+- ✘ passe pelo toque apontando torto vai para o companheiro da direção (MAROLINHA)
 - ✔ proteção ao dominar a bola
 - ✔ tabela: quem passou dispara para receber de volta
 - ✔ tabela: o passador corre para o espaço
 - ✔ bola aérea ao alcance: aviso CHUTE! e botão piscando
 - ✔ MARCAR colado no adversário dá o bote
 - ✔ troca automática passa o controle para quem está perto da bola
--   registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off hint fire:on pass:on tackle:on press:on pass:on pass:on pass:on shoot:on trick:on trick:off hint trick:off hint trick:on trick:off hint sprint:on shoot:on pass:on lob:on pass:on pass:on press:on
+-   registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off hint fire:on pass:on tackle:on press:on pass:on pass:on shoot:on trick:on trick:off hint trick:off hint trick:on sprint:on shoot:on pass:on lob:on pass:on pass:on press:on
 
 Capturas de tela das suítes em `docs/qa/`.

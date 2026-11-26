@@ -746,9 +746,11 @@ const SUITES = {
     await sleep(300);
     check((await g.ev(() => window.__game.touch.log.length)) > logN, 'toque entre dois botões aciona o mais próximo', n);
     await scene('atk'); await waitMode('atk');
+    const nT = await g.ev(() => window.__game.touch.log.filter((x) => x !== 'hint').length);
     for (let k = 0; k < 6; k++) await tapBtn('b-trick');
     await sleep(600);
-    check((await g.ev(() => window.__game.touch.log.filter((x) => x.startsWith('trick')).length)) >= 6, 'seis toques rápidos seguidos são todos registrados', n);
+    const gotT = await g.ev((n0) => window.__game.touch.log.filter((x) => x !== 'hint').length - n0, nT);
+    check(gotT >= 6, `seis toques rápidos seguidos são todos registrados (${gotT})`, n);
     // dois dedos: joystick + botão, e dois botões ao mesmo tempo
     await scene('atk'); await waitMode('atk');
     const sp = await ctr('b-sprint'), sh = await ctr('b-shoot');
@@ -799,6 +801,10 @@ const SUITES = {
     // passe real pelo toque apontando torto (≈25° fora) para o companheiro da diagonal
     await g.ev(() => { const me = window.__qaMe, d = me.team.dir, a = 25 * Math.PI / 180; window.__game.input.setStick({ x: Math.cos(a) * d * 0.9, y: Math.sin(a) * 0.9 }); window.__qaTgt = me.team.field.filter((x) => x !== me && !x.isGK)[1]; });
     await sleep(900);
+    // recoloca todo mundo parado na hora do toque (durante a espera o jogador correu com o direcional apertado)
+    await g.ev(() => { const m = window.__game.flow.match, me = window.__qaMe, d = me.team.dir; const mates = me.team.field.filter((x) => x !== me && !x.isGK);
+      const place = (x, deg, dist) => { const a = deg * Math.PI / 180; x.pos.set(me.pos.x + Math.cos(a) * dist * d, 0, me.pos.z + Math.sin(a) * dist); x.vel.set(0, 0, 0); x.sync(); };
+      me.vel.set(0, 0, 0); place(mates[0], 0, 9); place(mates[1], 50, 6); place(mates[2], -60, 7); if (m.ball.owner !== me) m.takeBall(me); });
     await tapBtn('b-pass');
     const tortoOk = await until(() => window.__game.flow.match.ball.owner === window.__qaTgt || window.__game.flow.match.passTo === window.__qaTgt, null, 20000);
     const tortoTo = await g.ev(() => window.__game.flow.match.passTo?.data.short ?? '-');
