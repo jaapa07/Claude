@@ -82,7 +82,8 @@ const SUITES = {
     const expect = ['ctrl', 'teams', 'teams', 'teams', 'challenges', 'achievements', 'options', 'credits'];
     for (let i = 0; i < expect.length; i++) {
       await g.waitScene('menu');
-      await sleep(300);
+      // o menu ignora o primeiro quadro depois de montado; no headless um quadro pode levar ~0,5 s
+      await g.waitFor(() => window.__game.flow.nav && window.__game.flow.nav.armed, null, 20000).catch(() => {}); await sleep(400);
       for (let k = 0; k < i; k++) { await g.key('ArrowRight'); await sleep(700); }
       await g.key('Enter');
       try { await g.waitScene(expect[i], 60000); check(true, `opção ${i + 1} → ${expect[i]}`, n); } catch { check(false, `opção ${i + 1} deveria abrir ${expect[i]} (está em ${await g.scene()})`, n); }
