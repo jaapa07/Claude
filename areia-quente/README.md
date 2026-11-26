@@ -177,6 +177,12 @@ bolas paradas, faltas/cartões/expulsão, pausa (táticas, substituição, reini
 pênaltis, treino, os 3 minijogos, conquistas e bolas, vazamento de memória entre partidas e tela de celular.
 Resultado em [`docs/QA.md`](docs/QA.md).
 
+Auditoria de telas no celular (todos os botões visíveis em 6 tamanhos de iPhone, inclusive com a barra do Safari):
+
+```bash
+node scripts/qa/telas.cjs
+```
+
 ## Testes
 
 ```bash
