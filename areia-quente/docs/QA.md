@@ -1,6 +1,6 @@
 # QA ponta a ponta
 
-Executado em 2026-11-26 11:59 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
+Executado em 2026-11-26 12:08 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
 
 **18/19 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
 bola perto do dono, controle duplicado, time humano sem jogador, estados presos, bola morta sem ninguém ir buscar).
@@ -11,7 +11,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 | options | ✔ OK | 45s |
 | fullmatch | ✔ OK | 141s |
 | arenas | ✔ OK | 132s |
-| human | ✔ OK | 167s |
+| human | ✔ OK | 166s |
 | twoplayers | ✔ OK | 54s |
 | setpieces | ✔ OK | 61s |
 | fouls | ✔ OK | 60s |
@@ -25,7 +25,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 | career | ✔ OK | 161s |
 | mobile | ✔ OK | 34s |
 | iphone | ✔ OK | 199s |
-| toques | ✘ FALHOU | 312s |
+| toques | ✘ FALHOU | 333s |
 
 ## menus
 
@@ -69,8 +69,8 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 ## human
 
-- ✔ jogador humano executou ações pelo teclado (44)
-- ✔ time humano chutou a gol (3)
+- ✔ jogador humano executou ações pelo teclado (50)
+- ✔ time humano chutou a gol (5)
 - ✔ jogador controlado se movimentou
 
 ## twoplayers
@@ -208,21 +208,21 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔ passe em andamento mantém o layout ATAQUE
 - ✔ DEFESA: layout aparece com o adversário na bola
 - ✔ TROCAR, MARCAR e CARRINHO grande ({"pass":"TROCAR","press":true,"tackle":76})
-- ✔ CARRINHO dá o carrinho
-- ✔ MARCAR corre sozinho até o adversário (9.3 → 6.6 m)
+- ✘ CARRINHO dá o carrinho
+- ✔ MARCAR corre sozinho até o adversário (9.0 → 7.7 m)
 - ✔ TROCAR troca o jogador controlado
 - ✔ toque entre dois botões aciona o mais próximo
 - ✔ seis toques rápidos seguidos são todos registrados
-- ✔ três dedos: joystick + CORRER + CHUTE ({"mx":1,"run":true,"shoot":true})
+- ✘ três dedos: joystick + CORRER + CHUTE ({"mx":1,"run":true,"shoot":false})
 - ✔ soltar todos os dedos solta tudo
-- ✘ PASSE rasteiro: chega no pé do companheiro (ele andou 4.47 m)
-- ✘ LENÇOL: chega no pé do companheiro (ele andou 4.31 m)
+- ✘ PASSE rasteiro: chega no pé do companheiro (ele andou 1.30 m)
+- ✔ LENÇOL: chega no pé do companheiro (ele andou 1.25 m)
 - ✔ proteção ao dominar a bola
 - ✔ tabela: quem passou dispara para receber de volta
 - ✔ tabela: o passador corre para o espaço
 - ✔ bola aérea ao alcance: aviso CHUTE! e botão piscando
 - ✔ MARCAR colado no adversário dá o bote
 - ✔ troca automática passa o controle para quem está perto da bola
--   registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off hint fire:on pass:on tackle:on press:on pass:on shoot:on trick:on trick:off hint trick:off hint trick:off hint trick:off hint sprint:on shoot:on pass:on lob:on pass:on press:on
+-   registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off hint fire:on pass:on tackle:off hint press:on pass:on shoot:on trick:on trick:off hint trick:off hint trick:off hint trick:on sprint:on pass:on lob:on pass:on press:on
 
 Capturas de tela das suítes em `docs/qa/`.

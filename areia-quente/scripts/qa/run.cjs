@@ -620,7 +620,8 @@ const SUITES = {
       m.sp = null; m.state = 'play'; m.stateT = 0; m.paused = false;
       // cancela gols/replays agendados por chutes de testes anteriores (senão a cena muda no meio do teste)
       m.timers = []; m.hud.cinema(false); m.hud.show(true); m.replay?.stop?.(); m.slowmo = 1;
-      for (const p of m.all) { p.kick = null; p.stun = 0; p.sliding = 0; p.vel.set(0, 0, 0); }
+      for (const p of m.all) { p.kick = null; p.stun = 0; p.sliding = 0; p.vel.set(0, 0, 0); p.tackleCd = 0; p.runT = 0; p.protectT = 0; }
+      m.clock = 10; // o relógio não pode chegar ao intervalo no meio dos testes
       // adversários longe (exceto no cenário de defesa)
       opp.field.forEach((o, i) => { if (!o.isGK) { o.pos.set(-dir * 14, 0, -8 + i * 5); o.sync(); } });
       const me = me0;
@@ -630,6 +631,8 @@ const SUITES = {
       if (kind === 'sup') { const mate = tm.field.find((x) => x !== me && !x.isGK); mate.pos.set(-dir * 6, 0, 3); mate.sync(); m.takeBall(mate); }
       for (const p of m.all) if (p.device === 'qa') p.device = null;
       // adversário com a bola "congelado" (sem IA) para o teste não depender do que a CPU decide
+      // na defesa, meus companheiros ficam longe (senão um carrinho deles vira falta/cobrança no meio do teste)
+      if (kind === 'def') tm.field.forEach((x, i) => { if (x !== me0 && !x.isGK) { x.pos.set(-dir * 12, 0, -9 + i * 6); x.sync(); } });
       if (kind === 'def') { const o = opp.field.find((x) => !x.isGK); o.pos.set(dir * 2.2, 0, 0.4); o.vel.set(0, 0, 0); o.sync(); m.takeBall(o); o.device = 'qa'; o.protectT = 0; }
       if (kind === 'deffar') { const o = opp.field.find((x) => !x.isGK); o.pos.set(dir * 9, 0, 4); o.sync(); m.takeBall(o); }
       if (b.owner) b.pos.copy(b.owner.pos).addScaledVector(b.owner.forward, 0.45).setY(0.11);

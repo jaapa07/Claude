@@ -457,7 +457,7 @@ export class Match {
     if (!hasIt || (p.kick && !p.kick.done)) return;
     const best = target ?? this.pickPassTarget(p, dir, lob);
     // o recebedor já para e espera no momento em que o botão é apertado (não sai correndo durante o preparo do passe)
-    if (best && !best.isGK) { this.passTo = best; this.passT = 3.5; best.vel.multiplyScalar(best.runT > 0 ? 1 : 0.3); }
+    if (best && !best.isGK) { this.passTo = best; this.passT = 3.5; if (best.runT <= 0) best.vel.set(0, 0, 0); }
     const kind: KickKind = p.isGK && b.held ? 'gk_throw' : this.sp?.kind === 'throw_in' ? 'throw_in' : lob ? 'pass_lob' : 'pass_short';
     this.queueKick(p, kind, 0.5, null, best);
   }
