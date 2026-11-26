@@ -1,34 +1,52 @@
 # QA ponta a ponta
 
-Executado em 2026-11-26 00:00 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
+Executado em 2026-11-26 00:23 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
 
 **14/18 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
 bola perto do dono, controle duplicado, time humano sem jogador, estados presos, bola morta sem ninguém ir buscar).
 
 | Suíte | Resultado | Tempo |
 |---|---|---|
-| menus | ✘ FALHOU | 1s |
-| options | ✔ OK | 82s |
+| menus | ✘ FALHOU | 415s |
+| options | ✔ OK | 45s |
 | fullmatch | ✔ OK | 170s |
-| arenas | ✔ OK | 136s |
-| human | ✔ OK | 220s |
+| arenas | ✔ OK | 132s |
+| human | ✔ OK | 166s |
 | twoplayers | ✔ OK | 54s |
 | setpieces | ✔ OK | 74s |
 | fouls | ✔ OK | 60s |
-| pausemenu | ✔ OK | 62s |
+| pausemenu | ✔ OK | 37s |
 | cup | ✔ OK | 164s |
 | pens | ✔ OK | 86s |
 | training | ✔ OK | 32s |
-| minigames | ✘ FALHOU | 188s |
+| minigames | ✘ FALHOU | 235s |
 | achievements | ✔ OK | 64s |
 | memory | ✔ OK | 108s |
 | career | ✔ OK | 161s |
-| mobile | ✘ FALHOU | 0s |
-| iphone | ✘ FALHOU | 91s |
+| mobile | ✘ FALHOU | 2s |
+| iphone | ✘ FALHOU | 223s |
 
 ## menus
 
-- ✘ exceção: page.waitForFunction: Target page, context or browser has been closed
+- ✔ ENTER no título abre o menu
+- ✔ duplo clique gera uma única transição (1)
+- ✔ menu com 8 opções (Amistoso | Copa Rei da Praia | Modo Carreira | Treino | Desafios da Praia | Conquistas (0/20) | Opções | Créditos)
+- ✔ opção 1 → ctrl
+- ✔   ESC volta ao menu
+- ✔ opção 2 → teams
+- ✔   ESC volta ao menu
+- ✔ opção 3 → teams
+- ✔   ESC volta ao menu
+- ✔ opção 4 → teams
+- ✔   ESC volta ao menu
+- ✔ opção 5 → challenges
+- ✔   ESC volta ao menu
+- ✘ opção 6 deveria abrir achievements (está em challenges)
+- ✔   ESC volta ao menu
+- ✘ opção 7 deveria abrir options (está em challenges)
+- ✔   ESC volta ao menu
+- ✘ opção 8 deveria abrir credits (está em options)
+- ✔   ESC volta ao menu
 
 ## options
 
@@ -45,13 +63,13 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 ## arenas
 
-- ✔ lagoa: o relógio avança (1º 154s)
-- ✔ dunas: o relógio avança (1º 126s)
+- ✔ lagoa: o relógio avança (1º 172s)
+- ✔ dunas: o relógio avança (1º 210s)
 
 ## human
 
-- ✔ jogador humano executou ações pelo teclado (29)
-- ✔ time humano chutou a gol (4)
+- ✔ jogador humano executou ações pelo teclado (44)
+- ✔ time humano chutou a gol (2)
 - ✔ jogador controlado se movimentou
 
 ## twoplayers
@@ -105,7 +123,8 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 ## minigames
 
-- ✘ exceção: keyboard.down: Target page, context or browser has been closed
+- ✔ Pênaltis de Ouro: 5 cobranças pelo teclado e tela de resultado ([false,false,true,false,false])
+- ✘ exceção: page.evaluate: Target page, context or browser has been closed
 
 ## achievements
 
@@ -133,7 +152,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 ## mobile
 
-- ✘ exceção: page.goto: Target page, context or browser has been closed
+- ✘ exceção: page.setViewportSize: Target page, context or browser has been closed
 
 ## iphone
 
@@ -150,6 +169,21 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔ botão PULAR aparece na apresentação
 - ✔ PULAR encerra a apresentação
 - ✔ no saque o botão PASSE pisca
-- ✘ exceção: touchscreen.tap: Target page, context or browser has been closed
+- ✔ bola em jogo
+- ✔ joystick e botões visíveis durante o jogo
+- ✔ todos os botões dentro da tela e com no mínimo 40 px
+- ✔ jogador controlado pela tela de toque
+- ✔ joystick move para a direita (mx=0.98)
+- ✔ multitoque: joystick + CHUTE ao mesmo tempo
+- ✔ soltar os dedos solta joystick e botão
+- ✔ jogador se moveu com o joystick
+- ✘ ATAQUE: PASSE/CHUTE/LENÇOL/FIRULA, sem CARRINHO ({"atk":false,"def":true,"pass":"TROCAR","tackle":true,"trick":false,"lob":false,"shoot":true,"big":76})
+- ✘ DEFESA: CARRINHO grande, TROCAR, sem FIRULA/LENÇOL ({"atk":false,"def":true,"pass":"TROCAR","tackle":true,"trick":false,"lob":false,"shoot":true,"big":76})
+- ✔ pausa esconde os controles de toque
+- ✔ continuar devolve os controles
+- ✔ na vertical aparece "Gire o aparelho"
+- ✔ na horizontal o aviso some
+- ✔ opções do celular: botões, vibração, troca de versão; sem teclas
+- ✔ pc.html: versão PC sem controles de toque
 
 Capturas de tela das suítes em `docs/qa/`.

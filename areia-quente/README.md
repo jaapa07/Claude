@@ -75,11 +75,28 @@ e abra pelo ícone.
 | ❚❚ (canto superior) | pausa |
 | PULAR ▶▶ | pula apresentação, replay e intervalo |
 
-Os botões **mudam entre ATAQUE e DEFESA**: com a bola do seu time aparecem CHUTE (grande), PASSE, LENÇOL e FIRULA;
-quando o adversário tem a bola o botão grande vira **CARRINHO**, PASSE vira **TROCAR** (pega o jogador mais perto) e CHUTE sobe
-para finalizações de bola alta. Goleiro com a bola na mão: CHUTE vira LANÇAR. Um selo ATAQUE/DEFESA mostra o modo atual.
+Os botões **mudam conforme o lance** (um selo mostra o modo):
+
+| Modo | Quando | Botões |
+|---|---|---|
+| **ATAQUE** | você está com a bola | CHUTE (grande; goleiro: LANÇAR), PASSE, LENÇOL, FIRULA |
+| **APOIO** | um companheiro da CPU está com a bola | **PEDIR** e **PEDIR ALTO** (ele passa para você), CHUTE de primeira |
+| **DEFESA** | o adversário está com a bola / bola dividida | **CARRINHO** (grande), **TROCAR**, **MARCAR** (segure: corre sozinho até a bola) |
+
+CORRER e FOGO ficam sempre na tela (o anel do FOGO enche com as jogadas de estilo). Botão que não pode agir naquele lance fica
+apagado e, se tocado, mostra uma dica. O toque entre dois botões aciona o mais próximo.
 Funciona com vários dedos ao mesmo tempo (joystick + chute). No saque e nas cobranças os botões PASSE/CHUTE piscam.
 As telas que no PC usam ENTER/ESC ganham botões **VOLTAR / COMEÇAR**; com o aparelho em pé aparece "Gire o aparelho".
+
+### Jogabilidade (passe, chute, defesa)
+
+- **Passe com alvo visível:** enquanto você conduz, um anel verde "PASSE" marca quem vai receber. Com o direcional apontado o passe
+  segue a direção; solto, vai para o companheiro mais livre e mais à frente (o rasteiro evita linhas com adversário no caminho).
+- **Passe calculado para a areia:** a força do passe rasteiro é calculada pelo atrito da areia para a bola chegar viva no companheiro,
+  mirando onde ele vai estar. O recebedor vai ao encontro da bola e domina com mais facilidade.
+- **Pedir a bola:** J (ou PEDIR) sem a bola com um companheiro da CPU nela faz ele passar para você; L (PEDIR ALTO) pede pelo alto.
+- **Chute:** toque rápido já sai com força boa; segurar carrega até a força máxima (barra embaixo do jogador).
+- **Troca automática** (Opções): na defesa, o controle passa sozinho para o companheiro bem mais perto da bola.
 
 ## O que tem
 

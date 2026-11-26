@@ -23,9 +23,26 @@ const html = (s: string) => { const d = document.createElement('div'); d.classNa
 let mouseXY = '';
 const mouseMoved = (e: MouseEvent) => { const xy = `${e.screenX},${e.screenY}`; const moved = xy !== mouseXY; mouseXY = xy; return moved; };
 
+/** Ícones do menu principal (SVG desenhado à mão, cores da marca). */
+function menuIcon(k: string): string {
+  const P: Record<string, string> = {
+    play: '<circle cx="24" cy="24" r="19" fill="#fff" stroke="#141414" stroke-width="3"/><path d="M24 11l7 5-3 8h-8l-3-8z M13 27l5-3 3 7-4 6-5-3z M35 27l-5-3-3 7 4 6 5-3z" fill="#141414"/>',
+    cup: '<path d="M14 8h20v8c0 8-4 13-10 13S14 24 14 16z" fill="#ffd21f" stroke="#141414" stroke-width="3"/><path d="M14 11H7c0 7 4 10 8 10M34 11h7c0 7-4 10-8 10" fill="none" stroke="#141414" stroke-width="3"/><rect x="20" y="29" width="8" height="6" fill="#ffd21f" stroke="#141414" stroke-width="3"/><rect x="14" y="35" width="20" height="6" rx="2" fill="#ff7a1a" stroke="#141414" stroke-width="3"/>',
+    career: '<path d="M6 34l4-20 9 9 5-13 5 13 9-9 4 20z" fill="#ffd21f" stroke="#141414" stroke-width="3" stroke-linejoin="round"/><rect x="6" y="34" width="36" height="6" rx="2" fill="#ff7a1a" stroke="#141414" stroke-width="3"/>',
+    train: '<path d="M24 6l12 32H12z" fill="#ff7a1a" stroke="#141414" stroke-width="3" stroke-linejoin="round"/><path d="M17 26h14M20 17h8" stroke="#fff" stroke-width="4"/><rect x="7" y="37" width="34" height="5" rx="2" fill="#141414"/>',
+    target: '<circle cx="24" cy="24" r="18" fill="#fff" stroke="#141414" stroke-width="3"/><circle cx="24" cy="24" r="12" fill="#e3182d"/><circle cx="24" cy="24" r="6" fill="#fff"/><circle cx="24" cy="24" r="2.5" fill="#141414"/>',
+    medal: '<path d="M14 4h8l4 12h-8zM34 4h-8l-4 12h8z" fill="#1d74c9" stroke="#141414" stroke-width="2.5"/><circle cx="24" cy="30" r="13" fill="#ffd21f" stroke="#141414" stroke-width="3"/><path d="M24 22l2.6 5.4 5.9.8-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z" fill="#ff7a1a"/>',
+    gear: '<path d="M24 6l4 1 1 5 4 2 4-3 3 3-3 4 2 4 5 1v4l-5 1-2 4 3 4-3 3-4-3-4 2-1 5h-4l-1-5-4-2-4 3-3-3 3-4-2-4-5-1v-4l5-1 2-4-3-4 3-3 4 3 4-2 1-5z" fill="#cfd8e3" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/><circle cx="24" cy="24" r="6" fill="#141414"/>',
+    info: '<circle cx="24" cy="24" r="18" fill="#7fd2ff" stroke="#141414" stroke-width="3"/><rect x="21" y="20" width="6" height="15" rx="2" fill="#141414"/><circle cx="24" cy="14" r="3.4" fill="#141414"/>',
+  };
+  return `<svg viewBox="0 0 48 48" aria-hidden="true">${P[k] ?? ''}</svg>`;
+}
+
 /** Navegação por teclado/controle numa lista de botões (também funciona com mouse). */
 class Nav {
   i = 0;
+  /** grid = true: cima/baixo vão para o item visualmente acima/abaixo; esquerda/direita andam na ordem */
+  grid = false;
   constructor(public items: HTMLElement[], public back?: () => void, public horiz = false) {
     this.mark();
     // só segue o mouse quando ele realmente se mexe: rolar a lista pelo teclado passa itens por baixo do
@@ -39,7 +56,18 @@ class Nav {
     // não pode ser lida de novo como ação desta tela (antes fechava a pausa no mesmo instante)
     if (!this.armed) { this.armed = true; return false; }
     const m = input.menu;
-    const prev = this.horiz ? m.left : m.up, next = this.horiz ? m.right : m.down;
+    if (this.grid && (m.up || m.down)) {
+      const r0 = this.items[this.i].getBoundingClientRect(), cx = r0.left + r0.width / 2, cy = r0.top + r0.height / 2, sg = m.down ? 1 : -1;
+      let best = -1, bd = Infinity;
+      this.items.forEach((it, k) => {
+        const r = it.getBoundingClientRect(), dy = (r.top + r.height / 2 - cy) * sg;
+        if (k === this.i || dy < 8) return;
+        const d = dy + Math.abs(r.left + r.width / 2 - cx) * 0.6;
+        if (d < bd) { bd = d; best = k; }
+      });
+      if (best >= 0) { this.i = best; this.mark(); audio.play('ui_move', 0.5); }
+    }
+    const prev = this.grid ? m.left : this.horiz ? m.left : m.up, next = this.grid ? m.right : this.horiz ? m.right : m.down;
     if (prev) { this.i = (this.i - 1 + this.items.length) % this.items.length; this.mark(); audio.play('ui_move', 0.5); }
     if (next) { this.i = (this.i + 1) % this.items.length; this.mark(); audio.play('ui_move', 0.5); }
     if (m.ok) { audio.play('ui_ok', 0.6); this.items[this.i]?.click(); return true; }
@@ -188,12 +216,23 @@ export class Flow {
       [t('menu_options'), 'Volume, duração, dificuldade, gráficos e controles.', () => this.fade(() => this.options())],
       [t('menu_credits'), 'Quem fez a areia esquentar.', () => this.fade(() => this.credits())],
     ];
-    const el = html(`<div class="screen menu"><div class="col"><img class="logo" src="${A('ui/logo.png')}">${opts.map(([n]) => `<button class="btn"><span>${n}</span></button>`).join('')}<div class="desc"></div></div><div></div></div>`);
+    const ICONS = ['play', 'cup', 'career', 'train', 'target', 'medal', 'gear', 'info'];
+    const SUBS = ['Jogar agora', this.cup && !this.cup.done ? 'Continuar' : '8 seleções', this.career ? `Temporada ${this.career.season.n}` : 'Nova carreira', 'Sem pressão', 'Bata recordes', 'Prêmios e bolas', 'Ajustes', 'Equipe'];
+    const chips = [
+      `<span>🏆 ${progress.count()}/${Object.keys(ACH).length} conquistas</span>`,
+      this.career ? `<span>${this.flagImg(this.career.team)} Carreira · T${this.career.season.n}</span>` : '',
+      this.cup && !this.cup.done ? `<span>${this.flagImg(this.cup.team)} Copa em andamento</span>` : '',
+      `<span>⚽ Pênaltis ${progress.data.records.pk}/5 · Embaixadinhas ${progress.data.records.juggle}</span>`,
+      `<span class="plat">${platform.label}</span>`,
+    ].filter(Boolean).join('');
+    const el = html(`<div class="screen menu mainmenu"><div class="mm-top"><img class="logo" src="${A('ui/logo.png')}"><div class="mm-chips">${chips}</div></div>
+      <div class="mm-grid">${opts.map(([n], i) => `<button class="btn mtile ${i === 0 ? 'hero' : ''} ${i === 7 ? 'mini' : ''}"><i class="ic">${menuIcon(ICONS[i])}</i><b>${n}</b><small>${SUBS[i]}</small></button>`).join('')}</div>
+      <div class="desc"></div></div>`);
     this.mount(el);
-    const btns = [...el.querySelectorAll('.btn')] as HTMLElement[];
+    const btns = [...el.querySelectorAll('.mtile')] as HTMLElement[];
     btns.forEach((b, i) => b.addEventListener('click', opts[i][2]));
     const desc = el.querySelector('.desc') as HTMLElement;
-    this.nav = new Nav(btns);
+    this.nav = new Nav(btns); this.nav.grid = true;
     // vitrine 3D: craque fazendo embaixadinhas na areia
     const p = new Athlete(this.kit(teams[0], 'home', 4));
     p.root.position.set(1.5, 0, 3); p.root.rotation.y = -0.5; p.play('freestyle', 0);
@@ -205,7 +244,7 @@ export class Flow {
     this.tick = (dt) => {
       desc.textContent = opts[this.nav!.i][1];
       const c = this.world.camera;
-      c.position.set(-1.2 + Math.sin(this.t * 0.2) * 0.4, 1.9, 9.5); c.lookAt(2.4, 1.5, 2);
+      c.position.set(-1.2 + Math.sin(this.t * 0.2) * 0.4, 1.5, 9.5); c.lookAt(2.4, 0.35, 2);
       const ph = (p.actionTime % 0.72) / 0.72;
       const fx = new THREE.Vector3(Math.sin(-0.5), 0, Math.cos(-0.5));
       ball.position.set(1.5 + fx.x * 0.5, 0.35 + Math.abs(Math.sin(ph * Math.PI * 2)) * 0.9, 3 + fx.z * 0.5);
@@ -952,6 +991,7 @@ export class Flow {
       { k: 'period_len', get: () => `${S.periodMinutes} min`, step: (d) => { const a = [2, 3, 5]; S.periodMinutes = a[(a.indexOf(S.periodMinutes) + d + 3) % 3]; } },
       { k: 'difficulty', get: () => t(['diff_easy', 'diff_normal', 'diff_hard'][S.difficulty]), step: (d) => { S.difficulty = ((S.difficulty + d + 3) % 3) as 0 | 1 | 2; } },
       { k: 'quality', get: () => t(['q_low', 'q_mid', 'q_high'][S.quality]) + ' (reinicia)', step: (d) => { S.quality = ((S.quality + d + 3) % 3) as 0 | 1 | 2; } }];
+    optsL.push({ k: 'Troca automática', get: () => (S.autoSwitch === false ? 'Desligada' : 'Ligada'), step: () => { S.autoSwitch = S.autoSwitch === false; } });
     if (platform.mobile) optsL.push(
       { k: 'Botões na tela', get: () => ['Pequenos', 'Médios', 'Grandes'][S.touchSize ?? 1], step: (d) => { S.touchSize = (((S.touchSize ?? 1) + d + 3) % 3) as 0 | 1 | 2; } },
       { k: 'Vibração ao tocar', get: () => (S.vibrate === false ? 'Desligada' : 'Ligada'), step: () => { S.vibrate = S.vibrate === false; } });

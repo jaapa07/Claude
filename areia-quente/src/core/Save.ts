@@ -6,6 +6,8 @@ export type Settings = {
   keys: Record<string, string>;
   /** versão Celular: tamanho dos botões (0 P · 1 M · 2 G) e vibração ao tocar */
   touchSize: 0 | 1 | 2; vibrate: boolean;
+  /** troca automática para o jogador mais perto da bola na defesa */
+  autoSwitch: boolean;
 };
 
 export const DEFAULT_KEYS: Record<string, string> = {
@@ -15,8 +17,8 @@ export const DEFAULT_KEYS: Record<string, string> = {
 
 // cada versão tem suas próprias configurações (PC começa no gráfico alto, celular no médio com tempos mais curtos)
 const DEF: Settings = platform.mobile
-  ? { music: 0.7, sfx: 0.9, crowd: 0.8, periodMinutes: 2, difficulty: 1, quality: 1, keys: { ...DEFAULT_KEYS }, touchSize: 1, vibrate: true }
-  : { music: 0.7, sfx: 0.9, crowd: 0.8, periodMinutes: 3, difficulty: 1, quality: 2, keys: { ...DEFAULT_KEYS }, touchSize: 1, vibrate: true };
+  ? { music: 0.7, sfx: 0.9, crowd: 0.8, periodMinutes: 2, difficulty: 1, quality: 1, keys: { ...DEFAULT_KEYS }, touchSize: 1, vibrate: true, autoSwitch: true }
+  : { music: 0.7, sfx: 0.9, crowd: 0.8, periodMinutes: 3, difficulty: 1, quality: 2, keys: { ...DEFAULT_KEYS }, touchSize: 1, vibrate: true, autoSwitch: true };
 const SETTINGS_KEY = platform.mobile ? 'aq.settings.mobile' : 'aq.settings';
 
 function read<T>(k: string, def: T): T {

@@ -115,6 +115,18 @@ export class Hud {
     }
   }
 
+  /** anel "PASSE" sobre quem vai receber o passe (aparece enquanto o jogador humano está com a bola) */
+  passTarget(p: Player | null, cam: THREE.Camera) {
+    const m = this.markers[3];
+    if (!p) { m.style.display = 'none'; return; }
+    const s = this.screen(this.v.copy(p.pos).setY(2.25), cam);
+    m.style.display = s.behind ? 'none' : 'block';
+    m.classList.add('ptgt');
+    m.style.left = `${s.x}px`; m.style.top = `${s.y}px`;
+    const lb = m.lastChild as HTMLElement;
+    if (lb.textContent !== 'PASSE') lb.textContent = 'PASSE';
+  }
+
   powerBar(p: Player | null, f: number, cam: THREE.Camera) {
     if (!p || f <= 0) { this.power.style.display = 'none'; return; }
     const s = this.screen(this.v.copy(p.pos).setY(-0.2), cam);

@@ -31,6 +31,15 @@ const STYLE = MOVES.style as Record<string, number>;
 const LABEL: Partial<Record<KickKind, string>> = { bicycle_kick: 'bicycle', scissor_kick: 'scissor', volley: 'volley', header: 'header', diving_header: 'diving_header', sombrero_flick: 'sombrero', long_throw: 'long_throw' };
 const v3 = () => new THREE.Vector3();
 
+/** velocidade inicial para a bola rolar d metros na areia e chegar com 'arrive' m/s (modelo de atrito do Ball) */
+function rollSpeedFor(d: number, arrive: number) {
+  let lo = arrive, hi = 40;
+  for (let i = 0; i < 18; i++) { const mid = (lo + hi) / 2; if (rollDist(mid, arrive) < d) lo = mid; else hi = mid; }
+  return hi;
+}
+function rollDist(v0: number, vEnd: number) { let v = v0, x = 0; const h = 1 / 60; while (v > vEnd && x < 80) { v -= (3.2 + v * 0.35) * h; x += v * h; } return x; }
+function rollTime(v0: number, d: number) { let v = v0, x = 0, t = 0; const h = 1 / 60; while (x < d && v > 0.3 && t < 5) { v -= (3.2 + v * 0.35) * h; x += v * h; t += h; } return t; }
+
 export class Match {
   world: World;
   opts: MatchOpts;
@@ -258,6 +267,29 @@ export class Match {
     p.device = owners[0].device; owners[0].device = null;
   }
 
+  /**
+   * Troca automática (Opções → "Troca automática"): sem a bola, se outro companheiro está bem mais perto dela,
+   * o controle passa para ele — o jogador não precisa caçar o botão TROCAR a cada lance.
+   */
+  private autoT = 0;
+  private autoSwitch(dt: number) {
+    this.autoT -= dt;
+    if (this.autoT > 0 || settings.data.autoSwitch === false || this.opts.mode === 'training' || this.mini) return;
+    this.autoT = 0.35;
+    const b = this.ball;
+    for (const tm of this.teams) {
+      if (tm.devices.length !== 1) continue;
+      const dev = tm.devices[0];
+      const cur = this.controlled(tm, dev);
+      if (!cur || b.owner === cur || (b.owner && b.owner.team === tm) || this.passTo?.team === tm) continue;
+      if (cur.sliding > 0 || (cur.kick && !cur.kick.done) || input.isDown('TouchPress')) continue;
+      const tgt = b.predict(0.4);
+      const dCur = cur.pos.distanceTo(tgt);
+      const near = tm.field.filter((p) => !p.isGK && p !== cur && p.stun <= 0 && p !== this.trainer).sort((a, c) => a.pos.distanceTo(tgt) - c.pos.distanceTo(tgt))[0];
+      if (near && near.pos.distanceTo(tgt) + 3.5 < dCur) { cur.device = null; near.device = dev; }
+    }
+  }
+
   private switchToNearest(tm: Team, dev: DeviceId) {
     const cur = this.controlled(tm, dev);
     const cands = tm.field.filter((p) => !p.isGK && (!p.device || p.device === dev) && p !== cur && p.stun <= 0 && p !== this.trainer);
@@ -290,6 +322,11 @@ export class Match {
     if (inSet) { p.vel.set(0, 0, 0); return; }
     const canMove = p.stun <= 0 && p.sliding <= 0 && !(p.kick && !p.kick.done) && !this.ball.held;
     let sprint = input.held(dev, 'sprint');
+    // recepção assistida: direcional solto e passe vindo para ele → vai ao encontro da bola
+    if (this.passTo === p && !hasBall && mv.lengthSq() < 0.04 && !this.ball.owner) {
+      const meet = this.ball.predict(0.35).sub(p.pos).setY(0);
+      if (meet.length() > 0.5) mv.copy(meet.normalize().multiplyScalar(0.85));
+    }
     // MARCAR (toque): corre sozinho atrás da bola/adversário enquanto o botão estiver pressionado
     if (input.isDown('TouchPress') && dev === 'kb' && !hasBall && mv.lengthSq() < 0.04) { mv.copy(this.pressDir(p)); sprint = true; }
     if (canMove) {
@@ -356,21 +393,35 @@ export class Match {
     return d.lengthSq() > 0.04 ? d.normalize() : new THREE.Vector3();
   }
 
+  /**
+   * Quem recebe o passe. Com o direcional apontado, a direção manda (cone estreito); solto, vale o companheiro
+   * mais livre e mais à frente. Passe rasteiro evita linhas com adversário no caminho; o lençol passa por cima.
+   */
+  pickPassTarget(p: Player, dir: THREE.Vector3 | null, lob: boolean): Player | null {
+    const mates = p.team.field.filter((m) => m !== p && !m.isGK && m.stun <= 0);
+    const aimed = !!dir && dir.lengthSq() > 0.04;
+    const fwd = aimed ? dir!.clone().setY(0).normalize() : p.forward;
+    let best: Player | null = null, bestS = -1e9;
+    for (const m of mates) {
+      const to = m.pos.clone().sub(p.pos).setY(0); const d = to.length(); to.normalize();
+      const ang = to.dot(fwd);
+      if (aimed && ang < 0.2) continue; // nunca passa para trás de onde o jogador apontou
+      const lane = Math.min(...p.team.opp.field.map((o) => distToSeg(o.pos, p.pos, m.pos)));
+      const mark = Math.min(...p.team.opp.field.map((o) => o.pos.distanceTo(m.pos)));
+      const s = ang * (aimed ? 6 : 2.5) - Math.abs(d - (lob ? 11 : 7)) * 0.14 + Math.min(lob ? 3 : lane, 3) * 0.9 + Math.min(mark, 4) * 0.5 + (m.pos.x * p.team.dir) * 0.06;
+      if (s > bestS) { bestS = s; best = m; }
+    }
+    return best;
+  }
+  /** jogador que deve receber o passe em andamento (recepção assistida) */
+  passTo: Player | null = null;
+  passT = 0;
+
   doPass(p: Player, dir: THREE.Vector3 | null, lob: boolean, target?: Player) {
     const b = this.ball;
     const hasIt = b.owner === p || this.sp?.taker === p || this.nearLooseBall(p);
     if (!hasIt || (p.kick && !p.kick.done)) return;
-    const mates = p.team.field.filter((m) => m !== p && !m.isGK);
-    if (p.isGK || this.sp?.kind === 'goal_kick') mates.push(...[]);
-    let best: Player | null = null, bestS = -1e9;
-    const fwd = dir && dir.lengthSq() > 0.01 ? dir.clone().normalize() : p.forward;
-    for (const m of target ? [target] : mates) {
-      const to = m.pos.clone().sub(p.pos); const d = to.length(); to.normalize();
-      const ang = to.dot(fwd);
-      const opp = Math.min(...p.team.opp.field.map((o) => distToSeg(o.pos, p.pos, m.pos)));
-      const s = ang * 3 - Math.abs(d - 8) * 0.12 + Math.min(opp, 3) * 0.8 + (m.pos.x * p.team.dir) * 0.05;
-      if (s > bestS) { bestS = s; best = m; }
-    }
+    const best = target ?? this.pickPassTarget(p, dir, lob);
     const kind: KickKind = p.isGK && b.held ? 'gk_throw' : this.sp?.kind === 'throw_in' ? 'throw_in' : lob ? 'pass_lob' : 'pass_short';
     this.queueKick(p, kind, 0.5, null, best);
   }
@@ -516,12 +567,16 @@ export class Match {
     const target = k.target;
     switch (k.kind) {
       case 'pass_short': case 'gk_throw': case 'throw_in': {
-        const tp = target ? target.pos.clone().addScaledVector(target.vel, 0.5) : b.pos.clone().addScaledVector(p.forward, 10);
+        let tp = target ? target.pos.clone() : b.pos.clone().addScaledVector(p.forward, 10);
         const d = tp.distanceTo(b.pos);
         if (k.kind === 'pass_short') {
-          const sp = Math.sqrt(4 * 4 + 2 * 4.5 * d) + 1.2;
-          v = tp.sub(b.pos).setY(0).normalize().multiplyScalar(Math.min(sp, 22)); v.y = 0.4;
+          // areia segura muito a bola: a velocidade de saída é calculada para ela chegar viva (~5 m/s) no recebedor,
+          // e o alvo é onde ele vai estar quando a bola chegar
+          let sp = rollSpeedFor(d, 5);
+          if (target) { const tArr = rollTime(sp, d); tp = target.pos.clone().addScaledVector(target.vel, Math.min(1.2, tArr * 0.8)); sp = rollSpeedFor(tp.distanceTo(b.pos), 5); }
+          v = tp.sub(b.pos).setY(0).normalize().multiplyScalar(Math.min(sp, 24)); v.y = 0.6;
           sfx = 'kick_soft';
+          if (target) { this.passTo = target; this.passT = 3; }
         } else {
           tp.y = 1.1;
           v = ballistic(b.pos.setY(k.kind === 'throw_in' ? 2.0 : 1.4), tp, 0.45 + d * 0.045);
@@ -539,7 +594,7 @@ export class Match {
         v = ballistic(b.pos, tp, 0.8 + d * 0.05);
         if (k.kind === 'long_throw') { this.addStyle(tm, 'long_throw', p, t('long_throw')); this.hud.big(t('long_throw')); }
         else this.addStyle(tm, 'lob', p);
-        if (target) this.giveControl(target);
+        if (target) { this.giveControl(target); this.passTo = target; this.passT = 3.5; }
         sfx = 'kick';
         break;
       }
@@ -572,7 +627,7 @@ export class Match {
       }
       default: {
         // finalizações
-        const power = THREE.MathUtils.clamp(k.power, 0.15, 1);
+        const power = THREE.MathUtils.clamp(k.power, tm.human ? 0.42 : 0.15, 1);
         const kindBoost = k.kind === 'bicycle_kick' || k.kind === 'scissor_kick' ? 4 : k.kind === 'volley' ? 3 : k.kind === 'header' ? -3 : k.kind === 'diving_header' ? 0 : 0;
         const speed = 13 + power * 15 + kindBoost + (fire ? 7 : 0);
         const d0 = Math.abs(goalX - b.pos.x) + Math.abs(b.pos.z) * 0.3;
@@ -709,6 +764,8 @@ export class Match {
     if (st === 'penalties') this.updatePens(dt);
     this.mini?.update(dt);
 
+    if (this.passT > 0) { this.passT -= dt; if (this.passT <= 0) this.passTo = null; }
+    if (st === 'play') this.autoSwitch(dt);
     // controle humano + IA
     const live = st === 'play' || st === 'kickoff' || st === 'setpiece';
     for (const tm of this.teams) {
@@ -860,8 +917,9 @@ export class Match {
       for (const p of this.onField) {
         if (p.cooldown > 0 || p.stun > 0 || p.sliding > 0 || (p.kick && !p.kick.done)) continue;
         const d = Math.hypot(b.pos.x - p.pos.x, b.pos.z - p.pos.z);
-        const reachH = p.isGK && this.inOwnArea(p, b.pos) ? 2.4 : p.juggling > 0 ? 0.25 : 0.75;
-        const reachD = p.isGK && this.inOwnArea(p, b.pos) ? 1.2 : 0.8;
+        const recv = p === this.passTo;
+        const reachH = p.isGK && this.inOwnArea(p, b.pos) ? 2.4 : p.juggling > 0 ? 0.25 : recv ? 1.25 : 0.75;
+        const reachD = p.isGK && this.inOwnArea(p, b.pos) ? 1.2 : recv ? 1.25 : 0.8;
         if (d < reachD && b.pos.y < reachH && d < bd) { best = p; bd = d; }
       }
       if (best) this.takeBall(best);
@@ -883,6 +941,7 @@ export class Match {
 
   takeBall(p: Player) {
     const b = this.ball;
+    this.passTo = null;
     const prevTeam = b.lastTouch?.team;
     b.lastTouch = p;
     p.juggling = 0;
@@ -1295,6 +1354,10 @@ export class Match {
     }
     const cpuCarrier = this.ball.owner && !this.ball.owner.device ? this.ball.owner : null;
     h.marker(2, live && cpuCarrier ? cpuCarrier : null, cam);
+    // indicador do passe: quem recebe se o jogador apertar PASSE agora
+    const carrier = humans.find((p) => (this.ball.owner === p && !this.ball.held) || (this.sp?.taker === p && this.state !== 'play')) ?? null;
+    if (live && carrier && humans.length === 1 && !this.mini) { const s = input.state(carrier.device!); h.passTarget(this.pickPassTarget(carrier, new THREE.Vector3(s.mx, 0, s.my), false), cam); }
+    else h.passTarget(null, cam);
     const shooter = humans.find((p) => p.shootHold > 0) ?? null;
     h.powerBar(shooter, shooter?.shootHold ?? 0, cam);
     if (this.state === 'play' && this.stateT > 2.5 && !this.teams.some((tm) => tm.human && tm.heat >= 1 && tm.fire <= 0)) h.msg(null);

@@ -71,19 +71,19 @@ const SUITES = {
     check(await g.scene() === 'menu', 'ENTER no título abre o menu', n);
     // duplo clique de mouse em "Opções" não pode enfileirar duas transições
     await g.waitFor(() => !window.__game.flow.busy, null, 60000);
-    const opt = await g.page.$$('.menu .btn');
+    const opt = await g.page.$$('.mainmenu .mtile');
     await opt[6].dblclick();
     await g.waitScene('options', 60000); await sleep(2500);
     const fades = await g.ev(() => window.__game.flow.fadeLog.filter((x) => x.endsWith('início')).length);
     check(fades === 2, `duplo clique gera uma única transição (${fades - 1})`, n);
     await g.key('Escape'); await g.waitScene('menu', 60000);
-    const items = await g.ev(() => [...document.querySelectorAll('.menu .btn')].map((b) => b.textContent.trim()));
+    const items = await g.ev(() => [...document.querySelectorAll('.mainmenu .mtile')].map((b) => b.textContent.trim()));
     check(items.length === 8, `menu com 8 opções (${items.join(' | ')})`, n);
     const expect = ['ctrl', 'teams', 'teams', 'teams', 'challenges', 'achievements', 'options', 'credits'];
     for (let i = 0; i < expect.length; i++) {
       await g.waitScene('menu');
       await sleep(300);
-      for (let k = 0; k < i; k++) { await g.key('ArrowDown'); await sleep(700); }
+      for (let k = 0; k < i; k++) { await g.key('ArrowRight'); await sleep(700); }
       await g.key('Enter');
       try { await g.waitScene(expect[i], 60000); check(true, `opção ${i + 1} → ${expect[i]}`, n); } catch { check(false, `opção ${i + 1} deveria abrir ${expect[i]} (está em ${await g.scene()})`, n); }
       await sleep(600);
@@ -281,7 +281,7 @@ const SUITES = {
       if (round === 1) {
         await g.page.reload(); await g.waitFor(() => window.__game?.flow.scene === 'title', null, 120000);
         await g.ev(() => window.__game.flow.mainMenu()); await g.waitScene('menu');
-        const label = await g.ev(() => document.querySelectorAll('.menu .btn')[1].textContent);
+        const label = await g.ev(() => document.querySelectorAll('.mainmenu .mtile')[1].textContent);
         check(/Continuar/.test(label), `progresso da copa salvo após recarregar ("${label.trim()}")`, n);
         await g.ev(() => window.__game.flow.cupScreen()); await g.waitScene('cup');
       }
@@ -505,7 +505,7 @@ const SUITES = {
     check(true, 'toque no título abre o menu', n);
     check(await noOverflow(), 'menu sem rolagem da página', n);
     await g.shot('iphone_menu');
-    await tap('.menu .btn'); await g.waitScene('teams');
+    await tap('.mainmenu .mtile'); await g.waitScene('teams');
     check(true, 'Amistoso vai direto para a seleção de times (sem tela de controles)', n);
     const go = await g.center('.tbar .go');
     check(go && go.vis && go.y + go.h / 2 <= 391 && go.x + go.w / 2 <= 845, 'botão COMEÇAR visível na tela', n);
@@ -636,7 +636,7 @@ const SUITES = {
     // ---- chega na partida pelo toque
     const tap = async (sel) => { const c = await g.center(sel); await g.page.touchscreen.tap(c.x, c.y); };
     await tap('.title-screen'); await g.waitScene('menu');
-    await tap('.menu .btn'); await g.waitScene('teams');
+    await tap('.mainmenu .mtile'); await g.waitScene('teams');
     await g.ev(() => { window.__game.flow.setup.arena = 'copacabana'; });
     await tap('.tbar .go');
     await g.waitFor(() => window.__game.flow.scene === 'match' && window.__game.flow.match, null, 180000);
