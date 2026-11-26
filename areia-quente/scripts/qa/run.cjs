@@ -804,7 +804,12 @@ const SUITES = {
     // recoloca todo mundo parado na hora do toque (durante a espera o jogador correu com o direcional apertado)
     await g.ev(() => { const m = window.__game.flow.match, me = window.__qaMe, d = me.team.dir; const mates = me.team.field.filter((x) => x !== me && !x.isGK);
       const place = (x, deg, dist) => { const a = deg * Math.PI / 180; x.pos.set(me.pos.x + Math.cos(a) * dist * d, 0, me.pos.z + Math.sin(a) * dist); x.vel.set(0, 0, 0); x.sync(); };
-      me.vel.set(0, 0, 0); place(mates[0], 0, 9); place(mates[1], 50, 6); place(mates[2], -60, 7); if (m.ball.owner !== me) m.takeBall(me); });
+      m.timers = []; m.sp = null; m.state = 'play'; m.passTo = null;
+      me.pos.set(0, 0, 0); me.vel.set(0, 0, 0); me.sync(); place(mates[0], 0, 9); place(mates[1], 50, 6); place(mates[2], -60, 7);
+      m.ball.owner = null; m.takeBall(me); m.ball.pos.copy(me.pos).addScaledVector(me.forward, 0.45).setY(0.11); });
+    const pre = await g.ev(() => { const s = window.__game.input.state('kb'); const m = window.__game.flow.match;
+      return { mx: +s.mx.toFixed(2), my: +s.my.toFixed(2), ctrl: m.all.find((x) => x.device === 'kb')?.data.short, pick: m.pickPassTarget(window.__qaMe, new window.__game.world.camera.position.constructor(s.mx, 0, s.my), false)?.data.short, tgt: window.__qaTgt.data.short }; });
+    n.push('  diagnóstico do passe apontado: ' + JSON.stringify(pre));
     await tapBtn('b-pass');
     const tortoOk = await until(() => window.__game.flow.match.ball.owner === window.__qaTgt || window.__game.flow.match.passTo === window.__qaTgt, null, 20000);
     const tortoTo = await g.ev(() => window.__game.flow.match.passTo?.data.short ?? '-');
