@@ -75,21 +75,23 @@ e abra pelo ícone.
 | ❚❚ (canto superior) | pausa |
 | PULAR ▶▶ | pula apresentação, replay e intervalo |
 
-Os botões **mudam conforme o lance** (um selo mostra o modo):
+Só **3 botões grandes**, que mudam conforme o lance (um selo mostra o modo):
 
 | Modo | Quando | Botões |
 |---|---|---|
-| **ATAQUE** | você está com a bola | CHUTE (grande; goleiro: LANÇAR), PASSE, LENÇOL, FIRULA |
-| **APOIO** | um companheiro da CPU está com a bola | **PEDIR** e **PEDIR ALTO** (ele passa para você), CHUTE de primeira |
-| **DEFESA** | o adversário está com a bola / bola dividida | **CARRINHO** (grande), **TROCAR**, **MARCAR** (segure: corre sozinho até a bola) |
+| **ATAQUE** | você está com a bola | **CHUTE** (grande; goleiro: LANÇAR), **PASSE**, **LENÇOL** |
+| **APOIO** | um companheiro da CPU está com a bola | CHUTE de primeira, **PEDIR**, **PEDIR ALTO** |
+| **DEFESA** | o adversário está com a bola / bola dividida | **CARRINHO** (grande), **TROCAR**, **MARCAR** (segure: corre sozinho e dá o bote) |
 
-CORRER e FOGO ficam sempre na tela (o anel do FOGO enche com as jogadas de estilo). Botão que não pode agir naquele lance fica
-apagado e, se tocado, mostra uma dica. O toque entre dois botões aciona o mais próximo.
-Funciona com vários dedos ao mesmo tempo (joystick + chute). No saque e nas cobranças os botões PASSE/CHUTE piscam.
-As telas que no PC usam ENTER/ESC ganham botões **VOLTAR / COMEÇAR**; com o aparelho em pé aparece "Gire o aparelho".
+- **Correr:** empurre o joystick até a borda.
+- **Chapéu / firula:** segure CHUTE e toque PASSE.
+- **FOGO:** aparece no topo da tela quando a barra de estilo enche.
+- Botão que não pode agir no lance fica apagado; o toque entre dois botões aciona o mais próximo.
 
 ### Jogabilidade (passe, chute, defesa)
 
+- **Passe no pé (estilo PES/FIFA):** apontando mais ou menos para um companheiro ele é o escolhido; quem recebe para e espera
+  (mesmo com o dedo no joystick), a bola corrige a rota até o pé dele e sai picada se houver marcador no caminho.
 - **Passe com alvo visível:** enquanto você conduz, um anel verde "PASSE" marca quem vai receber. Com o direcional apontado o passe
   segue a direção; solto, vai para o companheiro mais livre e mais à frente (o rasteiro evita linhas com adversário no caminho).
 - **Passe calculado para a areia:** a força do passe rasteiro é calculada pelo atrito da areia para a bola chegar viva no companheiro,

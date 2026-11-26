@@ -125,6 +125,8 @@ export function teamAI(m: Match, tm: Team, dt: number) {
       continue;
     }
     if (owner === p) { carrierAI(m, p, dt, st); continue; }
+    // goleiro adversário com a bola na mão: ninguém pressiona nem dá carrinho (volta para a posição)
+    if (owner && b.held && owner.team !== tm) { anchor(m, p, false, p.target); moveTo(p, p.target, dt, false, b.pos.clone().sub(p.pos)); continue; }
     if (p === chaser && (!owner || owner.team !== tm) && !(!owner && m.passTo && m.passTo.team === tm)) { // passe do time a caminho: ninguém corre atrás
       // pressão / disputa de bola
       const target = owner ? owner.pos.clone().addScaledVector(owner.vel, 0.3) : b.predict(0.25).setY(0);

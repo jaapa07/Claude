@@ -536,7 +536,7 @@ const SUITES = {
     }
     check(await waitPlay(g), 'bola em jogo', n);
     check(await g.ev(() => { const t = document.getElementById('touch'); return t.classList.contains('on') && !t.classList.contains('cine'); }), 'joystick e botões visíveis durante o jogo', n);
-    const btnsIn = await g.ev(() => [...document.querySelectorAll('#touch .t-btn')].filter((b) => +getComputedStyle(b).opacity > 0.5).every((b) => { const r = b.getBoundingClientRect(); return r.width >= 40 && r.left >= 0 && r.right <= innerWidth + 1 && r.top >= 0 && r.bottom <= innerHeight + 1; }));
+    const btnsIn = await g.ev(() => [...document.querySelectorAll('#touch .t-btn')].filter((b) => getComputedStyle(b).display !== 'none' && +getComputedStyle(b).opacity > 0.5).every((b) => { const r = b.getBoundingClientRect(); return r.width >= 40 && r.left >= 0 && r.right <= innerWidth + 1 && r.top >= 0 && r.bottom <= innerHeight + 1; }));
     check(btnsIn, 'todos os botões dentro da tela e com no mínimo 40 px', n);
     await g.shot('iphone_match');
     // joystick: arrasta o dedo para a direita e segura
@@ -949,10 +949,10 @@ const SUITES = {
     const ui = await g.ev(() => ({ msg: document.querySelector('.hud')?.textContent.match(/Goleiro com a bola[^·]*/)?.[0] || '', wait: document.getElementById('touch').classList.contains('wait'), label: document.querySelector('#touch .b-shoot span').textContent }));
     check(/Goleiro com a bola/.test(ui.msg) && ui.wait && ui.label === 'LANÇAR', `aviso "Goleiro com a bola" + PASSE/LANÇAR piscando (${JSON.stringify(ui)})`, n);
     await g.ev(() => window.__game.input.setStick({ x: 0, y: 0.9 }));
-    await step(1.5);
+    await step(3.0); // a animação de agarrar trava o goleiro ~1,2 s; depois ele anda
     await g.ev(() => window.__game.input.setStick(null));
     const walked = await g.ev(() => window.__qaGK.pos.distanceTo(window.__qaGK0));
-    check(walked > 0.5 && await g.ev(() => window.__game.flow.match.ball.held), `goleiro anda com a bola na mão (${walked.toFixed(1)} m)`, n);
+    check(walked > 1.0 && await g.ev(() => window.__game.flow.match.ball.held), `goleiro anda com a bola na mão (${walked.toFixed(1)} m)`, n);
     await g.shot('goleiro_bola');
     const pc = await g.center('#touch .b-pass'); await g.page.touchscreen.tap(pc.x, pc.y);
     await step(0.2);

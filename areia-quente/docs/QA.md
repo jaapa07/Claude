@@ -1,6 +1,6 @@
 # QA ponta a ponta
 
-Executado em 2026-11-26 16:27 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
+Executado em 2026-11-26 19:24 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
 
 **21/21 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
 bola perto do dono, controle duplicado, time humano sem jogador, estados presos, bola morta sem ninguém ir buscar).
@@ -9,11 +9,11 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 |---|---|---|
 | menus | ✔ OK | 222s |
 | options | ✔ OK | 45s |
-| fullmatch | ✔ OK | 121s |
+| fullmatch | ✔ OK | 108s |
 | arenas | ✔ OK | 132s |
-| human | ✔ OK | 158s |
+| human | ✔ OK | 159s |
 | twoplayers | ✔ OK | 50s |
-| setpieces | ✔ OK | 64s |
+| setpieces | ✔ OK | 58s |
 | fouls | ✔ OK | 57s |
 | pausemenu | ✔ OK | 37s |
 | cup | ✔ OK | 164s |
@@ -24,10 +24,10 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 | memory | ✔ OK | 108s |
 | career | ✔ OK | 161s |
 | mobile | ✔ OK | 34s |
-| iphone | ✔ OK | 166s |
-| toques | ✔ OK | 296s |
-| goleiro | ✔ OK | 121s |
-| formatos | ✔ OK | 154s |
+| iphone | ✔ OK | 167s |
+| toques | ✔ OK | 532s |
+| goleiro | ✔ OK | 110s |
+| formatos | ✔ OK | 145s |
 
 ## menus
 
@@ -61,8 +61,8 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 ## fullmatch
 
 - ✔ partida de 3 períodos termina na tela de resultado
-- ✔ ciclo de estados completo (play, setpiece, replay, goal, halftime, kickoff, fulltime)
-- ✔ houve chutes (13,6)
+- ✔ ciclo de estados completo (play, replay, goal, halftime, kickoff, fulltime)
+- ✔ houve chutes (7,5)
 
 ## arenas
 
@@ -71,8 +71,8 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 ## human
 
-- ✔ jogador humano executou ações pelo teclado (54)
-- ✔ time humano chutou a gol (3)
+- ✔ jogador humano executou ações pelo teclado (53)
+- ✔ time humano chutou a gol (5)
 - ✔ jogador controlado se movimentou
 
 ## twoplayers
@@ -184,8 +184,8 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔ multitoque: joystick + botão ao mesmo tempo (shoot:on | on atk | play)
 - ✔ soltar os dedos solta joystick e botão
 - ✔ jogador se moveu com o joystick
-- ✔ ATAQUE: PASSE/CHUTE/LENÇOL/FIRULA, sem CARRINHO ({"atk":true,"def":false,"pass":"PASSE","tackle":false,"trick":true,"lob":true,"shoot":true,"big":22.800048828125})
-- ✔ DEFESA: CARRINHO grande, TROCAR, sem FIRULA/LENÇOL ({"atk":false,"def":true,"pass":"TROCAR","tackle":true,"trick":false,"lob":false,"shoot":true,"big":76})
+- ✔ ATAQUE: CHUTE/PASSE/LENÇOL, sem CARRINHO ({"atk":true,"def":false,"pass":"PASSE","tackle":false,"trick":false,"lob":true,"shoot":true,"big":25.268798828125})
+- ✔ DEFESA: CARRINHO, TROCAR, MARCAR (3 botões) ({"atk":false,"def":true,"pass":"TROCAR","tackle":true,"trick":false,"lob":false,"shoot":false,"big":101.078125})
 - ✔ pausa esconde os controles de toque
 - ✔ continuar devolve os controles
 - ✔ na vertical aparece "Gire o aparelho"
@@ -197,30 +197,34 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 - ✔ ATAQUE: layout aparece com a bola
 - ✔ PASSE (toque rápido) passa a bola
-- ✔ CHUTE (toque rápido) chuta para o gol (20.2 m/s)
-- ✔ CHUTE segurado carrega a força (56%) e chuta
+- ✔ CHUTE (toque rápido) chuta para o gol (19.9 m/s)
+- ✔ CHUTE segurado carrega a força (40%) e chuta
 - ✔ LENÇOL levanta a bola
-- ✔ FIRULA faz embaixadinha/chapéu
-- ✔ CORRER aumenta a velocidade (2.7 → 5.1 m/s)
-- ✔ FOGO apagado com a barra vazia
-- ✔ tocar em botão apagado mostra uma dica
+- ✔ CHUTE segurado + PASSE = chapéu/firula (sem chutar)
+- ✔ combinação registrada como chapéu
+- ✔ joystick na borda corre (2.1 → 5.0 m/s)
+- ✔ só 3 botões de ação na tela
+- ✔ FOGO escondido com a barra vazia
+- ✔ FOGO aparece no topo com a barra cheia
 - ✔ FOGO com a barra cheia ativa o Modo Fogo
 - ✔ companheiro com a bola recebe o controle
 - ✔ layout ATAQUE para quem está com a bola
 - ✔ passe em andamento mantém o layout ATAQUE
 - ✔ DEFESA: layout aparece com o adversário na bola
-- ✔ TROCAR, MARCAR e CARRINHO grande ({"pass":"TROCAR","press":true,"tackle":76})
+- ✔ TROCAR, MARCAR e CARRINHO grande ({"pass":"TROCAR","press":true,"tackle":101.078125})
 - ✔ CARRINHO dá o carrinho
-- ✔ MARCAR corre sozinho até o adversário (9.3 → 5.6 m)
+- ✔ MARCAR corre sozinho até o adversário (9.3 → 7.0 m)
 - ✔ TROCAR troca o jogador controlado
 - ✔ toque entre dois botões aciona o mais próximo
 - ✔ seis toques rápidos seguidos chegam todos (6/6)
-- ✔ três dedos: joystick + CORRER + CHUTE ({"mx":1,"run":true,"shoot":true})
+- ✔ três dedos: joystick + LENÇOL + CHUTE ({"mx":1,"run":true,"shoot":true})
 - ✔ soltar todos os dedos solta tudo
 - ✔ PASSE rasteiro: chega no pé do companheiro (ele andou 0.00 m depois do passe)
+- ✔ passe com marcador no caminho sai picado e chega no companheiro (bola com CAJU)
+- ✔ chute com força máxima vai no gol (4/4 na direção do gol)
 - ✔ LENÇOL: chega no pé do companheiro (ele andou 0.00 m depois do passe)
 - ✔ mira assistida: 20–25° fora do alvo ainda escolhe o companheiro certo (✔✔✔✔✔✔)
--   diagnóstico do passe apontado: {"mx":0.82,"my":0.57,"ctrl":"CAJU","tgt":"ZÉ COQUEIRO"}
+-   diagnóstico do passe apontado: {"mx":0.82,"my":0.57,"ctrl":"MAROLINHA","tgt":"ZÉ COQUEIRO"}
 - ✔ passe pelo toque apontando torto vai para o companheiro da direção (ZÉ COQUEIRO)
 - ✔ proteção ao dominar a bola
 - ✔ tabela: quem passou dispara para receber de volta
@@ -228,7 +232,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔ bola aérea ao alcance: aviso CHUTE! e botão piscando
 - ✔ MARCAR colado no adversário dá o bote
 - ✔ troca automática passa o controle para quem está perto da bola
--   registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off hint fire:on pass:on tackle:on press:on pass:on shoot:on trick:on trick:off hint trick:off hint trick:off hint trick:off hint sprint:on shoot:on pass:on lob:on pass:on pass:on press:on
+-   registro de toques: pass:on shoot:on shoot:on lob:on shoot:on trick:combo fire:on pass:on tackle:on press:on pass:on shoot:on lob:on lob:on lob:off hint lob:on lob:off hint lob:off hint lob:on shoot:on pass:on pass:on shoot:on shoot:on shoot:on shoot:on lob:on pass:on pass:on press:on
 
 ## goleiro
 
@@ -236,7 +240,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔ goleiro nunca fica mais de 7 s com a bola na mão
 - ✔ meu goleiro agarra e recebe o controle
 - ✔ aviso "Goleiro com a bola" + PASSE/LANÇAR piscando ({"msg":"Goleiro com a bola: toque PASSE ou LANÇAR","wait":true,"label":"LANÇAR"})
-- ✔ goleiro anda com a bola na mão (0.5 m)
+- ✔ goleiro anda com a bola na mão (5.9 m)
 - ✔ tocar PASSE repõe a bola 
 - ✔ sem tocar em nada, o goleiro espera e repõe sozinho aos 6 s (com 5 s ainda segurando: true; aos 7,5 s solto: true) 
 
@@ -245,10 +249,10 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔ seletor de formato na escolha de times (3x3 4x4 5x5)
 - ✔ clicar em 3x3 seleciona o formato
 - ✔ 3x3: 3 em campo (com goleiro) e 7 no banco [{"field":3,"bench":7,"gk":true,"slots":"014"},{"field":3,"bench":7,"gk":true,"slots":"014"}]
-- ✔ 3x3: a partida anda (relógio 12s, estado replay, placar 0x1, chutes 0x1)
+- ✔ 3x3: a partida anda (relógio 27s, estado replay, placar 0x1, chutes 0x1)
 - ✔ 4x4: 4 em campo (com goleiro) e 6 no banco [{"field":4,"bench":6,"gk":true,"slots":"0123"},{"field":4,"bench":6,"gk":true,"slots":"0123"}]
-- ✔ 4x4: a partida anda (relógio 16s, estado replay, placar 0x1, chutes 0x1)
+- ✔ 4x4: a partida anda (relógio 37s, estado play, placar 0x0, chutes 1x0)
 - ✔ 5x5: 5 em campo (com goleiro) e 5 no banco [{"field":5,"bench":5,"gk":true,"slots":"01234"},{"field":5,"bench":5,"gk":true,"slots":"01234"}]
-- ✔ 5x5: a partida anda (relógio 33s, estado goal, placar 0x1, chutes 0x1)
+- ✔ 5x5: a partida anda (relógio 42s, estado play, placar 0x0, chutes 0x0)
 
 Capturas de tela das suítes em `docs/qa/`.
