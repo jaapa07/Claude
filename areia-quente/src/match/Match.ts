@@ -322,18 +322,16 @@ export class Match {
     if (inSet) { p.vel.set(0, 0, 0); return; }
     const canMove = p.stun <= 0 && p.sliding <= 0 && !(p.kick && !p.kick.done) && !this.ball.held;
     let sprint = input.held(dev, 'sprint');
-    // recepção assistida: direcional solto e passe vindo para ele → vai ao encontro da bola
-    if (this.passTo === p && !hasBall && mv.lengthSq() < 0.04 && !this.ball.owner) {
-      const meet = this.ball.predict(0.35).sub(p.pos).setY(0);
-      if (meet.length() > 0.5) mv.copy(meet.normalize().multiplyScalar(0.85));
-    }
+    // recepção estilo PES/FIFA: direcional solto e passe vindo para ele → para, vira para a bola e espera no pé
+    const waiting = this.passTo === p && !hasBall && mv.lengthSq() < 0.04 && !this.ball.owner;
+    if (waiting) { p.vel.multiplyScalar(Math.exp(-10 * dt)); p.faceTo(this.ball.pos.clone().sub(p.pos).setY(0), dt, 10); }
     // MARCAR (toque): corre sozinho atrás da bola/adversário enquanto o botão estiver pressionado
     if (input.isDown('TouchPress') && dev === 'kb' && !hasBall && mv.lengthSq() < 0.04) {
       mv.copy(this.pressDir(p)); sprint = true;
       const c = this.ball.owner;
       if (c && c.team !== tm && c.pos.distanceTo(p.pos) < 1.15 && p.tackleCd <= 0) this.doTackle(p, false); // bote
     }
-    if (canMove) {
+    if (canMove && !waiting) {
       const max = p.maxSpeed(sprint);
       const want = mv.clone().multiplyScalar(max);
       const acc = hasBall ? 16 : 20;
@@ -424,6 +422,27 @@ export class Match {
     const side = Math.sign(p.pos.z - recv.pos.z) || (p.pos.z > 0 ? 1 : -1);
     p.runTarget.set(THREE.MathUtils.clamp(recv.pos.x + d * 6, -FIELD.HL + 2, FIELD.HL - 2), 0, THREE.MathUtils.clamp(recv.pos.z + side * 4, -FIELD.HW + 1.5, FIELD.HW - 1.5));
     p.runT = 1.8;
+  }
+  /**
+   * Passe "no pé": enquanto o passe do time está a caminho (ninguém tocou), a bola corrige a direção para o
+   * pé do recebedor — se ele se mexer, ela acompanha — e não morre no meio do caminho por causa da areia.
+   */
+  private homePass(dt: number) {
+    const r = this.passTo, b = this.ball;
+    if (!r || b.owner || b.held || b.inGoal || !r.onField || b.lastTouch?.team !== r.team) return;
+    const to = r.pos.clone().sub(b.pos).setY(0);
+    const dist = to.length();
+    if (dist < 0.3) return;
+    to.divideScalar(dist);
+    const hv = new THREE.Vector3(b.vel.x, 0, b.vel.z);
+    let hs = hv.length();
+    if (hs < 0.05) return;
+    hv.divideScalar(hs);
+    if (hv.dot(to) < -0.2) return; // já passou do recebedor
+    const k = 1 - Math.exp(-(b.airborne ? 2.5 : 7) * dt);
+    hv.lerp(to, k).normalize();
+    if (!b.airborne) hs = Math.max(hs, Math.min(5, 1.5 + dist * 1.2)); // areia não segura o passe antes de chegar
+    b.vel.x = hv.x * hs; b.vel.z = hv.z * hs;
   }
   /** jogador que deve receber o passe em andamento (recepção assistida) */
   passTo: Player | null = null;
@@ -587,8 +606,9 @@ export class Match {
         if (k.kind === 'pass_short') {
           // areia segura muito a bola: a velocidade de saída é calculada para ela chegar viva (~5 m/s) no recebedor,
           // e o alvo é onde ele vai estar quando a bola chegar
-          let sp = rollSpeedFor(d, 5);
-          if (target) { const tArr = rollTime(sp, d); tp = target.pos.clone().addScaledVector(target.vel, Math.min(1.2, tArr * 0.8)); sp = rollSpeedFor(tp.distanceTo(b.pos), 5); }
+          // no pé: mira a posição do recebedor (ele espera a bola); só antecipa quem está correndo na tabela
+          let sp = rollSpeedFor(d, 6.5);
+          if (target && target.runT > 0) { const tArr = rollTime(sp, d); tp = target.pos.clone().addScaledVector(target.vel, Math.min(1.0, tArr * 0.8)); sp = rollSpeedFor(tp.distanceTo(b.pos), 6.5); }
           v = tp.sub(b.pos).setY(0).normalize().multiplyScalar(Math.min(sp, 24)); v.y = 0.6;
           sfx = 'kick_soft';
           if (target) { this.passTo = target; this.passT = 3; }
@@ -604,7 +624,7 @@ export class Match {
         break;
       }
       case 'pass_lob': case 'long_throw': {
-        const tp = target ? target.pos.clone().addScaledVector(target.vel, 0.9).addScaledVector(new THREE.Vector3(tm.dir, 0, 0), 1.2) : b.pos.clone().addScaledVector(p.forward, 14);
+        const tp = target ? (target.runT > 0 ? target.pos.clone().addScaledVector(target.vel, 0.9) : target.pos.clone()) : b.pos.clone().addScaledVector(p.forward, 14);
         const d = tp.distanceTo(b.pos);
         tp.y = k.kind === 'long_throw' ? 1.0 : 0.9;
         v = ballistic(b.pos, tp, 0.8 + d * 0.05);
@@ -781,6 +801,7 @@ export class Match {
     this.mini?.update(dt);
 
     if (this.passT > 0) { this.passT -= dt; if (this.passT <= 0) this.passTo = null; }
+    if (st === 'play') this.homePass(dt);
     if (st === 'play') this.autoSwitch(dt);
     // controle humano + IA
     const live = st === 'play' || st === 'kickoff' || st === 'setpiece';

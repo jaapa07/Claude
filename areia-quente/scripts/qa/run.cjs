@@ -757,6 +757,23 @@ const SUITES = {
     check(three.mx > 0.5 && three.run && three.shoot, `três dedos: joystick + CORRER + CHUTE (${JSON.stringify(three)})`, n);
     await sleep(300);
     check(await g.ev(() => !window.__game.input.held('kb', 'sprint') && !window.__game.input.held('kb', 'shoot')), 'soltar todos os dedos solta tudo', n);
+    // ---- passe no pé (estilo PES/FIFA): o recebedor não precisa ir buscar a bola
+    const feet = async (btn, label, maxMove) => {
+      await scene('atk'); await waitMode('atk');
+      const info = await g.ev(() => { const m = window.__game.flow.match, me = window.__qaMe, d = me.team.dir;
+        const mate = me.team.field.find((x) => x !== me && !x.isGK);
+        for (const x of me.team.field) if (x !== me && x !== mate && !x.isGK) { x.pos.set(-d * 10, 0, 10); x.sync(); }
+        mate.pos.set(d * 7, 0, 2.5); mate.vel.set(0, 0, 0); mate.sync(); me.yaw = Math.atan2(d, 0); me.sync();
+        window.__qaMate = mate; window.__qaMate0 = mate.pos.clone(); return mate.data.id; });
+      await tapBtn(btn);
+      const got = await until(() => window.__game.flow.match.ball.owner === window.__qaMate, null, 30000);
+      const moved = await g.ev(() => window.__qaMate.pos.distanceTo(window.__qaMate0));
+      check(got && moved < maxMove, `${label}: chega no pé do companheiro (ele andou ${moved.toFixed(2)} m)`, n);
+      void info;
+    };
+    await feet('b-pass', 'PASSE rasteiro', 1.0);
+    await feet('b-lob', 'LENÇOL', 1.6);
+
     // ---- jogabilidade nova
     await scene('atk'); await waitMode('atk');
     check(await g.ev(() => window.__qaMe.protectT > 0), 'proteção ao dominar a bola', n);

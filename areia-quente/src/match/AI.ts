@@ -122,7 +122,7 @@ export function teamAI(m: Match, tm: Team, dt: number) {
       continue;
     }
     if (owner === p) { carrierAI(m, p, dt, st); continue; }
-    if (p === chaser && (!owner || owner.team !== tm)) {
+    if (p === chaser && (!owner || owner.team !== tm) && !(!owner && m.passTo && m.passTo.team === tm)) { // passe do time a caminho: ninguém corre atrás
       // pressão / disputa de bola
       const target = owner ? owner.pos.clone().addScaledVector(owner.vel, 0.3) : b.predict(0.25).setY(0);
       moveTo(p, target, dt, true);
@@ -137,8 +137,10 @@ export function teamAI(m: Match, tm: Team, dt: number) {
       if (!owner && b.airborne && b.lastTouch?.team === tm) tryAerial(m, p, st);
       continue;
     }
-    // recebendo passe: vai ao encontro da bola
-    if (!owner && b.lastTouch?.team === tm && b.speed > 2) {
+    // recebedor do passe: espera a bola no pé, de frente para ela (a bola é que vem até ele)
+    if (p === m.passTo && !owner && p.runT <= 0) { moveTo(p, p.pos, dt, false, b.pos.clone().sub(p.pos)); p.vel.multiplyScalar(0.85); tryAerial(m, p, st); continue; }
+    // outro companheiro perto de uma bola do time: vai ao encontro dela
+    if (!owner && b.lastTouch?.team === tm && b.speed > 2 && m.passTo !== p) {
       const tt = Math.max(0.1, Math.min(1.5, p.pos.distanceTo(b.pos) / Math.max(4, b.speed)));
       const pr = b.predict(tt);
       if (pr.distanceTo(p.pos) < 7) { moveTo(p, pr.setY(0), dt, true); tryAerial(m, p, st); continue; }
