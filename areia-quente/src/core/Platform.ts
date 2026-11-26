@@ -5,6 +5,7 @@
 export type PlatformId = 'pc' | 'mobile';
 
 function detect(): PlatformId {
+  if (typeof window === 'undefined') return 'pc'; // testes em Node
   const forced = (window as any).__PLATFORM as PlatformId | undefined;
   if (forced === 'pc' || forced === 'mobile') return forced;
   const q = new URLSearchParams(location.search).get('plataforma');
@@ -25,4 +26,4 @@ export const platform = {
     location.href = id === 'mobile' ? './celular.html' : './pc.html';
   },
 };
-document.documentElement.classList.add(platform.mobile ? 'mobile' : 'pc');
+if (typeof document !== 'undefined') document.documentElement.classList.add(platform.mobile ? 'mobile' : 'pc');
