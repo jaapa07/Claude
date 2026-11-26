@@ -135,13 +135,13 @@
  },
  "pens": {
   "name": "pens",
-  "ok": false,
+  "ok": true,
   "notes": [
    "✔ empate → prorrogação → pênaltis",
-   "✘ disputa termina no resultado (pênaltis 0,0)"
+   "✔ disputa termina no resultado (pênaltis 2,3)"
   ],
-  "secs": 419,
-  "at": "2026-11-26T15:32:18.146Z"
+  "secs": 103,
+  "at": "2026-11-26T15:37:55.584Z"
  },
  "training": {
   "name": "training",
@@ -299,16 +299,16 @@
   "name": "goleiro",
   "ok": false,
   "notes": [
-   "✔ 24 chutes contra os dois goleiros sem travar (24 resolvidos, 0 defesas agarradas, maior tempo com a bola 0.0 s)",
+   "✔ 24 chutes contra os dois goleiros sem travar (24 resolvidos, 1 defesas agarradas, maior tempo com a bola 0.0 s)",
    "✔ goleiro nunca fica mais de 7 s com a bola na mão",
    "✔ meu goleiro agarra e recebe o controle",
    "✔ aviso \"Goleiro com a bola\" + PASSE/LANÇAR piscando ({\"msg\":\"Goleiro com a bola: toque PASSE ou LANÇAR\",\"wait\":true,\"label\":\"LANÇAR\"})",
-   "✔ goleiro anda com a bola na mão (2.3 m)",
-   "✘ tocar PASSE repõe a bola",
+   "✔ goleiro anda com a bola na mão (0.6 m)",
+   "✘ tocar PASSE repõe a bola {\"log\":\"pass:off hint\",\"held\":true,\"dev\":null,\"kick\":null,\"holdT\":1.8,\"mode\":\"atk\",\"cls\":\"on atk\"}",
    "✘ sem tocar em nada, o goleiro espera e repõe sozinho aos 6 s (com 5 s ainda segurando: true; aos 7,5 s solto: false)"
   ],
-  "secs": 150,
-  "at": "2026-11-26T15:32:18.146Z"
+  "secs": 124,
+  "at": "2026-11-26T15:37:55.584Z"
  },
  "formatos": {
   "name": "formatos",

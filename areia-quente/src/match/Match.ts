@@ -234,7 +234,7 @@ export class Match {
     this.formation(team, true);
     const taker = team.players.find((p) => p.slot === 4 && p.onField) ?? team.field[1];
     this.ball.place(0, 0);
-    this.ball.owner = null;
+    this.ball.owner = null; this.ball.held = false;
     this.sp = { kind: 'kickoff', team, taker, spot: v3(), t: 0 };
     taker.pos.set(-team.dir * 0.45, 0, 0); taker.yaw = Math.atan2(team.dir, 0); taker.sync();
     this.giveControl(taker);

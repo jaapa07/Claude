@@ -1,8 +1,8 @@
 # QA ponta a ponta
 
-Executado em 2026-11-26 15:32 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
+Executado em 2026-11-26 15:37 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
 
-**19/21 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
+**20/21 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
 bola perto do dono, controle duplicado, time humano sem jogador, estados presos, bola morta sem ninguém ir buscar).
 
 | Suíte | Resultado | Tempo |
@@ -17,7 +17,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 | fouls | ✔ OK | 60s |
 | pausemenu | ✔ OK | 37s |
 | cup | ✔ OK | 164s |
-| pens | ✘ FALHOU | 419s |
+| pens | ✔ OK | 103s |
 | training | ✔ OK | 32s |
 | minigames | ✔ OK | 561s |
 | achievements | ✔ OK | 64s |
@@ -26,7 +26,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 | mobile | ✔ OK | 34s |
 | iphone | ✔ OK | 181s |
 | toques | ✔ OK | 331s |
-| goleiro | ✘ FALHOU | 150s |
+| goleiro | ✘ FALHOU | 124s |
 | formatos | ✔ OK | 156s |
 
 ## menus
@@ -116,7 +116,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 ## pens
 
 - ✔ empate → prorrogação → pênaltis
-- ✘ disputa termina no resultado (pênaltis 0,0)
+- ✔ disputa termina no resultado (pênaltis 2,3)
 
 ## training
 
@@ -232,12 +232,12 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 ## goleiro
 
-- ✔ 24 chutes contra os dois goleiros sem travar (24 resolvidos, 0 defesas agarradas, maior tempo com a bola 0.0 s)
+- ✔ 24 chutes contra os dois goleiros sem travar (24 resolvidos, 1 defesas agarradas, maior tempo com a bola 0.0 s)
 - ✔ goleiro nunca fica mais de 7 s com a bola na mão
 - ✔ meu goleiro agarra e recebe o controle
 - ✔ aviso "Goleiro com a bola" + PASSE/LANÇAR piscando ({"msg":"Goleiro com a bola: toque PASSE ou LANÇAR","wait":true,"label":"LANÇAR"})
-- ✔ goleiro anda com a bola na mão (2.3 m)
-- ✘ tocar PASSE repõe a bola
+- ✔ goleiro anda com a bola na mão (0.6 m)
+- ✘ tocar PASSE repõe a bola {"log":"pass:off hint","held":true,"dev":null,"kick":null,"holdT":1.8,"mode":"atk","cls":"on atk"}
 - ✘ sem tocar em nada, o goleiro espera e repõe sozinho aos 6 s (com 5 s ainda segurando: true; aos 7,5 s solto: false)
 
 ## formatos

@@ -887,7 +887,7 @@ const SUITES = {
     check(q.holdMax < 7.5, 'goleiro nunca fica mais de 7 s com a bola na mão', n);
 
     // MEU goleiro agarra: aviso, botões piscando, anda com a bola, PASSE repõe
-    const setHold = () => g.ev(() => { const m = window.__game.flow.match; m.timers = []; m.sp = null; m.state = 'play'; m.stateT = 1;
+    const setHold = () => g.ev(() => { const m = window.__game.flow.match; m.timers = []; m.sp = null; m.state = 'play'; m.stateT = 1; m.clock = 5; // o fim do tempo não pode cair no meio do teste
       const tm = m.teams.find((t) => t.human), gk = tm.gk; gk.pos.set(m.ownGoalX(tm) + tm.dir * 1.5, 0, 0); gk.vel.set(0, 0, 0); gk.kick = null; gk.stun = 0; gk.lying = null; gk.ath.locked = 0; gk.sync();
       m.ball.owner = null; m.ball.held = false; m.ball.vel.set(0, 0, 0); m.ball.pos.copy(gk.pos).setY(1.0); m.ball.speed; m.takeBall(gk);
       if (!m.ball.held) { m.ball.owner = gk; m.ball.held = true; gk.holdT = 0; m.giveControl(gk); }
