@@ -305,6 +305,7 @@ export class Match {
     const s = input.state(dev);
     const mv = new THREE.Vector3(s.mx, 0, s.my);
     const tm = p.team;
+    this.aimOf(dev, mv);
     this.requestT = Math.max(0, this.requestT - dt);
     const sp = this.sp;
     const inSet = this.state === 'setpiece' || this.state === 'kickoff';
@@ -313,8 +314,8 @@ export class Match {
     if (inSet && sp?.taker === p) {
       // cobrança: só mira
       if (mv.lengthSq() > 0.01) p.faceTo(mv, dt, 8);
-      if (input.pressed(dev, 'pass')) this.doPass(p, mv.lengthSq() > 0.01 ? mv : null, false);
-      else if (input.pressed(dev, 'lob')) this.doPass(p, mv.lengthSq() > 0.01 ? mv : null, true);
+      if (input.pressed(dev, 'pass')) this.doPass(p, this.aimOf(dev, mv), false);
+      else if (input.pressed(dev, 'lob')) this.doPass(p, this.aimOf(dev, mv), true);
       else if (input.held(dev, 'shoot')) { p.shootHold = Math.min(1, p.shootHold + dt * 1.25); }
       else if (input.released(dev, 'shoot')) { this.doShoot(p, p.shootHold, mv); p.shootHold = 0; }
       return;
@@ -343,18 +344,18 @@ export class Match {
     if (this.ball.held && this.ball.owner === p) {
       p.holdT += dt;
       if (mv.lengthSq() > 0.01) p.faceTo(mv, dt, 8);
-      if (input.pressed(dev, 'pass')) this.doPass(p, mv.lengthSq() > 0.01 ? mv : null, false);
+      if (input.pressed(dev, 'pass')) this.doPass(p, this.aimOf(dev, mv), false);
       else if (input.held(dev, 'shoot')) p.shootHold = Math.min(1, p.shootHold + dt * 1.25);
       else if (input.released(dev, 'shoot')) { this.longThrow(p, p.shootHold); p.shootHold = 0; }
       return;
     }
     // ações
     if (input.pressed(dev, 'pass')) {
-      if (hasBall) this.doPass(p, mv.lengthSq() > 0.01 ? mv : null, false);
+      if (hasBall) this.doPass(p, this.aimOf(dev, mv), false);
       else if (this.ball.owner?.team !== tm || !this.ball.owner) this.switchToNearest(tm, dev);
       else this.requestPass(p, false); // companheiro com a bola: pede o passe
     }
-    if (input.pressed(dev, 'lob') && hasBall) this.doPass(p, mv.lengthSq() > 0.01 ? mv : null, true);
+    if (input.pressed(dev, 'lob') && hasBall) this.doPass(p, this.aimOf(dev, mv), true);
     else if (input.pressed(dev, 'lob') && this.opts.mode === 'training') this.trainerCross();
     else if (input.pressed(dev, 'lob') && this.ball.owner && this.ball.owner.team === tm) this.requestPass(p, true);
     if (input.pressed(dev, 'trick')) this.doTrick(p);
@@ -402,19 +403,43 @@ export class Match {
   pickPassTarget(p: Player, dir: THREE.Vector3 | null, lob: boolean): Player | null {
     const mates = p.team.field.filter((m) => m !== p && !m.isGK && m.stun <= 0);
     const aimed = !!dir && dir.lengthSq() > 0.04;
-    const fwd = aimed ? dir!.clone().setY(0).normalize() : p.forward;
+    if (aimed) {
+      // mira assistida (estilo FIFA/PES): vale quem está mais perto da direção apontada. Cada jogador "ocupa"
+      // um ângulo que cresce quando está perto (ímã), então não precisa apontar certinho.
+      const aim = dir!.clone().setY(0).normalize();
+      let best: Player | null = null, bestS = Infinity;
+      for (const m of mates) {
+        const to = m.pos.clone().sub(p.pos).setY(0); const d = Math.max(0.5, to.length()); to.divideScalar(d);
+        const dev = Math.acos(THREE.MathUtils.clamp(to.dot(aim), -1, 1)) * 180 / Math.PI; // desvio em graus
+        const eff = Math.max(0, dev - Math.atan(1.6 / d) * 180 / Math.PI); // tira o "tamanho" do jogador
+        if (eff > 70) continue; // nada na direção apontada
+        const lane = Math.min(...p.team.opp.field.map((o) => distToSeg(o.pos, p.pos, m.pos)));
+        const s = eff + d * 0.6 + (!lob && lane < 0.7 ? 6 : 0) - (m.runT > 0 ? 5 : 0);
+        if (s < bestS) { bestS = s; best = m; }
+      }
+      if (best) return best;
+    }
+    // direcional solto: o companheiro mais livre e mais à frente
+    const fwd = p.forward;
     let best: Player | null = null, bestS = -1e9;
     for (const m of mates) {
       const to = m.pos.clone().sub(p.pos).setY(0); const d = to.length(); to.normalize();
       const ang = to.dot(fwd);
-      if (aimed && ang < 0.2) continue; // nunca passa para trás de onde o jogador apontou
       const lane = Math.min(...p.team.opp.field.map((o) => distToSeg(o.pos, p.pos, m.pos)));
       const mark = Math.min(...p.team.opp.field.map((o) => o.pos.distanceTo(m.pos)));
       const run = m.runT > 0 ? 1.2 : 0; // companheiro na corrida da tabela
-      const s = ang * (aimed ? 6 : 2.5) - Math.abs(d - (lob ? 11 : 7)) * 0.14 + Math.min(lob ? 3 : lane, 3) * 0.9 + Math.min(mark, 4) * 0.5 + (m.pos.x * p.team.dir) * 0.06 + run;
+      const s = ang * 2.5 - Math.abs(d - (lob ? 11 : 7)) * 0.14 + Math.min(lob ? 3 : lane, 3) * 0.9 + Math.min(mark, 4) * 0.5 + (m.pos.x * p.team.dir) * 0.06 + run;
       if (s > bestS) { bestS = s; best = m; }
     }
     return best;
+  }
+  /** última direção apontada por controle (vale por 0,4 s depois de soltar o direcional) */
+  private lastAim = new Map<string, { v: THREE.Vector3; t: number }>();
+  aimOf(dev: string, mv: THREE.Vector3): THREE.Vector3 | null {
+    const now = performance.now();
+    if (mv.lengthSq() > 0.04) { this.lastAim.set(dev, { v: mv.clone(), t: now }); return mv; }
+    const a = this.lastAim.get(dev);
+    return a && now - a.t < 400 ? a.v : null;
   }
   /** tabela: o passador dispara para o espaço à frente (na diagonal do recebedor) para receber de volta */
   startRun(p: Player, recv: Player) {
@@ -1403,7 +1428,7 @@ export class Match {
     if (!this.ball.airborne) this.cueFor = null;
     // indicador do passe: quem recebe se o jogador apertar PASSE agora
     const carrier = humans.find((p) => (this.ball.owner === p && !this.ball.held) || (this.sp?.taker === p && this.state !== 'play')) ?? null;
-    if (live && carrier && humans.length === 1 && !this.mini) { const s = input.state(carrier.device!); h.passTarget(this.pickPassTarget(carrier, new THREE.Vector3(s.mx, 0, s.my), false), cam); }
+    if (live && carrier && humans.length === 1 && !this.mini) { const s = input.state(carrier.device!); h.passTarget(this.pickPassTarget(carrier, this.aimOf(carrier.device!, new THREE.Vector3(s.mx, 0, s.my)), false), cam); }
     else h.passTarget(null, cam);
     const shooter = humans.find((p) => p.shootHold > 0) ?? null;
     h.powerBar(shooter, shooter?.shootHold ?? 0, cam);

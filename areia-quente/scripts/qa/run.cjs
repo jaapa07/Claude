@@ -782,6 +782,27 @@ const SUITES = {
     await feet('b-pass', 'PASSE rasteiro', 0.5);
     await feet('b-lob', 'LENÇOL', 0.8);
 
+    // ---- mira assistida: apontar "mais ou menos" já escolhe o companheiro certo
+    await scene('atk'); await waitMode('atk');
+    const aimRes = await g.ev(() => {
+      const m = window.__game.flow.match, me = window.__qaMe, d = me.team.dir;
+      const mates = me.team.field.filter((x) => x !== me && !x.isGK);
+      const place = (x, deg, dist) => { const a = deg * Math.PI / 180; x.pos.set(Math.cos(a) * dist * d, 0, Math.sin(a) * dist); x.vel.set(0, 0, 0); x.sync(); };
+      place(mates[0], 0, 9); place(mates[1], 50, 6); place(mates[2], -60, 7);
+      const dirAt = (deg) => { const a = deg * Math.PI / 180; return new window.__game.world.camera.position.constructor(Math.cos(a) * d, 0, Math.sin(a)); };
+      const pick = (deg) => m.pickPassTarget(me, dirAt(deg), false)?.data.id;
+      const ids = mates.slice(0, 3).map((x) => x.data.id);
+      return { ids, r: [[0, pick(18)], [0, pick(-15)], [1, pick(28)], [1, pick(70)], [2, pick(-38)], [2, pick(-85)]] };
+    });
+    const okAim = aimRes.r.every(([i, id]) => id === aimRes.ids[i]);
+    check(okAim, `mira assistida: 20–25° fora do alvo ainda escolhe o companheiro certo (${aimRes.r.map(([i, id]) => (id === aimRes.ids[i] ? '✔' : '✘')).join('')})`, n);
+    // passe real pelo toque apontando torto (≈25° fora) para o companheiro da diagonal
+    await g.ev(() => { const me = window.__qaMe, d = me.team.dir, a = 25 * Math.PI / 180; window.__game.input.setStick({ x: Math.cos(a) * d * 0.9, y: Math.sin(a) * 0.9 }); window.__qaTgt = me.team.field.filter((x) => x !== me && !x.isGK)[1]; });
+    await sleep(150);
+    await tapBtn('b-pass');
+    await g.ev(() => window.__game.input.setStick(null));
+    check(await until(() => window.__game.flow.match.ball.owner === window.__qaTgt || window.__game.flow.match.passTo === window.__qaTgt, null, 20000), 'passe pelo toque apontando torto vai para o companheiro da direção', n);
+
     // ---- jogabilidade nova
     await scene('atk'); await waitMode('atk');
     check(await g.ev(() => window.__qaMe.protectT > 0), 'proteção ao dominar a bola', n);
