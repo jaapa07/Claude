@@ -798,8 +798,8 @@ const SUITES = {
     });
     const okAim = aimRes.r.every(([i, id]) => id === aimRes.ids[i]);
     check(okAim, `mira assistida: 20–25° fora do alvo ainda escolhe o companheiro certo (${aimRes.r.map(([i, id]) => (id === aimRes.ids[i] ? '✔' : '✘')).join('')})`, n);
-    // passe real pelo toque apontando torto (≈25° fora) para o companheiro da diagonal
-    await g.ev(() => { const me = window.__qaMe, d = me.team.dir, a = 25 * Math.PI / 180; window.__game.input.setStick({ x: Math.cos(a) * d * 0.9, y: Math.sin(a) * 0.9 }); window.__qaTgt = me.team.field.filter((x) => x !== me && !x.isGK)[1]; });
+    // passe real pelo toque apontando torto (15° fora do alvo, 35° do outro) para o companheiro da diagonal
+    await g.ev(() => { const me = window.__qaMe, d = me.team.dir, a = 35 * Math.PI / 180; window.__game.input.setStick({ x: Math.cos(a) * d * 0.9, y: Math.sin(a) * 0.9 }); window.__qaTgt = me.team.field.filter((x) => x !== me && !x.isGK)[1]; });
     await sleep(900);
     // recoloca todo mundo parado na hora do toque, a partir do jogador que está de fato sob controle
     const pre = await g.ev(() => { const m = window.__game.flow.match; m.timers = []; m.sp = null; m.state = 'play'; m.passTo = null;
