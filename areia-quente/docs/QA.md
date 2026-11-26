@@ -1,36 +1,37 @@
 # QA ponta a ponta
 
-Executado em 2026-11-26 00:23 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
+Executado em 2026-11-26 00:56 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
 
-**14/18 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
+**16/19 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
 bola perto do dono, controle duplicado, time humano sem jogador, estados presos, bola morta sem ninguém ir buscar).
 
 | Suíte | Resultado | Tempo |
 |---|---|---|
-| menus | ✘ FALHOU | 415s |
+| menus | ✘ FALHOU | 293s |
 | options | ✔ OK | 45s |
-| fullmatch | ✔ OK | 170s |
+| fullmatch | ✔ OK | 154s |
 | arenas | ✔ OK | 132s |
 | human | ✔ OK | 166s |
 | twoplayers | ✔ OK | 54s |
-| setpieces | ✔ OK | 74s |
+| setpieces | ✔ OK | 66s |
 | fouls | ✔ OK | 60s |
 | pausemenu | ✔ OK | 37s |
 | cup | ✔ OK | 164s |
 | pens | ✔ OK | 86s |
 | training | ✔ OK | 32s |
-| minigames | ✘ FALHOU | 235s |
+| minigames | ✔ OK | 553s |
 | achievements | ✔ OK | 64s |
 | memory | ✔ OK | 108s |
 | career | ✔ OK | 161s |
-| mobile | ✘ FALHOU | 2s |
-| iphone | ✘ FALHOU | 223s |
+| mobile | ✔ OK | 34s |
+| iphone | ✘ FALHOU | 202s |
+| toques | ✘ FALHOU | 350s |
 
 ## menus
 
 - ✔ ENTER no título abre o menu
 - ✔ duplo clique gera uma única transição (1)
-- ✔ menu com 8 opções (Amistoso | Copa Rei da Praia | Modo Carreira | Treino | Desafios da Praia | Conquistas (0/20) | Opções | Créditos)
+- ✔ menu com 8 opções (AmistosoJogar agora | Copa Rei da Praia8 seleções | Modo CarreiraNova carreira | TreinoSem pressão | Desafios da PraiaBata recordes | Conquistas (0/20)Prêmios e bolas | OpçõesAjustes | CréditosEquipe)
 - ✔ opção 1 → ctrl
 - ✔   ESC volta ao menu
 - ✔ opção 2 → teams
@@ -41,9 +42,9 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔   ESC volta ao menu
 - ✔ opção 5 → challenges
 - ✔   ESC volta ao menu
-- ✘ opção 6 deveria abrir achievements (está em challenges)
+- ✔ opção 6 → achievements
 - ✔   ESC volta ao menu
-- ✘ opção 7 deveria abrir options (está em challenges)
+- ✔ opção 7 → options
 - ✔   ESC volta ao menu
 - ✘ opção 8 deveria abrir credits (está em options)
 - ✔   ESC volta ao menu
@@ -58,8 +59,8 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 ## fullmatch
 
 - ✔ partida de 3 períodos termina na tela de resultado
-- ✔ ciclo de estados completo (play, goal, replay, halftime, setpiece, periodEnd, kickoff, fulltime)
-- ✔ houve chutes (20,9)
+- ✔ ciclo de estados completo (play, halftime, replay, kickoff, periodEnd, goal, fulltime)
+- ✔ houve chutes (8,13)
 
 ## arenas
 
@@ -68,7 +69,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 ## human
 
-- ✔ jogador humano executou ações pelo teclado (44)
+- ✔ jogador humano executou ações pelo teclado (43)
 - ✔ time humano chutou a gol (2)
 - ✔ jogador controlado se movimentou
 
@@ -123,8 +124,11 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 ## minigames
 
-- ✔ Pênaltis de Ouro: 5 cobranças pelo teclado e tela de resultado ([false,false,true,false,false])
-- ✘ exceção: page.evaluate: Target page, context or browser has been closed
+- ✔ Pênaltis de Ouro: 5 cobranças pelo teclado e tela de resultado ([true,false,false,false,false])
+- ✔ embaixadinhas encadeadas pelo bot (11)
+- ✔ Embaixadinhas termina (bola caiu ou tempo)
+- ✔ Tiro ao Alvo termina após 10 bolas (10,320)
+- ✔ recordes salvos ({"pk":1,"juggle":11,"target":320})
 
 ## achievements
 
@@ -152,7 +156,8 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 ## mobile
 
-- ✘ exceção: page.setViewportSize: Target page, context or browser has been closed
+- ✔ menu sem rolagem horizontal em 390 px
+- ✔ placar cabe na tela do celular
 
 ## iphone
 
@@ -177,13 +182,42 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔ multitoque: joystick + CHUTE ao mesmo tempo
 - ✔ soltar os dedos solta joystick e botão
 - ✔ jogador se moveu com o joystick
-- ✘ ATAQUE: PASSE/CHUTE/LENÇOL/FIRULA, sem CARRINHO ({"atk":false,"def":true,"pass":"TROCAR","tackle":true,"trick":false,"lob":false,"shoot":true,"big":76})
-- ✘ DEFESA: CARRINHO grande, TROCAR, sem FIRULA/LENÇOL ({"atk":false,"def":true,"pass":"TROCAR","tackle":true,"trick":false,"lob":false,"shoot":true,"big":76})
+- ✘ ATAQUE: PASSE/CHUTE/LENÇOL/FIRULA, sem CARRINHO ({"atk":true,"def":false,"pass":"PASSE","tackle":true,"trick":false,"lob":false,"shoot":false,"big":76})
+- ✘ DEFESA: CARRINHO grande, TROCAR, sem FIRULA/LENÇOL ({"atk":false,"def":true,"pass":"TROCAR","tackle":false,"trick":true,"lob":true,"shoot":false,"big":22.800048828125})
 - ✔ pausa esconde os controles de toque
 - ✔ continuar devolve os controles
 - ✔ na vertical aparece "Gire o aparelho"
 - ✔ na horizontal o aviso some
 - ✔ opções do celular: botões, vibração, troca de versão; sem teclas
 - ✔ pc.html: versão PC sem controles de toque
+
+## toques
+
+- ✔ ATAQUE: layout aparece com a bola
+- ✔ PASSE (toque rápido) passa a bola
+- ✔ CHUTE (toque rápido) chuta para o gol (20.0 m/s)
+- ✔ CHUTE segurado carrega a força (56%) e chuta
+- ✔ LENÇOL levanta a bola
+- ✔ FIRULA faz embaixadinha/chapéu
+- ✔ CORRER aumenta a velocidade (2.1 → 4.7 m/s)
+- ✔ FOGO apagado com a barra vazia
+- ✘ tocar em botão apagado mostra uma dica
+- ✔ FOGO com a barra cheia ativa o Modo Fogo
+- ✘ APOIO: layout aparece com o companheiro na bola
+- ✘ rótulos PEDIR / PEDIR ALTO (PASSE, LENÇOL)
+- ✔ PEDIR: o companheiro passa a bola
+- ✘ PEDIR: a bola chega no jogador
+- ✔ PEDIR ALTO: companheiro cruza pelo alto
+- ✔ DEFESA: layout aparece com o adversário na bola
+- ✘ TROCAR, MARCAR e CARRINHO grande ({"pass":"TROCAR","press":false,"tackle":22.800048828125})
+- ✘ CARRINHO dá o carrinho
+- ✔ MARCAR corre sozinho até o adversário (9.8 → 8.4 m)
+- ✔ TROCAR troca o jogador controlado
+- ✔ toque entre dois botões aciona o mais próximo
+- ✘ seis toques rápidos seguidos são todos registrados
+- ✔ três dedos: joystick + CORRER + CHUTE ({"mx":1,"run":true,"shoot":true})
+- ✔ soltar todos os dedos solta tudo
+-   registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off fire:on pass:on lob:on tackle:on press:on pass:on shoot:on trick:on sprint:on shoot:on
+- ✘ 1 anomalia(s): bola longe do dono (3.4 m) estado=play
 
 Capturas de tela das suítes em `docs/qa/`.

@@ -5,7 +5,7 @@
   "notes": [
    "✔ ENTER no título abre o menu",
    "✔ duplo clique gera uma única transição (1)",
-   "✔ menu com 8 opções (Amistoso | Copa Rei da Praia | Modo Carreira | Treino | Desafios da Praia | Conquistas (0/20) | Opções | Créditos)",
+   "✔ menu com 8 opções (AmistosoJogar agora | Copa Rei da Praia8 seleções | Modo CarreiraNova carreira | TreinoSem pressão | Desafios da PraiaBata recordes | Conquistas (0/20)Prêmios e bolas | OpçõesAjustes | CréditosEquipe)",
    "✔ opção 1 → ctrl",
    "✔   ESC volta ao menu",
    "✔ opção 2 → teams",
@@ -16,15 +16,15 @@
    "✔   ESC volta ao menu",
    "✔ opção 5 → challenges",
    "✔   ESC volta ao menu",
-   "✘ opção 6 deveria abrir achievements (está em challenges)",
+   "✔ opção 6 → achievements",
    "✔   ESC volta ao menu",
-   "✘ opção 7 deveria abrir options (está em challenges)",
+   "✔ opção 7 → options",
    "✔   ESC volta ao menu",
    "✘ opção 8 deveria abrir credits (está em options)",
    "✔   ESC volta ao menu"
   ],
-  "secs": 415,
-  "at": "2026-11-26T00:23:16.672Z"
+  "secs": 293,
+  "at": "2026-11-26T00:56:23.742Z"
  },
  "options": {
   "name": "options",
@@ -43,11 +43,11 @@
   "ok": true,
   "notes": [
    "✔ partida de 3 períodos termina na tela de resultado",
-   "✔ ciclo de estados completo (play, goal, replay, halftime, setpiece, periodEnd, kickoff, fulltime)",
-   "✔ houve chutes (20,9)"
+   "✔ ciclo de estados completo (play, halftime, replay, kickoff, periodEnd, goal, fulltime)",
+   "✔ houve chutes (8,13)"
   ],
-  "secs": 170,
-  "at": "2026-11-25T22:24:07.298Z"
+  "secs": 154,
+  "at": "2026-11-26T00:56:23.742Z"
  },
  "arenas": {
   "name": "arenas",
@@ -63,12 +63,12 @@
   "name": "human",
   "ok": true,
   "notes": [
-   "✔ jogador humano executou ações pelo teclado (44)",
+   "✔ jogador humano executou ações pelo teclado (43)",
    "✔ time humano chutou a gol (2)",
    "✔ jogador controlado se movimentou"
   ],
   "secs": 166,
-  "at": "2026-11-26T00:23:16.672Z"
+  "at": "2026-11-26T00:56:23.742Z"
  },
  "twoplayers": {
   "name": "twoplayers",
@@ -93,8 +93,8 @@
    "✔ free_kick: CPU cobra e o jogo segue (play sp=- t=-)",
    "✔ penalty: CPU cobra e o jogo segue (play sp=- t=-)"
   ],
-  "secs": 74,
-  "at": "rodada 1"
+  "secs": 66,
+  "at": "2026-11-26T00:56:23.742Z"
  },
  "fouls": {
   "name": "fouls",
@@ -156,13 +156,16 @@
  },
  "minigames": {
   "name": "minigames",
-  "ok": false,
+  "ok": true,
   "notes": [
-   "✔ Pênaltis de Ouro: 5 cobranças pelo teclado e tela de resultado ([false,false,true,false,false])",
-   "✘ exceção: page.evaluate: Target page, context or browser has been closed"
+   "✔ Pênaltis de Ouro: 5 cobranças pelo teclado e tela de resultado ([true,false,false,false,false])",
+   "✔ embaixadinhas encadeadas pelo bot (11)",
+   "✔ Embaixadinhas termina (bola caiu ou tempo)",
+   "✔ Tiro ao Alvo termina após 10 bolas (10,320)",
+   "✔ recordes salvos ({\"pk\":1,\"juggle\":11,\"target\":320})"
   ],
-  "secs": 235,
-  "at": "2026-11-26T00:23:16.672Z"
+  "secs": 553,
+  "at": "2026-11-26T00:56:23.742Z"
  },
  "achievements": {
   "name": "achievements",
@@ -205,12 +208,13 @@
  },
  "mobile": {
   "name": "mobile",
-  "ok": false,
+  "ok": true,
   "notes": [
-   "✘ exceção: page.setViewportSize: Target page, context or browser has been closed"
+   "✔ menu sem rolagem horizontal em 390 px",
+   "✔ placar cabe na tela do celular"
   ],
-  "secs": 2,
-  "at": "2026-11-26T00:23:16.672Z"
+  "secs": 34,
+  "at": "2026-11-26T00:56:23.742Z"
  },
  "iphone": {
   "name": "iphone",
@@ -237,8 +241,8 @@
    "✔ multitoque: joystick + CHUTE ao mesmo tempo",
    "✔ soltar os dedos solta joystick e botão",
    "✔ jogador se moveu com o joystick",
-   "✘ ATAQUE: PASSE/CHUTE/LENÇOL/FIRULA, sem CARRINHO ({\"atk\":false,\"def\":true,\"pass\":\"TROCAR\",\"tackle\":true,\"trick\":false,\"lob\":false,\"shoot\":true,\"big\":76})",
-   "✘ DEFESA: CARRINHO grande, TROCAR, sem FIRULA/LENÇOL ({\"atk\":false,\"def\":true,\"pass\":\"TROCAR\",\"tackle\":true,\"trick\":false,\"lob\":false,\"shoot\":true,\"big\":76})",
+   "✘ ATAQUE: PASSE/CHUTE/LENÇOL/FIRULA, sem CARRINHO ({\"atk\":true,\"def\":false,\"pass\":\"PASSE\",\"tackle\":true,\"trick\":false,\"lob\":false,\"shoot\":false,\"big\":76})",
+   "✘ DEFESA: CARRINHO grande, TROCAR, sem FIRULA/LENÇOL ({\"atk\":false,\"def\":true,\"pass\":\"TROCAR\",\"tackle\":false,\"trick\":true,\"lob\":true,\"shoot\":false,\"big\":22.800048828125})",
    "✔ pausa esconde os controles de toque",
    "✔ continuar devolve os controles",
    "✔ na vertical aparece \"Gire o aparelho\"",
@@ -246,7 +250,41 @@
    "✔ opções do celular: botões, vibração, troca de versão; sem teclas",
    "✔ pc.html: versão PC sem controles de toque"
   ],
-  "secs": 223,
-  "at": "2026-11-26T00:23:16.672Z"
+  "secs": 202,
+  "at": "2026-11-26T00:56:23.742Z"
+ },
+ "toques": {
+  "name": "toques",
+  "ok": false,
+  "notes": [
+   "✔ ATAQUE: layout aparece com a bola",
+   "✔ PASSE (toque rápido) passa a bola",
+   "✔ CHUTE (toque rápido) chuta para o gol (20.0 m/s)",
+   "✔ CHUTE segurado carrega a força (56%) e chuta",
+   "✔ LENÇOL levanta a bola",
+   "✔ FIRULA faz embaixadinha/chapéu",
+   "✔ CORRER aumenta a velocidade (2.1 → 4.7 m/s)",
+   "✔ FOGO apagado com a barra vazia",
+   "✘ tocar em botão apagado mostra uma dica",
+   "✔ FOGO com a barra cheia ativa o Modo Fogo",
+   "✘ APOIO: layout aparece com o companheiro na bola",
+   "✘ rótulos PEDIR / PEDIR ALTO (PASSE, LENÇOL)",
+   "✔ PEDIR: o companheiro passa a bola",
+   "✘ PEDIR: a bola chega no jogador",
+   "✔ PEDIR ALTO: companheiro cruza pelo alto",
+   "✔ DEFESA: layout aparece com o adversário na bola",
+   "✘ TROCAR, MARCAR e CARRINHO grande ({\"pass\":\"TROCAR\",\"press\":false,\"tackle\":22.800048828125})",
+   "✘ CARRINHO dá o carrinho",
+   "✔ MARCAR corre sozinho até o adversário (9.8 → 8.4 m)",
+   "✔ TROCAR troca o jogador controlado",
+   "✔ toque entre dois botões aciona o mais próximo",
+   "✘ seis toques rápidos seguidos são todos registrados",
+   "✔ três dedos: joystick + CORRER + CHUTE ({\"mx\":1,\"run\":true,\"shoot\":true})",
+   "✔ soltar todos os dedos solta tudo",
+   "  registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off fire:on pass:on lob:on tackle:on press:on pass:on shoot:on trick:on sprint:on shoot:on",
+   "✘ 1 anomalia(s): bola longe do dono (3.4 m) estado=play"
+  ],
+  "secs": 350,
+  "at": "2026-11-26T00:56:23.742Z"
  }
 }
