@@ -328,7 +328,11 @@ export class Match {
       if (meet.length() > 0.5) mv.copy(meet.normalize().multiplyScalar(0.85));
     }
     // MARCAR (toque): corre sozinho atrás da bola/adversário enquanto o botão estiver pressionado
-    if (input.isDown('TouchPress') && dev === 'kb' && !hasBall && mv.lengthSq() < 0.04) { mv.copy(this.pressDir(p)); sprint = true; }
+    if (input.isDown('TouchPress') && dev === 'kb' && !hasBall && mv.lengthSq() < 0.04) {
+      mv.copy(this.pressDir(p)); sprint = true;
+      const c = this.ball.owner;
+      if (c && c.team !== tm && c.pos.distanceTo(p.pos) < 1.15 && p.tackleCd <= 0) this.doTackle(p, false); // bote
+    }
     if (canMove) {
       const max = p.maxSpeed(sprint);
       const want = mv.clone().multiplyScalar(max);
@@ -408,13 +412,24 @@ export class Match {
       if (aimed && ang < 0.2) continue; // nunca passa para trás de onde o jogador apontou
       const lane = Math.min(...p.team.opp.field.map((o) => distToSeg(o.pos, p.pos, m.pos)));
       const mark = Math.min(...p.team.opp.field.map((o) => o.pos.distanceTo(m.pos)));
-      const s = ang * (aimed ? 6 : 2.5) - Math.abs(d - (lob ? 11 : 7)) * 0.14 + Math.min(lob ? 3 : lane, 3) * 0.9 + Math.min(mark, 4) * 0.5 + (m.pos.x * p.team.dir) * 0.06;
+      const run = m.runT > 0 ? 1.2 : 0; // companheiro na corrida da tabela
+      const s = ang * (aimed ? 6 : 2.5) - Math.abs(d - (lob ? 11 : 7)) * 0.14 + Math.min(lob ? 3 : lane, 3) * 0.9 + Math.min(mark, 4) * 0.5 + (m.pos.x * p.team.dir) * 0.06 + run;
       if (s > bestS) { bestS = s; best = m; }
     }
     return best;
   }
+  /** tabela: o passador dispara para o espaço à frente (na diagonal do recebedor) para receber de volta */
+  startRun(p: Player, recv: Player) {
+    const d = p.team.dir;
+    const side = Math.sign(p.pos.z - recv.pos.z) || (p.pos.z > 0 ? 1 : -1);
+    p.runTarget.set(THREE.MathUtils.clamp(recv.pos.x + d * 6, -FIELD.HL + 2, FIELD.HL - 2), 0, THREE.MathUtils.clamp(recv.pos.z + side * 4, -FIELD.HW + 1.5, FIELD.HW - 1.5));
+    p.runT = 1.8;
+  }
   /** jogador que deve receber o passe em andamento (recepção assistida) */
   passTo: Player | null = null;
+  /** bola aérea dominável agora pelo jogador humano (o celular pisca o botão CHUTE) */
+  aerialCue = false;
+  private cueFor: Player | null = null;
   passT = 0;
 
   doPass(p: Player, dir: THREE.Vector3 | null, lob: boolean, target?: Player) {
@@ -490,7 +505,7 @@ export class Match {
       p.tackleCd = 0.9;
       p.ath.play('shoulder_charge', 0.08);
       if (carrier && d < 1.3) {
-        const chance = 0.35 + p.stat('defesa') * 0.4 - carrier.stat('tecnica') * 0.25 + (p.team.human ? 0.1 : 0);
+        const chance = (0.35 + p.stat('defesa') * 0.4 - carrier.stat('tecnica') * 0.25 + (p.team.human ? 0.1 : 0)) * (carrier.protectT > 0 ? 0.25 : 1);
         if (Math.random() < chance) { this.looseBall(carrier, p.forward.clone().multiplyScalar(3)); audio.play('body', 0.7); this.addStyle(p.team, 'tackle', p); }
       }
     }
@@ -585,6 +600,7 @@ export class Match {
         }
         this.addStyle(tm, 'pass', p);
         if (target) { this.giveControl(target); target.aiT = 0; }
+        if (k.kind === 'pass_short' && target && !p.isGK) this.startRun(p, target);
         break;
       }
       case 'pass_lob': case 'long_throw': {
@@ -789,6 +805,8 @@ export class Match {
   private integrate(p: Player, dt: number) {
     if (p.cooldown > 0) p.cooldown -= dt;
     if (p.tackleCd > 0) p.tackleCd -= dt;
+    if (p.protectT > 0) p.protectT -= dt;
+    if (p.runT > 0) p.runT -= dt;
     if (p.juggling > 0) p.juggling -= dt;
     if (p.stun > 0) {
       p.stun -= dt;
@@ -955,6 +973,7 @@ export class Match {
     }
     if (b.pos.y > 0.5 && b.speed > 4) p.ath.play('chest_control', 0.06);
     b.owner = p; b.held = false; b.fire = false;
+    p.protectT = 0.5;
     audio.play('kick_soft', 0.25);
     if (p.team.devices.length) this.giveControl(p);
   }
@@ -1354,6 +1373,11 @@ export class Match {
     }
     const cpuCarrier = this.ball.owner && !this.ball.owner.device ? this.ball.owner : null;
     h.marker(2, live && cpuCarrier ? cpuCarrier : null, cam);
+    // bola aérea ao alcance do jogador humano: aviso "CHUTE!" (bicicleta / voleio / cabeçada)
+    const aerialMe = live && this.state === 'play' ? humans.find((p) => !this.ball.owner && this.aerialChance(p) && this.ball.vel.y < 1.5 && this.ball.speed > 3) ?? null : null;
+    this.aerialCue = !!aerialMe;
+    if (aerialMe && this.ball.lastTouch !== this.cueFor) { this.cueFor = this.ball.lastTouch; h.worldPop('CHUTE!', aerialMe.pos.clone().setY(2.6), cam, '#ffd21f'); }
+    if (!this.ball.airborne) this.cueFor = null;
     // indicador do passe: quem recebe se o jogador apertar PASSE agora
     const carrier = humans.find((p) => (this.ball.owner === p && !this.ball.held) || (this.sp?.taker === p && this.state !== 'play')) ?? null;
     if (live && carrier && humans.length === 1 && !this.mini) { const s = input.state(carrier.device!); h.passTarget(this.pickPassTarget(carrier, new THREE.Vector3(s.mx, 0, s.my), false), cam); }

@@ -246,6 +246,8 @@ export class TouchControls {
     av.sprint = true;
     av.fire = !!tm && tm.heat >= 1 && tm.fire <= 0;
     for (const x of this.btns) x.el.classList.toggle('off', av[x.action] === false);
+    // bola aérea ao alcance: CHUTE pisca (hora da bicicleta/voleio)
+    this.root.classList.toggle('aerial', m.aerialCue);
   }
 }
 

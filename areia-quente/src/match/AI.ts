@@ -52,6 +52,37 @@ function anchor(m: Match, p: Player, attacking: boolean, out: THREE.Vector3) {
   return out;
 }
 
+/**
+ * Desmarque: perto da posição da formação, procura o ponto com mais espaço (longe dos marcadores)
+ * e com a linha de passe do companheiro com a bola livre. Recalcula de tempos em tempos para não tremer.
+ */
+const cand = new THREE.Vector3();
+function openSpace(m: Match, p: Player, carrier: Player, out: THREE.Vector3, dt: number) {
+  p.aiT -= dt;
+  if (p.aiT > 0 && p.wantSprint) { out.copy(p.runTarget); return; }
+  p.aiT = 0.6 + Math.random() * 0.3;
+  const opp = p.team.opp.field;
+  let best = -1e9;
+  const base = out.clone();
+  for (let i = 0; i < 9; i++) {
+    const a = (i / 8) * Math.PI * 2, r = i === 8 ? 0 : 3.2;
+    cand.set(base.x + Math.cos(a) * r, 0, base.z + Math.sin(a) * r);
+    cand.x = THREE.MathUtils.clamp(cand.x, -FIELD.HL + 1.5, FIELD.HL - 1.5); cand.z = THREE.MathUtils.clamp(cand.z, -FIELD.HW + 1, FIELD.HW - 1);
+    const free = Math.min(...opp.map((o) => o.pos.distanceTo(cand)));
+    const lane = Math.min(...opp.map((o) => segDist(o.pos, carrier.pos, cand)));
+    const d = cand.distanceTo(carrier.pos);
+    const s = Math.min(free, 5) * 0.8 + Math.min(lane, 3) * 1.2 - Math.abs(d - 7) * 0.15 - cand.distanceTo(base) * 0.15 + cand.x * p.team.dir * 0.05;
+    if (s > best) { best = s; p.runTarget.copy(cand); }
+  }
+  p.wantSprint = true;
+  out.copy(p.runTarget);
+}
+function segDist(pt: THREE.Vector3, a: THREE.Vector3, b: THREE.Vector3) {
+  const abx = b.x - a.x, abz = b.z - a.z, l = abx * abx + abz * abz || 1;
+  const t = Math.max(0, Math.min(1, ((pt.x - a.x) * abx + (pt.z - a.z) * abz) / l));
+  return Math.hypot(a.x + abx * t - pt.x, a.z + abz * t - pt.z);
+}
+
 function moveTo(p: Player, target: THREE.Vector3, dt: number, sprint: boolean, face?: THREE.Vector3) {
   const d = tmp.copy(target).sub(p.pos).setY(0);
   const dist = d.length();
@@ -112,7 +143,10 @@ export function teamAI(m: Match, tm: Team, dt: number) {
       const pr = b.predict(tt);
       if (pr.distanceTo(p.pos) < 7) { moveTo(p, pr.setY(0), dt, true); tryAerial(m, p, st); continue; }
     }
+    // tabela: corre para o espaço depois de tocar
+    if (p.runT > 0 && attacking) { moveTo(p, p.runTarget, dt, true); continue; }
     anchor(m, p, !!attacking, p.target);
+    if (attacking && owner && owner !== p) openSpace(m, p, owner, p.target, dt);
     if (!attacking && owner) {
       // marcação: fica entre o adversário mais próximo e o gol
       const opp = owner.team.field.filter((o) => o !== owner && !o.isGK).sort((a, c) => a.pos.distanceTo(p.target) - c.pos.distanceTo(p.target))[0];

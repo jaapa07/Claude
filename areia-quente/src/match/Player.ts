@@ -47,6 +47,11 @@ export class Player {
   stepSide = 1;
   holdT = 0; // segurando a bola (goleiro / lateral)
   shootHold = 0;
+  /** proteção logo após dominar a bola (desarmes quase não entram) */
+  protectT = 0;
+  /** corrida de tabela: depois de tocar, dispara para frente para receber de volta */
+  runT = 0;
+  runTarget = new THREE.Vector3();
 
   constructor(data: PlayerData, team: Team, slot: number, kitUrl: string) {
     this.data = data;

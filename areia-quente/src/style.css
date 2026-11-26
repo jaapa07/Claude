@@ -452,3 +452,4 @@ html.touch .hint { display: none; }
   .mainmenu .btn.mtile.mini { top: 8px; padding: 4px 9px; font-size: 12px; grid-template-columns: 22px auto; } .mainmenu .btn.mtile.mini .ic { width: 22px; height: 22px; }
   .mainmenu .btn.mtile.sel, .mainmenu .btn.mtile:hover { transform: translateY(-3px); box-shadow: 0 7px 0 var(--ink), 0 0 0 3px #fff, 0 0 16px rgba(255,210,31,0.9); }
 }
+#touch.aerial .b-shoot { animation: aq-pulse 0.45s ease-in-out infinite; filter: brightness(1.35) drop-shadow(0 0 10px #ffd21f); opacity: 1 !important; }

@@ -750,6 +750,28 @@ const SUITES = {
     check(three.mx > 0.5 && three.run && three.shoot, `três dedos: joystick + CORRER + CHUTE (${JSON.stringify(three)})`, n);
     await sleep(300);
     check(await g.ev(() => !window.__game.input.held('kb', 'sprint') && !window.__game.input.held('kb', 'shoot')), 'soltar todos os dedos solta tudo', n);
+    // ---- jogabilidade nova
+    await scene('atk'); await waitMode('atk');
+    check(await g.ev(() => window.__qaMe.protectT > 0), 'proteção ao dominar a bola', n);
+    const passer = await g.ev(() => window.__qaMe.data.id);
+    await tapBtn('b-pass');
+    check(await until((id) => { const p = window.__game.flow.match.all.find((x) => x.data.id === id); return p.runT > 0 && p.runTarget.length() > 0; }, passer), 'tabela: quem passou dispara para receber de volta', n);
+    check(await until((id) => { const m = window.__game.flow.match; const p = m.all.find((x) => x.data.id === id); return p.vel.length() > 2; }, passer), 'tabela: o passador corre para o espaço', n);
+    // bola aérea chegando no jogador: aviso CHUTE! e botão pisca
+    await scene('none');
+    await g.ev(() => { const m = window.__game.flow.match, b = m.ball, me = window.__qaMe; const mate = me.team.field.find((x) => x !== me && !x.isGK);
+      b.pos.set(me.pos.x - 6 * me.team.dir, 2.6, me.pos.z); b.vel.set(6 * me.team.dir, 0.5, 0); b.lastTouch = mate; b.owner = null; });
+    check(await until(() => window.__game.flow.match.aerialCue && document.getElementById('touch').classList.contains('aerial'), null, 15000), 'bola aérea ao alcance: aviso CHUTE! e botão piscando', n);
+    await g.shot('toques_aerea');
+    // MARCAR colado no adversário dá o bote sozinho
+    await scene('def'); await waitMode('def'); await sleep(600);
+    await g.ev(() => { const o = window.__game.flow.match.ball.owner; o.pos.copy(window.__qaMe.pos).add({ x: window.__qaMe.team.dir * 0.9, y: 0, z: 0 }); o.vel.set(0, 0, 0); o.protectT = 0; o.sync(); window.__qaMe.tackleCd = 0; });
+    const pr = await ctr('b-press'); const prid = tid++;
+    await g.touch('touchStart', [{ x: pr.x, y: pr.y, id: prid }]);
+    const bote = await until(() => window.__qaMe.tackleCd > 0, null, 15000);
+    await g.touch('touchEnd', []);
+    check(bote, 'MARCAR colado no adversário dá o bote', n);
+
     // troca automática: adversário com a bola longe de mim e perto de um companheiro
     await g.ev(() => { window.__qaSettings.autoSwitch = true; });
     await scene('deffar');
