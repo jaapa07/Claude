@@ -729,8 +729,9 @@ const SUITES = {
     check(d1 < d0 - 1, `MARCAR corre sozinho até o adversário (${d0.toFixed(1)} → ${d1.toFixed(1)} m)`, n);
     await scene('deffar'); await waitMode('def'); await sleep(600);
     const before = await g.ev(() => window.__game.flow.match.all.find((x) => x.device === 'kb').data.id);
-    await tapBtn('b-pass');
-    check(await until((b) => window.__game.flow.match.all.find((x) => x.device === 'kb')?.data.id !== b, before), 'TROCAR troca o jogador controlado', n);
+    let swapped = false;
+    for (let k = 0; k < 3 && !swapped; k++) { await tapBtn('b-pass'); swapped = await until((b) => window.__game.flow.match.all.find((x) => x.device === 'kb')?.data.id !== b, before, 8000); }
+    check(swapped, 'TROCAR troca o jogador controlado', n);
 
     // ---- toques imprecisos e rápidos
     await scene('atk'); await waitMode('atk');

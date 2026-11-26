@@ -1,31 +1,31 @@
 # QA ponta a ponta
 
-Executado em 2026-11-26 01:32 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
+Executado em 2026-11-26 01:54 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
 
-**17/19 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
+**18/19 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
 bola perto do dono, controle duplicado, time humano sem jogador, estados presos, bola morta sem ninguém ir buscar).
 
 | Suíte | Resultado | Tempo |
 |---|---|---|
 | menus | ✔ OK | 246s |
 | options | ✔ OK | 45s |
-| fullmatch | ✘ FALHOU | 138s |
+| fullmatch | ✔ OK | 147s |
 | arenas | ✔ OK | 132s |
-| human | ✔ OK | 169s |
+| human | ✔ OK | 166s |
 | twoplayers | ✔ OK | 54s |
-| setpieces | ✔ OK | 66s |
+| setpieces | ✔ OK | 68s |
 | fouls | ✔ OK | 60s |
 | pausemenu | ✔ OK | 37s |
 | cup | ✔ OK | 164s |
-| pens | ✔ OK | 86s |
+| pens | ✔ OK | 78s |
 | training | ✔ OK | 32s |
-| minigames | ✔ OK | 553s |
+| minigames | ✔ OK | 561s |
 | achievements | ✔ OK | 64s |
 | memory | ✔ OK | 108s |
 | career | ✔ OK | 161s |
 | mobile | ✔ OK | 34s |
 | iphone | ✔ OK | 199s |
-| toques | ✘ FALHOU | 316s |
+| toques | ✘ FALHOU | 306s |
 
 ## menus
 
@@ -59,9 +59,8 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 ## fullmatch
 
 - ✔ partida de 3 períodos termina na tela de resultado
-- ✔ ciclo de estados completo (play, replay, halftime, setpiece, kickoff, fulltime)
-- ✔ houve chutes (8,8)
-- ✘ 1 anomalia(s): bola fora do mundo 41.0,3.0,8.1 estado=goal
+- ✔ ciclo de estados completo (kickoff, play, replay, halftime, setpiece, periodEnd, goal, fulltime)
+- ✔ houve chutes (3,16)
 
 ## arenas
 
@@ -70,8 +69,8 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 ## human
 
-- ✔ jogador humano executou ações pelo teclado (44)
-- ✔ time humano chutou a gol (5)
+- ✔ jogador humano executou ações pelo teclado (43)
+- ✔ time humano chutou a gol (3)
 - ✔ jogador controlado se movimentou
 
 ## twoplayers
@@ -115,7 +114,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 ## pens
 
 - ✔ empate → prorrogação → pênaltis
-- ✔ disputa termina no resultado (pênaltis 2,1)
+- ✔ disputa termina no resultado (pênaltis 1,2)
 
 ## training
 
@@ -125,11 +124,11 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 ## minigames
 
-- ✔ Pênaltis de Ouro: 5 cobranças pelo teclado e tela de resultado ([true,false,false,false,false])
+- ✔ Pênaltis de Ouro: 5 cobranças pelo teclado e tela de resultado ([false,false,true,false,true])
 - ✔ embaixadinhas encadeadas pelo bot (11)
 - ✔ Embaixadinhas termina (bola caiu ou tempo)
-- ✔ Tiro ao Alvo termina após 10 bolas (10,320)
-- ✔ recordes salvos ({"pk":1,"juggle":11,"target":320})
+- ✔ Tiro ao Alvo termina após 10 bolas (10,460)
+- ✔ recordes salvos ({"pk":2,"juggle":11,"target":460})
 
 ## achievements
 
@@ -196,7 +195,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 - ✔ ATAQUE: layout aparece com a bola
 - ✔ PASSE (toque rápido) passa a bola
-- ✔ CHUTE (toque rápido) chuta para o gol (19.8 m/s)
+- ✔ CHUTE (toque rápido) chuta para o gol (20.0 m/s)
 - ✔ CHUTE segurado carrega a força (56%) e chuta
 - ✔ LENÇOL levanta a bola
 - ✔ FIRULA faz embaixadinha/chapéu
@@ -209,9 +208,9 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔ passe em andamento mantém o layout ATAQUE
 - ✔ DEFESA: layout aparece com o adversário na bola
 - ✔ TROCAR, MARCAR e CARRINHO grande ({"pass":"TROCAR","press":true,"tackle":76})
-- ✘ CARRINHO dá o carrinho
-- ✔ MARCAR corre sozinho até o adversário (9.1 → 8.0 m)
-- ✔ TROCAR troca o jogador controlado
+- ✔ CARRINHO dá o carrinho
+- ✔ MARCAR corre sozinho até o adversário (9.3 → 7.2 m)
+- ✘ TROCAR troca o jogador controlado
 - ✔ toque entre dois botões aciona o mais próximo
 - ✔ seis toques rápidos seguidos são todos registrados
 - ✔ três dedos: joystick + CORRER + CHUTE ({"mx":1,"run":true,"shoot":true})
@@ -222,6 +221,6 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔ bola aérea ao alcance: aviso CHUTE! e botão piscando
 - ✔ MARCAR colado no adversário dá o bote
 - ✔ troca automática passa o controle para quem está perto da bola
--   registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off hint fire:on pass:on tackle:off hint press:on pass:on shoot:on trick:on trick:off hint trick:off hint trick:off hint trick:on sprint:on shoot:on pass:on press:on
+-   registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off hint fire:on pass:on tackle:on press:on pass:on shoot:on trick:on trick:off hint trick:off hint trick:off hint trick:off hint sprint:on shoot:on pass:on press:on
 
 Capturas de tela das suítes em `docs/qa/`.
