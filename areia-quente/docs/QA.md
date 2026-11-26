@@ -1,52 +1,34 @@
 # QA ponta a ponta
 
-Executado em 2026-11-25 23:47 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
+Executado em 2026-11-26 00:00 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
 
-**18/18 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
+**14/18 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
 bola perto do dono, controle duplicado, time humano sem jogador, estados presos, bola morta sem ninguém ir buscar).
 
 | Suíte | Resultado | Tempo |
 |---|---|---|
-| menus | ✔ OK | 250s |
-| options | ✔ OK | 51s |
+| menus | ✘ FALHOU | 1s |
+| options | ✔ OK | 82s |
 | fullmatch | ✔ OK | 170s |
 | arenas | ✔ OK | 136s |
-| human | ✔ OK | 173s |
+| human | ✔ OK | 220s |
 | twoplayers | ✔ OK | 54s |
 | setpieces | ✔ OK | 74s |
 | fouls | ✔ OK | 60s |
-| pausemenu | ✔ OK | 44s |
+| pausemenu | ✔ OK | 62s |
 | cup | ✔ OK | 164s |
 | pens | ✔ OK | 86s |
 | training | ✔ OK | 32s |
-| minigames | ✔ OK | 630s |
+| minigames | ✘ FALHOU | 188s |
 | achievements | ✔ OK | 64s |
 | memory | ✔ OK | 108s |
 | career | ✔ OK | 161s |
-| mobile | ✔ OK | 39s |
-| iphone | ✔ OK | 165s |
+| mobile | ✘ FALHOU | 0s |
+| iphone | ✘ FALHOU | 91s |
 
 ## menus
 
-- ✔ ENTER no título abre o menu
-- ✔ duplo clique gera uma única transição (1)
-- ✔ menu com 8 opções (Amistoso | Copa Areia Quente | Modo Carreira | Treino | Desafios da Praia | Conquistas (0/20) | Opções | Créditos)
-- ✔ opção 1 → ctrl
-- ✔   ESC volta ao menu
-- ✔ opção 2 → teams
-- ✔   ESC volta ao menu
-- ✔ opção 3 → teams
-- ✔   ESC volta ao menu
-- ✔ opção 4 → teams
-- ✔   ESC volta ao menu
-- ✔ opção 5 → challenges
-- ✔   ESC volta ao menu
-- ✔ opção 6 → achievements
-- ✔   ESC volta ao menu
-- ✔ opção 7 → options
-- ✔   ESC volta ao menu
-- ✔ opção 8 → credits
-- ✔   ESC volta ao menu
+- ✘ exceção: page.waitForFunction: Target page, context or browser has been closed
 
 ## options
 
@@ -68,8 +50,8 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 ## human
 
-- ✔ jogador humano executou ações pelo teclado (42)
-- ✔ time humano chutou a gol (5)
+- ✔ jogador humano executou ações pelo teclado (29)
+- ✔ time humano chutou a gol (4)
 - ✔ jogador controlado se movimentou
 
 ## twoplayers
@@ -123,11 +105,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 ## minigames
 
-- ✔ Pênaltis de Ouro: 5 cobranças pelo teclado e tela de resultado ([false,true,true,false,true])
-- ✔ embaixadinhas encadeadas pelo bot (11)
-- ✔ Embaixadinhas termina (bola caiu ou tempo)
-- ✔ Tiro ao Alvo termina após 10 bolas (10,240)
-- ✔ recordes salvos ({"pk":3,"juggle":11,"target":240})
+- ✘ exceção: keyboard.down: Target page, context or browser has been closed
 
 ## achievements
 
@@ -155,13 +133,13 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 ## mobile
 
-- ✔ menu sem rolagem horizontal em 390 px
-- ✔ placar cabe na tela do celular
+- ✘ exceção: page.goto: Target page, context or browser has been closed
 
 ## iphone
 
 - ✔ detecta tela de toque e cria os controles
 - ✔ título pede "TOQUE PARA COMEÇAR"
+- ✔ título mostra "VERSÃO CELULAR"
 - ✔ toque no título abre o menu
 - ✔ menu sem rolagem da página
 - ✔ Amistoso vai direto para a seleção de times (sem tela de controles)
@@ -172,18 +150,6 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔ botão PULAR aparece na apresentação
 - ✔ PULAR encerra a apresentação
 - ✔ no saque o botão PASSE pisca
-- ✔ bola em jogo
-- ✔ joystick e botões visíveis durante o jogo
-- ✔ todos os botões dentro da tela e com no mínimo 40 px
-- ✔ jogador controlado pela tela de toque
-- ✔ joystick move para a direita (mx=0.98)
-- ✔ multitoque: joystick + CHUTE ao mesmo tempo
-- ✔ soltar os dedos solta joystick e botão
-- ✔ jogador se moveu com o joystick
-- ✔ rótulo contextual do passe (PASSE)
-- ✔ pausa esconde os controles de toque
-- ✔ continuar devolve os controles
-- ✔ na vertical aparece "Gire o aparelho"
-- ✔ na horizontal o aviso some
+- ✘ exceção: touchscreen.tap: Target page, context or browser has been closed
 
 Capturas de tela das suítes em `docs/qa/`.

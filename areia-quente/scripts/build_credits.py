@@ -5,7 +5,7 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 A = os.path.join(ROOT, 'public', 'assets')
 
 KENNEY = 'Kenney (kenney.nl) — CC0 1.0'
-OWN = 'Criado para o AREIA QUENTE (scripts deste repositório) — CC0 1.0'
+OWN = 'Criado para o REI DA PRAIA (scripts deste repositório) — CC0 1.0'
 
 RULES = [
     ('models/players/athlete.glb', 'Malha/rig: Kenney "Animated Characters: Protagonists" (CC0). 40 clipes de captura de movimento retargetados por scripts/blender/retarget.py — Mixamo/Adobe (pacote de futebol fornecido pelo dono do projeto, licença Mixamo; os .fbx originais não são redistribuídos), Quaternius "Universal Animation Library" (CC0) e CMU Graphics Lab Motion Capture Database (mocap.cs.cmu.edu, uso livre; sessões 10, 11, 13, 33, 42, 49) — e clipes autorais (scripts/blender/anims.py)', 'CC0 1.0 / CMU (uso livre) / Mixamo (Adobe)'),
@@ -91,7 +91,7 @@ def main():
         out += [f'- `{m}`' for m in missing]
     open(os.path.join(ROOT, 'ASSETS.md'), 'w').write('\n'.join(out) + '\n')
     credits = {'sections': [
-        {'title': 'Jogo', 'items': ['AREIA QUENTE — futebol de praia arcade 3D', 'Design, código, animações e pipeline de assets gerados com Claude Code']},
+        {'title': 'Jogo', 'items': ['REI DA PRAIA — futebol de praia arcade 3D', 'Design, código, animações e pipeline de assets gerados com Claude Code']},
         {'title': 'Personagens, cenário e interface', 'items': ['Kenney (kenney.nl) — Animated Characters, Mini Characters, City Kit, Nature Kit, Watercraft Kit, Furniture Kit, Particle Pack, Smoke Particles, Input Prompts, Impact & Interface Sounds — CC0']},
         {'title': 'Animações', 'items': ['Mixamo (Adobe) — goleiro (mergulhos, encaixe, saída no alto, reposição, chutão), cabeceio, bicicleta, carrinho, queda, pênalti, lateral, corrida lateral e de costas, freestyle',
                                           'Quaternius — Universal Animation Library (CC0): corrida, trote, sprint, caminhada, parado, dança, conversa, queda',

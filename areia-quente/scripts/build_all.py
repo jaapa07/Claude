@@ -1,4 +1,4 @@
-"""Gera todos os assets do AREIA QUENTE a partir de .cache/src (rode antes: node scripts/fetch-assets.mjs).
+"""Gera todos os assets do REI DA PRAIA a partir de .cache/src (rode antes: node scripts/fetch-assets.mjs).
 Blender: usa o módulo `bpy` (pip install bpy, Python 3.11) via a variável BLENDER_PY (padrão: python3.11)."""
 import os, subprocess, sys
 

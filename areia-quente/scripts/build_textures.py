@@ -1,4 +1,4 @@
-"""Texturas de cenário do AREIA QUENTE (placas de patrocinadores fictícios, rede, faixas, bandeirões).
+"""Texturas de cenário do REI DA PRAIA (placas de patrocinadores fictícios, rede, faixas, bandeirões).
 Também copia e redimensiona as texturas PBR de areia (ambientCG, CC0) e os HDRIs (Poly Haven, CC0)."""
 import os, shutil, math, random
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
@@ -64,7 +64,7 @@ SPONSORS = [
     ('RÁDIO ONDA 98', '#FF7A00', '#FFFFFF', 'radio'),
     ('SOLAR FPS 50', '#FFD21F', '#D7263D', 'sun'),
     ('PICOLÉ TROPICAL', '#FF3E8A', '#FFFFFF', 'pop'),
-    ('AREIA QUENTE', '#141414', '#FFB81F', 'sun2'),
+    ('REI DA PRAIA', '#141414', '#FFB81F', 'sun2'),
     ('BRISA AIRLINES', '#FFFFFF', '#1D74C9', 'plane'),
     ('FAROL BANK', '#0B6B35', '#FFFFFF', 'light'),
 ]
@@ -144,7 +144,7 @@ def main():
     for i in range(0, 2048, 120):
         d.polygon([(i, 256), (i + 60, 256), (i + 160, 0), (i + 100, 0)], fill='#FF8A2A')
     sun(d, 180, 128, 54, '#FFD21F')
-    center_text(d, (300, 0, 1748, 256), 'AREIA QUENTE  •  COPA DE FUTEBOL DE PRAIA', fit_font(d, 'AREIA QUENTE  •  COPA DE FUTEBOL DE PRAIA', 1400, 110), '#FFFFFF', 6, '#7A2A00')
+    center_text(d, (300, 0, 1748, 256), 'REI DA PRAIA  •  COPA DE FUTEBOL DE PRAIA', fit_font(d, 'REI DA PRAIA  •  COPA DE FUTEBOL DE PRAIA', 1400, 110), '#FFFFFF', 6, '#7A2A00')
     sun(d, 1868, 128, 54, '#FFD21F')
     ban.save(os.path.join(TEX, 'arena', 'banner.png'), optimize=True)
 

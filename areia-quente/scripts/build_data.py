@@ -1,5 +1,5 @@
 """Gera src/data/teams.json: 8 seleções com jogadores fictícios, uniformes e estilo de IA.
-Os nomes são inventados para o AREIA QUENTE (nenhum jogador real)."""
+Os nomes são inventados para o REI DA PRAIA (nenhum jogador real)."""
 import json, os, random
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))

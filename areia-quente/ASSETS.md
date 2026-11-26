@@ -3,7 +3,7 @@
 Todos os arquivos em `public/assets/` listados com origem e licença. Gerado por `scripts/build_credits.py`.
 Fontes baixadas por `scripts/fetch-assets.mjs`; derivados gerados por `scripts/build_all.py`.
 
-Total: **495 arquivos**, 49.6 MB. Nenhuma marca real; patrocinadores e jogadores são fictícios.
+Total: **497 arquivos**, 49.6 MB. Nenhuma marca real; patrocinadores e jogadores são fictícios.
 
 Fontes tipográficas: Bungee (David Jonathan Ross) e Rubik (Hubert & Fischer) via @fontsource — SIL Open Font License 1.1.
 
@@ -98,7 +98,7 @@ Licença: **CC0 1.0** · 1 arquivo(s)
 - `audio/sfx/sand_run.mp3` (48 KB)
 
 ## Apito sintetizado por scripts/build_audio.py
-Licença: **Criado para o AREIA QUENTE (scripts deste repositório) — CC0 1.0** · 4 arquivo(s)
+Licença: **Criado para o REI DA PRAIA (scripts deste repositório) — CC0 1.0** · 4 arquivo(s)
 
 - `audio/sfx/whistle_end.mp3` (33 KB)
 - `audio/sfx/whistle_foul.mp3` (10 KB)
@@ -121,7 +121,7 @@ Licença: **CC0 1.0 / CMU (uso livre) / Mixamo (Adobe)** · 1 arquivo(s)
 - `models/players/athlete.glb` (2689 KB)
 
 ## Modelado em Blender por scripts/blender/build_props.py
-Licença: **Criado para o AREIA QUENTE (scripts deste repositório) — CC0 1.0** · 3 arquivo(s)
+Licença: **Criado para o REI DA PRAIA (scripts deste repositório) — CC0 1.0** · 3 arquivo(s)
 
 - `models/props/ball.glb` (37 KB)
 - `models/props/cone.glb` (8 KB)
@@ -133,11 +133,11 @@ Licença: **CC0 1.0** · 1 arquivo(s)
 - `models/props/crowd.glb` (1190 KB)
 
 ## Placas de patrocinadores fictícios, rede, fita e faixas: scripts/build_textures.py (fonte Bungee, OFL)
-Licença: **Criado para o AREIA QUENTE (scripts deste repositório) — CC0 1.0** · 8 arquivo(s)
+Licença: **Criado para o REI DA PRAIA (scripts deste repositório) — CC0 1.0** · 8 arquivo(s)
 
-- `textures/arena/banner.png` (25 KB)
-- `textures/arena/boards.png` (62 KB)
-- `textures/arena/boards_neon.png` (294 KB)
+- `textures/arena/banner.png` (23 KB)
+- `textures/arena/boards.png` (61 KB)
+- `textures/arena/boards_neon.png` (290 KB)
 - `textures/arena/canvas_stripes.png` (0 KB)
 - `textures/arena/net.png` (1 KB)
 - `textures/arena/screen.png` (7 KB)
@@ -479,7 +479,7 @@ Licença: **CC0 1.0** · 326 arquivo(s)
 </details>
 
 ## Gerado por scripts/blender/build_props.py
-Licença: **Criado para o AREIA QUENTE (scripts deste repositório) — CC0 1.0** · 4 arquivo(s)
+Licença: **Criado para o REI DA PRAIA (scripts deste repositório) — CC0 1.0** · 4 arquivo(s)
 
 - `textures/props/ball.png` (14 KB)
 - `textures/props/ball_gold.png` (14 KB)
@@ -519,10 +519,11 @@ Licença: **CC0 1.0** · 2 arquivo(s)
 - `textures/sky/qwantani_sunset_puresky.jpg` (76 KB)
 
 ## Logo, brasões, bandeiras, crista do medidor, marcadores e cartões: scripts/build_ui.py (fonte Bungee, OFL)
-Licença: **Criado para o AREIA QUENTE (scripts deste repositório) — CC0 1.0** · 42 arquivo(s)
+Licença: **Criado para o REI DA PRAIA (scripts deste repositório) — CC0 1.0** · 44 arquivo(s)
 
 <details><summary>arquivos</summary>
 
+- `ui/apple-touch-icon.png` (9 KB)
 - `ui/card_red.png` (0 KB)
 - `ui/card_yellow.png` (0 KB)
 - `ui/crest_blue.png` (10 KB)
@@ -559,7 +560,8 @@ Licença: **Criado para o AREIA QUENTE (scripts deste repositório) — CC0 1.0*
 - `ui/flags/TAH.png` (1 KB)
 - `ui/flags/URU.png` (1 KB)
 - `ui/flags/USA.png` (1 KB)
-- `ui/logo.png` (41 KB)
+- `ui/icon-512.png` (27 KB)
+- `ui/logo.png` (44 KB)
 - `ui/marker_cpu.png` (1 KB)
 - `ui/marker_p1.png` (1 KB)
 - `ui/marker_p2.png` (1 KB)
@@ -607,7 +609,7 @@ Licença: **CC0 1.0** · 1 arquivo(s)
 - `ui/sand_wipe.jpg` (29 KB)
 
 ## Gerado por scripts/build_ui.py
-Licença: **Criado para o AREIA QUENTE (scripts deste repositório) — CC0 1.0** · 3 arquivo(s)
+Licença: **Criado para o REI DA PRAIA (scripts deste repositório) — CC0 1.0** · 3 arquivo(s)
 
 - `vfx/blob_shadow.png` (5 KB)
 - `vfx/confetti.png` (0 KB)

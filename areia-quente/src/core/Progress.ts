@@ -17,7 +17,7 @@ export const ACH = {
   veterano: { name: 'Veterano', desc: 'Vença 5 partidas.', goal: 5 },
   sangue_frio: { name: 'Sangue Frio', desc: 'Vença uma disputa de pênaltis.', goal: 1 },
   turne: { name: 'Turnê da Areia', desc: 'Jogue nas 3 arenas.', goal: 3 },
-  campeao: { name: 'Campeão da Copa', desc: 'Vença a Copa Areia Quente.', goal: 1 },
+  campeao: { name: 'Campeão da Copa', desc: 'Vença a Copa Rei da Praia.', goal: 1 },
   aluno: { name: 'Aluno Aplicado', desc: 'Complete todos os desafios do treino.', goal: 1 },
   pk_ouro: { name: 'Pênaltis de Ouro', desc: 'Converta 5 de 5 no minijogo de pênaltis.', goal: 1 },
   embaixadinha: { name: 'Rei da Embaixadinha', desc: 'Faça 25 embaixadinhas seguidas.', goal: 1 },

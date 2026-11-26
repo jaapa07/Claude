@@ -148,7 +148,7 @@ export class Flow {
     this.scene = 'title';
     this.clearShow();
     this.mount(html(`<div class="screen title-screen"><img class="logo" src="${A('ui/logo.png')}"><div class="press">${input.touch ? 'TOQUE PARA COMEÇAR' : t('press_start')}</div><div class="plat">${platform.label}</div>
-      <div class="copy">Areia Quente · jogo original · assets CC0 (Kenney, Poly Haven, ambientCG, OpenGameArt)</div></div>`));
+      <div class="copy">Rei da Praia · jogo original · assets CC0 (Kenney, Poly Haven, ambientCG, OpenGameArt)</div></div>`));
     this.nav = undefined;
     let ang = 0;
     this.tick = (dt) => {

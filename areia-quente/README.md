@@ -1,4 +1,4 @@
-# AREIA QUENTE — Futebol de Praia
+# REI DA PRAIA — Futebol de Praia
 
 Futebol de praia arcade 3D, 5 contra 5, feito em **Three.js + TypeScript** a partir do `PROMPT_MESTRE.md`.
 Jogadas de efeito (chapéu, bicicleta, tesoura, voleio, peixinho) geram **pontos de estilo** que enchem o

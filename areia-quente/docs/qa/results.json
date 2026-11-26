@@ -1,30 +1,12 @@
 {
  "menus": {
   "name": "menus",
-  "ok": true,
+  "ok": false,
   "notes": [
-   "✔ ENTER no título abre o menu",
-   "✔ duplo clique gera uma única transição (1)",
-   "✔ menu com 8 opções (Amistoso | Copa Areia Quente | Modo Carreira | Treino | Desafios da Praia | Conquistas (0/20) | Opções | Créditos)",
-   "✔ opção 1 → ctrl",
-   "✔   ESC volta ao menu",
-   "✔ opção 2 → teams",
-   "✔   ESC volta ao menu",
-   "✔ opção 3 → teams",
-   "✔   ESC volta ao menu",
-   "✔ opção 4 → teams",
-   "✔   ESC volta ao menu",
-   "✔ opção 5 → challenges",
-   "✔   ESC volta ao menu",
-   "✔ opção 6 → achievements",
-   "✔   ESC volta ao menu",
-   "✔ opção 7 → options",
-   "✔   ESC volta ao menu",
-   "✔ opção 8 → credits",
-   "✔   ESC volta ao menu"
+   "✘ exceção: page.waitForFunction: Target page, context or browser has been closed"
   ],
-  "secs": 250,
-  "at": "2026-11-25T22:24:07.298Z"
+  "secs": 1,
+  "at": "2026-11-26T00:00:55.411Z"
  },
  "options": {
   "name": "options",
@@ -35,8 +17,8 @@
    "✔ opções persistem após recarregar a página",
    "✔ saída de bola com a tecla remapeada (U)"
   ],
-  "secs": 51,
-  "at": "rodada 1"
+  "secs": 82,
+  "at": "2026-11-26T00:00:55.411Z"
  },
  "fullmatch": {
   "name": "fullmatch",
@@ -63,12 +45,12 @@
   "name": "human",
   "ok": true,
   "notes": [
-   "✔ jogador humano executou ações pelo teclado (42)",
-   "✔ time humano chutou a gol (5)",
+   "✔ jogador humano executou ações pelo teclado (29)",
+   "✔ time humano chutou a gol (4)",
    "✔ jogador controlado se movimentou"
   ],
-  "secs": 173,
-  "at": "rodada 1"
+  "secs": 220,
+  "at": "2026-11-26T00:00:55.411Z"
  },
  "twoplayers": {
   "name": "twoplayers",
@@ -118,8 +100,8 @@
    "✔ continuar retoma a partida",
    "✔ reiniciar começa uma nova partida"
   ],
-  "secs": 44,
-  "at": "2026-11-25T22:35:36.461Z"
+  "secs": 62,
+  "at": "2026-11-26T00:00:55.411Z"
  },
  "cup": {
   "name": "cup",
@@ -156,16 +138,12 @@
  },
  "minigames": {
   "name": "minigames",
-  "ok": true,
+  "ok": false,
   "notes": [
-   "✔ Pênaltis de Ouro: 5 cobranças pelo teclado e tela de resultado ([false,true,true,false,true])",
-   "✔ embaixadinhas encadeadas pelo bot (11)",
-   "✔ Embaixadinhas termina (bola caiu ou tempo)",
-   "✔ Tiro ao Alvo termina após 10 bolas (10,240)",
-   "✔ recordes salvos ({\"pk\":3,\"juggle\":11,\"target\":240})"
+   "✘ exceção: keyboard.down: Target page, context or browser has been closed"
   ],
-  "secs": 630,
-  "at": "2026-11-25T22:35:36.461Z"
+  "secs": 188,
+  "at": "2026-11-26T00:00:55.411Z"
  },
  "achievements": {
   "name": "achievements",
@@ -208,12 +186,33 @@
  },
  "mobile": {
   "name": "mobile",
-  "ok": true,
+  "ok": false,
   "notes": [
-   "✔ menu sem rolagem horizontal em 390 px",
-   "✔ placar cabe na tela do celular"
+   "✘ exceção: page.goto: Target page, context or browser has been closed"
   ],
-  "secs": 39,
-  "at": "rodada 1"
+  "secs": 0,
+  "at": "2026-11-26T00:00:55.411Z"
+ },
+ "iphone": {
+  "name": "iphone",
+  "ok": false,
+  "notes": [
+   "✔ detecta tela de toque e cria os controles",
+   "✔ título pede \"TOQUE PARA COMEÇAR\"",
+   "✔ título mostra \"VERSÃO CELULAR\"",
+   "✔ toque no título abre o menu",
+   "✔ menu sem rolagem da página",
+   "✔ Amistoso vai direto para a seleção de times (sem tela de controles)",
+   "✔ botão COMEÇAR visível na tela",
+   "✔ toque na seta troca a seleção",
+   "✔ seleção de times cabe na tela",
+   "✔ COMEÇAR inicia a partida",
+   "✔ botão PULAR aparece na apresentação",
+   "✔ PULAR encerra a apresentação",
+   "✔ no saque o botão PASSE pisca",
+   "✘ exceção: touchscreen.tap: Target page, context or browser has been closed"
+  ],
+  "secs": 91,
+  "at": "2026-11-26T00:00:55.411Z"
  }
 }

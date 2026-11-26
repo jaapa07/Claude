@@ -1,4 +1,4 @@
-"""Biblioteca de animações autorais do AREIA QUENTE para o rig characterMedium (Kenney, CC0).
+"""Biblioteca de animações autorais do REI DA PRAIA para o rig characterMedium (Kenney, CC0).
 Cada clipe é uma lista de keyframes (tempo_s, pose). Poses são montadas com body(...),
 que traduz parâmetros semânticos (graus) para rotações por osso no espaço do personagem.
 Altura do personagem ~3.77 un; quadril em z=1.24."""

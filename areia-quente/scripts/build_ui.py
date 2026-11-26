@@ -1,4 +1,4 @@
-"""Arte de UI e VFX do AREIA QUENTE.
+"""Arte de UI e VFX do REI DA PRAIA.
 - Flipbooks/sprites de efeito a partir dos pacotes Kenney Smoke Particles e Particle Pack (CC0).
 - Logo, brasões dos times, bandeiras, medidor de calor (brasão azul -> dourado), marcadores,
   cartões, pegada (decal), ícones de controle (Kenney Input Prompts, CC0)."""
@@ -225,8 +225,15 @@ def ui():
     for k in range(4):
         y = cy + 40 + k * 26
         d.line([(cx - 170 + i * 5, y + math.sin(i * 0.2 + k) * 8) for i in range(70)], fill='#1D74C9', width=12)
+    # coroa do "rei" sobre o sol
+    k0x, k0y = cx, 30
+    crown = [(k0x - 150, k0y + 120), (k0x - 170, k0y + 20), (k0x - 85, k0y + 75), (k0x, k0y - 5), (k0x + 85, k0y + 75), (k0x + 170, k0y + 20), (k0x + 150, k0y + 120)]
+    d.polygon([(x + 8, y + 10) for x, y in crown], fill=(0, 0, 0, 110))
+    d.polygon(crown, fill='#FFD21F', outline='#7A1E00', width=10)
+    for jx, jy, jc in ((k0x - 170, k0y + 20, '#E3182D'), (k0x, k0y - 5, '#2F8CE6'), (k0x + 170, k0y + 20, '#E3182D')):
+        d.ellipse((jx - 20, jy - 20, jx + 20, jy + 20), fill=jc, outline='#7A1E00', width=6)
     fo = F(190)
-    for txt, y, col in (('AREIA', 40, '#FFFFFF'), ('QUENTE', 250, '#FFD21F')):
+    for txt, y, col in (('REI DA', 70, '#FFFFFF'), ('PRAIA', 262, '#FFD21F')):
         bb = d.textbbox((0, 0), txt, font=fo, stroke_width=16)
         x = W / 2 - (bb[2] - bb[0]) / 2 - bb[0]
         d.text((x + 10, y + 14), txt, font=fo, fill=(0, 0, 0, 120), stroke_width=16, stroke_fill=(0, 0, 0, 120))

@@ -1,4 +1,4 @@
-"""Objetos do AREIA QUENTE: bola, troféu, cone de treino e torcida (mini-characters do Kenney, CC0,
+"""Objetos do REI DA PRAIA: bola, troféu, cone de treino e torcida (mini-characters do Kenney, CC0,
 congelados em poses 'sentado' e 'torcendo' para InstancedMesh). Exporta public/assets/models/props/*.glb."""
 import bpy, bmesh, os, math, sys
 from mathutils import Vector

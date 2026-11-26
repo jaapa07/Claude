@@ -190,7 +190,7 @@ export function setupMobileBrowser() {
   }, { passive: false });
   const rot = document.createElement('div');
   rot.id = 'rotate';
-  rot.innerHTML = '<div class="phone"></div><b>Gire o aparelho</b><span>Areia Quente é jogado na horizontal</span>';
+  rot.innerHTML = '<div class="phone"></div><b>Gire o aparelho</b><span>Rei da Praia é jogado na horizontal</span>';
   document.getElementById('app')!.appendChild(rot);
   // depois de girar, o iOS às vezes informa o tamanho antigo: força novo cálculo
   addEventListener('orientationchange', () => setTimeout(() => dispatchEvent(new Event('resize')), 350));

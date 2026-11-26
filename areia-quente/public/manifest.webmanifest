@@ -1,6 +1,6 @@
 {
-  "name": "Areia Quente — Futebol de Praia",
-  "short_name": "Areia Quente",
+  "name": "Rei da Praia — Futebol de Praia",
+  "short_name": "Rei da Praia",
   "start_url": "./celular.html",
   "scope": "./",
   "display": "fullscreen",

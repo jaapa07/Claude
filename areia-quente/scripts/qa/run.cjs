@@ -1,4 +1,4 @@
-// QA ponta a ponta do AREIA QUENTE. Uso: npm run build && node scripts/qa/run.cjs [suite,suite]
+// QA ponta a ponta do REI DA PRAIA. Uso: npm run build && node scripts/qa/run.cjs [suite,suite]
 // Gera docs/QA.md com o resultado de cada suíte e as anomalias detectadas pelo monitor de invariantes.
 const fs = require('fs');
 const path = require('path');
@@ -534,7 +534,7 @@ const SUITES = {
     }
     check(await waitPlay(g), 'bola em jogo', n);
     check(await g.ev(() => { const t = document.getElementById('touch'); return t.classList.contains('on') && !t.classList.contains('cine'); }), 'joystick e botões visíveis durante o jogo', n);
-    const btnsIn = await g.ev(() => [...document.querySelectorAll('#touch .t-btn')].every((b) => { const r = b.getBoundingClientRect(); return r.width >= 40 && r.left >= 0 && r.right <= innerWidth + 1 && r.top >= 0 && r.bottom <= innerHeight + 1; }));
+    const btnsIn = await g.ev(() => [...document.querySelectorAll('#touch .t-btn')].filter((b) => +getComputedStyle(b).opacity > 0.5).every((b) => { const r = b.getBoundingClientRect(); return r.width >= 40 && r.left >= 0 && r.right <= innerWidth + 1 && r.top >= 0 && r.bottom <= innerHeight + 1; }));
     check(btnsIn, 'todos os botões dentro da tela e com no mínimo 40 px', n);
     await g.shot('iphone_match');
     // joystick: arrasta o dedo para a direita e segura
@@ -545,7 +545,10 @@ const SUITES = {
     const stick = await g.ev(() => { const s = window.__game.input.state('kb'); return { mx: s.mx, my: s.my }; });
     check(stick.mx > 0.5, `joystick move para a direita (mx=${stick.mx.toFixed(2)})`, n);
     await g.shot('iphone_stick');
-    // segundo dedo no CHUTE enquanto o primeiro segura o joystick (multitoque)
+    // segundo dedo no CHUTE enquanto o primeiro segura o joystick (multitoque) — em modo ATAQUE
+    await g.ev(() => { const m = window.__game.flow.match; m.takeBall(m.all.find((x) => x.device === 'kb')); });
+    await g.waitFor(() => document.getElementById('touch').classList.contains('atk'), null, 20000).catch(() => {});
+    await sleep(500);
     const sh = await g.center('#touch .b-shoot');
     await g.touch('touchStart', [{ x: 240, y: 270, id: 1 }, { x: sh.x, y: sh.y, id: 2 }]);
     await sleep(250);

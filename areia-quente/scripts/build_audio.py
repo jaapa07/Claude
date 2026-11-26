@@ -1,4 +1,4 @@
-"""Áudio do AREIA QUENTE: converte e corta as fontes CC0 (OpenGameArt, Kenney) para public/assets/audio
+"""Áudio do REI DA PRAIA: converte e corta as fontes CC0 (OpenGameArt, Kenney) para public/assets/audio
 e sintetiza os apitos de árbitro (não havia gravação CC0 disponível)."""
 import os, subprocess, wave, struct, math, random
 import numpy as np

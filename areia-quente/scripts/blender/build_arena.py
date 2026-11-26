@@ -1,4 +1,4 @@
-"""Monta as 3 arenas do AREIA QUENTE no Blender e exporta public/assets/models/arenas/<id>.glb
+"""Monta as 3 arenas do REI DA PRAIA no Blender e exporta public/assets/models/arenas/<id>.glb
 + <id>_seats.json (posições de assento da torcida, em coordenadas three.js).
 Unidades: metros. Campo 36 x 27 m centrado na origem, comprimento no eixo X, lado da câmera em -Y.
 Objetos com nome especial são tratados em runtime: FIELD_SAND, BEACH_SAND, WATER, NET_*, FLAG_*,
