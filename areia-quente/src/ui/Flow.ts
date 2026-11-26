@@ -19,10 +19,19 @@ type TeamData = (typeof TEAMS.teams)[number];
 const teams = TEAMS.teams;
 const html = (s: string) => { const d = document.createElement('div'); d.className = 'screen'; d.innerHTML = s; return d; };
 
+/** true só quando o ponteiro mudou de posição na tela desde o último evento (eventos sintéticos após rolagem repetem a posição). */
+let mouseXY = '';
+const mouseMoved = (e: MouseEvent) => { const xy = `${e.screenX},${e.screenY}`; const moved = xy !== mouseXY; mouseXY = xy; return moved; };
+
 /** Navegação por teclado/controle numa lista de botões (também funciona com mouse). */
 class Nav {
   i = 0;
-  constructor(public items: HTMLElement[], public back?: () => void, public horiz = false) { this.mark(); items.forEach((it, k) => it.addEventListener('mouseenter', () => { this.i = k; this.mark(); })); }
+  constructor(public items: HTMLElement[], public back?: () => void, public horiz = false) {
+    this.mark();
+    // só segue o mouse quando ele realmente se mexe: rolar a lista pelo teclado passa itens por baixo do
+    // cursor parado e o navegador dispara mouseenter/mousemove "falsos" (a seleção pulava para o item sob o mouse)
+    items.forEach((it, k) => it.addEventListener('mousemove', (e) => { if (!mouseMoved(e) || this.i === k) return; this.i = k; this.mark(); }));
+  }
   mark() { this.items.forEach((it, k) => it.classList.toggle('sel', k === this.i)); }
   private armed = false;
   update() {
