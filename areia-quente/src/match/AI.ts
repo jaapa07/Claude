@@ -138,7 +138,7 @@ export function teamAI(m: Match, tm: Team, dt: number) {
       continue;
     }
     // recebedor do passe: espera a bola no pé, de frente para ela (a bola é que vem até ele)
-    if (p === m.passTo && !owner && p.runT <= 0) { moveTo(p, p.pos, dt, false, b.pos.clone().sub(p.pos)); p.vel.multiplyScalar(0.85); tryAerial(m, p, st); continue; }
+    if (p === m.passTo && (!owner || owner.team === tm) && p.runT <= 0) { moveTo(p, p.pos, dt, false, b.pos.clone().sub(p.pos)); p.vel.multiplyScalar(0.85); tryAerial(m, p, st); continue; }
     // outro companheiro perto de uma bola do time: vai ao encontro dela
     if (!owner && b.lastTouch?.team === tm && b.speed > 2 && m.passTo !== p) {
       const tt = Math.max(0.1, Math.min(1.5, p.pos.distanceTo(b.pos) / Math.max(4, b.speed)));

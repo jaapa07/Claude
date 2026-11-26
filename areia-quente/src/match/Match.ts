@@ -323,7 +323,7 @@ export class Match {
     const canMove = p.stun <= 0 && p.sliding <= 0 && !(p.kick && !p.kick.done) && !this.ball.held;
     let sprint = input.held(dev, 'sprint');
     // recepção estilo PES/FIFA: direcional solto e passe vindo para ele → para, vira para a bola e espera no pé
-    const waiting = this.passTo === p && !hasBall && mv.lengthSq() < 0.04 && !this.ball.owner;
+    const waiting = this.passTo === p && !hasBall && mv.lengthSq() < 0.04 && (!this.ball.owner || this.ball.owner.team === tm);
     if (waiting) { p.vel.multiplyScalar(Math.exp(-10 * dt)); p.faceTo(this.ball.pos.clone().sub(p.pos).setY(0), dt, 10); }
     // MARCAR (toque): corre sozinho atrás da bola/adversário enquanto o botão estiver pressionado
     if (input.isDown('TouchPress') && dev === 'kb' && !hasBall && mv.lengthSq() < 0.04) {
@@ -456,6 +456,8 @@ export class Match {
     const hasIt = b.owner === p || this.sp?.taker === p || this.nearLooseBall(p);
     if (!hasIt || (p.kick && !p.kick.done)) return;
     const best = target ?? this.pickPassTarget(p, dir, lob);
+    // o recebedor já para e espera no momento em que o botão é apertado (não sai correndo durante o preparo do passe)
+    if (best && !best.isGK) { this.passTo = best; this.passT = 3.5; best.vel.multiplyScalar(best.runT > 0 ? 1 : 0.3); }
     const kind: KickKind = p.isGK && b.held ? 'gk_throw' : this.sp?.kind === 'throw_in' ? 'throw_in' : lob ? 'pass_lob' : 'pass_short';
     this.queueKick(p, kind, 0.5, null, best);
   }
@@ -584,7 +586,7 @@ export class Match {
       default: contact = foot;
     }
     const aerial = ['header', 'diving_header', 'bicycle_kick', 'scissor_kick', 'volley', 'chest_control'].includes(k.kind);
-    if (!owned && !reachable(aerial ? contact : p.pos.clone().setY(BALL_R).addScaledVector(p.forward, 0.5), aerial ? 1.7 : 1.4)) return; // furou
+    if (!owned && !reachable(aerial ? contact : p.pos.clone().setY(BALL_R).addScaledVector(p.forward, 0.5), aerial ? 1.7 : 1.4)) { if (this.passTo?.team === p.team) this.passTo = null; return; } // furou
     if (this.state === 'setpiece' || this.state === 'kickoff') this.resumePlay();
     b.owner = null; b.held = false;
     if (aerial) b.pos.lerp(contact, 0.6);
