@@ -630,6 +630,7 @@ const SUITES = {
       if (kind === 'sup') { const mate = tm.field.find((x) => x !== me && !x.isGK); mate.pos.set(-dir * 6, 0, 3); mate.sync(); m.takeBall(mate); }
       if (kind === 'def') { const o = opp.field.find((x) => !x.isGK); o.pos.set(dir * 2.2, 0, 0.4); o.vel.set(0, 0, 0); o.sync(); m.takeBall(o); }
       if (kind === 'deffar') { const o = opp.field.find((x) => !x.isGK); o.pos.set(dir * 9, 0, 4); o.sync(); m.takeBall(o); }
+      if (b.owner) b.pos.copy(b.owner.pos).addScaledVector(b.owner.forward, 0.45).setY(0.11);
       window.__qaMe = me;
       return { dir };
     }, kind);
@@ -711,7 +712,10 @@ const SUITES = {
     const ld = await g.ev(() => ({ pass: document.querySelector('#touch .b-pass span').textContent, press: getComputedStyle(document.querySelector('#touch .b-press')).opacity > 0.5, tackle: document.querySelector('#touch .b-tackle').getBoundingClientRect().width }));
     check(ld.pass === 'TROCAR' && ld.press && ld.tackle > 60, `TROCAR, MARCAR e CARRINHO grande (${JSON.stringify(ld)})`, n);
     await g.shot('toques_defesa');
-    await tapBtn('b-tackle');
+    // toque no CARRINHO no mesmo instante em que o layout DEFESA está confirmado (a CPU não tem tempo de perder a bola)
+    await g.ev(() => { const pad = document.querySelector('#touch .t-btns'); const r = document.querySelector('#touch .b-tackle').getBoundingClientRect();
+      const o = { pointerId: 77, pointerType: 'touch', isPrimary: false, clientX: r.left + r.width / 2, clientY: r.top + r.height / 2, bubbles: true, cancelable: true };
+      pad.dispatchEvent(new PointerEvent('pointerdown', o)); setTimeout(() => pad.dispatchEvent(new PointerEvent('pointerup', o)), 120); });
     check(await until(() => window.__qaMe.sliding > 0 || (window.__qaMe.kick && /tackle/.test(window.__qaMe.kick.kind))), 'CARRINHO dá o carrinho', n);
     await scene('deffar'); await waitMode('def');
     const d0 = await g.ev(() => { const o = window.__game.flow.match.ball.owner; return o ? o.pos.distanceTo(window.__qaMe.pos) : 99; });
