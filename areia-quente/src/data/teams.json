@@ -43,8 +43,8 @@
    "players": [
     {
      "id": "BRA0",
-     "name": "Tatuí",
-     "short": "TATUÍ",
+     "name": "Zuba",
+     "short": "ZUBA",
      "number": 1,
      "pos": "GOL",
      "stats": {
@@ -62,8 +62,8 @@
     },
     {
      "id": "BRA1",
-     "name": "Marolinha",
-     "short": "MAROLINHA",
+     "name": "Didi",
+     "short": "DIDI",
      "number": 4,
      "pos": "FIXO",
      "stats": {
@@ -81,8 +81,8 @@
     },
     {
      "id": "BRA2",
-     "name": "Caju",
-     "short": "CAJU",
+     "name": "Rocha",
+     "short": "ROCHA",
      "number": 7,
      "pos": "ALA",
      "stats": {
@@ -100,8 +100,8 @@
     },
     {
      "id": "BRA3",
-     "name": "Zé Coqueiro",
-     "short": "ZÉ COQUEIRO",
+     "name": "Alekão",
+     "short": "ALEKÃO",
      "number": 10,
      "pos": "ALA",
      "stats": {
@@ -119,8 +119,8 @@
     },
     {
      "id": "BRA4",
-     "name": "Pipoca",
-     "short": "PIPOCA",
+     "name": "Serjo",
+     "short": "SERJO",
      "number": 9,
      "pos": "PIVÔ",
      "stats": {

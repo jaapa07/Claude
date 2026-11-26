@@ -11,7 +11,7 @@ TEAMS = [
          home=dict(shirt='#FFD21F', shirt2='#0B9B4A', pattern='sash', shorts='#1D4FC4', trim='#0B9B4A', num='#0B6B35'),
          away=dict(shirt='#1D4FC4', shirt2='#FFD21F', pattern='chevron', shorts='#FFFFFF', trim='#FFD21F', num='#FFFFFF'),
          gk=dict(shirt='#FF6A1A', shirt2='#202020', pattern='shoulders', shorts='#202020', trim='#202020', num='#202020'),
-         players=['Tatuí', 'Marolinha', 'Caju', 'Zé Coqueiro', 'Pipoca', 'Tubarão', 'Biscoito', 'Raio Laser', 'Dendê', 'Guaraná']),
+         players=['Zuba', 'Didi', 'Rocha', 'Alekão', 'Serjo', 'Tubarão', 'Biscoito', 'Raio Laser', 'Dendê', 'Guaraná']),
     dict(id='ARG', name='Argentina', nick='Albicelestes del Sol', flag='AR', style='raça', colors=['#7CC6F2', '#FFFFFF'],
          stats=dict(ataque=4, defesa=4, tecnica=4, velocidade=4),
          home=dict(shirt='#FFFFFF', shirt2='#7CC6F2', pattern='stripes', shorts='#1B1B2A', trim='#1B1B2A', num='#1B1B2A'),
