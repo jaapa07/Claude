@@ -131,50 +131,63 @@ function SteerZone({ manual }: { manual: boolean }): JSX.Element {
           <div className="touch-steer__knob" style={{ transform: `translate(calc(-50% + ${knob.dx}px), -50%)` }} />
         </div>
       ) : (
-        // No modo manual os botões (Drift e setas) já se explicam; a dica ficaria por cima das setas.
+        // No modo manual os botões (Drift e analógico) já se explicam; a dica ficaria por cima do analógico.
         !manual && <span className="touch-steer__hint">◀ arraste para virar ▶</span>
       )}
     </div>
   );
 }
 
+/** Curso máximo (px) do pino do analógico a partir do centro: no limite, esterço total. */
+const STICK_RANGE = 40;
+/** Zona morta do analógico (fração do curso), para o polegar apoiado não virar o kart. */
+const STICK_DEAD = 0.08;
+
 /**
- * Setas ◀ ▶ (modo manual, embaixo do Drift): segure para virar; dá para deslizar de uma para a outra sem soltar.
- * Usam a mesma suavização da direção do teclado.
+ * Analógico (modo manual, embaixo do Drift): o pino segue o polegar dentro da base; o deslocamento horizontal vira
+ * esterço proporcional, como o direcional analógico de um controle.
  */
-function ArrowPad(): JSX.Element {
+function AnalogStick(): JSX.Element {
   const finger = useRef<number | null>(null);
-  const box = useRef<HTMLDivElement>(null);
-  const [dir, setDir] = useState(0);
-  const update = (x: number): void => {
-    const r = box.current?.getBoundingClientRect();
-    const d = r ? (x < r.left + r.width / 2 ? -1 : 1) : 0;
-    setDir(d);
-    inputManager.setTouch({ dir: d });
+  const base = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
+  const update = (cx: number, cy: number): void => {
+    const r = base.current?.getBoundingClientRect();
+    if (!r) return;
+    let x = cx - (r.left + r.width / 2);
+    let y = cy - (r.top + r.height / 2);
+    const len = Math.hypot(x, y);
+    if (len > STICK_RANGE) { x *= STICK_RANGE / len; y *= STICK_RANGE / len; }
+    setPos({ x, y });
+    const raw = x / STICK_RANGE;
+    const mag = Math.max(0, (Math.abs(raw) - STICK_DEAD) / (1 - STICK_DEAD));
+    const steer = Math.sign(raw) * mag * useSettingsStore.getState().sensitivity;
+    inputManager.setTouch({ steer: Math.max(-1, Math.min(1, steer)) });
   };
   const end = (e: ReactPointerEvent): void => {
     if (finger.current !== e.pointerId) return;
     finger.current = null;
-    setDir(0);
-    inputManager.setTouch({ dir: 0 });
+    setPos(null);
+    inputManager.setTouch({ steer: 0 });
   };
   return (
     <div
-      ref={box} className="touch-arrows" data-testid="touch-arrows"
+      ref={base} className="touch-stick" data-testid="touch-stick" data-down={pos !== null}
+      role="slider" aria-label="Analógico: arraste para os lados para virar" aria-valuemin={-1} aria-valuemax={1}
+      aria-valuenow={pos ? Math.round((pos.x / STICK_RANGE) * 100) / 100 : 0}
       onPointerDown={(e) => {
         if (finger.current !== null) return;
         e.preventDefault();
         e.stopPropagation();
         e.currentTarget.setPointerCapture(e.pointerId);
         finger.current = e.pointerId;
-        update(e.clientX);
+        update(e.clientX, e.clientY);
       }}
-      onPointerMove={(e) => { if (finger.current === e.pointerId) update(e.clientX); }}
+      onPointerMove={(e) => { if (finger.current === e.pointerId) update(e.clientX, e.clientY); }}
       onPointerUp={end} onPointerCancel={end} onLostPointerCapture={end}
       onContextMenu={(e) => e.preventDefault()}
     >
-      <div className="touch-btn touch-arrow" data-testid="touch-left" data-down={dir < 0} aria-label="Virar à esquerda">◀</div>
-      <div className="touch-btn touch-arrow" data-testid="touch-right" data-down={dir > 0} aria-label="Virar à direita">▶</div>
+      <div className="touch-stick__knob" style={pos ? { transform: `translate(calc(-50% + ${pos.x}px), calc(-50% + ${pos.y}px))` } : undefined} />
     </div>
   );
 }
@@ -195,7 +208,7 @@ export function TouchControls(): JSX.Element | null {
   return (
     <div className="touch-controls" data-testid="touch-controls">
       <SteerZone manual={manual} />
-      {manual && <ArrowPad />}
+      {manual && <AnalogStick />}
       <ButtonCluster manual={manual} />
       <button
         type="button" className="touch-btn touch-btn--pause" data-testid="touch-pause" aria-label="Pausar"

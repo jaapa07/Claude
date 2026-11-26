@@ -277,7 +277,7 @@ class InputManager {
     r.lastReadAt = now;
     const t = this.touch;
 
-    // Teclado ou setas de toque (◀ ▶): direção digital suavizada; a sensibilidade define a rapidez do esterço.
+    // Teclado: direção digital suavizada; a sensibilidade define a rapidez do esterço.
     const dir = Math.max(-1, Math.min(1, (key('right') ? 1 : 0) - (key('left') ? 1 : 0) + (useTouch ? t.dir : 0)));
     if (dir !== 0) {
       // Inverter o sentido parte do centro, sem esperar o retorno.
