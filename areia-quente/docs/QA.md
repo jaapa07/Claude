@@ -1,13 +1,13 @@
 # QA ponta a ponta
 
-Executado em 2026-11-26 00:56 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
+Executado em 2026-11-26 01:08 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
 
-**16/19 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
+**17/19 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
 bola perto do dono, controle duplicado, time humano sem jogador, estados presos, bola morta sem ninguém ir buscar).
 
 | Suíte | Resultado | Tempo |
 |---|---|---|
-| menus | ✘ FALHOU | 293s |
+| menus | ✔ OK | 246s |
 | options | ✔ OK | 45s |
 | fullmatch | ✔ OK | 154s |
 | arenas | ✔ OK | 132s |
@@ -24,8 +24,8 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 | memory | ✔ OK | 108s |
 | career | ✔ OK | 161s |
 | mobile | ✔ OK | 34s |
-| iphone | ✘ FALHOU | 202s |
-| toques | ✘ FALHOU | 350s |
+| iphone | ✘ FALHOU | 194s |
+| toques | ✘ FALHOU | 280s |
 
 ## menus
 
@@ -46,7 +46,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔   ESC volta ao menu
 - ✔ opção 7 → options
 - ✔   ESC volta ao menu
-- ✘ opção 8 deveria abrir credits (está em options)
+- ✔ opção 8 → credits
 - ✔   ESC volta ao menu
 
 ## options
@@ -179,11 +179,11 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔ todos os botões dentro da tela e com no mínimo 40 px
 - ✔ jogador controlado pela tela de toque
 - ✔ joystick move para a direita (mx=0.98)
-- ✔ multitoque: joystick + CHUTE ao mesmo tempo
+- ✘ multitoque: joystick + CHUTE ao mesmo tempo
 - ✔ soltar os dedos solta joystick e botão
 - ✔ jogador se moveu com o joystick
-- ✘ ATAQUE: PASSE/CHUTE/LENÇOL/FIRULA, sem CARRINHO ({"atk":true,"def":false,"pass":"PASSE","tackle":true,"trick":false,"lob":false,"shoot":false,"big":76})
-- ✘ DEFESA: CARRINHO grande, TROCAR, sem FIRULA/LENÇOL ({"atk":false,"def":true,"pass":"TROCAR","tackle":false,"trick":true,"lob":true,"shoot":false,"big":22.800048828125})
+- ✔ ATAQUE: PASSE/CHUTE/LENÇOL/FIRULA, sem CARRINHO ({"atk":true,"def":false,"pass":"PASSE","tackle":false,"trick":true,"lob":true,"shoot":true,"big":22.800048828125})
+- ✘ DEFESA: CARRINHO grande, TROCAR, sem FIRULA/LENÇOL ({"atk":false,"def":true,"pass":"TROCAR","tackle":false,"trick":true,"lob":true,"shoot":true,"big":22.800048828125})
 - ✔ pausa esconde os controles de toque
 - ✔ continuar devolve os controles
 - ✔ na vertical aparece "Gire o aparelho"
@@ -195,29 +195,28 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 - ✔ ATAQUE: layout aparece com a bola
 - ✔ PASSE (toque rápido) passa a bola
-- ✔ CHUTE (toque rápido) chuta para o gol (20.0 m/s)
+- ✔ CHUTE (toque rápido) chuta para o gol (19.8 m/s)
 - ✔ CHUTE segurado carrega a força (56%) e chuta
 - ✔ LENÇOL levanta a bola
 - ✔ FIRULA faz embaixadinha/chapéu
 - ✔ CORRER aumenta a velocidade (2.1 → 4.7 m/s)
 - ✔ FOGO apagado com a barra vazia
-- ✘ tocar em botão apagado mostra uma dica
+- ✔ tocar em botão apagado mostra uma dica
 - ✔ FOGO com a barra cheia ativa o Modo Fogo
-- ✘ APOIO: layout aparece com o companheiro na bola
-- ✘ rótulos PEDIR / PEDIR ALTO (PASSE, LENÇOL)
-- ✔ PEDIR: o companheiro passa a bola
-- ✘ PEDIR: a bola chega no jogador
-- ✔ PEDIR ALTO: companheiro cruza pelo alto
+- ✔ companheiro com a bola recebe o controle
+- ✔ layout ATAQUE para quem está com a bola
+- ✔ passe em andamento mantém o layout ATAQUE
 - ✔ DEFESA: layout aparece com o adversário na bola
-- ✘ TROCAR, MARCAR e CARRINHO grande ({"pass":"TROCAR","press":false,"tackle":22.800048828125})
-- ✘ CARRINHO dá o carrinho
-- ✔ MARCAR corre sozinho até o adversário (9.8 → 8.4 m)
-- ✔ TROCAR troca o jogador controlado
+- ✔ TROCAR, MARCAR e CARRINHO grande ({"pass":"TROCAR","press":true,"tackle":76})
+- ✔ CARRINHO dá o carrinho
+- ✔ MARCAR corre sozinho até o adversário (9.0 → 6.7 m)
+- ✘ TROCAR troca o jogador controlado
 - ✔ toque entre dois botões aciona o mais próximo
-- ✘ seis toques rápidos seguidos são todos registrados
-- ✔ três dedos: joystick + CORRER + CHUTE ({"mx":1,"run":true,"shoot":true})
+- ✔ seis toques rápidos seguidos são todos registrados
+- ✘ três dedos: joystick + CORRER + CHUTE ({"mx":1,"run":true,"shoot":false})
 - ✔ soltar todos os dedos solta tudo
--   registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off fire:on pass:on lob:on tackle:on press:on pass:on shoot:on trick:on sprint:on shoot:on
-- ✘ 1 anomalia(s): bola longe do dono (3.4 m) estado=play
+- ✔ troca automática passa o controle para quem está perto da bola
+-   registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off hint fire:on pass:on tackle:on press:on pass:on shoot:on trick:on trick:off hint trick:off hint trick:off hint trick:on sprint:on
+- ✘ 1 anomalia(s): bola longe do dono (9.8 m) estado=play
 
 Capturas de tela das suítes em `docs/qa/`.

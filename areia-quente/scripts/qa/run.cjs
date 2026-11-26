@@ -547,7 +547,7 @@ const SUITES = {
     check(stick.mx > 0.5, `joystick move para a direita (mx=${stick.mx.toFixed(2)})`, n);
     await g.shot('iphone_stick');
     // segundo dedo no CHUTE enquanto o primeiro segura o joystick (multitoque) — em modo ATAQUE
-    await g.ev(() => { const m = window.__game.flow.match; m.sp = null; m.state = 'play'; m.stateT = 0; m.takeBall(m.all.find((x) => x.device === 'kb')); });
+    await g.ev(() => { const m = window.__game.flow.match; m.timers = []; m.sp = null; m.state = 'play'; m.stateT = 0; m.takeBall(m.all.find((x) => x.device === 'kb')); });
     await g.waitFor(() => document.getElementById('touch').classList.contains('atk'), null, 20000).catch(() => {});
     await sleep(500);
     const sh = await g.center('#touch .b-shoot');
@@ -566,16 +566,16 @@ const SUITES = {
     const layout = () => g.ev(() => { const r = document.getElementById('touch'); const vis = (c) => getComputedStyle(document.querySelector('#touch .' + c)).opacity > 0.3; /* apagado = 0,5; escondido = 0 */
       return { atk: r.classList.contains('atk'), def: r.classList.contains('def'), pass: document.querySelector('#touch .b-pass span').textContent,
         tackle: vis('b-tackle'), trick: vis('b-trick'), lob: vis('b-lob'), shoot: vis('b-shoot'), big: document.querySelector('#touch .b-tackle').getBoundingClientRect().width }; });
-    await g.ev(() => { const m = window.__game.flow.match; m.sp = null; m.state = 'play'; m.stateT = 0; m.takeBall(m.all.find((x) => x.device === 'kb')); });
+    await g.ev(() => { const m = window.__game.flow.match; m.timers = []; m.sp = null; m.state = 'play'; m.stateT = 0; m.takeBall(m.all.find((x) => x.device === 'kb')); });
     await g.waitFor(() => document.getElementById('touch').classList.contains('atk'), null, 20000).catch(() => {});
-    await sleep(900); // fim das transições de CSS
-    const A1 = await layout();
+    let A1 = await layout();
+    for (let k = 0; k < 12 && !(A1.atk && A1.trick && !A1.tackle); k++) { await sleep(500); A1 = await layout(); } // espera as transições de CSS
     check(A1.atk && A1.pass === 'PASSE' && A1.trick && A1.lob && !A1.tackle, `ATAQUE: PASSE/CHUTE/LENÇOL/FIRULA, sem CARRINHO (${JSON.stringify(A1)})`, n);
     await g.shot('iphone_ataque');
-    await g.ev(() => { const m = window.__game.flow.match; const me = m.all.find((x) => x.device === 'kb'); const op = m.all.find((x) => x.team !== me.team && x.onField && !x.isGK); m.sp = null; m.state = 'play'; m.stateT = 0; m.takeBall(op); });
+    await g.ev(() => { const m = window.__game.flow.match; const me = m.all.find((x) => x.device === 'kb'); const op = m.all.find((x) => x.team !== me.team && x.onField && !x.isGK); m.timers = []; m.sp = null; m.state = 'play'; m.stateT = 0; m.takeBall(op); });
     await g.waitFor(() => document.getElementById('touch').classList.contains('def'), null, 20000).catch(() => {});
-    await sleep(900);
-    const D1 = await layout();
+    let D1 = await layout();
+    for (let k = 0; k < 12 && !(D1.def && D1.tackle && !D1.trick); k++) { await sleep(500); D1 = await layout(); }
     check(D1.def && D1.pass === 'TROCAR' && D1.tackle && !D1.trick && !D1.lob && D1.big > A1.big, `DEFESA: CARRINHO grande, TROCAR, sem FIRULA/LENÇOL (${JSON.stringify(D1)})`, n);
     await g.shot('iphone_defesa');
     // pausa pelo botão e volta tocando em "Continuar"
@@ -618,6 +618,8 @@ const SUITES = {
       const me0 = m.all.find((x) => x.device === 'kb');
       const tm = me0.team, opp = tm.opp, dir = tm.dir;
       m.sp = null; m.state = 'play'; m.stateT = 0; m.paused = false;
+      // cancela gols/replays agendados por chutes de testes anteriores (senão a cena muda no meio do teste)
+      m.timers = []; m.hud.cinema(false); m.hud.show(true); m.replay?.stop?.(); m.slowmo = 1;
       for (const p of m.all) { p.kick = null; p.stun = 0; p.sliding = 0; p.vel.set(0, 0, 0); }
       // adversários longe (exceto no cenário de defesa)
       opp.field.forEach((o, i) => { if (!o.isGK) { o.pos.set(-dir * 14, 0, -8 + i * 5); o.sync(); } });
