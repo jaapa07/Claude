@@ -1,23 +1,23 @@
 # QA ponta a ponta
 
-Executado em 2026-11-26 14:04 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
+Executado em 2026-11-26 14:44 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
 
-**19/19 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
+**18/20 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
 bola perto do dono, controle duplicado, time humano sem jogador, estados presos, bola morta sem ninguém ir buscar).
 
 | Suíte | Resultado | Tempo |
 |---|---|---|
 | menus | ✔ OK | 246s |
 | options | ✔ OK | 45s |
-| fullmatch | ✔ OK | 122s |
+| fullmatch | ✔ OK | 132s |
 | arenas | ✔ OK | 132s |
 | human | ✔ OK | 162s |
 | twoplayers | ✔ OK | 50s |
-| setpieces | ✔ OK | 61s |
+| setpieces | ✔ OK | 69s |
 | fouls | ✔ OK | 60s |
 | pausemenu | ✔ OK | 37s |
 | cup | ✔ OK | 164s |
-| pens | ✔ OK | 78s |
+| pens | ✘ FALHOU | 426s |
 | training | ✔ OK | 32s |
 | minigames | ✔ OK | 561s |
 | achievements | ✔ OK | 64s |
@@ -25,7 +25,8 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 | career | ✔ OK | 161s |
 | mobile | ✔ OK | 34s |
 | iphone | ✔ OK | 194s |
-| toques | ✔ OK | 333s |
+| toques | ✔ OK | 367s |
+| goleiro | ✘ FALHOU | 198s |
 
 ## menus
 
@@ -59,8 +60,8 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 ## fullmatch
 
 - ✔ partida de 3 períodos termina na tela de resultado
-- ✔ ciclo de estados completo (play, goal, kickoff, periodEnd, halftime, replay, fulltime)
-- ✔ houve chutes (8,8)
+- ✔ ciclo de estados completo (play, replay, goal, kickoff, halftime, setpiece, fulltime)
+- ✔ houve chutes (8,10)
 
 ## arenas
 
@@ -114,7 +115,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 ## pens
 
 - ✔ empate → prorrogação → pênaltis
-- ✔ disputa termina no resultado (pênaltis 1,2)
+- ✘ disputa termina no resultado (pênaltis 0,0)
 
 ## training
 
@@ -195,8 +196,8 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 - ✔ ATAQUE: layout aparece com a bola
 - ✔ PASSE (toque rápido) passa a bola
-- ✔ CHUTE (toque rápido) chuta para o gol (19.9 m/s)
-- ✔ CHUTE segurado carrega a força (50%) e chuta
+- ✔ CHUTE (toque rápido) chuta para o gol (20.1 m/s)
+- ✔ CHUTE segurado carrega a força (56%) e chuta
 - ✔ LENÇOL levanta a bola
 - ✔ FIRULA faz embaixadinha/chapéu
 - ✔ CORRER aumenta a velocidade (2.1 → 5.0 m/s)
@@ -226,6 +227,17 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔ bola aérea ao alcance: aviso CHUTE! e botão piscando
 - ✔ MARCAR colado no adversário dá o bote
 - ✔ troca automática passa o controle para quem está perto da bola
--   registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off hint fire:on pass:on tackle:on press:on pass:on shoot:on trick:on trick:off hint trick:off hint trick:on trick:off hint sprint:on shoot:on pass:on lob:on pass:on pass:on press:on
+-   registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off hint fire:on pass:on tackle:on press:on pass:on shoot:on trick:on trick:off hint trick:off hint trick:off hint trick:on sprint:on shoot:on pass:on lob:on pass:on pass:on press:on
+
+## goleiro
+
+- ✔ 24 chutes contra os dois goleiros sem travar (24 resolvidos, 0 defesas agarradas, maior tempo com a bola 0.2 s)
+- ✔ goleiro nunca fica mais de 7 s com a bola na mão
+- ✔ meu goleiro agarra e recebe o controle
+- ✘ aviso "Goleiro com a bola" + PASSE/LANÇAR piscando ({"msg":"Goleiro com a bola: toque PASSE ou LANÇAR","wait":true,"label":"CHUTE"})
+- ✘ goleiro anda com a bola na mão (0.2 m)
+- ✔ tocar PASSE repõe a bola
+- ✘ sem tocar em nada, o goleiro repõe sozinho em 6 s
+- ✘ 1 anomalia(s): bola longe do dono (13.6 m) estado=play
 
 Capturas de tela das suítes em `docs/qa/`.

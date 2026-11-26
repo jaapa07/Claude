@@ -43,11 +43,11 @@
   "ok": true,
   "notes": [
    "✔ partida de 3 períodos termina na tela de resultado",
-   "✔ ciclo de estados completo (play, goal, kickoff, periodEnd, halftime, replay, fulltime)",
-   "✔ houve chutes (8,8)"
+   "✔ ciclo de estados completo (play, replay, goal, kickoff, halftime, setpiece, fulltime)",
+   "✔ houve chutes (8,10)"
   ],
-  "secs": 122,
-  "at": "2026-11-26T13:11:25.830Z"
+  "secs": 132,
+  "at": "2026-11-26T14:44:00.289Z"
  },
  "arenas": {
   "name": "arenas",
@@ -93,8 +93,8 @@
    "✔ free_kick: CPU cobra e o jogo segue (play sp=- t=-)",
    "✔ penalty: CPU cobra e o jogo segue (play sp=- t=-)"
   ],
-  "secs": 61,
-  "at": "2026-11-26T11:59:43.352Z"
+  "secs": 69,
+  "at": "2026-11-26T14:44:00.289Z"
  },
  "fouls": {
   "name": "fouls",
@@ -135,13 +135,13 @@
  },
  "pens": {
   "name": "pens",
-  "ok": true,
+  "ok": false,
   "notes": [
    "✔ empate → prorrogação → pênaltis",
-   "✔ disputa termina no resultado (pênaltis 1,2)"
+   "✘ disputa termina no resultado (pênaltis 0,0)"
   ],
-  "secs": 78,
-  "at": "2026-11-26T01:54:54.146Z"
+  "secs": 426,
+  "at": "2026-11-26T14:44:00.289Z"
  },
  "training": {
   "name": "training",
@@ -259,8 +259,8 @@
   "notes": [
    "✔ ATAQUE: layout aparece com a bola",
    "✔ PASSE (toque rápido) passa a bola",
-   "✔ CHUTE (toque rápido) chuta para o gol (19.9 m/s)",
-   "✔ CHUTE segurado carrega a força (50%) e chuta",
+   "✔ CHUTE (toque rápido) chuta para o gol (20.1 m/s)",
+   "✔ CHUTE segurado carrega a força (56%) e chuta",
    "✔ LENÇOL levanta a bola",
    "✔ FIRULA faz embaixadinha/chapéu",
    "✔ CORRER aumenta a velocidade (2.1 → 5.0 m/s)",
@@ -290,9 +290,25 @@
    "✔ bola aérea ao alcance: aviso CHUTE! e botão piscando",
    "✔ MARCAR colado no adversário dá o bote",
    "✔ troca automática passa o controle para quem está perto da bola",
-   "  registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off hint fire:on pass:on tackle:on press:on pass:on shoot:on trick:on trick:off hint trick:off hint trick:on trick:off hint sprint:on shoot:on pass:on lob:on pass:on pass:on press:on"
+   "  registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off hint fire:on pass:on tackle:on press:on pass:on shoot:on trick:on trick:off hint trick:off hint trick:off hint trick:on sprint:on shoot:on pass:on lob:on pass:on pass:on press:on"
   ],
-  "secs": 333,
-  "at": "2026-11-26T14:04:23.207Z"
+  "secs": 367,
+  "at": "2026-11-26T14:44:00.289Z"
+ },
+ "goleiro": {
+  "name": "goleiro",
+  "ok": false,
+  "notes": [
+   "✔ 24 chutes contra os dois goleiros sem travar (24 resolvidos, 0 defesas agarradas, maior tempo com a bola 0.2 s)",
+   "✔ goleiro nunca fica mais de 7 s com a bola na mão",
+   "✔ meu goleiro agarra e recebe o controle",
+   "✘ aviso \"Goleiro com a bola\" + PASSE/LANÇAR piscando ({\"msg\":\"Goleiro com a bola: toque PASSE ou LANÇAR\",\"wait\":true,\"label\":\"CHUTE\"})",
+   "✘ goleiro anda com a bola na mão (0.2 m)",
+   "✔ tocar PASSE repõe a bola",
+   "✘ sem tocar em nada, o goleiro repõe sozinho em 6 s",
+   "✘ 1 anomalia(s): bola longe do dono (13.6 m) estado=play"
+  ],
+  "secs": 198,
+  "at": "2026-11-26T14:44:00.288Z"
  }
 }
