@@ -109,7 +109,7 @@ class InputSys {
       if (this.stick && Math.hypot(this.stick.x, this.stick.y) > 0.15) {
         const m = Math.min(1, Math.hypot(this.stick.x, this.stick.y));
         const ang = Math.atan2(this.stick.y, this.stick.x);
-        if (m > 0.93) b.sprint = true;
+        if (m > 0.85) b.sprint = true; // joystick na borda = correr (não precisa de botão)
         return { mx: Math.cos(ang) * Math.min(1, m * 1.15), my: Math.sin(ang) * Math.min(1, m * 1.15), buttons: b };
       }
       if (this.down.has('ShiftRight')) b.sprint = true;

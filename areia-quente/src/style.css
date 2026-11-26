@@ -462,3 +462,26 @@ html.touch .hint { display: none; }
 .size-pick .a { font-family: var(--title); padding: 6px 14px; border-radius: 12px; border: 3px solid var(--ink); background: #ddd; color: var(--ink); cursor: pointer; }
 .size-pick .a.on { background: #22c77a; color: #fff; text-shadow: 0 1px 0 #000; }
 @media (max-height: 500px) { .size-pick { bottom: 92px; gap: 6px; } .size-pick span { font-size: 11px; } .size-pick .a { font-size: 12px; padding: 3px 9px; } }
+
+/* ---------- controles de toque: só 3 botões grandes ---------- */
+#touch .t-btns { width: calc(54vh * var(--ts, 1)); height: calc(54vh * var(--ts, 1)); min-width: calc(200px * var(--ts, 1)); min-height: calc(200px * var(--ts, 1)); }
+#touch .b-trick, #touch .b-sprint, #touch .b-fire { display: none !important; }
+#touch .t-btn { font-size: clamp(11px, 3vh, 17px); }
+/* principal (CHUTE no ataque / CARRINHO na defesa): canto, bem grande */
+#touch .b-shoot, #touch.def .b-tackle { right: 0 !important; bottom: 0 !important; width: 48% !important; height: 48% !important; font-size: clamp(13px, 3.8vh, 22px) !important; }
+/* segundo (PASSE / PEDIR / TROCAR): à esquerda do principal */
+#touch .b-pass { right: 51% !important; bottom: 1% !important; width: 40% !important; height: 40% !important; }
+/* terceiro (LENÇOL / PEDIR ALTO / MARCAR): acima, entre os dois */
+#touch .b-lob, #touch.def .b-press { right: 30% !important; bottom: 50% !important; width: 36% !important; height: 36% !important; }
+/* defesa: CHUTE some (3 botões só) */
+#touch.def .b-shoot { opacity: 0 !important; pointer-events: none; transform: scale(0.4); }
+#touch.def.training .b-lob { right: 30% !important; bottom: 50% !important; }
+#touch.def.training .b-press { right: 2% !important; bottom: 52% !important; width: 30% !important; height: 30% !important; }
+/* FOGO no topo, só quando a barra está cheia */
+#touch .t-fire { display: none; pointer-events: auto; touch-action: manipulation; font-family: var(--title); color: #fff; background: linear-gradient(180deg, #ffb347, #ff3e00);
+  border: 3px solid var(--ink); border-radius: 12px; box-shadow: 0 4px 0 var(--ink); padding: 6px 14px; font-size: 16px; text-shadow: 0 2px 0 #000; animation: aq-pulse 0.9s ease-in-out infinite; }
+#touch .t-fire.on { display: block; }
+#touch.cine .t-fire { display: none; }
+/* dica do chapéu, discreta, acima dos botões */
+#touch .t-combo { position: absolute; right: calc(env(safe-area-inset-right) + 12px); bottom: calc(54vh * var(--ts, 1) + 30px); font-size: 11px; font-weight: 800; opacity: 0.75; text-shadow: 0 1px 2px #000; pointer-events: none; }
+#touch.def .t-combo, #touch.sup .t-combo, #touch.cine .t-combo { display: none; }

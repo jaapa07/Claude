@@ -572,20 +572,20 @@ const SUITES = {
     const me1 = await g.ev(() => { const p = window.__game.flow.match.all.find((x) => x.device === 'kb'); return p && { x: p.pos.x, z: p.pos.z }; });
     check(me1 && Math.hypot(me1.x - me0.x, me1.z - me0.z) > 0.5, 'jogador se moveu com o joystick', n);
     // ATAQUE x DEFESA: entrega a bola para mim e depois para o adversário e confere o layout dos botões
-    const layout = () => g.ev(() => { const r = document.getElementById('touch'); const vis = (c) => getComputedStyle(document.querySelector('#touch .' + c)).opacity > 0.3; /* apagado = 0,5; escondido = 0 */
+    const layout = () => g.ev(() => { const r = document.getElementById('touch'); const vis = (c) => { const cs = getComputedStyle(document.querySelector('#touch .' + c)); return cs.display !== 'none' && +cs.opacity > 0.3; }; /* apagado = 0,5; escondido = 0 */
       return { atk: r.classList.contains('atk'), def: r.classList.contains('def'), pass: document.querySelector('#touch .b-pass span').textContent,
         tackle: vis('b-tackle'), trick: vis('b-trick'), lob: vis('b-lob'), shoot: vis('b-shoot'), big: document.querySelector('#touch .b-tackle').getBoundingClientRect().width }; });
     await g.ev(() => { const m = window.__game.flow.match; m.timers = []; m.sp = null; m.state = 'play'; m.stateT = 0; m.takeBall(m.all.find((x) => x.device === 'kb')); });
     await g.waitFor(() => document.getElementById('touch').classList.contains('atk'), null, 20000).catch(() => {});
     let A1 = await layout();
-    for (let k = 0; k < 12 && !(A1.atk && A1.trick && !A1.tackle); k++) { await sleep(500); A1 = await layout(); } // espera as transições de CSS
-    check(A1.atk && A1.pass === 'PASSE' && A1.trick && A1.lob && !A1.tackle, `ATAQUE: PASSE/CHUTE/LENÇOL/FIRULA, sem CARRINHO (${JSON.stringify(A1)})`, n);
+    for (let k = 0; k < 12 && !(A1.atk && A1.lob && !A1.tackle); k++) { await sleep(500); A1 = await layout(); } // espera as transições de CSS
+    check(A1.atk && A1.pass === 'PASSE' && A1.shoot && A1.lob && !A1.tackle && !A1.trick, `ATAQUE: CHUTE/PASSE/LENÇOL, sem CARRINHO (${JSON.stringify(A1)})`, n);
     await g.shot('iphone_ataque');
     await g.ev(() => { const m = window.__game.flow.match; const me = m.all.find((x) => x.device === 'kb'); const op = m.all.find((x) => x.team !== me.team && x.onField && !x.isGK); m.timers = []; m.sp = null; m.state = 'play'; m.stateT = 0; m.clock = 5; op.pos.copy(me.pos).add({ x: me.team.dir * 4, y: 0, z: 0 }); op.sync(); m.ball.pos.copy(op.pos).setY(0.11); m.takeBall(op); op.device = 'qa'; window.__qaOp = op; });
     await g.waitFor(() => document.getElementById('touch').classList.contains('def'), null, 20000).catch(() => {});
     let D1 = await layout();
     for (let k = 0; k < 12 && !(D1.def && D1.tackle && !D1.trick); k++) { await sleep(500); D1 = await layout(); }
-    check(D1.def && D1.pass === 'TROCAR' && D1.tackle && !D1.trick && !D1.lob && D1.big > A1.big, `DEFESA: CARRINHO grande, TROCAR, sem FIRULA/LENÇOL (${JSON.stringify(D1)})`, n);
+    check(D1.def && D1.pass === 'TROCAR' && D1.tackle && !D1.trick && !D1.lob && !D1.shoot, `DEFESA: CARRINHO, TROCAR, MARCAR (3 botões) (${JSON.stringify(D1)})`, n);
     await g.shot('iphone_defesa');
     await g.ev(() => { if (window.__qaOp) window.__qaOp.device = null; });
     // pausa pelo botão e volta tocando em "Continuar"
@@ -687,27 +687,35 @@ const SUITES = {
     await tapBtn('b-lob');
     check(await until(() => { const b = window.__game.flow.match.ball; return b.lastTouch === window.__qaMe && b.pos.y > 0.9; }), 'LENÇOL levanta a bola', n);
     await scene('atk'); await waitMode('atk');
-    await tapBtn('b-trick');
-    check(await until(() => { const k = window.__qaMe.kick; return !!k && ['juggle', 'sombrero_flick'].includes(k.kind) || window.__game.flow.match.ball.pos.y > 0.5; }), 'FIRULA faz embaixadinha/chapéu', n);
-    // CORRER: segura o joystick e compara a velocidade com e sem CORRER
+    // chapéu/firula: segura CHUTE e toca PASSE (o chute é cancelado)
+    {
+      const cs = await ctr('b-shoot'), cp = await ctr('b-pass');
+      await g.touch('touchStart', [{ x: cs.x, y: cs.y, id: 60 }]); await sleep(120);
+      await g.touch('touchStart', [{ x: cs.x, y: cs.y, id: 60 }, { x: cp.x, y: cp.y, id: 61 }]); await sleep(120);
+      await g.touch('touchEnd', []);
+      check(await until(() => { const k = window.__qaMe.kick; return !!k && ['juggle', 'sombrero_flick'].includes(k.kind); }), 'CHUTE segurado + PASSE = chapéu/firula (sem chutar)', n);
+      check(await g.ev(() => window.__game.touch.log.includes('trick:combo')), 'combinação registrada como chapéu', n);
+    }
+    // CORRER: joystick até a borda corre mais que joystick no meio (sem botão)
     await scene('atk'); await waitMode('atk');
     await g.ev(() => window.__game.input.setStick({ x: 0.6, y: 0 }));
     await sleep(1500);
     const vWalk = await g.ev(() => window.__qaMe.vel.length());
-    const sc = await ctr('b-sprint'); const sid = tid++;
-    await g.touch('touchStart', [{ x: sc.x, y: sc.y, id: sid }]); await sleep(1500);
+    await g.ev(() => window.__game.input.setStick({ x: 1, y: 0 }));
+    await sleep(1500);
     const vRun = await g.ev(() => window.__qaMe.vel.length());
-    await g.touch('touchEnd', []); await g.ev(() => window.__game.input.setStick(null));
-    check(vRun > vWalk * 1.1, `CORRER aumenta a velocidade (${vWalk.toFixed(1)} → ${vRun.toFixed(1)} m/s)`, n);
-    // FOGO: apagado sem barra (com dica); aceso e funcionando com a barra cheia
+    await g.ev(() => window.__game.input.setStick(null));
+    check(vRun > vWalk * 1.1, `joystick na borda corre (${vWalk.toFixed(1)} → ${vRun.toFixed(1)} m/s)`, n);
+    check(await g.ev(() => [...document.querySelectorAll('#touch .t-btn')].filter((b) => getComputedStyle(b).display !== 'none' && +getComputedStyle(b).opacity > 0.3).length === 3), 'só 3 botões de ação na tela', n);
+    // FOGO: botão no topo só aparece com a barra cheia
     await scene('atk'); await waitMode('atk');
-    await g.ev(() => { const m = window.__game.flow.match; window.__qaMe.team.heat = 0; window.__qaMe.team.fire = 0; });
-    await sleep(400);
-    check(await g.ev(() => document.querySelector('#touch .b-fire').classList.contains('off')), 'FOGO apagado com a barra vazia', n);
-    await tapBtn('b-fire'); await sleep(300);
-    check(await g.ev(() => window.__game.touch.log.includes('hint') && document.querySelector('#touch .t-hint').textContent.length > 5), 'tocar em botão apagado mostra uma dica', n);
-    await g.ev(() => { window.__qaMe.team.heat = 1; }); await sleep(500);
-    await tapBtn('b-fire');
+    await g.ev(() => { window.__qaMe.team.heat = 0; window.__qaMe.team.fire = 0; });
+    await sleep(400); await g.ev(() => window.__game.touch.update());
+    check(await g.ev(() => getComputedStyle(document.querySelector('#touch .t-fire')).display === 'none'), 'FOGO escondido com a barra vazia', n);
+    await g.ev(() => { window.__qaMe.team.heat = 1; }); await sleep(500); await g.ev(() => window.__game.touch.update());
+    const fc = await g.center('#touch .t-fire');
+    check(fc && fc.vis, 'FOGO aparece no topo com a barra cheia', n);
+    if (fc) await press(fc.x, fc.y);
     check(await until(() => window.__qaMe.team.fire > 0), 'FOGO com a barra cheia ativa o Modo Fogo', n);
     await g.ev(() => { window.__qaMe.team.fire = 0; });
     await g.shot('toques_ataque');
@@ -756,23 +764,23 @@ const SUITES = {
     await scene('atk'); await waitMode('atk');
     // conta os toques que chegam na área dos botões (se a bola for perdida no meio, o layout muda — é o esperado)
     await g.ev(() => { window.__qaDowns = 0; document.querySelector('#touch .t-btns').addEventListener('pointerdown', () => window.__qaDowns++, true); });
-    for (let k = 0; k < 6; k++) { await tapBtn('b-trick'); await sleep(150); } // ~5 toques por segundo, ritmo de dedo de verdade
+    for (let k = 0; k < 6; k++) { await tapBtn('b-lob'); await sleep(150); } // ~5 toques por segundo, ritmo de dedo de verdade
     await sleep(600);
     const gotT = await g.ev(() => window.__qaDowns);
     check(gotT >= 6, `seis toques rápidos seguidos chegam todos (${gotT}/6)`, n);
     // dois dedos: joystick + botão, e dois botões ao mesmo tempo
     await scene('atk'); await waitMode('atk');
-    const sp = await ctr('b-sprint'), sh = await ctr('b-shoot');
+    const sp = await ctr('b-lob'), sh = await ctr('b-shoot');
     await g.touch('touchStart', [{ x: 150, y: 290, id: 90 }]);
     await g.touch('touchMove', [{ x: 230, y: 290, id: 90 }]);
     await g.touch('touchStart', [{ x: 230, y: 290, id: 90 }, { x: sp.x, y: sp.y, id: 91 }]);
     await g.touch('touchStart', [{ x: 230, y: 290, id: 90 }, { x: sp.x, y: sp.y, id: 91 }, { x: sh.x, y: sh.y, id: 92 }]);
     await sleep(300);
-    const three = await g.ev(() => { const i = window.__game.input; return { mx: i.state('kb').mx, run: i.held('kb', 'sprint'), shoot: i.held('kb', 'shoot') }; });
+    const three = await g.ev(() => { const i = window.__game.input; return { mx: i.state('kb').mx, run: i.held('kb', 'lob') || window.__game.touch.log.slice(-3).some((x) => x.startsWith('lob')), shoot: i.held('kb', 'shoot') }; });
     await g.touch('touchEnd', []);
-    check(three.mx > 0.5 && three.run && three.shoot, `três dedos: joystick + CORRER + CHUTE (${JSON.stringify(three)})`, n);
+    check(three.mx > 0.5 && three.run && three.shoot, `três dedos: joystick + LENÇOL + CHUTE (${JSON.stringify(three)})`, n);
     await sleep(300);
-    check(await g.ev(() => !window.__game.input.held('kb', 'sprint') && !window.__game.input.held('kb', 'shoot')), 'soltar todos os dedos solta tudo', n);
+    check(await g.ev(() => !window.__game.input.held('kb', 'lob') && !window.__game.input.held('kb', 'shoot')), 'soltar todos os dedos solta tudo', n);
     // ---- passe no pé (estilo PES/FIFA): o recebedor não precisa ir buscar a bola
     const feet = async (btn, label, maxMove) => {
       await scene('atk'); await waitMode('atk');

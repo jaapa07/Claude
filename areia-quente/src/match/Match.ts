@@ -101,7 +101,7 @@ export class Match {
     home.opp = away; away.opp = home;
     home.devices = opts.homeDevices; away.devices = opts.awayDevices;
     const diff = settings.data.difficulty;
-    for (const tm of [home, away]) tm.speedMul = tm.human ? 1 : [0.9, 1.0, 1.07][diff];
+    for (const tm of [home, away]) tm.speedMul = tm.human ? 1 : [0.86, 0.93, 1.02][diff]; // CPU um pouco mais lenta: dá tempo de pensar o passe
     this.teams = [home, away];
     const size = opts.mini || opts.mode === 'training' ? 5 : opts.size ?? 5;
     home.build(size); away.build(size);
@@ -109,6 +109,7 @@ export class Match {
     this.ball = new Ball();
     this.ref = new Athlete(Math.random() < 0.5 ? 'textures/kits/referee_0.webp' : 'textures/kits/referee_1.webp');
     this.cam = new CameraDirector(world.camera);
+    if (input.touch) this.cam.zoom = 1.16; // celular: câmera mais aberta, mais campo à vista
     this.hud = new Hud(home, away);
     this.periodLen = 720;
     this.timeScale = 720 / (settings.data.periodMinutes * 60);
@@ -330,7 +331,7 @@ export class Match {
     const canMove = p.stun <= 0 && p.sliding <= 0 && !(p.kick && !p.kick.done) && !this.ball.held;
     let sprint = input.held(dev, 'sprint');
     // recepção estilo PES/FIFA: direcional solto e passe vindo para ele → para, vira para a bola e espera no pé
-    const waiting = this.passTo === p && !hasBall && mv.lengthSq() < 0.04 && (!this.ball.owner || this.ball.owner.team === tm);
+    const waiting = this.passTo === p && !hasBall && (!this.ball.owner || this.ball.owner.team === tm); // espera no lugar, mesmo com o dedo no joystick
     if (waiting) { p.vel.multiplyScalar(Math.exp(-10 * dt)); p.faceTo(this.ball.pos.clone().sub(p.pos).setY(0), dt, 10); }
     // MARCAR (toque): corre sozinho atrás da bola/adversário enquanto o botão estiver pressionado
     if (input.isDown('TouchPress') && dev === 'kb' && !hasBall && mv.lengthSq() < 0.04) {
@@ -375,7 +376,7 @@ export class Match {
     if (input.pressed(dev, 'lob') && hasBall) this.doPass(p, this.aimOf(dev, mv), true);
     else if (input.pressed(dev, 'lob') && this.opts.mode === 'training') this.trainerCross();
     else if (input.pressed(dev, 'lob') && this.ball.owner && this.ball.owner.team === tm) this.requestPass(p, true);
-    if (input.pressed(dev, 'trick')) this.doTrick(p);
+    if (input.pressed(dev, 'trick')) { p.shootHold = 0; this.doTrick(p); }
     if (input.pressed(dev, 'tackle') && !hasBall) this.doTackle(p, sprint);
     // chute: segurar = força; bola no alto = finalização acrobática imediata
     if (input.pressed(dev, 'shoot') && !hasBall && this.aerialChance(p)) { this.doShoot(p, 0.8, mv); p.shootHold = 0; }
@@ -652,8 +653,8 @@ export class Match {
           // areia segura muito a bola: a velocidade de saída é calculada para ela chegar viva (~5 m/s) no recebedor,
           // e o alvo é onde ele vai estar quando a bola chegar
           // no pé: mira a posição do recebedor (ele espera a bola); só antecipa quem está correndo na tabela
-          let sp = rollSpeedFor(d, 6.5);
-          if (target && target.runT > 0) { const tArr = rollTime(sp, d); tp = target.pos.clone().addScaledVector(target.vel, Math.min(1.0, tArr * 0.8)); sp = rollSpeedFor(tp.distanceTo(b.pos), 6.5); }
+          let sp = rollSpeedFor(d, 9);
+          if (target && target.runT > 0) { const tArr = rollTime(sp, d); tp = target.pos.clone().addScaledVector(target.vel, Math.min(1.0, tArr * 0.8)); sp = rollSpeedFor(tp.distanceTo(b.pos), 9); }
           const blocked = target && Math.min(...tm.opp.field.map((o) => distToSeg(o.pos, b.pos, target.pos))) < 0.9 && tp.distanceTo(b.pos) > 3;
           if (blocked) {
             // linha fechada: passe picado por cima do marcador, caindo no pé do recebedor

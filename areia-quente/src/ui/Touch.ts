@@ -39,6 +39,7 @@ export class TouchControls {
   private hint: HTMLElement;
   private hintT = 0;
   private visible = false;
+  private fireTop!: HTMLElement;
   /** layout dos botões: ATAQUE (com a bola), APOIO (companheiro com a bola) ou DEFESA */
   mode: Mode = 'atk';
   private pendingSince = 0;
@@ -53,13 +54,16 @@ export class TouchControls {
     r.innerHTML = `<div class="t-zone"></div><div class="t-stick"><div class="t-knob"></div></div>
       <div class="t-btns">${ACTIONS.map(([a, l, c]) => `<div class="t-btn ${c}" data-a="${a}"><span>${l}</span></div>`).join('')}</div>
       <div class="t-hint"></div>
-      <div class="t-top"><div class="t-skip">PULAR ▶▶</div><div class="t-pause">❚❚</div></div>`;
+      <div class="t-top"><div class="t-fire">🔥 FOGO</div><div class="t-skip">PULAR ▶▶</div><div class="t-pause">❚❚</div></div>
+      <div class="t-combo">segure CHUTE + toque PASSE = chapéu</div>`;
     document.getElementById('app')!.appendChild(r);
     this.stickBase = r.querySelector('.t-stick')!;
     this.stickKnob = r.querySelector('.t-knob')!;
     this.skip = r.querySelector('.t-skip')!;
     this.pauseBtn = r.querySelector('.t-pause')!;
     this.hint = r.querySelector('.t-hint')!;
+    this.fireTop = r.querySelector('.t-fire')!;
+    this.fireTop.addEventListener('pointerdown', (e) => { e.preventDefault(); this.tap(settings.data.keys.fire); this.log.push('fire:on'); });
 
     // joystick: o toque em qualquer ponto da metade esquerda vira o centro do direcional
     const zone = r.querySelector('.t-zone') as HTMLElement;
@@ -87,6 +91,14 @@ export class TouchControls {
       e.preventDefault();
       const b = this.pick(e.clientX, e.clientY);
       if (!b) return;
+      // chapéu / firula: segurando CHUTE e tocando PASSE (no lugar de um botão só para isso)
+      const shootHeld = this.btns.find((x) => x.action === 'shoot')!.ids.size > 0;
+      if (b.action === 'pass' && shootHeld && this.mode === 'atk') {
+        this.tap(settings.data.keys.trick);
+        this.log.push('trick:combo');
+        if (settings.data.vibrate !== false) navigator.vibrate?.([8, 30, 8]);
+        return;
+      }
       try { pad.setPointerCapture(e.pointerId); } catch { /* iOS antigo */ }
       this.byPointer.set(e.pointerId, b);
       b.ids.add(e.pointerId);
@@ -245,6 +257,7 @@ export class TouchControls {
     av.press = !hasBall && !set;
     av.sprint = true;
     av.fire = !!tm && tm.heat >= 1 && tm.fire <= 0;
+    this.fireTop.classList.toggle('on', av.fire);
     for (const x of this.btns) x.el.classList.toggle('off', av[x.action] === false);
     // bola aérea ao alcance: CHUTE pisca (hora da bicicleta/voleio)
     this.root.classList.toggle('aerial', m.aerialCue);

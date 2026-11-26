@@ -128,12 +128,14 @@ export function teamAI(m: Match, tm: Team, dt: number) {
     if (p === chaser && (!owner || owner.team !== tm) && !(!owner && m.passTo && m.passTo.team === tm)) { // passe do time a caminho: ninguém corre atrás
       // pressão / disputa de bola
       const target = owner ? owner.pos.clone().addScaledVector(owner.vel, 0.3) : b.predict(0.25).setY(0);
-      moveTo(p, target, dt, true);
+      // pressão sem disparada contra o jogador humano (só corre a toda quando está perto ou no difícil)
+      const far = target.distanceTo(p.pos) > 5;
+      moveTo(p, target, dt, !(owner?.device && far && diff < 2));
       p.aiT -= dt;
       if (owner && p.aiT <= 0) {
         p.aiT = REACT[diff] + Math.random() * 0.3;
         const d = owner.pos.distanceTo(p.pos);
-        if (d < 1.2 && Math.random() < 0.45 * st.press) m.doTackle(p, false);
+        if (d < 1.2 && Math.random() < (owner.device ? 0.3 : 0.45) * st.press) m.doTackle(p, false);
         else if (d < 2.8 && d > 1.6 && Math.random() < 0.12 * st.press * (diff + 1) / 2) m.doTackle(p, true);
       }
       // bola no alto vindo na área de ataque: finalização acrobática
@@ -155,7 +157,7 @@ export function teamAI(m: Match, tm: Team, dt: number) {
     if (!attacking && owner) {
       // marcação: fica entre o adversário mais próximo e o gol
       const opp = owner.team.field.filter((o) => o !== owner && !o.isGK).sort((a, c) => a.pos.distanceTo(p.target) - c.pos.distanceTo(p.target))[0];
-      if (opp) p.target.lerp(opp.pos.clone().lerp(new THREE.Vector3(m.ownGoalX(tm), 0, 0), 0.25), 0.5);
+      if (opp) p.target.lerp(opp.pos.clone().lerp(new THREE.Vector3(m.ownGoalX(tm), 0, 0), 0.35), 0.4); // marcação mais solta, deixa espaço
     }
     moveTo(p, p.target, dt, p.target.distanceTo(p.pos) > 7, attacking ? undefined : b.pos.clone().sub(p.pos));
   }
