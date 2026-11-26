@@ -101,7 +101,7 @@ alternando antes/depois, FPS de 16 s de corrida com piloto automático):
 A variação entre rodadas da mesma build é de ±10 % por pista (itens e trajetória mudam a cada corrida); nenhuma
 pista ficou consistentemente mais lenta além disso, exceto o Templo Esmeralda na corrida (−4,5 % na média, embora
 o custo do cenário parado seja igual: +0,2 %). Média (2 rodadas): Vale 2,27 → 2,31 e Templo 2,17 → 2,02 FPS;
-Alta: 0,83 → 0,75 FPS (−10 %, a decoração cheia custa na Alta). Download a mais: na Baixa, o GLB da Kenney (450 kB,
+Alta: 0,83 → 0,75 FPS (−10 %, a decoração cheia custa na Alta). Download a mais: na Baixa, o GLB da Kenney (441 kB,
 uma vez, só em pistas que têm objetos na Baixa) + atlas de partículas (79 kB) + a lista da pista (1–6 kB); na
 Média/Alta + o GLB da Quaternius (540 kB, uma vez). Áudio no início: +133 kB de Ogg, −60 kB de efeitos sintetizados
 que deixaram de ser baixados (AAC: +128/−49 kB). Nada disso entra no pré-carregamento do menu, exceto o áudio.

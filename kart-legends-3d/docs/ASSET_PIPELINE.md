@@ -25,7 +25,7 @@ apenas o que o jogo usa:
 
 | Saída | Origem | Como |
 |---|---|---|
-| `kits/kenney-scenery.glb` (37 modelos, ~20 mil tri, 450 kB) | Kenney Racing Kit, Car Kit, Nature Kit | cores de material e a paleta `colormap.png` viram **cor de vértice** (amostrada no centro de cada face): um material só, sem textura; carros simplificados com meshoptimizer preservando as ilhas de cor; pneus empilhados em `c_tire_stack` |
+| `kits/kenney-scenery.glb` (34 modelos, ~20 mil tri, 441 kB) | Kenney Racing Kit, Car Kit, Nature Kit | cores de material e a paleta `colormap.png` viram **cor de vértice** (amostrada no centro de cada face): um material só, sem textura; carros simplificados com meshoptimizer preservando as ilhas de cor; pneus empilhados em `c_tire_stack` |
 | `kits/quaternius-nature.glb` (17 modelos, ~18 mil tri, 540 kB) | Quaternius Stylized Nature MegaKit [Standard] (OBJ+MTL) | casca/pedra/cogumelo viram cor de vértice e os troncos são simplificados (10–15 % dos triângulos); folhas e flores num **atlas WebP 512 px** com recorte (`alphaTest`, sem blending) e normais "de copa" (apontando para fora da copa) |
 | `kits/kenney-particles.webp` (512 px, 79 kB) | Kenney Particle Pack | 16 sprites reduzidos a 128 px, grade 4×4 (ordem em `scripts/kits/sprites.ts`) |
 | `audio/kenney/*.ogg`, `audio/aac/kenney/*.m4a` | Kenney Impact Sounds, Interface Sounds | ver `docs/AUDIO.md` |

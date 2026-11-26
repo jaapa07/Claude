@@ -3063,10 +3063,10 @@
    "type": "model",
    "path": "kits/kenney-scenery.glb",
    "format": "glb",
-   "origin": "Kenney — Racing Kit 2.0 (https://kenney.nl/assets, CC0 1.0): grandStandCovered.glb, grandStand.glb, bannerTowerRed.glb, bannerTowerGreen.glb, flagRed.glb, flagGreen.glb, barrierRed.glb, barrierWhite.glb, lightPostModern.glb, lightPostLarge.glb, pitsGarage.glb, pitsOffice.glb, tent.glb, tentRoof.glb, camera_exclusive.glb, radarEquipment.glb, pylon.glb; cores de material e paleta colormap.png convertidas em cor de vértice, escala em metros | Kenney — Car Kit 3.1 (https://kenney.nl/assets, CC0 1.0): sedan.glb, taxi.glb, van.glb, suv.glb, hatchback-sports.glb, police.glb, delivery.glb, truck-flat.glb, debris-tire.glb; cores de material e paleta colormap.png convertidas em cor de vértice, escala em metros | Kenney — Nature Kit 2.1 (https://kenney.nl/assets, CC0 1.0): stone_largeA.glb, stone_largeC.glb, stone_tallB.glb, stone_tallG.glb, stone_smallB.glb, stone_smallF.glb, cliff_large_stone.glb, stump_roundDetailed.glb, log_stackLarge.glb, cactus_tall.glb, cactus_short.glb; cores de material e paleta colormap.png convertidas em cor de vértice, escala em metros — scripts/build-kits.ts",
+   "origin": "Kenney — Racing Kit 2.0 (https://kenney.nl/assets, CC0 1.0): grandStandCovered.glb, grandStand.glb, bannerTowerRed.glb, bannerTowerGreen.glb, flagRed.glb, flagGreen.glb, barrierRed.glb, barrierWhite.glb, lightPostModern.glb, lightPostLarge.glb, tent.glb, tentRoof.glb, radarEquipment.glb, pylon.glb; cores de material e paleta colormap.png convertidas em cor de vértice, escala em metros | Kenney — Car Kit 3.1 (https://kenney.nl/assets, CC0 1.0): sedan.glb, taxi.glb, van.glb, suv.glb, hatchback-sports.glb, police.glb, delivery.glb, truck-flat.glb, debris-tire.glb; cores de material e paleta colormap.png convertidas em cor de vértice, escala em metros | Kenney — Nature Kit 2.1 (https://kenney.nl/assets, CC0 1.0): stone_largeA.glb, stone_largeC.glb, stone_tallB.glb, stone_tallG.glb, stone_smallB.glb, stone_smallF.glb, cliff_large_stone.glb, stump_roundDetailed.glb, log_stackLarge.glb, cactus_tall.glb, cactus_short.glb; cores de material e paleta colormap.png convertidas em cor de vértice, escala em metros — scripts/build-kits.ts",
    "author": "Kenney",
    "license": "CC0-1.0",
-   "bytes": 460544,
+   "bytes": 451704,
    "status": "validado",
    "usedIn": "Cenário extra das pistas e arenas (arquibancadas, barreiras, carros, árvores, pedras) e sprites de partículas"
   },
@@ -3092,7 +3092,7 @@
    "origin": "scripts/build-kits.ts (origem, autor e licença de cada arquivo desta pasta)",
    "author": "Equipe Kart Legends 3D",
    "license": "Original do projeto (todos os direitos da equipe; sem conteúdo de terceiros)",
-   "bytes": 2584,
+   "bytes": 2530,
    "status": "validado",
    "usedIn": "Cenário extra das pistas e arenas (arquibancadas, barreiras, carros, árvores, pedras) e sprites de partículas"
   },

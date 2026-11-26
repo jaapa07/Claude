@@ -39,11 +39,8 @@ export const KENNEY_MODELS: KitModel[] = [
   { id: 'k_barrier_white', pack: 'racing', file: 'barrierWhite', scale: 9, radius: 1.3, center: true },
   { id: 'k_light_post', pack: 'racing', file: 'lightPostModern', scale: 9, radius: 0.6, center: true },
   { id: 'k_light_large', pack: 'racing', file: 'lightPostLarge', scale: 9, radius: 1, center: true },
-  { id: 'k_pits', pack: 'racing', file: 'pitsGarage', scale: 10, radius: 6, center: true },
-  { id: 'k_pits_office', pack: 'racing', file: 'pitsOffice', scale: 10, radius: 6, center: true },
   { id: 'k_tent', pack: 'racing', file: 'tent', scale: 7, radius: 3.6, center: true },
   { id: 'k_tent_roof', pack: 'racing', file: 'tentRoof', scale: 7, radius: 3.6, center: true },
-  { id: 'k_camera', pack: 'racing', file: 'camera_exclusive', scale: 6, radius: 1, center: true },
   { id: 'k_radar', pack: 'racing', file: 'radarEquipment', scale: 8, radius: 3, center: true },
   { id: 'k_cone', pack: 'racing', file: 'pylon', scale: 5.5, radius: 0.4, center: true },
   // Car Kit — veículos estacionados (cidade/porto) e pneus para pilhas
