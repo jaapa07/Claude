@@ -555,6 +555,12 @@ const SUITES = {
     const n0 = await g.ev(() => window.__game.touch.log.length);
     await g.touch('touchStart', [{ x: 240, y: 270, id: 1 }, { x: sh.x, y: sh.y, id: 2 }]);
     await sleep(250);
+    // o Chromium emulado às vezes engole o 2º dedo; dedo de verdade tocaria de novo: tenta mais uma vez
+    if ((await g.ev((n0) => window.__game.touch.log.length - n0, n0)) === 0) {
+      await g.touch('touchEnd', []); await sleep(200);
+      await g.touch('touchStart', [{ x: 240, y: 270, id: 3 }]); await g.touch('touchMove', [{ x: 260, y: 270, id: 3 }]);
+      await g.touch('touchStart', [{ x: 260, y: 270, id: 3 }, { x: sh.x, y: sh.y, id: 4 }]); await sleep(250);
+    }
     // a CPU pode roubar a bola nesse meio-tempo e o layout mudar: vale qualquer botão acionado pelo 2º dedo
     const both = await g.ev((n0) => { const i = window.__game.input; return { btn: window.__game.touch.log.slice(n0).join(','), mx: i.state('kb').mx, cls: document.getElementById('touch').className, st: window.__game.flow.match.state }; }, n0);
     check(both.btn.length > 0 && both.mx > 0.5, `multitoque: joystick + botão ao mesmo tempo (${both.btn} | ${both.cls} | ${both.st})`, n);

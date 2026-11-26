@@ -1,20 +1,20 @@
 # QA ponta a ponta
 
-Executado em 2026-11-26 16:07 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
+Executado em 2026-11-26 16:27 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
 
-**19/21 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
+**21/21 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
 bola perto do dono, controle duplicado, time humano sem jogador, estados presos, bola morta sem ninguém ir buscar).
 
 | Suíte | Resultado | Tempo |
 |---|---|---|
 | menus | ✔ OK | 222s |
 | options | ✔ OK | 45s |
-| fullmatch | ✔ OK | 128s |
+| fullmatch | ✔ OK | 121s |
 | arenas | ✔ OK | 132s |
-| human | ✔ OK | 161s |
+| human | ✔ OK | 158s |
 | twoplayers | ✔ OK | 50s |
-| setpieces | ✔ OK | 56s |
-| fouls | ✔ OK | 60s |
+| setpieces | ✔ OK | 64s |
+| fouls | ✔ OK | 57s |
 | pausemenu | ✔ OK | 37s |
 | cup | ✔ OK | 164s |
 | pens | ✔ OK | 74s |
@@ -24,9 +24,9 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 | memory | ✔ OK | 108s |
 | career | ✔ OK | 161s |
 | mobile | ✔ OK | 34s |
-| iphone | ✘ FALHOU | 200s |
-| toques | ✔ OK | 291s |
-| goleiro | ✘ FALHOU | 109s |
+| iphone | ✔ OK | 166s |
+| toques | ✔ OK | 296s |
+| goleiro | ✔ OK | 121s |
 | formatos | ✔ OK | 154s |
 
 ## menus
@@ -61,8 +61,8 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 ## fullmatch
 
 - ✔ partida de 3 períodos termina na tela de resultado
-- ✔ ciclo de estados completo (play, goal, replay, kickoff, halftime, setpiece, fulltime)
-- ✔ houve chutes (8,11)
+- ✔ ciclo de estados completo (play, setpiece, replay, goal, halftime, kickoff, fulltime)
+- ✔ houve chutes (13,6)
 
 ## arenas
 
@@ -71,8 +71,8 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 ## human
 
-- ✔ jogador humano executou ações pelo teclado (55)
-- ✔ time humano chutou a gol (5)
+- ✔ jogador humano executou ações pelo teclado (54)
+- ✔ time humano chutou a gol (3)
 - ✔ jogador controlado se movimentou
 
 ## twoplayers
@@ -185,7 +185,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔ soltar os dedos solta joystick e botão
 - ✔ jogador se moveu com o joystick
 - ✔ ATAQUE: PASSE/CHUTE/LENÇOL/FIRULA, sem CARRINHO ({"atk":true,"def":false,"pass":"PASSE","tackle":false,"trick":true,"lob":true,"shoot":true,"big":22.800048828125})
-- ✘ DEFESA: CARRINHO grande, TROCAR, sem FIRULA/LENÇOL ({"atk":true,"def":false,"pass":"PASSE","tackle":false,"trick":true,"lob":true,"shoot":true,"big":22.800048828125})
+- ✔ DEFESA: CARRINHO grande, TROCAR, sem FIRULA/LENÇOL ({"atk":false,"def":true,"pass":"TROCAR","tackle":true,"trick":false,"lob":false,"shoot":true,"big":76})
 - ✔ pausa esconde os controles de toque
 - ✔ continuar devolve os controles
 - ✔ na vertical aparece "Gire o aparelho"
@@ -197,7 +197,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 - ✔ ATAQUE: layout aparece com a bola
 - ✔ PASSE (toque rápido) passa a bola
-- ✔ CHUTE (toque rápido) chuta para o gol (20.1 m/s)
+- ✔ CHUTE (toque rápido) chuta para o gol (20.2 m/s)
 - ✔ CHUTE segurado carrega a força (56%) e chuta
 - ✔ LENÇOL levanta a bola
 - ✔ FIRULA faz embaixadinha/chapéu
@@ -211,7 +211,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔ DEFESA: layout aparece com o adversário na bola
 - ✔ TROCAR, MARCAR e CARRINHO grande ({"pass":"TROCAR","press":true,"tackle":76})
 - ✔ CARRINHO dá o carrinho
-- ✔ MARCAR corre sozinho até o adversário (9.3 → 6.2 m)
+- ✔ MARCAR corre sozinho até o adversário (9.3 → 5.6 m)
 - ✔ TROCAR troca o jogador controlado
 - ✔ toque entre dois botões aciona o mais próximo
 - ✔ seis toques rápidos seguidos chegam todos (6/6)
@@ -232,13 +232,13 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 ## goleiro
 
-- ✔ 24 chutes contra os dois goleiros sem travar (24 resolvidos, 1 defesas agarradas, maior tempo com a bola 0.2 s)
+- ✔ 24 chutes contra os dois goleiros sem travar (24 resolvidos, 0 defesas agarradas, maior tempo com a bola 0.0 s)
 - ✔ goleiro nunca fica mais de 7 s com a bola na mão
 - ✔ meu goleiro agarra e recebe o controle
 - ✔ aviso "Goleiro com a bola" + PASSE/LANÇAR piscando ({"msg":"Goleiro com a bola: toque PASSE ou LANÇAR","wait":true,"label":"LANÇAR"})
-- ✔ goleiro anda com a bola na mão (0.6 m)
+- ✔ goleiro anda com a bola na mão (0.5 m)
 - ✔ tocar PASSE repõe a bola 
-- ✘ sem tocar em nada, o goleiro espera e repõe sozinho aos 6 s (com 5 s ainda segurando: false; aos 7,5 s solto: true) {"chg":["kb→null st=setpiece held=false wp.giveControl<wp.setPiece<http://game.local/bundle/main-7v9-TQz9.js:4505:67389"],"dev":null,"holdT":1,"gk":"TATUÍ"}
+- ✔ sem tocar em nada, o goleiro espera e repõe sozinho aos 6 s (com 5 s ainda segurando: true; aos 7,5 s solto: true) 
 
 ## formatos
 

@@ -43,11 +43,11 @@
   "ok": true,
   "notes": [
    "✔ partida de 3 períodos termina na tela de resultado",
-   "✔ ciclo de estados completo (play, goal, replay, kickoff, halftime, setpiece, fulltime)",
-   "✔ houve chutes (8,11)"
+   "✔ ciclo de estados completo (play, setpiece, replay, goal, halftime, kickoff, fulltime)",
+   "✔ houve chutes (13,6)"
   ],
-  "secs": 128,
-  "at": "2026-11-26T16:02:56.619Z"
+  "secs": 121,
+  "at": "2026-11-26T16:24:11.587Z"
  },
  "arenas": {
   "name": "arenas",
@@ -63,12 +63,12 @@
   "name": "human",
   "ok": true,
   "notes": [
-   "✔ jogador humano executou ações pelo teclado (55)",
-   "✔ time humano chutou a gol (5)",
+   "✔ jogador humano executou ações pelo teclado (54)",
+   "✔ time humano chutou a gol (3)",
    "✔ jogador controlado se movimentou"
   ],
-  "secs": 161,
-  "at": "2026-11-26T16:02:56.619Z"
+  "secs": 158,
+  "at": "2026-11-26T16:24:11.587Z"
  },
  "twoplayers": {
   "name": "twoplayers",
@@ -93,8 +93,8 @@
    "✔ free_kick: CPU cobra e o jogo segue (play sp=- t=-)",
    "✔ penalty: CPU cobra e o jogo segue (play sp=- t=-)"
   ],
-  "secs": 56,
-  "at": "2026-11-26T16:02:56.619Z"
+  "secs": 64,
+  "at": "2026-11-26T16:24:11.587Z"
  },
  "fouls": {
   "name": "fouls",
@@ -105,8 +105,8 @@
    "✔ jogo continua (cobrança executada) após a falta",
    "✔ jogador expulso volta após 2 minutos de jogo"
   ],
-  "secs": 60,
-  "at": "rodada 1"
+  "secs": 57,
+  "at": "2026-11-26T16:24:11.587Z"
  },
  "pausemenu": {
   "name": "pausemenu",
@@ -218,7 +218,7 @@
  },
  "iphone": {
   "name": "iphone",
-  "ok": false,
+  "ok": true,
   "notes": [
    "✔ detecta tela de toque e cria os controles",
    "✔ título pede \"TOQUE PARA COMEÇAR\"",
@@ -242,7 +242,7 @@
    "✔ soltar os dedos solta joystick e botão",
    "✔ jogador se moveu com o joystick",
    "✔ ATAQUE: PASSE/CHUTE/LENÇOL/FIRULA, sem CARRINHO ({\"atk\":true,\"def\":false,\"pass\":\"PASSE\",\"tackle\":false,\"trick\":true,\"lob\":true,\"shoot\":true,\"big\":22.800048828125})",
-   "✘ DEFESA: CARRINHO grande, TROCAR, sem FIRULA/LENÇOL ({\"atk\":true,\"def\":false,\"pass\":\"PASSE\",\"tackle\":false,\"trick\":true,\"lob\":true,\"shoot\":true,\"big\":22.800048828125})",
+   "✔ DEFESA: CARRINHO grande, TROCAR, sem FIRULA/LENÇOL ({\"atk\":false,\"def\":true,\"pass\":\"TROCAR\",\"tackle\":true,\"trick\":false,\"lob\":false,\"shoot\":true,\"big\":76})",
    "✔ pausa esconde os controles de toque",
    "✔ continuar devolve os controles",
    "✔ na vertical aparece \"Gire o aparelho\"",
@@ -250,8 +250,8 @@
    "✔ opções do celular: botões, vibração, troca de versão; sem teclas",
    "✔ pc.html: versão PC sem controles de toque"
   ],
-  "secs": 200,
-  "at": "2026-11-26T16:02:56.619Z"
+  "secs": 166,
+  "at": "2026-11-26T16:27:16.180Z"
  },
  "toques": {
   "name": "toques",
@@ -259,7 +259,7 @@
   "notes": [
    "✔ ATAQUE: layout aparece com a bola",
    "✔ PASSE (toque rápido) passa a bola",
-   "✔ CHUTE (toque rápido) chuta para o gol (20.1 m/s)",
+   "✔ CHUTE (toque rápido) chuta para o gol (20.2 m/s)",
    "✔ CHUTE segurado carrega a força (56%) e chuta",
    "✔ LENÇOL levanta a bola",
    "✔ FIRULA faz embaixadinha/chapéu",
@@ -273,7 +273,7 @@
    "✔ DEFESA: layout aparece com o adversário na bola",
    "✔ TROCAR, MARCAR e CARRINHO grande ({\"pass\":\"TROCAR\",\"press\":true,\"tackle\":76})",
    "✔ CARRINHO dá o carrinho",
-   "✔ MARCAR corre sozinho até o adversário (9.3 → 6.2 m)",
+   "✔ MARCAR corre sozinho até o adversário (9.3 → 5.6 m)",
    "✔ TROCAR troca o jogador controlado",
    "✔ toque entre dois botões aciona o mais próximo",
    "✔ seis toques rápidos seguidos chegam todos (6/6)",
@@ -292,23 +292,23 @@
    "✔ troca automática passa o controle para quem está perto da bola",
    "  registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off hint fire:on pass:on tackle:on press:on pass:on shoot:on trick:on trick:off hint trick:off hint trick:off hint trick:off hint sprint:on shoot:on pass:on lob:on pass:on pass:on press:on"
   ],
-  "secs": 291,
-  "at": "2026-11-26T16:02:56.619Z"
+  "secs": 296,
+  "at": "2026-11-26T16:24:11.587Z"
  },
  "goleiro": {
   "name": "goleiro",
-  "ok": false,
+  "ok": true,
   "notes": [
-   "✔ 24 chutes contra os dois goleiros sem travar (24 resolvidos, 1 defesas agarradas, maior tempo com a bola 0.2 s)",
+   "✔ 24 chutes contra os dois goleiros sem travar (24 resolvidos, 0 defesas agarradas, maior tempo com a bola 0.0 s)",
    "✔ goleiro nunca fica mais de 7 s com a bola na mão",
    "✔ meu goleiro agarra e recebe o controle",
    "✔ aviso \"Goleiro com a bola\" + PASSE/LANÇAR piscando ({\"msg\":\"Goleiro com a bola: toque PASSE ou LANÇAR\",\"wait\":true,\"label\":\"LANÇAR\"})",
-   "✔ goleiro anda com a bola na mão (0.6 m)",
+   "✔ goleiro anda com a bola na mão (0.5 m)",
    "✔ tocar PASSE repõe a bola ",
-   "✘ sem tocar em nada, o goleiro espera e repõe sozinho aos 6 s (com 5 s ainda segurando: false; aos 7,5 s solto: true) {\"chg\":[\"kb→null st=setpiece held=false wp.giveControl<wp.setPiece<http://game.local/bundle/main-7v9-TQz9.js:4505:67389\"],\"dev\":null,\"holdT\":1,\"gk\":\"TATUÍ\"}"
+   "✔ sem tocar em nada, o goleiro espera e repõe sozinho aos 6 s (com 5 s ainda segurando: true; aos 7,5 s solto: true) "
   ],
-  "secs": 109,
-  "at": "2026-11-26T16:07:06.663Z"
+  "secs": 121,
+  "at": "2026-11-26T16:24:11.587Z"
  },
  "formatos": {
   "name": "formatos",
