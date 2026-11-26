@@ -322,7 +322,7 @@ export class Match {
       if (mv.lengthSq() > 0.01) p.faceTo(mv, dt, 8);
       if (input.pressed(dev, 'pass')) this.doPass(p, this.aimOf(dev, mv), false);
       else if (input.pressed(dev, 'lob')) this.doPass(p, this.aimOf(dev, mv), true);
-      else if (input.held(dev, 'shoot')) { p.shootHold = Math.min(1, p.shootHold + dt * 1.25); }
+      else if (input.held(dev, 'shoot')) { p.shootHold = Math.min(1, p.shootHold + dt * 1.0); }
       else if (input.released(dev, 'shoot')) { this.doShoot(p, p.shootHold, mv); p.shootHold = 0; }
       return;
     }
@@ -360,7 +360,7 @@ export class Match {
       } else p.vel.multiplyScalar(Math.exp(-10 * dt));
       this.hud.msg(input.touch ? 'Goleiro com a bola: toque PASSE ou LANÇAR' : 'Goleiro com a bola: J passa · segure K para lançar');
       if (input.pressed(dev, 'pass')) { this.doPass(p, this.aimOf(dev, mv), false); this.hud.msg(null); }
-      else if (input.held(dev, 'shoot')) p.shootHold = Math.min(1, p.shootHold + dt * 1.25);
+      else if (input.held(dev, 'shoot')) p.shootHold = Math.min(1, p.shootHold + dt * 1.0);
       else if (input.released(dev, 'shoot')) { this.longThrow(p, Math.max(0.5, p.shootHold)); p.shootHold = 0; this.hud.msg(null); }
       // regra dos 6 segundos: se o jogador não repõe, o goleiro toca sozinho para o companheiro mais livre
       else if (p.holdT > 6 && !(p.kick && !p.kick.done)) { this.doPass(p, null, false); this.hud.msg(null); }
@@ -379,7 +379,7 @@ export class Match {
     if (input.pressed(dev, 'tackle') && !hasBall) this.doTackle(p, sprint);
     // chute: segurar = força; bola no alto = finalização acrobática imediata
     if (input.pressed(dev, 'shoot') && !hasBall && this.aerialChance(p)) { this.doShoot(p, 0.8, mv); p.shootHold = 0; }
-    else if (input.held(dev, 'shoot') && (hasBall || this.nearLooseBall(p))) p.shootHold = Math.min(1, p.shootHold + dt * 1.25);
+    else if (input.held(dev, 'shoot') && (hasBall || this.nearLooseBall(p))) p.shootHold = Math.min(1, p.shootHold + dt * 1.0);
     else if (input.released(dev, 'shoot') && p.shootHold > 0) { this.doShoot(p, p.shootHold, mv); p.shootHold = 0; }
     else if (!input.held(dev, 'shoot')) p.shootHold = 0;
   }
@@ -431,7 +431,7 @@ export class Match {
         const eff = Math.max(0, dev - Math.atan(1.6 / d) * 180 / Math.PI); // tira o "tamanho" do jogador
         if (eff > 70) continue; // nada na direção apontada
         const lane = Math.min(...p.team.opp.field.map((o) => distToSeg(o.pos, p.pos, m.pos)));
-        const s = eff + d * 0.6 + (!lob && lane < 0.7 ? 6 : 0) - (m.runT > 0 ? 5 : 0);
+        const s = eff + d * 0.6 - (m.runT > 0 ? 5 : 0); void lane;
         if (s < bestS) { bestS = s; best = m; }
       }
       if (best) return best;
@@ -481,7 +481,7 @@ export class Match {
     if (hs < 0.05) return;
     hv.divideScalar(hs);
     if (hv.dot(to) < -0.2) return; // já passou do recebedor
-    const k = 1 - Math.exp(-(b.airborne ? 2.5 : 7) * dt);
+    const k = 1 - Math.exp(-(b.airborne ? 4 : 12) * dt);
     hv.lerp(to, k).normalize();
     if (!b.airborne) hs = Math.max(hs, Math.min(5, 1.5 + dist * 1.2)); // areia não segura o passe antes de chegar
     b.vel.x = hv.x * hs; b.vel.z = hv.z * hs;
@@ -654,7 +654,12 @@ export class Match {
           // no pé: mira a posição do recebedor (ele espera a bola); só antecipa quem está correndo na tabela
           let sp = rollSpeedFor(d, 6.5);
           if (target && target.runT > 0) { const tArr = rollTime(sp, d); tp = target.pos.clone().addScaledVector(target.vel, Math.min(1.0, tArr * 0.8)); sp = rollSpeedFor(tp.distanceTo(b.pos), 6.5); }
-          v = tp.sub(b.pos).setY(0).normalize().multiplyScalar(Math.min(sp, 24)); v.y = 0.6;
+          const blocked = target && Math.min(...tm.opp.field.map((o) => distToSeg(o.pos, b.pos, target.pos))) < 0.9 && tp.distanceTo(b.pos) > 3;
+          if (blocked) {
+            // linha fechada: passe picado por cima do marcador, caindo no pé do recebedor
+            const land = tp.clone().setY(0.35);
+            v = ballistic(b.pos, land, 0.55 + tp.distanceTo(b.pos) * 0.035);
+          } else { v = tp.sub(b.pos).setY(0).normalize().multiplyScalar(Math.min(sp, 24)); v.y = 0.6; }
           sfx = 'kick_soft';
           if (target) { this.passTo = target; this.passT = 3; }
         } else {
@@ -719,9 +724,9 @@ export class Match {
         if (Math.abs(lateral) > 0.3) z = Math.sign(lateral) * (1.5 + Math.random() * 1.0);
         else z = (gk && gk.pos.z > 0 ? -1 : 1) * (0.6 + Math.random() * 1.9);
         let y = k.kind === 'header' || k.kind === 'diving_header' ? 0.4 + Math.random() * 0.6 : 0.5 + Math.random() * 1.3;
-        const over = Math.max(0, power - 0.85) * 3;
+        const over = tm.human ? 0 : Math.max(0, power - 0.85) * 3; // humano: força máxima não isola a bola
         y += over * (0.6 + Math.random());
-        const err = (1 - Math.min(1, acc)) * (tm.human ? 2.4 : 3.4) + over * 0.4 + (d0 > 11 ? (d0 - 11) * 0.12 : 0);
+        const err = (1 - Math.min(1, acc)) * (tm.human ? 1.6 : 3.4) + over * 0.4 + (d0 > 11 ? (d0 - 11) * 0.12 : 0);
         z += (Math.random() - 0.5) * err * 2;
         y += (Math.random() - 0.3) * err;
         const tp = new THREE.Vector3(goalX + tm.dir * 0.3, Math.max(0.15, y), z);
@@ -1011,8 +1016,8 @@ export class Match {
         if (this.pens && !p.isGK) continue; // na disputa de pênaltis ninguém de linha domina a bola
         const d = Math.hypot(b.pos.x - p.pos.x, b.pos.z - p.pos.z);
         const recv = p === this.passTo;
-        const reachH = p.isGK && this.inOwnArea(p, b.pos) ? 2.4 : p.juggling > 0 ? 0.25 : recv ? 1.25 : 0.75;
-        const reachD = p.isGK && this.inOwnArea(p, b.pos) ? 1.2 : recv ? 1.25 : 0.8;
+        const reachH = p.isGK && this.inOwnArea(p, b.pos) ? 2.4 : p.juggling > 0 ? 0.25 : recv ? 1.6 : 0.75;
+        const reachD = p.isGK && this.inOwnArea(p, b.pos) ? 1.2 : recv ? 1.5 : 0.8;
         if (d < reachD && b.pos.y < reachH && d < bd) { best = p; bd = d; }
       }
       if (best) this.takeBall(best);

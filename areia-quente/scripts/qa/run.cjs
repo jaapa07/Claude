@@ -791,6 +791,36 @@ const SUITES = {
       void info;
     };
     await feet('b-pass', 'PASSE rasteiro', 0.5);
+    // passe com adversário parado no meio do caminho: sai picado por cima e chega no pé
+    {
+      await scene('atk'); await waitMode('atk');
+      await g.ev(() => { const m = window.__game.flow.match, me = window.__qaMe, d = me.team.dir;
+        const mate = me.team.field.find((x) => x !== me && !x.isGK);
+        for (const x of me.team.field) if (x !== me && x !== mate && !x.isGK) { x.pos.set(-d * 10, 0, 10); x.sync(); }
+        mate.pos.set(d * 8, 0, 0); mate.vel.set(0, 0, 0); mate.sync(); me.yaw = Math.atan2(d, 0); me.sync();
+        const o = me.team.opp.field.find((x) => !x.isGK); o.pos.set(d * 4, 0, 0.2); o.vel.set(0, 0, 0); o.sync(); o.device = 'qa'; // marcador parado na linha do passe
+        window.__qaMate = mate; window.__qaBlock = o; });
+      await tapBtn('b-pass');
+      const gotB = await until(() => window.__game.flow.match.ball.owner === window.__qaMate, null, 30000);
+      const by = await g.ev(() => window.__game.flow.match.ball.owner?.data.short ?? '-');
+      await g.ev(() => { window.__qaBlock.device = null; });
+      check(gotB, `passe com marcador no caminho sai picado e chega no companheiro (bola com ${by})`, n);
+    }
+    // chute segurado até o máximo não vai por cima do gol
+    {
+      let onT = 0;
+      for (let k = 0; k < 4; k++) {
+        await scene('atk'); await waitMode('atk');
+        await g.ev(() => { const me = window.__qaMe, d = me.team.dir, m = window.__game.flow.match; me.pos.set(d * 9, 0, 0); me.yaw = Math.atan2(d, 0); me.sync(); m.ball.pos.copy(me.pos).addScaledVector(me.forward, 0.45).setY(0.11); m.shotOnTarget = false; });
+        const c = await ctr('b-shoot'); const id = tid++;
+        await g.touch('touchStart', [{ x: c.x, y: c.y, id }]);
+        await until(() => window.__qaMe.shootHold >= 0.99, null, 15000);
+        await g.touch('touchEnd', []);
+        await until(() => { const b = window.__game.flow.match.ball; return b.lastTouch === window.__qaMe && b.speed > 6; }, null, 15000);
+        if (await g.ev(() => window.__game.flow.match.shotOnTarget)) onT++;
+      }
+      check(onT >= 3, `chute com força máxima vai no gol (${onT}/4 na direção do gol)`, n);
+    }
     await feet('b-lob', 'LENÇOL', 0.8);
 
     // ---- mira assistida: apontar "mais ou menos" já escolhe o companheiro certo

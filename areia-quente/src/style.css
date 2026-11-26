@@ -142,8 +142,10 @@ body { font-family: var(--body); color: var(--white); user-select: none; -webkit
 .hud .pl .nm img { height: 22px; }
 .hud .pl .st { width: 200px; height: 10px; background: rgba(0,0,0,0.5); border: 2px solid #fff; border-radius: 6px; overflow: hidden; }
 .hud .pl .st i { display: block; height: 100%; background: linear-gradient(90deg, #2ee6a0, #b4ff5a); width: 100%; }
-.hud .power { position: absolute; width: 90px; height: 12px; border: 2px solid #fff; border-radius: 6px; background: rgba(0,0,0,0.5); overflow: hidden; display: none; transform: translate(-50%, 0); }
-.hud .power i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #ffe36a, #ff7a1a, #e3182d); }
+.hud .power { position: absolute; width: 96px; height: 14px; border: 2px solid #fff; border-radius: 7px; overflow: hidden; display: none; transform: translate(-50%, 0);
+  /* faixa verde = força boa (55–100%) */
+  background: linear-gradient(90deg, rgba(0,0,0,0.55) 0 55%, rgba(15,196,143,0.55) 55% 100%); }
+.hud .power i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #ffe36a, #ff7a1a); box-shadow: 0 0 6px #fff; }
 .hud .marker { position: absolute; width: 30px; transform: translate(-50%, -100%); }
 .hud .marker b { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-family: var(--title); font-size: 14px; text-shadow: 0 2px 0 #000; }
 .hud .offs { position: absolute; width: 24px; height: 24px; }
