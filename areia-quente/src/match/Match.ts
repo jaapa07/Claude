@@ -989,7 +989,8 @@ export class Match {
       if (e.type === 'goal' && this.state === 'play') this.goal(e.p.x > 0 ? 1 : -1, e.p);
       if (e.type === 'board') audio.play('body', 0.4);
     }
-    if (this.pens && this.shotPen && this.stateT > 0.4 && (b.held || (b.speed < 1.2 && !b.inGoal) || (b.owner && b.owner.isGK) || (this.stateT > 4 && !b.inGoal))) {
+    if (this.pens && this.shotPen) this.pens.t += dt;
+    if (this.pens && this.shotPen && this.stateT > 0.4 && (b.held || (b.speed < 1.2 && !b.inGoal) || (b.owner && b.owner.isGK) || (this.pens.t > 4 && !b.inGoal))) { // pens.t zera no início de cada cobrança
       this.shotPen = false; this.state = 'penalties'; audio.crowdReact('ooh', 1); this.later(0.9, () => this.penResult(false)); return;
     }
     if (this.state !== 'play') return;

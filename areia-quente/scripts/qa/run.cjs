@@ -907,7 +907,10 @@ const SUITES = {
     await g.shot('goleiro_bola');
     const pc = await g.center('#touch .b-pass'); await g.page.touchscreen.tap(pc.x, pc.y);
     await step(0.2);
-    check(await g.waitFor(() => !window.__game.flow.match.ball.held, null, 20000).then(() => true, () => false), 'tocar PASSE repõe a bola', n);
+    await step(1.0);
+    const rel = await g.waitFor(() => !window.__game.flow.match.ball.held, null, 20000).then(() => true, () => false);
+    const dg = await g.ev(() => { const m = window.__game.flow.match, gk = window.__qaGK; return { log: window.__game.touch.log.slice(-4).join(' '), held: m.ball.held, dev: gk.device, kick: gk.kick && gk.kick.kind + ':' + gk.kick.done, holdT: +gk.holdT.toFixed(1), mode: window.__game.touch.mode, cls: document.getElementById('touch').className }; });
+    check(rel, `tocar PASSE repõe a bola ${rel ? '' : JSON.stringify(dg)}`, n);
     // sem tocar em nada: regra dos 6 segundos
     await setHold();
     await step(5.0);

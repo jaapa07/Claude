@@ -1,15 +1,15 @@
 # QA ponta a ponta
 
-Executado em 2026-11-26 15:08 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
+Executado em 2026-11-26 15:32 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
 
-**17/21 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
+**19/21 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
 bola perto do dono, controle duplicado, time humano sem jogador, estados presos, bola morta sem ninguém ir buscar).
 
 | Suíte | Resultado | Tempo |
 |---|---|---|
-| menus | ✘ FALHOU | 266s |
+| menus | ✔ OK | 242s |
 | options | ✔ OK | 45s |
-| fullmatch | ✔ OK | 114s |
+| fullmatch | ✔ OK | 121s |
 | arenas | ✔ OK | 132s |
 | human | ✔ OK | 160s |
 | twoplayers | ✔ OK | 50s |
@@ -17,16 +17,16 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 | fouls | ✔ OK | 60s |
 | pausemenu | ✔ OK | 37s |
 | cup | ✔ OK | 164s |
-| pens | ✘ FALHOU | 84s |
+| pens | ✘ FALHOU | 419s |
 | training | ✔ OK | 32s |
 | minigames | ✔ OK | 561s |
 | achievements | ✔ OK | 64s |
 | memory | ✔ OK | 108s |
 | career | ✔ OK | 161s |
 | mobile | ✔ OK | 34s |
-| iphone | ✘ FALHOU | 190s |
+| iphone | ✔ OK | 181s |
 | toques | ✔ OK | 331s |
-| goleiro | ✘ FALHOU | 110s |
+| goleiro | ✘ FALHOU | 150s |
 | formatos | ✔ OK | 156s |
 
 ## menus
@@ -42,7 +42,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔   ESC volta ao menu
 - ✔ opção 4 → teams
 - ✔   ESC volta ao menu
-- ✘ opção 5 deveria abrir challenges (está em teams)
+- ✔ opção 5 → challenges
 - ✔   ESC volta ao menu
 - ✔ opção 6 → achievements
 - ✔   ESC volta ao menu
@@ -61,8 +61,8 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 ## fullmatch
 
 - ✔ partida de 3 períodos termina na tela de resultado
-- ✔ ciclo de estados completo (play, goal, periodEnd, halftime, setpiece, kickoff, fulltime)
-- ✔ houve chutes (2,5)
+- ✔ ciclo de estados completo (kickoff, setpiece, play, halftime, replay, fulltime)
+- ✔ houve chutes (12,4)
 
 ## arenas
 
@@ -116,8 +116,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 ## pens
 
 - ✔ empate → prorrogação → pênaltis
-- ✔ disputa termina no resultado (pênaltis 3,1)
-- ✘ 1 anomalia(s): estado penalties preso há 62s
+- ✘ disputa termina no resultado (pênaltis 0,0)
 
 ## training
 
@@ -182,7 +181,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔ todos os botões dentro da tela e com no mínimo 40 px
 - ✔ jogador controlado pela tela de toque
 - ✔ joystick move para a direita (mx=0.98)
-- ✘ multitoque: joystick + botão ao mesmo tempo ()
+- ✔ multitoque: joystick + botão ao mesmo tempo (shoot:on | on atk | play)
 - ✔ soltar os dedos solta joystick e botão
 - ✔ jogador se moveu com o joystick
 - ✔ ATAQUE: PASSE/CHUTE/LENÇOL/FIRULA, sem CARRINHO ({"atk":true,"def":false,"pass":"PASSE","tackle":false,"trick":true,"lob":true,"shoot":true,"big":22.800048828125})
@@ -233,13 +232,13 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 ## goleiro
 
-- ✔ 24 chutes contra os dois goleiros sem travar (24 resolvidos, 1 defesas agarradas, maior tempo com a bola 0.1 s)
+- ✔ 24 chutes contra os dois goleiros sem travar (24 resolvidos, 0 defesas agarradas, maior tempo com a bola 0.0 s)
 - ✔ goleiro nunca fica mais de 7 s com a bola na mão
 - ✔ meu goleiro agarra e recebe o controle
 - ✔ aviso "Goleiro com a bola" + PASSE/LANÇAR piscando ({"msg":"Goleiro com a bola: toque PASSE ou LANÇAR","wait":true,"label":"LANÇAR"})
-- ✔ goleiro anda com a bola na mão (0.5 m)
-- ✔ tocar PASSE repõe a bola
-- ✘ sem tocar em nada, o goleiro espera e repõe sozinho aos 6 s (com 5 s ainda segurando: false; aos 7,5 s solto: true)
+- ✔ goleiro anda com a bola na mão (2.3 m)
+- ✘ tocar PASSE repõe a bola
+- ✘ sem tocar em nada, o goleiro espera e repõe sozinho aos 6 s (com 5 s ainda segurando: true; aos 7,5 s solto: false)
 
 ## formatos
 

@@ -1,7 +1,7 @@
 {
  "menus": {
   "name": "menus",
-  "ok": false,
+  "ok": true,
   "notes": [
    "✔ ENTER no título abre o menu",
    "✔ duplo clique gera uma única transição (1)",
@@ -14,7 +14,7 @@
    "✔   ESC volta ao menu",
    "✔ opção 4 → teams",
    "✔   ESC volta ao menu",
-   "✘ opção 5 deveria abrir challenges (está em teams)",
+   "✔ opção 5 → challenges",
    "✔   ESC volta ao menu",
    "✔ opção 6 → achievements",
    "✔   ESC volta ao menu",
@@ -23,8 +23,8 @@
    "✔ opção 8 → credits",
    "✔   ESC volta ao menu"
   ],
-  "secs": 266,
-  "at": "2026-11-26T15:08:37.778Z"
+  "secs": 242,
+  "at": "2026-11-26T15:32:18.146Z"
  },
  "options": {
   "name": "options",
@@ -43,11 +43,11 @@
   "ok": true,
   "notes": [
    "✔ partida de 3 períodos termina na tela de resultado",
-   "✔ ciclo de estados completo (play, goal, periodEnd, halftime, setpiece, kickoff, fulltime)",
-   "✔ houve chutes (2,5)"
+   "✔ ciclo de estados completo (kickoff, setpiece, play, halftime, replay, fulltime)",
+   "✔ houve chutes (12,4)"
   ],
-  "secs": 114,
-  "at": "2026-11-26T15:08:37.778Z"
+  "secs": 121,
+  "at": "2026-11-26T15:32:18.146Z"
  },
  "arenas": {
   "name": "arenas",
@@ -138,11 +138,10 @@
   "ok": false,
   "notes": [
    "✔ empate → prorrogação → pênaltis",
-   "✔ disputa termina no resultado (pênaltis 3,1)",
-   "✘ 1 anomalia(s): estado penalties preso há 62s"
+   "✘ disputa termina no resultado (pênaltis 0,0)"
   ],
-  "secs": 84,
-  "at": "2026-11-26T15:08:37.778Z"
+  "secs": 419,
+  "at": "2026-11-26T15:32:18.146Z"
  },
  "training": {
   "name": "training",
@@ -219,7 +218,7 @@
  },
  "iphone": {
   "name": "iphone",
-  "ok": false,
+  "ok": true,
   "notes": [
    "✔ detecta tela de toque e cria os controles",
    "✔ título pede \"TOQUE PARA COMEÇAR\"",
@@ -239,7 +238,7 @@
    "✔ todos os botões dentro da tela e com no mínimo 40 px",
    "✔ jogador controlado pela tela de toque",
    "✔ joystick move para a direita (mx=0.98)",
-   "✘ multitoque: joystick + botão ao mesmo tempo ()",
+   "✔ multitoque: joystick + botão ao mesmo tempo (shoot:on | on atk | play)",
    "✔ soltar os dedos solta joystick e botão",
    "✔ jogador se moveu com o joystick",
    "✔ ATAQUE: PASSE/CHUTE/LENÇOL/FIRULA, sem CARRINHO ({\"atk\":true,\"def\":false,\"pass\":\"PASSE\",\"tackle\":false,\"trick\":true,\"lob\":true,\"shoot\":true,\"big\":22.800048828125})",
@@ -251,8 +250,8 @@
    "✔ opções do celular: botões, vibração, troca de versão; sem teclas",
    "✔ pc.html: versão PC sem controles de toque"
   ],
-  "secs": 190,
-  "at": "2026-11-26T15:08:37.778Z"
+  "secs": 181,
+  "at": "2026-11-26T15:32:18.146Z"
  },
  "toques": {
   "name": "toques",
@@ -300,16 +299,16 @@
   "name": "goleiro",
   "ok": false,
   "notes": [
-   "✔ 24 chutes contra os dois goleiros sem travar (24 resolvidos, 1 defesas agarradas, maior tempo com a bola 0.1 s)",
+   "✔ 24 chutes contra os dois goleiros sem travar (24 resolvidos, 0 defesas agarradas, maior tempo com a bola 0.0 s)",
    "✔ goleiro nunca fica mais de 7 s com a bola na mão",
    "✔ meu goleiro agarra e recebe o controle",
    "✔ aviso \"Goleiro com a bola\" + PASSE/LANÇAR piscando ({\"msg\":\"Goleiro com a bola: toque PASSE ou LANÇAR\",\"wait\":true,\"label\":\"LANÇAR\"})",
-   "✔ goleiro anda com a bola na mão (0.5 m)",
-   "✔ tocar PASSE repõe a bola",
-   "✘ sem tocar em nada, o goleiro espera e repõe sozinho aos 6 s (com 5 s ainda segurando: false; aos 7,5 s solto: true)"
+   "✔ goleiro anda com a bola na mão (2.3 m)",
+   "✘ tocar PASSE repõe a bola",
+   "✘ sem tocar em nada, o goleiro espera e repõe sozinho aos 6 s (com 5 s ainda segurando: true; aos 7,5 s solto: false)"
   ],
-  "secs": 110,
-  "at": "2026-11-26T15:08:37.778Z"
+  "secs": 150,
+  "at": "2026-11-26T15:32:18.146Z"
  },
  "formatos": {
   "name": "formatos",
