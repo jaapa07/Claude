@@ -343,10 +343,21 @@ export class Match {
     // goleiro humano segurando a bola
     if (this.ball.held && this.ball.owner === p) {
       p.holdT += dt;
-      if (mv.lengthSq() > 0.01) p.faceTo(mv, dt, 8);
-      if (input.pressed(dev, 'pass')) this.doPass(p, this.aimOf(dev, mv), false);
+      // anda com a bola na mão dentro da área (antes ficava parado e parecia que o jogo tinha travado)
+      if (mv.lengthSq() > 0.01) {
+        p.faceTo(mv, dt, 8);
+        p.vel.lerp(mv.clone().multiplyScalar(3.2), 1 - Math.exp(-8 * dt));
+        const gx = this.ownGoalX(tm);
+        const nx = p.pos.x + p.vel.x * dt, nz = p.pos.z + p.vel.z * dt;
+        if (Math.abs(nx - gx) > FIELD.PEN - 0.5 || Math.sign(nx - gx) === Math.sign(gx) && Math.abs(nx) > FIELD.HL) p.vel.x = 0;
+        if (Math.abs(nz) > FIELD.HW - 1) p.vel.z = 0;
+      } else p.vel.multiplyScalar(Math.exp(-10 * dt));
+      this.hud.msg(input.touch ? 'Goleiro com a bola: toque PASSE ou LANÇAR' : 'Goleiro com a bola: J passa · segure K para lançar');
+      if (input.pressed(dev, 'pass')) { this.doPass(p, this.aimOf(dev, mv), false); this.hud.msg(null); }
       else if (input.held(dev, 'shoot')) p.shootHold = Math.min(1, p.shootHold + dt * 1.25);
-      else if (input.released(dev, 'shoot')) { this.longThrow(p, p.shootHold); p.shootHold = 0; }
+      else if (input.released(dev, 'shoot')) { this.longThrow(p, Math.max(0.5, p.shootHold)); p.shootHold = 0; this.hud.msg(null); }
+      // regra dos 6 segundos: se o jogador não repõe, o goleiro toca sozinho para o companheiro mais livre
+      else if (p.holdT > 6 && !(p.kick && !p.kick.done)) { this.doPass(p, null, false); this.hud.msg(null); }
       return;
     }
     // ações
@@ -1434,7 +1445,7 @@ export class Match {
     else h.passTarget(null, cam);
     const shooter = humans.find((p) => p.shootHold > 0) ?? null;
     h.powerBar(shooter, shooter?.shootHold ?? 0, cam);
-    if (this.state === 'play' && this.stateT > 2.5 && !this.teams.some((tm) => tm.human && tm.heat >= 1 && tm.fire <= 0)) h.msg(null);
+    if (this.state === 'play' && this.stateT > 2.5 && !this.teams.some((tm) => tm.human && tm.heat >= 1 && tm.fire <= 0) && !(this.ball.held && this.ball.owner?.device)) h.msg(null);
   }
 
   // ------------------------------------------------------------------ treino

@@ -849,6 +849,68 @@ const SUITES = {
     const log = await g.ev(() => window.__game.touch.log.join(' '));
     n.push('  registro de toques: ' + log.slice(0, 400));
   },
+
+  /** Goleiro: chuves contra os dois goleiros (nada pode travar) e o fluxo do MEU goleiro com a bola na mão (celular). */
+  async goleiro(g, n) {
+    await g.ev(() => { const f = window.__game.flow; Object.assign(f.setup, { homeDevices: ['kb'], awayDevices: [], mode: 'friendly', arena: 'copacabana' }); f.tick = undefined; f.loading(); });
+    await g.waitFor(() => window.__game.flow.match && window.__game.flow.scene === 'match', null, 180000);
+    await g.ev(() => { const m = window.__game.flow.match; m.hud.cinema(false); m.hud.show(true); m.beginKickoff(m.kickoffTeam); });
+    await sleep(1000);
+    await g.ev(() => { const m = window.__game.flow.match; window.__gkq = { holdMax: 0, catches: 0 };
+      const tick = () => { for (const tm of m.teams) { const gk = tm.gk; if (m.ball.held && m.ball.owner === gk) { if (gk.holdT < 0.05) window.__gkq.catches++; window.__gkq.holdMax = Math.max(window.__gkq.holdMax, gk.holdT); } } requestAnimationFrame(tick); };
+      requestAnimationFrame(tick); });
+    let stuck = 0, done = 0;
+    for (let i = 0; i < 24; i++) {
+      await g.ev((i) => { const m = window.__game.flow.match;
+        if (m.state !== 'play' && !m.ball.held) { m.timers = []; m.sp = null; m.state = 'play'; m.stateT = 1; }
+        const atk = m.teams[i % 2], gx = m.goalX(atk);
+        const shooter = atk.field.find((x) => !x.isGK && x.onField);
+        shooter.pos.set(gx - atk.dir * (5 + (i % 5) * 1.5), 0, ((i * 7) % 9) - 4); shooter.vel.set(0, 0, 0); shooter.kick = null; shooter.stun = 0; shooter.sync();
+        m.ball.owner = null; m.ball.held = false; m.takeBall(shooter);
+        // metade dos chutes fracos e no meio (o goleiro agarra), metade variados
+        m.queueKick(shooter, 'shot', i % 2 ? 0.2 : 0.4 + (i % 4) * 0.2, i % 2 ? new window.__game.world.camera.position.constructor(0, 0, 0) : null, null);
+      }, i);
+      await g.speed(4);
+      const ok = await g.waitFor(() => { const m = window.__game.flow.match; return (m.state === 'play' && !m.ball.held && m.stateT > 0.5) || m.state === 'kickoff'; }, null, 40000).then(() => true, () => false);
+      await g.speed(1);
+      if (!ok) {
+        // meu goleiro com a bola: o jogo espera a reposição (máx. 6 s) — conta como travado só se passar disso
+        stuck++;
+        const st = await g.ev(() => { const m = window.__game.flow.match, o = m.ball.owner; return { state: m.state, held: m.ball.held, gk: o?.isGK, dev: o?.device, holdT: o?.holdT }; });
+        n.push('  não resolveu: ' + JSON.stringify(st));
+        await g.ev(() => { const m = window.__game.flow.match; m.ball.held = false; m.ball.owner = null; m.timers = []; m.sp = null; m.state = 'play'; });
+      } else done++;
+    }
+    const q = await g.ev(() => window.__gkq);
+    check(stuck === 0, `24 chutes contra os dois goleiros sem travar (${done} resolvidos, ${q.catches} defesas agarradas, maior tempo com a bola ${q.holdMax.toFixed(1)} s)`, n);
+    check(q.holdMax < 7.5, 'goleiro nunca fica mais de 7 s com a bola na mão', n);
+
+    // MEU goleiro agarra: aviso, botões piscando, anda com a bola, PASSE repõe
+    const setHold = () => g.ev(() => { const m = window.__game.flow.match; m.timers = []; m.sp = null; m.state = 'play'; m.stateT = 1;
+      const tm = m.teams.find((t) => t.human), gk = tm.gk; gk.pos.set(m.ownGoalX(tm) + tm.dir * 1.5, 0, 0); gk.vel.set(0, 0, 0); gk.kick = null; gk.stun = 0; gk.lying = null; gk.ath.locked = 0; gk.sync();
+      m.ball.owner = null; m.ball.held = false; m.ball.vel.set(0, 0, 0); m.ball.pos.copy(gk.pos).setY(1.0); m.ball.speed; m.takeBall(gk);
+      if (!m.ball.held) { m.ball.owner = gk; m.ball.held = true; gk.holdT = 0; m.giveControl(gk); }
+      window.__qaGK = gk; window.__qaGK0 = gk.pos.clone(); return { held: m.ball.held, dev: gk.device }; });
+    const h0 = await setHold();
+    check(h0.held && h0.dev === 'kb', 'meu goleiro agarra e recebe o controle', n);
+    await sleep(800);
+    const ui = await g.ev(() => ({ msg: document.querySelector('.hud .msg')?.textContent || document.querySelector('.hud')?.textContent.match(/Goleiro com a bola[^·]*/)?.[0] || '', wait: document.getElementById('touch').classList.contains('wait'), label: document.querySelector('#touch .b-shoot span').textContent }));
+    check(/Goleiro com a bola/.test(ui.msg) && ui.wait && ui.label === 'LANÇAR', `aviso "Goleiro com a bola" + PASSE/LANÇAR piscando (${JSON.stringify(ui)})`, n);
+    await g.ev(() => window.__game.input.setStick({ x: 0, y: 0.9 }));
+    await sleep(1500);
+    await g.ev(() => window.__game.input.setStick(null));
+    const walked = await g.ev(() => window.__qaGK.pos.distanceTo(window.__qaGK0));
+    check(walked > 0.5 && await g.ev(() => window.__game.flow.match.ball.held), `goleiro anda com a bola na mão (${walked.toFixed(1)} m)`, n);
+    await g.shot('goleiro_bola');
+    const pc = await g.center('#touch .b-pass'); await g.page.touchscreen.tap(pc.x, pc.y);
+    check(await g.waitFor(() => !window.__game.flow.match.ball.held, null, 20000).then(() => true, () => false), 'tocar PASSE repõe a bola', n);
+    // sem tocar em nada: regra dos 6 segundos
+    await setHold();
+    await g.speed(4);
+    const auto = await g.waitFor(() => !window.__game.flow.match.ball.held, null, 60000).then(() => true, () => false);
+    await g.speed(1);
+    check(auto, 'sem tocar em nada, o goleiro repõe sozinho em 6 s', n);
+  },
 };
 
 (async () => {
@@ -859,7 +921,7 @@ const SUITES = {
     let g;
     console.log('▶', name);
     try {
-      g = await open({ gamepads: name === 'twoplayers' ? 2 : 0, iphone: name === 'iphone' || name === 'toques' });
+      g = await open({ gamepads: name === 'twoplayers' ? 2 : 0, iphone: name === 'iphone' || name === 'toques' || name === 'goleiro' });
       await SUITES[name](g, notes);
     } catch (e) {
       notes.push('✘ exceção: ' + String(e.message || e).split('\n')[0]); notes.failed = true;

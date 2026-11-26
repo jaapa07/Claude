@@ -192,7 +192,7 @@ export class TouchControls {
     const hasBall = !!me && owner === me;
     const taker = !!me && (st === 'kickoff' || st === 'setpiece') && m.sp?.taker === me;
     // saque/cobrança esperando o jogador: os botões de passe e chute piscam
-    this.root.classList.toggle('wait', taker);
+    this.root.classList.toggle('wait', taker || (hasBall && b.held)); // cobrança ou goleiro com a bola na mão: PASSE/LANÇAR piscam
     if (st !== 'play' && st !== 'kickoff' && st !== 'setpiece') return;
 
     // modo do layout
