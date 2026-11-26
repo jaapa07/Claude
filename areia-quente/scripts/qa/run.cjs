@@ -562,18 +562,18 @@ const SUITES = {
     const me1 = await g.ev(() => { const p = window.__game.flow.match.all.find((x) => x.device === 'kb'); return p && { x: p.pos.x, z: p.pos.z }; });
     check(me1 && Math.hypot(me1.x - me0.x, me1.z - me0.z) > 0.5, 'jogador se moveu com o joystick', n);
     // ATAQUE x DEFESA: entrega a bola para mim e depois para o adversário e confere o layout dos botões
-    const layout = () => g.ev(() => { const r = document.getElementById('touch'); const vis = (c) => getComputedStyle(document.querySelector('#touch .' + c)).opacity > 0.5;
+    const layout = () => g.ev(() => { const r = document.getElementById('touch'); const vis = (c) => getComputedStyle(document.querySelector('#touch .' + c)).opacity > 0.3; /* apagado = 0,5; escondido = 0 */
       return { atk: r.classList.contains('atk'), def: r.classList.contains('def'), pass: document.querySelector('#touch .b-pass span').textContent,
         tackle: vis('b-tackle'), trick: vis('b-trick'), lob: vis('b-lob'), shoot: vis('b-shoot'), big: document.querySelector('#touch .b-tackle').getBoundingClientRect().width }; });
     await g.ev(() => { const m = window.__game.flow.match; m.sp = null; m.state = 'play'; m.stateT = 0; m.takeBall(m.all.find((x) => x.device === 'kb')); });
     await g.waitFor(() => document.getElementById('touch').classList.contains('atk'), null, 20000).catch(() => {});
-    await sleep(350);
+    await sleep(900); // fim das transições de CSS
     const A1 = await layout();
     check(A1.atk && A1.pass === 'PASSE' && A1.trick && A1.lob && !A1.tackle, `ATAQUE: PASSE/CHUTE/LENÇOL/FIRULA, sem CARRINHO (${JSON.stringify(A1)})`, n);
     await g.shot('iphone_ataque');
     await g.ev(() => { const m = window.__game.flow.match; const me = m.all.find((x) => x.device === 'kb'); const op = m.all.find((x) => x.team !== me.team && x.onField && !x.isGK); m.sp = null; m.state = 'play'; m.stateT = 0; m.takeBall(op); });
     await g.waitFor(() => document.getElementById('touch').classList.contains('def'), null, 20000).catch(() => {});
-    await sleep(700);
+    await sleep(900);
     const D1 = await layout();
     check(D1.def && D1.pass === 'TROCAR' && D1.tackle && !D1.trick && !D1.lob && D1.big > A1.big, `DEFESA: CARRINHO grande, TROCAR, sem FIRULA/LENÇOL (${JSON.stringify(D1)})`, n);
     await g.shot('iphone_defesa');
