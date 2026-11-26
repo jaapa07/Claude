@@ -798,10 +798,12 @@ const SUITES = {
     check(okAim, `mira assistida: 20–25° fora do alvo ainda escolhe o companheiro certo (${aimRes.r.map(([i, id]) => (id === aimRes.ids[i] ? '✔' : '✘')).join('')})`, n);
     // passe real pelo toque apontando torto (≈25° fora) para o companheiro da diagonal
     await g.ev(() => { const me = window.__qaMe, d = me.team.dir, a = 25 * Math.PI / 180; window.__game.input.setStick({ x: Math.cos(a) * d * 0.9, y: Math.sin(a) * 0.9 }); window.__qaTgt = me.team.field.filter((x) => x !== me && !x.isGK)[1]; });
-    await sleep(150);
+    await sleep(900);
     await tapBtn('b-pass');
+    const tortoOk = await until(() => window.__game.flow.match.ball.owner === window.__qaTgt || window.__game.flow.match.passTo === window.__qaTgt, null, 20000);
+    const tortoTo = await g.ev(() => window.__game.flow.match.passTo?.data.short ?? '-');
     await g.ev(() => window.__game.input.setStick(null));
-    check(await until(() => window.__game.flow.match.ball.owner === window.__qaTgt || window.__game.flow.match.passTo === window.__qaTgt, null, 20000), 'passe pelo toque apontando torto vai para o companheiro da direção', n);
+    check(tortoOk, `passe pelo toque apontando torto vai para o companheiro da direção (${tortoTo})`, n);
 
     // ---- jogabilidade nova
     await scene('atk'); await waitMode('atk');
