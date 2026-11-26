@@ -4,6 +4,7 @@
  * (requestAnimationFrame) em janelas de alguns segundos, depois da largada.
  * Uso: npx tsx scripts/tools/fps-bench.ts [--url=http://127.0.0.1:4173] [--tracks=a,b] [--quality=low] [--secs=12]
  *      [--shots=<pasta>] (salva uma captura por pista) [--runs=1] [--arena=<id>]
+ *      [--fixed-dpr] (pixel ratio 0,6 fixo na corrida)
  *      [--static] (cenário parado: ms por quadro com a câmera da largada e +8 s, sem variação da corrida)
  */
 import { chromium, devices } from 'playwright';
@@ -19,6 +20,8 @@ const runs = Number(flags.runs ?? 1);
 const shots = flags.shots ? String(flags.shots) : null;
 const arena = flags.arena ? String(flags.arena) : null;
 const stat = !!flags.static;
+/** Resolução fixa (pixel ratio 0,6) também na corrida: tira a resolução adaptativa da comparação. */
+const fixedDpr = !!flags['fixed-dpr'];
 if (shots) mkdirSync(shots, { recursive: true });
 
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
@@ -27,7 +30,7 @@ try {
   for (let run = 0; run < runs; run++) {
     for (const track of arena ? [arena] : tracks) {
       // no modo parado, pixel ratio 0,6 fixa a resolução (a adaptativa não tem para onde descer): comparação justa
-      const ctx = await browser.newContext({ ...devices['iPhone 14 landscape'], ...(stat ? { deviceScaleFactor: 0.6 } : {}) });
+      const ctx = await browser.newContext({ ...devices['iPhone 14 landscape'], ...(stat || fixedDpr ? { deviceScaleFactor: 0.6 } : {}) });
       const page = await ctx.newPage();
       await page.addInitScript((q) => { localStorage.setItem('kl3d.settings.v1', JSON.stringify({ quality: q })); localStorage.setItem('kl3d.save', JSON.stringify({ version: 2, unlocked: { characters: [], karts: [], cups: ['aurora', 'eclipse', 'meteoro'] }, coins: 0, owned: { characters: [], karts: [], tires: [], cosmetics: [] }, trophies: {}, records: {}, stats: {} })); }, quality);
       await page.goto(`${url}/?fast=1&e2e=1`);
@@ -102,7 +105,8 @@ try {
         requestAnimationFrame(tick);
       })`) as number;
       (results[track] ??= []).push(Math.round(fps * 100) / 100);
-      console.log(`${track}: ${fps.toFixed(2)} FPS`);
+      const canvas = await page.evaluate('(() => { const c = document.querySelector("canvas"); return c.width + "x" + c.height; })()') as string;
+      console.log(`${track}: ${fps.toFixed(2)} FPS (canvas ${canvas})`);
       if (shots && run === 0) await page.screenshot({ path: path.join(shots, `${track}-${quality}.png`) });
       await ctx.close();
     }

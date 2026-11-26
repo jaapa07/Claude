@@ -70,6 +70,43 @@ Média 3,2 → 3,0 FPS (diferença dentro do ruído do renderizador por software
 abertura (2 mapas de ambiente, metadados e a fonte); por corrida na Baixa só o mapa de ambiente da pista
 (10–55 kB); na Média/Alta mais 0,2–0,78 MB de relevo conforme a pista. JS: 3.587 → 3.610 kB (gzip 1.209 → 1.217 kB).
 
+## Kits CC0 (Kenney e Quaternius): cenário extra, partículas e sons
+
+- **Cenário extra por pista e arena** (`tracks/<id>.dress.json`, `arenas/<id>.dress.json`, só visual e sem colisor;
+  malha, colisão, dados de corrida e linha da IA conferidos byte a byte como inalterados): arquibancadas, torres de
+  faixa, bandeiras, postes de luz, tendas e cones do Racing Kit na largada do Vale dos Moinhos, Cânion Solar, Pico
+  Boreal e Cidade Neon; pilhas de pneus (Car Kit) e barreiras no lado de fora das curvas; carros estacionados (Car
+  Kit) na Cidade Neon, no cais do Porto das Lanternas e em volta da Praça do Coreto; árvores, pinheiros, árvores
+  secas/retorcidas, arbustos, flores, samambaias e cogumelos da Quaternius e pedras/penhascos/cactos/tocos do Nature
+  Kit nas pistas de natureza, tingidos com a paleta de cada pista; radares e postes na Estação Lunar e na Cratera.
+- **Camadas por qualidade:** Baixa = 0 a 14 objetos leves por pista (0–4,7 mil triângulos, só o GLB da Kenney, sem
+  folhagem recortada); Média ≈ 6–50 mil triângulos; Alta ≈ 6–143 mil. Tudo fundido por material em blocos de 110 m
+  (≤ 2 chamadas de desenho por bloco). Tela dividida: só a camada da Baixa.
+- **Partículas:** 16 sprites do Particle Pack (faíscas de drift na cor do nível, chamas e clarão do turbo, anel do
+  miniturbo, fogo/redemoinho ao ser atingido, brilho de coleta, raios, fumaça e cascalho) num atlas combinado com o
+  próprio (uma leitura de textura). Na Baixa a fumaça de pneu e a poeira (emissores de alto volume) seguem com os
+  sprites próprios.
+- **Sons:** 19 gravações das Impact/Interface Sounds (batidas, aterrissagens, vidro do escudo, soco ao ser atingido,
+  menus, compra na loja), com RMS casado com os efeitos sintetizados e cópia AAC para o Safari.
+
+Medições (SwiftShader, iPhone 14 na horizontal, qualidade Baixa, antes = build anterior, depois = esta build,
+alternando antes/depois, FPS de 16 s de corrida com piloto automático):
+
+| Bateria | Pistas | Antes | Depois |
+|---|---|---:|---:|
+| Resolução adaptativa ligada (como no aparelho), 3 rodadas | Porto, Vale, Templo, Cidade, Bosque, Praça, Cânion, Pico, Cratera | 8,51 | 8,50 (−0,1 %) |
+| Resolução fixa (pixel ratio 0,6), 3 rodadas | Vale, Templo, Porto, Cratera | 10,20 | 10,25 (+0,5 %) |
+| Cenário parado, ms por quadro (largada e +8 s), 2 rodadas | 8 pistas/arenas | 137,1 ms | 136,7 ms (−0,3 %) |
+
+A variação entre rodadas da mesma build é de ±10 % por pista (itens e trajetória mudam a cada corrida); nenhuma
+pista ficou consistentemente mais lenta além disso, exceto o Templo Esmeralda na corrida (−4,5 % na média, embora
+o custo do cenário parado seja igual: +0,2 %). Média (2 rodadas): Vale 2,27 → 2,31 e Templo 2,17 → 2,02 FPS;
+Alta: 0,83 → 0,75 FPS (−10 %, a decoração cheia custa na Alta). Download a mais: na Baixa, o GLB da Kenney (450 kB,
+uma vez, só em pistas que têm objetos na Baixa) + atlas de partículas (79 kB) + a lista da pista (1–6 kB); na
+Média/Alta + o GLB da Quaternius (540 kB, uma vez). Áudio no início: +133 kB de Ogg, −60 kB de efeitos sintetizados
+que deixaram de ser baixados (AAC: +128/−49 kB). Nada disso entra no pré-carregamento do menu, exceto o áudio.
+Ferramenta: `npx tsx scripts/tools/fps-bench.ts` (`--static`, `--fixed-dpr`).
+
 ## Funcionalidades implementadas
 
 - **14 pilotos** (Nilo, Boro, Lumi, Tiko, Mia, Mavi, Runi, Zera, Capi, Tuca, Yuki, Kaito, Ren, Sora; 8 por corrida): GLB com skin, 10 clipes de animação, atlas de
