@@ -1,8 +1,8 @@
 # QA ponta a ponta
 
-Executado em 2026-11-26 01:54 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
+Executado em 2026-11-26 02:00 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
 
-**18/19 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
+**19/19 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
 bola perto do dono, controle duplicado, time humano sem jogador, estados presos, bola morta sem ninguém ir buscar).
 
 | Suíte | Resultado | Tempo |
@@ -25,7 +25,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 | career | ✔ OK | 161s |
 | mobile | ✔ OK | 34s |
 | iphone | ✔ OK | 199s |
-| toques | ✘ FALHOU | 306s |
+| toques | ✔ OK | 296s |
 
 ## menus
 
@@ -195,7 +195,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 - ✔ ATAQUE: layout aparece com a bola
 - ✔ PASSE (toque rápido) passa a bola
-- ✔ CHUTE (toque rápido) chuta para o gol (20.0 m/s)
+- ✔ CHUTE (toque rápido) chuta para o gol (19.9 m/s)
 - ✔ CHUTE segurado carrega a força (56%) e chuta
 - ✔ LENÇOL levanta a bola
 - ✔ FIRULA faz embaixadinha/chapéu
@@ -210,7 +210,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔ TROCAR, MARCAR e CARRINHO grande ({"pass":"TROCAR","press":true,"tackle":76})
 - ✔ CARRINHO dá o carrinho
 - ✔ MARCAR corre sozinho até o adversário (9.3 → 7.2 m)
-- ✘ TROCAR troca o jogador controlado
+- ✔ TROCAR troca o jogador controlado
 - ✔ toque entre dois botões aciona o mais próximo
 - ✔ seis toques rápidos seguidos são todos registrados
 - ✔ três dedos: joystick + CORRER + CHUTE ({"mx":1,"run":true,"shoot":true})

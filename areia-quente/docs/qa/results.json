@@ -255,11 +255,11 @@
  },
  "toques": {
   "name": "toques",
-  "ok": false,
+  "ok": true,
   "notes": [
    "✔ ATAQUE: layout aparece com a bola",
    "✔ PASSE (toque rápido) passa a bola",
-   "✔ CHUTE (toque rápido) chuta para o gol (20.0 m/s)",
+   "✔ CHUTE (toque rápido) chuta para o gol (19.9 m/s)",
    "✔ CHUTE segurado carrega a força (56%) e chuta",
    "✔ LENÇOL levanta a bola",
    "✔ FIRULA faz embaixadinha/chapéu",
@@ -274,7 +274,7 @@
    "✔ TROCAR, MARCAR e CARRINHO grande ({\"pass\":\"TROCAR\",\"press\":true,\"tackle\":76})",
    "✔ CARRINHO dá o carrinho",
    "✔ MARCAR corre sozinho até o adversário (9.3 → 7.2 m)",
-   "✘ TROCAR troca o jogador controlado",
+   "✔ TROCAR troca o jogador controlado",
    "✔ toque entre dois botões aciona o mais próximo",
    "✔ seis toques rápidos seguidos são todos registrados",
    "✔ três dedos: joystick + CORRER + CHUTE ({\"mx\":1,\"run\":true,\"shoot\":true})",
@@ -287,7 +287,7 @@
    "✔ troca automática passa o controle para quem está perto da bola",
    "  registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off hint fire:on pass:on tackle:on press:on pass:on shoot:on trick:on trick:off hint trick:off hint trick:off hint trick:off hint sprint:on shoot:on pass:on press:on"
   ],
-  "secs": 306,
-  "at": "2026-11-26T01:54:54.146Z"
+  "secs": 296,
+  "at": "2026-11-26T02:00:14.937Z"
  }
 }
