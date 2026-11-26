@@ -63,12 +63,12 @@
   "name": "human",
   "ok": true,
   "notes": [
-   "✔ jogador humano executou ações pelo teclado (46)",
-   "✔ time humano chutou a gol (4)",
+   "✔ jogador humano executou ações pelo teclado (45)",
+   "✔ time humano chutou a gol (3)",
    "✔ jogador controlado se movimentou"
   ],
-  "secs": 166,
-  "at": "2026-11-26T13:11:25.830Z"
+  "secs": 162,
+  "at": "2026-11-26T13:57:22.696Z"
  },
  "twoplayers": {
   "name": "twoplayers",
@@ -80,8 +80,8 @@
    "✔ saída cobrada pelo dispositivo do batedor (kb)",
    "✔ analógico move o jogador do controle 1"
   ],
-  "secs": 54,
-  "at": "2026-11-25T22:24:07.298Z"
+  "secs": 50,
+  "at": "2026-11-26T13:57:22.696Z"
  },
  "setpieces": {
   "name": "setpieces",
@@ -250,8 +250,8 @@
    "✔ opções do celular: botões, vibração, troca de versão; sem teclas",
    "✔ pc.html: versão PC sem controles de toque"
   ],
-  "secs": 178,
-  "at": "2026-11-26T12:27:56.510Z"
+  "secs": 194,
+  "at": "2026-11-26T13:57:22.696Z"
  },
  "toques": {
   "name": "toques",
@@ -259,11 +259,11 @@
   "notes": [
    "✔ ATAQUE: layout aparece com a bola",
    "✔ PASSE (toque rápido) passa a bola",
-   "✔ CHUTE (toque rápido) chuta para o gol (19.9 m/s)",
+   "✔ CHUTE (toque rápido) chuta para o gol (20.0 m/s)",
    "✔ CHUTE segurado carrega a força (56%) e chuta",
    "✔ LENÇOL levanta a bola",
    "✔ FIRULA faz embaixadinha/chapéu",
-   "✔ CORRER aumenta a velocidade (2.7 → 4.8 m/s)",
+   "✔ CORRER aumenta a velocidade (2.7 → 5.1 m/s)",
    "✔ FOGO apagado com a barra vazia",
    "✔ tocar em botão apagado mostra uma dica",
    "✔ FOGO com a barra cheia ativa o Modo Fogo",
@@ -274,7 +274,7 @@
    "✔ TROCAR, MARCAR e CARRINHO grande ({\"pass\":\"TROCAR\",\"press\":true,\"tackle\":76})",
    "✔ CARRINHO dá o carrinho",
    "✔ MARCAR corre sozinho até o adversário (9.3 → 6.2 m)",
-   "✘ TROCAR troca o jogador controlado",
+   "✔ TROCAR troca o jogador controlado",
    "✔ toque entre dois botões aciona o mais próximo",
    "✘ seis toques rápidos seguidos são todos registrados (5)",
    "✔ três dedos: joystick + CORRER + CHUTE ({\"mx\":1,\"run\":true,\"shoot\":true})",
@@ -290,9 +290,9 @@
    "✔ bola aérea ao alcance: aviso CHUTE! e botão piscando",
    "✔ MARCAR colado no adversário dá o bote",
    "✔ troca automática passa o controle para quem está perto da bola",
-   "  registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off hint fire:on pass:on tackle:on press:on pass:on pass:on pass:on shoot:on trick:on trick:off hint trick:off hint trick:on trick:off hint sprint:on shoot:on pass:on lob:on pass:on pass:on press:on"
+   "  registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off hint fire:on pass:on tackle:on press:on pass:on shoot:on trick:on trick:off hint trick:off hint trick:off hint trick:off hint sprint:on shoot:on pass:on lob:on pass:on pass:on press:on"
   ],
-  "secs": 369,
-  "at": "2026-11-26T13:44:22.460Z"
+  "secs": 338,
+  "at": "2026-11-26T13:57:22.696Z"
  }
 }
