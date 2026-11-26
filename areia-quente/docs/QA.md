@@ -1,17 +1,17 @@
 # QA ponta a ponta
 
-Executado em 2026-11-26 01:18 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
+Executado em 2026-11-26 01:32 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
 
-**18/19 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
+**17/19 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
 bola perto do dono, controle duplicado, time humano sem jogador, estados presos, bola morta sem ninguém ir buscar).
 
 | Suíte | Resultado | Tempo |
 |---|---|---|
 | menus | ✔ OK | 246s |
 | options | ✔ OK | 45s |
-| fullmatch | ✔ OK | 154s |
+| fullmatch | ✘ FALHOU | 138s |
 | arenas | ✔ OK | 132s |
-| human | ✔ OK | 166s |
+| human | ✔ OK | 169s |
 | twoplayers | ✔ OK | 54s |
 | setpieces | ✔ OK | 66s |
 | fouls | ✔ OK | 60s |
@@ -24,8 +24,8 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 | memory | ✔ OK | 108s |
 | career | ✔ OK | 161s |
 | mobile | ✔ OK | 34s |
-| iphone | ✔ OK | 207s |
-| toques | ✘ FALHOU | 276s |
+| iphone | ✔ OK | 199s |
+| toques | ✘ FALHOU | 316s |
 
 ## menus
 
@@ -59,8 +59,9 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 ## fullmatch
 
 - ✔ partida de 3 períodos termina na tela de resultado
-- ✔ ciclo de estados completo (play, halftime, replay, kickoff, periodEnd, goal, fulltime)
-- ✔ houve chutes (8,13)
+- ✔ ciclo de estados completo (play, replay, halftime, setpiece, kickoff, fulltime)
+- ✔ houve chutes (8,8)
+- ✘ 1 anomalia(s): bola fora do mundo 41.0,3.0,8.1 estado=goal
 
 ## arenas
 
@@ -69,8 +70,8 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 ## human
 
-- ✔ jogador humano executou ações pelo teclado (43)
-- ✔ time humano chutou a gol (2)
+- ✔ jogador humano executou ações pelo teclado (44)
+- ✔ time humano chutou a gol (5)
 - ✔ jogador controlado se movimentou
 
 ## twoplayers
@@ -195,7 +196,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 - ✔ ATAQUE: layout aparece com a bola
 - ✔ PASSE (toque rápido) passa a bola
-- ✔ CHUTE (toque rápido) chuta para o gol (19.9 m/s)
+- ✔ CHUTE (toque rápido) chuta para o gol (19.8 m/s)
 - ✔ CHUTE segurado carrega a força (56%) e chuta
 - ✔ LENÇOL levanta a bola
 - ✔ FIRULA faz embaixadinha/chapéu
@@ -209,14 +210,18 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 - ✔ DEFESA: layout aparece com o adversário na bola
 - ✔ TROCAR, MARCAR e CARRINHO grande ({"pass":"TROCAR","press":true,"tackle":76})
 - ✘ CARRINHO dá o carrinho
-- ✔ MARCAR corre sozinho até o adversário (9.2 → 7.7 m)
+- ✔ MARCAR corre sozinho até o adversário (9.1 → 8.0 m)
 - ✔ TROCAR troca o jogador controlado
 - ✔ toque entre dois botões aciona o mais próximo
 - ✔ seis toques rápidos seguidos são todos registrados
 - ✔ três dedos: joystick + CORRER + CHUTE ({"mx":1,"run":true,"shoot":true})
 - ✔ soltar todos os dedos solta tudo
+- ✔ proteção ao dominar a bola
+- ✔ tabela: quem passou dispara para receber de volta
+- ✔ tabela: o passador corre para o espaço
+- ✔ bola aérea ao alcance: aviso CHUTE! e botão piscando
+- ✔ MARCAR colado no adversário dá o bote
 - ✔ troca automática passa o controle para quem está perto da bola
--   registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off hint fire:on pass:on shoot:on press:on pass:on shoot:on trick:on trick:off hint trick:off hint trick:off hint trick:off hint trick:off hint sprint:on shoot:on
-- ✘ 1 anomalia(s): bola longe do dono (6.7 m) estado=play
+-   registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off hint fire:on pass:on tackle:off hint press:on pass:on shoot:on trick:on trick:off hint trick:off hint trick:off hint trick:on sprint:on shoot:on pass:on press:on
 
 Capturas de tela das suítes em `docs/qa/`.

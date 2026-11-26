@@ -67,7 +67,9 @@ export class Ball {
     if (this.frozen) { this.sync(dt, 0); return; }
     if (this.owner || this.held) { this.sync(dt, this.vel.length()); return; }
     const p = this.pos, v = this.vel;
-    const sub = 3;
+    // subpassos adaptativos: a bola nunca anda mais que ~12 cm por passo (chute de 35 m/s num aparelho lento
+    // a 10 qps atravessava a rede inteira num passo só)
+    const sub = Math.min(40, Math.max(3, Math.ceil((v.length() * dt) / 0.12)));
     const h = dt / sub;
     for (let i = 0; i < sub; i++) {
       // efeito: força perpendicular à velocidade horizontal

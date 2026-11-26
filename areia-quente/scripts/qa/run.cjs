@@ -628,7 +628,9 @@ const SUITES = {
       b.owner = null; b.held = false; b.vel.set(0, 0, 0); b.pos.set(0, 0.11, 0); b.lastTouch = null; m.passTo = null;
       if (kind === 'atk') { m.takeBall(me); }
       if (kind === 'sup') { const mate = tm.field.find((x) => x !== me && !x.isGK); mate.pos.set(-dir * 6, 0, 3); mate.sync(); m.takeBall(mate); }
-      if (kind === 'def') { const o = opp.field.find((x) => !x.isGK); o.pos.set(dir * 2.2, 0, 0.4); o.vel.set(0, 0, 0); o.sync(); m.takeBall(o); }
+      for (const p of m.all) if (p.device === 'qa') p.device = null;
+      // adversário com a bola "congelado" (sem IA) para o teste não depender do que a CPU decide
+      if (kind === 'def') { const o = opp.field.find((x) => !x.isGK); o.pos.set(dir * 2.2, 0, 0.4); o.vel.set(0, 0, 0); o.sync(); m.takeBall(o); o.device = 'qa'; o.protectT = 0; }
       if (kind === 'deffar') { const o = opp.field.find((x) => !x.isGK); o.pos.set(dir * 9, 0, 4); o.sync(); m.takeBall(o); }
       if (b.owner) b.pos.copy(b.owner.pos).addScaledVector(b.owner.forward, 0.45).setY(0.11);
       window.__qaMe = me;

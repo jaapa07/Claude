@@ -40,14 +40,15 @@
  },
  "fullmatch": {
   "name": "fullmatch",
-  "ok": true,
+  "ok": false,
   "notes": [
    "✔ partida de 3 períodos termina na tela de resultado",
-   "✔ ciclo de estados completo (play, halftime, replay, kickoff, periodEnd, goal, fulltime)",
-   "✔ houve chutes (8,13)"
+   "✔ ciclo de estados completo (play, replay, halftime, setpiece, kickoff, fulltime)",
+   "✔ houve chutes (8,8)",
+   "✘ 1 anomalia(s): bola fora do mundo 41.0,3.0,8.1 estado=goal"
   ],
-  "secs": 154,
-  "at": "2026-11-26T00:56:23.742Z"
+  "secs": 138,
+  "at": "2026-11-26T01:32:05.980Z"
  },
  "arenas": {
   "name": "arenas",
@@ -63,12 +64,12 @@
   "name": "human",
   "ok": true,
   "notes": [
-   "✔ jogador humano executou ações pelo teclado (43)",
-   "✔ time humano chutou a gol (2)",
+   "✔ jogador humano executou ações pelo teclado (44)",
+   "✔ time humano chutou a gol (5)",
    "✔ jogador controlado se movimentou"
   ],
-  "secs": 166,
-  "at": "2026-11-26T00:56:23.742Z"
+  "secs": 169,
+  "at": "2026-11-26T01:32:05.980Z"
  },
  "twoplayers": {
   "name": "twoplayers",
@@ -250,8 +251,8 @@
    "✔ opções do celular: botões, vibração, troca de versão; sem teclas",
    "✔ pc.html: versão PC sem controles de toque"
   ],
-  "secs": 207,
-  "at": "2026-11-26T01:18:00.421Z"
+  "secs": 199,
+  "at": "2026-11-26T01:32:05.980Z"
  },
  "toques": {
   "name": "toques",
@@ -259,7 +260,7 @@
   "notes": [
    "✔ ATAQUE: layout aparece com a bola",
    "✔ PASSE (toque rápido) passa a bola",
-   "✔ CHUTE (toque rápido) chuta para o gol (19.9 m/s)",
+   "✔ CHUTE (toque rápido) chuta para o gol (19.8 m/s)",
    "✔ CHUTE segurado carrega a força (56%) e chuta",
    "✔ LENÇOL levanta a bola",
    "✔ FIRULA faz embaixadinha/chapéu",
@@ -273,17 +274,21 @@
    "✔ DEFESA: layout aparece com o adversário na bola",
    "✔ TROCAR, MARCAR e CARRINHO grande ({\"pass\":\"TROCAR\",\"press\":true,\"tackle\":76})",
    "✘ CARRINHO dá o carrinho",
-   "✔ MARCAR corre sozinho até o adversário (9.2 → 7.7 m)",
+   "✔ MARCAR corre sozinho até o adversário (9.1 → 8.0 m)",
    "✔ TROCAR troca o jogador controlado",
    "✔ toque entre dois botões aciona o mais próximo",
    "✔ seis toques rápidos seguidos são todos registrados",
    "✔ três dedos: joystick + CORRER + CHUTE ({\"mx\":1,\"run\":true,\"shoot\":true})",
    "✔ soltar todos os dedos solta tudo",
+   "✔ proteção ao dominar a bola",
+   "✔ tabela: quem passou dispara para receber de volta",
+   "✔ tabela: o passador corre para o espaço",
+   "✔ bola aérea ao alcance: aviso CHUTE! e botão piscando",
+   "✔ MARCAR colado no adversário dá o bote",
    "✔ troca automática passa o controle para quem está perto da bola",
-   "  registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off hint fire:on pass:on shoot:on press:on pass:on shoot:on trick:on trick:off hint trick:off hint trick:off hint trick:off hint trick:off hint sprint:on shoot:on",
-   "✘ 1 anomalia(s): bola longe do dono (6.7 m) estado=play"
+   "  registro de toques: pass:on shoot:on shoot:on lob:on trick:on sprint:on fire:off hint fire:on pass:on tackle:off hint press:on pass:on shoot:on trick:on trick:off hint trick:off hint trick:off hint trick:on sprint:on shoot:on pass:on press:on"
   ],
-  "secs": 276,
-  "at": "2026-11-26T01:18:00.421Z"
+  "secs": 316,
+  "at": "2026-11-26T01:32:05.980Z"
  }
 }
