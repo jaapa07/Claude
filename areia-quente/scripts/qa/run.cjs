@@ -866,7 +866,7 @@ const SUITES = {
         const atk = m.teams[i % 2], gx = m.goalX(atk);
         const shooter = atk.field.find((x) => !x.isGK && x.onField);
         shooter.pos.set(gx - atk.dir * (5 + (i % 5) * 1.5), 0, ((i * 7) % 9) - 4); shooter.vel.set(0, 0, 0); shooter.kick = null; shooter.stun = 0; shooter.sync();
-        m.ball.owner = null; m.ball.held = false; m.takeBall(shooter);
+        m.ball.owner = null; m.ball.held = false; m.ball.vel.set(0, 0, 0); m.ball.pos.copy(shooter.pos).addScaledVector(shooter.forward, 0.45).setY(0.11); m.takeBall(shooter);
         // metade dos chutes fracos e no meio (o goleiro agarra), metade variados
         m.queueKick(shooter, 'shot', i % 2 ? 0.2 : 0.4 + (i % 4) * 0.2, i % 2 ? new window.__game.world.camera.position.constructor(0, 0, 0) : null, null);
       }, i);
@@ -893,23 +893,51 @@ const SUITES = {
       window.__qaGK = gk; window.__qaGK0 = gk.pos.clone(); return { held: m.ball.held, dev: gk.device }; });
     const h0 = await setHold();
     check(h0.held && h0.dev === 'kb', 'meu goleiro agarra e recebe o controle', n);
-    await sleep(800);
-    const ui = await g.ev(() => ({ msg: document.querySelector('.hud .msg')?.textContent || document.querySelector('.hud')?.textContent.match(/Goleiro com a bola[^·]*/)?.[0] || '', wait: document.getElementById('touch').classList.contains('wait'), label: document.querySelector('#touch .b-shoot span').textContent }));
+    // avança o jogo em passos fixos (independe da lentidão do Chromium de teste)
+    const step = (sec) => g.ev((sec) => { for (let i = 0; i < Math.round(sec / 0.05); i++) window.__game.flow.update(0.05); window.__game.touch?.update(); }, sec);
+    await step(0.6); await sleep(400); await g.ev(() => window.__game.touch?.update()); // a troca de layout espera 150 ms reais
+    const ui = await g.ev(() => ({ msg: document.querySelector('.hud')?.textContent.match(/Goleiro com a bola[^·]*/)?.[0] || '', wait: document.getElementById('touch').classList.contains('wait'), label: document.querySelector('#touch .b-shoot span').textContent }));
     check(/Goleiro com a bola/.test(ui.msg) && ui.wait && ui.label === 'LANÇAR', `aviso "Goleiro com a bola" + PASSE/LANÇAR piscando (${JSON.stringify(ui)})`, n);
     await g.ev(() => window.__game.input.setStick({ x: 0, y: 0.9 }));
-    await sleep(1500);
+    await step(1.5);
     await g.ev(() => window.__game.input.setStick(null));
     const walked = await g.ev(() => window.__qaGK.pos.distanceTo(window.__qaGK0));
     check(walked > 0.5 && await g.ev(() => window.__game.flow.match.ball.held), `goleiro anda com a bola na mão (${walked.toFixed(1)} m)`, n);
     await g.shot('goleiro_bola');
     const pc = await g.center('#touch .b-pass'); await g.page.touchscreen.tap(pc.x, pc.y);
+    await step(0.2);
     check(await g.waitFor(() => !window.__game.flow.match.ball.held, null, 20000).then(() => true, () => false), 'tocar PASSE repõe a bola', n);
     // sem tocar em nada: regra dos 6 segundos
     await setHold();
-    await g.speed(4);
-    const auto = await g.waitFor(() => !window.__game.flow.match.ball.held, null, 60000).then(() => true, () => false);
-    await g.speed(1);
-    check(auto, 'sem tocar em nada, o goleiro repõe sozinho em 6 s', n);
+    await step(5.0);
+    const still = await g.ev(() => window.__game.flow.match.ball.held);
+    await step(2.5);
+    const auto = await g.ev(() => !window.__game.flow.match.ball.held);
+    check(still && auto, `sem tocar em nada, o goleiro espera e repõe sozinho aos 6 s (com 5 s ainda segurando: ${still}; aos 7,5 s solto: ${auto})`, n);
+  },
+
+  /** Formatos 3x3 / 4x4 / 5x5: seletor na escolha de times e partidas CPU x CPU em cada formato. */
+  async formatos(g, n) {
+    await g.ev(() => { window.__game.flow.setup.mode = 'friendly'; window.__game.flow.teamSelect(false); }); await g.waitScene('teams'); await sleep(800);
+    const chips = await g.ev(() => [...document.querySelectorAll('.size-pick .a')].map((a) => a.textContent));
+    check(chips.join(',') === '3x3,4x4,5x5', `seletor de formato na escolha de times (${chips.join(' ')})`, n);
+    await g.page.click('.size-pick .a[data-s="3"]'); await sleep(300);
+    check(await g.ev(() => window.__game.settings.teamSize === 3 && document.querySelector('.size-pick .a.on')?.textContent === '3x3'), 'clicar em 3x3 seleciona o formato', n);
+    await g.shot('formato_escolha');
+    for (const size of [3, 4, 5]) {
+      await g.ev((sz) => { window.__game.settings.teamSize = sz; }, size);
+      await quickMatch(g); await skipIntro(g);
+      const info = await g.ev(() => { const m = window.__game.flow.match; return m.teams.map((t) => ({ field: t.field.length, bench: t.bench.length, gk: !!t.gk?.isGK, slots: t.players.map((p) => p.slot).join('') })); });
+      check(info.every((t) => t.field === size && t.gk && t.field + t.bench === 10), `${size}x${size}: ${size} em campo (com goleiro) e ${10 - size} no banco ${JSON.stringify(info)}`, n);
+      await g.speed(6);
+      await sleep(25000);
+      await g.speed(1);
+      const st2 = await st(g);
+      check(st2.clock > 20 || st2.state !== 'kickoff', `${size}x${size}: a partida anda (relógio ${st2.clock}s, estado ${st2.state}, placar ${st2.score.join('x')}, chutes ${st2.shots.join('x')})`, n);
+      await g.shot(`formato_${size}x${size}`);
+      await g.ev(() => window.__game.flow.mainMenu()); await g.waitScene('menu');
+    }
+    await g.ev(() => { window.__game.settings.teamSize = 5; });
   },
 };
 

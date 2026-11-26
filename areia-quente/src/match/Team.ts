@@ -38,11 +38,17 @@ export class Team {
   get field() { return this.players.filter((p) => p.onField); }
   kitUrl(i: number) { return `textures/kits/${this.data.id}_${this.kit}_${i}.webp`; }
 
-  build() {
-    // titulares: índices 0..4 (GOL, FIXO, ALA, ALA, PIVÔ); reservas 5..9
+  /**
+   * Titulares conforme o formato da partida (o número conta o goleiro):
+   * 5x5 = GOL, FIXO, ALA, ALA, PIVÔ · 4x4 = GOL, FIXO, ALA, ALA · 3x3 = GOL, FIXO, PIVÔ. O resto vai para o banco.
+   */
+  size: 3 | 4 | 5 = 5;
+  build(size: 3 | 4 | 5 = 5) {
+    this.size = size;
     const ps = this.data.players;
-    for (let i = 0; i < 5; i++) this.players.push(new Player(ps[i], this, i, this.kitUrl(i)));
-    for (let i = 5; i < 10; i++) this.bench.push(new Player(ps[i], this, i - 5, this.kitUrl(i)));
+    const starters = size === 3 ? [0, 1, 4] : size === 4 ? [0, 1, 2, 3] : [0, 1, 2, 3, 4];
+    for (const i of starters) this.players.push(new Player(ps[i], this, i, this.kitUrl(i)));
+    for (let i = 0; i < 10; i++) if (!starters.includes(i)) this.bench.push(new Player(ps[i], this, Math.max(1, i % 5), this.kitUrl(i)));
   }
 
   /** Substituição: troca titular por reserva mantendo a posição. */

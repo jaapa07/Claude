@@ -310,7 +310,9 @@ export class Flow {
     const card = (side: 'l' | 'r') => `<div class="tcard panel ${side}"><div class="side">${side === 'l' ? t('home') : t('away')}</div>
       <div class="row"><span class="arrow" data-d="-1">◀</span><img class="em"><span class="arrow" data-d="1">▶</span></div>
       <div class="name"></div><div class="nick"></div><img class="flag"><div class="stats"></div><div class="kit"><div class="sw" data-k="home"></div><div class="sw" data-k="away"></div></div></div>`;
+    const sizePick = !training && !careerMode; // amistoso e copa escolhem 3x3 / 4x4 / 5x5
     const el = html(`<div class="screen teamsel"><h1 class="title">${training ? t('training_title') : careerMode ? 'Carreira: escolha sua seleção' : t('team_select')}</h1>${card('l')}${training || cupMode ? '' : card('r')}
+      ${sizePick ? `<div class="size-pick"><span>Formato</span>${[3, 4, 5].map((n) => `<div class="a" data-s="${n}">${n}x${n}</div>`).join('')}</div>` : ''}
       <div class="arena-pick">${arenaDefs.map((a) => `<div class="a" data-a="${a.id}">${a.name}</div>`).join('')}</div>
       <div class="hint"><img src="${A('ui/input/key_arrows.png')}">times/uniformes · <img src="${A('ui/input/key_enter.png')}">${t('start_match')} · <img src="${A('ui/input/key_escape.png')}">${t('back')}</div></div>`);
     this.mount(el);
@@ -343,6 +345,7 @@ export class Flow {
       if (models[0]) models[0].setKit(this.kit(teams[hi], this.setup.homeKit, 4));
       if (models[1]) models[1].setKit(this.kit(teams[ai], this.setup.awayKit, 4));
       el.querySelectorAll('.arena-pick .a').forEach((a) => a.classList.toggle('on', (a as HTMLElement).dataset.a === this.setup.arena));
+      el.querySelectorAll('.size-pick .a').forEach((a) => a.classList.toggle('on', +(a as HTMLElement).dataset.s! === (settings.data.teamSize ?? 5)));
     };
     for (let i = 0; i < cards.length; i++) {
       const m = new Athlete(i === 0 ? this.kit(teams[hi], this.setup.homeKit, 4) : this.kit(teams[ai], this.setup.awayKit, 4));
@@ -355,6 +358,7 @@ export class Flow {
       c.querySelectorAll('.sw').forEach((s) => s.addEventListener('click', () => { if (i === 0) this.setup.homeKit = (s as HTMLElement).dataset.k as any; else this.setup.awayKit = (s as HTMLElement).dataset.k as any; refresh(); }));
     });
     el.querySelectorAll('.arena-pick .a').forEach((a) => a.addEventListener('click', () => { this.setup.arena = (a as HTMLElement).dataset.a!; refresh(); }));
+    el.querySelectorAll('.size-pick .a').forEach((a) => a.addEventListener('click', () => { settings.data.teamSize = +(a as HTMLElement).dataset.s! as 3 | 4 | 5; settings.save(); refresh(); audio.play('ui_move', 0.5); }));
     const step = (d: number) => {
       if (focus === 0) hi = (hi + d + teams.length) % teams.length; else ai = (ai + d + teams.length) % teams.length;
       if (!training && hi === ai) { if (focus === 0) hi = (hi + d + teams.length) % teams.length; else ai = (ai + d + teams.length) % teams.length; }
@@ -363,23 +367,26 @@ export class Flow {
       refresh();
     };
     refresh();
-    let row = 0; // 0 = time, 1 = uniforme, 2 = arena
+    let row = 0; // 0 = time, 1 = uniforme, 2 = arena, 3 = formato (amistoso/copa)
+    const rows = sizePick ? 4 : 3;
     this.tick = (dt) => {
       const c = this.world.camera;
       c.position.set(0, 1.7, 8); c.lookAt(0, 1.25, 2);
       models.forEach((m, i) => { m.root.rotation.y = Math.sin(this.t * 0.6 + i) * 0.5; if (m.locked <= 0 && !m.isLoco() && m.current !== 'idle_ready') m.play(i === 0 ? 'idle_ready' : 'idle', 0.3); });
       const M = input.menu;
-      if (M.up) { row = (row + 2) % 3; audio.play('ui_move', 0.4); }
-      if (M.down) { row = (row + 1) % 3; audio.play('ui_move', 0.4); }
+      if (M.up) { row = (row + rows - 1) % rows; audio.play('ui_move', 0.4); }
+      if (M.down) { row = (row + 1) % rows; audio.play('ui_move', 0.4); }
       if (M.left || M.right) {
         const d = M.left ? -1 : 1;
         if (row === 0) step(d);
         else if (row === 1) { if (focus === 0) this.setup.homeKit = this.setup.homeKit === 'home' ? 'away' : 'home'; else this.setup.awayKit = this.setup.awayKit === 'home' ? 'away' : 'home'; refresh(); audio.play('ui_move', 0.5); }
+        else if (row === 3) { const o = [3, 4, 5], i = o.indexOf(settings.data.teamSize ?? 5); settings.data.teamSize = o[(i + d + 3) % 3] as 3 | 4 | 5; settings.save(); refresh(); audio.play('ui_move', 0.5); }
         else { const i = arenaDefs.findIndex((a) => a.id === this.setup.arena); this.setup.arena = arenaDefs[(i + d + arenaDefs.length) % arenaDefs.length].id; refresh(); audio.play('ui_move', 0.5); }
       }
       if (input.pressed('kb', 'trick') || (input.devices()[1] && input.pressed(input.devices()[1], 'trick'))) { focus = cards.length > 1 ? 1 - focus : 0; refresh(); }
       cards.forEach((cc, i) => cc.style.outline = i === focus ? `3px solid ${row === 0 ? '#ffb81f' : row === 1 ? '#7fd2ff' : '#fff'}` : 'none');
       el.querySelector('.arena-pick')!.setAttribute('style', row === 2 ? 'filter:drop-shadow(0 0 10px #ffb81f)' : '');
+      el.querySelector('.size-pick')?.setAttribute('style', row === 3 ? 'filter:drop-shadow(0 0 10px #ffb81f)' : '');
       if (M.ok || M.start) {
         audio.play('ui_ok'); this.tick = undefined;
         if (careerMode) { this.career = newCareer(this.setup.home.id, this.setup.homeKit); careerStore.save(this.career); this.fade(() => this.careerHub()); return; }
@@ -442,7 +449,7 @@ export class Flow {
     const solo = s.mode === 'training' || s.mode === 'mini';
     const opts: MatchOpts = { home: s.home, away: solo ? teams[(teams.indexOf(s.home) + 1) % teams.length] : s.away,
       homeKit: s.homeKit, awayKit: solo ? 'home' : s.awayKit, arena: s.arena, homeDevices: s.homeDevices, awayDevices: s.awayDevices, mode: s.mode === 'career' ? 'cup' : s.mode, noDraw: s.mode === 'cup' || s.mode === 'career',
-      mini: s.mode === 'mini' ? s.mini : undefined };
+      mini: s.mode === 'mini' ? s.mini : undefined, size: s.mode === 'career' || solo ? 5 : (settings.data.teamSize ?? 5) };
     const m = new Match(this.world, opts);
     this.match = m;
     m.onEnd = (r) => this.results(r);

@@ -47,6 +47,9 @@ function anchor(m: Match, p: Player, attacking: boolean, out: THREE.Vector3) {
       if (f === '1-1-2' && attacking) v += 3;
       break;
   }
+  // formatos menores: menos gente para cobrir a largura do campo
+  if (tm.size === 3) { if (p.slot === 1) v = bz * 0.7; else if (p.slot === 4) v = attacking ? -Math.sign(bz || 1) * 4 + bz * 0.2 : bz * 0.5; }
+  if (tm.size === 4 && (p.slot === 2 || p.slot === 3) && attacking) u = Math.min(15, u + 2); // sem pivô, os alas atacam mais
   out.set(u * d, 0, THREE.MathUtils.clamp(v, -FIELD.HW + 1, FIELD.HW - 1));
   out.x = THREE.MathUtils.clamp(out.x, -FIELD.HL + 1.5, FIELD.HL - 1.5);
   return out;

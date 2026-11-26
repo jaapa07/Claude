@@ -21,6 +21,8 @@ export type MatchMode = 'friendly' | 'cup' | 'training' | 'mini';
 export type MatchOpts = {
   home: TeamData; away: TeamData; homeKit: 'home' | 'away'; awayKit: 'home' | 'away'; arena: string;
   homeDevices: DeviceId[]; awayDevices: DeviceId[]; mode: MatchMode; label?: string; noDraw?: boolean; mini?: MiniKind;
+  /** jogadores por time contando o goleiro (5x5 padrão; 4x4 e 3x3 no amistoso/copa) */
+  size?: 3 | 4 | 5;
 };
 export type MatchResult = { home: Team; away: Team; winner: Team | null; pens: boolean; extra: boolean; mom: Player };
 
@@ -101,7 +103,8 @@ export class Match {
     const diff = settings.data.difficulty;
     for (const tm of [home, away]) tm.speedMul = tm.human ? 1 : [0.9, 1.0, 1.07][diff];
     this.teams = [home, away];
-    home.build(); away.build();
+    const size = opts.mini || opts.mode === 'training' ? 5 : opts.size ?? 5;
+    home.build(size); away.build(size);
     this.kickoffTeam = home;
     this.ball = new Ball();
     this.ref = new Athlete(Math.random() < 0.5 ? 'textures/kits/referee_0.webp' : 'textures/kits/referee_1.webp');
@@ -176,13 +179,13 @@ export class Match {
         this.cam.playPath([{ p: new THREE.Vector3(-70, 45, 70), l: new THREE.Vector3(0, 0, 0), t: 0 }, { p: new THREE.Vector3(10, 28, 55), l: new THREE.Vector3(0, 4, -10), t: 4.2 }]);
         this.hud.lower(null);
       } else if (step === 1) {
-        const p = this.teams[0].players[4];
+        const p = this.star(this.teams[0]);
         p.pos.set(-4, 0, 3); p.yaw = 0.4; p.ath.play('juggle', 0); p.sync();
         this.ball.place(-3.6, 3.5, 1.0);
         this.cam.playPath([{ p: new THREE.Vector3(-1.5, 1.6, 7.5), l: new THREE.Vector3(-4, 1.2, 3), t: 0 }, { p: new THREE.Vector3(-6.5, 1.4, 7.0), l: new THREE.Vector3(-4, 1.3, 3), t: 4.2 }]);
         this.hud.lower(p, 'Aquecimento');
       } else if (step === 2) {
-        const p = this.teams[1].players[4];
+        const p = this.star(this.teams[1]);
         p.pos.set(5, 0, 2); p.yaw = -0.5; p.ath.play('stretch', 0); p.sync();
         this.cam.playPath([{ p: new THREE.Vector3(8.5, 2.2, 7.5), l: new THREE.Vector3(5, 1.0, 2), t: 0 }, { p: new THREE.Vector3(3, 1.8, 7.8), l: new THREE.Vector3(5, 1.1, 2), t: 4.2 }]);
         this.hud.lower(p, 'Aquecimento');
@@ -256,6 +259,9 @@ export class Match {
       }
     }
   }
+
+  /** o craque do time na apresentação (pivô; nos formatos menores, o último titular) */
+  star(tm: Team) { return tm.players.find((p) => p.slot === 4) ?? tm.players[tm.players.length - 1]; }
 
   giveControl(p: Player) {
     const tm = p.team;

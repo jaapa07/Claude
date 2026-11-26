@@ -8,6 +8,8 @@ export type Settings = {
   touchSize: 0 | 1 | 2; vibrate: boolean;
   /** troca automática para o jogador mais perto da bola na defesa */
   autoSwitch: boolean;
+  /** formato do amistoso/copa: jogadores por time contando o goleiro */
+  teamSize: 3 | 4 | 5;
 };
 
 export const DEFAULT_KEYS: Record<string, string> = {
@@ -17,8 +19,8 @@ export const DEFAULT_KEYS: Record<string, string> = {
 
 // cada versão tem suas próprias configurações (PC começa no gráfico alto, celular no médio com tempos mais curtos)
 const DEF: Settings = platform.mobile
-  ? { music: 0.7, sfx: 0.9, crowd: 0.8, periodMinutes: 2, difficulty: 1, quality: 1, keys: { ...DEFAULT_KEYS }, touchSize: 1, vibrate: true, autoSwitch: true }
-  : { music: 0.7, sfx: 0.9, crowd: 0.8, periodMinutes: 3, difficulty: 1, quality: 2, keys: { ...DEFAULT_KEYS }, touchSize: 1, vibrate: true, autoSwitch: true };
+  ? { music: 0.7, sfx: 0.9, crowd: 0.8, periodMinutes: 2, difficulty: 1, quality: 1, keys: { ...DEFAULT_KEYS }, touchSize: 1, vibrate: true, autoSwitch: true, teamSize: 5 }
+  : { music: 0.7, sfx: 0.9, crowd: 0.8, periodMinutes: 3, difficulty: 1, quality: 2, keys: { ...DEFAULT_KEYS }, touchSize: 1, vibrate: true, autoSwitch: true, teamSize: 5 };
 const SETTINGS_KEY = platform.mobile ? 'aq.settings.mobile' : 'aq.settings';
 
 function read<T>(k: string, def: T): T {
