@@ -853,8 +853,11 @@ export class Match {
       if (live) {
         // lista fixada antes: se TROCAR/passe mudar o controle neste quadro, o novo jogador não relê o mesmo botão
         // (antes o controle ia e voltava no mesmo quadro e o TROCAR às vezes "não funcionava")
-        if (tm.devices.length) for (const p of tm.players.filter((x) => x.device && x.onField)) if (p.device) this.humanUpdate(p, dt);
-        teamAI(this, tm, dt);
+        // disputa de pênaltis: só cobrador e goleiro agem (antes os jogadores de linha voltavam a jogar depois de uma defesa)
+        if (!this.pens) {
+          if (tm.devices.length) for (const p of tm.players.filter((x) => x.device && x.onField)) if (p.device) this.humanUpdate(p, dt);
+          teamAI(this, tm, dt);
+        } else if (this.sp?.taker?.team === tm && this.sp.taker.device && this.state === 'penalties') this.humanUpdate(this.sp.taker, dt);
         gkAI(this, tm, dt);
       }
     }
@@ -986,7 +989,7 @@ export class Match {
       if (e.type === 'goal' && this.state === 'play') this.goal(e.p.x > 0 ? 1 : -1, e.p);
       if (e.type === 'board') audio.play('body', 0.4);
     }
-    if (this.pens && this.shotPen && this.stateT > 0.4 && (b.held || (b.speed < 1.2 && !b.inGoal) || (b.owner && b.owner.isGK))) {
+    if (this.pens && this.shotPen && this.stateT > 0.4 && (b.held || (b.speed < 1.2 && !b.inGoal) || (b.owner && b.owner.isGK) || (this.stateT > 4 && !b.inGoal))) {
       this.shotPen = false; this.state = 'penalties'; audio.crowdReact('ooh', 1); this.later(0.9, () => this.penResult(false)); return;
     }
     if (this.state !== 'play') return;
@@ -1001,6 +1004,7 @@ export class Match {
       let best: Player | null = null, bd = 1e9;
       for (const p of this.onField) {
         if (p.cooldown > 0 || p.stun > 0 || p.sliding > 0 || (p.kick && !p.kick.done)) continue;
+        if (this.pens && !p.isGK) continue; // na disputa de pênaltis ninguém de linha domina a bola
         const d = Math.hypot(b.pos.x - p.pos.x, b.pos.z - p.pos.z);
         const recv = p === this.passTo;
         const reachH = p.isGK && this.inOwnArea(p, b.pos) ? 2.4 : p.juggling > 0 ? 0.25 : recv ? 1.25 : 0.75;

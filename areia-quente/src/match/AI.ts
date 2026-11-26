@@ -220,8 +220,7 @@ export function gkAI(m: Match, tm: Team, dt: number) {
   const side = Math.sign(gx);
   // segurando a bola: repõe
   if (b.held && b.owner === gk) {
-    if (!gk.device) gk.vel.set(0, 0, 0); // goleiro humano anda com a bola (controle em humanUpdate)
-    gk.holdT += dt;
+    if (!gk.device) { gk.vel.set(0, 0, 0); gk.holdT += dt; } // goleiro humano: anda com a bola e o tempo conta em humanUpdate (antes contava em dobro)
     if (!gk.device && gk.holdT > 1.4 && !gk.kick) {
       if (Math.random() < 0.35) m.longThrow(gk, 0.8);
       else m.doPass(gk, null, Math.random() < 0.3);

@@ -84,7 +84,8 @@ const SUITES = {
       await g.waitScene('menu');
       // o menu ignora o primeiro quadro depois de montado; no headless um quadro pode levar ~0,5 s
       await g.waitFor(() => window.__game.flow.nav && window.__game.flow.nav.armed, null, 20000).catch(() => {}); await sleep(400);
-      for (let k = 0; k < i; k++) { await g.key('ArrowRight'); await sleep(700); }
+      // anda com a seta até o item (no headless um toque de tecla pode cair num quadro descartado; repete até chegar)
+      for (let k = 0; k < 14 && (await g.ev(() => window.__game.flow.nav?.i ?? -1)) !== i; k++) { await g.key('ArrowRight'); await sleep(700); }
       await g.key('Enter');
       try { await g.waitScene(expect[i], 60000); check(true, `opção ${i + 1} → ${expect[i]}`, n); } catch { check(false, `opção ${i + 1} deveria abrir ${expect[i]} (está em ${await g.scene()})`, n); }
       await sleep(600);
@@ -555,8 +556,8 @@ const SUITES = {
     await g.touch('touchStart', [{ x: 240, y: 270, id: 1 }, { x: sh.x, y: sh.y, id: 2 }]);
     await sleep(250);
     // a CPU pode roubar a bola nesse meio-tempo e o layout mudar: vale qualquer botão acionado pelo 2º dedo
-    const both = await g.ev((n0) => { const i = window.__game.input; return { btn: window.__game.touch.log.slice(n0).join(','), mx: i.state('kb').mx }; }, n0);
-    check(both.btn.length > 0 && both.mx > 0.5, `multitoque: joystick + botão ao mesmo tempo (${both.btn})`, n);
+    const both = await g.ev((n0) => { const i = window.__game.input; return { btn: window.__game.touch.log.slice(n0).join(','), mx: i.state('kb').mx, cls: document.getElementById('touch').className, st: window.__game.flow.match.state }; }, n0);
+    check(both.btn.length > 0 && both.mx > 0.5, `multitoque: joystick + botão ao mesmo tempo (${both.btn} | ${both.cls} | ${both.st})`, n);
     await g.touch('touchEnd', []);
     await sleep(300);
     const rel = await g.ev(() => { const i = window.__game.input; return { held: i.held('kb', 'shoot'), mx: i.state('kb').mx }; });
