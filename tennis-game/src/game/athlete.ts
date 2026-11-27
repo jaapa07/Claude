@@ -55,7 +55,7 @@ export function makeOutfitMaterial(src: THREE.MeshStandardMaterial, o: OutfitCol
           float shirt = smoothstep(0.87, 0.92, y) * (1.0 - smoothstep(1.44, 1.5, y)) * (1.0 - smoothstep(0.3, 0.36, ax));
           float shorts = smoothstep(0.58, 0.64, y) * (1.0 - smoothstep(0.96, 1.0, y)) * (1.0 - smoothstep(0.28, 0.32, ax));
           float shoe = 1.0 - smoothstep(0.1, 0.14, y);
-          return shirt * 0.008 + shorts * (0.012 + 0.02 * smoothstep(0.85, 0.62, y)) + shoe * 0.014;
+          return shirt * (0.009 + 0.014 * smoothstep(1.22, 0.95, y) * (1.0 - smoothstep(0.17, 0.23, ax))) + shorts * (0.012 + 0.02 * smoothstep(0.85, 0.62, y)) + shoe * 0.014;
         }`)
       .replace('#include <beginnormal_vertex>', `#include <beginnormal_vertex>
         #ifdef CLOTH_FIT
@@ -83,8 +83,8 @@ export function makeOutfitMaterial(src: THREE.MeshStandardMaterial, o: OutfitCol
           vec3 shirtC = ${instanced ? 'vShirtI' : 'uShirt'};
           vec3 shortsC = ${instanced ? 'vShortsI' : 'uShorts'};
           // round neckline around the neck (a crew neck dipping a little at the front)
-          float r = length(vec2(p.x, (p.z + 0.03) * 0.92)) / uScale;
-          float neckR = 0.082 + 0.022 * smoothstep(0.0, 0.1, p.z);
+          float r = length(vec2(p.x, (p.z + 0.036) * 0.9)) / uScale;
+          float neckR = 0.074 + 0.012 * smoothstep(0.0, 0.1, p.z);
           float neckCut = mix(1.0, smoothstep(neckR - f, neckR + f, r), smoothstep(1.36, 1.4, y));
           float torso = band(y, 0.905, 1.58, f) * (1.0 - smoothstep(0.255, 0.265, ax)) * neckCut;
           float neck0 = 1.5;
@@ -97,10 +97,13 @@ export function makeOutfitMaterial(src: THREE.MeshStandardMaterial, o: OutfitCol
           float head = uHasBand * band(y, 1.735, 1.772, 0.003) * step(ax, 0.2);
           // accents: sleeve hem, collar, side seams, shorts side stripe, shoe sole & swoosh
           float hem = sleeve * band(ax, 0.33, 0.355, 0.002) * (1.0 - smoothstep(1.44, 1.47, y));
-          float collar = torso * band(r, neckR, neckR + 0.017, 0.002) * smoothstep(1.37, 1.41, y);
-          float seam = torso * band(ax, 0.235, 0.255, 0.002) * step(abs(p.z), 0.06);
+          float collar = torso * band(r, neckR, neckR + 0.02, 0.002) * smoothstep(1.37, 1.41, y);
+          float seam = torso * band(ax, 0.235, 0.255, 0.002) * step(abs(p.z), 0.06) * (1.0 - smoothstep(1.3, 1.33, y));
           float sstripe = shorts * band(ax, 0.255, 0.285, 0.002) * step(abs(p.z), 0.05);
           float sole = shoes * (1.0 - smoothstep(0.018, 0.024, y));
+          float waist = shorts * smoothstep(0.925, 0.935, y);
+          float shoeStripe = shoes * band(y, 0.04, 0.058, 0.002) * step(0.02, abs(ax - 0.11 * uScale)) * step(p.z, 0.1);
+          float laces = shoes * step(0.06, p.z) * smoothstep(0.075, 0.085, y) * (0.5 + 0.5 * step(0.5, fract(p.z * 90.0)));
           float weave = texture2D(uFabric, p.xy * 18.0).r;
           vec3 cloth = vec3(0.0); float clothA = 0.0;
           vec3 base = diffuseColor.rgb * uSkinTint;
@@ -111,6 +114,9 @@ export function makeOutfitMaterial(src: THREE.MeshStandardMaterial, o: OutfitCol
           cloth = mix(cloth, uSocks, socks); clothA = max(clothA, socks);
           cloth = mix(cloth, uShoes, shoes); clothA = max(clothA, shoes);
           cloth = mix(cloth, vec3(0.95), sole);
+          cloth = mix(cloth, uAccent, shoeStripe * (1.0 - uSuit));
+          cloth = mix(cloth, vec3(0.92), laces * 0.6 * (1.0 - uSuit));
+          cloth *= 1.0 - waist * 0.22;
           cloth = mix(cloth, uBand, max(wrist, head)); clothA = max(clothA, max(wrist, head));
           // chest sponsor logo (player's left chest = +x, front = +z)
           vec2 lp = vec2((p.x - 0.03) / 0.16, (y - (uScale < 0.99 ? 1.39 : 1.29)) / 0.05);
@@ -127,6 +133,12 @@ export function makeOutfitMaterial(src: THREE.MeshStandardMaterial, o: OutfitCol
       .replace('void main() {', 'float vClothAmt = 0.0;\nvoid main() {')
       .replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
         roughnessFactor = mix(roughnessFactor, 0.82, vClothAmt);`)
+      .replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
+        {
+          // skin: soft warm rim (cheap subsurface look); fabric: faint sheen at grazing angles
+          float fr = pow(1.0 - abs(dot(normal, normalize(vViewPosition))), 3.0);
+          totalEmissiveRadiance += fr * mix(diffuseColor.rgb * vec3(0.55, 0.28, 0.2), diffuseColor.rgb * 0.18, vClothAmt);
+        }`)
       .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
         {
           // fabric instead of the sculpted muscle normal map: woven weave + soft folds
