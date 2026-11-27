@@ -189,16 +189,18 @@ function playMatch(p1: PlayerDef, p2: PlayerDef, venue: VenueDef, cfg: MatchConf
   S.vsScreen(p1, p2, venue, subtitle, () => {
     document.getElementById('fade')!.classList.add('on');
     setTimeout(() => {
-      endSession();
-      mode = 'match';
-      Input.twoKeyboards = p2Human;
-      session = new Session(R, { p1, p2, venue, cfg, difficulty, p2Human, intro: true, partners }, S.ui());
-      matchStart = performance.now();
-      Audio.music(null);
-      Audio.play('crowd_cheer', { vol: 0.5 });
-      applyOptions();
-      session.onFinished = (w) => { mode = 'menu'; S.touchControls(false); onEnd(w === 0, session!); };
-      document.getElementById('fade')!.classList.remove('on');
+      try {
+        endSession();
+        mode = 'match';
+        Input.twoKeyboards = p2Human;
+        session = new Session(R, { p1, p2, venue, cfg, difficulty, p2Human, intro: true, partners }, S.ui());
+        matchStart = performance.now();
+        Audio.music(null);
+        Audio.play('crowd_cheer', { vol: 0.5 });
+        applyOptions();
+        session.onFinished = (w) => { mode = 'menu'; S.touchControls(false); onEnd(w === 0, session!); };
+      } catch (e) { reportError(e, 'partida'); }
+      finally { document.getElementById('fade')!.classList.remove('on'); } // never leave the screen black
     }, 380);
   });
 }
@@ -382,6 +384,7 @@ function startTraining(me: PlayerDef, onDone?: (score: number) => void) {
   const coach = PLAYERS.find((p) => p.id !== me.id)!;
   const venue = VENUES[0];
   document.getElementById('fade')!.classList.add('on');
+  setTimeout(() => document.getElementById('fade')!.classList.remove('on'), 2500); // safety net against a black screen
   setTimeout(() => {
     endSession();
     mode = 'training';

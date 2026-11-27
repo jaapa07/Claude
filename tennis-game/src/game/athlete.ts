@@ -341,6 +341,7 @@ export class Athlete {
   private shotEnd = Infinity;
 
   play(name: AnimName, opts: { fade?: number; speed?: number; from?: number; end?: number } = {}) {
+    if (this.disposed) return; // delayed calls (timers) can arrive after the match was torn down
     const a = this.actions.get(name);
     if (!a) return;
     const fade = Math.max(0.02, opts.fade ?? 0.15);
@@ -398,6 +399,7 @@ export class Athlete {
   }
 
   releaseOneShot(fade = 0.2) {
+    if (this.disposed) return;
     if (!this.oneShot) return;
     this.shotReleasing = true;
     this.shotFadeOut = Math.max(0.02, fade);
@@ -430,7 +432,10 @@ export class Athlete {
   }
 
   /** Free this athlete's own materials and animation bindings (geometry and textures are shared assets). */
+  disposed = false;
   dispose() {
+    if (this.disposed) return;
+    this.disposed = true;
     this.mixer.stopAllAction();
     this.mixer.uncacheRoot(this.model);
     this.root.traverse((o) => {
@@ -443,6 +448,7 @@ export class Athlete {
   }
 
   update(dt: number) {
+    if (this.disposed) return;
     // one-shot envelope
     if (this.oneShot) {
       if (this.shotReleasing) {

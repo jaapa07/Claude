@@ -204,7 +204,7 @@ export class Session {
       this.flowT = 0;
       this.hud?.showBanner('TROCA DE LADO', 1.6);
       document.getElementById('fade')!.classList.add('on');
-      setTimeout(() => document.getElementById('fade')!.classList.remove('on'), 500);
+      setTimeout(() => document.getElementById('fade')!.classList.remove('on'), 500); // always: a stuck fade is a black screen
       this.cam.set({ kind: 'game', end: m.camEnd() });
     } else {
       this.flow = 'play';
@@ -269,9 +269,9 @@ export class Session {
     Audio.play('crowd_cheer_big', { vol: 1 });
     Audio.play('ump_game_over');
     const human = !this.opts.demo && w.side === 0;
-    setTimeout(() => Audio.play(human || this.opts.p2Human ? 'jingle_win' : 'jingle_lose'), 900);
-    setTimeout(() => Audio.play(human || this.opts.p2Human ? 'vo_you_win' : 'vo_you_lose'), 1800);
-    for (let i = 0; i < 14; i++) setTimeout(() => this.cameraFlash(), 200 + i * 230);
+    this.later(() => Audio.play(human || this.opts.p2Human ? 'jingle_win' : 'jingle_lose'), 900);
+    this.later(() => Audio.play(human || this.opts.p2Human ? 'vo_you_win' : 'vo_you_lose'), 1800);
+    for (let i = 0; i < 14; i++) this.later(() => this.cameraFlash(), 200 + i * 230);
     this.hud?.showBanner('GAME, SET AND MATCH', 4);
   }
 
@@ -337,19 +337,19 @@ export class Session {
           if (e.rally > 12 && Math.random() < 0.5) this.venue.crowd.startWave();
           // ball kid retrieves
           const kid = this.venue.ballKids[Math.floor(Math.random() * this.venue.ballKids.length)];
-          setTimeout(() => kid.play('pickup', { fade: 0.15 }), 700);
-          setTimeout(() => { kid.releaseOneShot(); kid.play('ready'); }, 1800);
+          this.later(() => kid.play('pickup', { fade: 0.15 }), 700);
+          this.later(() => { kid.releaseOneShot(); kid.play('ready'); }, 1800);
           break;
         }
         case 'score': {
           this.hud?.refresh();
           const big = e.matchWon !== null ? 'GAME, SET AND MATCH' : e.setWon !== null ? 'SET' : e.gameWon !== null ? 'GAME' : '';
-          setTimeout(() => {
+          this.later(() => {
             if (big) this.hud?.call(big, e.tag ?? '', 'gold', 2);
             else this.hud?.call('', `${callText(e.call)}${e.tag ? '  ·  ' + tagText(e.tag) : ''}`, 'green', 1.8);
           }, 450);
-          setTimeout(() => this.umpireCall(e), 650);
-          if (e.tag === 'MATCH POINT') for (let i = 0; i < 5; i++) setTimeout(() => this.cameraFlash(), 300 + i * 300);
+          this.later(() => this.umpireCall(e), 650);
+          if (e.tag === 'MATCH POINT') for (let i = 0; i < 5; i++) this.later(() => this.cameraFlash(), 300 + i * 300);
           break;
         }
         case 'changeEnds':
@@ -370,7 +370,7 @@ export class Session {
   private umpireCall(e: Extract<MatchEvent, { type: 'score' }>) {
     const s = this.match.score;
     this.venue.umpire.play('point', { fade: 0.2 });
-    setTimeout(() => { this.venue.umpire.releaseOneShot(); this.venue.umpire.play('sit'); }, 1200);
+    this.later(() => { this.venue.umpire.releaseOneShot(); this.venue.umpire.play('sit'); }, 1200);
     if (e.matchWon !== null) return;
     if (e.tag === 'MATCH POINT') { Audio.play('ump_match_point'); return; }
     if (e.tag === 'SET POINT') { Audio.play('ump_set_point'); return; }
@@ -388,10 +388,15 @@ export class Session {
     const say = (w: string) => (w === 'LOVE' ? 'ump_love' : w === '15' ? 'ump_fifteen' : w === '30' ? 'ump_thirty' : w === '40' ? 'ump_fourty_five' : null);
     const first = say(parts[0]);
     if (first) Audio.play(first);
-    if (parts[1]) { const second = say(parts[1]); if (second) setTimeout(() => Audio.play(second), 700); }
+    if (parts[1]) { const second = say(parts[1]); if (second) this.later(() => Audio.play(second), 700); }
   }
 
+  private disposed = false;
+  /** setTimeout that is dropped once the session is disposed. */
+  private later(f: () => void, ms: number) { setTimeout(() => { if (!this.disposed) f(); }, ms); }
+
   dispose() {
+    this.disposed = true;
     this.venue.dispose(this.r.scene);
     this.r.scene.remove(this.fx.group);
     this.fx.group.traverse((o) => {
