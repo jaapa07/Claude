@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { N8AOPostPass } from 'n8ao';
+import { isMobile } from '../core/platform';
 import { EffectComposer, RenderPass, EffectPass, BloomEffect, SMAAEffect, VignetteEffect, ToneMappingEffect, ToneMappingMode, BrightnessContrastEffect, HueSaturationEffect } from 'postprocessing';
 
 export type Quality = 'low' | 'medium' | 'high';
@@ -66,7 +67,7 @@ export class Renderer {
 
   setQuality(q: Quality) {
     this.quality = q;
-    this.basePR = Math.min(window.devicePixelRatio, q === 'high' ? 2 : q === 'medium' ? 1.5 : 1);
+    this.basePR = Math.min(window.devicePixelRatio, q === 'high' ? 2 : q === 'medium' ? 1.5 : 1, isMobile ? 1.5 : 2);
     this.direct = q === 'low';
     this.renderer.toneMapping = this.direct ? THREE.ACESFilmicToneMapping : THREE.NoToneMapping;
     this.renderer.shadowMap.type = q === 'high' ? THREE.PCFSoftShadowMap : THREE.PCFShadowMap;
@@ -85,7 +86,8 @@ export class Renderer {
   resize() {
     const w = window.innerWidth, h = window.innerHeight;
     this.renderer.setSize(w, h);
-    this.composer.setSize(w, h);
+    // post-processing buffers are not used in direct (low) mode: keep them tiny to save GPU memory
+    if (this.direct) this.composer.setSize(4, 4); else this.composer.setSize(w, h);
     this.camera.aspect = w / h;
     // keep the whole court in view on narrow screens
     this.camera.fov = w / h < 1 ? 60 : w / h < 1.4 ? 50 : 42;

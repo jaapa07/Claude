@@ -89,7 +89,7 @@ function applyOptions() {
   R.setQuality(o.quality);
   CameraDirector.mode = o.camera;
   Venue.crowdDensity = o.quality === 'low' ? 0.35 : o.quality === 'medium' ? 0.65 : 1;
-  Venue.shadowSize = o.quality === 'high' ? 2048 : 1024;
+  Venue.shadowSize = o.quality === 'high' ? 2048 : o.quality === 'medium' ? 1024 : isMobile ? 512 : 1024;
   document.documentElement.style.setProperty('--hud-scale', String(o.hudScale));
   const touch = o.touch === 'on' || (o.touch === 'auto' && isTouch);
   S.touchControls(touch && mode !== 'menu');

@@ -1,7 +1,9 @@
 // Device detection and mobile helpers (fullscreen, orientation lock, service worker).
 export const isTouch = matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0;
 export const isPhone = isTouch && Math.min(screen.width, screen.height) < 820;
-export const isMobile = isTouch && (isPhone || /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent));
+const iPadOS = /Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1; // iPadOS reports a desktop UA
+export const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || iPadOS;
+export const isMobile = isTouch && (isPhone || iPadOS || /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent));
 
 if (isTouch) document.documentElement.classList.add('is-touch');
 if (isMobile) document.documentElement.classList.add('mobile');

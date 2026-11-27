@@ -8,6 +8,23 @@ const meshoptReady = import.meta.env.VITE_JSON_MODELS
   ? Promise.resolve()
   : import('three/examples/jsm/libs/meshopt_decoder.module.js').then((m) => { gltfLoader.setMeshoptDecoder(m.MeshoptDecoder); }).catch(() => {});
 const texLoader = new THREE.TextureLoader();
+import { isMobile } from './platform';
+
+/** Phones (iOS Safari above all) kill the tab when GPU memory runs out: keep textures small there. */
+const MOBILE_MAX = 512;
+function shrinkForMobile(t: THREE.Texture, max: number) {
+  const img = t.image as HTMLImageElement | undefined;
+  if (!isMobile || !img || !img.width) return;
+  const big = Math.max(img.width, img.height);
+  if (big <= max) return;
+  const k = max / big;
+  const c = document.createElement('canvas');
+  c.width = Math.max(1, Math.round(img.width * k));
+  c.height = Math.max(1, Math.round(img.height * k));
+  c.getContext('2d')!.drawImage(img, 0, 0, c.width, c.height);
+  t.image = c;
+  t.needsUpdate = true;
+}
 
 /** Sandbox-safe model format (see scripts/glb-to-json.mjs): rebuild a GLB in memory, textures load as same-origin files. */
 async function loadJsonModel(url: string): Promise<GLTF> {
@@ -71,7 +88,8 @@ class AssetStore {
     if (!this.pending.has(path))
       this.pending.set(path, texLoader.loadAsync(BASE + path).then((t) => {
         t.colorSpace = /_color|felt|sponsor|banner|grip|strings/.test(path) ? THREE.SRGBColorSpace : THREE.NoColorSpace;
-        t.anisotropy = 8;
+        t.anisotropy = isMobile ? 2 : 8;
+        shrinkForMobile(t, /court_lines/.test(path) ? 1024 : MOBILE_MAX);
         this.tex.set(path, t);
         return t;
       }));
@@ -85,6 +103,7 @@ class AssetStore {
       this.pending.set(path, texLoader.loadAsync(BASE + path).then((t) => {
         t.mapping = THREE.EquirectangularReflectionMapping;
         t.colorSpace = THREE.SRGBColorSpace;
+        shrinkForMobile(t, 1024);
         this.hdr.set(path, t);
         return t;
       }));
