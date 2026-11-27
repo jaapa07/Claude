@@ -334,8 +334,9 @@ export class Venue {
       this.group.add(p);
     };
     if (!def.indoor) {
-      const plant = def.id === 'harbor' ? 'models/props/potted_plant_01.glb' : def.id === 'lawn' ? 'models/props/shrub_01.glb' : 'models/props/potted_plant_04.glb';
+      const plant = def.id === 'harbor' ? 'models/props/potted_plant_01.glb' : 'models/props/potted_plant_04.glb';
       for (const sx of [-1, 1]) for (const z of [-6.5, 6.5]) placeProp(plant, sx * (BOARD_X + 0.9), z, 1.4, Math.random() * 6);
+      if (def.id === 'lawn') for (const sx of [-1, 1]) for (const z of [-15, 15]) placeProp('models/props/shrub_01.glb', sx * (BOARD_X + 2.2), z, 1.1, Math.random() * 6);
       for (const sx of [-1, 1]) placeProp('models/props/planter_box_01.glb', sx * (BOARD_X + 0.8), sx * 12.5, 0.7, Math.PI / 2);
     }
     placeProp('models/props/plastic_crate_01.glb', BOARD_X - 0.4, -3.0, 0.35);

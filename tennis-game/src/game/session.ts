@@ -63,6 +63,7 @@ export class Session {
       () => this.cam.set({ kind: 'close', target: () => a.pos, offset: new THREE.Vector3(-1.2, 1.6, a.end * -3.2) }),
     ];
     for (const p of this.match.players) p.athlete.play('arms_folded', { fade: 0 });
+    if (this.hud) this.hud.el.style.opacity = '0';
   }
 
   skipIntro() {
@@ -71,6 +72,7 @@ export class Session {
     this.cam.set({ kind: 'game', end: this.match.camEnd() });
     for (const p of this.match.players) p.athlete.play(p.side === this.match.server ? 'idle' : 'ready');
     this.hud?.showMarkers();
+    if (this.hud) this.hud.el.style.opacity = '1';
     Audio.play('vo_ready');
   }
 
@@ -185,7 +187,7 @@ export class Session {
     this.hud?.setReplay(true);
     const m = this.match;
     const angles = [
-      () => this.cam.set({ kind: 'track', from: new THREE.Vector3(-9, 1.4, 0.5), target: () => m.ball.mesh.position.clone(), fov: 34 }),
+      () => this.cam.set({ kind: 'track', from: new THREE.Vector3(-11.5, 2.6, m.players[0].end * 5), target: () => m.ball.mesh.position.clone(), fov: 34 }),
       () => this.cam.set({ kind: 'track', from: new THREE.Vector3(7, 3.0, m.players[1].end * -(COURT.halfLength + 6)), target: () => m.ball.mesh.position.clone(), fov: 30 }),
       () => this.cam.set({ kind: 'orbit', center: new THREE.Vector3(0, 1, 0), radius: 15, height: 4.5, speed: 0.25, angle: 1.2 }),
     ];

@@ -34,10 +34,10 @@ export class CameraDirector {
       case 'game': {
         // high camera behind the human player's baseline; drifts with play like classic arcade tennis
         this.focusX = THREE.MathUtils.lerp(this.focusX, humanPos.x * 0.35 + ballPos.x * 0.2, 1 - Math.exp(-dt * 2.5));
-        const back = 21.0, height = 7.1;
+        const back = 21.8, height = 7.3;
         const depthShift = THREE.MathUtils.clamp((Math.abs(humanPos.z) - 11.9) * 0.4, -2, 2.5);
         wantPos.set(this.focusX, height, s.end * (back + depthShift));
-        wantLook.set(this.focusX * 0.6, 0.0, s.end * -4.6);
+        wantLook.set(this.focusX * 0.6, 0.0, s.end * -2.6);
         lerp = 1 - Math.exp(-dt * 6);
         break;
       }

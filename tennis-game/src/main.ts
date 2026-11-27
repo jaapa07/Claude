@@ -180,6 +180,7 @@ function startTraining(me: PlayerDef) {
     applyOptions();
     const m = session.match;
     m.training = true;
+    session.hud?.el.querySelectorAll('.top, .score-box').forEach((e) => ((e as HTMLElement).style.visibility = 'hidden'));
     m.setupPoint();
     Audio.music('music_match');
     // targets
@@ -285,7 +286,8 @@ async function boot() {
   load.close();
   S.titleScreen(() => toMenu());
   // expose for automated tests
-  (window as unknown as { __game: unknown }).__game = { get session() { return session; }, R, simulate: (sec: number) => { for (let t = 0; t < sec && session; t += 1 / 60) session.update(1 / 60); } };
+  (window as unknown as { __game: unknown }).__game = { get session() { return session; }, R, simulate: (sec: number) => { for (let t = 0; t < sec && session; t += 1 / 60) session.update(1 / 60); },
+    demoVenue: (i: number) => { endSession(); session = new Session(R, { p1: PLAYERS[i * 2 % 8], p2: PLAYERS[(i * 2 + 1) % 8], venue: VENUES[i], cfg: defaultConfig(), difficulty: 'hard', p2Human: false }, S.ui()); session.skipIntro(); return 'ok'; } };
 }
 
 boot().catch((e) => {
