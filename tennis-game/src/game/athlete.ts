@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils.js';
 import { Assets } from '../core/assets';
 import type { PlayerDef } from '../data/content';
+import { mirrorClip, sampleMirroredRacket, twoBoneIK, setWorldQuat, type BackhandData } from './backhand';
 
 // ------------------------------------------------------------------ tennis outfit material
 // The base characters ship as bare bodies. The kit (shirt, shorts, socks, shoes, wrist & head bands, chest logo) is
@@ -233,6 +234,42 @@ export class Athlete {
       this.bones.get('hand_r')?.add(r);
       this.racket = r;
     }
+    // two-handed backhand: mirrored forehand + right hand on the grip (built once, shared)
+    if (this.racket) {
+      const fh = this.actions.get('forehand')!.getClip();
+      if (!Athlete.bh) {
+        const clip = mirrorClip(fh, this.model, 'backhand2h');
+        const path = sampleMirroredRacket(this.model, fh, this.racket, this.racketHead);
+        Athlete.bh = { clip, ...path };
+      }
+      const old = this.actions.get('backhand')!;
+      old.stop();
+      const a = this.mixer.clipAction(Athlete.bh.clip);
+      a.setLoop(THREE.LoopOnce, 1); a.clampWhenFinished = true; a.enabled = true; a.setEffectiveWeight(0); a.play();
+      this.actions.set('backhand', a);
+    }
+  }
+
+  static bh: BackhandData | null = null;
+
+  /** Right hand joins the left on the grip and the racket follows the mirrored forehand path. */
+  private applyTwoHand(t: number, w: number) {
+    const bh = Athlete.bh;
+    const ua = this.bones.get('upperarm_r'), la = this.bones.get('lowerarm_r'), hr = this.bones.get('hand_r'), hl = this.bones.get('hand_l');
+    if (!bh || !ua || !la || !hr || !hl || !this.racket || w < 0.01) return;
+    const i = THREE.MathUtils.clamp(Math.round(t * bh.fps), 0, bh.dir.length - 1);
+    this.model.updateMatrixWorld(true);
+    const mq = this.model.getWorldQuaternion(new THREE.Quaternion());
+    const d = bh.dir[i].clone().applyQuaternion(mq).normalize();
+    const n0 = bh.normal[i].clone().applyQuaternion(mq);
+    const target = hl.getWorldPosition(new THREE.Vector3()).addScaledVector(d, -0.1);
+    const pole = la.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, -0.6, 0));
+    twoBoneIK(ua, la, hr, target, pole, w);
+    const z = n0.sub(d.clone().multiplyScalar(n0.dot(d))).normalize();
+    const x = new THREE.Vector3().crossVectors(d, z);
+    const qr = new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(x, d, z));
+    const handQ = qr.multiply(this.racket.quaternion.clone().invert());
+    setWorldQuat(hr, handQ, w);
   }
 
   // ================================================================== animation system
@@ -388,6 +425,7 @@ export class Athlete {
     this.applyWeights();
     this.mixer.update(dt);
     if (this.procedural) this.applyProcedural(dt, false);
+    if (this.oneShotName === 'backhand' && this.oneShot) this.applyTwoHand(this.oneShot.time, this.shotW);
   }
 
   // ------------------------------------------------------------------ procedural layer
@@ -492,6 +530,8 @@ export class Athlete {
     if (this.neck) this.rotateWorld(this.neck, Athlete.UP, this.twist * 0.15 + this.headYaw * 0.4);
     if (this.head) this.rotateWorld(this.head, Athlete.UP, this.headYaw * 0.6);
     this.lookAt = save.lookAt; this.chestYaw = save.chestYaw;
+    const bhAct = s.acts.find(([n]) => n === 'backhand');
+    if (bhAct) this.applyTwoHand(bhAct[1], bhAct[2]);
   }
 
   restoreFromReplay() {

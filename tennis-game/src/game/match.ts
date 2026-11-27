@@ -29,7 +29,7 @@ export interface MatchStats { aces: number; doubleFaults: number; winners: numbe
 // where the racket head is at that instant relative to the feet (metres; right = player's right, fwd = toward net).
 const SWING: Record<string, { impact: number; right: number; fwd: number; h: number }> = {
   forehand: { impact: 0.245, right: 0.27, fwd: 1.08, h: 0.65 },
-  backhand: { impact: 0.232, right: -0.49, fwd: 0.2, h: 0.75 },
+  backhand: { impact: 0.245, right: -0.29, fwd: 0.62, h: 0.78 }, // mirrored forehand, two hands
   volley: { impact: 0.255, right: 0.38, fwd: 1.16, h: 1.3 },
   smash: { impact: 0.385, right: 0.49, fwd: 0.48, h: 1.7 },
 };
