@@ -92,9 +92,17 @@ export class FX {
   private markMat: THREE.MeshBasicMaterial;
   private rings: { m: THREE.Mesh; t: number }[] = [];
   private ringGeom = new THREE.RingGeometry(0.2, 0.32, 40);
+  /** Fixed pool: adding/removing lights mid-match makes every shader recompile (a multi-second freeze on phones). */
   private flashes: { l: THREE.PointLight; t: number }[] = [];
+  private flashNext = 0;
 
   constructor() {
+    for (let i = 0; i < 2; i++) {
+      const l = new THREE.PointLight('#ffffff', 0, 8);
+      l.position.set(0, -50, 0);
+      this.group.add(l);
+      this.flashes.push({ l, t: 1 });
+    }
     const tex = Assets.t('textures/fx_dot.png');
     this.pointsGeom = new THREE.BufferGeometry();
     this.pointsGeom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(this.MAX * 3), 3));
@@ -190,10 +198,9 @@ export class FX {
   }
 
   cameraFlash(at: THREE.Vector3) {
-    const l = new THREE.PointLight('#ffffff', 40, 8);
-    l.position.copy(at);
-    this.group.add(l);
-    this.flashes.push({ l, t: 0 });
+    const f = this.flashes[this.flashNext++ % this.flashes.length];
+    f.l.position.copy(at);
+    f.t = 0;
     this.burst(at, { n: 1, color: '#ffffff', speed: 0, size: 0.8, life: 0.08, grav: 0 });
   }
 
@@ -254,6 +261,5 @@ export class FX {
     }
     this.rings = this.rings.filter((r) => (r.t < 0.4 ? true : (this.group.remove(r.m), false)));
     for (const f of this.flashes) { f.t += dt; f.l.intensity = Math.max(0, 40 * (1 - f.t * 10)); }
-    this.flashes = this.flashes.filter((f) => (f.t < 0.12 ? true : (this.group.remove(f.l), false)));
   }
 }
