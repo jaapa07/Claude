@@ -60,9 +60,10 @@ describe('rules', () => {
     const cfg = { ...defaultConfig(), sets: 3 as const, gamesPerSet: 1, tiebreakAt: null };
     const s = newScore(0);
     const r1 = play(s, [0, 0, 0, 0], cfg);
-    expect(r1[3].setWon).toBe(null); // 1-0 is not 2 clear
-    play(s, [0, 0, 0, 0], cfg);
+    expect(r1[3].setWon).toBe(0); // a one-game set is won by that game
     expect(s.sets).toEqual([1, 0]);
     expect(s.winner).toBe(null);
+    play(s, [0, 0, 0, 0], cfg);
+    expect(s.winner).toBe(0);
   });
 });

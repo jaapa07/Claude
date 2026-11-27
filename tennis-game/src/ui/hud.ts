@@ -3,7 +3,10 @@ import type { Match } from '../game/match';
 import type { PlayerDef } from '../data/content';
 
 const h = (html: string) => { const d = document.createElement('div'); d.innerHTML = html.trim(); return d.firstElementChild as HTMLElement; };
-const flag = (c: [string, string, string]) => `<span class="flag">${c.map((x) => `<i style="background:${x}"></i>`).join('')}</span>`;
+const flag = (c: [string, string, string]) =>
+  c[0] === c[2] && c[0].toLowerCase() === '#ffffff' && c[1].toLowerCase() === '#bc002d'
+    ? `<span class="flag disc" style="--d:${c[1]}"></span>` // Japan: red disc on white
+    : `<span class="flag">${c.map((x) => `<i style="background:${x}"></i>`).join('')}</span>`;
 
 export class Hud {
   el: HTMLElement;

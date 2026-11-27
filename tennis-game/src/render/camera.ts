@@ -25,13 +25,15 @@ export class CameraDirector {
     this.cut = cut;
   }
 
-  addShake(a: number) { this.shake = Math.min(0.5, this.shake + a); }
+  /** Screen shake (Options > TREMOR DE TELA). */
+  static shakeEnabled = true;
+  addShake(a: number) { if (CameraDirector.shakeEnabled) this.shake = Math.min(0.5, this.shake + a); }
 
   update(dt: number, ballPos: THREE.Vector3, humanPos: THREE.Vector3) {
     const s = this.shot;
     const wantPos = new THREE.Vector3();
     const wantLook = new THREE.Vector3();
-    let fov = this.cam.aspect < 1 ? 60 : this.cam.aspect < 1.4 ? 50 : this.cam.aspect > 2 ? 34 : 40;
+    let fov = this.cam.aspect < 1 ? 60 : this.cam.aspect < 1.4 ? 50 : 40;
     let lerp = 1 - Math.exp(-dt * 5);
     switch (s.kind) {
       case 'game': {
@@ -51,8 +53,11 @@ export class CameraDirector {
         const back = arcade ? 21.8 : 22.6, height = arcade ? 7.3 : 10.6;
         const depthShift = THREE.MathUtils.clamp((Math.abs(humanPos.z) - 11.9) * 0.3, -1.5, 1.8);
         wantPos.set(this.focusX, height, s.end * (back + depthShift));
-        wantLook.set(this.focusX * 0.5, 0.0, s.end * (arcade ? -2.6 : -0.6));
-        if (!arcade) fov = this.cam.aspect < 1 ? 62 : this.cam.aspect < 1.4 ? 52 : this.cam.aspect > 2 ? 38 : 43;
+        // very wide phone screens: same vertical view, aimed a bit nearer so your own player stays above the touch pad
+        const wide = this.cam.aspect > 1.9;
+        wantLook.set(this.focusX * 0.5, 0.0, s.end * (arcade ? (wide ? -1.2 : -2.6) : wide ? 0.9 : -0.6));
+        if (!arcade) fov = this.cam.aspect < 1 ? 62 : this.cam.aspect < 1.4 ? 52 : wide ? 45 : 43;
+        else if (wide) fov = 42;
         lerp = 1 - Math.exp(-dt * 6);
         break;
       }

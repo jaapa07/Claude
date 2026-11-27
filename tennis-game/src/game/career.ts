@@ -68,7 +68,8 @@ const FIRST = ['Luca', 'Theo', 'Nico', 'Ivan', 'Bruno', 'Hugo', 'Leo', 'Marco', 
 const LAST = ['Varga', 'Moreau', 'Silva', 'Kowal', 'Brandt', 'Rossi', 'Novak', 'Haas', 'Costa', 'Lind', 'Mares', 'Okoye', 'Duarte', 'Ferro', 'Sato', 'Bauer', 'Nunes', 'Petrov', 'Alves', 'Romero'];
 
 /** World ranking: a fixed field of points by rank (rank 1 ~ 9000 pts). Your rank = 1 + players above you. */
-export function fieldPoints(rank: number) { return Math.round(9000 * Math.pow(rank, -1.05)); }
+/** Points held by the player at a given world rank (dense at the bottom, so one small title is not a leap to the top 100). */
+export function fieldPoints(rank: number) { return Math.round(9000 * Math.pow(rank, -0.75)); }
 export function rankOf(points: number) {
   let lo = 1, hi = 2000;
   while (lo < hi) { const mid = (lo + hi) >> 1; if (fieldPoints(mid) > points) lo = mid + 1; else hi = mid; }
@@ -111,7 +112,14 @@ export function drawOpponent(ev: EventDef, round: number, salt: number): PlayerD
 
 export const CAREER_KEY = 'gsa_career_v1';
 export function loadCareer(): CareerData | null {
-  try { const r = localStorage.getItem(CAREER_KEY); return r ? (JSON.parse(r) as CareerData) : null; } catch { return null; }
+  try {
+    const r = localStorage.getItem(CAREER_KEY);
+    if (!r) return null;
+    const c = JSON.parse(r) as CareerData;
+    const plain = (x: string) => x.replace(/[<>&"'`\\]/g, '');
+    c.me.name = plain(c.me.name); c.me.short = plain(c.me.short); // saves from before names were sanitized
+    return c;
+  } catch { return null; }
 }
 export function saveCareer(c: CareerData) { try { localStorage.setItem(CAREER_KEY, JSON.stringify(c)); } catch { /* ignore */ } }
 export function venueOf(id: VenueDef['id']) { return VENUES.find((v) => v.id === id)!; }

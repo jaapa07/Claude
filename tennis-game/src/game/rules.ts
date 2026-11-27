@@ -69,6 +69,7 @@ function setWonBy(games: [number, number], cfg: MatchConfig, tiebreakJustWon: bo
   for (const side of [0, 1] as Side[]) {
     const g = games[side], o = games[1 - side];
     if (tiebreakJustWon && g > o) return side;
+    if (cfg.gamesPerSet <= 1 && g >= 1) return side; // a one-game set is won by that game
     if (g >= cfg.gamesPerSet && g - o >= 2) return side;
   }
   return null;

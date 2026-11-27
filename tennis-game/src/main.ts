@@ -105,6 +105,7 @@ function applyOptions() {
   for (const k of ['music', 'sfx', 'voice', 'crowd'] as const) Audio.setVolume(k, o.volume[k]);
   R.setQuality(o.quality);
   CameraDirector.mode = o.camera;
+  CameraDirector.shakeEnabled = o.shake;
   Venue.crowdDensity = o.quality === 'low' ? (isMobile ? 0.25 : 0.35) : o.quality === 'medium' ? 0.65 : 1;
   Venue.shadowSize = o.quality === 'high' ? 2048 : o.quality === 'medium' ? 1024 : isMobile ? 512 : 1024;
   document.documentElement.style.setProperty('--hud-scale', String(o.hudScale));
@@ -127,7 +128,11 @@ function attract() {
   session.match.players[0].diff = 'hard';
 }
 
+/** Extra teardown for modes that add their own objects (training targets, banner, timer). */
+let modeCleanup: (() => void) | null = null;
 function endSession() {
+  modeCleanup?.();
+  modeCleanup = null;
   clearShowcase();
   if (session) { session.dispose(); session = null; }
   S.touchControls(false);
@@ -148,7 +153,7 @@ function toMenu() {
         const pickOpp = (partner?: PlayerDef) => S.playerSelect('EXIBIÇÃO', (p2) => {
           const rest = PLAYERS.filter((p) => !p.unlock && ![p1.id, p2.id, partner?.id].includes(p.id));
           startExhibition(p1, p2, setup, partner ? [partner, rest[Math.floor(Math.random() * rest.length)]] : undefined);
-        }, toMenu, { exclude: p1.id, who: setup.twoPlayers ? 'Jogador 2: escolha seu tenista' : 'Escolha o adversário' });
+        }, toMenu, { exclude: [p1.id, ...(partner ? [partner.id] : [])], who: setup.twoPlayers ? 'Jogador 2: escolha seu tenista' : 'Escolha o adversário' });
         if (setup.doubles) S.playerSelect('DUPLAS', (partner) => pickOpp(partner), toMenu, { exclude: p1.id, who: 'Escolha seu parceiro de duplas' });
         else pickOpp();
       }, toMenu);
@@ -173,14 +178,21 @@ function playMatch(p1: PlayerDef, p2: PlayerDef, venue: VenueDef, cfg: MatchConf
       Audio.music(null);
       Audio.play('crowd_cheer', { vol: 0.5 });
       applyOptions();
-      session.onFinished = (w) => onEnd(w === 0, session!);
+      session.onFinished = (w) => { mode = 'menu'; S.touchControls(false); onEnd(w === 0, session!); };
       document.getElementById('fade')!.classList.remove('on');
     }, 380);
   });
 }
 
 function matchStats(s: Session) {
-  const [a, b] = s.match.players;
+  // doubles: team totals (players = [team A lead, team B lead, team A partner, team B partner])
+  const ps = s.match.players;
+  const team = (t: 0 | 1) => {
+    const mem = ps.filter((_, i) => i % 2 === t);
+    const sum = (k: keyof typeof ps[0]['stats']) => mem.reduce((acc, p) => acc + (p.stats[k] as number), 0);
+    return { stats: { pointsWon: sum('pointsWon'), aces: sum('aces'), doubleFaults: sum('doubleFaults'), winners: sum('winners'), errors: sum('errors'), smashes: sum('smashes'), netPoints: sum('netPoints'), maxServe: Math.max(...mem.map((p) => p.stats.maxServe)) } };
+  };
+  const a = team(0), b = team(1);
   const ms = performance.now() - matchStart;
   const mm = Math.floor(ms / 60000), ss = Math.floor((ms % 60000) / 1000);
   return {
@@ -200,7 +212,7 @@ function matchStats(s: Session) {
 
 function startExhibition(p1: PlayerDef, p2: PlayerDef, setup: S.ExhibitionSetup, partners?: [PlayerDef, PlayerDef]) {
   const cfg: MatchConfig = { ...defaultConfig(), sets: setup.sets, gamesPerSet: setup.games, tiebreakAt: setup.games };
-  playMatch(p1, p2, setup.venue, cfg, setup.difficulty, setup.twoPlayers, `${partners ? 'DUPLAS · ' : ''}${setup.sets === 1 ? 'SET ÚNICO' : 'MELHOR DE 3'} · ${setup.games} GAMES`, (won, s) => {
+  playMatch(p1, p2, setup.venue, cfg, setup.difficulty, setup.twoPlayers, `${partners ? 'DUPLAS · ' : ''}${setup.sets === 1 ? 'SET ÚNICO' : 'MELHOR DE 3'} · ${setup.games} ${setup.games === 1 ? 'GAME' : 'GAMES'}`, (won, s) => {
     const st = matchStats(s);
     const sets = s.match.score.setHistory;
     Audio.music('music_victory');
@@ -221,6 +233,7 @@ function startArcade(me: PlayerDef) {
   const run = (stageI: number) => {
     endSession();
     attract();
+    mode = 'menu';
     S.arcadeLadder(stageI, ladder, me, () => {
       const { p, v } = ladder[stageI];
       const cfg: MatchConfig = { ...defaultConfig(), sets: 1, gamesPerSet: stageI === 4 ? 3 : 2, tiebreakAt: stageI === 4 ? 3 : 2 };
@@ -239,7 +252,7 @@ function startArcade(me: PlayerDef) {
         }
         if (won) {
           Audio.music('music_victory');
-          S.resultsScreen({ a: me, b: p, winner: 0, sets: s.match.score.setHistory, ...st, title: 'VITÓRIA!', lose: false }, [['PRÓXIMA PARTIDA', () => run(stageI + 1)]]);
+          S.resultsScreen({ a: me, b: p, winner: 0, sets: s.match.score.setHistory, ...st, title: 'VITÓRIA!', lose: false }, [['PRÓXIMA PARTIDA', () => run(stageI + 1)], ['MENU PRINCIPAL', () => { endSession(); toMenu(); }]]);
         } else {
           S.resultsScreen({ a: me, b: p, winner: 1, sets: s.match.score.setHistory, ...st, title: 'DERROTA', lose: true }, [
             ['CONTINUAR', () => run(stageI)],
@@ -247,7 +260,7 @@ function startArcade(me: PlayerDef) {
           ]);
         }
       });
-    });
+    }, () => { endSession(); toMenu(); });
   };
   run(0);
 }
@@ -406,14 +419,19 @@ function startTraining(me: PlayerDef, onDone?: (score: number) => void) {
       if (!hit) { combo = 0; if (!inCourt) session!.hud?.call('FORA', '', 'red', 0.8); }
       paint();
     };
+    const cleanup = () => {
+      clearInterval(timer);
+      box.remove();
+      for (const t of targets) { R.scene.remove(t.mesh); t.mesh.geometry.dispose(); }
+    };
     const timer = setInterval(() => {
-      if (paused || !session || session.match !== m) return;
+      if (!session || session.match !== m) { cleanup(); return; }
+      if (paused) return;
       time -= 0.25;
       paint();
       if (time <= 0) {
-        clearInterval(timer);
-        box.remove();
-        for (const t of targets) R.scene.remove(t.mesh);
+        cleanup();
+        modeCleanup = null;
         const best = Math.max(score, Save.data.records.trainingBest);
         const isRecord = score > Save.data.records.trainingBest;
         Save.data.records.trainingBest = best;
@@ -427,6 +445,7 @@ function startTraining(me: PlayerDef, onDone?: (score: number) => void) {
         ]);
       }
     }, 250);
+    modeCleanup = cleanup;
     session.onFinished = () => {};
     session.skipIntro();
     document.getElementById('fade')!.classList.remove('on');
@@ -439,11 +458,12 @@ Input.onAction((a) => {
   if (a === 'pause' && !paused) {
     paused = true;
     session.match.paused = true;
-    S.pauseMenu(
+    const openPause = () => S.pauseMenu(
       () => { paused = false; session!.match.paused = false; },
       () => { paused = false; endSession(); toMenu(); },
-      () => S.optionsScreen(() => { paused = false; session!.match.paused = false; }, applyOptions),
+      () => S.optionsScreen(openPause, applyOptions), // back from options returns to the pause menu
     );
+    openPause();
   } else if ((a === 'confirm') && !paused) {
     session.requestSkip();
   }

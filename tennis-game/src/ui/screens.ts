@@ -75,7 +75,10 @@ export function wipe() {
   ));
   setTimeout(() => w.remove(), 760);
 }
-const flag = (c: [string, string, string]) => `<span class="fl">${c.map((x) => `<i style="background:${x}"></i>`).join('')}</span>`;
+const flag = (c: [string, string, string]) =>
+  c[0] === c[2] && c[0].toLowerCase() === '#ffffff' && c[1].toLowerCase() === '#bc002d'
+    ? `<span class="fl disc" style="--d:${c[1]}"></span>` // Japan: red disc on white
+    : `<span class="fl">${c.map((x) => `<i style="background:${x}"></i>`).join('')}</span>`;
 
 // ------------------------------------------------------------------ loading
 export function loadingScreen() {
@@ -123,8 +126,9 @@ export function mainMenu(cb: { arcade: () => void; career: () => void; exhibitio
 // ------------------------------------------------------------------ player select
 export const MenuHooks: { preview: ((p: PlayerDef | null) => void) | null } = { preview: null };
 
-export function playerSelect(title: string, onPick: (p: PlayerDef) => void, onBack: () => void, opts: { exclude?: string; who?: string } = {}) {
-  const list = PLAYERS.filter((p) => p.id !== opts.exclude);
+export function playerSelect(title: string, onPick: (p: PlayerDef) => void, onBack: () => void, opts: { exclude?: string | string[]; who?: string } = {}) {
+  const ex = ([] as string[]).concat(opts.exclude ?? []);
+  const list = PLAYERS.filter((p) => !ex.includes(p.id));
   const unlocked = (p: PlayerDef) => !p.unlock || Save.data.unlocked.includes(p.id);
   const el = mount(h(`<div class="screen"><h1><span>${title}</span></h1><div class="sub">${opts.who ?? 'Escolha seu tenista'}</div>
     <div class="select ${window.innerWidth >= 1000 && window.innerHeight >= 600 ? 'showcase' : ''}"><div class="grid">${list.map((p) => `<div class="card ${unlocked(p) ? '' : 'locked'}"><img src="${Portraits.get(p.id)?.head ?? ''}"/>${flag(p.flagColors)}<div class="nm">${unlocked(p) ? p.short : '???'}</div></div>`).join('')}</div>
@@ -169,7 +173,7 @@ export function exhibitionSetup(onGo: (s: ExhibitionSetup) => void, onBack: () =
       <button class="item go">JOGAR!</button>
     </div><div class="hint"><b>←→</b> alterar <b>↑↓</b> navegar <b>ENTER</b> confirmar</div><button class="backbtn">◀ VOLTAR</button></div>`));
   const venues = [...el.querySelectorAll('.venue')] as HTMLElement[];
-  const paintV = () => venues.forEach((v, i) => v.classList.toggle('vsel', i === vi) || v.classList.toggle('sel', i === vi));
+  const paintV = () => venues.forEach((v, i) => v.classList.toggle('sel', i === vi));
   const paintOpts = () => {
     (el.querySelector('[data-k="games"] .v') as HTMLElement).textContent = String(st.games);
     (el.querySelector('[data-k="sets"] .v') as HTMLElement).textContent = st.sets === 1 ? 'SET ÚNICO' : 'MELHOR DE 3';
@@ -266,7 +270,7 @@ export function resultsScreen(r: { a: PlayerDef; b: PlayerDef; winner: 0 | 1; se
       <div class="p ${r.winner === 1 ? 'win' : ''}"><img src="${Portraits.get(r.b.id)?.head}"/><div class="nm">${r.b.short}</div></div>
     </div>
     <table class="st">${r.stats.map((s) => `<tr><td>${s.a}</td><td>${s.label}</td><td>${s.b}</td></tr>`).join('')}</table>
-    <div style="margin-top:14px">${buttons.map(([t]) => `<button class="item">${t}</button>`).join('')}</div></div></div>`));
+    <div class="res-btns">${buttons.map(([t]) => `<button class="item">${t}</button>`).join('')}</div></div></div>`));
   const items = [...el.querySelectorAll('.item')] as HTMLElement[];
   // count up the statistics
   el.querySelectorAll<HTMLElement>('table.st td:nth-child(1), table.st td:nth-child(3)').forEach((td, k) => {
@@ -340,21 +344,22 @@ export async function creditsScreen(onBack: () => void) {
     return l.trim() ? `<p>${l}</p>` : '';
   }).join('');
   const el = mount(h(`<div class="overlay"><div class="panel" style="width:min(900px,94vw)"><h2>CRÉDITOS</h2><div class="credits">${html}</div><button class="item" style="margin-top:10px">VOLTAR</button></div></div>`));
-  const nav = navigable([el.querySelector('.item') as HTMLElement], { onConfirm: () => { nav.off(); leave(el); onBack(); }, onBack: () => { nav.off(); leave(el); onBack(); } });
   const box = el.querySelector('.credits') as HTMLElement;
   const off = Input.onAction((a) => { if (a === 'down') box.scrollTop += 80; if (a === 'up') box.scrollTop -= 80; });
-  el.addEventListener('remove', off);
+  const close = () => { off(); nav.off(); leave(el); onBack(); };
+  const nav = navigable([el.querySelector('.item') as HTMLElement], { onConfirm: close, onBack: close });
 }
 
 // ------------------------------------------------------------------ arcade ladder
-export function arcadeLadder(stage: number, ladder: { p: PlayerDef; v: VenueDef }[], me: PlayerDef, done: () => void) {
+export function arcadeLadder(stage: number, ladder: { p: PlayerDef; v: VenueDef }[], me: PlayerDef, done: () => void, quit?: () => void) {
   const el = mount(h(`<div class="screen"><h1><span>ARCADE</span></h1><div class="sub">Partida ${stage + 1} de ${ladder.length}</div>
     <div class="venues" style="grid-template-columns:repeat(${ladder.length}, minmax(0,1fr))">${ladder.map((l, i) => `<div class="venue ${i === stage ? 'sel' : ''}" style="${i < stage ? 'opacity:.45' : ''}">
-      <img src="${i <= stage || !l.p.unlock ? Portraits.get(l.p.id)?.head : ''}" style="width:100%;max-width:none;aspect-ratio:1;object-fit:cover;${i > stage && l.p.unlock ? 'filter:brightness(0)' : ''}"/>
+      ${i <= stage || !l.p.unlock ? `<img src="${Portraits.get(l.p.id)?.head ?? ''}" style="width:100%;max-width:none;aspect-ratio:1;object-fit:cover"/>` : '<div class="mystery">?</div>'}
       <div class="vn">${i > stage && l.p.unlock ? '???' : l.p.short}</div><div class="vs">${l.v.name}</div>${i < stage ? '<div class="vn" style="color:#39e36b">VENCIDO</div>' : ''}</div>`).join('')}</div>
     <div class="sub" style="margin-top:20px">Jogando com <b style="color:#f5c542">${me.name}</b></div>
-    <button class="item go">CONTINUAR</button></div>`));
-  const nav = navigable([el.querySelector('.go') as HTMLElement], { onConfirm: () => { nav.off(); leave(el); done(); } });
+    <button class="item go">CONTINUAR</button>${quit ? '<button class="item go">SAIR DO ARCADE</button>' : ''}</div>`));
+  const exit = () => { nav.off(); leave(el); quit?.(); };
+  const nav = navigable([...el.querySelectorAll<HTMLElement>('.go')], { onConfirm: (i) => { if (i === 1) return exit(); nav.off(); leave(el); done(); }, onBack: quit ? exit : undefined });
 }
 
 // ------------------------------------------------------------------ touch controls

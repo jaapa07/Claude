@@ -54,7 +54,12 @@ export function createPlayer(onDone: (me: PlayerDef) => void, onBack: () => void
     <div class="hint"><b>←→</b> alterar <b>↑↓</b> navegar <b>ENTER</b> confirmar</div><button class="backbtn">◀ VOLTAR</button></div>`));
   const input = el.querySelector('#pname') as HTMLInputElement;
   const paint = () => { rows.forEach(([k, , , v]) => ((el.querySelector(`[data-k="${k}"] .v`) as HTMLElement).innerHTML = v())); ver++; MenuHooks.preview?.(build()); };
-  input.addEventListener('input', () => { st.name = input.value; });
+  input.addEventListener('input', () => {
+    // names show up in many HTML views: keep them to plain text
+    const clean = input.value.replace(/[<>&"'`\\]/g, '');
+    if (clean !== input.value) input.value = clean;
+    st.name = clean;
+  });
   // typing goes to the name only; Enter / ↑ / ↓ / Esc / Tab leave the field and return to the menu
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === 'Escape' || e.key === 'Tab') { e.preventDefault(); e.stopPropagation(); input.blur(); if (e.key !== 'Escape') Input.trigger('down'); return; }

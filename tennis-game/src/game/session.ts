@@ -380,7 +380,7 @@ export class Session {
       return;
     }
     const c = e.call;
-    if (c === 'DEUCE') return Audio.play('ump_fourty_five'), void 0;
+    if (c === 'DEUCE') return; // no 'deuce' recording: the umpire stays silent rather than say 'forty'
     if (c === 'ADVANTAGE SERVER') { Audio.play('ump_advantage_server'); return; }
     if (c === 'ADVANTAGE RECEIVER') { Audio.play('ump_advantage_receiver'); return; }
     const parts = c.split(/\s*-\s*|\s+ALL/).filter(Boolean);

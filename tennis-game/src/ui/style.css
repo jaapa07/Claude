@@ -419,3 +419,37 @@ html.is-touch .callout { top: 40%; }
 .opts.creator .namebox input { font-size: 19px; padding: 2px 10px; }
 .ctxlost { position: fixed; inset: 0; z-index: 9999; display: grid; place-content: center; gap: 8px; text-align: center; background: #05070f; color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 22px; }
 .ctxlost b { font-family: 'Anton'; font-size: 30px; color: var(--gold); letter-spacing: 1px; }
+/* phones (short landscape screens): creator rows in two compact columns, everything on one screen */
+@media (max-height: 520px) {
+  .opts.creator { max-width: none !important; grid-template-columns: 1fr 1fr; gap: 3px 8px; max-height: calc(100vh - 92px); margin-top: 2px; }
+  .opts.creator .opt { grid-template-columns: 92px minmax(0, 1fr); font-size: 14px; padding: 2px 8px; letter-spacing: 0; }
+  .opts.creator .opt .v { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; letter-spacing: 1px; }
+  .opts.creator .opt .v::before, .opts.creator .opt .v::after { font-size: 10px; }
+  .opts.creator .namebox { grid-column: span 2; grid-template-columns: 92px 1fr; }
+  .opts.creator .namebox input { font-size: 16px; padding: 1px 8px; }
+  .opts.creator .sw { width: 30px; height: 13px; }
+  .opts.creator .item.go { grid-column: span 2; font-size: 20px; padding: 2px 12px; margin-top: 2px; }
+  .screen:has(.opts.creator) .hint { display: none; }
+}
+/* arena row focus (exhibition setup) */
+.venues { outline: 2px solid transparent; outline-offset: 6px; transition: outline-color .15s; }
+.venues.sel { outline-color: rgba(245,197,66,.55); }
+/* the touch pad never covers menus, pause or results */
+body:has(.overlay) .touch, body:has(.screen) .touch { display: none !important; }
+/* results: the action buttons stay visible even when the stats scroll */
+.res-btns { margin-top: 14px; position: sticky; bottom: -18px; padding: 8px 0 4px; background: var(--panel-2); z-index: 1; }
+@media (max-height: 520px) { .res-btns { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 6px; margin-top: 6px; } .res-btns .item { font-size: 18px; padding: 4px 8px; } }
+.mystery { width: 100%; aspect-ratio: 1; display: grid; place-items: center; background: #05070f; font-family: 'Anton'; font-size: 64px; color: rgba(255,255,255,.25); }
+/* 720p-class desktop screens: everything, including the main action button, fits without scrolling */
+@media (min-height: 521px) and (max-height: 820px) {
+  .screen { overflow-y: auto; }
+  .venue img { width: 42%; max-width: 96px; }
+  .venue { padding: 8px; }
+  .opts { gap: 4px; margin-top: 10px; }
+  .opt { padding: 4px 16px; font-size: 19px; }
+  .panel .opt { padding: 3px 14px; font-size: 18px; }
+  .panel h2 { font-size: 32px; margin-bottom: 8px; }
+  .panel .item { font-size: clamp(20px, 3.6vh, 28px); padding-top: 2px; padding-bottom: 2px; }
+  .item.go { margin-top: 4px; }
+}
+.fl.disc, .flag.disc { background: radial-gradient(circle closest-side, var(--d) 58%, #fff 62%); }
