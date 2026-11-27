@@ -1,6 +1,6 @@
 # QA ponta a ponta
 
-Executado em 2026-11-26 22:55 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
+Executado em 2026-11-27 13:39 UTC com `node scripts/qa/run.cjs` (Chromium headless, build de produção).
 
 **22/22 suítes OK.** O monitor de invariantes roda a cada quadro em todas as suítes (bola/jogadores com posição válida e dentro do mundo,
 bola perto do dono, controle duplicado, time humano sem jogador, estados presos, bola morta sem ninguém ir buscar).
@@ -15,7 +15,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 | twoplayers | ✔ OK | 50s |
 | setpieces | ✔ OK | 58s |
 | fouls | ✔ OK | 57s |
-| pausemenu | ✔ OK | 37s |
+| pausemenu | ✔ OK | 41s |
 | cup | ✔ OK | 164s |
 | pens | ✔ OK | 74s |
 | training | ✔ OK | 32s |
@@ -24,7 +24,7 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 | memory | ✔ OK | 108s |
 | career | ✔ OK | 161s |
 | mobile | ✔ OK | 34s |
-| iphone | ✔ OK | 167s |
+| iphone | ✔ OK | 142s |
 | toques | ✔ OK | 532s |
 | goleiro | ✔ OK | 110s |
 | formatos | ✔ OK | 145s |
@@ -103,8 +103,12 @@ bola perto do dono, controle duplicado, time humano sem jogador, estados presos,
 
 - ✔ ESC pausa a partida
 - ✔ formação alterada pelo menu de táticas (2-2)
-- ✔ substituição troca o jogador em campo (CAJU → RAIO LASER)
+- ✔ substituição troca o jogador em campo (ROCHA → RAIO LASER)
 - ✔ continuar retoma a partida
+- ✔ menu de pausa tem "Configurações"
+- ✔ remapear PASSE pela pausa (agora KeyP)
+- ✔ voltar das configurações retorna à pausa ({"scene":"match","paused":true,"overlay":true})
+- ✔ partida continua depois das configurações
 - ✔ reiniciar começa uma nova partida
 
 ## cup

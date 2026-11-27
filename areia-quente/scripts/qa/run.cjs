@@ -267,9 +267,25 @@ const SUITES = {
     await g.ev(() => window.__game.flow.unpause());
     await sleep(1500);
     check(!(await g.ev(() => window.__game.flow.match.paused)), 'continuar retoma a partida', n);
+    // configurações pela pausa: troca uma tecla e volta para a pausa (sem sair da partida)
+    await g.key('Escape');
+    await g.waitFor(() => window.__game.flow.match.paused, null, 20000);
+    const hasCfg = await g.ev(() => { const b = [...document.querySelectorAll('.overlay .btn')].find((x) => x.textContent.includes('Configurações')); if (b) b.click(); return !!b; });
+    check(hasCfg, 'menu de pausa tem "Configurações"', n);
+    await g.waitFor(() => window.__game.flow.scene === 'options' && document.querySelector('.options .keys'), null, 20000);
+    await g.ev(() => document.querySelector('.options .k[data-k="pass"]').click()); await sleep(400);
+    await g.key('KeyP'); await sleep(600);
+    const key = await g.ev(() => window.__game.settings.keys.pass);
+    check(key === 'KeyP', `remapear PASSE pela pausa (agora ${key})`, n);
+    await g.ev(() => document.querySelector('.options [data-a=back]').click()); await sleep(800);
+    const back = await g.ev(() => ({ scene: window.__game.flow.scene, paused: window.__game.flow.match?.paused, overlay: !!document.querySelector('.overlay .btn') }));
+    check(back.scene === 'match' && back.paused && back.overlay, `voltar das configurações retorna à pausa (${JSON.stringify(back)})`, n);
+    await g.ev(() => { window.__game.flow.unpause(); window.__game.settings.keys.pass = 'KeyJ'; });
+    await sleep(800);
+    check(await g.ev(() => !window.__game.flow.match.paused && window.__game.flow.scene === 'match'), 'partida continua depois das configurações', n);
     // reiniciar
     await g.ev(() => window.__game.flow.pause()); await sleep(400);
-    await g.ev(() => [...document.querySelectorAll('.overlay .btn')][3].click());
+    await g.ev(() => [...document.querySelectorAll('.overlay .btn')].find((x) => x.textContent.includes('Reiniciar')).click());
     const ok = await g.waitFor(() => window.__game.flow.match && window.__game.flow.match.state === 'intro', null, 60000).then(() => true, () => false);
     check(ok, 'reiniciar começa uma nova partida', n);
   },

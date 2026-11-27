@@ -60,7 +60,7 @@ npm run build
 | Pausa · pular cinemáticas/replays | Esc / Enter | Start |
 
 Finalizações são contextuais: com a bola no alto, **K** vira cabeçada (bola alta), **bicicleta** (de costas para o gol),
-**tesoura** (gol de lado), **voleio** ou **peixinho** (correndo para uma bola baixa). As teclas podem ser remapeadas em *Opções*.
+**tesoura** (gol de lado), **voleio** ou **peixinho** (correndo para uma bola baixa). As teclas podem ser remapeadas em *Opções* — ou no meio da partida: ESC → *Configurações* (volta para a pausa).
 Na tela "Quem joga com quem?" cada teclado/controle é movido para CASA, CPU ou FORA (até 2 jogadores locais).
 
 ### iPhone / Android (tela de toque)

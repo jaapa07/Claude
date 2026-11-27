@@ -484,8 +484,8 @@ export class Flow {
     audio.play('ui_pop');
     const training = m.opts.mode === 'training' || m.opts.mode === 'mini';
     const opts: [string, () => void][] = training
-      ? [[t('resume'), () => this.unpause()], [t('quit'), () => { this.unpause(); this.fade(() => this.mainMenu()); }]]
-      : [[t('resume'), () => this.unpause()], [t('tactics'), () => this.tactics()], [t('subs'), () => this.subs()], [t('restart'), () => { this.unpause(); this.fade(() => { this.endMatch(); this.startMatch(); }); }],
+      ? [[t('resume'), () => this.unpause()], ['Configurações', () => this.options(true)], [t('quit'), () => { this.unpause(); this.fade(() => this.mainMenu()); }]]
+      : [[t('resume'), () => this.unpause()], [t('tactics'), () => this.tactics()], [t('subs'), () => this.subs()], ['Configurações', () => this.options(true)], [t('restart'), () => { this.unpause(); this.fade(() => { this.endMatch(); this.startMatch(); }); }],
         [t('quit'), () => { this.unpause(); this.fade(() => this.mainMenu()); }]];
     const el = html(`<div class="screen overlay"><div class="box panel"><h1 class="title">${t('pause')}</h1>${opts.map(([n]) => `<button class="btn"><span>${n}</span></button>`).join('')}</div></div>`);
     this.mount(el);
@@ -989,7 +989,14 @@ export class Flow {
   }
 
   // ------------------------------------------------------------------ opções
-  options() {
+  /** Opções. fromPause = aberto pelo menu de pausa (ESC / ❚❚): volta para a pausa em vez do menu principal. */
+  options(fromPause = false) {
+    const prevTick = this.tick, prevScene = this.scene;
+    const leave = () => {
+      settings.save(); audio.play('ui_back');
+      if (fromPause && this.match) { this.tick = prevTick; this.scene = prevScene; this.pause(); }
+      else { this.tick = undefined; this.fade(() => this.mainMenu()); }
+    };
     this.scene = 'options';
     const S = settings.data;
     type Opt = { k: string; get: () => string; step: (d: number) => void };
@@ -1002,7 +1009,7 @@ export class Flow {
     if (platform.mobile) optsL.push(
       { k: 'Botões na tela', get: () => ['Pequenos', 'Médios', 'Grandes'][S.touchSize ?? 1], step: (d) => { S.touchSize = (((S.touchSize ?? 1) + d + 3) % 3) as 0 | 1 | 2; } },
       { k: 'Vibração ao tocar', get: () => (S.vibrate === false ? 'Desligada' : 'Ligada'), step: () => { S.vibrate = S.vibrate === false; } });
-    optsL.push({ k: 'Versão do jogo', get: () => (platform.mobile ? 'Celular (toque para trocar)' : 'PC (clique para trocar)'), step: () => { settings.save(); platform.switchTo(platform.mobile ? 'pc' : 'mobile'); } });
+    if (!fromPause) optsL.push({ k: 'Versão do jogo', get: () => (platform.mobile ? 'Celular (toque para trocar)' : 'PC (clique para trocar)'), step: () => { settings.save(); platform.switchTo(platform.mobile ? 'pc' : 'mobile'); } });
     const labels: Record<string, string> = { up: 'Cima', down: 'Baixo', left: 'Esquerda', right: 'Direita', pass: 'Passe / trocar', shoot: 'Chute', lob: 'Lençol', trick: 'Firula', sprint: 'Correr', tackle: 'Carrinho', fire: 'Modo Fogo', pause: 'Pausa' };
     let waiting: string | null = null;
     let sel = 0;
@@ -1016,7 +1023,7 @@ export class Flow {
       el.querySelectorAll('.opt').forEach((o) => o.addEventListener('click', (e) => { sel = +(o as HTMLElement).dataset.i!; const r = (o as HTMLElement).getBoundingClientRect(); optsL[sel].step((e as MouseEvent).clientX > r.left + r.width / 2 ? 1 : -1); settings.save(); render(); }));
       el.querySelectorAll('.k').forEach((k) => k.addEventListener('click', () => { waiting = (k as HTMLElement).dataset.k!; input.anyKeyCode(); render(); }));
       el.querySelector('[data-a=reset]')?.addEventListener('click', () => { S.keys = { ...DEFAULT_KEYS }; settings.save(); render(); });
-      el.querySelector('[data-a=back]')!.addEventListener('click', () => { settings.save(); this.tick = undefined; this.fade(() => this.mainMenu()); });
+      el.querySelector('[data-a=back]')!.addEventListener('click', leave);
     };
     render();
     this.nav = undefined;
@@ -1030,7 +1037,7 @@ export class Flow {
       if (M.up) { sel = (sel + optsL.length) % (optsL.length + 1); render(); audio.play('ui_move', 0.4); }
       if (M.down) { sel = (sel + 1) % (optsL.length + 1); render(); audio.play('ui_move', 0.4); }
       if ((M.left || M.right) && sel < optsL.length) { optsL[sel].step(M.left ? -1 : 1); settings.save(); render(); audio.play('ui_tick', 0.5); }
-      if ((M.ok && sel === optsL.length) || M.back) { settings.save(); audio.play('ui_back'); this.tick = undefined; this.fade(() => this.mainMenu()); }
+      if ((M.ok && sel === optsL.length) || M.back) leave();
     };
   }
 

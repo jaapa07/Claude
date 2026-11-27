@@ -114,12 +114,16 @@
   "notes": [
    "✔ ESC pausa a partida",
    "✔ formação alterada pelo menu de táticas (2-2)",
-   "✔ substituição troca o jogador em campo (CAJU → RAIO LASER)",
+   "✔ substituição troca o jogador em campo (ROCHA → RAIO LASER)",
    "✔ continuar retoma a partida",
+   "✔ menu de pausa tem \"Configurações\"",
+   "✔ remapear PASSE pela pausa (agora KeyP)",
+   "✔ voltar das configurações retorna à pausa ({\"scene\":\"match\",\"paused\":true,\"overlay\":true})",
+   "✔ partida continua depois das configurações",
    "✔ reiniciar começa uma nova partida"
   ],
-  "secs": 37,
-  "at": "2026-11-26T00:23:16.672Z"
+  "secs": 41,
+  "at": "2026-11-27T13:39:48.866Z"
  },
  "cup": {
   "name": "cup",
@@ -250,8 +254,8 @@
    "✔ opções do celular: botões, vibração, troca de versão; sem teclas",
    "✔ pc.html: versão PC sem controles de toque"
   ],
-  "secs": 167,
-  "at": "2026-11-26T19:17:29.247Z"
+  "secs": 142,
+  "at": "2026-11-27T13:39:48.866Z"
  },
  "toques": {
   "name": "toques",
