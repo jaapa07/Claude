@@ -1,0 +1,23 @@
+<!doctype html><html><head><base href="/"></head><body style="margin:0;background:#333"><script type="module">
+import * as THREE from 'three';
+import { Assets, CORE_ASSETS } from '/src/core/assets.ts';
+import { Athlete } from '/src/game/athlete.ts';
+import { PLAYERS } from '/src/data/content.ts';
+await Assets.loadAll(CORE_ASSETS); await Assets.loadExtraClips('models/mixamo_clips.json');
+const q = new URLSearchParams(location.search);
+const anim = q.get('anim'); const times = q.get('t').split(',').map(Number); const ry = +(q.get('ry')||0);
+const r = new THREE.WebGLRenderer({antialias:true}); r.setSize(innerWidth, innerHeight); document.body.appendChild(r.domElement);
+r.toneMapping = THREE.ACESFilmicToneMapping; r.outputColorSpace = THREE.SRGBColorSpace;
+const sc = new THREE.Scene(); sc.background = new THREE.Color('#7a8a99');
+sc.add(new THREE.HemisphereLight('#fff','#556',1.5)); const d=new THREE.DirectionalLight('#fff',2.5); d.position.set(3,5,4); sc.add(d);
+const info = [];
+times.forEach((t, i) => {
+  const a = new Athlete(PLAYERS[0]); sc.add(a.root);
+  a.root.position.x = (i - (times.length - 1) / 2) * 1.8; a.root.rotation.y = ry; a.procedural = false;
+  a.play(anim, { fade: 0 }); if (a.oneShot) a.oneShot.time = t; else a.actions.get(anim).time = t; a.update(0);
+  const h = a.racketHeadWorld(); info.push([t, (h.x - a.root.position.x).toFixed(2), h.y.toFixed(2), h.z.toFixed(2)].join(' '));
+});
+const w = times.length * 1.8;
+const cam = new THREE.PerspectiveCamera(30, innerWidth/innerHeight, 0.1, 200); cam.position.set(0, 1.3, w * 0.62); cam.lookAt(0, 1.1, 0);
+r.render(sc, cam); console.log('INFO ' + info.join(' | ')); window.done = true;
+</script></body></html>

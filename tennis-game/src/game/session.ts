@@ -129,7 +129,7 @@ export class Session {
     // racket swing arcs and footwork dust
     m.players.forEach((p, i) => {
       const a = p.athlete;
-      const swinging = !!a.oneShot && ['forehand', 'backhand', 'volley', 'smash'].includes(a.oneShotName ?? '') && a.oneShot.time < a.oneShot.getClip().duration * 0.75;
+      const swinging = !!a.oneShot && ['forehand', 'backhand', 'volley', 'smash', 'bb_hit', 'pitch'].includes(a.oneShotName ?? '') && a.oneShot.time < a.oneShot.getClip().duration * 0.75;
       const grip = a.racket ? a.racket.getWorldPosition(new THREE.Vector3()) : null;
       this.fx.swingTrail(i, swinging ? a.racketHeadWorld(new THREE.Vector3()) : null, swinging ? grip : null, this.r.camera);
       const acc = a.accel.length();

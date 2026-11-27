@@ -32,6 +32,17 @@ async function loadJsonModel(url: string): Promise<GLTF> {
 }
 
 class AssetStore {
+  /** Optional extra animation clips (retargeted Mixamo moves); empty when the file is absent. */
+  extraClips: THREE.AnimationClip[] = [];
+  async loadExtraClips(path: string) {
+    try {
+      const r = await fetch(BASE + path);
+      if (!r.ok) return;
+      const arr = (await r.json()) as unknown[];
+      this.extraClips = arr.map((j) => THREE.AnimationClip.parse(j as Parameters<typeof THREE.AnimationClip.parse>[0]));
+    } catch { /* optional */ }
+  }
+
   gltf = new Map<string, GLTF>();
   tex = new Map<string, THREE.Texture>();
   hdr = new Map<string, THREE.Texture>();

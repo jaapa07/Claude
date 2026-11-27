@@ -2,3 +2,5 @@ node_modules
 .asset-cache
 dist
 dist-artifact
+public/mixamo-src
+public/assets/models/mixamo_*

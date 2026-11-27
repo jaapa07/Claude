@@ -129,12 +129,14 @@ export function makeOutfitMaterial(src: THREE.MeshStandardMaterial, o: OutfitCol
 export type AnimName =
   | 'idle' | 'ready' | 'run' | 'sprint' | 'walk' | 'forehand' | 'backhand' | 'smash' | 'volley' | 'serve' | 'dive' | 'dive_up'
   | 'cheer' | 'dance' | 'upset' | 'frustrated' | 'arms_folded' | 'fist_pump' | 'jump' | 'land' | 'sit' | 'sit_talk' | 'talk'
-  | 'pickup' | 'point' | 'call' | 'interact' | 'roll';
+  | 'pickup' | 'point' | 'call' | 'interact' | 'roll' | 'pitch' | 'bb_hit' | 'bb_idle';
 
 const LOCO_CYCLE: AnimName[] = ['walk', 'run', 'sprint'];
+/** Long motion-capture clips: where the useful move ends. */
+const CLIP_END: Partial<Record<AnimName, number>> = { bb_hit: 1.9, pitch: 2.7 };
 const NATURAL_SPEED: Record<string, number> = { walk: 1.4, run: 4.0, sprint: 6.4 };
 
-const ONE_SHOT = new Set<AnimName>(['forehand', 'backhand', 'smash', 'volley', 'serve', 'dive', 'dive_up', 'cheer', 'frustrated', 'fist_pump', 'jump', 'land', 'pickup', 'point', 'interact', 'roll']);
+const ONE_SHOT = new Set<AnimName>(['pitch', 'bb_hit', 'forehand', 'backhand', 'smash', 'volley', 'serve', 'dive', 'dive_up', 'cheer', 'frustrated', 'fist_pump', 'jump', 'land', 'pickup', 'point', 'interact', 'roll']);
 
 export class Athlete {
   root = new THREE.Group();
@@ -198,7 +200,7 @@ export class Athlete {
     if (def.beard) attachHair('models/hair_beard.glb');
 
     this.mixer = new THREE.AnimationMixer(this.model);
-    for (const clip of Assets.g('models/anims.glb').animations) {
+    for (const clip of [...Assets.g('models/anims.glb').animations, ...Assets.extraClips]) {
       const a = this.mixer.clipAction(clip);
       if (ONE_SHOT.has(clip.name as AnimName)) { a.setLoop(THREE.LoopOnce, 1); a.clampWhenFinished = true; }
       a.enabled = true;
@@ -302,7 +304,10 @@ export class Athlete {
   private leanSide = 0;
   procedural = true;
 
-  play(name: AnimName, opts: { fade?: number; speed?: number; from?: number } = {}) {
+  /** Clip time at which the current one-shot counts as finished (long mocap clips end early). */
+  private shotEnd = Infinity;
+
+  play(name: AnimName, opts: { fade?: number; speed?: number; from?: number; end?: number } = {}) {
     const a = this.actions.get(name);
     if (!a) return;
     const fade = Math.max(0.02, opts.fade ?? 0.15);
@@ -317,6 +322,7 @@ export class Athlete {
       if (opts.from) a.time = opts.from;
       this.oneShot = a;
       this.oneShotName = name;
+      this.shotEnd = opts.end ?? CLIP_END[name] ?? Infinity;
       this.shotFadeIn = fade;
       this.shotReleasing = false;
       if (opts.fade === 0) this.shotW = 1;
@@ -349,7 +355,7 @@ export class Athlete {
 
   oneShotDone(): boolean {
     if (!this.oneShot) return true;
-    return this.oneShot.time >= this.oneShot.getClip().duration - 0.001 || !this.oneShot.isRunning();
+    return this.oneShot.time >= Math.min(this.shotEnd, this.oneShot.getClip().duration - 0.001) || !this.oneShot.isRunning();
   }
 
   /** Time left until the one-shot clip ends (s). */

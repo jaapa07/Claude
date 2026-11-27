@@ -1,0 +1,68 @@
+<!doctype html><html><head><base href="/"></head><body><script type="module">
+// Retarget Mixamo clips onto the Quaternius/UE mannequin skeleton (world-space delta from rest, T-pose to T-pose).
+import * as THREE from 'three';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
+import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils.js';
+const MAP = { Hips: 'pelvis', Spine: 'spine_01', Spine1: 'spine_02', Spine2: 'spine_03', Neck: 'neck_01', Head: 'Head' };
+for (const [s, d] of [['Left', 'l'], ['Right', 'r']]) {
+  Object.assign(MAP, { [`${s}Shoulder`]: `clavicle_${d}`, [`${s}Arm`]: `upperarm_${d}`, [`${s}ForeArm`]: `lowerarm_${d}`, [`${s}Hand`]: `hand_${d}`,
+    [`${s}UpLeg`]: `thigh_${d}`, [`${s}Leg`]: `calf_${d}`, [`${s}Foot`]: `foot_${d}`, [`${s}ToeBase`]: `ball_${d}` });
+  for (const [f, g] of [['Thumb', 'thumb'], ['Index', 'index'], ['Middle', 'middle'], ['Ring', 'ring'], ['Pinky', 'pinky']])
+    for (const k of [1, 2, 3]) MAP[`${s}Hand${f}${k}`] = `${g}_0${k}_${d}`;
+}
+window.retarget = async (file, name, opts = {}) => {
+  const fbx = await new FBXLoader().loadAsync(`/mixamo-src/${file}.fbx`);
+  const g = new GLTFLoader(); g.setMeshoptDecoder(MeshoptDecoder);
+  const tgt = SkeletonUtils.clone((await g.loadAsync('/assets/models/athlete_m.glb')).scene);
+  const src = fbx; const clip = src.animations[0];
+  src.updateMatrixWorld(true); tgt.updateMatrixWorld(true);
+  const sb = (n) => src.getObjectByName('mixamorig' + n);
+  const tBones = []; tgt.traverse((o) => { if (o.isBone) tBones.push(o); });
+  const restWT = new Map(tBones.map((b) => [b.name, b.getWorldQuaternion(new THREE.Quaternion())]));
+  const restLT = new Map(tBones.map((b) => [b.name, b.quaternion.clone()]));
+  const pairs = Object.entries(MAP).map(([s, t]) => [sb(s), tgt.getObjectByName(t)]).filter(([a, b]) => a && b);
+  const restWS = new Map(pairs.map(([s]) => [s.name, s.getWorldQuaternion(new THREE.Quaternion())]));
+  const hipsS = sb('Hips'), pelvis = tgt.getObjectByName('pelvis');
+  const hipsRest = hipsS.getWorldPosition(new THREE.Vector3());
+  const pelvisRest = pelvis.getWorldPosition(new THREE.Vector3());
+  const scale = pelvisRest.y / hipsRest.y;
+  const mixer = new THREE.AnimationMixer(src); mixer.clipAction(clip).play();
+  const fps = 60, t0 = opts.start ?? 0, t1 = Math.min(clip.duration, opts.end ?? clip.duration);
+  const n = Math.ceil((t1 - t0) * fps) + 1;
+  const times = new Float32Array(n);
+  const q = new Map(tBones.map((b) => [b.name, new Float32Array(n * 4)]));
+  const pp = new Float32Array(n * 3);
+  const mapT = new Map(pairs.map(([s, t]) => [t.name, s]));
+  let x0 = null;
+  for (let i = 0; i < n; i++) {
+    const t = t0 + i / fps; times[i] = t - t0;
+    mixer.setTime(Math.min(t, t1)); src.updateMatrixWorld(true);
+    const W = new Map();
+    const visit = (b, parentW) => {
+      let w;
+      const s = mapT.get(b.name);
+      if (s) { const delta = s.getWorldQuaternion(new THREE.Quaternion()).multiply(restWS.get(s.name).clone().invert()); w = delta.multiply(restWT.get(b.name)); }
+      else w = parentW.clone().multiply(restLT.get(b.name));
+      W.set(b.name, w);
+      const local = parentW.clone().invert().multiply(w);
+      local.toArray(q.get(b.name), i * 4);
+      for (const c of b.children) if (c.isBone) visit(c, w);
+    };
+    const rootBone = tBones.find((b) => !b.parent.isBone);
+    visit(rootBone, rootBone.parent.getWorldQuaternion(new THREE.Quaternion()));
+    // pelvis: vertical motion scaled; horizontal kept only if asked (in place by default)
+    const hp = hipsS.getWorldPosition(new THREE.Vector3()).sub(hipsRest).multiplyScalar(scale);
+    if (x0 === null) x0 = hp.clone();
+    const world = pelvisRest.clone().add(new THREE.Vector3(opts.keepXZ ? hp.x - x0.x : 0, hp.y, opts.keepXZ ? hp.z - x0.z : 0));
+    const local = pelvis.parent.worldToLocal(world.clone());
+    pp.set([local.x, local.y, local.z], i * 3);
+  }
+  const tracks = tBones.map((b) => new THREE.QuaternionKeyframeTrack(`${b.name}.quaternion`, times, q.get(b.name)));
+  tracks.push(new THREE.VectorKeyframeTrack('pelvis.position', times, pp));
+  const out = new THREE.AnimationClip(name, t1 - t0, tracks);
+  return JSON.stringify(THREE.AnimationClip.toJSON(out));
+};
+window.done = true;
+</script></body></html>

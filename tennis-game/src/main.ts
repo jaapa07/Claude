@@ -329,6 +329,7 @@ async function boot() {
   Input.init();
   const load = S.loadingScreen();
   await Assets.loadAll({ ...CORE_ASSETS, hdr: VENUES.map((v) => `sky/${v.hdri}.jpg`) }, (f) => load.set(f * 0.85));
+  await Assets.loadExtraClips('models/mixamo_clips.json'); // optional motion-capture moves
   await Audio.init();
   load.set(0.9);
   await renderPortraits(PLAYERS);

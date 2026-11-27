@@ -1,0 +1,16 @@
+<!doctype html><html><head><base href="/"></head><body><script type="module">
+import * as THREE from 'three';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
+const L = new FBXLoader();
+const out = {};
+for (const f of ['pitching', 'idle', 'hit']) {
+  const o = await L.loadAsync(`/mixamo-src/${f}.fbx`);
+  const bones = []; o.traverse((b) => { if (b.isBone) bones.push(b.name); });
+  o.updateMatrixWorld(true);
+  const hips = o.getObjectByName('mixamorigHips') || o.getObjectByName('mixamorig:Hips');
+  const head = o.getObjectByName('mixamorigHead');
+  const lh = o.getObjectByName('mixamorigLeftHand');
+  out[f] = { scale: o.scale.toArray(), clips: o.animations.map((a) => a.name + ':' + a.duration.toFixed(2) + ':' + a.tracks.length), bones: bones.length, first: bones.slice(0, 8), hips: hips && hips.getWorldPosition(new THREE.Vector3()).toArray().map((v) => v.toFixed(1)), head: head && head.getWorldPosition(new THREE.Vector3()).toArray().map((v) => v.toFixed(1)), lhand: lh && lh.getWorldPosition(new THREE.Vector3()).toArray().map((v) => v.toFixed(1)), tr: o.animations[0].tracks.slice(0, 4).map((t) => t.name) };
+}
+console.log('FBX', JSON.stringify(out)); window.done = true;
+</script></body></html>

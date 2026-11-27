@@ -27,14 +27,20 @@ export interface MatchStats { aces: number; doubleFaults: number; winners: numbe
 
 // Contact data measured from the animation clips (tools/impact.html): time of racket-ball contact in the clip and
 // where the racket head is at that instant relative to the feet (metres; right = player's right, fwd = toward net).
-const SWING: Record<string, { impact: number; right: number; fwd: number; h: number }> = {
+const SWING: Record<string, { impact: number; right: number; fwd: number; h: number; start?: number }> = {
   forehand: { impact: 0.245, right: 0.27, fwd: 1.08, h: 0.65 },
   backhand: { impact: 0.245, right: -0.29, fwd: 0.62, h: 0.78 }, // mirrored forehand, two hands
   volley: { impact: 0.255, right: 0.38, fwd: 1.16, h: 1.3 },
   smash: { impact: 0.385, right: 0.49, fwd: 0.48, h: 1.7 },
+  // retarget of a motion-captured two-handed bat swing (optional asset): loaded power forehand
+  bb_hit: { impact: 1.42, start: 1.08, right: 0.93, fwd: 0.08, h: 0.76 },
 };
-const SERVE_HOLD = 0.3; // overhead clip: racket cocked behind the head (trophy position)
-const SERVE_IMPACT = 0.385;
+// serve: motion-captured overhand throw when available, else the overhead sword clip
+const SERVE_CLIPS = {
+  pitch: { start: 1.25, hold: 1.8, impact: 1.97, speed: 1.0, hop: 0.16 },
+  smash: { start: 0, hold: 0.3, impact: 0.385, speed: 0.8, hop: 0.3 },
+};
+type ServeClip = keyof typeof SERVE_CLIPS;
 const MAGNET = 0.14; // seconds before contact in which the ball is drawn onto the strings
 
 export class PlayerCtl {
@@ -55,6 +61,7 @@ export class PlayerCtl {
   lockT = 0; // can't move (recovering from dive, serving)
   hopT = -1;
   interceptAge = 0;
+  powerPick = false;
   predBounce: Vec3 | null = null;
   reactLoop: AnimName | null = null;
   prevVel = new THREE.Vector3();
@@ -209,7 +216,7 @@ export class Match {
     for (const p of this.players) {
       // serve hop
       let hop = 0;
-      if (p.hopT >= 0) { p.hopT += dt; hop = Math.sin(Math.min(1, p.hopT / 0.55) * Math.PI) * 0.3; if (p.hopT > 0.55) p.hopT = -1; }
+      if (p.hopT >= 0) { p.hopT += dt; hop = Math.sin(Math.min(1, p.hopT / 0.55) * Math.PI) * SERVE_CLIPS[this.serveClip(p)].hop; if (p.hopT > 0.55) p.hopT = -1; }
       p.athlete.root.position.set(p.pos.x, hop, p.pos.z);
       // body language: legs follow movement, chest and eyes stay on the play
       const o = this.opp(p.side);
@@ -232,7 +239,8 @@ export class Match {
       if (this.phase === 'toss' && p.side === this.server && !this.tossHeld) {
         const act = p.athlete.oneShot;
         if (act) {
-          const k = THREE.MathUtils.clamp((act.time - SERVE_HOLD) / (SERVE_IMPACT - SERVE_HOLD), 0, 1);
+          const sc = SERVE_CLIPS[this.serveClip(p)];
+          const k = THREE.MathUtils.clamp((act.time - sc.hold) / (sc.impact - sc.hold), 0, 1);
           this.ball.mesh.position.lerp(p.athlete.racketHeadWorld(new THREE.Vector3()), k * k * 0.9);
         }
       }
@@ -275,11 +283,13 @@ export class Match {
     this.serveMeter = 0;
     this.serveMeterDir = 1;
     this.tossHeld = true;
-    sv.athlete.play('smash', { fade: 0.18, speed: 0.8 });
+    const sc = SERVE_CLIPS[this.serveClip(sv)];
+    sv.athlete.play(this.serveClip(sv), { fade: 0.18, speed: sc.speed, from: sc.start });
     // toss: ball leaves the left hand, rises in front of the hitting shoulder
     const hand = new THREE.Vector3();
     (sv.athlete.bones.get('hand_l') ?? sv.athlete.root).getWorldPosition(hand);
-    this.ball.set({ x: sv.pos.x + 0.45 * sv.end, y: Math.max(1.3, hand.y), z: sv.pos.z - sv.end * 0.35 }, { x: 0.12 * sv.end, y: 5.0, z: 0 }, 0);
+    const pitch = this.serveClip(sv) === 'pitch';
+    this.ball.set({ x: sv.pos.x + (pitch ? -0.3 : 0.45) * sv.end, y: Math.max(1.3, hand.y), z: sv.pos.z - sv.end * (pitch ? 0.3 : 0.35) }, { x: (pitch ? 0 : 0.12) * sv.end, y: pitch ? 4.6 : 5.0, z: 0 }, 0);
     this.serveAim.set(0, 0);
     this.emit({ type: 'meter', side: this.server, value: 0 });
   }
@@ -293,7 +303,8 @@ export class Match {
     st.p.y += st.v.y * dt;
     // serve animation holds the trophy pose until the hit
     const act = sv.athlete.oneShot;
-    if (act && this.tossHeld && act.time >= SERVE_HOLD) act.setEffectiveTimeScale(0.04);
+    const scT = SERVE_CLIPS[this.serveClip(sv)];
+    if (act && this.tossHeld && act.time >= scT.hold) act.setEffectiveTimeScale(0.04);
     // power meter
     this.serveMeter += this.serveMeterDir * dt * 1.6;
     if (this.serveMeter >= 1) { this.serveMeter = 1; this.serveMeterDir = -1; }
@@ -319,7 +330,7 @@ export class Match {
       (sv as PlayerCtl & { meterAtHit?: number }).meterAtHit = meterValue;
     }
     // impact
-    if (!this.tossHeld && act && act.time >= SERVE_IMPACT) {
+    if (!this.tossHeld && act && act.time >= scT.impact) {
       this.hitServe(sv, (sv as PlayerCtl & { meterAtHit?: number }).meterAtHit ?? 0.5);
       return;
     }
@@ -375,6 +386,7 @@ export class Match {
     r.intercept = null;
     r.aiDecision = null;
     r.aiReact = r.human ? 0 : DIFFICULTY[r.diff].reaction * (0.7 + this.rng() * 0.6);
+    r.powerPick = !r.human && this.rng() < DIFFICULTY[r.diff].aggression * 0.45;
     const h = this.players[side];
     h.intercept = null;
     h.charging = false;
@@ -701,19 +713,26 @@ export class Match {
       } else this.movePlayer(p, i, dt, 1);
       if (p.charging) {
         const anim = this.swingAnimFor(p, ic);
-        const lead = SWING[anim]?.impact ?? 0.24;
+        const lead = this.swingLead(anim);
         // late press: start the swing part-way through so the contact still lines up with the ball
-        if (ic.t <= lead) this.startSwing(p, anim, Math.max(0.03, ic.t), Math.max(0, lead - ic.t));
+        if (ic.t <= lead) this.startSwing(p, anim, Math.max(0.03, ic.t), (SWING[anim]?.start ?? 0) + Math.max(0, lead - ic.t));
       }
     } else {
       this.movePlayer(p, i, dt, p.swingT >= 0 ? 0.35 : p.charging ? 0.8 : 1);
     }
   }
 
+  private serveClip(p: PlayerCtl): ServeClip { return p.athlete.actions.has('pitch') ? 'pitch' : 'smash'; }
+
+  /** Clip lead time (start -> contact) for a swing. */
+  private swingLead(anim: AnimName) { const sw = SWING[anim]; return sw ? sw.impact - (sw.start ?? 0) : 0.24; }
+
   private swingAnimFor(p: PlayerCtl, ic: Intercept): AnimName {
     if (ic.kind === 'smash') return 'smash';
     if (ic.kind === 'volley') return 'volley';
-    return (ic.p.x - p.pos.x) * p.end >= -0.15 ? 'forehand' : 'backhand';
+    const fore = (ic.p.x - p.pos.x) * p.end >= -0.15;
+    if (fore && p.athlete.actions.has('bb_hit') && ic.kind === 'ground' && ic.p.y < 1.3 && (p.human ? p.chargeT > 0.45 && p.chargeKind === 'drive' : p.powerPick)) return 'bb_hit';
+    return fore ? 'forehand' : 'backhand';
   }
 
   private startSwing(p: PlayerCtl, anim: AnimName, lead: number, from = 0) {
@@ -786,7 +805,7 @@ export class Match {
     // natural angle: mid-court contacts can go wider
     let speed = 0, spin = 0, minClear = 0.3, lob = false;
     switch (shot) {
-      case 'drive': speed = 23 + charge * 11 + pow * 9; spin = 0.55 + tech * 0.5; minClear = 0.35 + (1 - charge) * 0.4; break;
+      case 'drive': speed = 23 + charge * 11 + pow * 9 + (p.swingAnim === 'bb_hit' ? 5 : 0); spin = 0.55 + tech * 0.5; minClear = 0.35 + (1 - charge) * 0.4; break;
       case 'slice': speed = 19 + charge * 6 + pow * 4; spin = -0.6; minClear = 0.2; break;
       case 'drop': speed = 10 + charge * 2; spin = -0.9; minClear = 0.3; tz = o.end * (2.2 + this.rng() * 1.2); break;
       case 'lob': speed = 15.5 + charge * 3; spin = 0.35; minClear = 2.2; lob = true; tz = o.end * (COURT.halfLength - 1.6 + aimY * 0.6); break;
@@ -840,8 +859,8 @@ export class Match {
         this.aiMoveTo(p, spot, dt);
         if (!p.aiDecision) p.aiDecision = this.aiChooseShot(p, ic);
         const anim = this.swingAnimFor(p, ic);
-        const lead = SWING[anim]?.impact ?? 0.24;
-        if (ic.t <= lead && p.swingT < 0) { p.chargeT = 0.6; this.startSwing(p, anim, lead); }
+        const lead = this.swingLead(anim);
+        if (ic.t <= lead && p.swingT < 0) { p.chargeT = 0.6; this.startSwing(p, anim, lead, SWING[anim]?.start ?? 0); }
       }
     } else {
       // recover: baseline centre, or net if attacking
