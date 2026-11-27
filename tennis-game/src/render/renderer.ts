@@ -85,9 +85,10 @@ export class Renderer {
 
   resize() {
     const w = window.innerWidth, h = window.innerHeight;
+    // post-processing buffers are not used in direct (low) mode: keep them tiny to save GPU memory.
+    // (the composer resizes the renderer as well, so the canvas size is set after it)
+    this.composer.setSize(this.direct ? 4 : w, this.direct ? 4 : h);
     this.renderer.setSize(w, h);
-    // post-processing buffers are not used in direct (low) mode: keep them tiny to save GPU memory
-    if (this.direct) this.composer.setSize(4, 4); else this.composer.setSize(w, h);
     this.camera.aspect = w / h;
     // keep the whole court in view on narrow screens
     this.camera.fov = w / h < 1 ? 60 : w / h < 1.4 ? 50 : 42;
