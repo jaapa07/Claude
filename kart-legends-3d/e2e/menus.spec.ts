@@ -89,6 +89,13 @@ test('menus: todos os modos, copas, pistas, personagens e karts aparecem e a nav
   await expect(page.getByTestId('screen-mode')).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(page.getByTestId('screen-players')).toBeVisible();
+  // O quadro de teclas acompanha a escolha: 1 jogador mostra as teclas configuradas; 2 jogadores, o padrão fixo.
+  await page.getByTestId('card-players-1').click();
+  await expect(page.getByTestId('players-keys')).toHaveAttribute('data-players', '1');
+  await expect(page.getByTestId('players-key-drift')).toContainText('Espaço');
+  await page.getByTestId('card-players-2').click();
+  await expect(page.getByTestId('players-keys')).toHaveAttribute('data-players', '2');
+  await expect(page.getByTestId('players-keys')).toContainText('Backspace');
   await page.keyboard.press('Escape');
   await expect(page.getByTestId('screen-menu')).toBeVisible();
   expect(errors).toEqual([]);
