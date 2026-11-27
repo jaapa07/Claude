@@ -94,11 +94,30 @@ function frame() {
   const dt = Math.min(raw, 0.05);
   if (session && mode !== 'menu' && !paused) governor.tick(raw);
   Input.pollGamepads();
-  if (session && !paused) session.update(dt);
-  updateShowcase(dt);
-  if (session) R.render(dt);
+  // one bad frame must not freeze the game: report it on screen and keep the loop alive
+  try { if (session && !paused) session.update(dt); } catch (e) { reportError(e, 'update'); }
+  try { updateShowcase(dt); } catch (e) { reportError(e, 'showcase'); }
+  try { if (session) R.render(dt); } catch (e) { reportError(e, 'render'); }
   Input.endFrame();
 }
+
+// On-device diagnostics: errors show in a small box (players can send a screenshot), each message once.
+const reported = new Set<string>();
+function reportError(e: unknown, where: string) {
+  const err = e as Error;
+  const msg = `${where}: ${err?.message ?? String(e)}`;
+  if (reported.has(msg)) return;
+  reported.add(msg);
+  console.error(msg, err?.stack);
+  let box = document.querySelector('.errbox') as HTMLElement | null;
+  if (!box) { box = document.createElement('div'); box.className = 'errbox'; box.title = 'toque para fechar'; box.onclick = () => box!.remove(); document.body.appendChild(box); }
+  const line = document.createElement('div');
+  line.textContent = `${msg} · ${(err?.stack ?? '').split('\n').slice(1, 3).join(' ').replace(/https?:\/\/[^ )]+\//g, '').slice(0, 160)}`;
+  box.appendChild(line);
+  while (box.children.length > 4) box.firstChild!.remove();
+}
+window.addEventListener('error', (ev) => reportError(ev.error ?? ev.message, 'erro'));
+window.addEventListener('unhandledrejection', (ev) => reportError(ev.reason, 'promise'));
 
 function applyOptions() {
   const o = Save.data.options;
@@ -493,11 +512,13 @@ async function boot() {
   pb.setAttribute('aria-label', 'Pausa');
   pb.addEventListener('click', (e) => { e.stopPropagation(); Input.trigger('pause'); });
   S.ui().appendChild(pb);
+  // any tap skips intro / replay / match end, including taps on GOLPE, SLICE, LOB or the stick
+  // (players press GOLPE to get on with the next serve; ignoring it felt like a freeze)
   document.addEventListener('pointerdown', (e) => {
-    if ((e.target as HTMLElement).closest('button, .stick, .overlay, .panel')) return;
+    if ((e.target as HTMLElement).closest('.pausebtn, .overlay, .panel, .screen')) return;
     if (mode === 'menu' || !session || paused) return;
     if (session.flow === 'intro' || session.flow === 'replay' || session.flow === 'matchEnd') session.requestSkip();
-  });
+  }, { capture: true });
   // expose for automated tests
   (window as unknown as { __game: unknown }).__game = { get session() { return session; }, R, simulate: (sec: number) => { for (let t = 0; t < sec && session; t += 1 / 60) { session.update(1 / 60); Input.endFrame(); } },
     touch: (t: Parameters<typeof Input.setTouch>[0]) => Input.setTouch(t),

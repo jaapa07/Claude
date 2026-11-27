@@ -453,3 +453,6 @@ body:has(.overlay) .touch, body:has(.screen) .touch { display: none !important; 
   .item.go { margin-top: 4px; }
 }
 .fl.disc, .flag.disc { background: radial-gradient(circle closest-side, var(--d) 58%, #fff 62%); }
+.skip-tag { position: absolute; bottom: 70px; right: 26px; padding: 4px 16px; font-family: 'Anton'; font-size: 18px; letter-spacing: 2px; color: #fff; background: rgba(0,0,0,.55); border-radius: 20px; pointer-events: none; }
+.errbox { position: fixed; left: 8px; right: 8px; top: 8px; z-index: 10000; padding: 6px 10px; background: rgba(150,10,20,.92); color: #fff; font: 12px/1.35 monospace; border-radius: 6px; max-height: 40vh; overflow: auto; }
+.errbox div + div { border-top: 1px solid rgba(255,255,255,.25); margin-top: 4px; padding-top: 4px; }

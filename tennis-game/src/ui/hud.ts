@@ -1,3 +1,4 @@
+import { isTouch } from '../core/platform';
 import * as THREE from 'three';
 import type { Match } from '../game/match';
 import type { PlayerDef } from '../data/content';
@@ -40,7 +41,7 @@ export class Hud {
       <div class="meter" style="display:none"><i></i></div>
       <div class="marker" style="--plate:#f5c542;opacity:0">${labels[0]}</div>
       <div class="marker" style="--plate:#3ff7ff;opacity:0">${labels[1]}</div>
-      <div class="replay-tag" style="display:none">REPLAY</div>
+      <div class="replay-tag" style="display:none">REPLAY</div><div class="skip-tag" style="display:none">${isTouch ? 'TOQUE' : 'ENTER'} PARA PULAR ▶▶</div>
     </div>`);
     root.appendChild(this.el);
     this.top = this.el.querySelector('.top')!;
@@ -98,6 +99,7 @@ export class Hud {
 
   setReplay(on: boolean) {
     this.replay.style.display = on ? '' : 'none';
+    (this.el.querySelector('.skip-tag') as HTMLElement).style.display = on ? '' : 'none';
     this.el.classList.toggle('letterbox', on);
     this.top.style.display = on ? 'none' : '';
     this.box.style.display = on ? 'none' : '';

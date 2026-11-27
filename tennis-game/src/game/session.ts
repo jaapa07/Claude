@@ -95,6 +95,7 @@ export class Session {
       for (const p of m.players) p.athlete.update(dt);
     } else if (this.flow === 'replay') {
       this.updateReplay(dt);
+      if (this.flowT > 15) this.endReplay(); // watchdog: never stay stuck in a replay
     } else {
       // fixed-step simulation
       const scale = this.slowmo > 0 ? 0.35 : 1;
@@ -213,11 +214,11 @@ export class Session {
   }
 
   private beginReplay() {
-    const clip = this.rec.clip(4.2);
+    const clip = this.rec.clip(3.2);
     if (clip.length < 30) { this.nextPoint(); return; }
     this.flow = 'replay';
     this.flowT = 0;
-    this.replay = new ReplayPlayer(clip, 0.45);
+    this.replay = new ReplayPlayer(clip, 0.6); // ~5 s of slow motion
     this.hud?.setReplay(true);
     const m = this.match;
     const angles = [
