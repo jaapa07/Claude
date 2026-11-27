@@ -45,6 +45,13 @@ No celular aparecem botões de toque automaticamente.
 
 **Dica:** aperte o golpe *antes* da bola chegar. Quanto mais cedo, mais forte e preciso. Enquanto carrega, o tenista se posiciona sozinho em parte.
 
+## Modos
+
+- **Circuito (carreira):** crie seu tenista (nome, país, corpo, cabelo, pele e cores) e suba do nº 300 ao nº 1. A temporada tem Challengers, GOLD 250/500/1000 e Grand Slams, em simples e duplas, com ranking mínimo para entrar, chave por rodadas, pontos, prêmios e títulos. Entre os torneios há amistosos (jogo único), treino e evolução de atributos. O progresso fica salvo.
+- **Exibição:** simples ou duplas, 1P vs COM ou 1P vs 2P.
+- **Arcade** e **Treino**.
+- **Câmeras (Opções):** TV alta (padrão), clássica arcade e atrás do jogador.
+
 ## O que tem
 
 - **Modos:** Arcade (5 partidas + chefe final "El Muro", que é desbloqueado), Exibição (1P vs COM ou 1P vs 2P, arena, games, sets e dificuldade livres), Treino (precisão com alvos, combo e recorde).

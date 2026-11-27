@@ -123,7 +123,8 @@ export const CORE_ASSETS = {
   tex: [
     'textures/court_lines.png', 'textures/fx_dot.png', 'textures/court_zone.png', 'textures/grass_wear.png', 'textures/grass_stripes.png', 'textures/sponsor_atlas.webp',
     'textures/fabric_normal.webp', 'textures/concrete_color.webp', 'textures/concrete_normal.webp', 'textures/metal_color.webp',
-    ...['harbor', 'clay', 'lawn', 'neon'].map((v) => `textures/banner_${v}.webp`),
+    ...['harbor', 'clay', 'lawn', 'neon'].flatMap((v) => [`textures/banner_${v}.webp`, `textures/wallads_${v}.webp`]),
+    'textures/board_speed.png', 'textures/board_clock.png',
     ...['grass', 'worn', 'clay', 'hard', 'carpet'].flatMap((m) => [`textures/${m}_color.webp`, `textures/${m}_normal.webp`, `textures/${m}_rough.webp`]),
   ],
 };

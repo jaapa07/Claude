@@ -87,7 +87,7 @@ class InputManager {
   read(player: 0 | 1): PadState {
     const s: PadState = { x: 0, y: 0, shot: false, slice: false, lob: false };
     const km = KEYMAPS[this.twoKeyboards ? player : 0];
-    const any = (codes: string[]) => codes.some((c) => this.down.has(c));
+    const any = (codes: string[]) => codes.some((c) => this.down.has(c) || this.pressed.has(c)); // quick taps between frames still count
     if (player === 0 || this.twoKeyboards) {
       s.x = (any(km.right) ? 1 : 0) - (any(km.left) ? 1 : 0);
       s.y = (any(km.up) ? 1 : 0) - (any(km.down) ? 1 : 0);

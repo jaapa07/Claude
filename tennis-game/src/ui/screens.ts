@@ -105,8 +105,9 @@ export function titleScreen(onStart: () => void) {
 }
 
 // ------------------------------------------------------------------ main menu
-export function mainMenu(cb: { arcade: () => void; exhibition: () => void; training: () => void; options: () => void; credits: () => void }) {
+export function mainMenu(cb: { arcade: () => void; career: () => void; exhibition: () => void; training: () => void; options: () => void; credits: () => void }) {
   const entries: [string, string, () => void][] = [
+    ['CIRCUITO', 'Carreira: crie seu tenista e chegue ao nº 1', cb.career],
     ['ARCADE', 'Cinco partidas e o chefe final', cb.arcade],
     ['EXIBIÇÃO', 'Regras, arena e adversário livres · 1P ou 2P', cb.exhibition],
     ['TREINO', 'Minigame de precisão com alvos', cb.training],
@@ -150,7 +151,7 @@ export function playerSelect(title: string, onPick: (p: PlayerDef) => void, onBa
 }
 
 // ------------------------------------------------------------------ exhibition setup
-export interface ExhibitionSetup { venue: VenueDef; games: number; sets: 1 | 3; difficulty: DifficultyId; twoPlayers: boolean }
+export interface ExhibitionSetup { venue: VenueDef; games: number; sets: 1 | 3; difficulty: DifficultyId; twoPlayers: boolean; doubles: boolean }
 export function exhibitionSetup(onGo: (s: ExhibitionSetup) => void, onBack: () => void) {
   const st = Save.data.exhibition;
   let vi = Math.max(0, VENUES.findIndex((v) => v.id === st.venue));
@@ -163,6 +164,7 @@ export function exhibitionSetup(onGo: (s: ExhibitionSetup) => void, onBack: () =
       <div class="opt" data-k="sets"><span>SETS</span><span class="v"></span></div>
       <div class="opt" data-k="diff"><span>DIFICULDADE</span><span class="v"></span></div>
       <div class="opt" data-k="mode"><span>JOGADORES</span><span class="v"></span></div>
+      <div class="opt" data-k="kind"><span>MODALIDADE</span><span class="v"></span></div>
       <button class="item go">JOGAR!</button>
     </div><div class="hint"><b>←→</b> alterar <b>↑↓</b> navegar <b>ENTER</b> confirmar</div><button class="backbtn">◀ VOLTAR</button></div>`));
   const venues = [...el.querySelectorAll('.venue')] as HTMLElement[];
@@ -172,6 +174,7 @@ export function exhibitionSetup(onGo: (s: ExhibitionSetup) => void, onBack: () =
     (el.querySelector('[data-k="sets"] .v') as HTMLElement).textContent = st.sets === 1 ? 'SET ÚNICO' : 'MELHOR DE 3';
     (el.querySelector('[data-k="diff"] .v') as HTMLElement).textContent = DIFFICULTY[st.difficulty as DifficultyId].name.toUpperCase();
     (el.querySelector('[data-k="mode"] .v') as HTMLElement).textContent = st.twoPlayers ? '1P vs 2P (local)' : '1P vs COM';
+    (el.querySelector('[data-k="kind"] .v') as HTMLElement).textContent = st.doubles ? 'DUPLAS' : 'SIMPLES';
   };
   const rows = [el.querySelector('.venues') as HTMLElement, ...el.querySelectorAll('.opt'), el.querySelector('.go') as HTMLElement] as HTMLElement[];
   paintV(); paintOpts();
@@ -183,14 +186,15 @@ export function exhibitionSetup(onGo: (s: ExhibitionSetup) => void, onBack: () =
       else if (i === 2) st.sets = st.sets === 1 ? 3 : 1;
       else if (i === 3) st.difficulty = diffs[(diffs.indexOf(st.difficulty as DifficultyId) + d + diffs.length) % diffs.length];
       else if (i === 4) st.twoPlayers = !st.twoPlayers;
+      else if (i === 5) st.doubles = !st.doubles;
       paintOpts();
     },
     onConfirm: (i) => {
-      if (i !== 5 && i !== 0) return;
+      if (i !== 6 && i !== 0) return;
       st.venue = VENUES[vi].id;
       Save.flush();
       nav.off(); leave(el);
-      onGo({ venue: VENUES[vi], games: st.games, sets: st.sets as 1 | 3, difficulty: st.difficulty as DifficultyId, twoPlayers: st.twoPlayers });
+      onGo({ venue: VENUES[vi], games: st.games, sets: st.sets as 1 | 3, difficulty: st.difficulty as DifficultyId, twoPlayers: st.twoPlayers, doubles: !!st.doubles });
     },
     onBack: () => { nav.off(); leave(el); onBack(); },
   });
@@ -281,6 +285,7 @@ export function optionsScreen(onBack: () => void, apply: () => void) {
   const o = Save.data.options;
   const el = mount(h(`<div class="overlay"><div class="panel"><h2>OPÇÕES</h2><div class="opts" style="margin:0">
     ${['music', 'sfx', 'voice', 'crowd'].map((k) => `<div class="opt" data-k="${k}"><span>${{ music: 'MÚSICA', sfx: 'EFEITOS', voice: 'VOZ', crowd: 'PÚBLICO' }[k]}</span><span class="slider"><span class="b"><i></i></span><span class="v"></span></span></div>`).join('')}
+    <div class="opt" data-k="camera"><span>CÂMERA</span><span class="v"></span></div>
     <div class="opt" data-k="quality"><span>GRÁFICOS</span><span class="v"></span></div>
     <div class="opt" data-k="hud"><span>TAMANHO DO HUD</span><span class="v"></span></div>
     <div class="opt" data-k="shake"><span>TREMOR DE TELA</span><span class="v"></span></div>
@@ -289,7 +294,7 @@ export function optionsScreen(onBack: () => void, apply: () => void) {
     <div class="opt" data-k="hints"><span>MARCA DA BOLA</span><span class="v"></span></div>
     <button class="item">VOLTAR</button></div></div></div>`));
   const rows = [...el.querySelectorAll('.opt'), el.querySelector('.item')] as HTMLElement[];
-  const keys = ['music', 'sfx', 'voice', 'crowd', 'quality', 'hud', 'shake', 'touch', 'assist', 'hints'] as const;
+  const keys = ['music', 'sfx', 'voice', 'crowd', 'camera', 'quality', 'hud', 'shake', 'touch', 'assist', 'hints'] as const;
   const paint = () => {
     for (const k of ['music', 'sfx', 'voice', 'crowd'] as const) {
       const r = el.querySelector(`[data-k="${k}"]`)!;
@@ -299,6 +304,7 @@ export function optionsScreen(onBack: () => void, apply: () => void) {
     (el.querySelector('[data-k="quality"] .v') as HTMLElement).textContent = { low: 'BAIXA', medium: 'MÉDIA', high: 'ALTA' }[o.quality];
     (el.querySelector('[data-k="hud"] .v') as HTMLElement).textContent = `${Math.round(o.hudScale * 100)}%`;
     (el.querySelector('[data-k="shake"] .v') as HTMLElement).textContent = o.shake ? 'LIGADO' : 'DESLIGADO';
+    (el.querySelector('[data-k="camera"] .v') as HTMLElement).textContent = { tv: 'TV (ALTA)', arcade: 'CLÁSSICA', player: 'ATRÁS DO JOGADOR' }[o.camera];
     (el.querySelector('[data-k="assist"] .v') as HTMLElement).textContent = o.assist ? 'LIGADA' : 'DESLIGADA';
     (el.querySelector('[data-k="hints"] .v') as HTMLElement).textContent = o.hints ? 'LIGADA' : 'DESLIGADA';
     (el.querySelector('[data-k="touch"] .v') as HTMLElement).textContent = o.touch === 'auto' ? 'AUTOMÁTICO' : o.touch === 'on' ? 'SEMPRE' : 'NUNCA';
@@ -312,6 +318,7 @@ export function optionsScreen(onBack: () => void, apply: () => void) {
       else if (k === 'hud') o.hudScale = Math.max(0.7, Math.min(1.4, o.hudScale + d * 0.1));
       else if (k === 'shake') o.shake = !o.shake;
       else if (k === 'assist') o.assist = !o.assist;
+      else if (k === 'camera') { const c = ['tv', 'arcade', 'player'] as const; o.camera = c[(c.indexOf(o.camera) + d + 3) % 3]; }
       else if (k === 'hints') o.hints = !o.hints;
       else if (k === 'touch') { const t = ['auto', 'on', 'off'] as const; o.touch = t[(t.indexOf(o.touch) + d + 3) % 3]; }
       else { o.volume[k] = Math.max(0, Math.min(1, Math.round((o.volume[k] + d * 0.1) * 10) / 10)); }

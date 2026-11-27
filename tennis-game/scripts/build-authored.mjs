@@ -197,6 +197,30 @@ for (const t of TOURNEYS) {
   await svgWebp(banner, join(TEX, `banner_${t.id}.webp`), 2048, 256);
 }
 
+// Broadcast-style back walls: venue colour with repeated sponsor marks (2 alternating brands per venue)
+{
+  const WALLS = { harbor: ['#13466e', 0, 1], clay: ['#1d5a3a', 3, 2], lawn: ['#1e4632', 2, 5], neon: ['#101030', 4, 3] };
+  for (const [id, [bg, a, b]] of Object.entries(WALLS)) {
+    const logo = (sp, x) => `<g transform="translate(${x},0)"><g transform="translate(0,70) scale(1.05)">${ICONS[sp.icon]('#ffffff')}</g>
+      <text x="96" y="152" ${FONT} font-size="104" font-style="italic" fill="#ffffff" letter-spacing="4">${sp.name}</text></g>`;
+    const items = [];
+    for (let i = 0; i < 4; i++) items.push(logo(SPONSORS[i % 2 ? b : a], 40 + i * 512));
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="2048" height="256"><rect width="2048" height="256" fill="${bg}"/>
+      <rect y="0" width="2048" height="256" fill="url(#g)"/><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.06"/><stop offset="1" stop-color="#000" stop-opacity="0.18"/></linearGradient></defs>
+      <g opacity="0.92">${items.join('')}</g></svg>`;
+    await svgWebp(svg, join(TEX, `wallads_${id}.webp`), 2048, 256, 90);
+  }
+  // serve-speed and clock boards (static faces; the speed digits glow)
+  const board = (title, value, sub) => `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="256"><rect width="512" height="256" rx="14" fill="#16306b"/>
+    <rect x="10" y="10" width="492" height="236" rx="10" fill="none" stroke="#3d64c4" stroke-width="4"/>
+    <text x="256" y="58" text-anchor="middle" ${FONT} font-size="44" fill="#ffffff" letter-spacing="3">${title}</text>
+    <rect x="96" y="78" width="320" height="120" rx="8" fill="#050505"/>
+    <text x="256" y="172" text-anchor="middle" font-family="'Courier New', monospace" font-weight="700" font-size="96" fill="#ffd21a">${value}</text>
+    <text x="256" y="236" text-anchor="middle" font-family="'Barlow Condensed', Arial" font-weight="700" font-size="28" fill="#cfd8ff" letter-spacing="4">${sub}</text></svg>`;
+  await svgPng(board('GOLD CIRCUIT', '186', 'SAQUE KM/H'), join(TEX, 'board_speed.png'), 512, 256);
+  await svgPng(board('GOLD CIRCUIT', '1:24', 'TEMPO DE JOGO'), join(TEX, 'board_clock.png'), 512, 256);
+}
+
 // ============================================================ models (gltf-transform from three geometry)
 function makeDoc() {
   const doc = new Document();

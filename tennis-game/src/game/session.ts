@@ -17,6 +17,8 @@ const STEP = 1 / 120;
 
 export interface SessionOptions {
   p1: PlayerDef; p2: PlayerDef; venue: VenueDef; cfg: MatchConfig; difficulty: DifficultyId; p2Human: boolean; demo?: boolean; intro?: boolean;
+  /** Doubles: [your partner, opponent's partner]. */
+  partners?: [PlayerDef, PlayerDef];
 }
 
 type Flow = 'intro' | 'play' | 'afterPoint' | 'replay' | 'changeEnds' | 'matchEnd' | 'done';
@@ -44,9 +46,9 @@ export class Session {
     const scene = r.scene;
     this.venue = new Venue(opts.venue, scene, r.renderer);
     r.setExposure(opts.venue.exposure);
-    r.setGrade(opts.venue.indoor ? 0.2 : 0.1, opts.venue.indoor ? 0.1 : 0.05);
+    r.setGrade(opts.venue.indoor ? 0.12 : -0.02, opts.venue.indoor ? 0.08 : 0.03);
     scene.add(this.fx.group);
-    this.match = new Match(opts.p1, opts.p2, opts.venue, opts.cfg, { p2Human: opts.p2Human, difficulty: opts.difficulty, demo: opts.demo }, scene);
+    this.match = new Match(opts.p1, opts.p2, opts.venue, opts.cfg, { p2Human: opts.p2Human, difficulty: opts.difficulty, demo: opts.demo, partners: opts.partners }, scene);
     this.cam = new CameraDirector(r.camera);
     if (!opts.demo) this.hud = new Hud(uiRoot, this.match, [opts.demo ? 'COM' : '1P', opts.p2Human ? '2P' : 'COM']);
     this.match.start();

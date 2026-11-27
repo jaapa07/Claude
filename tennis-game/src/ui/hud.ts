@@ -21,10 +21,11 @@ export class Hud {
 
   constructor(root: HTMLElement, private match: Match, labels: [string, string]) {
     const [a, b] = match.players.map((p) => p.def) as [PlayerDef, PlayerDef];
+    const nm = (side: 0 | 1) => match.team(side).map((p) => p.def.short).join(' / ');
     this.el = h(`<div class="hud">
       <div class="top">
-        <div class="plate" style="--plate:#f5c542"><div class="tag"><span>${labels[0]}</span></div><div class="pn">${flag(a.flagColors)}&nbsp;&nbsp;${a.short}</div><div class="games" data-g="0"></div></div>
-        <div class="plate" style="--plate:#3ff7ff"><div class="games" data-g="1"></div><div class="pn">${b.short}&nbsp;&nbsp;${flag(b.flagColors)}</div><div class="tag"><span>${labels[1]}</span></div></div>
+        <div class="plate" style="--plate:#f5c542"><div class="tag"><span>${labels[0]}</span></div><div class="pn">${flag(a.flagColors)}&nbsp;&nbsp;${nm(0)}</div><div class="games" data-g="0"></div></div>
+        <div class="plate" style="--plate:#3ff7ff"><div class="games" data-g="1"></div><div class="pn">${nm(1)}&nbsp;&nbsp;${flag(b.flagColors)}</div><div class="tag"><span>${labels[1]}</span></div></div>
       </div>
       <div class="score-box">
         <div class="row" data-r="0"><span class="dot"></span><span>${labels[0]}</span><span class="sets"></span><span class="pt">0</span></div>
@@ -115,6 +116,7 @@ export class Hud {
     this.markerTimer -= dt;
     this.match.players.forEach((p, i) => {
       const m = this.markers[i];
+      if (!m) return;
       const s = proj(p.pos.clone().add(new THREE.Vector3(0, 2.15, 0)));
       m.style.left = `${s.x}px`;
       m.style.top = `${s.y}px`;

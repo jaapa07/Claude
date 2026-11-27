@@ -38,9 +38,9 @@ export class Renderer {
     this.ao.configuration.denoiseSamples = 4;
     this.ao.configuration.gammaCorrection = false;
     this.composer.addPass(this.ao);
-    this.bloom = new BloomEffect({ intensity: 0.7, luminanceThreshold: 0.82, luminanceSmoothing: 0.25, mipmapBlur: true, radius: 0.7 });
+    this.bloom = new BloomEffect({ intensity: 0.35, luminanceThreshold: 0.9, luminanceSmoothing: 0.25, mipmapBlur: true, radius: 0.7 });
     const tone = new ToneMappingEffect({ mode: ToneMappingMode.ACES_FILMIC });
-    const vignette = new VignetteEffect({ offset: 0.32, darkness: 0.42 });
+    const vignette = new VignetteEffect({ offset: 0.38, darkness: 0.28 });
     this.grade = new HueSaturationEffect({ saturation: 0.12 });
     this.bc = new BrightnessContrastEffect({ contrast: 0.06 });
     const smaa = new SMAAEffect();
@@ -70,7 +70,7 @@ export class Renderer {
     this.direct = q === 'low';
     this.renderer.toneMapping = this.direct ? THREE.ACESFilmicToneMapping : THREE.NoToneMapping;
     this.renderer.shadowMap.type = q === 'high' ? THREE.PCFSoftShadowMap : THREE.PCFShadowMap;
-    this.bloom.intensity = q === 'low' ? 0 : 0.7;
+    this.bloom.intensity = q === 'low' ? 0 : 0.35;
     this.ao.enabled = q === 'high';
     this.applyPR();
   }

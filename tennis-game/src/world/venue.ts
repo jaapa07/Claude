@@ -40,13 +40,13 @@ function courtMaterial(v: VenueDef): THREE.MeshStandardMaterial {
           if (uKind == 0 || uKind == 3) {
             // acrylic paint over asphalt / carpet weave
             vec3 tint = mix(uOutTint, uTint, inCourt);
-            col = tint * (0.72 + 0.55 * lum);
+            col = tint * (0.88 + 0.26 * lum); // smooth matte acrylic
           } else if (uKind == 1) {
             col = uTint * (0.55 + 0.75 * lum) * mix(vec3(1.0), vec3(1.05, 0.96, 0.92), inCourt);
           } else {
             float stripe = texture2D(uStripes, cu).r;
             float w = texture2D(uWear, cu).r;
-            vec3 g = diffuseColor.rgb * mix(0.85, 1.12, stripe) * vec3(0.92, 1.02, 0.86);
+            vec3 g = diffuseColor.rgb * mix(0.8, 1.16, stripe) * vec3(0.9, 1.02, 0.84);
             vec3 dirt = texture2D(uWorn, cu * 6.0).rgb * vec3(0.95, 0.88, 0.75);
             col = mix(g, dirt, smoothstep(0.15, 0.8, w));
           }
@@ -177,8 +177,7 @@ export class Venue {
     };
     const segW = backW / 3;
     for (let i = 0; i < 3; i++) {
-      addBoard(segW, -backW / 2 + segW * (i + 0.5), -BOARD_Z, 0, (i * 2) % 6);
-      addBoard(segW, -backW / 2 + segW * (i + 0.5), BOARD_Z, Math.PI, (i * 2 + 1) % 6);
+      void segW; // end boards replaced by the broadcast sponsor wall
     }
     const sideL = SURF_L + 0.6, sideSeg = sideL / 4;
     for (let i = 0; i < 4; i++) {
@@ -193,31 +192,50 @@ export class Venue {
     const wallMat = new THREE.MeshStandardMaterial({ color: def.wall, roughness: 0.6 });
     const seats: Seat[] = [];
     const stepH = 0.42, stepD = 0.85;
+    const BASE = 2.8; // court wall height; the tiers start above it
+    const panelMat = new THREE.MeshStandardMaterial({ color: '#0c0f12', roughness: 0.35, metalness: 0.2 });
     const seatXf: THREE.Matrix4[] = [];
     const stairMat = new THREE.MeshStandardMaterial({ map: Assets.t('textures/concrete_color.webp', 1), color: new THREE.Color(def.standColor).multiplyScalar(1.12), roughness: 0.8 });
     const railMat = new THREE.MeshStandardMaterial({ color: '#c9ced6', metalness: 0.85, roughness: 0.3 });
     const glassMat = new THREE.MeshStandardMaterial({ color: '#9fd4ff', transparent: true, opacity: 0.18, roughness: 0.05, metalness: 0.2, depthWrite: false, side: THREE.DoubleSide });
     const roofMat = new THREE.MeshStandardMaterial({ color: '#f2f4f7', roughness: 0.6, metalness: 0.1 });
     const trussMat = new THREE.MeshStandardMaterial({ map: Assets.t('textures/metal_color.webp', 2), color: '#d5dae0', metalness: 0.8, roughness: 0.35 });
-    const addStand = (width: number, rows: number, pos: THREE.Vector3, ry: number, seatSpacing = 0.62, withRoof = false) => {
+    const addStand = (width: number, rows: number, pos: THREE.Vector3, ry: number, seatSpacing = 0.62, withRoof = false, adsWall = false) => {
       const g = standGeometry(width, rows, stepH, stepD);
       const m = new THREE.Mesh(g, concreteMat);
       const holder = new THREE.Group();
       holder.position.copy(pos);
       holder.rotation.y = ry;
       m.receiveShadow = true;
-      m.position.y = 1.6;
+      m.position.y = BASE;
       holder.add(m);
       // front wall
-      const fw = new THREE.Mesh(new THREE.BoxGeometry(width, 1.6, 0.3), wallMat);
-      fw.position.set(0, 0.8, -0.15);
+      // tall court wall (TV-style surround) with dark sponsor panels
+      const fw = new THREE.Mesh(new THREE.BoxGeometry(width, BASE, 0.3), wallMat);
+      fw.position.set(0, BASE / 2, -0.15);
       fw.receiveShadow = true;
       holder.add(fw);
+      if (adsWall) {
+        const t = Assets.t(`textures/wallads_${def.id}.webp`).clone();
+        t.wrapS = THREE.RepeatWrapping; t.repeat.set(width / 9, 1); t.needsUpdate = true;
+        const ads = new THREE.Mesh(new THREE.PlaneGeometry(width, BASE * 0.72), new THREE.MeshStandardMaterial({ map: t, roughness: 0.75 }));
+        ads.position.set(0, BASE * 0.5, -0.31);
+        ads.rotation.y = Math.PI;
+        ads.receiveShadow = true;
+        holder.add(ads);
+      }
       // tournament banner on the front wall
       const banner = new THREE.Mesh(new THREE.PlaneGeometry(Math.min(width - 1, 16), 0.9), new THREE.MeshStandardMaterial({ map: Assets.t(`textures/banner_${def.id}.webp`), roughness: 0.6, emissive: '#fff', emissiveMap: Assets.t(`textures/banner_${def.id}.webp`), emissiveIntensity: def.indoor ? 0.5 : 0.08 }));
-      banner.position.set(0, 0.85, -0.31);
+      banner.position.set(0, BASE - 0.75, -0.31);
+      for (const sx of [-1, 1]) {
+        if (adsWall) break;
+        const panel = new THREE.Mesh(new THREE.PlaneGeometry(Math.min(5, width * 0.15), 1.1), panelMat);
+        panel.position.set(sx * Math.min(width * 0.33, 10.5), 1.05, -0.31);
+        panel.rotation.y = Math.PI;
+        holder.add(panel);
+      }
       banner.rotation.y = Math.PI;
-      holder.add(banner);
+      if (!adsWall) holder.add(banner);
       // side walls
       for (const sx of [-1, 1]) {
         const sw = new THREE.Mesh(new THREE.BoxGeometry(0.3, rows * stepH + 2.2, rows * stepD), wallMat);
@@ -231,9 +249,9 @@ export class Venue {
         for (let i = 0; i < n; i++) {
           if (aisle(i)) continue;
           const lx = -width / 2 + 0.5 + i * seatSpacing;
-          const local = new THREE.Vector3(lx, 1.6 + stepH * (r + 1) - 0.47, r * stepD + 0.42);
+          const local = new THREE.Vector3(lx, BASE + stepH * (r + 1) - 0.47, r * stepD + 0.42);
           seats.push({ pos: local.applyMatrix4(holder.matrixWorld), ry: ry + Math.PI });
-          seatXf.push(new THREE.Matrix4().multiplyMatrices(holder.matrixWorld, new THREE.Matrix4().makeTranslation(lx, 1.6 + stepH * (r + 1), r * stepD + 0.5)));
+          seatXf.push(new THREE.Matrix4().multiplyMatrices(holder.matrixWorld, new THREE.Matrix4().makeTranslation(lx, BASE + stepH * (r + 1), r * stepD + 0.5)));
         }
       }
       // aisle stairs: lighter half-steps between the tiers
@@ -243,21 +261,21 @@ export class Venue {
         const lx = -width / 2 + 0.5 + i * seatSpacing;
         for (let r = 0; r < rows; r++) {
           const b = new THREE.BoxGeometry(0.9, stepH / 2, stepD / 2);
-          b.translate(lx, 1.6 + stepH * (r + 1) + stepH / 4, r * stepD + stepD * 0.75);
+          b.translate(lx, BASE + stepH * (r + 1) + stepH / 4, r * stepD + stepD * 0.75);
           stairGeoms.push(b);
         }
       }
       if (stairGeoms.length) { const st = new THREE.Mesh(mergeGeometries(stairGeoms), stairMat); st.receiveShadow = true; holder.add(st); }
       // front railing (posts + top rail + glass panel)
       const rail: THREE.BufferGeometry[] = [];
-      const top = new THREE.CylinderGeometry(0.035, 0.035, width, 8); top.rotateZ(Math.PI / 2); top.translate(0, 2.55, 0.05); rail.push(top);
-      for (let x = -width / 2 + 0.3; x <= width / 2; x += 2.2) { const post = new THREE.CylinderGeometry(0.03, 0.03, 0.95, 6); post.translate(x, 2.08, 0.05); rail.push(post); }
+      const top = new THREE.CylinderGeometry(0.035, 0.035, width, 8); top.rotateZ(Math.PI / 2); top.translate(0, BASE + 0.95, 0.05); rail.push(top);
+      for (let x = -width / 2 + 0.3; x <= width / 2; x += 2.2) { const post = new THREE.CylinderGeometry(0.03, 0.03, 0.95, 6); post.translate(x, BASE + 0.48, 0.05); rail.push(post); }
       const railMesh = new THREE.Mesh(mergeGeometries(rail), railMat); holder.add(railMesh);
-      const glass = new THREE.Mesh(new THREE.PlaneGeometry(width, 0.85), glassMat); glass.position.set(0, 2.05, 0.05); holder.add(glass);
+      const glass = new THREE.Mesh(new THREE.PlaneGeometry(width, 0.85), glassMat); glass.position.set(0, BASE + 0.45, 0.05); holder.add(glass);
       // cantilever roof over the upper rows (outdoor side stands)
       if (!def.indoor && withRoof) {
         const depth = rows * stepD;
-        const roofY = 1.6 + rows * stepH + 3.6;
+        const roofY = BASE + rows * stepH + 3.6;
         const roof = new THREE.Mesh(new THREE.BoxGeometry(width + 0.6, 0.18, depth * 0.85), roofMat);
         roof.position.set(0, roofY, depth * 0.62);
         roof.rotation.x = -0.08;
@@ -265,22 +283,22 @@ export class Venue {
         holder.add(roof);
         const truss: THREE.BufferGeometry[] = [];
         for (let x = -width / 2; x <= width / 2 + 0.01; x += width / 6) {
-          const col = new THREE.BoxGeometry(0.25, roofY - 1.6 - rows * stepH * 0.85, 0.25);
-          col.translate(x, 1.6 + rows * stepH * 0.85 + (roofY - 1.6 - rows * stepH * 0.85) / 2, depth - 0.3);
+          const col = new THREE.BoxGeometry(0.25, roofY - BASE - rows * stepH * 0.85, 0.25);
+          col.translate(x, BASE + rows * stepH * 0.85 + (roofY - BASE - rows * stepH * 0.85) / 2, depth - 0.3);
           const beam = new THREE.BoxGeometry(0.18, 0.4, depth * 0.9);
           beam.translate(x, roofY - 0.25, depth * 0.6);
           const brace = new THREE.CylinderGeometry(0.05, 0.05, Math.hypot(depth * 0.5, 3), 6);
           brace.rotateX(Math.atan2(depth * 0.5, 3));
-          brace.translate(x, roofY - 1.6, depth * 0.72);
+          brace.translate(x, roofY - BASE, depth * 0.72);
           truss.push(col, beam, brace);
         }
         const tm = new THREE.Mesh(mergeGeometries(truss), trussMat); tm.castShadow = true; holder.add(tm);
       }
       this.group.add(holder);
     };
-    const backDist = BOARD_Z + 3.2, sideDist = BOARD_X + 3.2;
-    addStand(30, 11, new THREE.Vector3(0, 0, -backDist), Math.PI); // far end (visible behind opponent)
-    addStand(30, 6, new THREE.Vector3(0, 0, backDist), 0);
+    const backDist = BOARD_Z + 1.0, sideDist = BOARD_X + 3.2;
+    addStand(30, 11, new THREE.Vector3(0, 0, -backDist), Math.PI, 0.62, false, true); // far end (visible behind opponent)
+    addStand(30, 6, new THREE.Vector3(0, 0, backDist), 0, 0.62, false, true);
     addStand(34, 9, new THREE.Vector3(-sideDist - 1.5, 0, 0), -Math.PI / 2, 0.62, true);
     addStand(34, 9, new THREE.Vector3(sideDist, 0, 0), Math.PI / 2, 0.62, true);
     // stadium seats (instanced): pan, backrest and legs, tinted with the venue's seat colours
@@ -300,7 +318,7 @@ export class Venue {
     for (const [x, z, ry] of [[-17, -24, Math.PI * 0.75], [17, -24, -Math.PI * 0.75]] as [number, number, number][]) {
       const g = standGeometry(10, 8, stepH, stepD);
       const m = new THREE.Mesh(g, concreteMat);
-      m.position.set(x, 1.6, z);
+      m.position.set(x, BASE, z);
       m.rotation.y = ry;
       this.group.add(m);
     }
@@ -368,7 +386,7 @@ export class Venue {
         };
         const flag = new THREE.Mesh(g, mat);
         const x = -14 + i * 4;
-        flag.position.set(x, 1.6 + 11 * stepH + 3.2, -backDist - 11 * stepD + 0.3);
+        flag.position.set(x, BASE + 11 * stepH + 3.2, -backDist - 11 * stepD + 0.3);
         const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 3.4, 6), poleMat);
         pole.position.set(x, flag.position.y - 1.2, flag.position.z);
         this.group.add(flag, pole);
@@ -406,8 +424,44 @@ export class Venue {
     }
     placeProp('models/props/plastic_crate_01.glb', BOARD_X - 0.4, -3.0, 0.35);
 
+    // broadcast dressing: serve-speed and clock boards on the far wall, sponsor cube by the net, TV cameras
+    const boardBox = (tex: string, x: number) => {
+      const t = Assets.t(tex);
+      const mats = [panelMat, panelMat, panelMat, panelMat, new THREE.MeshStandardMaterial({ map: t, emissive: '#ffffff', emissiveMap: t, emissiveIntensity: 0.55, roughness: 0.5 }), panelMat];
+      const b = new THREE.Mesh(new THREE.BoxGeometry(2.0, 1.0, 0.35), mats);
+      b.position.set(x, 1.55, -backDist + 0.25);
+      b.castShadow = true;
+      this.group.add(b);
+    };
+    boardBox('textures/board_speed.png', -9.4);
+    boardBox('textures/board_clock.png', 9.4);
+    {
+      const row = 1 + (['harbor', 'clay', 'lawn', 'neon'].indexOf(def.id) % 5);
+      const t = Assets.t('textures/sponsor_atlas.webp').clone();
+      t.repeat.set(0.4, 1 / 6); t.offset.set(0.17, 1 - (row + 1) / 6); t.needsUpdate = true;
+      const side = new THREE.MeshStandardMaterial({ map: t, roughness: 0.5 });
+      const white = new THREE.MeshStandardMaterial({ color: '#f4f4f2', roughness: 0.6 });
+      const cube = new THREE.Mesh(new THREE.BoxGeometry(1.1, 1.1, 1.1), [side, side, white, white, side, side]);
+      cube.position.set(BOARD_X - 1.4, 0.55, -1.6);
+      cube.rotation.y = -0.15;
+      cube.castShadow = true; cube.receiveShadow = true;
+      this.group.add(cube);
+    }
+    const camMat = new THREE.MeshStandardMaterial({ color: '#1b1d22', roughness: 0.4, metalness: 0.6 });
+    for (const [x, z] of [[-7.4, -BOARD_Z + 0.2], [7.4, -BOARD_Z + 0.2], [BOARD_X - 0.4, -12]] as [number, number][]) {
+      const parts: THREE.BufferGeometry[] = [];
+      for (let k = 0; k < 3; k++) { const leg = new THREE.CylinderGeometry(0.02, 0.025, 1.5, 5); leg.rotateZ(0.32); leg.rotateY((k * Math.PI * 2) / 3); leg.translate(Math.cos((k * Math.PI * 2) / 3) * 0.22, 0.72, -Math.sin((k * Math.PI * 2) / 3) * 0.22); parts.push(leg); }
+      const body = new THREE.BoxGeometry(0.28, 0.3, 0.6); body.translate(0, 1.6, 0); parts.push(body);
+      const lens = new THREE.CylinderGeometry(0.09, 0.11, 0.42, 12); lens.rotateX(Math.PI / 2); lens.translate(0, 1.62, 0.48); parts.push(lens);
+      const rig = new THREE.Mesh(mergeGeometries(parts), camMat);
+      rig.position.set(x, 0, z);
+      rig.lookAt(0, 0, 0);
+      rig.castShadow = true;
+      this.group.add(rig);
+    }
+
     // --- officials & ball kids (same character models, uniform outfits)
-    const official = { body: 'm' as const, hair: 'hair_simpleparted', skinTint: '#e2b48c', hairColor: '#3a2a1a', shirt: '#f4f1ea', shirtAccent: def.wallAccent, shorts: '#1c2440', socks: '#1c2440', shoes: '#111111', headband: undefined, sponsor: 2, racket: '#000' };
+    const official = { body: 'm' as const, hair: 'hair_simpleparted', skinTint: '#e2b48c', hairColor: '#3a2a1a', shirt: def.officialColor, shirtAccent: '#e9e4d8', shorts: def.officialPants, socks: def.officialPants, shoes: '#111111', headband: undefined, sponsor: 2, racket: '#000', suit: true };
     this.umpire = new Athlete(official, { racket: false });
     this.umpire.root.position.set(-BOARD_X + 1.6, 2.04, 0);
     this.umpire.root.rotation.y = Math.PI / 2;
@@ -427,19 +481,27 @@ export class Venue {
       this.ballKids.push(k);
       this.group.add(k.root);
     });
-    // line judges sitting near the baseline corners
-    for (const [x, z, ry] of [[-BOARD_X + 0.5, -BOARD_Z + 0.9, Math.PI / 4], [BOARD_X - 0.5, BOARD_Z - 0.9, -Math.PI * 0.75]] as [number, number, number][]) {
-      const j = new Athlete({ ...official, hair: 'hair_buzzed' }, { racket: false });
-      j.root.position.set(x, 0.0, z);
+    // line judges: standing in front of the back walls and along the sides (TV-broadcast look)
+    const skins = ['#e2b48c', '#c68642', '#f2d0b5', '#8d5524', '#e9c09a'];
+    const judgeSpots: [number, number, number, boolean][] = [
+      [-4.1, -BOARD_Z + 0.75, 0, false], [0, -BOARD_Z + 0.75, 0, true], [4.1, -BOARD_Z + 0.75, 0, false],
+      [-5.3, BOARD_Z - 0.75, Math.PI, false], [5.3, BOARD_Z - 0.75, Math.PI, true],
+      [BOARD_X - 0.55, -7.5, -Math.PI / 2, false], [BOARD_X - 0.55, 7.5, -Math.PI / 2, false], [-BOARD_X + 0.55, -9.5, Math.PI / 2, false],
+    ];
+    judgeSpots.forEach(([x, z, ry, female], i) => {
+      const j = new Athlete({ ...official, body: female ? 'f' : 'm', hair: female ? 'hair_buns' : i % 2 ? 'hair_buzzed' : 'hair_simpleparted', skinTint: skins[i % skins.length], hairColor: ['#2a1a10', '#111', '#6b4a2a'][i % 3] }, { racket: false });
+      j.root.position.set(x, 0, z);
       j.root.rotation.y = ry;
       j.play('arms_folded', { fade: 0 });
+      j.actions.get('arms_folded')!.time = Math.random() * 2;
+      j.chestYaw = null;
       this.lineJudges.push(j);
       this.group.add(j.root);
-    }
-    // photographers crouching behind the far baseline
-    for (const x of [-7.5, 7.5]) {
-      const p = new Athlete({ ...official, shirt: '#2b2d42', shorts: '#2b2d42', hair: 'hair_simpleparted' }, { racket: false });
-      p.root.position.set(x, 0, -BOARD_Z - 0.9);
+    });
+    // TV camera operators in the far corners
+    for (const x of [-7.6, 7.6]) {
+      const p = new Athlete({ ...official, shirt: '#2b2d42', shorts: '#2b2d42', hair: 'hair_simpleparted', suit: false }, { racket: false });
+      p.root.position.set(x, 0, -BOARD_Z + 0.6);
       p.root.rotation.y = 0;
       p.play('ready', { fade: 0 });
       this.photographers.push(p);

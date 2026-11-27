@@ -6,11 +6,15 @@ import { Input } from './core/input';
 import { Save } from './core/save';
 import { renderPortraits } from './render/portraits';
 import { Session } from './game/session';
+import { CameraDirector } from './render/camera';
 import { Venue } from './world/venue';
 import { Athlete, type AnimName } from './game/athlete';
 import { PLAYERS, VENUES, type PlayerDef, type VenueDef, type DifficultyId } from './data/content';
 import { defaultConfig, type MatchConfig } from './game/rules';
 import * as S from './ui/screens';
+import * as C from './ui/career';
+import { CATEGORY, SEASON, ROUND_NAMES, drawOpponent, loadCareer, newCareer, rankOf, rival, saveCareer, venueOf, type CareerData, type EventDef } from './game/career';
+import { Portraits } from './render/portraits';
 import { isTouch, isMobile, enterFullscreen, registerServiceWorker, FpsGovernor } from './core/platform';
 
 const stage = document.getElementById('stage')!;
@@ -82,6 +86,7 @@ function applyOptions() {
   const o = Save.data.options;
   for (const k of ['music', 'sfx', 'voice', 'crowd'] as const) Audio.setVolume(k, o.volume[k]);
   R.setQuality(o.quality);
+  CameraDirector.mode = o.camera;
   Venue.crowdDensity = o.quality === 'low' ? 0.35 : o.quality === 'medium' ? 0.65 : 1;
   Venue.shadowSize = o.quality === 'high' ? 2048 : 1024;
   document.documentElement.style.setProperty('--hud-scale', String(o.hudScale));
@@ -119,9 +124,15 @@ function toMenu() {
   if (!session || !session.opts.demo) attract();
   S.mainMenu({
     arcade: () => S.playerSelect('ARCADE', (p) => startArcade(p), toMenu),
+    career: () => startCareer(),
     exhibition: () => S.exhibitionSetup((setup) => {
       S.playerSelect('EXIBIÇÃO', (p1) => {
-        S.playerSelect('EXIBIÇÃO', (p2) => startExhibition(p1, p2, setup), toMenu, { exclude: p1.id, who: setup.twoPlayers ? 'Jogador 2: escolha seu tenista' : 'Escolha o adversário' });
+        const pickOpp = (partner?: PlayerDef) => S.playerSelect('EXIBIÇÃO', (p2) => {
+          const rest = PLAYERS.filter((p) => !p.unlock && ![p1.id, p2.id, partner?.id].includes(p.id));
+          startExhibition(p1, p2, setup, partner ? [partner, rest[Math.floor(Math.random() * rest.length)]] : undefined);
+        }, toMenu, { exclude: p1.id, who: setup.twoPlayers ? 'Jogador 2: escolha seu tenista' : 'Escolha o adversário' });
+        if (setup.doubles) S.playerSelect('DUPLAS', (partner) => pickOpp(partner), toMenu, { exclude: p1.id, who: 'Escolha seu parceiro de duplas' });
+        else pickOpp();
       }, toMenu);
     }, toMenu),
     training: () => S.playerSelect('TREINO', (p) => startTraining(p), toMenu),
@@ -130,14 +141,16 @@ function toMenu() {
   });
 }
 
-function playMatch(p1: PlayerDef, p2: PlayerDef, venue: VenueDef, cfg: MatchConfig, difficulty: DifficultyId, p2Human: boolean, subtitle: string, onEnd: (won: boolean, s: Session) => void) {
+function playMatch(p1: PlayerDef, p2: PlayerDef, venue: VenueDef, cfg: MatchConfig, difficulty: DifficultyId, p2Human: boolean, subtitle: string, onEnd: (won: boolean, s: Session) => void, partners?: [PlayerDef, PlayerDef]) {
+  const missing = [p1, p2, ...(partners ?? [])].filter((p) => !Portraits.has(p.id));
+  if (missing.length) { renderPortraits(missing).then(() => playMatch(p1, p2, venue, cfg, difficulty, p2Human, subtitle, onEnd, partners)); return; }
   S.vsScreen(p1, p2, venue, subtitle, () => {
     document.getElementById('fade')!.classList.add('on');
     setTimeout(() => {
       endSession();
       mode = 'match';
       Input.twoKeyboards = p2Human;
-      session = new Session(R, { p1, p2, venue, cfg, difficulty, p2Human, intro: true }, S.ui());
+      session = new Session(R, { p1, p2, venue, cfg, difficulty, p2Human, intro: true, partners }, S.ui());
       matchStart = performance.now();
       Audio.music(null);
       Audio.play('crowd_cheer', { vol: 0.5 });
@@ -167,17 +180,17 @@ function matchStats(s: Session) {
   };
 }
 
-function startExhibition(p1: PlayerDef, p2: PlayerDef, setup: S.ExhibitionSetup) {
+function startExhibition(p1: PlayerDef, p2: PlayerDef, setup: S.ExhibitionSetup, partners?: [PlayerDef, PlayerDef]) {
   const cfg: MatchConfig = { ...defaultConfig(), sets: setup.sets, gamesPerSet: setup.games, tiebreakAt: setup.games };
-  playMatch(p1, p2, setup.venue, cfg, setup.difficulty, setup.twoPlayers, `${setup.sets === 1 ? 'SET ÚNICO' : 'MELHOR DE 3'} · ${setup.games} GAMES`, (won, s) => {
+  playMatch(p1, p2, setup.venue, cfg, setup.difficulty, setup.twoPlayers, `${partners ? 'DUPLAS · ' : ''}${setup.sets === 1 ? 'SET ÚNICO' : 'MELHOR DE 3'} · ${setup.games} GAMES`, (won, s) => {
     const st = matchStats(s);
     const sets = s.match.score.setHistory;
     Audio.music('music_victory');
     S.resultsScreen({ a: p1, b: p2, winner: won ? 0 : 1, sets, ...st, title: setup.twoPlayers ? `${(won ? p1 : p2).short} VENCE!` : won ? 'VITÓRIA!' : 'DERROTA', lose: !won && !setup.twoPlayers }, [
-      ['REVANCHE', () => startExhibition(p1, p2, setup)],
+      ['REVANCHE', () => startExhibition(p1, p2, setup, partners)],
       ['MENU PRINCIPAL', () => { endSession(); toMenu(); }],
     ]);
-  });
+  }, partners);
 }
 
 // ------------------------------------------------------------------ arcade
@@ -221,8 +234,101 @@ function startArcade(me: PlayerDef) {
   run(0);
 }
 
+// ------------------------------------------------------------------ career (Circuito)
+function startCareer() {
+  const c = loadCareer();
+  if (c) { Portraits.has(c.me.id) ? careerHome(c) : renderPortraits([c.me]).then(() => careerHome(c)); return; }
+  C.createPlayer((me) => {
+    const nc = newCareer(me);
+    saveCareer(nc);
+    renderPortraits([me]).then(() => C.messagePanel('BEM-VINDO AO CIRCUITO', [`${me.name} começa como nº ${rankOf(nc.points)} do mundo.`, 'Vença Challengers para entrar nos torneios GOLD e nos Grand Slams.', 'Treine e ganhe partidas para evoluir seus atributos.'], 'VAMOS', () => careerHome(nc)));
+  }, toMenu);
+}
+
+function careerHome(c: CareerData) {
+  mode = 'menu';
+  if (!session || !session.opts.demo) attract();
+  Audio.music('music_menu');
+  c.bestRank = Math.min(c.bestRank, rankOf(c.points));
+  saveCareer(c);
+  C.careerHub(c, {
+    play: () => careerEvent(c, SEASON[c.week], 0, [], []),
+    friendly: () => careerFriendly(c),
+    train: () => startTraining(c.me, (gained) => { c.statPoints += gained; saveCareer(c); careerHome(c); }),
+    evolve: () => C.evolveScreen(c, () => { saveCareer(c); careerHome(c); }),
+    partner: () => C.partnerScreen(c, () => { saveCareer(c); careerHome(c); }),
+    skip: () => { advanceWeek(c); careerHome(c); },
+    quit: () => { saveCareer(c); toMenu(); },
+  });
+}
+
+function advanceWeek(c: CareerData) {
+  c.week++;
+  if (c.week >= SEASON.length) { c.week = 0; c.season++; c.points = Math.round(c.points * 0.7); } // ranking points age at season end
+  saveCareer(c);
+}
+
+function careerPartner(c: CareerData, rankHint: number): PlayerDef {
+  return PLAYERS.find((p) => p.id === c.partnerId) ?? rival(Math.max(1, rankHint), 7);
+}
+
+function careerEvent(c: CareerData, ev: EventDef, round: number, opps: PlayerDef[], results: (boolean | null)[]) {
+  const salt = c.season * 100 + c.week;
+  opps[round] ??= drawOpponent(ev, round, salt);
+  const partner = ev.doubles ? careerPartner(c, rankOf(c.points)) : null;
+  C.bracketScreen(ev, round, opps, results, c.me, partner, () => {
+    const cat = CATEGORY[ev.category];
+    const diff = cat.diff[Math.min(cat.diff.length - 1, round + (cat.diff.length - ev.rounds))];
+    const cfg: MatchConfig = { ...defaultConfig(), sets: 1, gamesPerSet: cat.games, tiebreakAt: cat.games };
+    const venue = venueOf(ev.venue);
+    const oppPartner = ev.doubles ? drawOpponent(ev, round, salt + 991) : undefined;
+    const names = ROUND_NAMES(ev.rounds);
+    playMatch(c.me, opps[round], venue, cfg, diff, false, `${cat.label} · ${names[round]}`, (won, s) => {
+      results[round] = won;
+      const roundsWon = round + (won ? 1 : 0);
+      const finished = !won || round === ev.rounds - 1;
+      const st = matchStats(s);
+      if (won) c.statPoints += 1;
+      if (!finished) {
+        Audio.music('music_victory');
+        S.resultsScreen({ a: c.me, b: opps[round], winner: 0, sets: s.match.score.setHistory, ...st, title: `${names[round]}: VITÓRIA!`, lose: false }, [['PRÓXIMA RODADA', () => { endSession(); careerEvent(c, ev, round + 1, opps, results); }]]);
+        return;
+      }
+      const idx = roundsWon + (cat.points.length - 1 - ev.rounds);
+      const pts = cat.points[Math.max(0, idx)], prize = cat.prize[Math.max(0, idx)];
+      const before = rankOf(c.points);
+      c.points += pts; c.money += prize;
+      const champion = won && round === ev.rounds - 1;
+      if (champion) c.titles.push({ name: ev.name, category: ev.category, season: c.season });
+      c.results.push({ event: ev.name, reached: champion ? 'CAMPEÃO' : names[round], season: c.season });
+      const after = rankOf(c.points);
+      advanceWeek(c);
+      Audio.music('music_victory');
+      S.resultsScreen({ a: c.me, b: opps[round], winner: won ? 0 : 1, sets: s.match.score.setHistory, ...st, title: champion ? 'CAMPEÃO!' : won ? 'VITÓRIA!' : 'ELIMINADO', lose: !won }, [['CONTINUAR', () => {
+        endSession();
+        C.messagePanel(champion ? `CAMPEÃO DO ${cat.label}!` : 'FIM DO TORNEIO', [`${ev.name}: ${champion ? 'título!' : names[round].toLowerCase()}`, `+${pts} pontos · +$ ${prize.toLocaleString('pt-BR')}`, `Ranking: nº ${before} → nº ${after}${after === 1 ? ' · NÚMERO 1 DO MUNDO!' : ''}`], 'CONTINUAR', () => careerHome(c));
+      }]]);
+    }, ev.doubles && partner && oppPartner ? [partner, oppPartner] : undefined);
+  }, () => { advanceWeek(c); careerHome(c); });
+}
+
+function careerFriendly(c: CareerData) {
+  const r = rankOf(c.points);
+  const opp = rival(Math.max(1, Math.round(r * (0.6 + Math.random() * 0.8))), Date.now() % 1000);
+  const venue = VENUES[Math.floor(Math.random() * VENUES.length)];
+  const cfg: MatchConfig = { ...defaultConfig(), sets: 1, gamesPerSet: 2, tiebreakAt: 2 };
+  playMatch(c.me, opp, venue, cfg, r > 150 ? 'easy' : r > 40 ? 'normal' : 'hard', false, 'AMISTOSO', (won, s) => {
+    const prize = won ? 1500 : 400;
+    c.money += prize;
+    if (won) c.statPoints += 1;
+    saveCareer(c);
+    Audio.music('music_victory');
+    S.resultsScreen({ a: c.me, b: opp, winner: won ? 0 : 1, sets: s.match.score.setHistory, ...matchStats(s), title: won ? 'VITÓRIA NO AMISTOSO' : 'DERROTA NO AMISTOSO', lose: !won }, [['VOLTAR AO CIRCUITO', () => { endSession(); careerHome(c); }]]);
+  });
+}
+
 // ------------------------------------------------------------------ training: target practice
-function startTraining(me: PlayerDef) {
+function startTraining(me: PlayerDef, onDone?: (score: number) => void) {
   const coach = PLAYERS.find((p) => p.id !== me.id)!;
   const venue = VENUES[0];
   document.getElementById('fade')!.classList.add('on');
@@ -295,7 +401,9 @@ function startTraining(me: PlayerDef) {
         Save.data.records.trainingBest = best;
         Save.flush();
         const medal = score >= 1200 ? 'OURO' : score >= 600 ? 'PRATA' : score >= 250 ? 'BRONZE' : '—';
-        S.resultsScreen({ a: me, b: coach, winner: 0, sets: [], time: '1:00', stats: [{ label: 'Pontos', a: score, b: '' }, { label: 'Recorde', a: best, b: isRecord ? 'NOVO!' : '' }, { label: 'Medalha', a: medal, b: '' }], title: isRecord ? 'NOVO RECORDE!' : 'FIM DO TREINO', lose: false }, [
+        const gained = onDone ? Math.max(1, Math.floor(score / 250)) : 0;
+        S.resultsScreen({ a: me, b: coach, winner: 0, sets: [], time: '1:00', stats: [{ label: 'Pontos', a: score, b: '' }, { label: 'Recorde', a: best, b: isRecord ? 'NOVO!' : '' }, { label: 'Medalha', a: medal, b: '' }, ...(onDone ? [{ label: 'Evolução', a: `+${gained}`, b: '' }] : [])], title: isRecord ? 'NOVO RECORDE!' : 'FIM DO TREINO', lose: false },
+          onDone ? [['VOLTAR AO CIRCUITO', () => { endSession(); onDone(gained); }]] : [
           ['DE NOVO', () => startTraining(me)],
           ['MENU PRINCIPAL', () => { endSession(); toMenu(); }],
         ]);
@@ -353,8 +461,9 @@ async function boot() {
     if (session.flow === 'intro' || session.flow === 'replay' || session.flow === 'matchEnd') session.requestSkip();
   });
   // expose for automated tests
-  (window as unknown as { __game: unknown }).__game = { get session() { return session; }, R, simulate: (sec: number) => { for (let t = 0; t < sec && session; t += 1 / 60) session.update(1 / 60); },
+  (window as unknown as { __game: unknown }).__game = { get session() { return session; }, R, simulate: (sec: number) => { for (let t = 0; t < sec && session; t += 1 / 60) { session.update(1 / 60); Input.endFrame(); } },
     touch: (t: Parameters<typeof Input.setTouch>[0]) => Input.setTouch(t),
+    demoDoubles: (i: number) => { endSession(); session = new Session(R, { p1: PLAYERS[0], p2: PLAYERS[1], partners: [PLAYERS[5], PLAYERS[6]], venue: VENUES[i], cfg: defaultConfig(), difficulty: 'hard', p2Human: false }, S.ui()); session.skipIntro(); return 'ok'; },
     demoVenue: (i: number) => { endSession(); session = new Session(R, { p1: PLAYERS[i * 2 % 8], p2: PLAYERS[(i * 2 + 1) % 8], venue: VENUES[i], cfg: defaultConfig(), difficulty: 'hard', p2Human: false }, S.ui()); session.skipIntro(); return 'ok'; } };
 }
 

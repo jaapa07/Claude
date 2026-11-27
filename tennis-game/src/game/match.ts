@@ -73,10 +73,15 @@ export class PlayerCtl {
   get maxSpeed() { return 5.2 + (this.def.stats.speed / 100) * 2.4 * (this.human ? 1 : DIFFICULTY[this.diff].speed); }
 }
 
+type Inputs = Map<PlayerCtl, PadState | null>;
 type Phase = 'idle' | 'preServe' | 'toss' | 'rally' | 'pointOver' | 'between' | 'matchOver';
 
 export class Match {
-  players: [PlayerCtl, PlayerCtl];
+  /** [team0 lead, team1 lead, team0 partner, team1 partner] (2 or 4 players). */
+  players: PlayerCtl[];
+  doubles = false;
+  serverP!: PlayerCtl;
+  receiverP!: PlayerCtl;
   ball: Ball;
   score: ScoreState;
   phase: Phase = 'idle';
@@ -104,13 +109,17 @@ export class Match {
   feedT = -1;
   onTrainingLand: ((p: Vec3, inCourt: boolean) => void) | null = null;
 
-  constructor(p1: PlayerDef, p2: PlayerDef, public venue: VenueDef, public cfg: MatchConfig, opts: { p2Human: boolean; difficulty: DifficultyId; p1Difficulty?: DifficultyId; demo?: boolean }, scene: THREE.Object3D) {
+  constructor(p1: PlayerDef, p2: PlayerDef, public venue: VenueDef, public cfg: MatchConfig, opts: { p2Human: boolean; difficulty: DifficultyId; p1Difficulty?: DifficultyId; demo?: boolean; partners?: [PlayerDef, PlayerDef]; partnerDifficulty?: DifficultyId }, scene: THREE.Object3D) {
     this.players = [
       new PlayerCtl(0, p1, !opts.demo, 0, opts.p1Difficulty ?? 'normal'),
       new PlayerCtl(1, p2, opts.p2Human, 1, opts.difficulty),
     ];
-    this.players[0].end = 1;
-    this.players[1].end = -1;
+    if (opts.partners) {
+      this.doubles = true;
+      this.players.push(new PlayerCtl(0, opts.partners[0], false, 0, opts.partnerDifficulty ?? 'normal'));
+      this.players.push(new PlayerCtl(1, opts.partners[1], false, 1, opts.difficulty));
+    }
+    for (const p of this.players) p.end = p.side === 0 ? 1 : -1;
     for (const p of this.players) scene.add(p.athlete.root);
     this.ball = new Ball(scene);
     this.score = newScore(0);
@@ -122,6 +131,10 @@ export class Match {
 
   surf() { return this.venue.surface; }
   opp(s: Side): PlayerCtl { return this.players[1 - s]; }
+  team(s: Side): PlayerCtl[] { return this.players.filter((p) => p.side === s); }
+  mate(p: PlayerCtl): PlayerCtl | null { return this.players.find((q) => q.side === p.side && q !== p) ?? null; }
+  /** Teammate that should play the incoming ball (doubles), refreshed while the ball travels. */
+  responsible: [PlayerCtl | null, PlayerCtl | null] = [null, null];
 
   // ------------------------------------------------------------------ point setup
   start() {
@@ -133,19 +146,25 @@ export class Match {
     const s = this.score;
     this.server = s.server;
     const court = serviceCourt(s);
+    // who serves / receives: in doubles the four players take turns (A1, B1, A2, B2) and each receiver keeps a court
+    const games = s.setHistory.reduce((a, g) => a + g[0] + g[1], 0) + s.games[0] + s.games[1];
+    const sTeam = this.team(this.server), rTeam = this.team((1 - this.server) as Side);
+    this.serverP = this.doubles ? sTeam[Math.floor(games / 2) % 2] : sTeam[0];
+    this.receiverP = this.doubles ? rTeam[court === 'deuce' ? 0 : 1] : rTeam[0];
     for (const p of this.players) {
-      const isServer = p.side === this.server;
-      // deuce court = server's right. Near end faces -z so right is +x; far end right is -x.
-      const right = p.end === 1 ? 1 : -1;
-      const sx = court === 'deuce' ? right : -right;
-      if (isServer) p.pos.set(sx * 0.7, 0, p.end * (COURT.halfLength + 0.25));
-      else p.pos.set(-sx * 2.9 * -1 * -1, 0, p.end * (COURT.halfLength + 0.6));
-      if (!isServer) {
-        // receiver stands diagonally opposite the server
-        const rRight = p.end === 1 ? 1 : -1;
-        const rx = court === 'deuce' ? rRight : -rRight;
-        p.pos.x = rx * 2.6;
-        if (p.human) p.pos.z = p.end * (COURT.halfLength + 1.3); // a step deeper buys time against big serves
+      const right = p.end === 1 ? 1 : -1; // world x of this end's right side
+      const sx = court === 'deuce' ? right : -right; // server side for this end
+      const isServer = p === this.serverP, isReceiver = p === this.receiverP;
+      if (isServer) p.pos.set(sx * (this.doubles ? 2.0 : 0.7), 0, p.end * (COURT.halfLength + 0.25));
+      else if (isReceiver) {
+        p.pos.set(sx * (this.doubles ? 2.9 : 2.6), 0, p.end * (COURT.halfLength + (p.human ? 1.3 : 0.6)));
+      } else if (p.side === this.server) {
+        // server's partner waits at the net on the other half
+        const svx = this.serverP.pos.x;
+        p.pos.set(-Math.sign(svx || 1) * 2.7, 0, p.end * 3.4);
+      } else {
+        // receiver's partner on the service line of the other half
+        p.pos.set(-Math.sign(this.receiverP.pos.x || 1) * 2.6, 0, p.end * 6.4);
       }
       p.vel.set(0, 0, 0);
       p.charging = false; p.chargeT = 0; p.swingT = -1; p.swingAnim = null; p.intercept = null; p.aiDecision = null; p.lockT = 0;
@@ -155,9 +174,10 @@ export class Match {
       p.athlete.releaseOneShot(0.1);
       p.athlete.play(isServer ? 'idle' : 'ready', { fade: 0.2 });
     }
+    this.responsible = [null, null];
     this.ball.active = false;
     this.ball.visible = true;
-    this.ball.held = this.players[this.server].athlete.bones.get('hand_l') ?? null;
+    this.ball.held = this.serverP.athlete.bones.get('hand_l') ?? null;
     this.lastHitter = null;
     this.bouncesSinceHit = 0;
     this.rally = 0;
@@ -203,7 +223,7 @@ export class Match {
     if (this.paused) return;
     this.time += dt;
     this.phaseT += dt;
-    const inputs = this.players.map((p) => (p.human ? Input.read(p.pad) : null));
+    const inputs: Inputs = new Map(this.players.map((p) => [p, p.human ? Input.read(p.pad) : null]));
 
     switch (this.phase) {
       case 'preServe': this.updatePreServe(dt, inputs); break;
@@ -226,7 +246,7 @@ export class Match {
       p.athlete.accel.set(p.athlete.accel.x * 0.85 + ax * 0.15, 0, p.athlete.accel.z * 0.85 + az * 0.15);
       p.prevVel.copy(p.vel);
       p.athlete.update(dt);
-      if (p.human) p.prevInput = inputs[p.side] ?? p.prevInput;
+      if (p.human) p.prevInput = inputs.get(p) ?? p.prevInput;
     }
     this.ball.sync(dt);
     // contact magnet: in the last instants of a swing the ball is drawn onto the racket strings
@@ -236,7 +256,7 @@ export class Match {
         const head = p.athlete.racketHeadWorld(new THREE.Vector3());
         if (head.distanceTo(this.ball.mesh.position) < 1.6) this.ball.mesh.position.lerp(head, k * k * 0.92);
       }
-      if (this.phase === 'toss' && p.side === this.server && !this.tossHeld) {
+      if (this.phase === 'toss' && p === this.serverP && !this.tossHeld) {
         const act = p.athlete.oneShot;
         if (act) {
           const sc = SERVE_CLIPS[this.serveClip(p)];
@@ -252,9 +272,9 @@ export class Match {
   }
 
   // ------------------------------------------------------------------ serve
-  private updatePreServe(dt: number, inputs: (PadState | null)[]) {
-    const sv = this.players[this.server];
-    const i = inputs[this.server];
+  private updatePreServe(dt: number, inputs: Inputs) {
+    const sv = this.serverP;
+    const i = inputs.get(this.serverP) ?? null;
     // server may shuffle along the baseline
     const court = serviceCourt(this.score);
     const right = sv.end === 1 ? 1 : -1;
@@ -263,21 +283,22 @@ export class Match {
       sv.pos.x = THREE.MathUtils.clamp(sv.pos.x + i.x * dt * 2.2, sx > 0 ? 0.25 : -3.6, sx > 0 ? 3.6 : -0.25);
       if (this.phaseT > 0.4 && (this.pressed(sv, i, 'shot') || this.pressed(sv, i, 'slice') || this.pressed(sv, i, 'lob'))) this.beginToss();
     } else if (this.phaseT > 1.4 + this.rng() * 0.6) {
-      sv.pos.x = sx * (0.5 + this.rng() * 0.8);
+      sv.pos.x = sx * (this.doubles ? 1.6 + this.rng() * 0.8 : 0.5 + this.rng() * 0.8);
       this.beginToss();
     }
     // receiver AI/human can adjust
-    const rc = this.opp(this.server);
-    const ri = inputs[rc.side];
+    const rc = this.receiverP;
+    const ri = inputs.get(rc) ?? null;
     if (ri) this.movePlayer(rc, ri, dt, 1);
     else rc.athlete.setLoco(0, true);
     sv.athlete.setLoco(0, false);
     this.faceNet(sv, dt);
     this.faceNet(rc, dt);
+    for (const p of this.players) if (p !== sv && p !== rc) { p.athlete.setLoco(0, true); this.faceNet(p, dt); }
   }
 
   private beginToss() {
-    const sv = this.players[this.server];
+    const sv = this.serverP;
     this.phase = 'toss';
     this.phaseT = 0;
     this.serveMeter = 0;
@@ -294,9 +315,9 @@ export class Match {
     this.emit({ type: 'meter', side: this.server, value: 0 });
   }
 
-  private updateToss(dt: number, inputs: (PadState | null)[]) {
-    const sv = this.players[this.server];
-    const i = inputs[this.server];
+  private updateToss(dt: number, inputs: Inputs) {
+    const sv = this.serverP;
+    const i = inputs.get(this.serverP) ?? null;
     // ball physics during toss (no ground)
     const st = this.ball.state;
     st.v.y -= 9.81 * dt;
@@ -349,7 +370,7 @@ export class Match {
   private hitServe(sv: PlayerCtl, meter: number) {
     this.emit({ type: 'meter', side: this.server, value: null });
     const court = serviceCourt(this.score);
-    const rc = this.opp(this.server);
+    const rc = this.receiverP;
     // target inside the diagonal service box
     const rRight = rc.end === 1 ? 1 : -1;
     const boxSign = court === 'deuce' ? rRight : -rRight;
@@ -381,18 +402,40 @@ export class Match {
 
   // ------------------------------------------------------------------ rally
   private onBallHit(side: Side) {
-    // receiver plans an intercept
-    const r = this.opp(side);
-    r.intercept = null;
-    r.aiDecision = null;
-    r.aiReact = r.human ? 0 : DIFFICULTY[r.diff].reaction * (0.7 + this.rng() * 0.6);
-    r.powerPick = !r.human && this.rng() < DIFFICULTY[r.diff].aggression * 0.45;
-    const h = this.players[side];
-    h.intercept = null;
-    h.charging = false;
+    // the other team plans an intercept
+    for (const r of this.team((1 - side) as Side)) {
+      r.intercept = null;
+      r.aiDecision = null;
+      r.aiReact = r.human ? 0 : DIFFICULTY[r.diff].reaction * (0.7 + this.rng() * 0.6);
+      r.powerPick = !r.human && this.rng() < DIFFICULTY[r.diff].aggression * 0.45;
+    }
+    for (const h of this.team(side)) { h.intercept = null; h.charging = false; }
+    this.responsible = [null, null];
+    this.respT = 0;
   }
 
-  private updateRally(dt: number, inputs: (PadState | null)[]) {
+  private respT = 0;
+  /** Doubles: decide which member of the receiving team plays the ball (the one who gets there most comfortably). */
+  private updateResponsibility(dt: number) {
+    if (!this.doubles || this.lastHitter === null) return;
+    const rs = (1 - this.lastHitter) as Side;
+    this.respT -= dt;
+    const cur = this.responsible[rs];
+    if (cur && (cur.swingT >= 0 || this.respT > 0)) return;
+    this.respT = 0.15;
+    let best: PlayerCtl | null = null, bestScore = Infinity;
+    for (const p of this.team(rs)) {
+      const ic = this.computeIntercept(p);
+      if (!ic) continue;
+      const spot = this.contactSpot(p, ic.p, ic.kind);
+      const dist = Math.hypot(spot.x - p.pos.x, spot.z - p.pos.z);
+      const score = dist / p.maxSpeed - ic.t + (p === cur ? -0.08 : 0); // slight hysteresis
+      if (score < bestScore) { bestScore = score; best = p; }
+    }
+    if (best) this.responsible[rs] = best;
+  }
+
+  private updateRally(dt: number, inputs: Inputs) {
     // ball physics with sub-steps
     const sub = 2;
     for (let k = 0; k < sub; k++) {
@@ -404,7 +447,7 @@ export class Match {
       if (this.feedT >= 0 && (this.feedT -= dt) <= 0) this.feed();
       if (this.ball.active && (Math.abs(this.ball.pos.z) > COURT.halfLength + 8 || Math.abs(this.ball.pos.x) > 11) && this.feedT < 0) this.feedT = 0.4;
       const pl = this.players[0];
-      this.updateHuman(pl, inputs[0]!, dt);
+      this.updateHuman(pl, inputs.get(pl)!, dt);
       this.updateSwing(pl, dt);
       return;
     }
@@ -413,8 +456,9 @@ export class Match {
     if (Math.abs(p.z) > COURT.halfLength + 8 || Math.abs(p.x) > 11) this.ballDead('out_of_area');
     if (this.phase !== 'rally') return;
 
+    this.updateResponsibility(dt);
     for (const pl of this.players) {
-      const i = inputs[pl.side];
+      const i = inputs.get(pl) ?? null;
       if (pl.human) this.updateHuman(pl, i!, dt);
       else this.updateAI(pl, dt);
       this.updateSwing(pl, dt);
@@ -452,7 +496,7 @@ export class Match {
         const court = serviceCourt(this.score);
         inCourt = isInside(e.p, targetHalf, court === 'deuce' ? 'serviceDeuce' : 'serviceAd');
       } else {
-        inCourt = isInside(e.p, targetHalf, 'singles');
+        inCourt = isInside(e.p, targetHalf, this.doubles ? 'doubles' : 'singles');
       }
       this.emit({ type: 'bounce', pos: e.p, speed: e.speed, inCourt });
       if (!inCourt) {
@@ -508,7 +552,7 @@ export class Match {
     (this as Match & { letPending?: boolean }).letPending = false;
     if (this.secondServe) {
       this.emit({ type: 'call', text: 'DOUBLE FAULT' });
-      this.players[this.server].stats.doubleFaults++;
+      this.serverP.stats.doubleFaults++;
       this.secondServe = false;
       this.endPoint((1 - this.server) as Side, 'double_fault');
       return;
@@ -706,7 +750,8 @@ export class Match {
     if (ic && incoming && p.swingT < 0) {
       const spot = this.contactSpot(p, ic.p, ic.kind);
       // auto-positioning: full when charging, gentle when the stick is idle (Opções > Assistência)
-      const assist = p.charging ? 1 : !stick && Save.data.options.assist ? 0.85 : 0;
+      const mine = !this.doubles || this.responsible[p.side] === p;
+      const assist = p.charging ? 1 : !stick && Save.data.options.assist && mine ? 0.85 : 0;
       if (assist > 0) {
         if (stick) { const camEnd = this.camEnd(); spot.x += i.x * camEnd * 0.6; spot.z += -i.y * camEnd * 0.4; }
         this.aiMoveTo(p, spot, dt, assist * 1.08);
@@ -849,6 +894,7 @@ export class Match {
   private updateAI(p: PlayerCtl, dt: number) {
     const d = DIFFICULTY[p.diff];
     const incoming = this.lastHitter !== p.side && this.ball.active;
+    if (this.doubles && !(incoming && this.responsible[p.side] === p)) { this.doublesSupport(p, incoming, dt); return; }
     if (incoming) {
       if (p.aiReact > 0) { p.aiReact -= dt; this.aiMoveTo(p, p.pos, dt); return; }
       if (!p.intercept || this.phaseT % 0.25 < dt) p.intercept = this.computeIntercept(p) ?? p.intercept;
@@ -871,6 +917,18 @@ export class Match {
       const homeX = THREE.MathUtils.clamp(this.ball.pos.x * 0.35 + o.pos.x * 0.1, -2.5, 2.5);
       this.aiMoveTo(p, new THREE.Vector3(homeX, 0, homeZ), dt, 0.75);
     }
+  }
+
+  /** Doubles positioning for the player not playing the ball: one up, one back, covering the open half. */
+  private doublesSupport(p: PlayerCtl, incoming: boolean, dt: number) {
+    const mate = this.mate(p)!;
+    const atNet = Math.abs(p.pos.z) < Math.abs(mate.pos.z) - 0.5 || (Math.abs(p.pos.z) < 6 && Math.abs(mate.pos.z) >= 6);
+    const ref = incoming ? (this.responsible[p.side] ?? mate) : mate;
+    const side = -Math.sign(ref.pos.x || (p.pos.x >= 0 ? -1 : 1));
+    const x = THREE.MathUtils.clamp(side * 2.4 + this.ball.pos.x * 0.25, -4.6, 4.6);
+    const z = p.end * (atNet ? 3.3 : COURT.halfLength + 0.4);
+    if (incoming && !this.responsible[p.side]) { this.aiMoveTo(p, new THREE.Vector3(p.pos.x, 0, p.pos.z), dt, 0.5); return; }
+    this.aiMoveTo(p, new THREE.Vector3(x, 0, z), dt, 0.85);
   }
 
   private aiMoveTo(p: PlayerCtl, target: THREE.Vector3, dt: number, urgency = 1) {

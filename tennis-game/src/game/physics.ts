@@ -192,11 +192,12 @@ export function predictPath(state: BallState, surf: SurfaceParams, seconds: numb
   return out;
 }
 
-export function isInside(p: Vec3, half: 'near' | 'far', zone: 'singles' | 'serviceDeuce' | 'serviceAd', margin = 0): boolean {
+export function isInside(p: Vec3, half: 'near' | 'far', zone: 'singles' | 'doubles' | 'serviceDeuce' | 'serviceAd', margin = 0): boolean {
   const r = COURT.ballRadius + margin;
   const zSign = half === 'near' ? 1 : -1;
   const z = p.z * zSign; // positive into the target half
   if (zone === 'singles') return z >= -r && z <= COURT.halfLength + r && Math.abs(p.x) <= COURT.halfWidthSingles + r;
+  if (zone === 'doubles') return z >= -r && z <= COURT.halfLength + r && Math.abs(p.x) <= COURT.halfWidthDoubles + r;
   // service boxes: deuce box is to the receiver's right.
   if (z < -r || z > COURT.serviceLine + r) return false;
   // receiver on the near half faces -z, so their right is +x; on the far half their right is -x

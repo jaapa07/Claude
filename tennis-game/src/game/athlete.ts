@@ -8,7 +8,7 @@ import { mirrorClip, sampleMirroredRacket, twoBoneIK, setWorldQuat, type Backhan
 // The base characters ship as bare bodies. The kit (shirt, shorts, socks, shoes, wrist & head bands, chest logo) is
 // applied in the shader using the bind-pose position, so hems are clean and every player gets their own colours.
 export interface OutfitColors {
-  shirt: string; accent: string; shorts: string; socks: string; shoes: string; skin: string; band?: string; sponsor: number; female: boolean; plain?: boolean;
+  shirt: string; accent: string; shorts: string; socks: string; shoes: string; skin: string; band?: string; sponsor: number; female: boolean; plain?: boolean; suit?: boolean;
 }
 
 const SKIN_REF = new THREE.Color('#d9a27a');
@@ -36,6 +36,7 @@ export function makeOutfitMaterial(src: THREE.MeshStandardMaterial, o: OutfitCol
     uScale: { value: s },
     uHandX: { value: o.female ? 0.641 : 0.706 },
     uPlain: { value: o.plain ? 1 : 0 },
+    uSuit: { value: o.suit ? 1 : 0 },
   };
   m.userData.outfit = uniforms;
   m.onBeforeCompile = (shader) => {
@@ -61,7 +62,7 @@ export function makeOutfitMaterial(src: THREE.MeshStandardMaterial, o: OutfitCol
         varying vec3 vBind;
         ${instanced ? 'varying vec3 vShirtI; varying vec3 vShortsI;' : ''}
         uniform vec3 uShirt, uAccent, uShorts, uSocks, uShoes, uBand, uSkinTint;
-        uniform float uHasBand, uSponsorRow, uScale, uHandX, uPlain;
+        uniform float uHasBand, uSponsorRow, uScale, uHandX, uPlain, uSuit;
         uniform sampler2D uSponsor, uFabric;
         float band(float v, float a, float b, float f){ return smoothstep(a - f, a + f, v) * (1.0 - smoothstep(b - f, b + f, v)); }`)
       .replace('#include <map_fragment>', `#include <map_fragment>
@@ -73,10 +74,10 @@ export function makeOutfitMaterial(src: THREE.MeshStandardMaterial, o: OutfitCol
           float neck0 = mix(1.52, 1.465, smoothstep(0.0, 0.09, p.z));
           float neck = mix(neck0, 1.7, smoothstep(0.075, 0.115, ax));
           float torso = band(y, 0.905, neck, f) * (1.0 - smoothstep(0.255, 0.265, ax));
-          float sleeve = band(y, 1.33, 1.65, f) * band(ax, 0.16, 0.355, f);
+          float sleeve = band(y, 1.33, 1.65, f) * band(ax, 0.16, mix(0.355, uHandX * 0.86, uSuit), f);
           float shirt = max(torso, sleeve);
-          float shorts = band(y, 0.64 - 0.04 * smoothstep(0.0, 0.1, p.z), 0.965, f) * (1.0 - smoothstep(0.3, 0.31, ax));
-          float socks = band(y, 0.075, mix(0.21, 0.13, uPlain), f) * (1.0 - shirt);
+          float shorts = band(y, mix(0.64 - 0.04 * smoothstep(0.0, 0.1, p.z), 0.1, uSuit), 0.965, f) * (1.0 - smoothstep(0.3, 0.31, ax));
+          float socks = band(y, 0.075, mix(mix(0.21, 0.13, uPlain), 0.1, uSuit), f) * (1.0 - shirt);
           float shoes = 1.0 - smoothstep(0.105 + 0.03 * smoothstep(0.02, 0.12, p.z), 0.115 + 0.03 * smoothstep(0.02, 0.12, p.z), y);
           float wrist = (1.0 - uPlain) * band(ax, uHandX * 0.86, uHandX * 0.93, 0.003) * step(1.3, y);
           float head = uHasBand * band(y, 1.735, 1.772, 0.003) * step(ax, 0.2);
@@ -151,7 +152,7 @@ export class Athlete {
   bones = new Map<string, THREE.Bone>();
   bodyMat: THREE.MeshStandardMaterial | null = null;
 
-  constructor(def: Pick<PlayerDef, 'body' | 'hair' | 'beard' | 'skinTint' | 'hairColor' | 'shirt' | 'shirtAccent' | 'shorts' | 'socks' | 'shoes' | 'headband' | 'sponsor' | 'racket'>, opts: { racket?: boolean; shadow?: boolean } = {}) {
+  constructor(def: Pick<PlayerDef, 'body' | 'hair' | 'beard' | 'skinTint' | 'hairColor' | 'shirt' | 'shirtAccent' | 'shorts' | 'socks' | 'shoes' | 'headband' | 'sponsor' | 'racket'> & { suit?: boolean }, opts: { racket?: boolean; shadow?: boolean } = {}) {
     const src = Assets.g(def.body === 'f' ? 'models/athlete_f.glb' : 'models/athlete_m.glb');
     this.model = SkeletonUtils.clone(src.scene);
     this.root.add(this.model);
@@ -168,7 +169,7 @@ export class Athlete {
       if (/Superhero/i.test(mat.name)) {
         bodyMesh = sm;
         this.bodyMat = makeOutfitMaterial(mat, {
-          shirt: def.shirt, accent: def.shirtAccent, shorts: def.shorts, socks: def.socks, shoes: def.shoes, skin: def.skinTint, band: def.headband, sponsor: def.sponsor, female: def.body === 'f',
+          shirt: def.shirt, accent: def.shirtAccent, shorts: def.shorts, socks: def.socks, shoes: def.shoes, skin: def.skinTint, band: def.headband, sponsor: def.sponsor, female: def.body === 'f', suit: def.suit, plain: def.suit,
         });
         sm.material = this.bodyMat;
       } else if (/Hair/i.test(mat.name)) {

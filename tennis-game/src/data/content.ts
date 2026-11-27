@@ -56,33 +56,35 @@ export interface VenueDef {
   exposure: number;
   fog?: string;
   music: string;
+  officialColor: string;
+  officialPants: string;
   indoor?: boolean;
 }
 
 export const VENUES: VenueDef[] = [
   {
     id: 'harbor', name: 'HARBOR OPEN', city: 'Porto Azul', surfaceName: 'Quadra dura', hdri: 'harbor', envIntensity: 0.9, bgIntensity: 1, exposure: 0.95,
-    sun: { color: '#fff4e0', intensity: 3.2, dir: [-0.45, 1, 0.35] },
-    surface: { tex: 'hard', tint: '#2c6fb8', outTint: '#2d8a5a', repeat: 10, rough: 0.75, lineTint: '#ffffff', restitution: 0.76, friction: 0.74, spinKick: 0.1 },
-    wall: '#0b4f7a', wallAccent: '#0aa2c0', standColor: '#d9dde2', seatColors: ['#0aa2c0', '#0b4f7a', '#e6eef2'], music: 'music_match',
+    sun: { color: '#fff1dc', intensity: 3.4, dir: [0.75, 1.05, -0.8] },
+    surface: { tex: 'hard', tint: '#3d7fc4', outTint: '#2c5f96', repeat: 10, rough: 0.75, lineTint: '#ffffff', restitution: 0.76, friction: 0.74, spinKick: 0.1 },
+    wall: '#13466e', wallAccent: '#0aa2c0', standColor: '#d9dde2', seatColors: ['#0aa2c0', '#0b4f7a', '#e6eef2'], music: 'music_match', officialColor: '#1b3a5c', officialPants: '#c9c3b5',
   },
   {
     id: 'clay', name: 'TERRE ROUGE CUP', city: 'Vale Rubro', surfaceName: 'Saibro', hdri: 'clay', envIntensity: 0.8, bgIntensity: 0.9, exposure: 0.9,
-    sun: { color: '#ffd9a8', intensity: 3.0, dir: [0.6, 0.62, -0.3] },
+    sun: { color: '#ffd7a3', intensity: 3.2, dir: [0.9, 0.75, -0.55] },
     surface: { tex: 'clay', tint: '#d4683a', outTint: '#c86034', repeat: 8, rough: 0.95, lineTint: '#f2ede4', restitution: 0.82, friction: 0.62, spinKick: 0.16 },
-    wall: '#1d5a3a', wallAccent: '#d9622b', standColor: '#cfc7b8', seatColors: ['#1d5a3a', '#2f7a4f', '#e8e0d0'], music: 'music_match',
+    wall: '#1d5a3a', wallAccent: '#d9622b', standColor: '#cfc7b8', seatColors: ['#1d5a3a', '#2f7a4f', '#e8e0d0'], music: 'music_match', officialColor: '#2c3b2e', officialPants: '#d8cfbd',
   },
   {
     id: 'lawn', name: 'ROYAL LAWN CLASSIC', city: 'Bramblewood', surfaceName: 'Grama', hdri: 'lawn', envIntensity: 1.0, bgIntensity: 0.9, exposure: 1.0,
-    sun: { color: '#f2f4ff', intensity: 1.6, dir: [-0.2, 1, 0.5] },
+    sun: { color: '#fff6e6', intensity: 3.0, dir: [0.7, 1.1, -0.75] },
     surface: { tex: 'grass', tint: '#5f9a3a', outTint: '#5f9a3a', repeat: 9, rough: 0.9, lineTint: '#ffffff', restitution: 0.68, friction: 0.83, spinKick: 0.05 },
-    wall: '#203d2a', wallAccent: '#5b2a6e', standColor: '#c9cdc4', seatColors: ['#2c5a3a', '#5b2a6e', '#e8e8e0'], music: 'music_match',
+    wall: '#1e4632', wallAccent: '#5b2a6e', standColor: '#c9cdc4', seatColors: ['#2c5a3a', '#5b2a6e', '#e8e8e0'], music: 'music_match', officialColor: '#1d4a32', officialPants: '#e6e1d3',
   },
   {
     id: 'neon', name: 'NEON ARENA FINALS', city: 'Cidade Néon', surfaceName: 'Carpete (indoor)', hdri: 'neon', envIntensity: 0.55, bgIntensity: 0.25, exposure: 0.85, indoor: true,
     sun: { color: '#e8f0ff', intensity: 2.2, dir: [0.1, 1, 0.15] },
     surface: { tex: 'carpet', tint: '#22306e', outTint: '#541a6e', repeat: 12, rough: 0.85, lineTint: '#ffffff', restitution: 0.72, friction: 0.8, spinKick: 0.06 },
-    wall: '#0a0a24', wallAccent: '#ff2bd6', standColor: '#262640', seatColors: ['#ff2bd6', '#3ff7ff', '#2a2a55'], music: 'music_match', fog: '#0a0820',
+    wall: '#0a0a24', wallAccent: '#ff2bd6', standColor: '#262640', seatColors: ['#ff2bd6', '#3ff7ff', '#2a2a55'], music: 'music_match', fog: '#0a0820', officialColor: '#16162e', officialPants: '#16162e',
   },
 ];
 

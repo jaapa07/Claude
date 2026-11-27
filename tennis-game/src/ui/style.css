@@ -378,3 +378,37 @@ html.is-touch .callout { top: 40%; }
   .enter *, .enter, .card.sel, .item.sel, .title img.logo, .vs-streaks i, .lball b { animation: none !important; }
 }
 .screen:has(.select.showcase) { background: linear-gradient(90deg, rgba(5,8,20,.92) 0%, rgba(5,8,20,.6) 42%, rgba(5,8,20,.05) 58%, rgba(5,8,20,.1) 68%, rgba(5,8,20,.88) 100%); }
+
+/* ================================================================ career (Circuito) */
+.sw { display: inline-block; width: 46px; height: 18px; border: 2px solid rgba(255,255,255,.6); transform: skewX(-12deg); vertical-align: middle; }
+.namebox input { font-family: 'Anton'; font-size: 22px; letter-spacing: 1px; color: #fff; background: rgba(0,0,0,.35); border: 1px solid rgba(255,255,255,.35); padding: 4px 10px; width: 100%; outline: none; }
+.namebox input:focus { border-color: var(--gold); }
+.chub { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 18px; margin: 10px 0 12px; }
+.cme { display: flex; gap: 16px; align-items: center; background: var(--panel-2); border-left: 4px solid var(--gold); padding: 12px 16px; }
+.cme img { width: 110px; height: 110px; object-fit: cover; background: #0c1022; border: 2px solid rgba(255,255,255,.2); }
+.cname { font-family: 'Anton'; font-size: 30px; line-height: 1; letter-spacing: 1px; }
+.crank { font-family: 'Anton'; font-size: 22px; margin-top: 6px; } .crank b { font-size: 40px; color: var(--gold); } .crank small { font-family: 'Barlow Condensed'; font-size: 16px; color: var(--muted); }
+.cline { font-size: 18px; color: #dfe4f2; } .cline.gold { color: var(--gold); }
+.cevents, .bracket { display: grid; gap: 6px; align-content: start; }
+.bracket { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); max-width: 1100px; }
+.ev { display: grid; grid-template-columns: 120px 1fr; align-items: center; column-gap: 10px; padding: 6px 12px; background: rgba(255,255,255,.05); border-left: 4px solid #6b7a99; font-size: 18px; }
+.bracket .ev { grid-template-columns: 1fr; padding: 10px 12px; }
+.ev b { font-family: 'Anton'; font-weight: 400; letter-spacing: 1px; font-size: 16px; color: #cfd8f0; }
+.ev small { grid-column: 2; color: var(--muted); font-size: 14px; }
+.bracket .ev small { grid-column: 1; }
+.ev.now { background: rgba(245,197,66,.14); border-left-color: var(--gold); }
+.ev.challenger { border-left-color: #6b7a99; } .ev.gold250 { border-left-color: #2a9d8f; } .ev.gold500 { border-left-color: #3a86ff; } .ev.gold1000 { border-left-color: #8338ec; } .ev.slam { border-left-color: var(--gold); }
+.ev.won { border-left-color: #39e36b; } .ev.won small { color: #39e36b; } .ev.lost { border-left-color: #ff4d5a; opacity: .7; }
+.cact { max-width: 760px; } .cact .item { font-size: clamp(20px, min(3vw, 4.6vh), 30px); }
+.cmsg { font-size: 20px; text-align: center; margin: 6px 0; }
+@media (max-height: 520px) {
+  .chub { grid-template-columns: 1fr 1fr; gap: 8px; margin: 4px 0; }
+  .cme { padding: 6px 10px; gap: 10px; } .cme img { width: 64px; height: 64px; }
+  .cname { font-size: 20px; } .crank { font-size: 16px; } .crank b { font-size: 26px; } .cline { font-size: 13px; }
+  .ev { font-size: 13px; padding: 3px 8px; grid-template-columns: 84px 1fr; } .ev b { font-size: 12px; } .ev small { font-size: 11px; }
+  .cevents .ev:nth-child(n+4) { display: none; }
+  .cact .item { font-size: 18px; }
+}
+.cact { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 18px; max-width: 1100px; }
+.cact .item { width: 100%; font-size: clamp(18px, min(2.4vw, 4vh), 28px); padding: 6px 20px 4px; }
+.cact .item:first-child { grid-column: span 2; }

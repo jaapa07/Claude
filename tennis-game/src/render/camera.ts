@@ -7,7 +7,10 @@ export type Shot =
   | { kind: 'track'; from: THREE.Vector3; target: () => THREE.Vector3; fov?: number }
   | { kind: 'dolly'; from: THREE.Vector3; to: THREE.Vector3; look: THREE.Vector3; dur: number; t: number };
 
+export type CamMode = 'tv' | 'arcade' | 'player';
+
 export class CameraDirector {
+  static mode: CamMode = 'tv';
   shot: Shot = { kind: 'game', end: 1 };
   private pos = new THREE.Vector3(0, 8, 22);
   private look = new THREE.Vector3(0, 0, -2);
@@ -28,16 +31,28 @@ export class CameraDirector {
     const s = this.shot;
     const wantPos = new THREE.Vector3();
     const wantLook = new THREE.Vector3();
-    let fov = this.cam.aspect < 1 ? 60 : this.cam.aspect < 1.4 ? 50 : 42;
+    let fov = this.cam.aspect < 1 ? 60 : this.cam.aspect < 1.4 ? 50 : this.cam.aspect > 2 ? 34 : 40;
     let lerp = 1 - Math.exp(-dt * 5);
     switch (s.kind) {
       case 'game': {
-        // high camera behind the human player's baseline; drifts with play like classic arcade tennis
-        this.focusX = THREE.MathUtils.lerp(this.focusX, humanPos.x * 0.35 + ballPos.x * 0.2, 1 - Math.exp(-dt * 2.5));
-        const back = 21.8, height = 7.3;
-        const depthShift = THREE.MathUtils.clamp((Math.abs(humanPos.z) - 11.9) * 0.4, -2, 2.5);
+        const mode = CameraDirector.mode;
+        if (mode === 'player') {
+          // close, low, behind your player (follows them around the court)
+          this.focusX = THREE.MathUtils.lerp(this.focusX, humanPos.x, 1 - Math.exp(-dt * 3.5));
+          wantPos.set(this.focusX * 0.75, 3.3, THREE.MathUtils.clamp(humanPos.z + s.end * 5.6, -18.6, 18.6));
+          wantLook.set(this.focusX * 0.35, 0.9, humanPos.z - s.end * 13);
+          fov = this.cam.aspect < 1 ? 66 : 52;
+          lerp = 1 - Math.exp(-dt * 5);
+          break;
+        }
+        const arcade = mode === 'arcade';
+        // TV: high broadcast view with the whole court in frame; arcade: the classic lower view behind the baseline
+        this.focusX = THREE.MathUtils.lerp(this.focusX, humanPos.x * (arcade ? 0.35 : 0.15) + ballPos.x * (arcade ? 0.2 : 0.08), 1 - Math.exp(-dt * 2.2));
+        const back = arcade ? 21.8 : 22.6, height = arcade ? 7.3 : 10.6;
+        const depthShift = THREE.MathUtils.clamp((Math.abs(humanPos.z) - 11.9) * 0.3, -1.5, 1.8);
         wantPos.set(this.focusX, height, s.end * (back + depthShift));
-        wantLook.set(this.focusX * 0.6, 0.0, s.end * -2.6);
+        wantLook.set(this.focusX * 0.5, 0.0, s.end * (arcade ? -2.6 : -0.6));
+        if (!arcade) fov = this.cam.aspect < 1 ? 62 : this.cam.aspect < 1.4 ? 52 : this.cam.aspect > 2 ? 38 : 43;
         lerp = 1 - Math.exp(-dt * 6);
         break;
       }
