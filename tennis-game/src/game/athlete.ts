@@ -436,6 +436,7 @@ export class Athlete {
     this.root.traverse((o) => {
       const m = o as THREE.Mesh;
       if (!m.isMesh) return;
+      (m as THREE.SkinnedMesh).skeleton?.dispose(); // frees the bone-matrix texture
       for (const mat of Array.isArray(m.material) ? m.material : [m.material]) mat.dispose();
     });
     this.root.removeFromParent();

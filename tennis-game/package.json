@@ -9,7 +9,8 @@
     "test": "vitest run",
     "fetch-assets": "node scripts/fetch-assets.mjs",
     "build-assets": "node scripts/build-assets.mjs && node scripts/build-authored.mjs && node scripts/compress-assets.mjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "optimize-assets": "node scripts/optimize-mobile.mjs"
   },
   "dependencies": {
     "gsap": "^3.12.5",

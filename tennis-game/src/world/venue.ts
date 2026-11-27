@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { isMobile } from '../core/platform';
 import { Assets } from '../core/assets';
 import type { VenueDef } from '../data/content';
 import { Crowd, type Seat } from './crowd';
@@ -115,12 +116,14 @@ export class Venue {
   private flagUniform = { uTime: { value: 0 } };
   private neonLights: THREE.Mesh[] = [];
   private env: THREE.Texture | null = null;
+  private envRT: THREE.WebGLRenderTarget | null = null;
 
   constructor(public def: VenueDef, scene: THREE.Scene, renderer: THREE.WebGLRenderer) {
     // --- environment
     const hdr = Assets.hdr.get(`sky/${def.hdri}.jpg`)!;
     const pm = new THREE.PMREMGenerator(renderer);
-    const env = pm.fromEquirectangular(hdr).texture;
+    this.envRT = pm.fromEquirectangular(hdr);
+    const env = this.envRT.texture;
     pm.dispose();
     this.env = env;
     scene.environment = env;
@@ -473,8 +476,9 @@ export class Venue {
 
     const kid = (female: boolean) => ({ body: female ? ('f' as const) : ('m' as const), hair: female ? 'hair_buns' : 'hair_buzzed', skinTint: ['#e9c09a', '#a86b42', '#f2d0b5'][Math.floor(Math.random() * 3)], hairColor: '#2a1a10', shirt: def.wallAccent, shirtAccent: '#ffffff', shorts: '#1c1c28', socks: '#ffffff', shoes: '#ffffff', sponsor: 0, racket: '#000' });
     const kidSpots: [number, number, number][] = [[-6.9, 0.25, Math.PI / 2], [6.9, -0.25, -Math.PI / 2], [-4.5, -BOARD_Z + 0.6, 0], [4.5, BOARD_Z - 0.6, Math.PI]];
-    kidSpots.forEach(([x, z, ry], i) => {
-      const k = new Athlete(kid(i % 2 === 1), { racket: false });
+    // phones: fewer animated extras and no shadows from them (each one is a full skinned athlete)
+    (isMobile ? kidSpots.slice(0, 2) : kidSpots).forEach(([x, z, ry], i) => {
+      const k = new Athlete(kid(i % 2 === 1), { racket: false, shadow: !isMobile });
       k.root.scale.setScalar(0.82);
       k.root.position.set(x, 0, z);
       k.root.rotation.y = ry;
@@ -490,8 +494,8 @@ export class Venue {
       [-5.3, BOARD_Z - 0.75, Math.PI, false], [5.3, BOARD_Z - 0.75, Math.PI, true],
       [BOARD_X - 0.55, -7.5, -Math.PI / 2, false], [BOARD_X - 0.55, 7.5, -Math.PI / 2, false], [-BOARD_X + 0.55, -9.5, Math.PI / 2, false],
     ];
-    judgeSpots.forEach(([x, z, ry, female], i) => {
-      const j = new Athlete({ ...official, body: female ? 'f' : 'm', hair: female ? 'hair_buns' : i % 2 ? 'hair_buzzed' : 'hair_simpleparted', skinTint: skins[i % skins.length], hairColor: ['#2a1a10', '#111', '#6b4a2a'][i % 3] }, { racket: false });
+    (isMobile ? judgeSpots.slice(0, 3) : judgeSpots).forEach(([x, z, ry, female], i) => {
+      const j = new Athlete({ ...official, body: female ? 'f' : 'm', hair: female ? 'hair_buns' : i % 2 ? 'hair_buzzed' : 'hair_simpleparted', skinTint: skins[i % skins.length], hairColor: ['#2a1a10', '#111', '#6b4a2a'][i % 3] }, { racket: false, shadow: !isMobile });
       j.root.position.set(x, 0, z);
       j.root.rotation.y = ry;
       j.play('arms_folded', { fade: 0 });
@@ -501,7 +505,7 @@ export class Venue {
       this.group.add(j.root);
     });
     // TV camera operators in the far corners
-    for (const x of [-7.6, 7.6]) {
+    for (const x of isMobile ? [] : [-7.6, 7.6]) {
       const p = new Athlete({ ...official, shirt: '#2b2d42', shorts: '#2b2d42', hair: 'hair_simpleparted', suit: false }, { racket: false });
       p.root.position.set(x, 0, -BOARD_Z + 0.6);
       p.root.rotation.y = 0;
@@ -530,17 +534,25 @@ export class Venue {
     const mats = new Set<THREE.Material>();
     this.group.traverse((o) => {
       const m = o as THREE.Mesh;
-      if (!m.isMesh && !(o as THREE.Points).isPoints) return;
-      m.geometry?.dispose();
+      if ((o as THREE.Light).isLight) (o as THREE.DirectionalLight).dispose?.(); // shadow map render target
+      if (!m.geometry) return;
+      m.geometry.dispose();
       for (const mat of Array.isArray(m.material) ? m.material : [m.material]) if (mat) mats.add(mat);
     });
+    // every texture this venue used (clones and shared assets alike) leaves the GPU; shared ones re-upload on next use
+    const texs = new Set<THREE.Texture>();
     for (const mat of mats) {
-      for (const v of Object.values(mat)) if (v instanceof THREE.Texture && !(v as THREE.Texture & { isAssetTex?: boolean }).isAssetTex && (v instanceof THREE.CanvasTexture || v instanceof THREE.DataTexture)) v.dispose();
+      for (const v of Object.values(mat)) if (v instanceof THREE.Texture) texs.add(v);
+      const u = (mat as THREE.ShaderMaterial).uniforms ?? (mat.userData.outfit as Record<string, { value: unknown }> | undefined);
+      if (u) for (const x of Object.values(u)) if (x?.value instanceof THREE.Texture) texs.add(x.value);
       mat.dispose();
     }
+    for (const t of texs) t.dispose();
+    if (scene.background instanceof THREE.Texture) { scene.background.dispose(); scene.background = null; } // equirect -> cube cache
     for (const a of this.officials()) a.dispose();
     if (scene.environment === this.env) scene.environment = null;
-    this.env?.dispose();
+    this.envRT?.dispose();
+    this.envRT = null;
     this.env = null;
   }
 }

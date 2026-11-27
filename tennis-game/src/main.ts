@@ -20,6 +20,15 @@ import { isTouch, isMobile, enterFullscreen, registerServiceWorker, FpsGovernor 
 const stage = document.getElementById('stage')!;
 const R = new Renderer(stage);
 setPortraitRenderer(R.renderer);
+// If the GPU drops the WebGL context (phones under memory pressure), say so and reload instead of showing a black screen.
+R.renderer.domElement.addEventListener('webglcontextlost', (e) => {
+  e.preventDefault();
+  const d = document.createElement('div');
+  d.className = 'ctxlost';
+  d.innerHTML = '<b>Memória de vídeo esgotada</b><span>Recarregando o jogo…</span>';
+  document.body.appendChild(d);
+  setTimeout(() => location.reload(), 1500);
+});
 let session: Session | null = null;
 let paused = false;
 let mode: 'menu' | 'match' | 'training' = 'menu';
@@ -96,7 +105,7 @@ function applyOptions() {
   for (const k of ['music', 'sfx', 'voice', 'crowd'] as const) Audio.setVolume(k, o.volume[k]);
   R.setQuality(o.quality);
   CameraDirector.mode = o.camera;
-  Venue.crowdDensity = o.quality === 'low' ? 0.35 : o.quality === 'medium' ? 0.65 : 1;
+  Venue.crowdDensity = o.quality === 'low' ? (isMobile ? 0.25 : 0.35) : o.quality === 'medium' ? 0.65 : 1;
   Venue.shadowSize = o.quality === 'high' ? 2048 : o.quality === 'medium' ? 1024 : isMobile ? 512 : 1024;
   document.documentElement.style.setProperty('--hud-scale', String(o.hudScale));
   const touch = o.touch === 'on' || (o.touch === 'auto' && isTouch);

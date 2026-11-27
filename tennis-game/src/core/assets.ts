@@ -10,10 +10,24 @@ const meshoptReady = import.meta.env.VITE_JSON_MODELS
 const texLoader = new THREE.TextureLoader();
 import { isMobile } from './platform';
 
+/** On phones: embedded model textures at most 512 px; athletes drop normal/roughness maps (kit is shaded in the shader). */
+function slimModel(g: GLTF, athlete: boolean) {
+  const seen = new Set<THREE.Texture>();
+  g.scene.traverse((o) => {
+    const m = (o as THREE.Mesh).material as THREE.MeshStandardMaterial | undefined;
+    if (!m || !(o as THREE.Mesh).isMesh) return;
+    if (athlete && /Superhero/i.test(m.name)) { m.roughnessMap = null; m.metalnessMap = null; }
+    for (const k of ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'aoMap', 'emissiveMap'] as const) {
+      const t = m[k];
+      if (t && !seen.has(t)) { seen.add(t); shrinkForMobile(t, 512); }
+    }
+  });
+}
+
 /** Phones (iOS Safari above all) kill the tab when GPU memory runs out: keep textures small there. */
 const MOBILE_MAX = 512;
 function shrinkForMobile(t: THREE.Texture, max: number) {
-  const img = t.image as HTMLImageElement | undefined;
+  const img = t.image as (HTMLImageElement | ImageBitmap) | undefined;
   if (!isMobile || !img || !img.width) return;
   const big = Math.max(img.width, img.height);
   if (big <= max) return;
@@ -24,6 +38,7 @@ function shrinkForMobile(t: THREE.Texture, max: number) {
   c.getContext('2d')!.drawImage(img, 0, 0, c.width, c.height);
   t.image = c;
   t.needsUpdate = true;
+  (img as ImageBitmap).close?.();
 }
 
 /** Sandbox-safe model format (see scripts/glb-to-json.mjs): rebuild a GLB in memory, textures load as same-origin files. */
@@ -62,6 +77,7 @@ class AssetStore {
 
   gltf = new Map<string, GLTF>();
   tex = new Map<string, THREE.Texture>();
+  private repeats = new Map<string, THREE.Texture>();
   hdr = new Map<string, THREE.Texture>();
   private pending = new Map<string, Promise<unknown>>();
 
@@ -78,7 +94,8 @@ class AssetStore {
 
   loadGltf(path: string): Promise<GLTF> {
     if (this.gltf.has(path)) return Promise.resolve(this.gltf.get(path)!);
-    const load = import.meta.env.VITE_JSON_MODELS ? loadJsonModel(BASE + path) : meshoptReady.then(() => gltfLoader.loadAsync(BASE + path));
+    const raw = import.meta.env.VITE_JSON_MODELS ? loadJsonModel(BASE + path) : meshoptReady.then(() => gltfLoader.loadAsync(BASE + path));
+    const load = raw.then((g) => { if (isMobile) slimModel(g, /athlete_/.test(path)); return g; });
     if (!this.pending.has(path)) this.pending.set(path, load.then((g) => (this.gltf.set(path, g), g)));
     return this.pending.get(path) as Promise<GLTF>;
   }
@@ -119,7 +136,11 @@ class AssetStore {
     const t = this.tex.get(path);
     if (!t) throw new Error('texture not loaded: ' + path);
     if (repeat) {
+      const key = path + '@' + repeat;
+      const hit = this.repeats.get(key);
+      if (hit) return hit;
       const c = t.clone();
+      this.repeats.set(key, c);
       c.wrapS = c.wrapT = THREE.RepeatWrapping;
       c.repeat.set(repeat, repeat);
       c.needsUpdate = true;
