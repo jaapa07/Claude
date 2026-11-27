@@ -393,7 +393,13 @@ export class Session {
   dispose() {
     this.venue.dispose(this.r.scene);
     this.r.scene.remove(this.fx.group);
-    for (const p of this.match.players) this.r.scene.remove(p.athlete.root);
+    this.fx.group.traverse((o) => {
+      const m = o as THREE.Mesh;
+      if (!m.geometry) return;
+      m.geometry.dispose();
+      for (const mat of Array.isArray(m.material) ? m.material : [m.material]) mat?.dispose();
+    });
+    for (const p of this.match.players) { this.r.scene.remove(p.athlete.root); p.athlete.dispose(); }
     this.r.scene.remove(this.match.ball.mesh);
     this.hud?.dispose();
     Audio.crowdAmbience(false);

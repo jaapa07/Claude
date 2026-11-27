@@ -114,6 +114,7 @@ export class Venue {
   flags: THREE.Mesh[] = [];
   private flagUniform = { uTime: { value: 0 } };
   private neonLights: THREE.Mesh[] = [];
+  private env: THREE.Texture | null = null;
 
   constructor(public def: VenueDef, scene: THREE.Scene, renderer: THREE.WebGLRenderer) {
     // --- environment
@@ -121,6 +122,7 @@ export class Venue {
     const pm = new THREE.PMREMGenerator(renderer);
     const env = pm.fromEquirectangular(hdr).texture;
     pm.dispose();
+    this.env = env;
     scene.environment = env;
     scene.environmentIntensity = def.envIntensity * 1.5;
     scene.background = hdr;
@@ -524,11 +526,21 @@ export class Venue {
 
   dispose(scene: THREE.Scene) {
     scene.remove(this.group);
+    // free GPU memory between matches (phones run out otherwise). Shared asset textures are re-uploaded on next use.
+    const mats = new Set<THREE.Material>();
     this.group.traverse((o) => {
       const m = o as THREE.Mesh;
-      if (m.isMesh) {
-        m.geometry?.dispose();
-      }
+      if (!m.isMesh && !(o as THREE.Points).isPoints) return;
+      m.geometry?.dispose();
+      for (const mat of Array.isArray(m.material) ? m.material : [m.material]) if (mat) mats.add(mat);
     });
+    for (const mat of mats) {
+      for (const v of Object.values(mat)) if (v instanceof THREE.Texture && !(v as THREE.Texture & { isAssetTex?: boolean }).isAssetTex && (v instanceof THREE.CanvasTexture || v instanceof THREE.DataTexture)) v.dispose();
+      mat.dispose();
+    }
+    for (const a of this.officials()) a.dispose();
+    if (scene.environment === this.env) scene.environment = null;
+    this.env?.dispose();
+    this.env = null;
   }
 }

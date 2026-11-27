@@ -4,7 +4,7 @@ import { Assets, CORE_ASSETS } from './core/assets';
 import { Audio } from './core/audio';
 import { Input } from './core/input';
 import { Save } from './core/save';
-import { renderPortraits } from './render/portraits';
+import { renderPortraits, setPortraitRenderer } from './render/portraits';
 import { Session } from './game/session';
 import { CameraDirector } from './render/camera';
 import { Venue } from './world/venue';
@@ -19,6 +19,7 @@ import { isTouch, isMobile, enterFullscreen, registerServiceWorker, FpsGovernor 
 
 const stage = document.getElementById('stage')!;
 const R = new Renderer(stage);
+setPortraitRenderer(R.renderer);
 let session: Session | null = null;
 let paused = false;
 let mode: 'menu' | 'match' | 'training' = 'menu';
@@ -29,10 +30,11 @@ const clock = new THREE.Clock();
 const governor = new FpsGovernor((sc) => R.setDynamicScale(sc), isMobile ? 0.55 : 0.7);
 // ------------------------------------------------------------------ 3D showcase on the player-select screen
 const SHOW_AT = new THREE.Vector3(0, 0, 12.6);
-let showcase: { a: Athlete; id: string; t: number } | null = null;
+let showcase: { a: Athlete; id: string; t: number; shot?: Parameters<CameraDirector['set']>[0] } | null = null;
 function clearShowcase() {
   if (!showcase) return;
   R.scene.remove(showcase.a.root);
+  showcase.a.dispose();
   showcase = null;
   if (session) session.ballHidden = false;
   if (session) { for (const p of session.match.players) p.athlete.root.visible = true; session.match.ball.mesh.visible = true; }
@@ -57,7 +59,8 @@ S.MenuHooks.preview = (p) => {
   showcase = { a, id: p.id, t: 0 };
   for (const q of session.match.players) q.athlete.root.visible = false; // the demo rally steps aside
   const V = THREE.Vector3;
-  session.cam.set({ kind: 'track', from: new V(0.35, 1.25, SHOW_AT.z + 5.2), target: () => new V(-0.12, 0.98, SHOW_AT.z), fov: 30 }, false);
+  showcase.shot = { kind: 'track', from: new V(0.35, 1.25, SHOW_AT.z + 5.2), target: () => new V(-0.12, 0.98, SHOW_AT.z), fov: 30 };
+  session.cam.set(showcase.shot, false);
 };
 function updateShowcase(dt: number) {
   if (!showcase) return;
@@ -66,7 +69,12 @@ function updateShowcase(dt: number) {
   const a = s.a;
   if (a.oneShot && a.oneShotDone()) { a.releaseOneShot(0.45); a.play('idle', { fade: 0.45 }); }
   a.root.rotation.y = 0.15 + Math.sin(s.t * 0.6) * 0.22;
-  if (session) { session.match.ball.mesh.visible = false; session.ballHidden = true; }
+  if (session) {
+    session.match.ball.mesh.visible = false;
+    session.ballHidden = true;
+    // the demo rally's own camera cuts (point won, replays) must not steal the shot from the showcase
+    if (s.shot && session.cam.shot !== s.shot) session.cam.set(s.shot, false);
+  }
   a.lookAt = R.camera.position;
   a.update(dt);
 }
