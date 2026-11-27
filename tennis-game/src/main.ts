@@ -534,8 +534,9 @@ boot().catch((e) => {
   const msg = e instanceof Error ? e.message : (e && (e as Event).type) ? `falha ao carregar ${((e as Event).target as HTMLImageElement | null)?.src ?? 'um arquivo'}` : String(e);
   const el = document.createElement('div');
   el.className = 'loading';
-  el.innerHTML = '<div class="inner"><h2 style="font-family:Anton,sans-serif;letter-spacing:2px">ERRO AO CARREGAR</h2><p class="tip"></p><pre style="white-space:pre-wrap;color:#f88;font-size:12px;text-align:left;max-height:40vh;overflow:auto"></pre></div>';
-  el.querySelector('.tip')!.textContent = msg;
+  el.innerHTML = '<div class="inner"><h2 style="font-family:Anton,sans-serif;letter-spacing:2px">ERRO AO CARREGAR</h2><p class="tip"></p><pre style="white-space:pre-wrap;color:#f88;font-size:12px;text-align:left;max-height:30vh;overflow:auto"></pre><button class="item retry" style="margin-top:14px">TENTAR DE NOVO</button><p class="tip" style="font-size:14px;opacity:.7">Verifique a conexão. Se repetir, feche a aba e abra o jogo de novo.</p></div>';
+  el.querySelector('.retry')!.addEventListener('click', () => location.reload());
+  el.querySelector('.tip')!.textContent = msg === 'Load failed' || msg === 'Failed to fetch' ? 'Falha de rede ao baixar os arquivos do jogo' : msg;
   el.querySelector('pre')!.textContent = String((e as Error)?.stack ?? '');
   document.getElementById('ui')!.replaceChildren(el);
 });

@@ -12,7 +12,11 @@ class AudioManager {
   private ambience: number | null = null;
 
   async init() {
-    const manifest: Record<string, string> = await (await fetch('assets/audio/manifest.json')).json();
+    let manifest: Record<string, string> = {};
+    for (let i = 0; i < 4; i++) {
+      try { manifest = await (await fetch('assets/audio/manifest.json')).json(); break; }
+      catch { await new Promise((r) => setTimeout(r, 700 * (i + 1))); } // the game still runs without sound
+    }
     for (const [name, url] of Object.entries(manifest)) {
       this.sounds.set(name, new Howl({ src: [url], loop: LOOPS.has(name), preload: true, html5: MUSIC.has(name) }));
     }

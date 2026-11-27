@@ -10,6 +10,26 @@ const meshoptReady = import.meta.env.VITE_JSON_MODELS
 const texLoader = new THREE.TextureLoader();
 import { isMobile } from './platform';
 
+/** Retry a download a few times (phones on mobile data drop requests: Safari reports "Load failed"). */
+async function withRetry<T>(f: () => Promise<T>, tries = 4): Promise<T> {
+  for (let i = 0; ; i++) {
+    try { return await f(); } catch (e) {
+      if (i >= tries - 1) throw e;
+      await new Promise((r) => setTimeout(r, 600 * (i + 1)));
+    }
+  }
+}
+/** At most N downloads at a time. */
+const MAX_PARALLEL = 6;
+let active = 0;
+const waiting: (() => void)[] = [];
+async function slot<T>(f: () => Promise<T>): Promise<T> {
+  if (active >= MAX_PARALLEL) await new Promise<void>((r) => waiting.push(r));
+  active++;
+  try { return await f(); } finally { active--; waiting.shift()?.(); }
+}
+const download = <T,>(f: () => Promise<T>) => slot(() => withRetry(f));
+
 /** On phones: embedded model textures at most 512 px; athletes drop normal/roughness maps (kit is shaded in the shader). */
 function slimModel(g: GLTF, athlete: boolean) {
   const seen = new Set<THREE.Texture>();
@@ -94,7 +114,7 @@ class AssetStore {
 
   loadGltf(path: string): Promise<GLTF> {
     if (this.gltf.has(path)) return Promise.resolve(this.gltf.get(path)!);
-    const raw = import.meta.env.VITE_JSON_MODELS ? loadJsonModel(BASE + path) : meshoptReady.then(() => gltfLoader.loadAsync(BASE + path));
+    const raw = download(() => (import.meta.env.VITE_JSON_MODELS ? loadJsonModel(BASE + path) : meshoptReady.then(() => gltfLoader.loadAsync(BASE + path))));
     const load = raw.then((g) => { if (isMobile) slimModel(g, /athlete_/.test(path)); return g; });
     if (!this.pending.has(path)) this.pending.set(path, load.then((g) => (this.gltf.set(path, g), g)));
     return this.pending.get(path) as Promise<GLTF>;
@@ -103,7 +123,7 @@ class AssetStore {
   loadTex(path: string): Promise<THREE.Texture> {
     if (this.tex.has(path)) return Promise.resolve(this.tex.get(path)!);
     if (!this.pending.has(path))
-      this.pending.set(path, texLoader.loadAsync(BASE + path).then((t) => {
+      this.pending.set(path, download(() => texLoader.loadAsync(BASE + path)).then((t) => {
         t.colorSpace = /_color|felt|sponsor|banner|grip|strings/.test(path) ? THREE.SRGBColorSpace : THREE.NoColorSpace;
         t.anisotropy = isMobile ? 2 : 8;
         shrinkForMobile(t, /court_lines/.test(path) ? 1024 : MOBILE_MAX);
@@ -117,7 +137,7 @@ class AssetStore {
   loadHdr(path: string): Promise<THREE.Texture> {
     if (this.hdr.has(path)) return Promise.resolve(this.hdr.get(path)!);
     if (!this.pending.has(path))
-      this.pending.set(path, texLoader.loadAsync(BASE + path).then((t) => {
+      this.pending.set(path, download(() => texLoader.loadAsync(BASE + path)).then((t) => {
         t.mapping = THREE.EquirectangularReflectionMapping;
         t.colorSpace = THREE.SRGBColorSpace;
         shrinkForMobile(t, 1024);
