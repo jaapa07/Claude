@@ -10,6 +10,8 @@ import type { Renderer } from '../render/renderer';
 import type { PlayerDef, VenueDef, DifficultyId } from '../data/content';
 import type { MatchConfig, Side } from './rules';
 import { COURT } from './physics';
+import { Save } from '../core/save';
+import { Assets } from '../core/assets';
 
 const STEP = 1 / 120;
 
@@ -36,6 +38,7 @@ export class Session {
   timeScale = 1;
   slowmo = 0;
   private replayCams: (() => void)[] = [];
+  private footShadows: THREE.Mesh[] | null = null;
 
   constructor(private r: Renderer, public opts: SessionOptions, uiRoot: HTMLElement) {
     const scene = r.scene;
@@ -109,6 +112,33 @@ export class Session {
     const human = m.players[0].pos;
     this.cam.update(dt, bp, human);
     this.fx.update(dt, this.r.camera);
+    // receiving hints for the local human player
+    {
+      const me = m.players[0];
+      const show = !this.opts.demo && Save.data.options.hints && me.human && m.phase === 'rally' && m.lastHitter !== 0 && this.flow === 'play';
+      const b = show && me.predBounce ? new THREE.Vector3(me.predBounce.x, 0, me.predBounce.z) : null;
+      const spot = show && me.intercept && me.swingT < 0 ? m.hintSpot(me) : null;
+      this.fx.hints(b, spot, this.t);
+    }
+    // soft contact shadows under the players' feet (grounding, also on low quality)
+    this.footShadows ??= m.players.map(() => {
+      const sh = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 1.5), new THREE.MeshBasicMaterial({ map: Assets.t('textures/fx_dot.png'), color: '#000', transparent: true, opacity: 0.55, depthWrite: false }));
+      sh.rotation.x = -Math.PI / 2; sh.renderOrder = 1; this.fx.group.add(sh); return sh;
+    });
+    m.players.forEach((p, i) => { const sh = this.footShadows![i]; sh.position.set(p.athlete.root.position.x, 0.008, p.athlete.root.position.z); sh.visible = p.athlete.root.visible; const hop = p.athlete.root.position.y; sh.scale.setScalar(1 - hop * 0.8); });
+    // racket swing arcs and footwork dust
+    m.players.forEach((p, i) => {
+      const a = p.athlete;
+      const swinging = !!a.oneShot && ['forehand', 'backhand', 'volley', 'smash'].includes(a.oneShotName ?? '') && a.oneShot.time < a.oneShot.getClip().duration * 0.75;
+      const grip = a.racket ? a.racket.getWorldPosition(new THREE.Vector3()) : null;
+      this.fx.swingTrail(i, swinging ? a.racketHeadWorld(new THREE.Vector3()) : null, swinging ? grip : null, this.r.camera);
+      const acc = a.accel.length();
+      if (this.flow !== 'replay' && acc > 16 && Math.random() < dt * 12) this.fx.dust(new THREE.Vector3(p.pos.x, 0.03, p.pos.z), this.opts.venue.surface.tex, this.opts.venue.surface.tex === 'clay' ? 0.6 : 0.35);
+    });
+    // officials and spectators follow the ball
+    const watch = m.ball.visible ? bp : new THREE.Vector3(0, 1.2, 0);
+    for (const o of this.venue.officials()) o.lookAt = watch;
+    this.venue.crowd.watch.copy(watch);
     this.venue.update(dt, this.t);
     this.hud?.update(dt, this.r.camera);
   }
@@ -271,6 +301,7 @@ export class Session {
         }
         case 'bounce': {
           const p = new THREE.Vector3(e.pos.x, 0.02, e.pos.z);
+          m.ball.squash = Math.min(1, e.speed / 10);
           Audio.play('bounce', { vol: Math.min(1, e.speed / 12) * 0.8, rate: this.opts.venue.surface.tex === 'clay' ? 0.8 : this.opts.venue.surface.tex === 'grass' ? 0.75 : 0.9 });
           this.fx.dust(p, this.opts.venue.surface.tex, Math.min(1.4, e.speed / 10));
           if (this.opts.venue.surface.tex === 'clay') this.fx.ballMark(p);

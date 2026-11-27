@@ -9,6 +9,7 @@ export class Ball {
   visible = false;
   held: THREE.Object3D | null = null; // attached to a hand during service toss setup
   private spinAngle = 0;
+  squash = 0;
 
   constructor(scene: THREE.Object3D) {
     this.mesh = Assets.g('models/props/ball.glb').scene.clone(true);
@@ -45,6 +46,10 @@ export class Ball {
     }
     const p = this.state.p;
     this.mesh.position.set(p.x, p.y, p.z);
+    // squash & stretch: flatten on impact, stretch along fast flight
+    this.squash = Math.max(0, this.squash - dt * 9);
+    const sq = this.squash, st = Math.min(0.25, this.speedKmh() / 900);
+    this.mesh.scale.set(1.6 * (1 + sq * 0.25), 1.6 * (1 - sq * 0.4), 1.6 * (1 + st));
     const v = this.state.v;
     const sp = Math.hypot(v.x, v.z);
     this.spinAngle += (sp * 0.6 + Math.abs(this.state.spin) * 40) * dt;

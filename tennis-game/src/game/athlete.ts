@@ -111,7 +111,14 @@ export function makeOutfitMaterial(src: THREE.MeshStandardMaterial, o: OutfitCol
       .replace('void main() {', 'float vClothAmt = 0.0;\nvoid main() {')
       .replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
         roughnessFactor = mix(roughnessFactor, 0.82, vClothAmt);`)
-      .replace('mapN.xy *= normalScale;', 'mapN.xy *= normalScale * (1.0 - 0.8 * vClothAmt);');
+      .replace('mapN.xy *= normalScale;', `mapN.xy *= normalScale * (1.0 - 0.85 * vClothAmt);
+        {
+          // woven fabric + soft folds on the clothing
+          vec3 fab = texture2D(uFabric, vBind.xy * 7.0 + vBind.z * 2.0).xyz * 2.0 - 1.0;
+          float folds = sin(vBind.y * 55.0 + sin(vBind.x * 18.0) * 2.0) * 0.5 + sin(vBind.y * 23.0 - vBind.x * 31.0) * 0.5;
+          vec3 clothN = normalize(vec3(fab.xy * 0.55 + vec2(folds * 0.09, folds * 0.05), 1.0));
+          mapN = normalize(mix(mapN, clothN, vClothAmt * 0.9));
+        }`);
   };
   m.customProgramCacheKey = () => 'outfit' + (instanced ? 'I' : '');
   return m;
@@ -122,6 +129,9 @@ export type AnimName =
   | 'idle' | 'ready' | 'run' | 'sprint' | 'walk' | 'forehand' | 'backhand' | 'smash' | 'volley' | 'serve' | 'dive' | 'dive_up'
   | 'cheer' | 'dance' | 'upset' | 'frustrated' | 'arms_folded' | 'fist_pump' | 'jump' | 'land' | 'sit' | 'sit_talk' | 'talk'
   | 'pickup' | 'point' | 'call' | 'interact' | 'roll';
+
+const LOCO_CYCLE: AnimName[] = ['walk', 'run', 'sprint'];
+const NATURAL_SPEED: Record<string, number> = { walk: 1.4, run: 4.0, sprint: 6.4 };
 
 const ONE_SHOT = new Set<AnimName>(['forehand', 'backhand', 'smash', 'volley', 'serve', 'dive', 'dive_up', 'cheer', 'frustrated', 'fist_pump', 'jump', 'land', 'pickup', 'point', 'interact', 'roll']);
 
@@ -190,9 +200,17 @@ export class Athlete {
     for (const clip of Assets.g('models/anims.glb').animations) {
       const a = this.mixer.clipAction(clip);
       if (ONE_SHOT.has(clip.name as AnimName)) { a.setLoop(THREE.LoopOnce, 1); a.clampWhenFinished = true; }
+      a.enabled = true;
+      a.setEffectiveWeight(0);
+      a.play();
       this.actions.set(clip.name as AnimName, a);
     }
-    this.actions.get('idle')!.play();
+    for (const n of LOCO_CYCLE) this.actions.get(n)!.setEffectiveTimeScale(0); // driven by the shared gait phase
+    this.weights.set('idle', 1);
+    this.spine = ['spine_01', 'spine_02', 'spine_03'].map((n) => this.bones.get(n)!).filter(Boolean);
+    this.neck = this.bones.get('neck_01') ?? null;
+    this.head = this.bones.get('Head') ?? null;
+    this.applyWeights();
 
     if (opts.racket !== false) {
       const r = Assets.g('models/props/racket.glb').scene.clone(true);
@@ -207,8 +225,8 @@ export class Athlete {
           }
         }
       });
-      r.rotation.set(0, 0, Math.PI / 2 + 0.25);
-      r.position.set(-0.02, 0.07, 0.0);
+      r.rotation.set(Math.PI / 2, Math.PI / 2, 0); // handle across the fist (knuckle line = hand +z), face normal = palm normal
+      r.position.set(-0.02, 0.075, -0.07);
       r.scale.setScalar(1.05);
       this.racketHead.position.set(0, 0.5, 0);
       r.add(this.racketHead);
@@ -217,54 +235,225 @@ export class Athlete {
     }
   }
 
+  // ================================================================== animation system
+  // Base layer: either a smooth locomotion blend (idle/ready -> walk -> run -> sprint, phase-synchronised so feet
+  // never pop) or a named loop.  One-shot layer (swings, celebrations) fades over it with its own envelope.
+  // Procedural layer on top: chest twist toward the net, head tracking the ball, lean into acceleration.
+  private weights = new Map<AnimName, number>();
+  private base: 'loco' | AnimName = 'idle';
+  private baseFade = 6;
+  private locoSpeed = 0;
+  private locoReady = false;
+  private gaitPhase = 0;
+  private shotW = 0;
+  private shotFadeIn = 0.1;
+  private shotFadeOut = 0.2;
+  private shotReleasing = false;
+  private spine: THREE.Bone[] = [];
+  private neck: THREE.Bone | null = null;
+  private head: THREE.Bone | null = null;
+  /** World point the head should look at (ball, opponent, camera); null = straight ahead. */
+  lookAt: THREE.Vector3 | null = null;
+  /** World yaw the chest should face (e.g. the net) while the legs follow the root; null = no twist. */
+  chestYaw: number | null = null;
+  /** Acceleration in world space (m/s^2) for body lean. */
+  accel = new THREE.Vector3();
+  private twist = 0;
+  private headYaw = 0;
+  private headPitch = 0;
+  private leanFwd = 0;
+  private leanSide = 0;
+  procedural = true;
+
   play(name: AnimName, opts: { fade?: number; speed?: number; from?: number } = {}) {
     const a = this.actions.get(name);
     if (!a) return;
-    const fade = opts.fade ?? 0.15;
+    const fade = Math.max(0.02, opts.fade ?? 0.15);
     if (ONE_SHOT.has(name)) {
-      if (this.oneShot && this.oneShot !== a) this.oneShot.fadeOut(fade);
+      if (this.oneShot && this.oneShot !== a) {
+        // hand the old shot's weight to the new one so there is no pose pop
+        this.oneShot.setEffectiveWeight(0);
+      }
       a.reset();
+      a.play();
       a.setEffectiveTimeScale(opts.speed ?? 1);
-      a.setEffectiveWeight(1);
       if (opts.from) a.time = opts.from;
-      a.fadeIn(fade).play();
       this.oneShot = a;
       this.oneShotName = name;
+      this.shotFadeIn = fade;
+      this.shotReleasing = false;
+      if (opts.fade === 0) this.shotW = 1;
+      this.applyWeights();
       return;
     }
-    if (this.current === name && !this.oneShot) {
-      a.setEffectiveTimeScale(opts.speed ?? 1);
-      return;
+    if (this.base !== name) {
+      if (opts.fade === 0) { for (const k of this.weights.keys()) this.weights.set(k, 0); this.weights.set(name, 1); }
+      const act = this.actions.get(name)!;
+      if (!LOCO_CYCLE.includes(name)) { act.setEffectiveTimeScale(opts.speed ?? 1); if ((this.weights.get(name) ?? 0) < 0.05) act.time = opts.from ?? 0; }
     }
-    const prev = this.actions.get(this.current)!;
-    a.reset().setEffectiveTimeScale(opts.speed ?? 1).setEffectiveWeight(1).play();
-    prev.crossFadeTo(a, fade, false);
-    if (this.oneShot) { this.oneShot.fadeOut(fade); this.oneShot = null; this.oneShotName = null; }
+    this.base = name;
     this.current = name;
+    this.baseFade = 1 / fade;
+    if (this.oneShot && !this.shotReleasing) this.releaseOneShot(fade);
+    if (opts.fade === 0) this.applyWeights();
   }
 
-  setLocoSpeed(speed: number) {
-    const a = this.actions.get(this.current);
-    if (a) a.setEffectiveTimeScale(speed);
+  /** Drive the locomotion blend by ground speed (m/s). `ready` = split-step stance instead of a relaxed idle. */
+  setLoco(speed: number, ready: boolean) {
+    this.base = 'loco';
+    this.locoSpeed = speed;
+    this.locoReady = ready;
+    this.current = speed > 4.4 ? 'sprint' : speed > 1.5 ? 'run' : speed > 0.3 ? 'walk' : ready ? 'ready' : 'idle';
+    this.baseFade = 7;
   }
+
+  /** @deprecated kept for callers that set gait speed explicitly */
+  setLocoSpeed(_speed: number) { /* gait rate now derives from setLoco */ }
 
   oneShotDone(): boolean {
     if (!this.oneShot) return true;
     return this.oneShot.time >= this.oneShot.getClip().duration - 0.001 || !this.oneShot.isRunning();
   }
 
+  /** Time left until the one-shot clip ends (s). */
+  oneShotRemaining(): number {
+    if (!this.oneShot) return 0;
+    return Math.max(0, (this.oneShot.getClip().duration - this.oneShot.time) / Math.max(0.01, this.oneShot.getEffectiveTimeScale()));
+  }
+
   releaseOneShot(fade = 0.2) {
-    if (this.oneShot) { this.oneShot.fadeOut(fade); this.oneShot = null; this.oneShotName = null; }
-    const loco = this.actions.get(this.current)!;
-    loco.enabled = true;
-    loco.setEffectiveWeight(1);
-    if (!loco.isRunning()) loco.play();
+    if (!this.oneShot) return;
+    this.shotReleasing = true;
+    this.shotFadeOut = Math.max(0.02, fade);
+  }
+
+  private baseTargets(): Map<AnimName, number> {
+    const t = new Map<AnimName, number>();
+    if (this.base !== 'loco') { t.set(this.base, 1); return t; }
+    const s = this.locoSpeed;
+    const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
+    const tri = (x: number, a: number, b: number, c: number) => (x <= a || x >= c ? 0 : x < b ? (x - a) / (b - a) : (c - x) / (c - b));
+    const still = clamp01(1 - s / 0.6);
+    const walk = s < 1.0 ? clamp01((s - 0.15) / 0.6) * (1 - clamp01((s - 1.0) / 1.0)) : tri(s, 0.3, 1.0, 2.2);
+    const run = s < 3.6 ? clamp01((s - 1.2) / 2.0) : 1 - clamp01((s - 4.3) / 1.4);
+    const sprint = clamp01((s - 4.3) / 1.4);
+    const sum = still + walk + run + sprint || 1;
+    t.set(this.locoReady ? 'ready' : 'idle', still / sum);
+    t.set('walk', walk / sum);
+    t.set('run', run / sum);
+    t.set('sprint', sprint / sum);
+    return t;
+  }
+
+  private applyWeights() {
+    const shot = this.oneShot ? this.shotW : 0;
+    for (const [n, a] of this.actions) {
+      if (a === this.oneShot) { a.setEffectiveWeight(shot); continue; }
+      a.setEffectiveWeight((this.weights.get(n) ?? 0) * (1 - shot));
+    }
   }
 
   update(dt: number) {
+    // one-shot envelope
+    if (this.oneShot) {
+      if (this.shotReleasing) {
+        this.shotW -= dt / this.shotFadeOut;
+        if (this.shotW <= 0) { this.shotW = 0; this.oneShot.setEffectiveWeight(0); this.oneShot = null; this.oneShotName = null; this.shotReleasing = false; }
+      } else this.shotW = Math.min(1, this.shotW + dt / this.shotFadeIn);
+    } else this.shotW = 0;
+    // base layer weights move smoothly toward their targets
+    const targets = this.baseTargets();
+    const k = 1 - Math.exp(-dt * this.baseFade * 1.6);
+    let sum = 0;
+    for (const n of new Set([...this.weights.keys(), ...targets.keys()])) {
+      const w = THREE.MathUtils.lerp(this.weights.get(n) ?? 0, targets.get(n) ?? 0, k);
+      if (w < 0.002 && !targets.get(n)) this.weights.delete(n); else { this.weights.set(n, w); sum += w; }
+    }
+    if (sum > 0) for (const [n, w] of this.weights) this.weights.set(n, w / sum);
+    // gait phase shared by walk/run/sprint: blend cycle length and playback rate by weight
+    let cyc = 0, nat = 0, mw = 0;
+    for (const n of LOCO_CYCLE) {
+      const w = this.weights.get(n) ?? 0;
+      if (!w) continue;
+      cyc += w * this.actions.get(n)!.getClip().duration;
+      nat += w * NATURAL_SPEED[n];
+      mw += w;
+    }
+    if (mw > 0.001) {
+      cyc /= mw; nat /= mw;
+      const rate = THREE.MathUtils.clamp(this.base === 'loco' ? Math.max(this.locoSpeed, 0.4) / nat : 1, 0.55, 1.7);
+      this.gaitPhase = (this.gaitPhase + (dt * rate) / cyc) % 1;
+      for (const n of LOCO_CYCLE) { const a = this.actions.get(n)!; a.time = this.gaitPhase * a.getClip().duration; }
+    }
+    this.applyWeights();
     this.mixer.update(dt);
-    if (this.oneShot && this.oneShotDone() && this.oneShot.clampWhenFinished) {
-      // keep final pose until caller releases
+    if (this.procedural) this.applyProcedural(dt, false);
+  }
+
+  // ------------------------------------------------------------------ procedural layer
+  private static tmpQ = new THREE.Quaternion();
+  private static tmpQ2 = new THREE.Quaternion();
+  private static tmpV = new THREE.Vector3();
+  private static UP = new THREE.Vector3(0, 1, 0);
+
+  /** Rotate a bone about a world-space axis, preserving its parent chain. */
+  private rotateWorld(bone: THREE.Bone, axis: THREE.Vector3, angle: number) {
+    if (Math.abs(angle) < 1e-5) return;
+    const parent = bone.parent!;
+    parent.updateWorldMatrix(true, false);
+    bone.updateWorldMatrix(false, false);
+    const world = bone.getWorldQuaternion(Athlete.tmpQ);
+    const rot = Athlete.tmpQ2.setFromAxisAngle(axis, angle);
+    world.premultiply(rot);
+    const parentWorld = parent.getWorldQuaternion(new THREE.Quaternion()).invert();
+    bone.quaternion.copy(parentWorld.multiply(world));
+    bone.updateMatrixWorld(true);
+  }
+
+  private applyProcedural(dt: number, snap: boolean) {
+    if (!this.spine.length) return;
+    const k = snap ? 1 : 1 - Math.exp(-dt * 10);
+    const shotDamp = 1 - this.shotW * 0.85; // swings own the upper body
+    this.root.updateMatrixWorld(true);
+    // chest twist toward chestYaw
+    let twistT = 0;
+    if (this.chestYaw !== null) {
+      let d = this.chestYaw - this.root.rotation.y;
+      while (d > Math.PI) d -= Math.PI * 2;
+      while (d < -Math.PI) d += Math.PI * 2;
+      twistT = THREE.MathUtils.clamp(d, -1.15, 1.15) * shotDamp;
+    }
+    this.twist = THREE.MathUtils.lerp(this.twist, twistT, k);
+    // lean into acceleration (local frame)
+    const yaw = this.root.rotation.y;
+    const fwd = Math.sin(yaw) * this.accel.x + Math.cos(yaw) * this.accel.z;
+    const side = Math.cos(yaw) * this.accel.x - Math.sin(yaw) * this.accel.z;
+    this.leanFwd = THREE.MathUtils.lerp(this.leanFwd, THREE.MathUtils.clamp(fwd * 0.018, -0.16, 0.2), k * 0.6);
+    this.leanSide = THREE.MathUtils.lerp(this.leanSide, THREE.MathUtils.clamp(side * 0.014, -0.14, 0.14), k * 0.6);
+    this.model.rotation.set(this.leanFwd, 0, -this.leanSide);
+    this.model.updateMatrixWorld(true);
+    const share = [0.3, 0.3, 0.25];
+    this.spine.forEach((b, i) => this.rotateWorld(b, Athlete.UP, this.twist * share[i]));
+    if (this.neck) this.rotateWorld(this.neck, Athlete.UP, this.twist * 0.15);
+    // head look-at
+    let hy = 0, hp = 0;
+    if (this.lookAt && this.head) {
+      const hpos = this.head.getWorldPosition(Athlete.tmpV.set(0, 0, 0));
+      const dx = this.lookAt.x - hpos.x, dy = this.lookAt.y - hpos.y, dz = this.lookAt.z - hpos.z;
+      const faceYaw = yaw + this.twist;
+      let d = Math.atan2(dx, dz) - faceYaw;
+      while (d > Math.PI) d -= Math.PI * 2;
+      while (d < -Math.PI) d += Math.PI * 2;
+      hy = THREE.MathUtils.clamp(d, -1.25, 1.25) * shotDamp;
+      hp = THREE.MathUtils.clamp(Math.atan2(dy, Math.hypot(dx, dz)), -0.6, 0.5) * shotDamp;
+    }
+    this.headYaw = THREE.MathUtils.lerp(this.headYaw, hy, snap ? 1 : 1 - Math.exp(-dt * 7));
+    this.headPitch = THREE.MathUtils.lerp(this.headPitch, hp, snap ? 1 : 1 - Math.exp(-dt * 7));
+    if (this.neck) this.rotateWorld(this.neck, Athlete.UP, this.headYaw * 0.4);
+    if (this.head) {
+      this.rotateWorld(this.head, Athlete.UP, this.headYaw * 0.6);
+      const right = Athlete.tmpV.set(Math.cos(yaw + this.twist + this.headYaw), 0, -Math.sin(yaw + this.twist + this.headYaw));
+      this.rotateWorld(this.head, right.clone(), -this.headPitch * 0.7);
     }
   }
 
@@ -274,30 +463,41 @@ export class Athlete {
 
   /** Snapshot for replays. */
   snapshot() {
+    const acts: [string, number, number][] = [];
+    for (const [n, a] of this.actions) { const w = a.getEffectiveWeight(); if (w > 0.005) acts.push([n, a.time, w]); }
     return {
       x: this.root.position.x, y: this.root.position.y, z: this.root.position.z, ry: this.root.rotation.y,
-      loco: this.current, locoT: this.actions.get(this.current)!.time,
-      shot: this.oneShotName, shotT: this.oneShot ? this.oneShot.time : 0, shotW: this.oneShot ? this.oneShot.getEffectiveWeight() : 0,
+      acts, twist: this.twist, hy: this.headYaw, hp: this.headPitch, lf: this.leanFwd, ls: this.leanSide,
     };
   }
 
   applySnapshot(s: ReturnType<Athlete['snapshot']>) {
     this.root.position.set(s.x, s.y, s.z);
     this.root.rotation.y = s.ry;
+    const on = new Map(s.acts.map(([n, t, w]) => [n, { t, w }]));
     for (const [n, a] of this.actions) {
-      if (n === s.loco) { a.enabled = true; a.play(); a.time = s.locoT; a.setEffectiveWeight(1 - s.shotW); a.setEffectiveTimeScale(0); }
-      else if (n === s.shot) { a.enabled = true; a.play(); a.time = s.shotT; a.setEffectiveWeight(s.shotW); a.setEffectiveTimeScale(0); }
-      else { a.setEffectiveWeight(0); }
+      const st = on.get(n);
+      a.setEffectiveTimeScale(0);
+      if (st) { a.time = st.t; a.setEffectiveWeight(st.w); } else a.setEffectiveWeight(0);
     }
     this.mixer.update(0);
+    this.twist = s.twist; this.headYaw = s.hy; this.headPitch = s.hp; this.leanFwd = s.lf; this.leanSide = s.ls;
+    const save = { lookAt: this.lookAt, chestYaw: this.chestYaw };
+    this.lookAt = null; this.chestYaw = null;
+    // re-apply stored procedural angles exactly
+    this.model.rotation.set(this.leanFwd, 0, -this.leanSide);
+    this.root.updateMatrixWorld(true);
+    const share = [0.3, 0.3, 0.25];
+    this.spine.forEach((b, i) => this.rotateWorld(b, Athlete.UP, this.twist * share[i]));
+    if (this.neck) this.rotateWorld(this.neck, Athlete.UP, this.twist * 0.15 + this.headYaw * 0.4);
+    if (this.head) this.rotateWorld(this.head, Athlete.UP, this.headYaw * 0.6);
+    this.lookAt = save.lookAt; this.chestYaw = save.chestYaw;
   }
 
   restoreFromReplay() {
-    for (const [n, a] of this.actions) {
-      a.setEffectiveTimeScale(1);
-      if (n === this.current) { a.setEffectiveWeight(1); a.play(); } else { a.stop(); }
-    }
-    this.oneShot = null;
-    this.oneShotName = null;
+    for (const [n, a] of this.actions) a.setEffectiveTimeScale(LOCO_CYCLE.includes(n) ? 0 : 1);
+    if (this.oneShot) { this.oneShot.setEffectiveWeight(0); this.oneShot = null; this.oneShotName = null; }
+    this.shotW = 0;
+    this.applyWeights();
   }
 }

@@ -3,6 +3,7 @@ import { Assets } from '../core/assets';
 import type { VenueDef } from '../data/content';
 import { Crowd, type Seat } from './crowd';
 import { Athlete } from '../game/athlete';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
 const SURF_L = 36.57, SURF_W = 18.29;
 const BOARD_Z = SURF_L / 2 + 0.3, BOARD_X = SURF_W / 2 + 0.3;
@@ -192,7 +193,13 @@ export class Venue {
     const wallMat = new THREE.MeshStandardMaterial({ color: def.wall, roughness: 0.6 });
     const seats: Seat[] = [];
     const stepH = 0.42, stepD = 0.85;
-    const addStand = (width: number, rows: number, pos: THREE.Vector3, ry: number, seatSpacing = 0.62) => {
+    const seatXf: THREE.Matrix4[] = [];
+    const stairMat = new THREE.MeshStandardMaterial({ map: Assets.t('textures/concrete_color.webp', 1), color: new THREE.Color(def.standColor).multiplyScalar(1.12), roughness: 0.8 });
+    const railMat = new THREE.MeshStandardMaterial({ color: '#c9ced6', metalness: 0.85, roughness: 0.3 });
+    const glassMat = new THREE.MeshStandardMaterial({ color: '#9fd4ff', transparent: true, opacity: 0.18, roughness: 0.05, metalness: 0.2, depthWrite: false, side: THREE.DoubleSide });
+    const roofMat = new THREE.MeshStandardMaterial({ color: '#f2f4f7', roughness: 0.6, metalness: 0.1 });
+    const trussMat = new THREE.MeshStandardMaterial({ map: Assets.t('textures/metal_color.webp', 2), color: '#d5dae0', metalness: 0.8, roughness: 0.35 });
+    const addStand = (width: number, rows: number, pos: THREE.Vector3, ry: number, seatSpacing = 0.62, withRoof = false) => {
       const g = standGeometry(width, rows, stepH, stepD);
       const m = new THREE.Mesh(g, concreteMat);
       const holder = new THREE.Group();
@@ -218,20 +225,77 @@ export class Venue {
         holder.add(sw);
       }
       holder.updateMatrixWorld(true);
+      const n = Math.floor((width - 1) / seatSpacing);
+      const aisle = (i: number) => i % 14 === 7; // stair aisles every ~8.7 m
       for (let r = 0; r < rows; r++) {
-        const n = Math.floor((width - 1) / seatSpacing);
         for (let i = 0; i < n; i++) {
-          const local = new THREE.Vector3(-width / 2 + 0.5 + i * seatSpacing + (r % 2) * 0.15, 1.6 + stepH * (r + 1) - 0.47, r * stepD + 0.42);
+          if (aisle(i)) continue;
+          const lx = -width / 2 + 0.5 + i * seatSpacing;
+          const local = new THREE.Vector3(lx, 1.6 + stepH * (r + 1) - 0.47, r * stepD + 0.42);
           seats.push({ pos: local.applyMatrix4(holder.matrixWorld), ry: ry + Math.PI });
+          seatXf.push(new THREE.Matrix4().multiplyMatrices(holder.matrixWorld, new THREE.Matrix4().makeTranslation(lx, 1.6 + stepH * (r + 1), r * stepD + 0.5)));
         }
+      }
+      // aisle stairs: lighter half-steps between the tiers
+      const stairGeoms: THREE.BufferGeometry[] = [];
+      for (let i = 0; i < n; i++) {
+        if (!aisle(i)) continue;
+        const lx = -width / 2 + 0.5 + i * seatSpacing;
+        for (let r = 0; r < rows; r++) {
+          const b = new THREE.BoxGeometry(0.9, stepH / 2, stepD / 2);
+          b.translate(lx, 1.6 + stepH * (r + 1) + stepH / 4, r * stepD + stepD * 0.75);
+          stairGeoms.push(b);
+        }
+      }
+      if (stairGeoms.length) { const st = new THREE.Mesh(mergeGeometries(stairGeoms), stairMat); st.receiveShadow = true; holder.add(st); }
+      // front railing (posts + top rail + glass panel)
+      const rail: THREE.BufferGeometry[] = [];
+      const top = new THREE.CylinderGeometry(0.035, 0.035, width, 8); top.rotateZ(Math.PI / 2); top.translate(0, 2.55, 0.05); rail.push(top);
+      for (let x = -width / 2 + 0.3; x <= width / 2; x += 2.2) { const post = new THREE.CylinderGeometry(0.03, 0.03, 0.95, 6); post.translate(x, 2.08, 0.05); rail.push(post); }
+      const railMesh = new THREE.Mesh(mergeGeometries(rail), railMat); holder.add(railMesh);
+      const glass = new THREE.Mesh(new THREE.PlaneGeometry(width, 0.85), glassMat); glass.position.set(0, 2.05, 0.05); holder.add(glass);
+      // cantilever roof over the upper rows (outdoor side stands)
+      if (!def.indoor && withRoof) {
+        const depth = rows * stepD;
+        const roofY = 1.6 + rows * stepH + 3.6;
+        const roof = new THREE.Mesh(new THREE.BoxGeometry(width + 0.6, 0.18, depth * 0.85), roofMat);
+        roof.position.set(0, roofY, depth * 0.62);
+        roof.rotation.x = -0.08;
+        roof.castShadow = true; roof.receiveShadow = true;
+        holder.add(roof);
+        const truss: THREE.BufferGeometry[] = [];
+        for (let x = -width / 2; x <= width / 2 + 0.01; x += width / 6) {
+          const col = new THREE.BoxGeometry(0.25, roofY - 1.6 - rows * stepH * 0.85, 0.25);
+          col.translate(x, 1.6 + rows * stepH * 0.85 + (roofY - 1.6 - rows * stepH * 0.85) / 2, depth - 0.3);
+          const beam = new THREE.BoxGeometry(0.18, 0.4, depth * 0.9);
+          beam.translate(x, roofY - 0.25, depth * 0.6);
+          const brace = new THREE.CylinderGeometry(0.05, 0.05, Math.hypot(depth * 0.5, 3), 6);
+          brace.rotateX(Math.atan2(depth * 0.5, 3));
+          brace.translate(x, roofY - 1.6, depth * 0.72);
+          truss.push(col, beam, brace);
+        }
+        const tm = new THREE.Mesh(mergeGeometries(truss), trussMat); tm.castShadow = true; holder.add(tm);
       }
       this.group.add(holder);
     };
     const backDist = BOARD_Z + 3.2, sideDist = BOARD_X + 3.2;
     addStand(30, 11, new THREE.Vector3(0, 0, -backDist), Math.PI); // far end (visible behind opponent)
     addStand(30, 6, new THREE.Vector3(0, 0, backDist), 0);
-    addStand(34, 9, new THREE.Vector3(-sideDist - 1.5, 0, 0), -Math.PI / 2);
-    addStand(34, 9, new THREE.Vector3(sideDist, 0, 0), Math.PI / 2);
+    addStand(34, 9, new THREE.Vector3(-sideDist - 1.5, 0, 0), -Math.PI / 2, 0.62, true);
+    addStand(34, 9, new THREE.Vector3(sideDist, 0, 0), Math.PI / 2, 0.62, true);
+    // stadium seats (instanced): pan, backrest and legs, tinted with the venue's seat colours
+    {
+      const pan = new THREE.BoxGeometry(0.46, 0.05, 0.4); pan.translate(0, 0.02, -0.02);
+      const back = new THREE.BoxGeometry(0.46, 0.38, 0.05); back.rotateX(-0.12); back.translate(0, 0.22, 0.2);
+      const leg = new THREE.BoxGeometry(0.05, 0.02, 0.36); leg.translate(0, -0.01, 0);
+      const geom = mergeGeometries([pan, back, leg]);
+      const im = new THREE.InstancedMesh(geom, new THREE.MeshStandardMaterial({ roughness: 0.45, metalness: 0.05 }), seatXf.length);
+      const cols = def.seatColors.map((c) => new THREE.Color(c));
+      seatXf.forEach((mx, k) => { im.setMatrixAt(k, mx); im.setColorAt(k, cols[(Math.floor(k / 40) + (k % 40 > 20 ? 1 : 0)) % cols.length]); });
+      im.instanceMatrix.needsUpdate = true;
+      im.receiveShadow = true;
+      this.group.add(im);
+    }
     // corner fill so the bowl reads as closed
     for (const [x, z, ry] of [[-17, -24, Math.PI * 0.75], [17, -24, -Math.PI * 0.75]] as [number, number, number][]) {
       const g = standGeometry(10, 8, stepH, stepD);

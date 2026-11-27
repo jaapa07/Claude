@@ -55,7 +55,9 @@ export class Hud {
     const lab = this.match.labels();
     for (const i of [0, 1]) {
       const row = this.box.querySelector(`[data-r="${i}"]`)!;
-      row.querySelector('.pt')!.textContent = lab[i];
+      const pt = row.querySelector('.pt') as HTMLElement;
+      if (pt.textContent !== lab[i]) { pt.classList.remove('bump'); void pt.offsetWidth; pt.classList.add('bump'); }
+      pt.textContent = lab[i];
       row.querySelector('.dot')!.classList.toggle('on', s.server === i);
       const hist = s.setHistory.map((g) => g[i]).join(' ');
       row.querySelector('.sets')!.textContent = `${hist}${hist ? ' ' : ''}${s.games[i]}`;
@@ -64,7 +66,11 @@ export class Hud {
     }
   }
 
-  setSpeed(kmh: number) { this.speed.textContent = String(Math.round(kmh)); }
+  setSpeed(kmh: number) {
+    this.speed.textContent = String(Math.round(kmh));
+    const box = this.speed.closest('.speed') as HTMLElement;
+    box.classList.remove('flash'); void box.offsetWidth; box.classList.add('flash');
+  }
 
   call(text: string, sub = '', color: 'green' | 'red' | 'gold' = 'green', dur = 1.6) {
     const c = this.callout.querySelector('.c') as HTMLElement;

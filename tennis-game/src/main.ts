@@ -7,6 +7,7 @@ import { Save } from './core/save';
 import { renderPortraits } from './render/portraits';
 import { Session } from './game/session';
 import { Venue } from './world/venue';
+import { Athlete, type AnimName } from './game/athlete';
 import { PLAYERS, VENUES, type PlayerDef, type VenueDef, type DifficultyId } from './data/content';
 import { defaultConfig, type MatchConfig } from './game/rules';
 import * as S from './ui/screens';
@@ -22,6 +23,49 @@ let matchStart = 0;
 // ------------------------------------------------------------------ loop
 const clock = new THREE.Clock();
 const governor = new FpsGovernor((sc) => R.setDynamicScale(sc), isMobile ? 0.55 : 0.7);
+// ------------------------------------------------------------------ 3D showcase on the player-select screen
+const SHOW_AT = new THREE.Vector3(0, 0, 12.6);
+let showcase: { a: Athlete; id: string; t: number } | null = null;
+function clearShowcase() {
+  if (!showcase) return;
+  R.scene.remove(showcase.a.root);
+  showcase = null;
+  if (session) { for (const p of session.match.players) p.athlete.root.visible = true; session.match.ball.mesh.visible = true; }
+}
+S.MenuHooks.preview = (p) => {
+  if (!session || !session.opts.demo) return;
+  if (!p) {
+    clearShowcase();
+    session.cam.set({ kind: 'orbit', center: new THREE.Vector3(0, 0.5, 0), radius: 26, height: 9, speed: 0.06, angle: 0.6 }, false);
+    return;
+  }
+  if (showcase?.id === p.id) return;
+  const wide = window.innerWidth >= 1000 && window.innerHeight >= 600;
+  if (!wide) return; // on phones the cards fill the screen; keep the arena orbit behind them
+  clearShowcase();
+  const a = new Athlete(p);
+  a.root.position.copy(SHOW_AT);
+  a.root.rotation.y = 0.15;
+  a.play('idle', { fade: 0 });
+  a.play((['fist_pump', 'cheer', 'point', 'fist_pump'] as AnimName[])[Math.floor(Math.random() * 4)], { fade: 0.12 });
+  R.scene.add(a.root);
+  showcase = { a, id: p.id, t: 0 };
+  for (const q of session.match.players) q.athlete.root.visible = false; // the demo rally steps aside
+  const V = THREE.Vector3;
+  session.cam.set({ kind: 'track', from: new V(0.35, 1.25, SHOW_AT.z + 5.2), target: () => new V(-0.12, 0.98, SHOW_AT.z), fov: 30 }, false);
+};
+function updateShowcase(dt: number) {
+  if (!showcase) return;
+  const s = showcase;
+  s.t += dt;
+  const a = s.a;
+  if (a.oneShot && a.oneShotDone()) { a.releaseOneShot(0.45); a.play('idle', { fade: 0.45 }); }
+  a.root.rotation.y = 0.15 + Math.sin(s.t * 0.6) * 0.22;
+  if (session) session.match.ball.mesh.visible = false;
+  a.lookAt = R.camera.position;
+  a.update(dt);
+}
+
 function frame() {
   requestAnimationFrame(frame);
   const raw = clock.getDelta();
@@ -29,6 +73,7 @@ function frame() {
   if (session && mode !== 'menu' && !paused) governor.tick(raw);
   Input.pollGamepads();
   if (session && !paused) session.update(dt);
+  updateShowcase(dt);
   if (session) R.render(dt);
   Input.endFrame();
 }
@@ -60,6 +105,7 @@ function attract() {
 }
 
 function endSession() {
+  clearShowcase();
   if (session) { session.dispose(); session = null; }
   S.touchControls(false);
   document.querySelector('.pausebtn')?.classList.remove('on');

@@ -44,7 +44,36 @@ export function navigable(items: HTMLElement[], opts: { onConfirm: (i: number) =
   return { off, get sel() { return sel; } };
 }
 
-function mount(el: HTMLElement) { ui().appendChild(el); return el; }
+/** Add a screen with staggered entrance animation (and a stripe wipe for full screens). */
+function mount(el: HTMLElement) {
+  const groups = ['.item', '.card', '.venue', '.opt', 'table.st tr', '.stat', '.res-head .p', '.controls-grid > *', '.credits > *'];
+  for (const sel of groups) el.querySelectorAll<HTMLElement>(sel).forEach((n, i) => n.style.setProperty('--i', String(i)));
+  el.classList.add('enter');
+  if (el.classList.contains('screen') || el.classList.contains('menu')) wipe();
+  ui().appendChild(el);
+  return el;
+}
+
+/** Remove a screen with a short exit animation. */
+export function leave(el: HTMLElement) {
+  el.style.pointerEvents = 'none';
+  const a = el.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateX(-30px) skewX(-4deg)' }], { duration: 180, easing: 'ease-in' });
+  a.onfinish = () => el.remove();
+}
+
+/** Diagonal stripe wipe across the screen (menu transitions). */
+export function wipe() {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const w = document.createElement('div');
+  w.className = 'wipe';
+  w.innerHTML = '<i></i><i></i><i></i>';
+  document.getElementById('app')!.appendChild(w);
+  [...w.children].forEach((b, i) => (b as HTMLElement).animate(
+    [{ transform: 'translateX(-130%) skewX(-24deg)' }, { transform: 'translateX(0%) skewX(-24deg)', offset: 0.45 }, { transform: 'translateX(130%) skewX(-24deg)' }],
+    { duration: 520, delay: i * 55, easing: 'cubic-bezier(.7,0,.3,1)', fill: 'both' },
+  ));
+  setTimeout(() => w.remove(), 760);
+}
 const flag = (c: [string, string, string]) => `<span class="fl">${c.map((x) => `<i style="background:${x}"></i>`).join('')}</span>`;
 
 // ------------------------------------------------------------------ loading
@@ -57,7 +86,7 @@ export function loadingScreen() {
     'No saque, aperte de novo quando o medidor estiver no topo.',
     'Lob contra quem sobe à rede!',
   ];
-  const el = mount(h(`<div class="loading"><div class="inner"><img src="assets/ui/logo.svg" alt="GRAND SLAM ARCADE"/><div class="bar"><i></i></div><div class="tip">${tips[Math.floor(Math.random() * tips.length)]}</div></div></div>`));
+  const el = mount(h(`<div class="loading"><div class="inner"><img src="assets/ui/logo.svg" alt="GRAND SLAM ARCADE"/><div class="lball"><b></b><s></s></div><div class="bar"><i></i></div><div class="tip">${tips[Math.floor(Math.random() * tips.length)]}</div></div></div>`));
   return {
     set(f: number) { (el.querySelector('.bar i') as HTMLElement).style.width = `${Math.round(f * 100)}%`; },
     close() { el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 400 }).onfinish = () => el.remove(); },
@@ -69,7 +98,7 @@ export function titleScreen(onStart: () => void) {
   const touch = document.documentElement.classList.contains('is-touch');
   const el = mount(h(`<div class="title"><img class="logo" src="assets/ui/logo.svg" alt="GRAND SLAM ARCADE"/><div class="press">${touch ? 'TOQUE PARA JOGAR' : 'PRESSIONE ENTER'}</div><div class="copy">© GOLD CIRCUIT TOUR · JOGO ORIGINAL · ASSETS CC0/CC-BY (ver Créditos)</div></div>`));
   let done = false;
-  const go = () => { if (done) return; done = true; off(); el.remove(); Audio.unlock(); Audio.play('ui_start'); onStart(); };
+  const go = () => { if (done) return; done = true; off(); el.classList.add('out'); setTimeout(() => el.remove(), 380); Audio.unlock(); Audio.play('ui_start'); onStart(); };
   const off = Input.onAction((a) => { if (a === 'confirm' || a === 'pause') go(); });
   el.addEventListener('click', go);
 
@@ -86,34 +115,38 @@ export function mainMenu(cb: { arcade: () => void; exhibition: () => void; train
   ];
   const el = mount(h(`<div class="menu"><div class="col"><img class="head" src="assets/ui/logo.svg"/>${entries.map(([t, s]) => `<button class="item">${t}<small>${s}</small></button>`).join('')}</div><div class="hint"><b>↑↓</b> escolher <b>ENTER</b> confirmar</div></div>`));
   const items = [...el.querySelectorAll('.item')] as HTMLElement[];
-  const nav = navigable(items, { start: Save.data.lastMenu ?? 0, onConfirm: (i) => { Save.data.lastMenu = i; Save.flush(); nav.off(); el.remove(); entries[i][2](); } });
+  const nav = navigable(items, { start: Save.data.lastMenu ?? 0, onConfirm: (i) => { Save.data.lastMenu = i; Save.flush(); nav.off(); leave(el); entries[i][2](); } });
 }
 
 // ------------------------------------------------------------------ player select
+export const MenuHooks: { preview: ((p: PlayerDef | null) => void) | null } = { preview: null };
+
 export function playerSelect(title: string, onPick: (p: PlayerDef) => void, onBack: () => void, opts: { exclude?: string; who?: string } = {}) {
   const list = PLAYERS.filter((p) => p.id !== opts.exclude);
   const unlocked = (p: PlayerDef) => !p.unlock || Save.data.unlocked.includes(p.id);
   const el = mount(h(`<div class="screen"><h1><span>${title}</span></h1><div class="sub">${opts.who ?? 'Escolha seu tenista'}</div>
-    <div class="select"><div class="grid">${list.map((p) => `<div class="card ${unlocked(p) ? '' : 'locked'}"><img src="${Portraits.get(p.id)?.head ?? ''}"/>${flag(p.flagColors)}<div class="nm">${unlocked(p) ? p.short : '???'}</div></div>`).join('')}</div>
+    <div class="select ${window.innerWidth >= 1000 && window.innerHeight >= 600 ? 'showcase' : ''}"><div class="grid">${list.map((p) => `<div class="card ${unlocked(p) ? '' : 'locked'}"><img src="${Portraits.get(p.id)?.head ?? ''}"/>${flag(p.flagColors)}<div class="nm">${unlocked(p) ? p.short : '???'}</div></div>`).join('')}</div>
     <div class="info"></div></div><div class="hint"><b>←↑→↓</b> escolher <b>ENTER</b> confirmar <b>ESC</b> voltar</div><button class="backbtn">◀ VOLTAR</button></div>`));
   const info = el.querySelector('.info') as HTMLElement;
   const stat = (n: string, v: number) => `<div class="stat"><span>${n}</span><div class="b"><i style="width:${v}%"></i></div><b>${v}</b></div>`;
   const show = (i: number) => {
     const p = list[i];
-    if (!unlocked(p)) { info.innerHTML = `<h2>???</h2><div class="style">Bloqueado</div><div class="quote">${p.unlock}</div>`; return; }
+    if (!unlocked(p)) { info.innerHTML = `<h2>???</h2><div class="style">Bloqueado</div><div class="quote">${p.unlock}</div>`; MenuHooks.preview?.(null); return; }
+    MenuHooks.preview?.(p);
+    info.animate([{ opacity: 0, transform: 'translateX(24px)' }, { opacity: 1, transform: 'none' }], { duration: 260, easing: 'cubic-bezier(.2,1,.3,1)' });
     info.innerHTML = `<h2>${p.name}</h2><div class="ctry">${p.country}</div><div class="style">${p.style}</div>
       ${stat('FORÇA', p.stats.power)}${stat('VELOCIDADE', p.stats.speed)}${stat('SAQUE', p.stats.serve)}${stat('VOLEIO', p.stats.volley)}${stat('TÉCNICA', p.stats.technique)}
       <div class="quote">“${p.catchphrase}”</div>`;
   };
   const cards = [...el.querySelectorAll('.card')] as HTMLElement[];
-  const cols = getComputedStyle(el.querySelector('.grid')!).gridTemplateColumns.split(' ').length || 3;
-  const back = () => { nav.off(); el.remove(); onBack(); };
+  const cols = getComputedStyle(el.querySelector('.grid')!).gridTemplateColumns.split(' ').filter(Boolean).length || 3;
+  const back = () => { nav.off(); leave(el); onBack(); };
   const nav = navigable(cards, {
     columns: cols, onMove: show, isEnabled: (i) => unlocked(list[i]),
-    onConfirm: (i) => { nav.off(); el.remove(); onPick(list[i]); },
-    onBack: back,
+    onConfirm: (i) => { nav.off(); leave(el); MenuHooks.preview?.(null); onPick(list[i]); },
+    onBack: () => { MenuHooks.preview?.(null); back(); },
   });
-  el.querySelector('.backbtn')!.addEventListener('click', () => { Audio.play('ui_back'); back(); });
+  el.querySelector('.backbtn')!.addEventListener('click', () => { Audio.play('ui_back'); MenuHooks.preview?.(null); back(); });
 }
 
 // ------------------------------------------------------------------ exhibition setup
@@ -156,12 +189,12 @@ export function exhibitionSetup(onGo: (s: ExhibitionSetup) => void, onBack: () =
       if (i !== 5 && i !== 0) return;
       st.venue = VENUES[vi].id;
       Save.flush();
-      nav.off(); el.remove();
+      nav.off(); leave(el);
       onGo({ venue: VENUES[vi], games: st.games, sets: st.sets as 1 | 3, difficulty: st.difficulty as DifficultyId, twoPlayers: st.twoPlayers });
     },
-    onBack: () => { nav.off(); el.remove(); onBack(); },
+    onBack: () => { nav.off(); leave(el); onBack(); },
   });
-  el.querySelector('.backbtn')!.addEventListener('click', () => { Audio.play('ui_back'); nav.off(); el.remove(); onBack(); });
+  el.querySelector('.backbtn')!.addEventListener('click', () => { Audio.play('ui_back'); nav.off(); leave(el); onBack(); });
 }
 
 // ------------------------------------------------------------------ VS screen
@@ -169,11 +202,16 @@ export function vsScreen(a: PlayerDef, b: PlayerDef, v: VenueDef, sub: string, d
   const el = mount(h(`<div class="vs-screen">
     <div class="vs-half l"><img src="${Portraits.get(a.id)?.body}"/><div class="vs-name"><small>${a.country}</small>${a.short}</div></div>
     <div class="vs-half r"><img src="${Portraits.get(b.id)?.body}"/><div class="vs-name"><small>${b.country}</small>${b.short}</div></div>
-    <div class="vs-mid"><div class="vs">VS</div></div>
+    <div class="vs-streaks"><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="vs-mid"><div class="vs">VS</div></div><div class="vs-flash"></div>
     <div class="vs-bottom"><img src="assets/ui/crest_${v.id}.svg"/><span>${v.name} · ${v.surfaceName.toUpperCase()} · ${sub}</span></div></div>`));
   el.querySelector('.l')!.animate([{ transform: 'translateX(-60%)' }, { transform: 'none' }], { duration: 450, easing: 'cubic-bezier(.2,1,.3,1)' });
   el.querySelector('.r')!.animate([{ transform: 'translateX(60%)' }, { transform: 'none' }], { duration: 450, easing: 'cubic-bezier(.2,1,.3,1)' });
-  el.querySelector('.vs')!.animate([{ transform: 'scale(4)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 380, delay: 350, fill: 'both', easing: 'cubic-bezier(.3,1.6,.5,1)' });
+  el.querySelector('.vs')!.animate([{ transform: 'scale(4) rotate(-12deg)', opacity: 0 }, { transform: 'scale(1) rotate(0)', opacity: 1 }], { duration: 380, delay: 350, fill: 'both', easing: 'cubic-bezier(.3,1.6,.5,1)' });
+  el.querySelector('.vs-flash')!.animate([{ opacity: 0 }, { opacity: 0.9, offset: 0.15 }, { opacity: 0 }], { duration: 500, delay: 700, fill: 'both' });
+  el.animate([{ transform: 'none' }, { transform: 'translate(-8px,5px)' }, { transform: 'translate(7px,-6px)' }, { transform: 'translate(-4px,3px)' }, { transform: 'none' }], { duration: 300, delay: 720 });
+  el.querySelectorAll('.vs-half img').forEach((im, i) => (im as HTMLElement).animate([{ transform: `translateX(${i ? 30 : -30}%) scale(1.15)`, filter: 'brightness(3)' }, { transform: 'none', filter: 'brightness(1)' }], { duration: 650, delay: 120, fill: 'both', easing: 'cubic-bezier(.2,1,.3,1)' }));
+  el.querySelectorAll('.vs-name').forEach((n, i) => (n as HTMLElement).animate([{ opacity: 0, transform: `translateY(30px) skewX(-10deg)` }, { opacity: 1, transform: 'none' }], { duration: 420, delay: 520 + i * 120, fill: 'both', easing: 'cubic-bezier(.2,1,.3,1)' }));
   Audio.play('jingle_point', { vol: 0.8 });
   let fin = false;
   const finish = () => { if (fin) return; fin = true; off(); el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300 }).onfinish = () => { el.remove(); done(); }; };
@@ -187,7 +225,7 @@ export function pauseMenu(onResume: () => void, onQuit: () => void, onOptions: (
   const el = mount(h(`<div class="overlay"><div class="panel"><h2>PAUSA</h2>
     <button class="item">CONTINUAR</button><button class="item">CONTROLES</button><button class="item">OPÇÕES</button><button class="item">DESISTIR</button></div></div>`));
   const items = [...el.querySelectorAll('.item')] as HTMLElement[];
-  const close = () => { nav.off(); el.remove(); };
+  const close = () => { nav.off(); leave(el); };
   const nav = navigable(items, {
     onConfirm: (i) => {
       if (i === 0) { close(); onResume(); }
@@ -210,7 +248,7 @@ export function controlsPanel(onClose: () => void) {
     <b>PAUSA</b><span>ESC · Start</span>
     <b>2P LOCAL</b><span>Teclado numérico (8456 + 1 2 3) ou 2º controle</span>
     </div><button class="item" style="margin-top:14px">VOLTAR</button></div></div>`));
-  const nav = navigable([el.querySelector('.item') as HTMLElement], { onConfirm: () => { nav.off(); el.remove(); onClose(); }, onBack: () => { nav.off(); el.remove(); onClose(); } });
+  const nav = navigable([el.querySelector('.item') as HTMLElement], { onConfirm: () => { nav.off(); leave(el); onClose(); }, onBack: () => { nav.off(); leave(el); onClose(); } });
 }
 
 // ------------------------------------------------------------------ results
@@ -225,7 +263,17 @@ export function resultsScreen(r: { a: PlayerDef; b: PlayerDef; winner: 0 | 1; se
     <table class="st">${r.stats.map((s) => `<tr><td>${s.a}</td><td>${s.label}</td><td>${s.b}</td></tr>`).join('')}</table>
     <div style="margin-top:14px">${buttons.map(([t]) => `<button class="item">${t}</button>`).join('')}</div></div></div>`));
   const items = [...el.querySelectorAll('.item')] as HTMLElement[];
-  const nav = navigable(items, { onConfirm: (i) => { nav.off(); el.remove(); buttons[i][1](); } });
+  // count up the statistics
+  el.querySelectorAll<HTMLElement>('table.st td:nth-child(1), table.st td:nth-child(3)').forEach((td, k) => {
+    const m = /^(\d+)(.*)$/.exec(td.textContent ?? '');
+    if (!m) return;
+    const target = +m[1], suffix = m[2];
+    const t0 = performance.now() + 300 + k * 30;
+    const tick = (now: number) => { const f = Math.min(1, Math.max(0, (now - t0) / 700)); td.textContent = `${Math.round(target * (1 - (1 - f) ** 3))}${suffix}`; if (f < 1) requestAnimationFrame(tick); };
+    td.textContent = `0${suffix}`;
+    requestAnimationFrame(tick);
+  });
+  const nav = navigable(items, { onConfirm: (i) => { nav.off(); leave(el); buttons[i][1](); } });
 }
 
 // ------------------------------------------------------------------ options
@@ -237,9 +285,11 @@ export function optionsScreen(onBack: () => void, apply: () => void) {
     <div class="opt" data-k="hud"><span>TAMANHO DO HUD</span><span class="v"></span></div>
     <div class="opt" data-k="shake"><span>TREMOR DE TELA</span><span class="v"></span></div>
     <div class="opt" data-k="touch"><span>BOTÕES DE TOQUE</span><span class="v"></span></div>
+    <div class="opt" data-k="assist"><span>ASSISTÊNCIA</span><span class="v"></span></div>
+    <div class="opt" data-k="hints"><span>MARCA DA BOLA</span><span class="v"></span></div>
     <button class="item">VOLTAR</button></div></div></div>`));
   const rows = [...el.querySelectorAll('.opt'), el.querySelector('.item')] as HTMLElement[];
-  const keys = ['music', 'sfx', 'voice', 'crowd', 'quality', 'hud', 'shake', 'touch'] as const;
+  const keys = ['music', 'sfx', 'voice', 'crowd', 'quality', 'hud', 'shake', 'touch', 'assist', 'hints'] as const;
   const paint = () => {
     for (const k of ['music', 'sfx', 'voice', 'crowd'] as const) {
       const r = el.querySelector(`[data-k="${k}"]`)!;
@@ -249,6 +299,8 @@ export function optionsScreen(onBack: () => void, apply: () => void) {
     (el.querySelector('[data-k="quality"] .v') as HTMLElement).textContent = { low: 'BAIXA', medium: 'MÉDIA', high: 'ALTA' }[o.quality];
     (el.querySelector('[data-k="hud"] .v') as HTMLElement).textContent = `${Math.round(o.hudScale * 100)}%`;
     (el.querySelector('[data-k="shake"] .v') as HTMLElement).textContent = o.shake ? 'LIGADO' : 'DESLIGADO';
+    (el.querySelector('[data-k="assist"] .v') as HTMLElement).textContent = o.assist ? 'LIGADA' : 'DESLIGADA';
+    (el.querySelector('[data-k="hints"] .v') as HTMLElement).textContent = o.hints ? 'LIGADA' : 'DESLIGADA';
     (el.querySelector('[data-k="touch"] .v') as HTMLElement).textContent = o.touch === 'auto' ? 'AUTOMÁTICO' : o.touch === 'on' ? 'SEMPRE' : 'NUNCA';
   };
   paint();
@@ -259,12 +311,14 @@ export function optionsScreen(onBack: () => void, apply: () => void) {
       if (k === 'quality') { const q = ['low', 'medium', 'high'] as const; o.quality = q[(q.indexOf(o.quality) + d + 3) % 3]; }
       else if (k === 'hud') o.hudScale = Math.max(0.7, Math.min(1.4, o.hudScale + d * 0.1));
       else if (k === 'shake') o.shake = !o.shake;
+      else if (k === 'assist') o.assist = !o.assist;
+      else if (k === 'hints') o.hints = !o.hints;
       else if (k === 'touch') { const t = ['auto', 'on', 'off'] as const; o.touch = t[(t.indexOf(o.touch) + d + 3) % 3]; }
       else { o.volume[k] = Math.max(0, Math.min(1, Math.round((o.volume[k] + d * 0.1) * 10) / 10)); }
       paint(); apply(); Save.flush();
     },
-    onConfirm: (i) => { if (i === rows.length - 1) { nav.off(); el.remove(); onBack(); } },
-    onBack: () => { nav.off(); el.remove(); onBack(); },
+    onConfirm: (i) => { if (i === rows.length - 1) { nav.off(); leave(el); onBack(); } },
+    onBack: () => { nav.off(); leave(el); onBack(); },
   });
 }
 
@@ -278,7 +332,7 @@ export async function creditsScreen(onBack: () => void) {
     return l.trim() ? `<p>${l}</p>` : '';
   }).join('');
   const el = mount(h(`<div class="overlay"><div class="panel" style="width:min(900px,94vw)"><h2>CRÉDITOS</h2><div class="credits">${html}</div><button class="item" style="margin-top:10px">VOLTAR</button></div></div>`));
-  const nav = navigable([el.querySelector('.item') as HTMLElement], { onConfirm: () => { nav.off(); el.remove(); onBack(); }, onBack: () => { nav.off(); el.remove(); onBack(); } });
+  const nav = navigable([el.querySelector('.item') as HTMLElement], { onConfirm: () => { nav.off(); leave(el); onBack(); }, onBack: () => { nav.off(); leave(el); onBack(); } });
   const box = el.querySelector('.credits') as HTMLElement;
   const off = Input.onAction((a) => { if (a === 'down') box.scrollTop += 80; if (a === 'up') box.scrollTop -= 80; });
   el.addEventListener('remove', off);
@@ -292,7 +346,7 @@ export function arcadeLadder(stage: number, ladder: { p: PlayerDef; v: VenueDef 
       <div class="vn">${i > stage && l.p.unlock ? '???' : l.p.short}</div><div class="vs">${l.v.name}</div>${i < stage ? '<div class="vn" style="color:#39e36b">VENCIDO</div>' : ''}</div>`).join('')}</div>
     <div class="sub" style="margin-top:20px">Jogando com <b style="color:#f5c542">${me.name}</b></div>
     <button class="item go">CONTINUAR</button></div>`));
-  const nav = navigable([el.querySelector('.go') as HTMLElement], { onConfirm: () => { nav.off(); el.remove(); done(); } });
+  const nav = navigable([el.querySelector('.go') as HTMLElement], { onConfirm: () => { nav.off(); leave(el); done(); } });
 }
 
 // ------------------------------------------------------------------ touch controls

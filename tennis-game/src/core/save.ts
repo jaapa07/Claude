@@ -6,7 +6,7 @@ interface SaveData {
   lastMenu: number;
   records: { trainingBest: number };
   exhibition: { venue: string; games: number; sets: number; difficulty: string; twoPlayers: boolean; p1?: string; p2?: string };
-  options: { volume: { music: number; sfx: number; voice: number; crowd: number }; quality: 'low' | 'medium' | 'high'; hudScale: number; shake: boolean; touch: 'auto' | 'on' | 'off' };
+  options: { volume: { music: number; sfx: number; voice: number; crowd: number }; quality: 'low' | 'medium' | 'high'; hudScale: number; shake: boolean; touch: 'auto' | 'on' | 'off'; assist: boolean; hints: boolean };
 }
 
 const KEY = 'gsa_save_v1';
@@ -19,7 +19,7 @@ const defaults = (): SaveData => ({
   lastMenu: 0,
   records: { trainingBest: 0 },
   exhibition: { venue: 'harbor', games: 2, sets: 1, difficulty: 'normal', twoPlayers: false },
-  options: { volume: { music: 0.5, sfx: 0.9, voice: 1, crowd: 0.7 }, quality: isMobile ? 'low' : 'high', hudScale: 1, shake: true, touch: 'auto' },
+  options: { volume: { music: 0.5, sfx: 0.9, voice: 1, crowd: 0.7 }, quality: isMobile ? 'low' : 'high', hudScale: 1, shake: true, touch: 'auto', assist: true, hints: true },
 });
 
 class SaveStore {

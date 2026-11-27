@@ -45,8 +45,8 @@ if (step('characters')) {
   fixPngSuffix(hairDir);
   md(join(OUT, 'models'));
   for (const [src, dst, tex] of [
-    ['Superhero_Male_FullBody.gltf', 'athlete_m.glb', 1024],
-    ['Superhero_Female_FullBody.gltf', 'athlete_f.glb', 1024],
+    ['Superhero_Male_FullBody.gltf', 'athlete_m.glb', 2048],
+    ['Superhero_Female_FullBody.gltf', 'athlete_f.glb', 2048],
   ]) {
     const doc = await io.read(join(baseDir, src));
     for (const a of doc.getRoot().listAnimations()) a.dispose();
@@ -102,6 +102,19 @@ const CLIPS = {
   Interact: 'interact',
   Punch_Cross: 'fist_pump',
   Idle_Rail_Call: 'call',
+  Sword_Regular_A_Rec: 'x_a_rec',
+  Sword_Regular_B_Rec: 'x_b_rec',
+  Sword_Regular_C: 'x_c',
+  Melee_Hook_Rec: 'x_hook_rec',
+  Sword_Dash: 'x_dash',
+  Shield_Dash: 'x_shield_dash',
+  Sword_Block: 'x_block',
+  Sword_Regular_Combo: 'x_combo',
+  Spell_Simple_Enter: 'x_spell_enter',
+  Punch_Jab: 'x_jab',
+  NinjaJump_Start: 'x_ninja',
+  Idle_Shield_Break: 'x_shield_break',
+  Shield_OneShot: 'x_shield_one',
 };
 if (step('anims')) {
   console.log('animations');

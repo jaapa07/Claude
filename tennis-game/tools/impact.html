@@ -1,0 +1,17 @@
+<!doctype html><html><head><base href="/"></head><body><script type="module">
+import * as THREE from 'three';
+import { Assets, CORE_ASSETS } from '/src/core/assets.ts';
+import { Athlete } from '/src/game/athlete.ts';
+import { PLAYERS } from '/src/data/content.ts';
+await Assets.loadAll(CORE_ASSETS);
+const a = new Athlete(PLAYERS[0]);
+const out = {};
+for (const name of ['forehand','backhand','volley','smash','serve']) {
+  const act = a.actions.get(name); a.mixer.stopAllAction(); act.reset().play(); act.setEffectiveWeight(1);
+  const d = act.getClip().duration; let prev=null, best=0, bt=0; const rows=[];
+  for (let t=0;t<=d;t+=1/120){ act.time=t; a.mixer.update(0); a.root.updateMatrixWorld(true); const p=a.racketHeadWorld(); if(prev){const v=p.distanceTo(prev)*120; if(v>best){best=v;bt=t;}} rows.push([t.toFixed(2),p.x.toFixed(2),p.y.toFixed(2),p.z.toFixed(2), prev?(p.distanceTo(prev)*120).toFixed(0):0].join(' ')); prev=p.clone(); }
+  act.time=bt; a.mixer.update(0); a.root.updateMatrixWorld(true); const hp=a.racketHeadWorld();
+  (window.R=window.R||{})[name]=rows.filter((_,i)=>i%2==0); out[name]={dur:d.toFixed(2), impact:bt.toFixed(3), speed:best.toFixed(1), at:[hp.x.toFixed(2),hp.y.toFixed(2),hp.z.toFixed(2)]};
+}
+console.log('IMPACT', JSON.stringify(out)); console.log('ROWS', JSON.stringify(window.R)); window.done=true;
+</script></body></html>

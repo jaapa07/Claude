@@ -6,7 +6,78 @@ import { Assets } from '../core/assets';
 
 interface Particle { p: THREE.Vector3; v: THREE.Vector3; life: number; max: number; size: number; color: THREE.Color; grav: number; drag: number; spin: number; rot: number }
 
+/** Camera-facing ribbon that follows a moving point (racket swing arcs). */
+class Ribbon {
+  mesh: THREE.Mesh;
+  private pts: { p: THREE.Vector3; t: number }[] = [];
+  private geom = new THREE.BufferGeometry();
+  constructor(private n: number, color: string, private width: number, private life: number) {
+    this.geom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(n * 2 * 3), 3));
+    this.geom.setAttribute('alpha', new THREE.BufferAttribute(new Float32Array(n * 2), 1));
+    const idx: number[] = [];
+    for (let i = 0; i < n - 1; i++) { const a = i * 2; idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); }
+    this.geom.setIndex(idx);
+    this.mesh = new THREE.Mesh(this.geom, new THREE.ShaderMaterial({
+      uniforms: { uColor: { value: new THREE.Color(color) } },
+      vertexShader: 'attribute float alpha; varying float vA; void main(){ vA = alpha; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
+      fragmentShader: 'uniform vec3 uColor; varying float vA; void main(){ gl_FragColor = vec4(uColor, vA); }',
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
+    }));
+    this.mesh.frustumCulled = false;
+  }
+  update(t: number, head: THREE.Vector3 | null, base: THREE.Vector3 | null, camera: THREE.Camera) {
+    if (head) this.pts.unshift({ p: head.clone(), t });
+    this.pts = this.pts.filter((q) => t - q.t < this.life).slice(0, this.n);
+    const pos = this.geom.getAttribute('position') as THREE.BufferAttribute;
+    const al = this.geom.getAttribute('alpha') as THREE.BufferAttribute;
+    const cam = (camera as THREE.PerspectiveCamera).position;
+    for (let i = 0; i < this.n; i++) {
+      const q = this.pts[Math.min(i, this.pts.length - 1)];
+      if (!q) { al.setX(i * 2, 0); al.setX(i * 2 + 1, 0); continue; }
+      const nx = this.pts[Math.min(i + 1, this.pts.length - 1)].p;
+      const dir = new THREE.Vector3().subVectors(q.p, nx);
+      // wide side: toward the hand (racket face) if provided, else camera-facing
+      const side = base ? new THREE.Vector3().subVectors(base, q.p).normalize() : new THREE.Vector3().crossVectors(dir, new THREE.Vector3().subVectors(cam, q.p)).normalize();
+      const w = this.width * (1 - i / this.n);
+      pos.setXYZ(i * 2, q.p.x, q.p.y, q.p.z);
+      pos.setXYZ(i * 2 + 1, q.p.x + side.x * w, q.p.y + side.y * w, q.p.z + side.z * w);
+      const a = this.pts.length > 2 ? Math.max(0, 1 - (t - q.t) / this.life) * (1 - i / this.n) * 0.55 : 0;
+      al.setX(i * 2, a); al.setX(i * 2 + 1, a * 0.2);
+    }
+    pos.needsUpdate = al.needsUpdate = true;
+  }
+}
+
 export class FX {
+  private bounceRing: THREE.Mesh | null = null;
+  private spotRing: THREE.Mesh | null = null;
+  /** Receiving hints: where the incoming ball will bounce, and where to stand to hit it. */
+  hints(bounce: THREE.Vector3 | null, spot: THREE.Vector3 | null, t: number) {
+    if (!this.bounceRing) {
+      const mk = (r0: number, r1: number, c: string) => {
+        const m = new THREE.Mesh(new THREE.RingGeometry(r0, r1, 40), new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending }));
+        m.rotation.x = -Math.PI / 2; m.renderOrder = 3; this.group.add(m); return m;
+      };
+      this.bounceRing = mk(0.16, 0.24, '#ffe14a');
+      this.spotRing = mk(0.3, 0.38, '#3ff7ff');
+    }
+    const set = (m: THREE.Mesh, p: THREE.Vector3 | null, pulse: number) => {
+      const mat = m.material as THREE.MeshBasicMaterial;
+      mat.opacity = THREE.MathUtils.lerp(mat.opacity, p ? 0.75 : 0, 0.25);
+      if (p) { m.position.set(p.x, 0.012, p.z); m.scale.setScalar(1 + 0.12 * Math.sin(t * pulse)); }
+    };
+    set(this.bounceRing, bounce, 10);
+    set(this.spotRing!, spot, 6);
+  }
+  private ribbons = new Map<number, Ribbon>();
+  private clock = 0;
+  /** Racket swing arc for actor `id` (head and grip positions while swinging, nulls otherwise). */
+  swingTrail(id: number, head: THREE.Vector3 | null, grip: THREE.Vector3 | null, camera: THREE.Camera) {
+    let r = this.ribbons.get(id);
+    if (!r) { r = new Ribbon(22, '#cfe8ff', 0.42, 0.16); this.ribbons.set(id, r); this.group.add(r.mesh); }
+    r.update(this.clock, head, grip, camera);
+  }
+
   group = new THREE.Group();
   private parts: Particle[] = [];
   private pointsGeom: THREE.BufferGeometry;
@@ -156,6 +227,7 @@ export class FX {
   }
 
   update(dt: number, camera: THREE.Camera) {
+    this.clock += dt;
     const pos = this.pointsGeom.getAttribute('position') as THREE.BufferAttribute;
     const col = this.pointsGeom.getAttribute('pcolor') as THREE.BufferAttribute;
     const size = this.pointsGeom.getAttribute('size') as THREE.BufferAttribute;

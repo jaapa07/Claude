@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { N8AOPostPass } from 'n8ao';
 import { EffectComposer, RenderPass, EffectPass, BloomEffect, SMAAEffect, VignetteEffect, ToneMappingEffect, ToneMappingMode, BrightnessContrastEffect, HueSaturationEffect } from 'postprocessing';
 
 export type Quality = 'low' | 'medium' | 'high';
@@ -9,6 +10,7 @@ export class Renderer {
   scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera(42, 16 / 9, 0.1, 400);
   private bloom: BloomEffect;
+  private ao: InstanceType<typeof N8AOPostPass>;
   private renderPass: RenderPass;
   private grade: HueSaturationEffect;
   private bc: BrightnessContrastEffect;
@@ -27,6 +29,15 @@ export class Renderer {
     this.composer = new EffectComposer(this.renderer, { frameBufferType: THREE.HalfFloatType });
     this.renderPass = new RenderPass(this.scene, this.camera);
     this.composer.addPass(this.renderPass);
+    // ambient occlusion (contact darkening in stands, under the net, around feet) - high quality only
+    this.ao = new N8AOPostPass(this.scene, this.camera, 1, 1);
+    this.ao.configuration.aoRadius = 1.4;
+    this.ao.configuration.distanceFalloff = 0.6;
+    this.ao.configuration.intensity = 2.2;
+    this.ao.configuration.halfRes = true;
+    this.ao.configuration.denoiseSamples = 4;
+    this.ao.configuration.gammaCorrection = false;
+    this.composer.addPass(this.ao);
     this.bloom = new BloomEffect({ intensity: 0.7, luminanceThreshold: 0.82, luminanceSmoothing: 0.25, mipmapBlur: true, radius: 0.7 });
     const tone = new ToneMappingEffect({ mode: ToneMappingMode.ACES_FILMIC });
     const vignette = new VignetteEffect({ offset: 0.32, darkness: 0.42 });
@@ -60,6 +71,7 @@ export class Renderer {
     this.renderer.toneMapping = this.direct ? THREE.ACESFilmicToneMapping : THREE.NoToneMapping;
     this.renderer.shadowMap.type = q === 'high' ? THREE.PCFSoftShadowMap : THREE.PCFShadowMap;
     this.bloom.intensity = q === 'low' ? 0 : 0.7;
+    this.ao.enabled = q === 'high';
     this.applyPR();
   }
 

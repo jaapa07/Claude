@@ -46,7 +46,10 @@ export class ReplayPlayer {
     setBall({ x: lerp(f.ball.x, g.ball.x), y: lerp(f.ball.y, g.ball.y), z: lerp(f.ball.z, g.ball.z), vis: f.ball.vis, vx: f.ball.vx, vy: f.ball.vy, vz: f.ball.vz });
     athletes.forEach((a, idx) => {
       const s = f.a[idx], s2 = g.a[idx];
-      a.applySnapshot({ ...s, x: lerp(s.x, s2.x), z: lerp(s.z, s2.z), locoT: s.locoT, shotT: s2.shot === s.shot ? lerp(s.shotT, s2.shotT) : s.shotT });
+      // interpolate pose clip times for actions present in both frames (smooth slow motion)
+      const t2 = new Map(s2.acts.map(([n, t]) => [n, t]));
+      const acts = s.acts.map(([n, t, w]) => [n, t2.has(n) && t2.get(n)! >= t ? lerp(t, t2.get(n)!) : t, w] as [string, number, number]);
+      a.applySnapshot({ ...s, acts, x: lerp(s.x, s2.x), y: lerp(s.y, s2.y), z: lerp(s.z, s2.z), twist: lerp(s.twist, s2.twist), hy: lerp(s.hy, s2.hy), hp: lerp(s.hp, s2.hp) });
     });
   }
 }

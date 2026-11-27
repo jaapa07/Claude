@@ -1,0 +1,12 @@
+<!doctype html><html><head><base href="/"></head><body><script type="module">
+import * as THREE from 'three';
+import { Assets, CORE_ASSETS } from '/src/core/assets.ts';
+import { Athlete } from '/src/game/athlete.ts';
+import { PLAYERS } from '/src/data/content.ts';
+await Assets.loadAll(CORE_ASSETS);
+const a = new Athlete(PLAYERS[0]); a.mixer.stopAllAction(); a.mixer.update(0); a.root.updateMatrixWorld(true);
+const hand = a.bones.get('hand_r'); const inv = new THREE.Matrix4().copy(hand.matrixWorld).invert();
+const loc = (n) => a.bones.get(n).getWorldPosition(new THREE.Vector3()).applyMatrix4(inv);
+console.log('GRIP', JSON.stringify({mid: loc('middle_01_r'), idx: loc('index_01_r'), pinky: loc('pinky_01_r'), thumb: loc('thumb_01_r'), thumb3: loc('thumb_03_r'), mid3: loc('middle_03_r'), scale: hand.getWorldScale(new THREE.Vector3())}));
+window.done=true;
+</script></body></html>

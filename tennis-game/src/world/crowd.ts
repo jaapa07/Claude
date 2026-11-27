@@ -13,7 +13,7 @@ const SKINS = ['#f2d0b5', '#e0ac69', '#c68642', '#8d5524', '#ffdbac', '#a0673e']
 
 export interface Seat { pos: THREE.Vector3; ry: number; }
 
-function bakePose(gltfPath: string, clip: string, t: number): { geom: THREE.BufferGeometry; mat: THREE.MeshStandardMaterial } {
+function bakePose(gltfPath: string, clip: string, t: number): { geom: THREE.BufferGeometry; mat: THREE.MeshStandardMaterial; pivot: THREE.Vector3 } {
   const src = Assets.g(gltfPath);
   const model = SkeletonUtils.clone(src.scene);
   const mixer = new THREE.AnimationMixer(model);
@@ -24,6 +24,8 @@ function bakePose(gltfPath: string, clip: string, t: number): { geom: THREE.Buff
   model.updateMatrixWorld(true);
   let out: THREE.BufferGeometry | null = null;
   let mat: THREE.MeshStandardMaterial | null = null;
+  const pivot = new THREE.Vector3(0, 1.1, 0);
+  model.getObjectByName('neck_01')?.getWorldPosition(pivot);
   model.traverse((o) => {
     const sm = o as THREE.SkinnedMesh;
     if (!sm.isSkinnedMesh || out) return;
@@ -53,13 +55,15 @@ function bakePose(gltfPath: string, clip: string, t: number): { geom: THREE.Buff
     out = g;
     mat = sm.material as THREE.MeshStandardMaterial;
   });
-  return { geom: out!, mat: mat! };
+  return { geom: out!, mat: mat!, pivot };
 }
 
 export class Crowd {
   group = new THREE.Group();
   private meshes: THREE.InstancedMesh[] = [];
-  private uniforms = { uTime: { value: 0 }, uExcite: { value: 0 }, uStand: { value: 0 }, uWave: { value: -100 } };
+  private uniforms = { uTime: { value: 0 }, uExcite: { value: 0 }, uStand: { value: 0 }, uWave: { value: -100 }, uBall: { value: new THREE.Vector3(0, 1, 0) } };
+  /** World point the spectators watch (the ball). */
+  watch = new THREE.Vector3(0, 1, 0);
   excitement = 0;
   standing = 0;
 
@@ -85,14 +89,25 @@ export class Crowd {
       const prev = mat.onBeforeCompile;
       mat.onBeforeCompile = (shader, r) => {
         prev.call(mat, shader, r);
-        Object.assign(shader.uniforms, this.uniforms);
+        Object.assign(shader.uniforms, this.uniforms, { uPivot: { value: p.pivot } });
         shader.vertexShader = shader.vertexShader
           .replace('#include <common>', `#include <common>
             attribute vec3 aBind; attribute float aPhase; attribute vec3 aSkin;
-            uniform float uTime, uExcite, uStand, uWave; varying vec3 vSkinI;`)
+            uniform float uTime, uExcite, uStand, uWave; uniform vec3 uBall, uPivot; varying vec3 vSkinI;`)
           .replace('vBind = position;', 'vBind = aBind; vSkinI = aSkin;')
           .replace('transformed += objectNormal * puffAmt(position);', `transformed += objectNormal * puffAmt(aBind);
             {
+              // heads follow the ball (yaw about the neck, toward the ball in this spectator's local frame)
+              float headW = smoothstep(1.4, 1.56, aBind.y);
+              if (headW > 0.0) {
+                vec3 xa = normalize(instanceMatrix[0].xyz), za = normalize(instanceMatrix[2].xyz);
+                vec3 d = uBall - instanceMatrix[3].xyz;
+                float yaw = clamp(atan(dot(d, xa), dot(d, za)), -1.1, 1.1) * headW;
+                yaw += sin(uTime * 0.7 + aPhase * 40.0) * 0.08 * headW;
+                vec3 q = transformed - uPivot;
+                float c = cos(yaw), sn = sin(yaw);
+                transformed = uPivot + vec3(c * q.x + sn * q.z, q.y, -sn * q.x + c * q.z);
+              }
               float ph = aPhase * 6.2831;
               float upper = smoothstep(0.75, 1.3, transformed.y);
               float sway = sin(uTime * (0.8 + aPhase) + ph) * 0.03 * upper;
@@ -149,6 +164,7 @@ export class Crowd {
 
   update(dt: number, t: number) {
     this.uniforms.uTime.value = t;
+    this.uniforms.uBall.value.lerp(this.watch, Math.min(1, dt * 6));
     this.excitement = Math.max(0, this.excitement - dt * 0.35);
     this.uniforms.uExcite.value = THREE.MathUtils.lerp(this.uniforms.uExcite.value, Math.min(1, this.excitement), Math.min(1, dt * 6));
     this.uniforms.uStand.value = THREE.MathUtils.lerp(this.uniforms.uStand.value, this.standing, Math.min(1, dt * 3));
