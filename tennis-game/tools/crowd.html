@@ -1,0 +1,14 @@
+<!doctype html><html><head><base href="/"></head><body style="margin:0;background:#333"><script type="module">
+import * as THREE from 'three';
+import { Assets, CORE_ASSETS } from '/src/core/assets.ts';
+import { Crowd } from '/src/world/crowd.ts';
+await Assets.loadAll(CORE_ASSETS);
+const r = new THREE.WebGLRenderer({antialias:true}); r.setSize(innerWidth, innerHeight); document.body.appendChild(r.domElement);
+r.toneMapping = THREE.ACESFilmicToneMapping; r.outputColorSpace = THREE.SRGBColorSpace;
+const sc = new THREE.Scene(); sc.background = new THREE.Color('#7a8a99');
+sc.add(new THREE.HemisphereLight('#fff','#556',1.5)); const d=new THREE.DirectionalLight('#fff',2.5); d.position.set(3,5,4); sc.add(d);
+const seats=[]; for(let i=0;i<8;i++) for(let r2=0;r2<3;r2++) seats.push({pos:new THREE.Vector3(i*0.7-2.5, r2*0.42, -r2*0.85), ry:0});
+const c = new Crowd(seats, 1); sc.add(c.group); if(new URLSearchParams(location.search).get("dbg")) c.group.children.forEach(m=>{const mat=m.material; const prev=mat.onBeforeCompile; mat.onBeforeCompile=(sh,rr)=>{prev.call(mat,sh,rr); sh.fragmentShader=sh.fragmentShader.replace("vClothAmt = clothA;","vClothAmt = clothA; diffuseColor.rgb = vec3(vBind.y/2.0, fract(vBind.x*4.0), uScale);");}; mat.customProgramCacheKey=()=>"dbg";}); c.update(0.016, 1);
+const cam = new THREE.PerspectiveCamera(35, innerWidth/innerHeight, 0.1, 100); cam.position.set(0,1.5,5); cam.lookAt(0,0.6,-0.8);
+r.render(sc, cam); window.done = true; const mm=c.group.children[0]; console.log("attrs", Object.keys(mm.geometry.attributes).join(","), Array.from(mm.geometry.attributes.aShirt.array.slice(0,6)).map(v=>v.toFixed(2)).join(","), mm.geometry.attributes.aShirt.isInstancedBufferAttribute); const gl=r.getContext(); console.log("prog", r.info.programs.length);
+</script></body></html>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520">
+ <defs>
+  <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff3b0"/><stop offset="0.45" stop-color="#f5c542"/><stop offset="1" stop-color="#b8790f"/></linearGradient>
+  <linearGradient id="ball" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4ff7a"/><stop offset="1" stop-color="#a8c800"/></linearGradient>
+  <filter id="s" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000" flood-opacity="0.55"/></filter>
+ </defs>
+ <g filter="url(#s)">
+  <path d="M40 300 L1160 230 L1160 330 L40 400Z" fill="#c1121f"/>
+  <path d="M40 300 L1160 230 L1160 246 L40 316Z" fill="#ff4d5a"/>
+  <g transform="skewX(-12)">
+   <text x="120" y="228" font-family="Anton, Impact, 'Arial Black', sans-serif" font-size="210" fill="url(#gold)" stroke="#3b2300" stroke-width="6" letter-spacing="4">GRAND SLAM</text>
+   <text x="300" y="380" font-family="Anton, Impact, 'Arial Black', sans-serif" font-size="118" fill="#fff" letter-spacing="22">ARCADE</text>
+  </g>
+  <circle cx="1070" cy="330" r="78" fill="url(#ball)"/>
+  <path d="M1005 290 C1050 325 1050 365 1015 390 M1135 280 C1092 312 1094 360 1132 385" stroke="#fffde8" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <text x="600" y="470" text-anchor="middle" font-family="'Barlow Condensed', Arial" font-weight="700" font-size="44" letter-spacing="14" fill="#f5c542">CIRCUITO DE OURO</text>
+ </g></svg>

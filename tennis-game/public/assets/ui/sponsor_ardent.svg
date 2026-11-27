@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="128" viewBox="0 0 1024 256">
+  <rect width="1024" height="256" fill="#b3001b"/>
+  <rect y="0" width="1024" height="14" fill="#e8e8e8" opacity="0.9"/><rect y="242" width="1024" height="14" fill="#e8e8e8" opacity="0.9"/>
+  <g transform="translate(210,78) scale(1.15)"><path d="M6 24 L34 52 L62 24 V44 L34 72 L6 44Z" fill="#e8e8e8"/></g>
+  <text x="320" y="172" font-family="Anton, Impact, 'Arial Black', sans-serif" font-size="128" font-weight="900" fill="#e8e8e8" letter-spacing="6" font-style="italic">ARDENT</text>
+  <text x="1000" y="226" text-anchor="end" font-family="'Barlow Condensed', Arial, sans-serif" font-size="40" font-weight="700" fill="#e8e8e8" opacity="0.8" letter-spacing="8">MOTORS</text>
+</svg>

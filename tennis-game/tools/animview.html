@@ -1,0 +1,32 @@
+<!doctype html><html><head><base href="/"></head><body style="margin:0;background:#333"><script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils.js';
+const q = new URLSearchParams(location.search);
+const clips = (q.get('clips')||'forehand').split(',');
+const times = (q.get('t')||'0,0.25,0.5,0.75,1').split(',').map(Number);
+const r = new THREE.WebGLRenderer({antialias:true}); r.setSize(innerWidth, innerHeight); document.body.appendChild(r.domElement);
+const sc = new THREE.Scene(); sc.background = new THREE.Color('#556');
+sc.add(new THREE.HemisphereLight('#fff','#444',2)); const d=new THREE.DirectionalLight('#fff',2); d.position.set(3,5,4); sc.add(d);
+const L = new GLTFLoader();
+const [ch, an, rk] = await Promise.all([L.loadAsync('/assets/models/athlete_m.glb'), L.loadAsync('/assets/models/anims.glb'), L.loadAsync('/assets/models/props/racket.glb')]);
+const cols = times.length, rows = clips.length;
+const cam = new THREE.OrthographicCamera(-cols*1.1, cols*1.1, rows*1.2, -rows*1.2+0.0, 0.1, 50);
+const view = q.get('view')||'front';
+cam.position.set(view==='side'?20:0, rows*1.0, view==='side'?0:20); cam.lookAt(0, rows*1.0, 0);
+if (view==='top'){cam.position.set(0,30,0.01);cam.lookAt(0,0,0);}
+clips.forEach((cn, ri) => times.forEach((t, ci) => {
+  const m = SkeletonUtils.clone(ch.scene); sc.add(m);
+  const off = new THREE.Vector3((ci-(cols-1)/2)*2.2, (rows-1-ri)*2.4, 0);
+  if (view==='side') m.position.set(0, off.y, -off.x); else m.position.copy(off);
+  if (view==='top') m.position.set(off.x, 0, -off.y);
+  const mix = new THREE.AnimationMixer(m); const clip = an.animations.find(a=>a.name===cn);
+  if(!clip){console.log('missing',cn);return;}
+  const a = mix.clipAction(clip); a.play(); mix.setTime(t*clip.duration);
+  const hand = m.getObjectByName('hand_r'); const rr = rk.scene.clone(); hand.add(rr);
+  rr.rotation.set(+(q.get('rx')||0), +(q.get('ry')||0), +(q.get('rz')||0)); rr.position.set(+(q.get('px')||0), +(q.get('py')||0), +(q.get('pz')||0));
+}));
+r.render(sc, cam);
+window.done = true;
+console.log(an.animations.map(a=>a.name+':'+a.duration.toFixed(2)).join(' '));
+</script></body></html>

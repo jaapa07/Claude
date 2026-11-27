@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="128" viewBox="0 0 1024 256">
+  <rect width="1024" height="256" fill="#fff"/>
+  <rect y="0" width="1024" height="14" fill="#1aa7ec" opacity="0.9"/><rect y="242" width="1024" height="14" fill="#1aa7ec" opacity="0.9"/>
+  <g transform="translate(210,78) scale(1.15)"><path d="M34 6 C34 6 8 44 8 60 A26 26 0 0 0 60 60 C60 44 34 6 34 6Z" fill="#1aa7ec"/></g>
+  <text x="320" y="172" font-family="Anton, Impact, 'Arial Black', sans-serif" font-size="128" font-weight="900" fill="#1aa7ec" letter-spacing="6" font-style="italic">NIMBUS</text>
+  <text x="1000" y="226" text-anchor="end" font-family="'Barlow Condensed', Arial, sans-serif" font-size="40" font-weight="700" fill="#1aa7ec" opacity="0.8" letter-spacing="8">WATER</text>
+</svg>

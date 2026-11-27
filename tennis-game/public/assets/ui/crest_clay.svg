@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="-200 -200 400 400">
+   <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9622b"/><stop offset="1" stop-color="#3c1707"/></linearGradient></defs>
+   <path d="M0 -180 L150 -120 L150 40 C150 120 70 165 0 190 C-70 165 -150 120 -150 40 L-150 -120Z" fill="url(#g)" stroke="#f5c542" stroke-width="10"/>
+   <g transform="translate(0,-40) scale(1.6)"><path d="M-36 30 L0 -48 L36 30Z" fill="none" stroke="#fff" stroke-width="8"/><path d="M-18 30 L0 -10 L18 30" fill="#fff"/></g>
+   <text y="85" text-anchor="middle" font-family="Anton, Impact, 'Arial Black', sans-serif" font-size="30" fill="#fff" letter-spacing="2">TERRE ROUGE CUP</text>
+   <text y="128" text-anchor="middle" font-family="'Barlow Condensed', Arial" font-weight="700" font-size="24" fill="#f5c542" letter-spacing="6">GOLD CIRCUIT</text></svg>

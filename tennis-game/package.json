@@ -1,0 +1,35 @@
+{
+  "name": "grand-slam-arcade",
+  "version": "0.1.0",
+  "description": "GRAND SLAM ARCADE - Circuito de Ouro: jogo de tenis arcade 3D (Three.js + DOM UI)",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "fetch-assets": "node scripts/fetch-assets.mjs",
+    "build-assets": "node scripts/build-assets.mjs && node scripts/build-authored.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "gsap": "^3.12.5",
+    "howler": "^2.2.4",
+    "postprocessing": "^6.36.4",
+    "three": "^0.170.0"
+  },
+  "devDependencies": {
+    "@gltf-transform/cli": "^4.1.1",
+    "@gltf-transform/core": "^4.1.1",
+    "@gltf-transform/extensions": "^4.1.1",
+    "@gltf-transform/functions": "^4.1.1",
+    "@types/howler": "^2.2.12",
+    "@types/three": "^0.170.0",
+    "meshoptimizer": "^0.22.0",
+    "sharp": "^0.33.5",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11",
+    "vitest": "^2.1.8"
+  },
+  "private": true,
+  "type": "module"
+}

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="-200 -200 400 400">
+   <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff2bd6"/><stop offset="1" stop-color="#0a0a24"/></linearGradient></defs>
+   <path d="M0 -180 L150 -120 L150 40 C150 120 70 165 0 190 C-70 165 -150 120 -150 40 L-150 -120Z" fill="url(#g)" stroke="#f5c542" stroke-width="10"/>
+   <g transform="translate(0,-40) scale(1.6)"><path d="M-38 30 L-38 -36 L38 30 L38 -36" stroke="#3ff7ff" stroke-width="10" fill="none" stroke-linejoin="round"/></g>
+   <text y="85" text-anchor="middle" font-family="Anton, Impact, 'Arial Black', sans-serif" font-size="30" fill="#fff" letter-spacing="2">NEON ARENA FINALS</text>
+   <text y="128" text-anchor="middle" font-family="'Barlow Condensed', Arial" font-weight="700" font-size="24" fill="#f5c542" letter-spacing="6">GOLD CIRCUIT</text></svg>
