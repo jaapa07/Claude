@@ -1,11 +1,35 @@
 import * as THREE from 'three';
 import { GLTFLoader, type GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 
 const BASE = 'assets/';
 const gltfLoader = new GLTFLoader();
-gltfLoader.setMeshoptDecoder(MeshoptDecoder);
+// The WebAssembly mesh decoder is only needed for the compressed .glb files (not in the sandbox-safe build).
+const meshoptReady = import.meta.env.VITE_JSON_MODELS
+  ? Promise.resolve()
+  : import('three/examples/jsm/libs/meshopt_decoder.module.js').then((m) => { gltfLoader.setMeshoptDecoder(m.MeshoptDecoder); }).catch(() => {});
 const texLoader = new THREE.TextureLoader();
+
+/** Sandbox-safe model format (see scripts/glb-to-json.mjs): rebuild a GLB in memory, textures load as same-origin files. */
+async function loadJsonModel(url: string): Promise<GLTF> {
+  const res = await fetch(url + '.json');
+  if (!res.ok) throw new Error(`${res.status} ao baixar ${url}.json`);
+  const { gltf, bin } = (await res.json()) as { gltf: Record<string, unknown>; bin: string };
+  const raw = atob(bin);
+  const binBytes = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; i++) binBytes[i] = raw.charCodeAt(i);
+  const pad = (n: number) => (n + 3) & ~3;
+  const jsonBytes = new TextEncoder().encode(JSON.stringify(gltf));
+  const jLen = pad(jsonBytes.length), bLen = pad(binBytes.length);
+  const out = new ArrayBuffer(12 + 8 + jLen + (bLen ? 8 + bLen : 0));
+  const dv = new DataView(out);
+  const u8 = new Uint8Array(out);
+  dv.setUint32(0, 0x46546c67, true); dv.setUint32(4, 2, true); dv.setUint32(8, out.byteLength, true);
+  dv.setUint32(12, jLen, true); dv.setUint32(16, 0x4e4f534a, true);
+  u8.set(jsonBytes, 20); u8.fill(0x20, 20 + jsonBytes.length, 20 + jLen);
+  if (bLen) { dv.setUint32(20 + jLen, bLen, true); dv.setUint32(24 + jLen, 0x004e4942, true); u8.set(binBytes, 28 + jLen); }
+  const base = new URL('.', new URL(url, document.baseURI)).href;
+  return gltfLoader.parseAsync(out, base);
+}
 
 class AssetStore {
   gltf = new Map<string, GLTF>();
@@ -26,8 +50,8 @@ class AssetStore {
 
   loadGltf(path: string): Promise<GLTF> {
     if (this.gltf.has(path)) return Promise.resolve(this.gltf.get(path)!);
-    const url = BASE + (import.meta.env.VITE_JSON_MODELS ? path.replace(/\.glb$/, '.glb.json') : path);
-    if (!this.pending.has(path)) this.pending.set(path, gltfLoader.loadAsync(url).then((g) => (this.gltf.set(path, g), g)));
+    const load = import.meta.env.VITE_JSON_MODELS ? loadJsonModel(BASE + path) : meshoptReady.then(() => gltfLoader.loadAsync(BASE + path));
+    if (!this.pending.has(path)) this.pending.set(path, load.then((g) => (this.gltf.set(path, g), g)));
     return this.pending.get(path) as Promise<GLTF>;
   }
 

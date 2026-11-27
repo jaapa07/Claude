@@ -313,5 +313,11 @@ async function boot() {
 
 boot().catch((e) => {
   console.error(e);
-  document.getElementById('ui')!.innerHTML = `<div class="loading"><div class="inner"><h2>Erro ao carregar</h2><pre style="white-space:pre-wrap;color:#f88">${String(e?.stack ?? e)}</pre></div></div>`;
+  const msg = e instanceof Error ? e.message : (e && (e as Event).type) ? `falha ao carregar ${((e as Event).target as HTMLImageElement | null)?.src ?? 'um arquivo'}` : String(e);
+  const el = document.createElement('div');
+  el.className = 'loading';
+  el.innerHTML = '<div class="inner"><h2 style="font-family:Anton,sans-serif;letter-spacing:2px">ERRO AO CARREGAR</h2><p class="tip"></p><pre style="white-space:pre-wrap;color:#f88;font-size:12px;text-align:left;max-height:40vh;overflow:auto"></pre></div>';
+  el.querySelector('.tip')!.textContent = msg;
+  el.querySelector('pre')!.textContent = String((e as Error)?.stack ?? '');
+  document.getElementById('ui')!.replaceChildren(el);
 });
