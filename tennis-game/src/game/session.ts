@@ -291,13 +291,24 @@ export class Session {
           const p = new THREE.Vector3(e.pos.x, e.pos.y, e.pos.z);
           const pan = THREE.MathUtils.clamp(e.pos.x / 8, -1, 1) * m.camEnd();
           const kind = e.kind;
-          if (kind === 'serve' || kind === 'smash' || e.power > 0.75) Audio.play('hit_hard', { vol: 1, rate: 0.95 + Math.random() * 0.1, pan });
-          else if (kind === 'slice' || kind === 'drop' || kind === 'lob') Audio.play('hit_soft', { vol: 0.9, rate: 1.05, pan });
-          else Audio.play('hit_mid', { vol: 0.95, rate: 0.95 + Math.random() * 0.15, pan });
-          Audio.play(['swish1', 'swish2', 'swish3'][Math.floor(Math.random() * 3)], { vol: 0.35, pan });
+          // tennis hit: sample family by shot, random variation, louder with power, quieter far from the camera
+          const near = this.distGain(p);
+          const fam = kind === 'serve' || kind === 'smash' || e.power > 0.8 ? 'hit_power' : kind === 'slice' || kind === 'drop' || kind === 'lob' ? 'hit_slice' : kind === 'volley' ? 'hit_volley' : 'hit_flat';
+          const n = fam === 'hit_power' || fam === 'hit_flat' ? 4 : 3;
+          Audio.play(fam + Math.floor(Math.random() * n), { vol: near * (0.6 + 0.45 * Math.min(1, e.power)), rate: 0.96 + Math.random() * 0.08, pan });
+          if (e.perfect) Audio.play('hit_pop', { vol: near * 0.25, rate: 1.1, pan }); // sweet-spot ring
+          Audio.play(['swish1', 'swish2', 'swish3'][Math.floor(Math.random() * 3)], { vol: near * 0.22, pan });
           this.fx.impact(p, e.perfect);
           this.fx.trailColor.set(kind === 'slice' || kind === 'drop' ? '#59b8ff' : kind === 'lob' ? '#ffffff' : kind === 'smash' ? '#ff4d5a' : '#ffb347');
           if (e.perfect) { this.cam.addShake(0.12); this.slowmo = 0.12; }
+          // timing feedback for human shots: learn when to press
+          if (e.human && !this.opts.demo && Save.data.options.hints) {
+            if (kind === 'serve') { if (e.perfect) this.hud?.toast('SAQUE PERFEITO!', 'gold'); else if (e.power < 0.55) this.hud?.toast('SAQUE FRACO', 'blue'); }
+            else if (e.perfect) this.hud?.toast('PERFEITO!', 'gold');
+            else if (e.posErr > 0.9) this.hud?.toast('FORA DE POSIÇÃO', 'red');
+            else if (e.power < 0.3) this.hud?.toast('ATRASADO · aperte antes', 'blue');
+            else if (e.power > 0.85) this.hud?.toast('BOA!', 'gold');
+          }
           if (kind === 'smash') this.cam.addShake(0.2);
           this.hud?.setSpeed(e.speedKmh);
           this.venue.crowd.excitement = Math.min(1.2, this.venue.crowd.excitement + (m.rally > 5 ? 0.1 : 0.02));
@@ -307,7 +318,9 @@ export class Session {
         case 'bounce': {
           const p = new THREE.Vector3(e.pos.x, 0.02, e.pos.z);
           m.ball.squash = Math.min(1, e.speed / 10);
-          Audio.play('bounce', { vol: Math.min(1, e.speed / 12) * 0.8, rate: this.opts.venue.surface.tex === 'clay' ? 0.8 : this.opts.venue.surface.tex === 'grass' ? 0.75 : 0.9 });
+          const surf = ['hard', 'clay', 'grass', 'carpet'].includes(this.opts.venue.surface.tex) ? this.opts.venue.surface.tex : 'hard';
+          const bpan = THREE.MathUtils.clamp(e.pos.x / 8, -1, 1) * m.camEnd();
+          Audio.play(`bounce_${surf}${Math.floor(Math.random() * 3)}`, { vol: this.distGain(p) * Math.min(1, 0.25 + e.speed / 14) * 0.85, rate: 0.95 + Math.random() * 0.1, pan: bpan });
           this.fx.dust(p, this.opts.venue.surface.tex, Math.min(1.4, e.speed / 10));
           if (this.opts.venue.surface.tex === 'clay') this.fx.ballMark(p);
           break;
@@ -389,6 +402,12 @@ export class Session {
     const first = say(parts[0]);
     if (first) Audio.play(first);
     if (parts[1]) { const second = say(parts[1]); if (second) this.later(() => Audio.play(second), 700); }
+  }
+
+  /** Simple distance attenuation from the camera (far-court sounds are softer). */
+  private distGain(p: THREE.Vector3) {
+    const d = this.r.camera.position.distanceTo(p);
+    return THREE.MathUtils.clamp(1.35 - d / 45, 0.45, 1);
   }
 
   private disposed = false;

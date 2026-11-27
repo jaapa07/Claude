@@ -36,7 +36,7 @@ export class Hud {
         <div class="row" data-r="1"><span class="dot"></span><span>${labels[1]}</span><span class="sets"></span><span class="pt">0</span></div>
       </div>
       <div class="speed"><span><b>0</b><small>km/h</small></span></div>
-      <div class="callout" style="display:none"><div class="c"></div><div class="s"></div></div>
+      <div class="toast" style="display:none"></div><div class="callout" style="display:none"><div class="c"></div><div class="s"></div></div>
       <div class="banner" style="display:none"><div></div></div>
       <div class="meter" style="display:none"><i></i></div>
       <div class="marker" style="--plate:#f5c542;opacity:0">${labels[0]}</div>
@@ -75,6 +75,16 @@ export class Hud {
     this.speed.textContent = String(Math.round(kmh));
     const box = this.speed.closest('.speed') as HTMLElement;
     box.classList.remove('flash'); void box.offsetWidth; box.classList.add('flash');
+  }
+
+  /** Small timing feedback under your player ("PERFEITO!", "ATRASADO"...). */
+  toast(text: string, color: 'gold' | 'blue' | 'red' = 'gold') {
+    const t = this.el.querySelector('.toast') as HTMLElement;
+    t.textContent = text;
+    t.className = 'toast ' + color;
+    t.style.display = '';
+    t.getAnimations().forEach((a) => a.cancel());
+    t.animate([{ opacity: 0, transform: 'translate(-50%, 8px) scale(.8)' }, { opacity: 1, transform: 'translate(-50%, 0) scale(1.05)', offset: 0.25 }, { opacity: 1, transform: 'translate(-50%, -6px) scale(1)', offset: 0.75 }, { opacity: 0, transform: 'translate(-50%, -14px) scale(1)' }], { duration: 900, easing: 'ease-out', fill: 'forwards' });
   }
 
   call(text: string, sub = '', color: 'green' | 'red' | 'gold' = 'green', dur = 1.6) {

@@ -10,7 +10,7 @@ import { Save } from '../core/save';
 export type ShotKind = 'drive' | 'slice' | 'lob' | 'drop' | 'smash' | 'volley' | 'serve';
 
 export type MatchEvent =
-  | { type: 'hit'; side: Side; kind: ShotKind; power: number; perfect: boolean; pos: Vec3; speedKmh: number }
+  | { type: 'hit'; side: Side; kind: ShotKind; power: number; perfect: boolean; pos: Vec3; speedKmh: number; human: boolean; posErr: number }
   | { type: 'bounce'; pos: Vec3; speed: number; inCourt: boolean }
   | { type: 'net'; pos: Vec3; cord: boolean }
   | { type: 'call'; text: 'OUT' | 'FAULT' | 'DOUBLE FAULT' | 'LET' | 'NET' | 'ACE' | 'WINNER' }
@@ -215,7 +215,7 @@ export class Match {
     this.isServeInFlight = false;
     this.feedT = -1;
     this.onBallHit(1);
-    this.emit({ type: 'hit', side: 1, kind: 'drive', power: 0.3, perfect: false, pos: machine, speedKmh: this.ball.speedKmh() });
+    this.emit({ type: 'hit', side: 1, kind: 'drive', power: 0.3, perfect: false, pos: machine, speedKmh: this.ball.speedKmh(), human: false, posErr: 0 });
   }
 
   // ------------------------------------------------------------------ main update (fixed step)
@@ -338,6 +338,8 @@ export class Match {
     let meterValue = this.serveMeter;
     if (i) {
       if (this.phaseT > 0.12 && (this.pressed(sv, i, 'shot') || this.pressed(sv, i, 'slice') || this.pressed(sv, i, 'lob'))) hit = true;
+      // missed the moment: serve anyway (weaker) instead of letting the toss drop
+      else if (this.tossHeld && this.serveMeterDir === -1 && this.serveMeter < 0.5) { hit = true; meterValue = 0.45; }
     } else {
       const d = DIFFICULTY[sv.diff];
       const want = 0.97 - d.error * 0.12 - this.rng() * 0.08;
@@ -396,7 +398,7 @@ export class Match {
     this.lastShotKind = 'serve';
     this.servePeak = this.ball.speedKmh();
     sv.stats.maxServe = Math.max(sv.stats.maxServe, Math.round(this.servePeak));
-    this.emit({ type: 'hit', side: sv.side, kind: 'serve', power: meter, perfect, pos: { ...from }, speedKmh: this.servePeak });
+    this.emit({ type: 'hit', side: sv.side, kind: 'serve', power: meter, perfect, pos: { ...from }, speedKmh: this.servePeak, human: sv.human, posErr: 0 });
     this.onBallHit(sv.side);
   }
 
@@ -646,7 +648,9 @@ export class Match {
     const dirX = i.x * camEnd;
     const dirZ = -i.y * camEnd;
     const want = new THREE.Vector3(dirX, 0, dirZ).multiplyScalar(p.maxSpeed * scale);
-    const acc = 22;
+    // accelerate briskly, brake and turn even faster (no ice-skating when the stick is released or reversed)
+    const braking = want.lengthSq() < 0.01 || want.x * p.vel.x + want.z * p.vel.z < 0;
+    const acc = braking ? 38 : 26;
     p.vel.x += THREE.MathUtils.clamp(want.x - p.vel.x, -acc * dt, acc * dt);
     p.vel.z += THREE.MathUtils.clamp(want.z - p.vel.z, -acc * dt, acc * dt);
     this.integrate(p, dt);
@@ -882,7 +886,7 @@ export class Match {
     this.rally++;
     this.lastShotKind = shot;
     if (shot === 'smash') p.stats.smashes++;
-    this.emit({ type: 'hit', side: p.side, kind: shot, power: charge, perfect, pos: from, speedKmh: this.ball.speedKmh() });
+    this.emit({ type: 'hit', side: p.side, kind: shot, power: charge, perfect, pos: from, speedKmh: this.ball.speedKmh(), human: p.human, posErr });
     this.onBallHit(p.side);
   }
 

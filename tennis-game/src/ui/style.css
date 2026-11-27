@@ -456,3 +456,8 @@ body:has(.overlay) .touch, body:has(.screen) .touch { display: none !important; 
 .skip-tag { position: absolute; bottom: 70px; right: 26px; padding: 4px 16px; font-family: 'Anton'; font-size: 18px; letter-spacing: 2px; color: #fff; background: rgba(0,0,0,.55); border-radius: 20px; pointer-events: none; }
 .errbox { position: fixed; left: 8px; right: 8px; top: 8px; z-index: 10000; padding: 6px 10px; background: rgba(150,10,20,.92); color: #fff; font: 12px/1.35 monospace; border-radius: 6px; max-height: 40vh; overflow: auto; }
 .errbox div + div { border-top: 1px solid rgba(255,255,255,.25); margin-top: 4px; padding-top: 4px; }
+/* timing feedback toast (under the court centre, above the touch pad) */
+.toast { position: absolute; left: 50%; bottom: 22%; transform: translateX(-50%); padding: 3px 16px; font-family: 'Anton'; font-style: italic; font-size: clamp(18px, 2.6vw, 28px); letter-spacing: 2px; color: #fff; text-shadow: 0 2px 0 rgba(0,0,0,.5); border-radius: 4px; pointer-events: none; white-space: nowrap; }
+.toast.gold { background: linear-gradient(90deg, transparent, rgba(184,121,15,.9) 15%, rgba(184,121,15,.9) 85%, transparent); }
+.toast.blue { background: linear-gradient(90deg, transparent, rgba(30,90,180,.9) 15%, rgba(30,90,180,.9) 85%, transparent); }
+.toast.red { background: linear-gradient(90deg, transparent, rgba(170,25,35,.9) 15%, rgba(170,25,35,.9) 85%, transparent); }
