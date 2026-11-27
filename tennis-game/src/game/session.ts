@@ -27,6 +27,8 @@ export class Session {
   match: Match;
   venue: Venue;
   fx = new FX();
+  /** Set while a menu showcase covers the demo rally: no ball trail. */
+  ballHidden = false;
   cam: CameraDirector;
   hud: Hud | null = null;
   rec = new ReplayRecorder();
@@ -110,7 +112,7 @@ export class Session {
     }
     // ball effects & camera
     const bp = new THREE.Vector3(m.ball.mesh.position.x, m.ball.mesh.position.y, m.ball.mesh.position.z);
-    this.fx.ball(bp, m.ball.visible && (m.phase === 'rally' || this.flow === 'replay'), this.r.camera, m.ball.speedKmh());
+    this.fx.ball(bp, m.ball.visible && !this.ballHidden && (m.phase === 'rally' || this.flow === 'replay'), this.r.camera, m.ball.speedKmh());
     const human = m.players[0].pos;
     this.cam.update(dt, bp, human);
     this.fx.update(dt, this.r.camera);

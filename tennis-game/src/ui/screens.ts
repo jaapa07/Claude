@@ -16,6 +16,7 @@ export function navigable(items: HTMLElement[], opts: { onConfirm: (i: number) =
     if (n < 0 || n >= items.length || n === sel) return;
     sel = n;
     paint();
+    items[sel].scrollIntoView?.({ block: 'nearest' });
     Audio.play('ui_move', { vol: 0.6 });
     opts.onMove?.(sel);
   };

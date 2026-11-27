@@ -34,6 +34,7 @@ function clearShowcase() {
   if (!showcase) return;
   R.scene.remove(showcase.a.root);
   showcase = null;
+  if (session) session.ballHidden = false;
   if (session) { for (const p of session.match.players) p.athlete.root.visible = true; session.match.ball.mesh.visible = true; }
 }
 S.MenuHooks.preview = (p) => {
@@ -65,7 +66,7 @@ function updateShowcase(dt: number) {
   const a = s.a;
   if (a.oneShot && a.oneShotDone()) { a.releaseOneShot(0.45); a.play('idle', { fade: 0.45 }); }
   a.root.rotation.y = 0.15 + Math.sin(s.t * 0.6) * 0.22;
-  if (session) session.match.ball.mesh.visible = false;
+  if (session) { session.match.ball.mesh.visible = false; session.ballHidden = true; }
   a.lookAt = R.camera.position;
   a.update(dt);
 }

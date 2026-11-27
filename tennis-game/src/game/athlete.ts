@@ -3,6 +3,7 @@ import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils.js';
 import { Assets } from '../core/assets';
 import type { PlayerDef } from '../data/content';
 import { mirrorClip, sampleMirroredRacket, twoBoneIK, setWorldQuat, type BackhandData } from './backhand';
+import { fitClothing } from './clothfit';
 
 // ------------------------------------------------------------------ tennis outfit material
 // The base characters ship as bare bodies. The kit (shirt, shorts, socks, shoes, wrist & head bands, chest logo) is
@@ -13,7 +14,7 @@ export interface OutfitColors {
 
 const SKIN_REF = new THREE.Color('#d9a27a');
 
-export function makeOutfitMaterial(src: THREE.MeshStandardMaterial, o: OutfitColors, instanced = false): THREE.MeshStandardMaterial {
+export function makeOutfitMaterial(src: THREE.MeshStandardMaterial, o: OutfitColors, instanced = false, fit = false): THREE.MeshStandardMaterial {
   const m = src.clone();
   const sponsorTex = Assets.t('textures/sponsor_atlas.webp');
   const fabric = Assets.t('textures/fabric_normal.webp', 1);
@@ -45,16 +46,27 @@ export function makeOutfitMaterial(src: THREE.MeshStandardMaterial, o: OutfitCol
       .replace('#include <common>', `#include <common>
         varying vec3 vBind;
         uniform float uScale; uniform float uHandX;
+        #ifdef CLOTH_FIT
+        attribute vec3 aClothPos; attribute vec3 aClothN;
+        #endif
         ${instanced ? 'attribute vec3 aShirt; attribute vec3 aShorts; varying vec3 vShirtI; varying vec3 vShortsI;' : ''}
         float puffAmt(vec3 p){
           float y = p.y / uScale; float ax = abs(p.x);
-          float shirt = step(0.9, y) * step(y, 1.5) * step(ax, 0.36);
-          float shorts = step(0.6, y) * step(y, 1.0) * step(ax, 0.3);
-          float shoe = step(y, 0.12);
+          float shirt = smoothstep(0.87, 0.92, y) * (1.0 - smoothstep(1.44, 1.5, y)) * (1.0 - smoothstep(0.3, 0.36, ax));
+          float shorts = smoothstep(0.58, 0.64, y) * (1.0 - smoothstep(0.96, 1.0, y)) * (1.0 - smoothstep(0.28, 0.32, ax));
+          float shoe = 1.0 - smoothstep(0.1, 0.14, y);
           return shirt * 0.008 + shorts * (0.012 + 0.02 * smoothstep(0.85, 0.62, y)) + shoe * 0.014;
         }`)
+      .replace('#include <beginnormal_vertex>', `#include <beginnormal_vertex>
+        #ifdef CLOTH_FIT
+        objectNormal = aClothN;
+        #endif`)
       .replace('#include <begin_vertex>', `#include <begin_vertex>
         vBind = position;
+        #ifdef CLOTH_FIT
+        transformed = aClothPos;
+        vBind = aClothPos; // kit edges follow the fitted (smoothed) surface, so hems stay straight
+        #endif
         ${instanced ? 'vShirtI = aShirt; vShortsI = aShorts;' : ''}
         transformed += objectNormal * puffAmt(position);`);
     shader.fragmentShader = shader.fragmentShader
@@ -65,15 +77,17 @@ export function makeOutfitMaterial(src: THREE.MeshStandardMaterial, o: OutfitCol
         uniform float uHasBand, uSponsorRow, uScale, uHandX, uPlain, uSuit;
         uniform sampler2D uSponsor, uFabric;
         float band(float v, float a, float b, float f){ return smoothstep(a - f, a + f, v) * (1.0 - smoothstep(b - f, b + f, v)); }`)
-      .replace('#include <map_fragment>', `#include <map_fragment>
+      .replace('#include <color_fragment>', `#include <color_fragment>
         {
           vec3 p = vBind; float y = p.y / uScale; float ax = abs(p.x); float f = 0.004;
           vec3 shirtC = ${instanced ? 'vShirtI' : 'uShirt'};
           vec3 shortsC = ${instanced ? 'vShortsI' : 'uShorts'};
-          // neckline: lower at the front
-          float neck0 = mix(1.52, 1.465, smoothstep(0.0, 0.09, p.z));
-          float neck = mix(neck0, 1.7, smoothstep(0.075, 0.115, ax));
-          float torso = band(y, 0.905, neck, f) * (1.0 - smoothstep(0.255, 0.265, ax));
+          // round neckline around the neck (a crew neck dipping a little at the front)
+          float r = length(vec2(p.x, (p.z + 0.03) * 0.92)) / uScale;
+          float neckR = 0.082 + 0.022 * smoothstep(0.0, 0.1, p.z);
+          float neckCut = mix(1.0, smoothstep(neckR - f, neckR + f, r), smoothstep(1.36, 1.4, y));
+          float torso = band(y, 0.905, 1.58, f) * (1.0 - smoothstep(0.255, 0.265, ax)) * neckCut;
+          float neck0 = 1.5;
           float sleeve = band(y, 1.33, 1.65, f) * band(ax, 0.16, mix(0.355, uHandX * 0.86, uSuit), f);
           float shirt = max(torso, sleeve);
           float shorts = band(y, mix(0.64 - 0.04 * smoothstep(0.0, 0.1, p.z), 0.1, uSuit), 0.965, f) * (1.0 - smoothstep(0.3, 0.31, ax));
@@ -82,8 +96,8 @@ export function makeOutfitMaterial(src: THREE.MeshStandardMaterial, o: OutfitCol
           float wrist = (1.0 - uPlain) * band(ax, uHandX * 0.86, uHandX * 0.93, 0.003) * step(1.3, y);
           float head = uHasBand * band(y, 1.735, 1.772, 0.003) * step(ax, 0.2);
           // accents: sleeve hem, collar, side seams, shorts side stripe, shoe sole & swoosh
-          float hem = sleeve * band(ax, 0.33, 0.355, 0.002);
-          float collar = torso * band(y, neck0 - 0.02, neck0, 0.002) * (1.0 - smoothstep(0.07, 0.1, ax));
+          float hem = sleeve * band(ax, 0.33, 0.355, 0.002) * (1.0 - smoothstep(1.44, 1.47, y));
+          float collar = torso * band(r, neckR, neckR + 0.017, 0.002) * smoothstep(1.37, 1.41, y);
           float seam = torso * band(ax, 0.235, 0.255, 0.002) * step(abs(p.z), 0.06);
           float sstripe = shorts * band(ax, 0.255, 0.285, 0.002) * step(abs(p.z), 0.05);
           float sole = shoes * (1.0 - smoothstep(0.018, 0.024, y));
@@ -107,22 +121,27 @@ export function makeOutfitMaterial(src: THREE.MeshStandardMaterial, o: OutfitCol
             cloth = mix(cloth, logo.rgb, shirt * 0.9);
           }
           float shade = 0.82 + 0.3 * weave;
-          diffuseColor.rgb = mix(base, cloth * shade * (0.75 + 0.4 * dot(diffuseColor.rgb, vec3(0.6))), clothA);
+          diffuseColor.rgb = mix(base, cloth * shade * 0.98, clothA);
           vClothAmt = clothA;
         }`)
       .replace('void main() {', 'float vClothAmt = 0.0;\nvoid main() {')
       .replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
         roughnessFactor = mix(roughnessFactor, 0.82, vClothAmt);`)
-      .replace('mapN.xy *= normalScale;', `mapN.xy *= normalScale * (1.0 - 0.85 * vClothAmt);
+      .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
         {
-          // woven fabric + soft folds on the clothing
+          // fabric instead of the sculpted muscle normal map: woven weave + soft folds
           vec3 fab = texture2D(uFabric, vBind.xy * 7.0 + vBind.z * 2.0).xyz * 2.0 - 1.0;
           float folds = sin(vBind.y * 55.0 + sin(vBind.x * 18.0) * 2.0) * 0.5 + sin(vBind.y * 23.0 - vBind.x * 31.0) * 0.5;
-          vec3 clothN = normalize(vec3(fab.xy * 0.55 + vec2(folds * 0.09, folds * 0.05), 1.0));
-          mapN = normalize(mix(mapN, clothN, vClothAmt * 0.9));
+          vec3 clothN = normalize(vec3(fab.xy * 0.35 + vec2(folds * 0.06, folds * 0.035), 1.0));
+          #ifdef USE_NORMALMAP_TANGENTSPACE
+          normal = normalize(mix(normal, normalize(tbn * clothN), vClothAmt));
+          #else
+          normal = normalize(mix(normal, nonPerturbedNormal, vClothAmt));
+          #endif
         }`);
   };
-  m.customProgramCacheKey = () => 'outfit' + (instanced ? 'I' : '');
+  if (fit) m.defines = { ...(m.defines ?? {}), CLOTH_FIT: '' };
+  m.customProgramCacheKey = () => 'outfit' + (instanced ? 'I' : '') + (fit ? 'F' : '');
   return m;
 }
 
@@ -168,9 +187,10 @@ export class Athlete {
       const mat = sm.material as THREE.MeshStandardMaterial;
       if (/Superhero/i.test(mat.name)) {
         bodyMesh = sm;
+        fitClothing(sm.geometry, def.body === 'f' ? 0.965 : 1.0);
         this.bodyMat = makeOutfitMaterial(mat, {
           shirt: def.shirt, accent: def.shirtAccent, shorts: def.shorts, socks: def.socks, shoes: def.shoes, skin: def.skinTint, band: def.headband, sponsor: def.sponsor, female: def.body === 'f', suit: def.suit, plain: def.suit,
-        });
+        }, false, true);
         sm.material = this.bodyMat;
       } else if (/Hair/i.test(mat.name)) {
         // eyebrows

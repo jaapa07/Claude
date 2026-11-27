@@ -17,6 +17,7 @@ function mount(el: HTMLElement) {
 
 // ------------------------------------------------------------------ create your player
 const HAIRS: Record<'m' | 'f', (string | null)[]> = { m: ['hair_simpleparted', 'hair_buzzed', 'hair_long', null], f: ['hair_long', 'hair_buns', 'hair_buzzed'] };
+const HAIR_NAMES: Record<'m' | 'f', string[]> = { m: ['CURTO', 'RASPADO', 'LONGO', 'CARECA'], f: ['LONGO', 'COQUE', 'RASPADO'] };
 const SKINS = ['#f5d9c4', '#e9c09a', '#d9a77c', '#a86b42', '#7a4a2c', '#5a3620'];
 const HAIRC = ['#111111', '#2b1a10', '#6b4a2a', '#c9a15a', '#e2c27a', '#a33a12'];
 const COLORS = ['#ffffff', '#111111', '#c1121f', '#ff5a1f', '#ffd400', '#2a9d8f', '#0a7d32', '#1aa7ec', '#0b3a8c', '#8338ec', '#ff4d8d', '#f5c542'];
@@ -37,7 +38,7 @@ export function createPlayer(onDone: (me: PlayerDef) => void, onBack: () => void
   const rows: [string, string, (d: number) => void, () => string][] = [
     ['country', 'PAÍS', (d) => (st.country = (st.country + d + COUNTRIES.length) % COUNTRIES.length), () => COUNTRIES[st.country].name],
     ['body', 'CORPO', () => { st.body = st.body === 'm' ? 'f' : 'm'; st.hair = 0; }, () => (st.body === 'm' ? 'MASCULINO' : 'FEMININO')],
-    ['hair', 'CABELO', (d) => (st.hair = (st.hair + d + 4) % HAIRS[st.body].length), () => ['CURTO', 'RASPADO', 'LONGO', 'CARECA'][HAIRS.m.indexOf(HAIRS[st.body][st.hair % HAIRS[st.body].length])] ?? 'COQUE'],
+    ['hair', 'CABELO', (d) => { const n = HAIRS[st.body].length; st.hair = (st.hair + d + n) % n; }, () => HAIR_NAMES[st.body][st.hair % HAIRS[st.body].length]],
     ['hairc', 'COR DO CABELO', (d) => (st.hairC = (st.hairC + d + HAIRC.length) % HAIRC.length), () => `<i class="sw" style="background:${HAIRC[st.hairC]}"></i>`],
     ['skin', 'PELE', (d) => (st.skin = (st.skin + d + SKINS.length) % SKINS.length), () => `<i class="sw" style="background:${SKINS[st.skin]}"></i>`],
     ['shirt', 'CAMISA', (d) => (st.shirt = (st.shirt + d + COLORS.length) % COLORS.length), () => `<i class="sw" style="background:${COLORS[st.shirt]}"></i>`],
@@ -46,7 +47,7 @@ export function createPlayer(onDone: (me: PlayerDef) => void, onBack: () => void
     ['racket', 'RAQUETE', (d) => (st.racket = (st.racket + d + COLORS.length) % COLORS.length), () => `<i class="sw" style="background:${COLORS[st.racket]}"></i>`],
   ];
   const el = mount(h(`<div class="screen"><h1><span>NOVO TENISTA</span></h1><div class="sub">Crie o atleta que vai subir do nº 300 ao topo do ranking</div>
-    <div class="select showcase"><div class="opts" style="max-width:520px;margin:0">
+    <div class="select showcase"><div class="opts creator" style="max-width:520px;margin:0">
       <label class="opt namebox"><span>NOME</span><input id="pname" maxlength="22" value="${esc(st.name)}" autocomplete="off"/></label>
       ${rows.map(([k, l]) => `<div class="opt" data-k="${k}"><span>${l}</span><span class="v"></span></div>`).join('')}
       <button class="item go">COMEÇAR CARREIRA</button></div></div>
@@ -54,7 +55,12 @@ export function createPlayer(onDone: (me: PlayerDef) => void, onBack: () => void
   const input = el.querySelector('#pname') as HTMLInputElement;
   const paint = () => { rows.forEach(([k, , , v]) => ((el.querySelector(`[data-k="${k}"] .v`) as HTMLElement).innerHTML = v())); ver++; MenuHooks.preview?.(build()); };
   input.addEventListener('input', () => { st.name = input.value; });
-  input.addEventListener('keydown', (e) => e.stopPropagation());
+  // typing goes to the name only; Enter / ↑ / ↓ / Esc / Tab leave the field and return to the menu
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === 'Escape' || e.key === 'Tab') { e.preventDefault(); e.stopPropagation(); input.blur(); if (e.key !== 'Escape') Input.trigger('down'); return; }
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') { input.blur(); return; }
+    e.stopPropagation();
+  });
   const items = [el.querySelector('.namebox') as HTMLElement, ...el.querySelectorAll<HTMLElement>('.opt[data-k]'), el.querySelector('.go') as HTMLElement];
   const nav = navigable(items, {
     onLeftRight: (i, d) => { if (i >= 1 && i <= rows.length) { rows[i - 1][2](d); paint(); } },

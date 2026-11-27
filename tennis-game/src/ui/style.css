@@ -412,3 +412,8 @@ html.is-touch .callout { top: 40%; }
 .cact { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 18px; max-width: 1100px; }
 .cact .item { width: 100%; font-size: clamp(18px, min(2.4vw, 4vh), 28px); padding: 6px 20px 4px; }
 .cact .item:first-child { grid-column: span 2; }
+/* player creator: 11 rows must fit a 720p screen */
+.opts.creator { gap: 4px; max-height: calc(100vh - 200px); overflow-y: auto; scrollbar-width: thin; padding-right: 4px; }
+.opts.creator .opt { padding: 3px 14px; font-size: 19px; grid-template-columns: 190px 1fr; }
+.opts.creator .item.go { margin-top: 6px; }
+.opts.creator .namebox input { font-size: 19px; padding: 2px 10px; }
