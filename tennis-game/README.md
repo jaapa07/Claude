@@ -20,6 +20,14 @@ npm run build-assets   # otimiza (glb, webp, mp3) e gera os assets autorais
 
 Outros comandos: `npm test` (regras e física), `npm run typecheck`, `npm run build`.
 
+## Celular
+
+- Toque na tela de título: entra em tela cheia e trava na horizontal (quando o navegador permite).
+- Controles de toque: analógico à esquerda; GOLPE, SLICE e LOB à direita; botão ⏸ no topo. Tocar na tela pula intro e replay.
+- No celular a qualidade gráfica começa em "baixa" (sem pós-processamento, público menor). Se o FPS cair, a resolução se ajusta sozinha.
+- PWA: em `npm run build` + hospedagem HTTPS, o jogo pode ser instalado na tela inicial e funciona offline (`sw.js`).
+- Build para hosts que só aceitam tipos web (sem .glb): `VITE_JSON_MODELS=1 npx vite build --outDir dist-artifact && node scripts/glb-to-json.mjs dist-artifact`.
+
 ## Controles
 
 | Ação | Teclado | Controle |

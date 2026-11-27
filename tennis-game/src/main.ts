@@ -10,6 +10,7 @@ import { Venue } from './world/venue';
 import { PLAYERS, VENUES, type PlayerDef, type VenueDef, type DifficultyId } from './data/content';
 import { defaultConfig, type MatchConfig } from './game/rules';
 import * as S from './ui/screens';
+import { isTouch, isMobile, enterFullscreen, registerServiceWorker, FpsGovernor } from './core/platform';
 
 const stage = document.getElementById('stage')!;
 const R = new Renderer(stage);
@@ -20,9 +21,12 @@ let matchStart = 0;
 
 // ------------------------------------------------------------------ loop
 const clock = new THREE.Clock();
+const governor = new FpsGovernor((sc) => R.setDynamicScale(sc), isMobile ? 0.55 : 0.7);
 function frame() {
   requestAnimationFrame(frame);
-  const dt = Math.min(clock.getDelta(), 0.05);
+  const raw = clock.getDelta();
+  const dt = Math.min(raw, 0.05);
+  if (session && mode !== 'menu' && !paused) governor.tick(raw);
   Input.pollGamepads();
   if (session && !paused) session.update(dt);
   if (session) R.render(dt);
@@ -34,9 +38,11 @@ function applyOptions() {
   for (const k of ['music', 'sfx', 'voice', 'crowd'] as const) Audio.setVolume(k, o.volume[k]);
   R.setQuality(o.quality);
   Venue.crowdDensity = o.quality === 'low' ? 0.35 : o.quality === 'medium' ? 0.65 : 1;
+  Venue.shadowSize = o.quality === 'high' ? 2048 : 1024;
   document.documentElement.style.setProperty('--hud-scale', String(o.hudScale));
-  const touch = o.touch === 'on' || (o.touch === 'auto' && matchMedia('(pointer: coarse)').matches);
+  const touch = o.touch === 'on' || (o.touch === 'auto' && isTouch);
   S.touchControls(touch && mode !== 'menu');
+  document.querySelector('.pausebtn')?.classList.toggle('on', isTouch && mode !== 'menu');
 }
 
 // ------------------------------------------------------------------ background attract mode (AI vs AI)
@@ -56,6 +62,7 @@ function attract() {
 function endSession() {
   if (session) { session.dispose(); session = null; }
   S.touchControls(false);
+  document.querySelector('.pausebtn')?.classList.remove('on');
 }
 
 // ------------------------------------------------------------------ flows
@@ -275,7 +282,7 @@ async function boot() {
   Save.load();
   Input.init();
   const load = S.loadingScreen();
-  await Assets.loadAll({ ...CORE_ASSETS, hdr: VENUES.map((v) => `hdri/${v.hdri}.hdr`) }, (f) => load.set(f * 0.85));
+  await Assets.loadAll({ ...CORE_ASSETS, hdr: VENUES.map((v) => `sky/${v.hdri}.jpg`) }, (f) => load.set(f * 0.85));
   await Audio.init();
   load.set(0.9);
   await renderPortraits(PLAYERS);
@@ -284,9 +291,23 @@ async function boot() {
   frame();
   attract();
   load.close();
-  S.titleScreen(() => toMenu());
+  S.titleScreen(() => { enterFullscreen(); toMenu(); });
+  registerServiceWorker();
+  // on-screen pause button and tap-to-skip (intro / replay / match end) for touch devices
+  const pb = document.createElement('button');
+  pb.className = 'pausebtn';
+  pb.textContent = 'II';
+  pb.setAttribute('aria-label', 'Pausa');
+  pb.addEventListener('click', (e) => { e.stopPropagation(); Input.trigger('pause'); });
+  S.ui().appendChild(pb);
+  document.addEventListener('pointerdown', (e) => {
+    if ((e.target as HTMLElement).closest('button, .stick, .overlay, .panel')) return;
+    if (mode === 'menu' || !session || paused) return;
+    if (session.flow === 'intro' || session.flow === 'replay' || session.flow === 'matchEnd') session.requestSkip();
+  });
   // expose for automated tests
   (window as unknown as { __game: unknown }).__game = { get session() { return session; }, R, simulate: (sec: number) => { for (let t = 0; t < sec && session; t += 1 / 60) session.update(1 / 60); },
+    touch: (t: Parameters<typeof Input.setTouch>[0]) => Input.setTouch(t),
     demoVenue: (i: number) => { endSession(); session = new Session(R, { p1: PLAYERS[i * 2 % 8], p2: PLAYERS[(i * 2 + 1) % 8], venue: VENUES[i], cfg: defaultConfig(), difficulty: 'hard', p2Human: false }, S.ui()); session.skipIntro(); return 'ok'; } };
 }
 

@@ -45,6 +45,8 @@ class InputManager {
 
   onAction(f: (a: Action) => void) { this.listeners.push(f); return () => { this.listeners = this.listeners.filter((x) => x !== f); }; }
   private emit(a: Action) { for (const l of [...this.listeners]) l(a); }
+  /** Fire a UI action from on-screen buttons. */
+  trigger(a: Action) { this.emit(a); }
 
   isDown(code: string) { return this.down.has(code); }
   wasPressed(code: string) { return this.pressed.has(code); }

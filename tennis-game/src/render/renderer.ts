@@ -48,12 +48,25 @@ export class Renderer {
     this.bc.contrast = contrast;
   }
 
+  private basePR = 1;
+  private dynScale = 1;
+  /** low = direct render (no post-processing), for phones. */
+  private direct = false;
+
   setQuality(q: Quality) {
     this.quality = q;
-    const pr = Math.min(window.devicePixelRatio, q === 'high' ? 2 : q === 'medium' ? 1.25 : 1);
-    this.renderer.setPixelRatio(pr);
-    this.renderer.shadowMap.enabled = q !== 'low';
+    this.basePR = Math.min(window.devicePixelRatio, q === 'high' ? 2 : q === 'medium' ? 1.5 : 1);
+    this.direct = q === 'low';
+    this.renderer.toneMapping = this.direct ? THREE.ACESFilmicToneMapping : THREE.NoToneMapping;
+    this.renderer.shadowMap.type = q === 'high' ? THREE.PCFSoftShadowMap : THREE.PCFShadowMap;
     this.bloom.intensity = q === 'low' ? 0 : 0.7;
+    this.applyPR();
+  }
+
+  setDynamicScale(s: number) { this.dynScale = s; this.applyPR(); }
+
+  private applyPR() {
+    this.renderer.setPixelRatio(Math.max(0.5, this.basePR * this.dynScale));
     this.resize();
   }
 
@@ -68,6 +81,7 @@ export class Renderer {
   }
 
   render(dt: number) {
-    this.composer.render(dt);
+    if (this.direct) this.renderer.render(this.scene, this.camera);
+    else this.composer.render(dt);
   }
 }

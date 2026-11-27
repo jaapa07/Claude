@@ -162,6 +162,19 @@ const LOGO = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" 
  </g></svg>`;
 writeFileSync(join(UI, 'logo.svg'), LOGO);
 
+// App icons (PWA / home screen)
+const ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+ <defs><radialGradient id="bg" cx="50%" cy="35%" r="75%"><stop offset="0" stop-color="#1d2f6b"/><stop offset="1" stop-color="#05060a"/></radialGradient>
+ <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff3b0"/><stop offset="0.5" stop-color="#f5c542"/><stop offset="1" stop-color="#b8790f"/></linearGradient>
+ <linearGradient id="ball" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4ff7a"/><stop offset="1" stop-color="#a8c800"/></linearGradient></defs>
+ <rect width="512" height="512" fill="url(#bg)"/>
+ <path d="M40 330 L472 270 L472 340 L40 400Z" fill="#c1121f"/>
+ <circle cx="350" cy="190" r="92" fill="url(#ball)"/>
+ <path d="M272 140 C330 185 330 235 285 268 M430 120 C378 160 380 225 428 262" stroke="#fffde8" stroke-width="12" fill="none" stroke-linecap="round"/>
+ <g transform="skewX(-12)"><text x="150" y="300" ${FONT} font-size="230" fill="url(#gold)" stroke="#3b2300" stroke-width="6">GS</text></g>
+ <text x="256" y="455" text-anchor="middle" font-family="'Barlow Condensed', Arial" font-weight="700" font-size="44" letter-spacing="10" fill="#f5c542">ARCADE</text></svg>`;
+for (const sz of [192, 512]) await sharp(Buffer.from(ICON)).resize(sz, sz).png().toFile(join(UI, `icon-${sz}.png`));
+
 // Tournament crests
 const TOURNEYS = [
   { id: 'harbor', name: 'HARBOR OPEN', c1: '#0aa2c0', c2: '#063a55', glyph: '<path d="M-40 18 Q-20 0 0 18 T40 18" stroke="#fff" stroke-width="7" fill="none"/><path d="M-40 34 Q-20 16 0 34 T40 34" stroke="#fff" stroke-width="7" fill="none"/><path d="M0 -50 L0 6 M-22 -12 L22 -12" stroke="#fff" stroke-width="8"/>' },

@@ -10,6 +10,8 @@ interface SaveData {
 }
 
 const KEY = 'gsa_save_v1';
+import { isMobile } from './platform';
+
 const defaults = (): SaveData => ({
   version: 1,
   unlocked: [],
@@ -17,7 +19,7 @@ const defaults = (): SaveData => ({
   lastMenu: 0,
   records: { trainingBest: 0 },
   exhibition: { venue: 'harbor', games: 2, sets: 1, difficulty: 'normal', twoPlayers: false },
-  options: { volume: { music: 0.5, sfx: 0.9, voice: 1, crowd: 0.7 }, quality: 'high', hudScale: 1, shake: true, touch: 'auto' },
+  options: { volume: { music: 0.5, sfx: 0.9, voice: 1, crowd: 0.7 }, quality: isMobile ? 'low' : 'high', hudScale: 1, shake: true, touch: 'auto' },
 });
 
 class SaveStore {

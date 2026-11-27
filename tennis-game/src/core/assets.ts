@@ -1,16 +1,16 @@
 import * as THREE from 'three';
 import { GLTFLoader, type GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 
 const BASE = 'assets/';
 const gltfLoader = new GLTFLoader();
+gltfLoader.setMeshoptDecoder(MeshoptDecoder);
 const texLoader = new THREE.TextureLoader();
-const rgbeLoader = new RGBELoader();
 
 class AssetStore {
   gltf = new Map<string, GLTF>();
   tex = new Map<string, THREE.Texture>();
-  hdr = new Map<string, THREE.DataTexture>();
+  hdr = new Map<string, THREE.Texture>();
   private pending = new Map<string, Promise<unknown>>();
 
   async loadAll(list: { gltf?: string[]; tex?: string[]; hdr?: string[] }, onProgress?: (f: number) => void) {
@@ -26,7 +26,8 @@ class AssetStore {
 
   loadGltf(path: string): Promise<GLTF> {
     if (this.gltf.has(path)) return Promise.resolve(this.gltf.get(path)!);
-    if (!this.pending.has(path)) this.pending.set(path, gltfLoader.loadAsync(BASE + path).then((g) => (this.gltf.set(path, g), g)));
+    const url = BASE + (import.meta.env.VITE_JSON_MODELS ? path.replace(/\.glb$/, '.glb.json') : path);
+    if (!this.pending.has(path)) this.pending.set(path, gltfLoader.loadAsync(url).then((g) => (this.gltf.set(path, g), g)));
     return this.pending.get(path) as Promise<GLTF>;
   }
 
@@ -42,15 +43,17 @@ class AssetStore {
     return this.pending.get(path) as Promise<THREE.Texture>;
   }
 
-  loadHdr(path: string): Promise<THREE.DataTexture> {
+  /** Sky panoramas (tone-mapped equirectangular JPEGs) used for background and image-based lighting. */
+  loadHdr(path: string): Promise<THREE.Texture> {
     if (this.hdr.has(path)) return Promise.resolve(this.hdr.get(path)!);
     if (!this.pending.has(path))
-      this.pending.set(path, rgbeLoader.loadAsync(BASE + path).then((t) => {
+      this.pending.set(path, texLoader.loadAsync(BASE + path).then((t) => {
         t.mapping = THREE.EquirectangularReflectionMapping;
+        t.colorSpace = THREE.SRGBColorSpace;
         this.hdr.set(path, t);
         return t;
       }));
-    return this.pending.get(path) as Promise<THREE.DataTexture>;
+    return this.pending.get(path) as Promise<THREE.Texture>;
   }
 
   g(path: string): GLTF {

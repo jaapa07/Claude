@@ -2,10 +2,17 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <title>GRAND SLAM ARCADE — Circuito de Ouro</title>
   <meta name="description" content="Jogo de tênis arcade 3D com 4 arenas, 9 tenistas, replays e modo arcade." />
-  <link rel="icon" href="assets/ui/crest_harbor.svg" />
+  <meta name="theme-color" content="#05060a" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Grand Slam" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="assets/ui/icon-192.png" />
+  <link rel="apple-touch-icon" href="assets/ui/icon-192.png" />
   <link rel="stylesheet" href="/src/ui/style.css" />
 </head>
 <body>
@@ -13,6 +20,13 @@
     <div id="stage"></div>
     <div id="ui"></div>
     <div id="fade"></div>
+  </div>
+  <div class="rotate">
+    <div>
+      <svg viewBox="0 0 64 64" fill="none" stroke="#f5c542" stroke-width="3" stroke-linejoin="round"><rect x="18" y="6" width="28" height="52" rx="5"/><circle cx="32" cy="50" r="2" fill="#f5c542"/></svg>
+      <p>GIRE O CELULAR</p>
+      <small>O jogo é jogado na horizontal</small>
+    </div>
   </div>
   <script type="module" src="/src/main.ts"></script>
 </body>

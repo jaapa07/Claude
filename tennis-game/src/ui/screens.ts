@@ -66,12 +66,13 @@ export function loadingScreen() {
 
 // ------------------------------------------------------------------ title
 export function titleScreen(onStart: () => void) {
-  const el = mount(h(`<div class="title"><img class="logo" src="assets/ui/logo.svg" alt="GRAND SLAM ARCADE"/><div class="press">PRESSIONE ENTER</div><div class="copy">© GOLD CIRCUIT TOUR · JOGO ORIGINAL · ASSETS CC0/CC-BY (ver Créditos)</div></div>`));
+  const touch = document.documentElement.classList.contains('is-touch');
+  const el = mount(h(`<div class="title"><img class="logo" src="assets/ui/logo.svg" alt="GRAND SLAM ARCADE"/><div class="press">${touch ? 'TOQUE PARA JOGAR' : 'PRESSIONE ENTER'}</div><div class="copy">© GOLD CIRCUIT TOUR · JOGO ORIGINAL · ASSETS CC0/CC-BY (ver Créditos)</div></div>`));
   let done = false;
   const go = () => { if (done) return; done = true; off(); el.remove(); Audio.unlock(); Audio.play('ui_start'); onStart(); };
   const off = Input.onAction((a) => { if (a === 'confirm' || a === 'pause') go(); });
   el.addEventListener('click', go);
-  el.addEventListener('touchstart', go, { passive: true });
+
 }
 
 // ------------------------------------------------------------------ main menu
@@ -94,7 +95,7 @@ export function playerSelect(title: string, onPick: (p: PlayerDef) => void, onBa
   const unlocked = (p: PlayerDef) => !p.unlock || Save.data.unlocked.includes(p.id);
   const el = mount(h(`<div class="screen"><h1><span>${title}</span></h1><div class="sub">${opts.who ?? 'Escolha seu tenista'}</div>
     <div class="select"><div class="grid">${list.map((p) => `<div class="card ${unlocked(p) ? '' : 'locked'}"><img src="${Portraits.get(p.id)?.head ?? ''}"/>${flag(p.flagColors)}<div class="nm">${unlocked(p) ? p.short : '???'}</div></div>`).join('')}</div>
-    <div class="info"></div></div><div class="hint"><b>←↑→↓</b> escolher <b>ENTER</b> confirmar <b>ESC</b> voltar</div></div>`));
+    <div class="info"></div></div><div class="hint"><b>←↑→↓</b> escolher <b>ENTER</b> confirmar <b>ESC</b> voltar</div><button class="backbtn">◀ VOLTAR</button></div>`));
   const info = el.querySelector('.info') as HTMLElement;
   const stat = (n: string, v: number) => `<div class="stat"><span>${n}</span><div class="b"><i style="width:${v}%"></i></div><b>${v}</b></div>`;
   const show = (i: number) => {
@@ -105,11 +106,14 @@ export function playerSelect(title: string, onPick: (p: PlayerDef) => void, onBa
       <div class="quote">“${p.catchphrase}”</div>`;
   };
   const cards = [...el.querySelectorAll('.card')] as HTMLElement[];
+  const cols = getComputedStyle(el.querySelector('.grid')!).gridTemplateColumns.split(' ').length || 3;
+  const back = () => { nav.off(); el.remove(); onBack(); };
   const nav = navigable(cards, {
-    columns: window.innerWidth > 900 ? 5 : 3, onMove: show, isEnabled: (i) => unlocked(list[i]),
+    columns: cols, onMove: show, isEnabled: (i) => unlocked(list[i]),
     onConfirm: (i) => { nav.off(); el.remove(); onPick(list[i]); },
-    onBack: () => { nav.off(); el.remove(); onBack(); },
+    onBack: back,
   });
+  el.querySelector('.backbtn')!.addEventListener('click', () => { Audio.play('ui_back'); back(); });
 }
 
 // ------------------------------------------------------------------ exhibition setup
@@ -127,7 +131,7 @@ export function exhibitionSetup(onGo: (s: ExhibitionSetup) => void, onBack: () =
       <div class="opt" data-k="diff"><span>DIFICULDADE</span><span class="v"></span></div>
       <div class="opt" data-k="mode"><span>JOGADORES</span><span class="v"></span></div>
       <button class="item go">JOGAR!</button>
-    </div><div class="hint"><b>←→</b> alterar <b>↑↓</b> navegar <b>ENTER</b> confirmar</div></div>`));
+    </div><div class="hint"><b>←→</b> alterar <b>↑↓</b> navegar <b>ENTER</b> confirmar</div><button class="backbtn">◀ VOLTAR</button></div>`));
   const venues = [...el.querySelectorAll('.venue')] as HTMLElement[];
   const paintV = () => venues.forEach((v, i) => v.classList.toggle('vsel', i === vi) || v.classList.toggle('sel', i === vi));
   const paintOpts = () => {
@@ -157,7 +161,7 @@ export function exhibitionSetup(onGo: (s: ExhibitionSetup) => void, onBack: () =
     },
     onBack: () => { nav.off(); el.remove(); onBack(); },
   });
-  rows[0].querySelectorAll('.venue').forEach(() => 0);
+  el.querySelector('.backbtn')!.addEventListener('click', () => { Audio.play('ui_back'); nav.off(); el.remove(); onBack(); });
 }
 
 // ------------------------------------------------------------------ VS screen
@@ -302,7 +306,7 @@ export function touchControls(enabled: boolean) {
       const r = stick.getBoundingClientRect();
       let x = (e.clientX - (r.left + r.width / 2)) / (r.width / 2), y = (e.clientY - (r.top + r.height / 2)) / (r.height / 2);
       const l = Math.hypot(x, y); if (l > 1) { x /= l; y /= l; }
-      knob.style.transform = `translate(${x * 40}px, ${y * 40}px)`;
+      knob.style.transform = `translate(${x * r.width * 0.3}px, ${y * r.height * 0.3}px)`;
       Input.setTouch({ x, y: -y });
     };
     stick.addEventListener('pointerdown', (e) => { id = e.pointerId; stick.setPointerCapture(e.pointerId); upd(e); });
@@ -311,9 +315,11 @@ export function touchControls(enabled: boolean) {
     stick.addEventListener('pointerup', end); stick.addEventListener('pointercancel', end);
     el.querySelectorAll('.tbtns button').forEach((b) => {
       const k = (b as HTMLElement).dataset.b as 'shot' | 'slice' | 'lob';
-      b.addEventListener('pointerdown', (e) => { e.preventDefault(); Input.setTouch({ [k]: true }); });
-      b.addEventListener('pointerup', () => Input.setTouch({ [k]: false }));
-      b.addEventListener('pointercancel', () => Input.setTouch({ [k]: false }));
+      const up = () => { b.classList.remove('down'); Input.setTouch({ [k]: false }); };
+      b.addEventListener('pointerdown', (e) => { e.preventDefault(); b.classList.add('down'); (b as HTMLElement).setPointerCapture((e as PointerEvent).pointerId); Input.setTouch({ [k]: true }); navigator.vibrate?.(12); });
+      b.addEventListener('pointerup', up);
+      b.addEventListener('pointercancel', up);
+      b.addEventListener('contextmenu', (e) => e.preventDefault());
     });
   }
   el.classList.toggle('on', enabled);

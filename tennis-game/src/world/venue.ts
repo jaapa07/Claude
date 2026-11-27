@@ -102,6 +102,7 @@ function standGeometry(width: number, rows: number, stepH: number, stepD: number
 
 export class Venue {
   static crowdDensity = 1;
+  static shadowSize = 2048;
   group = new THREE.Group();
   crowd: Crowd;
   sun: THREE.DirectionalLight;
@@ -115,12 +116,12 @@ export class Venue {
 
   constructor(public def: VenueDef, scene: THREE.Scene, renderer: THREE.WebGLRenderer) {
     // --- environment
-    const hdr = Assets.hdr.get(`hdri/${def.hdri}.hdr`)!;
+    const hdr = Assets.hdr.get(`sky/${def.hdri}.jpg`)!;
     const pm = new THREE.PMREMGenerator(renderer);
     const env = pm.fromEquirectangular(hdr).texture;
     pm.dispose();
     scene.environment = env;
-    scene.environmentIntensity = def.envIntensity;
+    scene.environmentIntensity = def.envIntensity * 1.5;
     scene.background = hdr;
     scene.backgroundIntensity = def.bgIntensity;
     scene.backgroundBlurriness = def.indoor ? 0.6 : 0.0;
@@ -129,7 +130,7 @@ export class Venue {
     const sun = new THREE.DirectionalLight(def.sun.color, def.sun.intensity);
     sun.position.set(...(def.sun.dir.map((x) => x * 40) as [number, number, number]));
     sun.castShadow = true;
-    sun.shadow.mapSize.set(2048, 2048);
+    sun.shadow.mapSize.set(Venue.shadowSize, Venue.shadowSize);
     const sc = sun.shadow.camera;
     sc.left = -24; sc.right = 24; sc.top = 30; sc.bottom = -30; sc.near = 1; sc.far = 120;
     sun.shadow.bias = -0.0004;

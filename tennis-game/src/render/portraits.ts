@@ -13,7 +13,7 @@ export async function renderPortraits(players: PlayerDef[]) {
   r.toneMapping = THREE.ACESFilmicToneMapping;
   r.toneMappingExposure = 1.1;
   const scene = new THREE.Scene();
-  const hdr = Assets.hdr.get('hdri/harbor.hdr');
+  const hdr = Assets.hdr.get('sky/harbor.jpg');
   if (hdr) {
     const pm = new THREE.PMREMGenerator(r);
     scene.environment = pm.fromEquirectangular(hdr).texture;
