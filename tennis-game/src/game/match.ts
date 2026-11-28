@@ -10,7 +10,7 @@ import { Save } from '../core/save';
 export type ShotKind = 'drive' | 'slice' | 'lob' | 'drop' | 'smash' | 'volley' | 'serve';
 
 export type MatchEvent =
-  | { type: 'hit'; side: Side; kind: ShotKind; power: number; perfect: boolean; pos: Vec3; speedKmh: number; human: boolean; posErr: number }
+  | { type: 'hit'; side: Side; kind: ShotKind; power: number; perfect: boolean; pos: Vec3; speedKmh: number; human: boolean; posErr: number; timing?: number }
   | { type: 'bounce'; pos: Vec3; speed: number; inCourt: boolean }
   | { type: 'net'; pos: Vec3; cord: boolean }
   | { type: 'call'; text: 'OUT' | 'FAULT' | 'DOUBLE FAULT' | 'LET' | 'NET' | 'ACE' | 'WINNER' }
@@ -51,6 +51,9 @@ export class PlayerCtl {
   facing = 0;
   charging = false;
   chargeT = 0;
+  /** How long the shot button has been held for this shot (human power: tap = soft, hold = strong). */
+  holdT = 0;
+  get power() { return Math.min(1, this.holdT / 0.7); }
   chargeKind: ShotKind = 'drive';
   swingT = -1; // >=0 while a swing is scheduled/playing; counts time to impact
   swingAnim: AnimName | null = null;
@@ -738,9 +741,12 @@ export class Match {
     if (pressedAny && p.swingT < 0) {
       p.charging = true;
       p.chargeT = 0;
+      p.holdT = 0;
       p.chargeKind = i.lob ? 'lob' : i.slice ? (i.y < -0.5 ? 'drop' : 'slice') : 'drive';
     }
     if (p.charging) p.chargeT += dt;
+    // power builds while the button stays down (until the swing starts)
+    if (p.charging && p.swingT < 0 && (i.shot || i.slice || i.lob)) p.holdT = Math.min(1, p.holdT + dt);
     // keep the predicted contact fresh (spin and bounces change the path)
     if (incoming) {
       p.interceptAge += dt;
@@ -780,7 +786,7 @@ export class Match {
     if (ic.kind === 'smash') return 'smash';
     if (ic.kind === 'volley') return 'volley';
     const fore = (ic.p.x - p.pos.x) * p.end >= -0.15;
-    if (fore && p.athlete.actions.has('bb_hit') && ic.kind === 'ground' && ic.p.y < 1.3 && (p.human ? p.chargeT > 0.45 && p.chargeKind === 'drive' : p.powerPick)) return 'bb_hit';
+    if (fore && p.athlete.actions.has('bb_hit') && ic.kind === 'ground' && ic.p.y < 1.3 && (p.human ? p.power > 0.75 && p.chargeKind === 'drive' : p.powerPick)) return 'bb_hit';
     return fore ? 'forehand' : 'backhand';
   }
 
@@ -833,12 +839,15 @@ export class Match {
     else if (kind === 'volley' && shot === 'drive') shot = 'volley';
 
     // timing quality: longer charge = better (human). AI quality from difficulty.
+    // human: timing (pressed early enough) sets the quality, holding the button sets the power
     const charge = p.human ? THREE.MathUtils.clamp(p.chargeT / 0.75, 0, 1) : 0.55 + this.rng() * 0.4 - DIFFICULTY[p.diff].error * 0.15;
+    const power = p.human ? p.power : charge;
     const perfect = p.human ? p.chargeT > 0.6 && posErr < 0.35 : this.rng() < 0.12;
     const tech = stats.technique / 100, pow = stats.power / 100;
     const running = Math.hypot(p.vel.x, p.vel.z) / p.maxSpeed;
     const pressure = this.isBigPoint() ? 1 : 0;
-    let err = (1 - charge) * 0.9 + posErr * 0.7 + running * 0.35 + (1 - tech) * 0.5 + pressure * 0.15;
+    // a full-power swing is riskier than a controlled tap
+    let err = (1 - charge) * 0.9 + posErr * 0.7 + running * 0.35 + (1 - tech) * 0.5 + pressure * 0.15 + (p.human ? power * power * 0.35 : 0);
     if (ai) err *= DIFFICULTY[p.diff].error;
     if (perfect) err *= 0.25;
 
@@ -854,12 +863,12 @@ export class Match {
     // natural angle: mid-court contacts can go wider
     let speed = 0, spin = 0, minClear = 0.3, lob = false;
     switch (shot) {
-      case 'drive': speed = 23 + charge * 11 + pow * 9 + (p.swingAnim === 'bb_hit' ? 5 : 0); spin = 0.55 + tech * 0.5; minClear = 0.35 + (1 - charge) * 0.4; break;
-      case 'slice': speed = 19 + charge * 6 + pow * 4; spin = -0.6; minClear = 0.2; break;
+      case 'drive': speed = 18 + power * 21 + charge * 2 + pow * 7 + (p.swingAnim === 'bb_hit' ? 5 : 0); spin = 0.5 + tech * 0.45 + power * 0.45; minClear = 0.28 + (1 - charge) * 0.35 + (1 - power) * 0.35; break;
+      case 'slice': speed = 15 + power * 11 + charge * 1 + pow * 4; spin = -0.6; minClear = 0.2 + (1 - power) * 0.2; break;
       case 'drop': speed = 10 + charge * 2; spin = -0.9; minClear = 0.3; tz = o.end * (2.2 + this.rng() * 1.2); break;
       case 'lob': speed = 15.5 + charge * 3; spin = 0.35; minClear = 2.2; lob = true; tz = o.end * (COURT.halfLength - 1.6 + aimY * 0.6); break;
-      case 'volley': speed = 18 + charge * 8 + pow * 5; spin = -0.25; minClear = 0.15; tz = o.end * (COURT.halfLength - 3 + aimY * 2); tx = aimX * halfW; break;
-      case 'smash': speed = 36 + pow * 10 + charge * 4; spin = 0.15; minClear = 0.05; tz = o.end * (COURT.halfLength - 3.5 + aimY * 2); break;
+      case 'volley': speed = 15 + power * 11 + charge * 2 + pow * 5; spin = -0.25; minClear = 0.15; tz = o.end * (COURT.halfLength - 3 + aimY * 2); tx = aimX * halfW; break;
+      case 'smash': speed = 34 + pow * 10 + power * 6; spin = 0.15; minClear = 0.05; tz = o.end * (COURT.halfLength - 3.5 + aimY * 2); break;
     }
     if (kind === 'volley' && shot === 'lob') { lob = true; }
     // error scatter
@@ -868,7 +877,7 @@ export class Match {
     tz += o.end * g() * err * 2.0 + o.end * Math.max(0, err - 0.9) * 1.2;
     // unforced errors: grows with difficulty, running, pressure and how close to the lines the shot was aimed
     const lineRisk = Math.max(0, Math.abs(aimX) - 0.6) * 0.12 + Math.max(0, aimY) * 0.05;
-    const missChance = (ai ? DIFFICULTY[p.diff].miss : 0.02 + (1 - charge) * 0.06) + running * 0.05 + pressure * 0.03 + lineRisk + (shot === 'drive' ? charge * 0.02 : 0);
+    const missChance = (ai ? DIFFICULTY[p.diff].miss : 0.015 + (1 - charge) * 0.06 + power * 0.03) + running * 0.05 + pressure * 0.03 + lineRisk + (shot === 'drive' ? charge * 0.02 : 0);
     let netMiss = false;
     if (this.rng() < missChance) {
       const r = this.rng();
@@ -886,7 +895,8 @@ export class Match {
     this.rally++;
     this.lastShotKind = shot;
     if (shot === 'smash') p.stats.smashes++;
-    this.emit({ type: 'hit', side: p.side, kind: shot, power: charge, perfect, pos: from, speedKmh: this.ball.speedKmh(), human: p.human, posErr });
+    this.emit({ type: 'hit', side: p.side, kind: shot, power, perfect, pos: from, speedKmh: this.ball.speedKmh(), human: p.human, posErr, timing: charge });
+    p.holdT = 0;
     this.onBallHit(p.side);
   }
 

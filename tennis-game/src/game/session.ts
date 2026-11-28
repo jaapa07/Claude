@@ -304,10 +304,11 @@ export class Session {
           // timing feedback for human shots: learn when to press
           if (e.human && !this.opts.demo && Save.data.options.hints) {
             if (kind === 'serve') { if (e.perfect) this.hud?.toast('SAQUE PERFEITO!', 'gold'); else if (e.power < 0.55) this.hud?.toast('SAQUE FRACO', 'blue'); }
-            else if (e.perfect) this.hud?.toast('PERFEITO!', 'gold');
             else if (e.posErr > 0.9) this.hud?.toast('FORA DE POSIÇÃO', 'red');
-            else if (e.power < 0.3) this.hud?.toast('ATRASADO · aperte antes', 'blue');
-            else if (e.power > 0.85) this.hud?.toast('BOA!', 'gold');
+            else if ((e.timing ?? 1) < 0.3) this.hud?.toast('ATRASADO · aperte antes', 'blue');
+            else if (e.perfect && e.power > 0.8) this.hud?.toast('PERFEITO · POTENTE!', 'gold');
+            else if (e.perfect) this.hud?.toast('PERFEITO!', 'gold');
+            else if (e.power > 0.85) this.hud?.toast('POTENTE!', 'gold');
           }
           if (kind === 'smash') this.cam.addShake(0.2);
           this.hud?.setSpeed(e.speedKmh);

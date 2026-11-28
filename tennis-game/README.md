@@ -3,10 +3,11 @@
 Jogo de tênis arcade 3D original, feito a partir do `tennis-game-spec/GAME_SPEC.md`.
 Three.js (WebGL) para a cena 3D, interface 100% HTML/CSS, assets reais (modelos, animações, texturas, HDRIs, sons e música).
 
+**Jogar online:** https://jaapa07.github.io/grand_slam/ (publicado pelo GitHub Pages a cada push no `main`).
+
 ## Rodar
 
 ```bash
-cd tennis-game
 npm install
 npm run dev          # http://localhost:5173
 ```
@@ -33,7 +34,7 @@ Outros comandos: `npm test` (regras e física), `npm run typecheck`, `npm run bu
 | Ação | Teclado | Controle |
 |---|---|---|
 | Mover | WASD / setas | analógico / direcional |
-| Golpe (top spin) | J ou Espaço | A |
+| Golpe (top spin) — segure para mais força | J ou Espaço | A |
 | Slice (↓ + slice = deixadinha) | K | B |
 | Lob | L | X / Y |
 | Saque | golpe para lançar, golpe de novo no topo do medidor | A |

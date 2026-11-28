@@ -461,3 +461,44 @@ body:has(.overlay) .touch, body:has(.screen) .touch { display: none !important; 
 .toast.gold { background: linear-gradient(90deg, transparent, rgba(184,121,15,.9) 15%, rgba(184,121,15,.9) 85%, transparent); }
 .toast.blue { background: linear-gradient(90deg, transparent, rgba(30,90,180,.9) 15%, rgba(30,90,180,.9) 85%, transparent); }
 .toast.red { background: linear-gradient(90deg, transparent, rgba(170,25,35,.9) 15%, rgba(170,25,35,.9) 85%, transparent); }
+/* hold-to-charge power meter above the human player */
+.pmeter { position: absolute; width: 74px; height: 9px; transform: translate(-50%, -100%); background: rgba(0,0,0,.55); border: 1px solid rgba(255,255,255,.55); border-radius: 6px; overflow: visible; pointer-events: none; transition: opacity .12s; }
+.pmeter i { display: block; height: 100%; width: 0; border-radius: 5px; background: linear-gradient(90deg, #39e36b, #f5c542 60%, #ff4d5a); background-size: 74px 100%; }
+.pmeter b { position: absolute; left: 50%; bottom: 11px; transform: translateX(-50%); font-family: 'Anton'; font-weight: 400; font-size: 13px; letter-spacing: 1px; color: #fff; text-shadow: 0 1px 2px #000; white-space: nowrap; }
+.pmeter.max { box-shadow: 0 0 10px #ff4d5a; animation: blink .25s steps(2) infinite; }
+/* ================================================================ main menu v2: icons, context panel, tips */
+.menu .item { display: flex; flex-wrap: wrap; align-items: center; column-gap: 14px; }
+.menu .item .ico { width: .72em; height: .72em; flex: none; transform: skewX(12deg); opacity: .55; transition: opacity .12s, transform .2s, color .12s; }
+.menu .item.sel .ico { opacity: 1; color: var(--gold); transform: skewX(12deg) scale(1.12); filter: drop-shadow(0 2px 0 rgba(0,0,0,.4)); }
+.menu .item small { flex-basis: 100%; }
+.mm-side { position: absolute; right: clamp(16px, 4vw, 64px); top: 50%; transform: translateY(-50%); width: min(380px, 32vw); display: flex; flex-direction: column; gap: 10px; }
+.mm-info { padding: 18px 22px 16px; background: linear-gradient(160deg, rgba(20,28,58,.88), rgba(8,11,26,.92)); border: 1px solid rgba(255,255,255,.12); border-top: 3px solid var(--gold); border-radius: 4px; box-shadow: 0 18px 50px rgba(0,0,0,.5); backdrop-filter: blur(6px); }
+.mm-info h3 { margin: 0 0 8px; font-family: 'Anton'; font-weight: 400; font-style: italic; font-size: 30px; letter-spacing: 2px; line-height: 1.05; }
+.mm-info p { margin: 0 0 10px; font-size: 18px; line-height: 1.3; color: #c9d1e8; }
+.mm-big { font-family: 'Anton'; font-size: 22px; margin: 2px 0 10px; } .mm-big b { font-size: 56px; color: var(--gold); line-height: 1; } .mm-big small { font-family: 'Barlow Condensed'; font-size: 16px; color: var(--muted); margin-left: 6px; }
+.mm-row { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-top: 1px solid rgba(255,255,255,.08); font-size: 17px; }
+.mm-row span { color: var(--muted); } .mm-row b { font-weight: 600; text-align: right; }
+.mm-tip { display: flex; gap: 10px; align-items: flex-start; padding: 10px 14px; background: rgba(5,8,20,.72); border-left: 3px solid var(--gold); font-size: 16px; line-height: 1.3; color: #dfe4f2; min-height: 3.2em; }
+.mm-tip b { flex: none; padding: 2px 10px; background: var(--gold); color: #111; font-family: 'Anton'; font-weight: 400; letter-spacing: 1px; transform: skewX(-12deg); }
+.enter .mm-side { animation: inRight .5s cubic-bezier(.2,1,.3,1) both; animation-delay: .25s; }
+@keyframes inRight { from { opacity: 0; transform: translate(40px, -50%); } to { opacity: 1; transform: translate(0, -50%); } }
+@media (max-width: 900px) { .mm-side { width: min(300px, 40vw); } .mm-info { padding: 12px 14px; } .mm-info h3 { font-size: 22px; } .mm-info p { font-size: 15px; } .mm-big b { font-size: 40px; } .mm-row { font-size: 14px; padding: 4px 0; } }
+@media (max-height: 520px) { .mm-tip { display: none; } .mm-side { top: 54%; } .mm-info p { display: none; } }
+@media (min-height: 521px) and (max-height: 820px) { .menu .item { font-size: clamp(24px, 5.6vh, 40px); padding-top: 6px; padding-bottom: 4px; } .menu .head { width: min(300px, 50vw); } }
+.mm-tip span.in { animation: tipIn .35s ease-out; }
+@keyframes tipIn { from { transform: translateY(6px); color: var(--gold); } to { transform: none; } }
+.mm-tip span { display: block; }
+/* main menu on phones (short landscape): compact column, everything visible */
+@media (max-height: 520px) {
+  .menu .col { gap: 0; padding-top: 4px; }
+  .menu .head { width: min(190px, 26vw); margin-bottom: 2px; }
+  .menu .item { font-size: clamp(18px, 7.2vh, 28px); padding: 2px 16px 1px; column-gap: 10px; }
+  .menu .item small { display: none; }
+  .menu .item.sel small { display: block; height: auto; font-size: 12px; margin-top: 0; }
+  .mm-side { width: min(300px, 38vw); top: 50%; }
+  .mm-info { padding: 10px 14px; }
+  .mm-info h3 { font-size: 20px; margin-bottom: 4px; }
+  .mm-info p { display: block; font-size: 13px; margin-bottom: 4px; }
+  .mm-big { margin: 0 0 4px; } .mm-big b { font-size: 34px; }
+  .mm-row { font-size: 13px; padding: 3px 0; }
+}

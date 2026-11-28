@@ -3,7 +3,9 @@ import { Audio } from '../core/audio';
 import { PLAYERS, VENUES, DIFFICULTY, type PlayerDef, type VenueDef, type DifficultyId } from '../data/content';
 import { Portraits } from '../render/portraits';
 import { Save } from '../core/save';
+import { loadCareer, rankOf, SEASON, CATEGORY } from '../game/career';
 
+const esc = (t: string) => t.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 export const ui = () => document.getElementById('ui')!;
 const h = (html: string) => { const d = document.createElement('div'); d.innerHTML = html.trim(); return d.firstElementChild as HTMLElement; };
 
@@ -110,17 +112,54 @@ export function titleScreen(onStart: () => void) {
 
 // ------------------------------------------------------------------ main menu
 export function mainMenu(cb: { arcade: () => void; career: () => void; exhibition: () => void; training: () => void; options: () => void; credits: () => void }) {
-  const entries: [string, string, () => void][] = [
-    ['CIRCUITO', 'Carreira: crie seu tenista e chegue ao nº 1', cb.career],
-    ['ARCADE', 'Cinco partidas e o chefe final', cb.arcade],
-    ['EXIBIÇÃO', 'Regras, arena e adversário livres · 1P ou 2P', cb.exhibition],
-    ['TREINO', 'Minigame de precisão com alvos', cb.training],
-    ['OPÇÕES', 'Áudio, gráficos e controles', cb.options],
-    ['CRÉDITOS', 'Assets e licenças', cb.credits],
+  const ICON: Record<string, string> = {
+    trophy: '<path d="M7 4h10v3a5 5 0 0 1-10 0z"/><path d="M7 5H4v2a3 3 0 0 0 3 3M17 5h3v2a3 3 0 0 1-3 3M12 12v4M8 20h8M9 16h6"/>',
+    joy: '<rect x="3" y="8" width="18" height="10" rx="4"/><path d="M8 11v4M6 13h4"/><circle cx="16" cy="12" r="1"/><circle cx="18" cy="14" r="1"/>',
+    ball: '<circle cx="12" cy="12" r="8"/><path d="M5 7c4 2 4 8 0 10M19 7c-4 2-4 8 0 10"/>',
+    target: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1.2"/>',
+    gear: '<circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/>',
+    star: '<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>',
+  };
+  const svg = (k: string) => `<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON[k]}</svg>`;
+  const career = loadCareer();
+  const opts = Save.data.options;
+  const ex = Save.data.exhibition;
+  const venue = VENUES.find((v) => v.id === ex.venue) ?? VENUES[0];
+  const medal = (n: number) => (n >= 1200 ? 'OURO' : n >= 600 ? 'PRATA' : n >= 250 ? 'BRONZE' : '—');
+  const row = (k: string, v: string) => `<div class="mm-row"><span>${k}</span><b>${v}</b></div>`;
+  const entries: [string, string, string, () => string, () => void][] = [
+    ['CIRCUITO', 'Carreira: crie seu tenista e chegue ao nº 1', 'trophy', () => career
+      ? `<h3>${esc(career.me.name)}</h3><div class="mm-big">Nº <b>${rankOf(career.points)}</b><small>do ranking</small></div>${row('Temporada', String(career.season))}${row('Próximo torneio', esc(SEASON[career.week]?.name ?? '—'))}${row('Categoria', SEASON[career.week] ? CATEGORY[SEASON[career.week].category].label : '—')}${row('Títulos', String(career.titles.length))}`
+      : `<h3>Sua carreira</h3><p>Crie um tenista único e comece no nº 300 do mundo. Challengers, GOLD 250/500/1000 e Grand Slams, em simples e duplas.</p>`, cb.career],
+    ['ARCADE', 'Cinco partidas e o chefe final', 'joy', () => `<h3>Modo Arcade</h3><p>Cinco adversários em sequência, do fácil ao chefe final.</p>${row('Vitórias no Arcade', String(Save.data.arcadeWins))}${row('Chefe "El Muro"', Save.data.unlocked.includes('muro') ? 'DESBLOQUEADO' : 'bloqueado')}`, cb.arcade],
+    ['EXIBIÇÃO', 'Regras, arena e adversário livres · 1P ou 2P', 'ball', () => `<h3>Partida livre</h3><p>Escolha arena, regras, adversário, simples ou duplas.</p>${row('Arena', venue.name)}${row('Regras', `${ex.sets === 1 ? 'Set único' : 'Melhor de 3'} · ${ex.games} ${ex.games === 1 ? 'game' : 'games'}`)}${row('Modo', `${ex.twoPlayers ? '1P vs 2P' : '1P vs COM'}${(ex as { doubles?: boolean }).doubles ? ' · duplas' : ''}`)}`, cb.exhibition],
+    ['TREINO', 'Minigame de precisão com alvos', 'target', () => `<h3>Treino de precisão</h3><p>60 segundos acertando os alvos. Combos multiplicam os pontos.</p>${row('Recorde', `${Save.data.records.trainingBest} pts`)}${row('Medalha', medal(Save.data.records.trainingBest))}`, cb.training],
+    ['OPÇÕES', 'Áudio, gráficos e controles', 'gear', () => `<h3>Opções</h3>${row('Câmera', ({ tv: 'TV alta', arcade: 'Arcade', player: 'Atrás do jogador' } as Record<string, string>)[opts.camera] ?? opts.camera)}${row('Gráficos', ({ low: 'Baixa', medium: 'Média', high: 'Alta' } as Record<string, string>)[opts.quality] ?? opts.quality)}${row('Música', `${Math.round(opts.volume.music * 100)}%`)}${row('Assistência', opts.assist ? 'ligada' : 'desligada')}`, cb.options],
+    ['CRÉDITOS', 'Assets e licenças', 'star', () => `<h3>Créditos</h3><p>Jogo original. Modelos, texturas, sons e músicas de bancos livres (CC0 / CC-BY), listados com seus autores.</p>`, cb.credits],
   ];
-  const el = mount(h(`<div class="menu"><div class="col"><img class="head" src="assets/ui/logo.svg"/>${entries.map(([t, s]) => `<button class="item">${t}<small>${s}</small></button>`).join('')}</div><div class="hint"><b>↑↓</b> escolher <b>ENTER</b> confirmar</div></div>`));
+  const tips = [
+    'Segure GOLPE para bater mais forte; um toque rápido dá uma bola mais segura.',
+    'Aperte o golpe antes da bola chegar: quanto mais cedo, mais preciso.',
+    'Direcional no momento do contato: ↑ joga fundo, ↓ joga curto, ← → escolhe o lado.',
+    'SLICE + ↓ faz uma deixadinha. LOB passa por cima de quem sobe à rede.',
+    'Saque: um toque lança a bola, outro no topo do medidor bate. O topo dá SAQUE PERFEITO.',
+    'No saibro a bola quica alto e lenta; na grama, baixa e rápida.',
+  ];
+  const el = mount(h(`<div class="menu"><div class="col"><img class="head" src="assets/ui/logo.svg"/>${entries.map(([t, sub, ic]) => `<button class="item">${svg(ic)}<span class="lbl">${t}</span><small>${sub}</small></button>`).join('')}</div>
+    <aside class="mm-side"><div class="mm-info"></div><div class="mm-tip"><b>DICA</b><span></span></div></aside>
+    <div class="hint"><b>↑↓</b> escolher <b>ENTER</b> confirmar</div></div>`));
+  const info = el.querySelector('.mm-info') as HTMLElement;
+  const tip = el.querySelector('.mm-tip span') as HTMLElement;
+  let ti = Math.floor(Math.random() * tips.length);
+  const nextTip = () => { tip.textContent = tips[ti++ % tips.length]; tip.classList.remove('in'); void tip.offsetWidth; tip.classList.add('in'); };
+  nextTip();
+  const timer = setInterval(() => { if (!el.isConnected) { clearInterval(timer); return; } nextTip(); }, 6000);
   const items = [...el.querySelectorAll('.item')] as HTMLElement[];
-  const nav = navigable(items, { start: Save.data.lastMenu ?? 0, onConfirm: (i) => { Save.data.lastMenu = i; Save.flush(); nav.off(); leave(el); entries[i][2](); } });
+  const nav = navigable(items, {
+    start: Save.data.lastMenu ?? 0,
+    onMove: (i) => { info.innerHTML = entries[i][3](); info.animate([{ opacity: 0, transform: 'translateX(18px)' }, { opacity: 1, transform: 'none' }], { duration: 240, easing: 'cubic-bezier(.2,1,.3,1)' }); },
+    onConfirm: (i) => { Save.data.lastMenu = i; Save.flush(); clearInterval(timer); nav.off(); leave(el); entries[i][4](); },
+  });
 }
 
 // ------------------------------------------------------------------ player select
@@ -249,7 +288,7 @@ export function pauseMenu(onResume: () => void, onQuit: () => void, onOptions: (
 export function controlsPanel(onClose: () => void) {
   const el = mount(h(`<div class="overlay"><div class="panel"><h2>CONTROLES</h2><div class="controls-grid">
     <b>MOVER</b><span>WASD / Setas · Analógico</span>
-    <b>GOLPE (top spin)</b><span>J ou Espaço · Botão A</span>
+    <b>GOLPE (top spin)</b><span>J ou Espaço · Botão A · segure para bater mais forte</span>
     <b>SLICE</b><span>K · Botão B (com ↓ = deixadinha)</span>
     <b>LOB</b><span>L · Botão X/Y</span>
     <b>SAQUE</b><span>Golpe para lançar a bola, golpe de novo no topo do medidor</span>

@@ -1,5 +1,5 @@
 // Offline cache: game shell and assets are cached on first use (cache-first), so the game works offline afterwards.
-const CACHE = 'gsa-v7';
+const CACHE = 'gsa-v8';
 self.addEventListener('install', (e) => { self.skipWaiting(); e.waitUntil(caches.open(CACHE).then((c) => c.addAll(['./', 'index.html', 'manifest.webmanifest']).catch(() => {}))); });
 self.addEventListener('activate', (e) => e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim())));
 self.addEventListener('fetch', (e) => {

@@ -36,7 +36,7 @@ export class Hud {
         <div class="row" data-r="1"><span class="dot"></span><span>${labels[1]}</span><span class="sets"></span><span class="pt">0</span></div>
       </div>
       <div class="speed"><span><b>0</b><small>km/h</small></span></div>
-      <div class="toast" style="display:none"></div><div class="callout" style="display:none"><div class="c"></div><div class="s"></div></div>
+      <div class="toast" style="display:none"></div><div class="pmeter" style="opacity:0"><i></i><b></b></div><div class="pmeter" style="opacity:0"><i></i><b></b></div><div class="callout" style="display:none"><div class="c"></div><div class="s"></div></div>
       <div class="banner" style="display:none"><div></div></div>
       <div class="meter" style="display:none"><i></i></div>
       <div class="marker" style="--plate:#f5c542;opacity:0">${labels[0]}</div>
@@ -136,6 +136,22 @@ export class Hud {
       m.style.left = `${s.x}px`;
       m.style.top = `${s.y}px`;
       m.style.opacity = this.markerTimer > 0 && s.vis ? '1' : '0';
+    });
+    // power meter of each human player while the shot button is held (hold = stronger)
+    const pms = this.el.querySelectorAll<HTMLElement>('.pmeter');
+    this.match.players.slice(0, 2).forEach((p, i) => {
+      const el = pms[i];
+      if (!el) return;
+      const on = p.human && p.charging && this.match.phase === 'rally';
+      el.style.opacity = on ? '1' : '0';
+      if (!on) return;
+      const s = proj(p.pos.clone().add(new THREE.Vector3(0, 2.55, 0)));
+      el.style.left = `${s.x}px`;
+      el.style.top = `${s.y}px`;
+      const pw = p.power;
+      (el.firstElementChild as HTMLElement).style.width = `${Math.round(pw * 100)}%`;
+      el.classList.toggle('max', pw >= 1);
+      (el.lastElementChild as HTMLElement).textContent = pw < 0.15 ? 'TOQUE' : pw < 0.6 ? 'FORÇA' : pw < 1 ? 'FORTE' : 'MÁXIMO';
     });
     if (this.meter.style.display !== 'none') {
       const sv = this.match.players[this.match.server];
